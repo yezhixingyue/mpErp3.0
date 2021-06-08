@@ -389,12 +389,13 @@ export default {
     /* 工艺二级分类列表数据
     -------------------------------*/
     CraftClassifyData: [],
-    /* 产品管理相关
+    /* 产品分类管理相关
     -------------------------------*/
     ProductClassifyIDList: [
       { ID: 6, Name: '代客下单' },
       { ID: 2, Name: '自助上传' },
     ],
+    ProductMultipleClassifyList: [], // 产品多分类列表数据
   },
   getters: {
     /* 配送方式相关
@@ -496,11 +497,17 @@ export default {
     },
     /* 2级分类 产品 树结构
     -------------------------------*/
-    twoLevelsProductClassify(state) {
+    twoLevelsProductClassify(state) { // 去除子列表为空的类别
       return getTwoLevelsClassifyDataFromList(state.productList);
     },
-    twoLevelsProductClassify4Sort(state) {
+    twoLevelsProductClassify4Sort(state) { // 不去除 用于类别管理
       return getTwoLevelsClassifyDataFromList(state.productList, true);
+    },
+    twoLevelsMultipleProductClassifyList(state) { // 去除子列表为空的类别
+      return state.ProductMultipleClassifyList.map(it => ({ ...it, List: getTwoLevelsClassifyDataFromList(it.List) }));
+    },
+    twoLevelsMultipleProductClassifyList4Sort(state) { // 不去除 用于类别管理
+      return state.ProductMultipleClassifyList.map(it => ({ ...it, List: getTwoLevelsClassifyDataFromList(it.List, true) }));
     },
     /* 2级分类 工艺 树结构
     -------------------------------*/
@@ -671,6 +678,16 @@ export default {
     setCraftClassifyData(state, list) {
       state.CraftClassifyData = list;
     },
+    /* 设置产品多分类列表数据
+    -------------------------------*/
+    setProductMultipleClassifyList(state, data) {
+      if (state.ProductMultipleClassifyList.length === 0) state.ProductMultipleClassifyList.push(data);
+      else {
+        const i = state.ProductMultipleClassifyList.findIndex(it => it.type === data.type);
+        if (i > -1) state.ProductMultipleClassifyList.splice(i, 1, data);
+        else state.ProductMultipleClassifyList.push(data);
+      }
+    },
   },
   actions: {
     async getAreaList({ state, commit }) { // 获取地区列表数据
@@ -685,6 +702,18 @@ export default {
       const resp = await api.getVersionValid({ Key, Value: -1 }).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         commit('setProductList', resp.data.Data);
+        return true;
+      }
+      return false;
+    },
+    async getProductClassifyData({ state, commit }, { bool = false, key = 6 } = {}) { // 获取产品二级分类数据1  -      ---- !
+      const t = state.ProductMultipleClassifyList.find(it => it.type === key);
+      if (t && t.List.length > 0 && !bool) return true;
+      // { type: key, List: resp.data.Data }
+      const Key = (key || key === 0) ? key : state.ProductClassifyIDList[0].ID;
+      const resp = await api.getVersionValid({ Key, Value: -1 }).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        commit('setProductMultipleClassifyList', { type: Key, List: resp.data.Data });
         return true;
       }
       return false;
