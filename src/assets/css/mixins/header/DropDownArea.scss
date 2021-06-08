@@ -1,0 +1,58 @@
+@import "@/assets/css/common/var.scss";
+.dorp-down {
+  height: 25px;
+  width: 114px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgb(220, 220, 220);
+  &.el-dropdown {
+    font-size: 13px;
+    & > span {
+      outline: none;
+      display: flex;
+      width: 100%;
+      color: #000;
+      line-height: 25px;
+      font-size: 13px;
+      justify-content: space-between;
+      padding: 0 7px 0 5px;
+      user-select: none;
+      box-sizing: border-box;
+      white-space: nowrap;
+      > i {
+        align-self: center;
+        height: 15px;
+        width: 10px;
+      }
+      img {
+        height: 9px;
+        width: 11px;
+        position: relative;
+        top: 4px;
+      }
+    }
+  }
+}
+.el-dropdown-menu {
+  padding: 0;
+  width: 112px;
+  border-radius: 0px;
+  > li {
+    white-space: nowrap;
+    padding:0 13px;
+    margin: 0 5px;
+    // text-align: center;
+    user-select: none;
+    overflow: hidden;
+    font-size: 13px;
+    &:hover{
+      color: $--color-primary !important;
+    }
+  }
+  &.el-popper[x-placement^=bottom] {
+    margin: 0;
+    & > div::after,
+    & > div{
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,98 @@
+<template>
+  <div class="mp-service-page-main-wrap">
+      <ServiceTable />
+      <Count :watchPage='obj4RequestServiceList.Page'
+       :handlePageChange='handlePageChange' :count='totalCount' :showLoading='isShowLoadingMore'>
+        <!-- <span class="is-blue" @click="handleDownloadClick">
+          导出Excel表格
+          <i class="el-icon-download"></i>
+        </span> -->
+        <DownLoadExcelComp :configObj="configObj" />
+      </Count>
+      <ServiceDetailDialog />
+  </div>
+</template>
+
+<script>
+import { mapState, mapActions } from 'vuex';
+import Count from '@/components/common/Count.vue';
+import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
+import ServiceTable from './ServiceTable.vue';
+import ServiceDetailDialog from './ServiceDetailDialog.vue';
+
+export default {
+  components: {
+    ServiceTable,
+    Count,
+    ServiceDetailDialog,
+    DownLoadExcelComp,
+  },
+  computed: {
+    ...mapState('service', ['isShowLoadingMore', 'totalCount', 'obj4RequestServiceList', 'tableData']),
+    configObj() {
+      return {
+        condition: this.obj4RequestServiceList,
+        count: this.totalCount,
+        fileDefaultName: '售后单列表',
+        fileDate: this.obj4RequestServiceList.CreateTime,
+        downFunc: data => this.api.getServiceListData2Excel(data),
+      };
+    },
+  },
+  methods: {
+    ...mapActions('service', ['getServiceListData', 'getServiceListData2Excel']),
+    handlePageChange(page) {
+    //  console.log(page);
+      this.getServiceListData({ page, type: 'get' });
+    },
+    handleDownloadClick() {
+      if (this.obj4RequestServiceList.Page === 1
+           && this.tableData.length === 0
+           && this.totalCount === 0) {
+        this.messageBox.warnSingleError('[ 当前条件没有可下载的列表数据! ]');
+        return;
+      }
+      // const { First, Second } = this.obj4RequestServiceList.CreateTime;
+      // if (!First && !Second) {
+      //   this.messageBox.warnSingleError('[ 筛选时间为全部时不能导出数据，请选择具体时间! ]');
+      //   return;
+      // }
+      // if ((!First && Second) || (First && !Second)) {
+      //   this.messageBox.warnSingleError('[ 时间区间出现异常! ]');
+      //   return;
+      // }
+      // let _second = '';
+      // _second = Second && new Date(Second) > new Date() ? this.TodayDate.Second : Second;
+      // const _firstTime = new Date(new Date(First)).getTime();
+      // const _endTime = new Date(new Date(_second)).getTime();
+      // const _maxDuration = 3 * 24 * 60 * 60 * 1000; // 最大区间100天
+      // if (_endTime - _firstTime > _maxDuration) {
+      //   this.messageBox.warnSingleError('间隔时间不能超过3天,
+      // 请使用今日、昨日或自定义时间进行区间选择!', undefined, undefined, '导出间隔时间过长!');
+      //   // this.messageBox.warnSingleError('[ 导出数据时筛选时间间隔不能超过100天! ]');
+      //   return;
+      // }
+      // this.messageBox.warnCancelNullMsg('确定导出表格数据吗?', () => this.getServiceListData2Excel());
+      this.getServiceListData2Excel();
+    },
+  },
+};
+</script>
+
+<style lang='scss'>
+@import "@/assets/css/common/var.scss";
+.mp-service-page-main-wrap{
+  border: 1px solid #e6e6e6;
+  box-sizing: border-box;
+  > .count-wrap {
+    > .is-blue {
+      margin-left: 60px;
+      margin-right: -20px;
+      cursor: pointer;
+      &:hover {
+        color: $--color-primary-light !important;
+      }
+    }
+  }
+}
+</style>

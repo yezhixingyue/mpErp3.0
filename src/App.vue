@@ -1,0 +1,70 @@
+<template>
+  <div id="app">
+    <LeftMenu v-if="key" />
+    <section>
+      <HeaderTabs v-if="key" />
+      <main>
+        <!-- {{temp()}} -->
+        <!-- <keep-alive> -->
+          <router-view />
+        <!-- </keep-alive> -->
+      </main>
+    </section>
+    <div class="mp-general-loading-wrap"></div>
+  </div>
+</template>
+<script>
+import LeftMenu from './components/common/Layout/LeftMenu.vue';
+import HeaderTabs from './components/common/Layout/HeaderTabs.vue';
+
+export default {
+  components: {
+    LeftMenu,
+    HeaderTabs,
+  },
+  computed: {
+    key() {
+      return process.env.NODE_ENV === 'development' && this.$route.name !== 'login';
+    },
+  },
+  data() {
+    return {
+      temp() {
+        return <div> Hello world! </div>;
+      },
+    };
+  },
+};
+</script>
+<style lang="scss" scoped>
+  #app{
+    display: flex;
+    background-color: #f5f5f5;
+    > .leftmenu {
+      flex: none;
+      width: 180px;
+    }
+    > section {
+      flex: 1;
+      width: calc(100vw - 180px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background-color: #fff;
+      > header {
+        padding: 0;
+        // box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+        // background-color: #eee;
+        flex: none;
+        width: 100%;
+      }
+      > main {
+        overflow: auto;
+        width: 100%;
+        flex: 1;
+        // margin-left: 5px;
+        // padding-right: 15px;
+      }
+    }
+  }
+</style>
