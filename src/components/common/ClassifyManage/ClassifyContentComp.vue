@@ -77,6 +77,11 @@ export default {
       }
     },
   },
+  watch: {
+    classifyData() {
+      this.setCurEditClassifyData([this.classifyData, -1, '根分类']);
+    },
+  },
   async mounted() {
     const bool = await this.fetchData();
     if (bool) {

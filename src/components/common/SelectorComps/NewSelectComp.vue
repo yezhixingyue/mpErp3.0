@@ -3,6 +3,7 @@
    v-model="result"
    class="mp-erp-new-common-select-comp-wrap"
    :filterable='filterable'
+   size="small"
    >
     <el-option
       v-for="item in options"

@@ -5,7 +5,7 @@
         <el-radio-button :label="it.ID" v-for="it in ProductClassifyIDList" :key="it.ID">{{it.Name}}</el-radio-button>
       </el-radio-group>
     </header>
-    <ClassifyContentComp :classifyData='classifyData' :type='1' title='产品'
+    <ClassifyContentComp :classifyData='classifyData' :type='curType' title='产品'
      @goback='onGobackClick' @sort='onSortSuccess' :fetchData='fetchClassifyData' />
   </section>
 </template>
@@ -26,6 +26,11 @@ export default {
       const t = this.twoLevelsMultipleProductClassifyList4Sort.find(it => it.type === this.radio);
       return t ? t.List : [];
     },
+    curType() {
+      if (!this.radio && this.radio !== 0) return 0;
+      const t = this.ProductClassifyIDList.find(it => it.ID === this.radio);
+      return t ? t.Type : 0;
+    },
   },
   data() {
     return {
@@ -44,7 +49,7 @@ export default {
       this.$store.commit('common/setProductMultipleClassifyList', { type: this.radio, List });
     },
     onRadioChange(e) {
-      this.$store.dispatch('common/getProductClassifyData', { bool: true, key: e });
+      this.$store.dispatch('common/getProductClassifyData', { bool: false, key: e });
     },
   },
   mounted() {

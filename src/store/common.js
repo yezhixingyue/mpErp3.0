@@ -392,8 +392,8 @@ export default {
     /* 产品分类管理相关
     -------------------------------*/
     ProductClassifyIDList: [
-      { ID: 6, Name: '代客下单' },
-      { ID: 2, Name: '自助上传' },
+      { ID: 6, Name: '代客下单', Type: 1 }, // ID只与从缓存获取数据有关  其它分类管理 和 分类筛选等 都使用Type
+      { ID: 2, Name: '自助上传', Type: 2 },
     ],
     ProductMultipleClassifyList: [], // 产品多分类列表数据
   },
@@ -713,7 +713,15 @@ export default {
       const Key = (key || key === 0) ? key : state.ProductClassifyIDList[0].ID;
       const resp = await api.getVersionValid({ Key, Value: -1 }).catch(() => {});
       if (resp && resp.data.Status === 1000) {
-        commit('setProductMultipleClassifyList', { type: Key, List: resp.data.Data });
+        if (key === 0) {
+          state.ProductClassifyIDList.forEach(it => {
+            const type = it.Type;
+            const List = resp.data.Data.filter(_it => _it.Type === type);
+            commit('setProductMultipleClassifyList', { type, List });
+          });
+        } else {
+          commit('setProductMultipleClassifyList', { type: Key, List: resp.data.Data });
+        }
         return true;
       }
       return false;

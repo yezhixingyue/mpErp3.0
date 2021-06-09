@@ -1,23 +1,27 @@
 import api from '@/api/index';
 import CommonClassType from '@/store/CommonClassType';
 
+const initConditon = {
+  ProductClass: {
+    First: '',
+    Second: '',
+    Third: '',
+  },
+  Page: 1,
+  PageSize: 24,
+  KeyWords: '',
+};
+
 export default {
   namespaced: true,
   state: {
     /** 请求列表数据的对象
      ---------------------------------------- */
-    condition4ProductManageList: {
-      ProductClass: {
-        First: '',
-        Second: '',
-      },
-      Page: 1,
-      PageSize: 24,
-      KeyWords: '',
-    },
+    condition4ProductManageList: JSON.parse(JSON.stringify(initConditon)),
     ProductManageList: [],
     ProductManageListNumber: 0,
     isTableDataLoading: false,
+    curEditData: null,
   },
   getters: {
   },
@@ -52,15 +56,10 @@ export default {
     /** 清除列表数据请求信息
      ---------------------------------------- */
     clearCondition4ProductManageList(state) {
-      state.condition4ProductManageList = {
-        ProductClass: {
-          First: '',
-          Second: '',
-        },
-        Page: 1,
-        PageSize: 24,
-        KeyWords: '',
-      };
+      state.condition4ProductManageList = JSON.parse(JSON.stringify(initConditon));
+    },
+    setCurEditData(state, data) { // 设置当前正在编辑的产品数据 data为null时说明为新增
+      state.curEditData = data;
     },
   },
   actions: {

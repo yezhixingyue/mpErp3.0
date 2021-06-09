@@ -409,16 +409,16 @@ export const routes = [
             },
             component: () => import('../views/ProductManage/ProductClassifyManagePage.vue'),
           },
-          // {
-          //   path: '/ExpressPriceAddEdit/:type',
-          //   name: 'ExpressPriceAddEdit',
-          //   meta: {
-          //     title: '物流价格添加与编辑',
-          //     requiresAuth: true,
-          //     // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
-          //   },
-          //   component: () => import('../views/ExpressManage/ExpressPriceAddEditPage.vue'),
-          // },
+          {
+            path: '/ProductDataSave/:type',
+            name: 'ProductDataSave',
+            meta: {
+              title: '设置产品',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductDataSavePage.vue'),
+          },
         ],
       },
       {

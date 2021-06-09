@@ -3,15 +3,9 @@
     <header>
       <!-- 顶部按钮及筛选区域 -->
       <div class="left">
-        <el-button type="primary" class="mp-common-btn-styles" @click="addNewProductVisible=true">添加产品</el-button>
+        <el-button type="primary" class="mp-common-btn-styles" @click="onProductSaveClick(null)">添加产品</el-button>
         <el-button type="primary" class="mp-common-btn-styles" @click="goToClassifyPage">管理产品分类</el-button>
-        <product-selector-index-two-levels
-          title="产品分类"
-          :changePropsFunc="setObjForListData"
-          :requestFunc="getManageProductList"
-          :ClassID="condition4ProductManageList.ProductClass.First"
-          :TypeID="condition4ProductManageList.ProductClass.Second"
-          :typeList="[['ProductClass', 'First'],['ProductClass', 'Second']]" />
+        <NewProductClassifySelectComp v-model="ProductClass" />
       </div>
       <search-input-comp
         class="search-section"
@@ -41,27 +35,35 @@
 </template>
 
 <script>
-import ProductSelectorIndexTwoLevels from '@/components/common/SelectorComps/ProductSelectorIndexTwoLevels.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import ProductTableComp from '@/components/ProductManageComps/ListPageComps/ProductTableComp.vue';
 import Count from '@/components/common/Count.vue';
+import NewProductClassifySelectComp from '@/components/common/SelectorComps/NewProductClassifySelectComp.vue';
 import { mapState } from 'vuex';
 
 export default {
   components: {
-    ProductSelectorIndexTwoLevels,
     SearchInputComp,
     ProductTableComp,
     Count,
+    NewProductClassifySelectComp,
   },
   computed: {
     ...mapState('productManage', ['condition4ProductManageList', 'ProductManageList', 'ProductManageListNumber', 'isTableDataLoading']),
     ...mapState('common', ['OperatorKeyValueList']),
+    ProductClass: {
+      get() {
+        return this.condition4ProductManageList.ProductClass;
+      },
+      set(val) {
+        this.$store.commit('productManage/setCondition4ProductManageList', [['ProductClass', ''], val]);
+        this.getManageProductList();
+      },
+    },
   },
   data() {
     return {
-      addNewProductVisible: false,
-      productList: [],
+      // productList: [],
     };
   },
   methods: {
@@ -79,6 +81,14 @@ export default {
     },
     handlePageChange(page) {
       this.getManageProductList(page);
+    },
+    onProductSaveClick(data) { // 产品新增 | 编辑
+      this.$store.commit('productManage/setCurEditData', data);
+      if (data) {
+        this.$router.push('ProductDataSave/edit');
+      } else {
+        this.$router.push('ProductDataSave/add');
+      }
     },
   },
   mounted() {
