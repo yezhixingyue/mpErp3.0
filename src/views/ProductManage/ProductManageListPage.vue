@@ -84,11 +84,7 @@ export default {
     },
     onProductSaveClick(data) { // 产品新增 | 编辑
       this.$store.commit('productManage/setCurEditData', data);
-      if (data) {
-        this.$router.push('ProductDataSave/edit');
-      } else {
-        this.$router.push('ProductDataSave/add');
-      }
+      this.$router.push(`/ProductDataSave/${Date.now()}`);
     },
   },
   mounted() {
@@ -100,14 +96,18 @@ export default {
 .mp-erp-product-manage-list-page-wrap {
   height: 100%;
   width: 100%;
+  box-sizing: border-box;
+  padding-left: 8px;
+  background-color: #f5f5f5;
   > header {
-    height: 75px;
-    padding-top: 20px;
+    height: 60px;
+    padding-top: 13px;
     box-sizing: border-box;
     padding-left: 20px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    background-color: #fff;
     > .left {
       display: flex;
       align-items: center;
@@ -122,13 +122,14 @@ export default {
     }
   }
   > main {
-    height: calc(100% - 75px - 50px);
+    height: calc(100% - 60px - 60px);
   }
   > footer {
     height: 50px;
     box-sizing: border-box;
-    border-top: 1px solid #eee;
+    // border-top: 1px solid #eee;
     padding-top: 2px;
+    background-color: #fff;
   }
 }
 </style>

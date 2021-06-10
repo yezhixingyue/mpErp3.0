@@ -40,13 +40,13 @@ export default {
   transition: color 0.1s ease-in-out;
   user-select: none;
   &.red {
-    color: #e42a2a;
+    color: #FF3769;
   }
   &:hover {
     color: #f00;
   }
   &:active {
-    color: #05285c;
+    color: #e42a2a;
   }
   &.disabled {
     user-select: none;

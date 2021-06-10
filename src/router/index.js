@@ -410,7 +410,7 @@ export const routes = [
             component: () => import('../views/ProductManage/ProductClassifyManagePage.vue'),
           },
           {
-            path: '/ProductDataSave/:type',
+            path: '/ProductDataSave/:times',
             name: 'ProductDataSave',
             meta: {
               title: '设置产品',

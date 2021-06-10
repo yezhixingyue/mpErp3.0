@@ -23,7 +23,7 @@ export default {
     ...mapGetters('common', ['twoLevelsMultipleProductClassifyList4Sort']),
     classifyData() {
       if ((!this.radio && this.radio !== 0) || this.twoLevelsMultipleProductClassifyList4Sort.length === 0) return [];
-      const t = this.twoLevelsMultipleProductClassifyList4Sort.find(it => it.type === this.radio);
+      const t = this.twoLevelsMultipleProductClassifyList4Sort.find(it => it.ID === this.radio);
       return t ? t.List : [];
     },
     curType() {
@@ -46,7 +46,7 @@ export default {
       return resBool;
     },
     onSortSuccess(List) {
-      this.$store.commit('common/setProductMultipleClassifyList', { type: this.radio, List });
+      this.$store.commit('common/setProductMultipleClassifyList', { ID: this.radio, Type: this.curType, List });
     },
     onRadioChange(e) {
       this.$store.dispatch('common/getProductClassifyData', { bool: false, key: e });

@@ -342,6 +342,18 @@ const api = {
   getManageProductLists(data) { //  POST /Api/Product/List  获取产品列表数据
     return instance.post('/Api/Product/List', data);
   },
+  getProductBaseInfoSave(data) { // POST /Api/Product/BaseInfoSave  产品保存
+    return instance.post('/Api/Product/BaseInfoSave', data);
+  },
+  getProductRemove(id) { // DELETE /Api/Product/Remove 产品删除
+    return instance.delete(`/Api/Product/Remove?id=${id}`);
+  },
+  getProductPartSave(data) { // POST /Api/Part/Save  产品部件保存
+    return instance.post('/Api/Part/Save', data);
+  },
+  getProductPartRemove(id) { // DELETE /Api/Part/Remove 产品部件删除
+    return instance.delete(`/Api/Part/Remove?id=${id}`);
+  },
   getValetOrderStatusChange(productID) { // PUT /Api/Product/ChangeValetOrderStatus  改变产品代客下单状态
     return instance.put(`/Api/Product/ChangeValetOrderStatus?productID=${productID}`);
   },

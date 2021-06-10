@@ -1,5 +1,8 @@
 import api from '@/api/index';
+import messageBox from '@/assets/js/utils/message';
 import CommonClassType from '@/store/CommonClassType';
+import Product from '@/assets/js/TypeClass/ProductClass';
+import Part from '@/assets/js/TypeClass/PartClass';
 
 const initConditon = {
   ProductClass: {
@@ -10,6 +13,7 @@ const initConditon = {
   Page: 1,
   PageSize: 24,
   KeyWords: '',
+  FieldType: 3,
 };
 
 export default {
@@ -46,7 +50,7 @@ export default {
     },
     setTableDataOrderStatusChange(state, [type, productID]) { // type: ValetOrderStatus | CustomOrderStatus 更改产品自助上传和代客下单状态
       if (state.ProductManageList.length === 0) return;
-      const t = state.ProductManageList.find(it => it.ProductID === productID);
+      const t = state.ProductManageList.find(it => it.ID === productID);
       if (t) {
         // console.log(t);
         if (type === 'ValetOrderStatus') t.AllowValetOrder = !t.AllowValetOrder;
@@ -60,6 +64,48 @@ export default {
     },
     setCurEditData(state, data) { // 设置当前正在编辑的产品数据 data为null时说明为新增
       state.curEditData = data;
+    },
+    setProductSave(state, [isEdit, data]) { // 产品编辑添加
+      if (isEdit) {
+        const i = state.ProductManageList.findIndex(it => it.ID === data.ID);
+        if (i > -1) {
+          const t = state.ProductManageList[0];
+          const _temp = { ...t, ...data };
+          state.ProductManageList.splice(i, 1, _temp);
+        }
+      } else {
+        const _temp = new Product(data);
+        state.ProductManageList.push(_temp);
+        state.ProductManageListNumber += 1;
+      }
+    },
+    setProductRemove(state, id) { // 处理产品删除
+      state.ProductManageList = state.ProductManageList.filter(it => it.ID !== id);
+      state.ProductManageListNumber -= 1;
+    },
+    setProductPartSave(state, [data, isEdit, ID]) { // 处理产品部件添加与编辑
+      const { ProductID } = data;
+      const t = state.ProductManageList.find(it => it.ID === ProductID);
+      if (t) {
+        if (!isEdit) {
+          const temp = new Part({ ...data, ID });
+          t.PartList.push(temp);
+        } else {
+          const i = t.PartList.findIndex(_it => _it.ID === data.ID);
+          if (i > -1) {
+            const _t = t.PartList[i];
+            const _temp = { ..._t, ...data };
+            t.PartList.splice(i, 1, _temp);
+          }
+        }
+      }
+    },
+    setProductPartRemove(state, [id, ProductID]) { // 部件删除
+      const t = state.ProductManageList.find(it => it.ID === ProductID);
+      if (t) {
+        const i = t.PartList.findIndex(it => it.ID === id);
+        if (i > -1) t.PartList.splice(i, 1);
+      }
     },
   },
   actions: {
@@ -77,14 +123,61 @@ export default {
     },
     async getOrderStatusChange({ state, commit }, [type, productID]) { // 更改产品自助上传和代客下单状态
       if (state.ProductManageList.length === 0) return;
-      const t = state.ProductManageList.find(it => it.ProductID === productID);
+      const t = state.ProductManageList.find(it => it.ID === productID);
       if (t) {
         let changeRequstFunc = null;
         if (type === 'ValetOrderStatus') changeRequstFunc = api.getValetOrderStatusChange;
         if (type === 'CustomOrderStatus') changeRequstFunc = api.getCustomOrderStatusChange;
         if (!changeRequstFunc) return;
-        const res = await changeRequstFunc(productID);
+        const res = await changeRequstFunc(productID).catch(() => {});
         if (res && res.status === 200 && res.data.Status === 1000) commit('setTableDataOrderStatusChange', [type, productID]);
+      }
+    },
+    async getProductBaseInfoSave({ commit }, [data, cb]) { // 产品添加 | 编辑
+      const resp = await api.getProductBaseInfoSave(data).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const isEdit = !!data.ID;
+        const msg = isEdit ? '编辑成功' : '添加成功';
+        const callback = () => {
+          commit('setProductSave', [isEdit, data]);
+          if (cb) cb();
+        };
+        messageBox.successSingle(msg, callback, callback);
+      }
+    },
+    async getProductRemove({ commit }, id) { // 产品删除
+      if (!id) return;
+      const resp = await api.getProductRemove(id).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const callback = () => {
+          commit('setProductRemove', id);
+        };
+        messageBox.successSingle('删除成功', callback, callback);
+      }
+    },
+    async getProductPartSave({ commit }, [data, cb]) { // 产品部件保存
+      if (!data) return;
+      const resp = await api.getProductPartSave(data).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        // 保存成功
+        const { ID } = data;
+        const isEdit = !!(ID || ID === 0);
+        const msg = isEdit ? '部件编辑成功' : '部件添加成功';
+        const callback = () => {
+          commit('setProductPartSave', [data, isEdit, resp.data.Data]);
+          if (cb) cb();
+        };
+        messageBox.successSingle(msg, callback, callback);
+      }
+    },
+    async getProductPartRemove({ commit }, [id, ProductID]) { // 部件删除
+      if (!id) return;
+      const resp = await api.getProductPartRemove(id).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const callback = () => {
+          commit('setProductPartRemove', [id, ProductID]);
+        };
+        messageBox.successSingle('部件删除成功', callback, callback);
       }
     },
   },

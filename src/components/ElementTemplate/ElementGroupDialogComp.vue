@@ -146,11 +146,11 @@ export default {
       const { MinValue, MaxValue } = value;
       // 1. 必填   2. 可以为0 但不能同时为0  3. 最大值必须大于等于最小值  4. 不能为负，最大不可设为-1  5. 可以均不填写 代表不限制 (不行 取消该条)
       if ((!MinValue && MinValue !== 0) || (!MaxValue && MaxValue !== 0)) {
-        callback(new Error('请填写和补充使用次数最大最小值'));
+        callback(new Error('请填写和补充最大最小值'));
         return;
       }
       if (MinValue === 0 && MaxValue === 0) {
-        callback(new Error('使用次数最大最小值不能同时为0'));
+        callback(new Error('最大最小值不能同时为0'));
         return;
       }
       if (MinValue < 0 || MaxValue < 0) {

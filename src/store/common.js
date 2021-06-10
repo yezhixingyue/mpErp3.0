@@ -504,10 +504,10 @@ export default {
       return getTwoLevelsClassifyDataFromList(state.productList, true);
     },
     twoLevelsMultipleProductClassifyList(state) { // 去除子列表为空的类别
-      return state.ProductMultipleClassifyList.map(it => ({ ...it, List: getTwoLevelsClassifyDataFromList(it.List) }));
+      return state.ProductMultipleClassifyList.map(it => ({ ...it, List: getTwoLevelsClassifyDataFromList(it.List) })).sort((a, b) => a.Type - b.Type);
     },
     twoLevelsMultipleProductClassifyList4Sort(state) { // 不去除 用于类别管理
-      return state.ProductMultipleClassifyList.map(it => ({ ...it, List: getTwoLevelsClassifyDataFromList(it.List, true) }));
+      return state.ProductMultipleClassifyList.map(it => ({ ...it, List: getTwoLevelsClassifyDataFromList(it.List, true) })).sort((a, b) => a.Type - b.Type);
     },
     /* 2级分类 工艺 树结构
     -------------------------------*/
@@ -681,9 +681,13 @@ export default {
     /* 设置产品多分类列表数据
     -------------------------------*/
     setProductMultipleClassifyList(state, data) {
+      if (!data.Type && data.Type !== 0) {
+        const t = state.ProductClassifyIDList.find(it => it.ID === data.ID);
+        if (t) data.Type = t.Type;
+      }
       if (state.ProductMultipleClassifyList.length === 0) state.ProductMultipleClassifyList.push(data);
       else {
-        const i = state.ProductMultipleClassifyList.findIndex(it => it.type === data.type);
+        const i = state.ProductMultipleClassifyList.findIndex(it => it.ID === data.ID);
         if (i > -1) state.ProductMultipleClassifyList.splice(i, 1, data);
         else state.ProductMultipleClassifyList.push(data);
       }
@@ -707,20 +711,22 @@ export default {
       return false;
     },
     async getProductClassifyData({ state, commit }, { bool = false, key = 6 } = {}) { // 获取产品二级分类数据1  -      ---- !
-      const t = state.ProductMultipleClassifyList.find(it => it.type === key);
+      const t = state.ProductMultipleClassifyList.find(it => it.ID === key);
       if (t && t.List.length > 0 && !bool) return true;
       // { type: key, List: resp.data.Data }
       const Key = (key || key === 0) ? key : state.ProductClassifyIDList[0].ID;
       const resp = await api.getVersionValid({ Key, Value: -1 }).catch(() => {});
       if (resp && resp.data.Status === 1000) {
-        if (key === 0) {
+        if (Key === 0) {
           state.ProductClassifyIDList.forEach(it => {
-            const type = it.Type;
-            const List = resp.data.Data.filter(_it => _it.Type === type);
-            commit('setProductMultipleClassifyList', { type, List });
+            const { Type, ID } = it;
+            const List = resp.data.Data.filter(_it => _it.Type === Type);
+            commit('setProductMultipleClassifyList', { Type, ID, List });
           });
         } else {
-          commit('setProductMultipleClassifyList', { type: Key, List: resp.data.Data });
+          const _t = state.ProductClassifyIDList.find(it => it.ID === key);
+          const Type = _t ? _t.Type : '';
+          commit('setProductMultipleClassifyList', { ID: Key, Type, List: resp.data.Data });
         }
         return true;
       }
