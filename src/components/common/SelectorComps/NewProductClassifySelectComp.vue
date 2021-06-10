@@ -46,7 +46,7 @@ export default {
   },
   computed: {
     ...mapState('common', ['ProductClassifyIDList', 'ProductMultipleClassifyList']),
-    ...mapGetters('common', ['twoLevelsMultipleProductClassifyList']),
+    ...mapGetters('common', ['twoLevelsMultipleProductClassifyList4Sort']),
     classify: {
       get() {
         return {
@@ -87,7 +87,7 @@ export default {
       if (!this.classify.level1Val && this.classify.level1Val !== 0) return [item];
       const t1 = this.ProductClassifyIDList.find(it => it.Type === this.classify.level1Val);
       if (!t1) return [item];
-      const t2 = this.twoLevelsMultipleProductClassifyList.find(it => it.type === t1.ID);
+      const t2 = this.twoLevelsMultipleProductClassifyList4Sort.find(it => it.type === t1.ID);
       return t2 && t2.List ? [item, ...t2.List] : [item];
     },
     level3Options() {

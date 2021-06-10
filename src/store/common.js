@@ -696,7 +696,7 @@ export default {
       const resp = await api.getVersionValid({ Key: 3 });
       if (resp.data.Status === 1000) commit('setAreaList', resp.data.Data);
     },
-    async getProductList({ state, commit }, { bool = false, key = 6 } = {}) { // 获取产品二级分类数据
+    async getProductList({ state, commit }, { bool = false, key = 6 } = {}) { // 获取产品二级分类数据 2.0版本  3.0弃用
       if (state.productList.length > 0 && !bool) return true;
       const Key = (key || key === 0) ? key : state.ProductClassifyIDList[0].ID;
       const resp = await api.getVersionValid({ Key, Value: -1 }).catch(() => {});

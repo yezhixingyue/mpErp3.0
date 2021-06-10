@@ -72,7 +72,9 @@ export default {
   },
   mounted() {
     this.getInitData();
-    this.$store.dispatch('common/getProductClassifyData', { bool: true, key: 0 });
+    this.ProductClassifyIDList.forEach(({ ID }) => {
+      this.$store.dispatch('common/getProductClassifyData', { key: ID });
+    });
   },
   activated() {
     this.getInitData();
