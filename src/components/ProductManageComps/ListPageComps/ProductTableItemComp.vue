@@ -13,10 +13,10 @@
         <el-checkbox v-model="customOrderChecked">可自助上传</el-checkbox>
       </div>
       <div class="text-menu-box">
-        <TipsSpanButton text='界面元素' />
-        <TipsSpanButton text='尺寸物料' />
-        <TipsSpanButton text='工艺' />
-        <TipsSpanButton style="margin-right:60px" text='显示顺序' />
+        <TipsSpanButton text='界面元素' @click.native="onElementSaveClick(null)" />
+        <TipsSpanButton text='尺寸物料' @click.native="onProductSizeMaterialSetClick(null)" />
+        <TipsSpanButton text='工艺' @click.native="onProductCraftSetClick(null)" />
+        <TipsSpanButton style="margin-right:60px" text='显示顺序' @click.native="onProductDisplaySortSetClick(null)" />
         <TipsSpanButton text='工厂' />
         <TipsSpanButton text='文件' />
         <TipsSpanButton text='公式' />
@@ -42,20 +42,20 @@
         <i v-else class="el-icon-caret-top"></i>
       </div>
     </header>
-    <ul>
+    <ul> <!-- 部件 -->
       <li v-for="it in itemData.PartList" :key="it.PartID">
         <div>
           <span :title="it.Name">{{it.Name}}</span>
         </div>
         <div>
-          <TipsSpanButton text='界面元素' />
-          <TipsSpanButton text='尺寸物料' />
-          <TipsSpanButton text='工艺' />
-          <TipsSpanButton text='显示顺序' />
+          <TipsSpanButton text='界面元素' @click.native="onElementSaveClick(it)" />
+          <TipsSpanButton text='尺寸物料' @click.native="onProductSizeMaterialSetClick(it)" />
+          <TipsSpanButton text='工艺' @click.native="onProductCraftSetClick(it)" />
+          <TipsSpanButton text='显示顺序' @click.native="onProductDisplaySortSetClick(it)" />
         </div>
         <div>
           <TipsSpanButton text='编辑' @click.native="onPartSaveClick(it)" />
-          <TipsSpanButton text='删除' isRed />
+          <TipsSpanButton text='删除' @click.native="onPartRemoveClick(it)" isRed />
         </div>
       </li>
     </ul>
@@ -81,7 +81,7 @@ export default {
   },
   computed: {
     ...mapGetters('common', ['twoLevelsProductClassify']),
-    helpOrderChecked: {
+    helpOrderChecked: { // 代客下单
       get() {
         if (!this.itemData) return false;
         return this.itemData.AllowValetOrder;
@@ -90,7 +90,7 @@ export default {
         this.$store.dispatch('productManage/getOrderStatusChange', ['ValetOrderStatus', this.itemData.ID]);
       },
     },
-    customOrderChecked: {
+    customOrderChecked: { // 自助上传
       get() {
         if (!this.itemData) return false;
         return this.itemData.AllowCustomOrder;
@@ -99,7 +99,7 @@ export default {
         this.$store.dispatch('productManage/getOrderStatusChange', ['CustomOrderStatus', this.itemData.ID]);
       },
     },
-    ClassifyText() {
+    ClassifyText() { // 列表分类显示文字
       if (!this.itemData) return '';
       const list = this.itemData.ClassifyList;
       if (!list || !Array.isArray(list) || list.length === 0) return '';
@@ -123,15 +123,51 @@ export default {
         this.$store.dispatch('productManage/getProductRemove', this.itemData.ID);
       });
     },
-    onPartSaveClick(data) { // 添加 | 编辑 部件
+    setCommonPathJump(path, data) { // 产品与部件共同属性设置页面跳转方法
+      const { Name, ClassifyList } = this.itemData;
+      let _name = '';
+      const t = ClassifyList.find(it => it.Type === 1);
+      if (t) {
+        _name = `${t.FirstLevel.Name}`;
+      }
+      _name += `-${Name}`;
+      const ID = data ? data.ID : this.itemData.ID;
+      _name += (data ? `：${data.Name}` : '');
+      const type = data ? '部件' : '产品';
+      if (path === 'ProductSizeMaterialSet') {
+        const PartID = data ? data.ID : null;
+        this.$router.push(`/${path}/${this.itemData.ID}/${PartID}/${_name}/${type}`);
+        return;
+      }
+      this.$router.push(`/${path}/${ID}/${_name}/${type}/${Date.now()}`);
+    },
+    onElementSaveClick(data) { // 产品与部件元素设置 data有值时为部件元素设置
+      this.setCommonPathJump('ProductElementSet', data);
+    },
+    onProductSizeMaterialSetClick(data) { // 尺寸物料设置
+      this.setCommonPathJump('ProductSizeMaterialSet', data);
+    },
+    onProductCraftSetClick(data) { // 工艺设置
+      this.setCommonPathJump('ProductCraftSet', data);
+    },
+    onProductDisplaySortSetClick(data) { // 显示排序
+      this.setCommonPathJump('ProductDisplaySort', data);
+    },
+    onPartSaveClick(data) { // 添加 | 编辑 部件 --- 打开弹窗
       this.curPartData = data;
       this.visible = true;
     },
-    onPartSaveSubmit(data) {
+    onPartSaveSubmit(data) { // 部件添加与编辑数据提交保存
       const cb = () => {
         this.visible = false;
       };
       this.$store.dispatch('productManage/getProductPartSave', [data, cb]);
+    },
+    onPartRemoveClick(data) { // 部件删除
+      const { ID, ProductID, Name } = data;
+      this.messageBox.warnCancelBox('确定删除该部件吗', `部件名称：${Name}`, () => {
+        this.$store.dispatch('productManage/getProductPartRemove', [ID, ProductID]);
+      });
     },
   },
 };

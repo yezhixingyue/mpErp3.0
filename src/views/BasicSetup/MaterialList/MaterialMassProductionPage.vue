@@ -57,6 +57,7 @@ export default {
     },
     getItemName({ Second }) {
       if (!Second || !Array.isArray(Second) || Second.length === 0) return '';
+      // console.log(Second, Second.map(it => it.Third).join(' '));
       return Second.map(it => it.Third).join(' ');
     },
     onItemRemove(i) {
@@ -124,6 +125,7 @@ export default {
       });
     },
     onDialogSubmit({ type, ElementList }) {
+      // console.log(ElementList, this.ElementList);
       if (type === 'append') {
         this.ElementList.push(...ElementList);
         if (this.ElementList.length > ElementList.length) {

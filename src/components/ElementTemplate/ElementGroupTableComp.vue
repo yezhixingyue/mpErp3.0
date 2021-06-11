@@ -61,7 +61,7 @@ export default {
         if (itemData.ElementList.length > 1) {
           this.$emit('sort', itemData);
         } else if (itemData.ElementList.length <= 1) {
-          this.messageBox.failSingleError('操作失败', '当前元素组中元素数量不足2个，暂不可排序');
+          this.messageBox.failSingleError('操作失败', '当前元素组中元素数量不足2个，不支持排序');
         }
       }
     },

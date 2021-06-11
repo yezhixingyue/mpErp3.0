@@ -360,6 +360,9 @@ const api = {
   getCustomOrderStatusChange(productID) { // PUT /Api/Product/ChangeCustomOrderStatus 改变产品自助上传状态
     return instance.put(`/Api/Product/ChangeCustomOrderStatus?productID=${productID}`);
   },
+  getMaterialDisplayNameChange(id, name, isProduct) { // PUT /Api/Product/SetMaterialDisplayName  设置物料显示名称( 产品 | 部件 )
+    return instance.put(`/Api/Product/SetMaterialDisplayName?id=${id}&name=${name}&isProduct=${isProduct}`);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表
@@ -466,7 +469,8 @@ const api = {
   /* 物料列表api
   ----------------------------------------------------------------------------------- */
   getMaterialList(type, page = 1, pageSize = 30) { // GET /Api/Material/List  获取物料列表 type为物料类型
-    const queryStr = type ? `?type=${type}&page=${page}&pageSize=${pageSize}` : `?page=${page}&pageSize=${pageSize}`;
+    let queryStr = type ? `?type=${type}&page=${page}&pageSize=${pageSize}` : `?page=${page}&pageSize=${pageSize}`;
+    if (!type && !page && !pageSize) queryStr = '';
     return instance.get(`/Api/Material/List${queryStr}`);
   },
   getMaterialSave(data) { // POST /Api/Material/Save  物料保存

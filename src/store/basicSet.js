@@ -397,7 +397,7 @@ export default {
       }
       return false;
     },
-    async getMaterialTypeRemove({ commit }, id) { // 印刷幅面删除
+    async getMaterialTypeRemove({ commit }, id) { // 物料类型删除
       const resp = await api.getMaterialTypeRemove(id).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const callback = () => {

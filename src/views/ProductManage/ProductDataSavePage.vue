@@ -145,6 +145,11 @@ export default {
         this.messageBox.failSingleError('保存失败', '请选择所属产品分类');
         return;
       }
+      const t = ClassifyList.find(it => it.Type === 1);
+      if (!t) {
+        this.messageBox.failSingleError('保存失败', '应至少选择一个代客下单分类类别');
+        return;
+      }
       if (!normalNameReg.test(Name)) {
         this.messageBox.failSingleError('保存失败', '内部名称应由汉字字母或数字组成，不能包含符号等其它字符');
         return;

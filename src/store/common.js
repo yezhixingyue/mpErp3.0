@@ -396,6 +396,9 @@ export default {
       { ID: 2, Name: '自助上传', Type: 2 },
     ],
     ProductMultipleClassifyList: [], // 产品多分类列表数据
+    /* 物料列表
+    -------------------------------*/
+    MaterialAllList: [], // 全部物料列表
   },
   getters: {
     /* 配送方式相关
@@ -692,6 +695,11 @@ export default {
         else state.ProductMultipleClassifyList.push(data);
       }
     },
+    /* 物料列表
+    -------------------------------*/
+    setMaterialAllList(state, list) { // 设置全部物料列表
+      state.MaterialAllList = list;
+    },
   },
   actions: {
     async getAreaList({ state, commit }) { // 获取地区列表数据
@@ -866,6 +874,14 @@ export default {
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const callback = () => { commit('setFileInfoRemove', ID); };
         messageBox.successSingle('删除成功', callback, callback);
+      }
+    },
+    /* 物料列表
+    -------------------------------*/
+    async getMaterialAllList({ commit }) { // 获取全部物料列表
+      const resp = await api.getMaterialList(null, 1, 1000000).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        commit('setMaterialAllList', resp.data.Data);
       }
     },
   },

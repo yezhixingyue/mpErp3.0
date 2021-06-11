@@ -212,20 +212,15 @@ export const getNumberValueList = (valueList) => {
  * @return {*}
  */
 export const calcDescartes = (array) => {
-  if (array.length < 1) return [];
-  if (array.length < 2) return calcDescartes([...array, []]);
+  if (array.length < 2) return array[0] || [];
   return array.reduce((total, currentValue) => {
     const res = [];
 
     total.forEach(t => {
-      if (currentValue.lenght > 0) {
-        currentValue.forEach(cv => {
-          if (t instanceof Array) res.push([...t, cv]);
-          else res.push([t, cv]);
-        });
-      } else {
-        res.push([t]);
-      }
+      currentValue.forEach(cv => {
+        if (t instanceof Array) res.push([...t, cv]);
+        else res.push([t, cv]);
+      });
     });
     return res;
   });

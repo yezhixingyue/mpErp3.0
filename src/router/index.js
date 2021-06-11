@@ -419,6 +419,47 @@ export const routes = [
             },
             component: () => import('../views/ProductManage/ProductDataSavePage.vue'),
           },
+          {
+            path: '/ProductElementSet/:id/:name/:type/:times',
+            name: 'ProductElementSet',
+            meta: {
+              title: '产品界面元素设置',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductElementSetPage.vue'),
+          },
+          {
+            // path: '/ProductSizeMaterialSet/:id/:name/:type/:times',
+            path: '/ProductSizeMaterialSet/:ProductID/:PartID/:name/:type',
+            name: 'ProductSizeMaterialSet',
+            meta: {
+              title: '尺寸物料设置',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductSizeMaterialSetPage.vue'),
+          },
+          {
+            path: '/ProductCraftSet/:id/:name/:type/:times',
+            name: 'ProductCraftSet',
+            meta: {
+              title: '产品工艺设置',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductCraftSetPage.vue'),
+          },
+          {
+            path: '/ProductDisplaySort/:id/:name/:type/:times',
+            name: 'ProductDisplaySort',
+            meta: {
+              title: '显示排序设置',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductDisplaySortPage.vue'),
+          },
         ],
       },
       {

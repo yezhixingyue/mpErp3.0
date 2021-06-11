@@ -4,6 +4,7 @@
     top='15vh'
     :title="title"
     :visible.sync="visible"
+    submitText='追加生成'
     showDanger
     @submit="onAddSubmit"
     @danger='onAfreshSubmit'
@@ -132,8 +133,12 @@ export default {
     setSubmit(type) { // type: append | refresh
       if (this.checkValueChecker()) { // 弹窗校验通过
         const _array = this.list.map(it => this.getArrayFromCheckObj(it));
-        const set = this.$utils.calcDescartes(_array);
-        console.log(set);
+        let set = [];
+        if (_array.length === 1) {
+          _array[0].forEach(it => { set.push([it]); });
+        } else {
+          set = this.$utils.calcDescartes(_array);
+        }
         const ElementList = set.map(it => ({
           First: '',
           Second: it,

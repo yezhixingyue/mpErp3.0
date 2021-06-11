@@ -107,6 +107,17 @@ export default {
         if (i > -1) t.PartList.splice(i, 1);
       }
     },
+    setMaterialDisplayNameChange(state, [ProductID, PartID, name]) { // 修改产品或部件物料提示名称
+      const t = state.ProductManageList.find(it => it.ID === ProductID);
+      if (t) {
+        if (PartID) {
+          const p = t.PartList.find(it => it.ID === PartID);
+          if (p) p.MaterialDisplayName = name;
+        } else {
+          t.MaterialDisplayName = name;
+        }
+      }
+    },
   },
   actions: {
     async getManageProductList({ state, commit }, page = 1) { // 获取产品列表数据
@@ -178,6 +189,14 @@ export default {
           commit('setProductPartRemove', [id, ProductID]);
         };
         messageBox.successSingle('部件删除成功', callback, callback);
+      }
+    },
+    async getMaterialDisplayNameChange({ commit }, [ProductID, PartID, name, cb]) {
+      const id = PartID || ProductID;
+      const resp = await api.getMaterialDisplayNameChange(id, name, !PartID).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        commit('setMaterialDisplayNameChange', [ProductID, PartID, name]);
+        if (cb) cb();
       }
     },
   },

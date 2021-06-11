@@ -124,6 +124,7 @@ export default {
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const cb = () => {
           this.dataList.splice(index, 1);
+          this.dataNumber -= 1;
         };
         this.messageBox.successSingle('删除成功', cb, cb);
       }
@@ -142,7 +143,6 @@ export default {
     this.getTableDataList();
   },
   activated() {
-    console.log(this.$route);
     const { init } = this.$route.query;
     if (init) {
       this.getTableDataList();
