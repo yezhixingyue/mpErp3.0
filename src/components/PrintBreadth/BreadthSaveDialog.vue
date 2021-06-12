@@ -116,22 +116,22 @@ export default {
         MinMaterialSize: {
           Length: [
             { required: true, message: '长值不能为空' },
-            { type: 'number', min: 1, message: '请输入正整数类型数字' },
+            { type: 'number', min: 1, message: '请输入正整数数值' },
           ],
           Width: [
             { required: true, message: '短值不能为空' },
-            { type: 'number', min: 1, message: '请输入正整数类型数字' },
+            { type: 'number', min: 1, message: '请输入正整数数值' },
           ],
         },
         MaxMaterialSize: {
           Length: [
             { required: true, message: '长值不能为空' },
-            { type: 'number', message: '请输入数字值' },
+            { type: 'number', message: '请输入正整数数值或-1' },
             { validator: this.MaxMaterialSizeLength, trigger: 'blur' },
           ],
           Width: [
             { required: true, message: '短值不能为空' },
-            { type: 'number', message: '请输入数字值' },
+            { type: 'number', message: '请输入正整数数值或-1' },
             { validator: this.MaxMaterialSizeWidth, trigger: 'blur' },
           ],
         },
@@ -196,7 +196,7 @@ export default {
     },
     MaxMaterialSizeLength(rule, value, callback) { // 校验最大物料尺寸
       if (value <= 0 && value !== -1) {
-        callback(new Error('请输入正整数'));
+        callback(new Error('请输入正整数数值或-1'));
         return;
       }
       if (this.ruleForm.MinMaterialSize.Length && value < this.ruleForm.MinMaterialSize.Length && value !== -1) {
@@ -207,7 +207,7 @@ export default {
     },
     MaxMaterialSizeWidth(rule, value, callback) { // 校验最大物料尺寸
       if (value <= 0 && value !== -1) {
-        callback(new Error('请输入正整数'));
+        callback(new Error('请输入正整数数值或-1'));
         return;
       }
       if (this.ruleForm.MinMaterialSize.Width && value < this.ruleForm.MinMaterialSize.Width && value !== -1) {

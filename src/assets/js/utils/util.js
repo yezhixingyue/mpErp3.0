@@ -226,6 +226,25 @@ export const calcDescartes = (array) => {
   });
 };
 
+/**
+ * @description: 从一个列表中，根据传递进来的Name值或Name列表获取到其对应的ID值或ID列表，进行对应返回
+ * @param {*} Names
+ * @param {*} list
+ * @param {*} defaultKeys
+ * @return {*}
+ */
+export const getIDFromListByNames = (Names, list, defaultKeys = { label: 'Name', value: 'ID' }) => {
+  if (typeof Names === 'string') { // 单个Name模式， 返回单个ID
+    const t = list.find(it => it[defaultKeys.label] === Names);
+    return t ? t[defaultKeys.value] : '';
+  }
+  if (Array.isArray(Names)) { // 传递进来的是Name列表模式，同样返回ID组成的列表
+    const arr = Names.map(Name => list.find(it => it[defaultKeys.label] === Name)).filter(it => it).map(it => it[defaultKeys.value]);
+    return arr.length > 0 ? arr : '';
+  }
+  return '';
+};
+
 export default {
   getStatusString,
   getExpress,
@@ -243,4 +262,5 @@ export default {
   isPositiveInteger,
   getNumberValueList,
   calcDescartes,
+  getIDFromListByNames,
 };

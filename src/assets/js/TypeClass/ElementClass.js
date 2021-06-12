@@ -104,7 +104,7 @@ export default class ElementClassType {
   constructor(initData, positionID) {
     if (positionID) this.PositionID = positionID;
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { Name, Type, DefaultValue, HiddenToCustomer, ID, IsNameHidden, NumbericAttribute, OptionAttribute, SwitchAttribute, PositionID } = initData;
+    const { Name, Type, DefaultValue, HiddenToCustomer, ID, IsNameHidden, NumbericAttribute, OptionAttribute, SwitchAttribute, PositionID } = JSON.parse(JSON.stringify(initData));
     if (Name) this.Name = Name; // 还原名称
     if (Type || Type === 0) { // 还原类型
       const TypeKey = getEnumKeyName(TypeEnum, Type);
@@ -126,7 +126,7 @@ export default class ElementClassType {
       if (Unit) this.NumbericAttribute.Unit = Unit;
       if (Allow) this.NumbericAttribute.DefineList = ['staff'];
       if (Allow && AllowCustomer) this.NumbericAttribute.DefineList = ['staff', 'customer'];
-      if (SectionList && SectionList.length > 1) {
+      if (SectionList && SectionList.length > 0) {
         this.NumbericAttribute.SectionList = SectionList.map(it => ({
           ...it,
           key: getRandomRangeId(8),

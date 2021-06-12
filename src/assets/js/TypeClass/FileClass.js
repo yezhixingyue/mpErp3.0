@@ -13,7 +13,7 @@ export default class FileClassType {
 
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, Name, Remark, FailTips, TypeList, ShowIndex } = initData;
+    const { ID, Name, Remark, FailTips, TypeList, ShowIndex } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
     if (Remark) this.Remark = Remark;

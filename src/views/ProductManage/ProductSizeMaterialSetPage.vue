@@ -7,7 +7,7 @@
     <main>
       <LRWidthDragAutoChangeComp leftWidth='45%' v-if="curProduct">
         <template v-slot:left>
-          <ContentLeft :curProduct='curProduct' :curPart='curPart' />
+          <ContentLeft :curProduct='curProduct' :curPart='curPart' @MaterialSaveSubmit='onMaterialSaveSubmit' />
         </template>
         <template v-slot:right>
           <ContentRight />
@@ -38,10 +38,13 @@ export default {
       PartID: '',
       ProductName: '',
       titleType: '',
+      MaterialList: [],
+      SizeList: [],
+      SizeGroup: [],
     };
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList']),
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
     curProduct() {
       if (!this.ProductID) return null;
       return this.ProductManageList.find(it => it.ID === this.ProductID);
@@ -52,7 +55,7 @@ export default {
     },
   },
   methods: {
-    getPositionID() {
+    getInitDataFromPath() { // 从路径获取初始ID信息 并随后获取页面需要数据
       if (!this.$route.params) {
         this.onGoBackClick();
         return;
@@ -66,13 +69,37 @@ export default {
       this.PartID = PartID !== 'null' ? PartID : '';
       this.ProductName = name;
       this.titleType = type;
+      this.getMaterialSizeData();
     },
     onGoBackClick() {
       this.$router.replace('/ProductManageList');
     },
+    async getMaterialSizeData() { // 获取初始物料、常规尺寸与尺寸组信息
+      const ID = this.PartID ? this.PartID : this.ProductID;
+      const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
+      const List = this.$utils.getIDFromListByNames(['Material', 'SizeGroup', 'GeneralSize'], this.ProductModuleKeyIDList);
+      const _temp = { ID, List };
+      const resp = await _fetchFunc(_temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        // 获取数据成功
+        const { MaterialList, SizeList, SizeGroup } = resp.data.Data;
+        this.MaterialList = MaterialList;
+        this.SizeList = SizeList;
+        this.SizeGroup = SizeGroup;
+      }
+    },
+    async onMaterialSaveSubmit([TypeID, dataList]) { // 物料添加与编辑
+      const { ProductID, PartID } = this;
+      const List = dataList.map(it => it.ID);
+      const temp = { ProductID, PartID, TypeID, List };
+      const resp = await this.api.getProductMaterialSave(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        console.log(resp);
+      }
+    },
   },
   mounted() {
-    this.getPositionID();
+    this.getInitDataFromPath();
   },
 };
 </script>
@@ -98,6 +125,12 @@ export default {
   }
   > main {
     flex: 1;
+    .el-checkbox {
+      .el-checkbox__label {
+        font-size: 12px;
+        color: #585858;
+      }
+    }
   }
   > footer {
     text-align: center;

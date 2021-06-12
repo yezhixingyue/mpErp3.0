@@ -49,7 +49,7 @@ export default class ElementGroup {
     }
     // 2. 解决编辑数据时 元素初始勾选结果及数据绑定  通过curData数据对初始数据进行处理 | 或null对初始数据进行重置 --- 后面写编辑时解决有值时的处理方式
     if (!hasInitData) return;
-    const { Name, ID, PositionID, IsNameHidden, IsHorizontalDisplay, HiddenToCustomer, UseTimes } = initData;
+    const { Name, ID, PositionID, IsNameHidden, IsHorizontalDisplay, HiddenToCustomer, UseTimes } = JSON.parse(JSON.stringify(initData));
     if (Name) this.Name = Name; // 还原名称
     if (ID) this.ID = ID;
     if (PositionID) this.PositionID = PositionID;

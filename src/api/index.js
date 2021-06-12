@@ -363,6 +363,15 @@ const api = {
   getMaterialDisplayNameChange(id, name, isProduct) { // PUT /Api/Product/SetMaterialDisplayName  设置物料显示名称( 产品 | 部件 )
     return instance.put(`/Api/Product/SetMaterialDisplayName?id=${id}&name=${name}&isProduct=${isProduct}`);
   },
+  getProductModuleData(data) { // 根据不同ID序号获取产品上不同数据类型 POST /Api/Product/DataModules
+    return instance.post('/Api/Product/DataModules', data);
+  },
+  getPartModuleData(data) { // 根据不同ID序号获取部件上不同数据类型 POST /Api/ProductPart/DataModules
+    return instance.post('/Api/ProductPart/DataModules', data);
+  },
+  getProductMaterialSave(data) { // POST /Api/ProductMaterial/Save 设置产品或部件物料
+    return instance.post('/Api/ProductMaterial/Save', data);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表
@@ -433,7 +442,8 @@ const api = {
     return instance.delete(`/Api/BreadthClass/Remove?id=${id}`);
   },
   getBreadthList(classID) { // GET /Api/Breadth/List 印刷幅面列表
-    return instance.get(`/Api/Breadth/List?classID=${classID}`);
+    if (classID || classID === 0) return instance.get(`/Api/Breadth/List?classID=${classID}`);
+    return instance.get('/Api/Breadth/List');
   },
   getBreadthSave(data) { // POST /Api/Breadth/Save  印刷幅面保存
     return instance.post('/Api/Breadth/Save', data);

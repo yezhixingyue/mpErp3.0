@@ -48,7 +48,7 @@
         <el-radio-group v-model="ruleForm[it.ID]" v-if="it.Type === 2 && it.OptionAttribute.OptionList.length <= 3">
           <el-radio v-for="item in it.OptionAttribute.OptionList" :key="item.ID" :label="item.ID">{{item.Name}}</el-radio>
         </el-radio-group>
-        <el-switch v-model="ruleForm[it.ID]" v-if="it.Type === 3"></el-switch> <!-- 需转换布尔值为开值和关值 -->
+        <el-switch v-model="ruleForm[it.ID]" v-if="it.Type === 3" :active-text="it.SwitchAttribute.Words"></el-switch> <!-- 需转换布尔值为开值和关值 -->
       </el-form-item>
     </el-form>
   </CommonDialogComp>
@@ -182,10 +182,10 @@ export default {
               _value = +t.CustomerInputValue === OpenValue;
             }
           } else {
-            _value = it.Type === 3 ? false : '';
+            _value = it.Type === 3 ? it.SwitchAttribute.DefaultOpen : '';
           }
         } else {
-          _value = it.Type === 3 ? false : '';
+          _value = it.Type === 3 ? it.SwitchAttribute.DefaultOpen : '';
         }
         _temp[it.ID] = _value; // 如果为编辑模式 则在此进行赋值
         _tempRules[it.ID] = [{
@@ -272,6 +272,10 @@ export default {
       input {
         text-align: center;
       }
+    }
+    .el-switch__label > span {
+      font-size: 12px;
+      color: #585858;
     }
   }
 

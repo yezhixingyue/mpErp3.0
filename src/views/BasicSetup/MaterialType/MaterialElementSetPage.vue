@@ -11,6 +11,7 @@
      :canRemove='canRemove'
      @elementSave='onElementSave'
      @elementRemove='onElementRemove' />
+     <p class="tips-box"> <i class="el-icon-warning"></i> 物料类型添加界面元素时，如果添加的元素类型为选择项，不建议使用多选选择方式，如果使用多选选择方式也将按照单选方式处理</p>
     <footer>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
@@ -89,6 +90,10 @@ export default {
     font-size: 15px;
     color: #21CAE3;
     font-weight: bold;
+  }
+  .tips-box {
+    width: 800px;
+    margin-top: 15px;
   }
   > footer {
     position: absolute;

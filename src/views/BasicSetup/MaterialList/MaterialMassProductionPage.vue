@@ -10,7 +10,7 @@
     <main>
       <MaterialListMassProductionDialog :visible.sync='visible' :curMaterialType='curMaterialType' @submit="onDialogSubmit" />
       <ul class="list">
-        <li v-for="(it,i) in ElementList" :key="it.key" class="list-item" :class="it.repeat?'repeat':''" :title="it.repeat?'标红为重复项，请删除':''">
+        <li v-for="(it,i) in ElementList" :key="it.key" class="list-item" :class="it.repeat?'repeat':''" :title="it.repeat?'标红为重复项，请删除至一项':''">
           <span>{{getItemName(it)}}</span>
           <div @click="onItemRemove(i)">
             <i></i>

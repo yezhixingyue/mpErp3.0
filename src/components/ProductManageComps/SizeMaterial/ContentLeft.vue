@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-product-page-material-size-comp-left-conten-wrap">
     <header>
-      <el-button type="primary" size="small" @click="onMaterialAddClick">+添加物料</el-button>
+      <el-button type="primary" size="small" @click="onMaterialSaveClick(null)">+添加物料</el-button>
       <span class="title">物料提示名称：</span>
       <template v-if="!isTitleEditing">
         <span class="value">{{this.MaterialDisplayName}}</span>
@@ -15,7 +15,7 @@
       </template>
     </header>
     <main>
-      <MaterialSelectDialog :visible.sync='visible' :dataList="MaterialAllList" :typeList='MaterialTypeList' />
+      <MaterialSelectDialog :visible.sync='MaterialSavevisible' v-model="MaterialDialogSetData" :dataList="MaterialAllList" :typeList='MaterialTypeList' />
     </main>
   </section>
 </template>
@@ -41,9 +41,14 @@ export default {
   },
   data() {
     return {
+      // 下面为物料提示名称有关
       title: '',
       isTitleEditing: false,
-      visible: false,
+      // 下面为物料添加与编辑保存有关
+      MaterialSavevisible: false,
+      curEditMaterialData: null,
+      MaterialList: [],
+      // 下面为物料客户界面隐藏设置有关
     };
   },
   computed: {
@@ -52,6 +57,14 @@ export default {
     MaterialDisplayName() {
       if (!this.curProduct) return '';
       return this.curPart ? this.curPart.MaterialDisplayName : this.curProduct.MaterialDisplayName;
+    },
+    MaterialDialogSetData: {
+      get() {
+        return this.curEditMaterialData;
+      },
+      set([dataList, TypeID]) {
+        this.$emit('MaterialSaveSubmit', [TypeID, dataList]);
+      },
     },
   },
   methods: {
@@ -84,12 +97,13 @@ export default {
       const PartID = this.curPart ? this.curPart.ID : '';
       this.$store.dispatch('productManage/getMaterialDisplayNameChange', [ProductID, PartID, this.title, cb]);
     },
-    onMaterialAddClick() { // 点击物料按钮添加
+    onMaterialSaveClick(data) { // 点击物料按钮添加
       if (!this.MaterialTypeList || this.MaterialTypeList.length === 0) {
         this.messageBox.failSingle('尚无物料相关设置，请先到物料管理里面进行设置');
         return;
       }
-      this.visible = true;
+      this.curEditMaterialData = data;
+      this.MaterialSavevisible = true;
     },
   },
   mounted() {

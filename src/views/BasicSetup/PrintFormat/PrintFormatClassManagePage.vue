@@ -79,6 +79,7 @@ export default {
     flex: 1;
     background-color: #fff;
     padding-left: 20px;
+    max-height: calc(100% - 75px);
     > p.menu {
       padding: 40px 0;
       > button {

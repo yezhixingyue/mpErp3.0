@@ -6,8 +6,8 @@
         <span class="blue-span" @click="onClassManageClick">管理分类</span>
       </div>
       <div class="list">
-        <el-radio-group v-model="classID" size="small">
-          <el-radio-button :label="it.ID" :key='it.ID' v-for="it in BreadthCLassList">{{it.Name}}</el-radio-button>
+        <el-radio-group v-model="classID" size="small" v-if="BreadthCLassList.length>0">
+          <el-radio-button :label="it.ID" :key='it.ID' v-for="it in localBreadthCLassList">{{it.Name}}</el-radio-button>
         </el-radio-group>
         <span class="is-font-size-12 is-pink" style="opacity: 0.8" v-if="BreadthCLassList.length===0 && !classLoading">
           <i style="font-size:14px" class="el-icon-warning-outline"></i>
@@ -16,7 +16,7 @@
     </header>
     <main>
       <BreadthSaveDialog :visible.sync='visible' :curData='saveData' :classList='BreadthCLassList' @submit="onSaveSubmit" />
-      <BreadthTableComp :dataList='listData' :loading='tableLoading' @edit='onBreadthSaveClick' @remove='onRemoveClick' />
+      <BreadthTableComp ref="oBreadthTable" :dataList='listData' :loading='tableLoading' @edit='onBreadthSaveClick' @remove='onRemoveClick' />
     </main>
     <footer>
       <span>共检索出 <i>{{listData.length}}</i> 条数据</span>
@@ -33,8 +33,16 @@ export default {
   computed: {
     ...mapState('basicSet', ['BreadthCLassList', 'BreadthList']),
     listData() {
-      if ((!this.classID && this.classID !== 0) || this.BreadthList.length === 0) return [];
+      if ((!this.classID && this.classID !== 0 && this.classID !== '') || this.BreadthList.length === 0) return [];
+      if (this.classID === '') return this.BreadthList;
       return this.BreadthList.filter(it => it.Class.ID === this.classID);
+    },
+    localBreadthCLassList() {
+      const _item = { ID: '', Name: '全部' };
+      if (!this.BreadthCLassList || !Array.isArray(this.BreadthCLassList) || this.BreadthCLassList.length === 0) {
+        return [_item];
+      }
+      return [_item, ...this.BreadthCLassList];
     },
   },
   data() {
@@ -84,20 +92,19 @@ export default {
     },
   },
   watch: {
-    BreadthCLassList: { // 为初始classID赋值
-      handler(newVal) {
-        if (this.classID || this.classID === 0 || !newVal || !Array.isArray(newVal) || newVal.length === 0) return;
-        const first = newVal[0];
-        if (first && Object.prototype.toString.call(first) === '[object Object]') {
-          const { ID } = first;
-          if (ID || ID === 0) this.classID = ID;
-        }
-      },
-      immediate: true,
-    },
+    // BreadthCLassList: { // 为初始classID赋值
+    //   handler(newVal) {
+    //     if (this.classID || this.classID === 0 || !newVal || !Array.isArray(newVal) || newVal.length === 0) return;
+    //     const first = newVal[0];
+    //     if (first && Object.prototype.toString.call(first) === '[object Object]') {
+    //       const { ID } = first;
+    //       if (ID || ID === 0) this.classID = ID;
+    //     }
+    //   },
+    //   immediate: true,
+    // },
     classID: { // 监听数据改变，获取印刷幅面列表数据
       handler(newVal) {
-        if (newVal === '') return;
         this.getTableDataList(newVal);
       },
       immediate: true,
@@ -107,6 +114,7 @@ export default {
     this.classLoading = true;
     await this.$store.dispatch('basicSet/getBreadthClassList');
     this.classLoading = false;
+    if (this.$refs.oBreadthTable && this.$refs.oBreadthTable.setHeight) this.$refs.oBreadthTable.setHeight();
   },
 };
 </script>
@@ -118,10 +126,11 @@ export default {
   height: 100%;
   padding-left: 6px;
   > header {
-    height: 120px;
+    // min-height: 120px;
     padding: 15px 20px;
     background-color: #fff;
     box-sizing: border-box;
+    // min-width: 1180px;
     .menu {
       > button {
         border-radius: 2px;
@@ -136,15 +145,29 @@ export default {
     }
     .list {
       margin-top: 20px;
+      .el-radio-button:not(.is-active) {
+        .el-radio-button__inner {
+          &:hover {
+            background-color: #f5f5f5;
+          }
+          &:active {
+            background-color: #eee;
+          }
+        }
+      }
       .el-radio-button__inner {
         padding: 8px 35px;
         font-size: 14px;
+        box-shadow: -1px 0 0 0 #eee;
       }
       .el-radio-button:first-child .el-radio-button__inner {
         border-radius: 3px 0 0 3px;
       }
       .el-radio-button:last-child .el-radio-button__inner {
         border-radius: 0 3px 3px 0;
+      }
+      .el-radio-button {
+        margin-bottom: 10px;
       }
     }
   }

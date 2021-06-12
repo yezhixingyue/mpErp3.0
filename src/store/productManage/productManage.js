@@ -26,6 +26,22 @@ export default {
     ProductManageListNumber: 0,
     isTableDataLoading: false,
     curEditData: null,
+    ProductModuleKeyIDList: [ // 按照序号获取对产品对应数据 （2个接口 分别对应产品和模块）
+      { Name: 'Craft', ID: 0 }, // 工艺
+      { Name: 'Material', ID: 1 }, // 物料
+      { Name: 'SizeGroup', ID: 2 }, // 尺寸组
+      { Name: 'GeneralSize', ID: 3 }, // 常规尺寸
+      { Name: 'Group', ID: 4 }, // 元素组
+      { Name: 'Element', ID: 5 }, // 元素
+      { Name: 'Part', ID: 6 }, // 部件
+      { Name: 'Factory', ID: 7 }, // 工厂
+      { Name: 'File', ID: 8 }, // 文件
+      { Name: 'Order', ID: 9 }, // 显示顺序
+      { Name: 'Formula', ID: 10 }, // 公式
+      { Name: 'Interaction', ID: 11 }, // 交互
+      { Name: 'Stock', ID: 13 }, // 库存
+      { Name: 'CraftCondition', ID: 14 }, // 工艺条件
+    ],
   },
   getters: {
   },

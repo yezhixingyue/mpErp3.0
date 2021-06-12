@@ -206,8 +206,8 @@
             <span>示例：</span>
           </p>
           <p>
-            <span>示例：</span>
-            <el-switch :value='true' active-text="显示文字"></el-switch>
+            <span>名称：</span>
+            <el-switch v-model='testCheck' active-text="显示文字"></el-switch>
           </p>
         </div>
       </template>
@@ -322,6 +322,7 @@ export default {
       SelectModeEnum,
       TypeEnum,
       TempData: null,
+      testCheck: true,
     };
   },
   computed: {
@@ -688,6 +689,7 @@ export default {
     },
     onLimitDelClick(key) { // 删除数字分段项
       this.ruleForm.NumbericAttribute.SectionList = this.ruleForm.NumbericAttribute.SectionList.filter(it => it.key !== key);
+      this.$refs.ruleForm.validateField('NumbericAttribute.NumberValueLimit');
     },
     onOptionItemAddClick() { // 添加选项值行
       const key = this.$utils.getRandomRangeId(8);

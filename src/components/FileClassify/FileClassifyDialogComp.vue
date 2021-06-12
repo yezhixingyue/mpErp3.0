@@ -20,7 +20,7 @@
       v-if="ruleForm"
     >
       <el-form-item label="类目名称：" prop="Name" key="FileName">
-        <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="请输入类目名称" maxlength="10" show-word-limit></el-input>
+        <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="请输入类目名称" maxlength="6" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="显示顺序：" prop="ShowIndex" key="ShowIndex">
         <el-input style="width:150px;margin-right:10px" v-model.trim.number="ruleForm.ShowIndex"></el-input>
@@ -70,7 +70,7 @@ export default {
       rules: {
         Name: [
           { required: true, message: '请输入文件类目名称', trigger: 'blur' },
-          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
+          { min: 2, max: 6, message: '长度在 2 到 6 个字符', trigger: 'blur' },
         ],
         ShowIndex: [
           { required: true, message: '请设置显示顺序', trigger: 'blur' },
@@ -84,7 +84,7 @@ export default {
         ],
         FailTips: [
           { required: true, message: '请输入未上传提示文字', trigger: 'blur' },
-          { min: 2, max: 25, message: '长度在 2 到 40 个字符', trigger: 'blur' },
+          { min: 2, max: 40, message: '长度在 2 到 40 个字符', trigger: 'blur' },
         ],
       },
     };

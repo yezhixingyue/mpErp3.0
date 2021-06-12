@@ -31,7 +31,7 @@ export default class Part {
 
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, ProductID, Name, UseTimes } = initData;
+    const { ID, ProductID, Name, UseTimes } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (ProductID) this.ProductID = ProductID;
     if (Name) this.Name = Name;

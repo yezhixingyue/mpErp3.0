@@ -53,7 +53,7 @@ export default class PrintBreadth {
 
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, Name, MinMaterialSize, MaxMaterialSize, Class, ModeList } = initData;
+    const { ID, Name, MinMaterialSize, MaxMaterialSize, Class, ModeList } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
     if (MinMaterialSize) this.MinMaterialSize = MinMaterialSize;

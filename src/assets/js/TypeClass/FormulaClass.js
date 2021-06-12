@@ -32,7 +32,7 @@ export default class FormulaClass {
 
   constructor(initData) { // 初始化
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, Name, Content, PositionID, UseModule, UseTimes, Unit, PropertyList, Remark } = initData;
+    const { ID, Name, Content, PositionID, UseModule, UseTimes, Unit, PropertyList, Remark } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
     if (Content) this.Content = Content;

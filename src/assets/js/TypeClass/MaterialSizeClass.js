@@ -33,7 +33,8 @@ export default class MaterialSizeClass {
 
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, Name, IsLengthSplit, IsWidthSplit, MinLength, MinWidth, MaxLength, MaxWidth, LengthIncrement, WidthIncrement } = initData;
+    // eslint-disable-next-line max-len
+    const { ID, Name, IsLengthSplit, IsWidthSplit, MinLength, MinWidth, MaxLength, MaxWidth, LengthIncrement, WidthIncrement } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
     if (IsLengthSplit) this.IsLengthSplit = IsLengthSplit;
@@ -49,7 +50,7 @@ export default class MaterialSizeClass {
     if (!MinWidth && MinWidth !== 0) { // 为宽度单尺寸
       this.SingleWidth = MaxWidth;
     } else {
-      this.SingleLenRadio = false;
+      this.SingleWidthRadio = false;
       this.MinWidth = MinWidth;
       this.MaxWidth = MaxWidth;
       this.WidthIncrement = WidthIncrement;
