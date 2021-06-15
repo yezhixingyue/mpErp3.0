@@ -136,7 +136,7 @@ export default {
       const type = data ? '部件' : '产品';
       if (path === 'ProductSizeMaterialSet') {
         const PartID = data ? data.ID : null;
-        this.$router.push(`/${path}/${this.itemData.ID}/${PartID}/${_name}/${type}`);
+        this.$router.push(`/${path}/${this.itemData.ID}/${PartID}/${_name}/${type}/${Date.now()}`);
         return;
       }
       this.$router.push(`/${path}/${ID}/${_name}/${type}/${Date.now()}`);

@@ -7,7 +7,15 @@
     <main>
       <LRWidthDragAutoChangeComp leftWidth='45%' v-if="curProduct">
         <template v-slot:left>
-          <ContentLeft :curProduct='curProduct' :curPart='curPart' @MaterialSaveSubmit='onMaterialSaveSubmit' />
+          <ContentLeft
+           :curProduct='curProduct'
+           ref='oLeft'
+           :curPart='curPart'
+           @MaterialSaveSubmit='onMaterialSaveSubmit'
+           @MaterialSortSubmit='onMaterialSortSubmit'
+           @MaterialSetHiddenSubmit='onMaterialSetHiddenSubmit'
+           :MaterialList='MaterialList'
+           />
         </template>
         <template v-slot:right>
           <ContentRight />
@@ -83,18 +91,63 @@ export default {
       if (resp && resp.data && resp.data.Status === 1000) {
         // 获取数据成功
         const { MaterialList, SizeList, SizeGroup } = resp.data.Data;
-        this.MaterialList = MaterialList;
-        this.SizeList = SizeList;
-        this.SizeGroup = SizeGroup;
+        if (MaterialList) this.MaterialList = MaterialList;
+        if (SizeList) this.SizeList = SizeList;
+        if (SizeGroup) this.SizeGroup = SizeGroup;
       }
     },
-    async onMaterialSaveSubmit([TypeID, dataList]) { // 物料添加与编辑
+    async onMaterialSaveSubmit([TypeID, dataList, isEdit]) { // 物料添加与编辑
       const { ProductID, PartID } = this;
       const List = dataList.map(it => it.ID);
       const temp = { ProductID, PartID, TypeID, List };
       const resp = await this.api.getProductMaterialSave(temp).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
-        console.log(resp);
+        const cb = () => {
+          if (isEdit) {
+            const i = this.MaterialList.findIndex(it => it.Type.ID === TypeID);
+            this.MaterialList = this.MaterialList.filter(it => it.Type.ID !== TypeID);
+            this.MaterialList.splice(i, 0, ...dataList);
+          } else {
+            this.MaterialList.push(...dataList);
+          }
+          this.$refs.oLeft.MaterialSaveVisible = false;
+        };
+        this.messageBox.successSingle('保存成功', cb, cb);
+      }
+    },
+    async onMaterialSortSubmit(list) { // 一级组合排序
+      const { ProductID, PartID } = this;
+      const TypeList = list.map(it => it.ID);
+      const temp = { ProductID, PartID, TypeList };
+      const resp = await this.api.getProductMaterialOrder(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          const _newList = [];
+          const _oldList = JSON.parse(JSON.stringify(this.MaterialList));
+          TypeList.forEach(TypeID => {
+            _oldList.forEach((it, i) => {
+              if (it && it.Type.ID === TypeID) {
+                _newList.push(it);
+                _oldList.splice(i, 1, null);
+              }
+            });
+          });
+          this.MaterialList = _newList;
+          this.$refs.oLeft.MaterialSortVisible = false;
+        };
+        this.messageBox.successSingle('保存排序成功', cb, cb);
+      }
+    },
+    async onMaterialSetHiddenSubmit(list) { // 设置客户界面隐藏
+      const { ProductID, PartID } = this;
+      const temp = { ProductID, PartID, List: list };
+      const resp = await this.api.getProductMaterialHiddenSet(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          this.MaterialList = this.MaterialList.map(it => ({ ...it, HiddenToCustomer: list.includes(it.ID) }));
+          this.$refs.oLeft.MaterialHiddentVisible = false;
+        };
+        this.messageBox.successSingle('设置客户隐藏成功', cb, cb);
       }
     },
   },
@@ -124,7 +177,8 @@ export default {
     flex: none;
   }
   > main {
-    flex: 1;
+    // flex: 1;
+    height: calc(100% - 85px - 30px);
     .el-checkbox {
       .el-checkbox__label {
         font-size: 12px;

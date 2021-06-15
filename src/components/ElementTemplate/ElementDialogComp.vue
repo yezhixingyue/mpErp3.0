@@ -72,7 +72,7 @@
             <el-radio :label="false">
               <span>固定宽度</span>
               <el-input style='width:90px;margin-left:10px' :disabled='ruleForm.NumbericAttribute.IsWidthAdaption === true'
-               v-model.number.trim="ruleForm.NumbericAttribute.DisplayWidth"></el-input>
+               v-model.number.trim="ruleForm.NumbericAttribute.DisplayWidth" maxlength="20"></el-input>
               <span style="font-size:12px;color:#a2a2a2;margin-left:6px">px</span>
             </el-radio>
           </el-radio-group>
@@ -148,7 +148,7 @@
             <el-radio :label="true">自动宽度</el-radio>
             <el-radio :label="false">
               <span>固定宽度</span>
-              <el-input style='width:90px;margin-left:10px'
+              <el-input style='width:90px;margin-left:10px' maxlength="20"
                v-model.number.trim="ruleForm.OptionAttribute.DisplayWidth" :disabled='ruleForm.OptionAttribute.IsWidthAdaption === true'></el-input>
               <span style="font-size:12px;color:#a2a2a2;margin-left:6px">px</span>
             </el-radio>
@@ -180,9 +180,9 @@
         </el-form-item>
         <el-form-item label="项数限制：" prop="OptionAttribute.UseTimes" key="optionUseTimes"
          class="use-times-box" v-if="ruleForm.OptionAttribute.ChooseType !== 'single'">
-          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MinValue"></el-input>
+          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MinValue" maxlength="20"></el-input>
           <span>≤ 项数 ≤</span>
-          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MaxValue"></el-input>
+          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MaxValue" maxlength="20"></el-input>
           <span>项</span>
           <p class="tips-box" style="width:240px"><i class="el-icon-warning"></i> 不限制则不填写</p>
         </el-form-item>

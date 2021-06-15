@@ -23,10 +23,10 @@
         <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="请输入部件名称" maxlength="10" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="使用次数：" prop="UseTimes" class="use-times-box" key="GroupUseTimes">
-        <el-input style='width:110px' :disabled='isEdit&&curData.UseTimes.MinValue===1&&curData.UseTimes.MaxValue===1'
+        <el-input style='width:110px' :disabled='isEdit&&curData.UseTimes.MinValue===1&&curData.UseTimes.MaxValue===1' maxlength="20"
          v-model.number.trim="ruleForm.UseTimes.MinValue"></el-input>
         <span>≤ 次数 ≤</span>
-        <el-input style='width:110px' :disabled='isEdit&&curData.UseTimes.MinValue===1&&curData.UseTimes.MaxValue===1'
+        <el-input style='width:110px' :disabled='isEdit&&curData.UseTimes.MinValue===1&&curData.UseTimes.MaxValue===1' maxlength="20"
          v-model.number.trim="ruleForm.UseTimes.MaxValue"></el-input>
       </el-form-item>
       <!-- <el-form-item label="编辑时，需要注意以下几点：">

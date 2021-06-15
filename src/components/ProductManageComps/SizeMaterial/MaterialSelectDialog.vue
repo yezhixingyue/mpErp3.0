@@ -6,11 +6,16 @@
     class="mp-erp-comps-pruduct-module-material-select-dialog-comp-wrap"
     @open='onOpen'
     @closed='onClosed'>
-    <span slot="title" @click="handleClose" class="explain-title"><i class="el-icon-arrow-right"></i> 物料选择</span>
+    <span slot="title" @click="handleClose" class="explain-title">
+      <i class="el-icon-arrow-right"></i> 物料选择
+      <em>（ 添加时只允许添加尚未被添加过的分类；编辑时只能编辑当前分类，不能调整为其它分类；一次保存只能保存一个分类 ）</em>
+    </span>
     <section class="drawer-content">
       <aside>
         <el-scrollbar wrap-class="scrollbar-wrapper">
-          <span v-for="it in typeList" :key='`aside${it.ID}`' @click="onLabelClick(it)" :class="activeType===it.ID?'active':''" :title='it.Name'>
+          <span v-for="it in typeList" :key='`aside${it.ID}`'
+          :class="{ active: activeType===it.ID, disabled: !canSelectTypeIDList.includes(it.ID) }"
+           @click="onLabelClick(it)" :title='it.Name'>
             {{it.Name}}
           </span>
         </el-scrollbar>
@@ -38,6 +43,7 @@
 </template>
 
 <script>
+import { getFirstOptionName } from '@/assets/js/TypeClass/MaterialSizeClass';
 import SelectContentItem from './SelectContentItem.vue';
 
 export default {
@@ -55,6 +61,10 @@ export default {
       default: () => [],
     },
     dataList: {
+      type: Array,
+      default: () => [],
+    },
+    MaterialLocalList: {
       type: Array,
       default: () => [],
     },
@@ -84,7 +94,7 @@ export default {
       const _temp = {};
       list.forEach(it => {
         const { UnionShowList, ElementList } = it.Type;
-        const { lv1Title, itemContent } = this.getFirstOptionName(UnionShowList, ElementList); // 获取右侧第一级分类标题
+        const { lv1Title, itemContent } = getFirstOptionName(UnionShowList, ElementList); // 获取右侧第一级分类标题
         if (!_temp[lv1Title]) _temp[lv1Title] = [];
         _temp[lv1Title].push({ ...it, itemContent });
       });
@@ -127,6 +137,14 @@ export default {
         this.list.push(...list);
       },
     },
+    canSelectTypeIDList() {
+      if (!this.isEdit) {
+        const selectedIDs = this.MaterialLocalList.map(it => it.ID);
+        return this.typeList.filter(it => !selectedIDs.includes(it.ID)).map(it => it.ID);
+      }
+      if (this.value) return [this.value.ID];
+      return [];
+    },
   },
   methods: {
     onSubmit() {
@@ -134,7 +152,7 @@ export default {
         this.messageBox.failSingle('未选中物料');
         return;
       }
-      this.$emit('change', [this.curCheckedList, this.activeType]);
+      this.$emit('change', [this.curCheckedList, this.activeType, this.isEdit]);
     },
     onCancle() { // 取消  关闭弹窗
       this.$emit('update:visible', false);
@@ -156,47 +174,24 @@ export default {
         return;
       }
       if (this.typeList.length > 0) {
-        if (!this.value) this.activeType = this.typeList[0].ID;
-        else {
+        if (!this.value) {
+          this.isEdit = false;
+          this.$nextTick(() => {
+            if (this.canSelectTypeIDList && this.canSelectTypeIDList.length > 0) {
+              const [id] = this.canSelectTypeIDList;
+              this.activeType = id;
+            }
+          });
+        } else {
           this.isEdit = true;
-          // this.activeType =
-          // this.list =
+          this.activeType = this.value.ID;
+          this.list = this.value.List;
         }
       }
     },
     onLabelClick({ ID }) {
+      if (!this.canSelectTypeIDList.includes(ID)) return;
       this.activeType = ID;
-    },
-    getFirstOptionName(UnionShowList, ElementList) {
-      let lv1Title = '';
-      let itemContent = '';
-      if (!UnionShowList || UnionShowList.length === 0) { // 未设置元素组合 此时取元素列表种第一项
-        if (ElementList && ElementList.length > 0) {
-          lv1Title = ElementList[0].DisplayContent;
-          ElementList.forEach((ele, i) => {
-            if (i > 0) {
-              itemContent += ele.DisplayContent;
-            }
-          });
-        }
-      } else if (ElementList && ElementList.length > 0) { // 如果设置有元素组合 则按照元素组合取一项  （组合第一项可能为多个）
-        UnionShowList[0].forEach(union => {
-          const t = ElementList.find(Ele => Ele.ID === union);
-          if (t) lv1Title += t.DisplayContent;
-        });
-        UnionShowList.forEach((it, i) => {
-          if (i > 0) {
-            it.forEach((union, index) => {
-              const t = ElementList.find(Ele => Ele.ID === union);
-              if (t) {
-                if (index === 0 && itemContent) itemContent += ' ';
-                itemContent += t.DisplayContent;
-              }
-            });
-          }
-        });
-      }
-      return { lv1Title, itemContent };
     },
   },
 };
@@ -225,6 +220,10 @@ export default {
           > i {
             font-weight: 700;
           }
+        }
+        > em {
+          font-size: 12px;
+          color: #a2a2a2;
         }
       }
     }
@@ -288,6 +287,11 @@ export default {
               &::after {
                 opacity: 1;
               }
+            }
+            &.disabled {
+              color: #cbcbcb;
+              user-select: none;
+              pointer-events: none;
             }
           }
         }

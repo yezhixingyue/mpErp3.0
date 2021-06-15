@@ -1,5 +1,5 @@
 <template>
-  <div v-if="itemData" class="mp-erp-comps-pruduct-module-material-select-dialog-comp-content-item-wrap">
+  <div v-if="itemData" class="mp-erp-comps-pruduct-module-material-hidden-drawer-comp-content-item-wrap">
     <div class="header">
       <el-checkbox v-model="checkItemAll" :indeterminate="isIndeterminateAll">{{itemData.Name}}</el-checkbox>
       <div class="extend-box" @click="extend = !extend" v-if="showContent">
@@ -10,7 +10,7 @@
       </div>
     </div>
     <div v-show="showContent && extend" class="content">
-      <el-checkbox :value='checkedIDList.includes(it.ID)' @change='change(it)' v-for="it in itemData.List" :key="'item-check'+it.ID">
+      <el-checkbox :value="it.HiddenToCustomer" @change='change(it)' v-for="it in itemData.List" :key="'item-hidden'+it.ID">
         {{it.itemContent}}
       </el-checkbox>
     </div>
@@ -19,18 +19,10 @@
 
 <script>
 export default {
-  model: {
-    prop: 'value',
-    event: 'change',
-  },
   props: {
     itemData: {
       type: Object,
       default: null,
-    },
-    value: {
-      type: Array,
-      default: () => [],
     },
   },
   data() {
@@ -45,39 +37,31 @@ export default {
       if (this.itemData.List.length === 1 && this.itemData.List[0].itemContent) return true;
       return false;
     },
-    itemDataIds() {
-      if (!this.itemData) return [];
-      return this.itemData.List.map(it => it.ID);
-    },
-    checkedIDList() {
-      if (this.itemDataIds.length === 0 || this.value.length === 0) return [];
-      return this.value.filter(it => this.itemDataIds.includes(it.ID)).map(it => it.ID);
-    },
     checkItemAll: {
       get() {
-        return this.itemDataIds.length > 0 && this.checkedIDList.length === this.itemDataIds.length;
+        const t = this.itemData.List.find(it => !it.HiddenToCustomer);
+        return !t && this.itemData.List.length > 0;
       },
       set(bool) {
         const list = bool ? this.itemData.List : [];
-        this.$emit('change', [this.checkedIDList, list]);
+        this.$emit('change', list);
       },
     },
     isIndeterminateAll() {
-      return this.checkedIDList.length > 0 && this.checkedIDList.length < this.itemDataIds.length;
+      const t1 = this.itemData.List.find(it => !it.HiddenToCustomer);
+      const t2 = this.itemData.List.find(it => it.HiddenToCustomer);
+      return !!(t1 && t2);
     },
   },
   methods: {
-    change(item) {
-      const bool = !this.checkedIDList.includes(item.ID);
-      const lastCheckedList = this.itemData.List.filter(it => this.checkedIDList.includes(it.ID));
-      const list = bool ? [...lastCheckedList, item] : lastCheckedList.filter(it => it.ID !== item.ID);
-      this.$emit('change', [lastCheckedList.map(it => it.ID), list]);
+    change({ ID }) {
+      this.$emit('change', ID);
     },
   },
 };
 </script>
 <style lang='scss'>
-.mp-erp-comps-pruduct-module-material-select-dialog-comp-content-item-wrap {
+.mp-erp-comps-pruduct-module-material-hidden-drawer-comp-content-item-wrap {
   > .header {
     margin-bottom: 15px;
     display: flex;

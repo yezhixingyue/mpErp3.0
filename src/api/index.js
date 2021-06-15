@@ -372,6 +372,25 @@ const api = {
   getProductMaterialSave(data) { // POST /Api/ProductMaterial/Save 设置产品或部件物料
     return instance.post('/Api/ProductMaterial/Save', data);
   },
+  getProductMaterialRemove({ productID, partID, typeID }) { // PUT /Api/ProductMaterial/Remove 根据物料类型删除物料
+    return instance.put('/Api/ProductMaterial/Remove', { productID, partID, typeID });
+  },
+  getProductMaterialOrder(data) { // POST /Api/ProductMaterial/Order 设置物料排序
+    return instance.post('/Api/ProductMaterial/Order', data);
+  },
+  getProductMaterialHiddenSet(data) { // POST /Api/ProductMaterial/SetHidden 设置物料对客户隐藏
+    return instance.post('/Api/ProductMaterial/SetHidden', data);
+  },
+  getGeneralSizeSave(data) { // POST /Api/ProductSize/GeneralSizeSave 设置固定尺寸
+    return instance.post('/Api/ProductSize/GeneralSizeSave', data);
+  },
+  getGeneralSizeRemoveA(id) { // DELETE /Api/ProductSize/Remove  删除固定尺寸
+    // return instance.delete(`/Api/ProductSize/Remove?id=${id}`);
+    return instance.delete('/Api/ProductSize/Remove', { id });
+  },
+  getProductGroupSizeSet(data) { // POST /Api/ProductSize/SetGroup 设置产品尺寸组
+    return instance.post('/Api/ProductSize/SetGroup', data);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

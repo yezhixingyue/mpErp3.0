@@ -1,3 +1,35 @@
+export const getFirstOptionName = (UnionShowList, ElementList) => {
+  let lv1Title = '';
+  let itemContent = '';
+  if (!UnionShowList || UnionShowList.length === 0) { // 未设置元素组合 此时取元素列表种第一项
+    if (ElementList && ElementList.length > 0) {
+      lv1Title = ElementList[0].DisplayContent;
+      ElementList.forEach((ele, i) => {
+        if (i > 0) {
+          itemContent += ele.DisplayContent;
+        }
+      });
+    }
+  } else if (ElementList && ElementList.length > 0) { // 如果设置有元素组合 则按照元素组合取一项  （组合第一项可能为多个）
+    UnionShowList[0].forEach(union => {
+      const t = ElementList.find(Ele => Ele.ID === union);
+      if (t) lv1Title += t.DisplayContent;
+    });
+    UnionShowList.forEach((it, i) => {
+      if (i > 0) {
+        it.forEach((union, index) => {
+          const t = ElementList.find(Ele => Ele.ID === union);
+          if (t) {
+            if (index === 0 && itemContent) itemContent += ' ';
+            itemContent += t.DisplayContent;
+          }
+        });
+      }
+    });
+  }
+  return { lv1Title, itemContent };
+};
+
 export default class MaterialSizeClass {
   ID = '';
 

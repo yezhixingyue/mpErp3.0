@@ -28,7 +28,7 @@
         <el-input v-model.trim="ruleForm.LinkMan" placeholder="请输入联系人" maxlength="10" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="联系电话" prop="Mobile">
-        <el-input v-model.trim.number="ruleForm.Mobile" placeholder="请输入联系电话" maxlength="11" show-word-limit></el-input>
+        <el-input v-model.trim="ruleForm.Mobile" placeholder="请输入联系电话" maxlength="11" show-word-limit></el-input>
       </el-form-item>
     </el-form>
   </CommonDialogComp>

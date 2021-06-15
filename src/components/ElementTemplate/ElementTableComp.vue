@@ -68,20 +68,20 @@ export default {
       const hideValText = HiddenToCustomer && (DefaultValue || DefaultValue === 0) ? `客户界面隐藏取值：${DefaultValue}` : '';
       if (itemData.Type === 1) {
         // 数字描述 ： 是否允许小数 单位 默认选择 是否必填 是否允许自定义值 分段控制条目数
-        const { AllowDecimal, Unit, CheckedValue, IsRequired, Allow, CustomerAllow, SectionList } = itemData.NumbericAttribute;
+        const { AllowDecimal, Unit, CheckedValue, IsRequired, Allow, AllowCustomer, SectionList } = itemData.NumbericAttribute;
         const decimalText = AllowDecimal ? '小数：允许' : '';
         const unitText = Unit ? `单位：${Unit}` : '';
         const defaultText = CheckedValue || CheckedValue === 0 ? `默认值：${CheckedValue}` : '';
         const requiredText = IsRequired ? '是否必填：必填' : '';
         let canDefine = Allow ? '自定义：允许（客户除外）' : '自定义：不允许';
-        if (CustomerAllow) canDefine = '自定义：允许（包含客户）';
+        if (AllowCustomer) canDefine = '自定义：允许（包含客户）';
         const limit = SectionList && SectionList.length > 0 ? `分段控制条数：${SectionList.length}条` : '分段控制：未限制';
         const _list = [hideValText, decimalText, unitText, defaultText, requiredText, canDefine, limit].filter(it => it);
         return _list.join('；');
       }
       if (itemData.Type === 2) {
         // 选项
-        const { OptionList, IsRadio, Allow, CustomerAllow, CustomizeValue, SelectMode, IsRequired, UseTimes } = itemData.OptionAttribute;
+        const { OptionList, IsRadio, Allow, AllowCustomer, CustomizeValue, SelectMode, IsRequired, UseTimes } = itemData.OptionAttribute;
         const len = OptionList.length > 0 ? `选项数量：${OptionList.length}` : ''; // 选项数量
         let checkedLen;
         let customerShowLen;
@@ -96,7 +96,7 @@ export default {
         let canDefine = IsRadio ? '自定义：不允许' : '';
         if (canDefine && Allow) {
           canDefine = '自定义：允许（客户除外';
-          if (CustomerAllow) canDefine = '自定义：允许（包含客户';
+          if (AllowCustomer) canDefine = '自定义：允许（包含客户';
           if (CustomizeValue) canDefine += `,自定义值:${CustomizeValue}）`;
           else canDefine += '）';
         }

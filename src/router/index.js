@@ -431,7 +431,7 @@ export const routes = [
           },
           {
             // path: '/ProductSizeMaterialSet/:id/:name/:type/:times',
-            path: '/ProductSizeMaterialSet/:ProductID/:PartID/:name/:type',
+            path: '/ProductSizeMaterialSet/:ProductID/:PartID/:name/:type/:times',
             name: 'ProductSizeMaterialSet',
             meta: {
               title: '尺寸物料设置',

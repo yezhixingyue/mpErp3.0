@@ -180,10 +180,12 @@ export default {
         const _data = data;
         _data.ID = ID;
         state.MaterialSizeList.push(_data);
+        state.MaterialSizeListDataNumber += 1;
       }
     },
     setMaterialSizeRemove(state, id) {
       state.MaterialSizeList = state.MaterialSizeList.filter(it => it.ID !== id);
+      state.MaterialSizeListDataNumber -= 1;
     },
     setMaterialSizePage(state, page) {
       state.MaterialSizePage = page;

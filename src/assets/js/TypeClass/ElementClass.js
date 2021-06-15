@@ -22,7 +22,7 @@ const handleDefineListFormat = (data, key) => { // 处理自定义值至上传�
   // 处理自定义值至上传数据的转换
   if (_temp[key].DefineList.length > 0) {
     if (_temp[key].DefineList.includes('staff')) _temp[key].Allow = true;
-    if (_temp[key].DefineList.includes('customer')) _temp[key].CustomerAllow = true;
+    if (_temp[key].DefineList.includes('customer')) _temp[key].AllowCustomer = true;
   }
 
   delete _temp[key].DefineList;
@@ -74,7 +74,7 @@ export default class ElementClassType {
     IsRequired: false,
     IsWidthAdaption: true,
     DisplayWidth: '',
-    DefineList: [], // need Allow CustomerAllow
+    DefineList: [], // need Allow AllowCustomer
     SectionList: [],
   }
 
@@ -83,7 +83,7 @@ export default class ElementClassType {
     defaultSingleOption: '', // need
     IsWidthAdaption: true,
     DisplayWidth: '',
-    DefineList: [], // Allow CustomerAllow
+    DefineList: [], // Allow AllowCustomer
     CustomizeValue: '',
     ChooseType: 'single', // IsRadio
     IsRequired: false,
