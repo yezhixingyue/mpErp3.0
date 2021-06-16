@@ -27,7 +27,7 @@
             <main>
               <p class="module-title">已选元素概览</p>
               <ul>
-                <li v-for="(it, i) in FormulaData.PropertyList" :key="it.Element.ID + i">
+                <li v-for="(it, i) in FormulaData.PropertyList" :key="it.Element.StoredContent + '' + i">
                   <span class="name" v-if="!it.TipsContent">{{it.DisplayContent}}</span>
                   <TipsSpanButton v-else class="name" :text='it.DisplayContent' :tipContent='it.TipsContent' />
                   <span class="default">
@@ -114,6 +114,10 @@ export default {
       type: String,
       default: '当前物料类型',
     },
+    PositionType: {
+      type: String,
+      default: '',
+    },
   },
   components: {
     LRWidthDragAutoChangeComp,
@@ -145,7 +149,7 @@ export default {
   computed: {
     selectedElementIDs() {
       if (this.FormulaData && this.FormulaData.PropertyList && Array.isArray(this.FormulaData.PropertyList)) {
-        return this.FormulaData.PropertyList.map(it => it.Element.ID);
+        return this.FormulaData.PropertyList.map(it => it.StoredContent);
       }
       return [];
     },
@@ -167,8 +171,9 @@ export default {
       let temp;
       if (this.NowEditFormulaData) temp = { ...this.NowEditFormulaData };
       else {
-        temp = { PositionID: this.PositionID, UseModule: this.moduleIndex };
+        temp = { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex };
       }
+      console.log(this.NowEditFormulaData, temp);
       this.FormulaData = new FormulaClass(temp); // 初始化公式数据
       this.getPropertyList(); // 获取属性列表信息
     },
@@ -186,7 +191,7 @@ export default {
     initPropertyListReplaceHelper() { // 获取可用属性列表并转换完成后，对编辑数据时初始的PropertyList的数据进行修改操作（以获取到的可用属性为准）
       if (this.FormulaData.PropertyList.length === 0) return;
       this.FormulaData.PropertyList = this.FormulaData.PropertyList.map(it => {
-        const t = this.PropertyList.find(_it => _it.Element.ID === it.Element.ID);
+        const t = this.PropertyList.find(_it => _it.Element.ID === it.Element.ID && it.FixedType === _it.FixedType);
         if (t) return { ...t, DefaultValue: it.DefaultValue };
         return null;
       }).filter(it => it);
@@ -265,7 +270,7 @@ export default {
       if (!Element || !Element.DisplayContent) return;
       this.insertVariable(Element.DisplayContent);
     },
-    async insertVariable(value, num) {
+    async insertVariable(value, num = 0) {
       const myField = document.querySelector('.mp-erp-common-comps-formula-set-panel-comp-right-content-wrap .el-textarea__inner');
       if (!myField) {
         this.messageBox.failSingle('获取公式输入对象失败');
@@ -315,6 +320,7 @@ export default {
     onSubmitClick() {
       const checkBool = FormulaClass.checkSubmit(this.FormulaData);
       if (checkBool) { // 提交验证通过
+        // console.log(this.FormulaData);
         this.submitSave(this.FormulaData);
       }
     },

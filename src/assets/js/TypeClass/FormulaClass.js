@@ -18,7 +18,7 @@ export default class FormulaClass {
 
   Content = '';
 
-  PositionID = '';
+  // PositionID = '';
 
   UseModule = '';
 
@@ -32,11 +32,19 @@ export default class FormulaClass {
 
   constructor(initData) { // 初始化
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, Name, Content, PositionID, UseModule, UseTimes, Unit, PropertyList, Remark } = JSON.parse(JSON.stringify(initData));
+    // eslint-disable-next-line max-len
+    const { ID, Name, Content, PositionID, UseModule, UseTimes, Unit, PropertyList, Remark, MaterialTypeID, PartID, ProductID, PriceID, GroupID, ElementID, CraftID } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
     if (Content) this.Content = Content;
     if (PositionID) this.PositionID = PositionID;
+    if (MaterialTypeID) this.MaterialTypeID = MaterialTypeID;
+    if (PartID) this.PartID = PartID;
+    if (ProductID) this.ProductID = ProductID;
+    if (PriceID) this.PriceID = PriceID;
+    if (GroupID) this.GroupID = GroupID;
+    if (ElementID) this.ElementID = ElementID;
+    if (CraftID) this.CraftID = CraftID;
     if (UseModule || UseModule === 0) this.UseModule = UseModule;
     if (UseTimes) this.UseTimes = UseTimes;
     if (Unit) this.Unit = Unit;
@@ -49,7 +57,7 @@ export default class FormulaClass {
       messageBox.failSingleError('操作失败', '获取提交信息出错');
       return false;
     }
-    const { Name, PropertyList, Content, Remark } = obj;
+    const { Name, PropertyList, Content } = obj;
     if (!Name) {
       messageBox.failSingleError('操作失败', '请输入公式名称');
       return false;
@@ -104,10 +112,10 @@ export default class FormulaClass {
       messageBox.failSingleError('操作失败', '请填写公式内容');
       return false;
     }
-    if (!Remark) {
-      messageBox.failSingleError('操作失败', '请输入公式说明');
-      return false;
-    }
+    // if (!Remark) {
+    //   messageBox.failSingleError('操作失败', '请输入公式说明');
+    //   return false;
+    // }
     return true;
   }
 

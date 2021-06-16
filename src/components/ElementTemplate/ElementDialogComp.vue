@@ -41,7 +41,7 @@
           <el-checkbox class="checked-item" v-model="ruleForm.HiddenToCustomer">客户界面隐藏</el-checkbox>
           <div v-show="ruleForm.HiddenToCustomer">
             <span>隐藏时运算值：</span>
-            <el-input v-model="ruleForm.DefaultValue" ></el-input>
+            <el-input v-model.trim="ruleForm.DefaultValue" maxlength="20"></el-input>
           </div>
         </div>
       </el-form-item>
@@ -57,7 +57,7 @@
           <p class="tips-box"><i class="el-icon-warning"></i> 可为空，用空格、逗号分开，分隔符不限全角半角</p>
         </el-form-item>
         <el-form-item label="默认选择：" prop="NumbericAttribute.NumberDefaultValue" key="NumberDefaultValue">
-          <el-input style='width:120px' v-model.trim="ruleForm.NumbericAttribute.CheckedValue"></el-input>
+          <el-input style='width:120px' v-model.trim="ruleForm.NumbericAttribute.CheckedValue" maxlength="20"></el-input>
           <span style="font-size:12px;color:#a2a2a2;margin-left:12px">可为空</span>
         </el-form-item>
         <el-form-item label="单位：" prop="NumbericAttribute.NumberValueUnit" key="NumberValueUnit">
@@ -91,13 +91,13 @@
           <ul class="limit-list-box">
             <li v-for="it in ruleForm.NumbericAttribute.SectionList" :key="it.key">
               <div>
-                <el-input style='width:110px' v-model.trim="it.MinValue"></el-input>
+                <el-input style='width:110px' v-model.trim="it.MinValue" maxlength="20"></el-input>
                 <span class="text" style="margin:0 8px">＜值≤</span>
-                <el-input style='width:110px' v-model.trim="it.MaxValue"></el-input>
+                <el-input style='width:110px' v-model.trim="it.MaxValue" maxlength="20"></el-input>
               </div>
               <div style="padding:0 32px">
                 <span class="text" style="margin-right: 6px">增量</span>
-                <el-input style='width:110px;margin-right:12px' v-model.trim="it.Increment" :disabled='it.IsGeneralValue'></el-input>
+                <el-input style='width:110px;margin-right:12px' v-model.trim="it.Increment" maxlength="20" :disabled='it.IsGeneralValue'></el-input>
                 <el-checkbox class="checked-item" v-model="it.IsGeneralValue">符合常规数值</el-checkbox>
               </div>
               <span class="text del-btn" @click="onLimitDelClick(it.key)"><i></i> 删除</span>
@@ -255,7 +255,7 @@ export default {
       rules: { // 校验规则
         Name: [
           { required: true, message: '请输入元素名称', trigger: 'blur' },
-          { min: 2, max: 6, message: '长度在 2 到 6 个字符', trigger: 'blur' },
+          { min: 1, max: 6, message: '长度在 1 到 6 个字符', trigger: 'blur' },
         ],
         Type: [
           { validator: this.checkFormType, trigger: 'change' },

@@ -1,7 +1,6 @@
 <template>
   <el-table
     class="mp-erp-element-template-page-element-group-table-comp-wrap"
-    :max-height="452"
     :data="localTableData"
     stripe
     border

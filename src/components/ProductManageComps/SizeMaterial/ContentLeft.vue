@@ -153,6 +153,10 @@ export default {
         return this.MaterialLocalList;
       },
       set(val) {
+        if (val.length === this.MaterialList.length) {
+          this.messageBox.failSingle('不能全选，应至少保留一种物料类型');
+          return;
+        }
         this.$emit('MaterialSetHiddenSubmit', val);
       },
     },

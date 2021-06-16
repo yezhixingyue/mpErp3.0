@@ -20,7 +20,8 @@
       v-if="curMaterialType && ruleForm"
     >
       <el-form-item :label="`${it.Name}：`" :prop="it.ID" v-for="it in ElementList" :key='it.ID'>
-        <el-input style="width:178px" v-model.trim="ruleForm[it.ID]" v-if="it.Type === 1 && !it.NumbericAttribute.InputContent"></el-input>
+        <NumberTypeItemComp v-model="ruleForm[it.ID]" v-if="it.Type === 1" :InputContent='it.NumbericAttribute.InputContent' />
+        <!-- <el-input style="width:178px" v-model.trim="ruleForm[it.ID]" v-if="it.Type === 1 && !it.NumbericAttribute.InputContent"></el-input>
         <el-select
           v-if="it.Type === 1 && it.NumbericAttribute.InputContent"
           v-model="ruleForm[it.ID]"
@@ -36,8 +37,8 @@
             :label="item"
             :value="item">
           </el-option>
-        </el-select>
-        <el-select v-model="ruleForm[it.ID]" placeholder="请选择" v-if="it.Type === 2 && it.OptionAttribute.OptionList.length > 3">
+        </el-select> -->
+        <!-- <el-select v-model="ruleForm[it.ID]" placeholder="请选择" v-if="it.Type === 2 && it.OptionAttribute.OptionList.length > 3">
           <el-option
             v-for="item in it.OptionAttribute.OptionList"
             :key="item.ID"
@@ -47,7 +48,8 @@
         </el-select>
         <el-radio-group v-model="ruleForm[it.ID]" v-if="it.Type === 2 && it.OptionAttribute.OptionList.length <= 3">
           <el-radio v-for="item in it.OptionAttribute.OptionList" :key="item.ID" :label="item.ID">{{item.Name}}</el-radio>
-        </el-radio-group>
+        </el-radio-group> -->
+        <OptionTypeItemComp v-model="ruleForm[it.ID]" v-if="it.Type === 2" :options='it.OptionAttribute.OptionList' />
         <el-switch v-model="ruleForm[it.ID]" v-if="it.Type === 3" :active-text="it.SwitchAttribute.Words"></el-switch> <!-- 需转换布尔值为开值和关值 -->
       </el-form-item>
     </el-form>
@@ -56,6 +58,8 @@
 
 <script>
 import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import NumberTypeItemComp from '@/components/common/ElementDisplayTypeComps/NumberTypeItemComp.vue';
+import OptionTypeItemComp from '@/components/common/ElementDisplayTypeComps/OptionTypeItemComp.vue';
 // import MaterialSizeClass from '@/assets/js/TypeClass/MaterialSizeClass';
 
 export default {
@@ -75,6 +79,8 @@ export default {
   },
   components: {
     CommonDialogComp,
+    NumberTypeItemComp,
+    OptionTypeItemComp,
   },
   data() {
     return {
@@ -276,6 +282,9 @@ export default {
     .el-switch__label > span {
       font-size: 12px;
       color: #585858;
+    }
+    .el-form-item__content .el-input {
+      width: 173px;
     }
   }
 

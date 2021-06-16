@@ -5,7 +5,7 @@
       <span>{{materialTypeName}}</span>
     </header>
     <main>
-      <FormulaTableCrtlComp @setup='onFormulaSetupClick' :PositionID='PositionID' />
+      <FormulaTableCrtlComp @setup='onFormulaSetupClick' :PositionID='PositionID' PositionType='MaterialTypeID' />
     </main>
     <footer>
       <el-button @click="onGoBackClick">返回</el-button>

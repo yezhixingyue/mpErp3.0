@@ -45,6 +45,10 @@ export default {
       type: Number,
       default: 560,
     },
+    PositionType: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -70,7 +74,7 @@ export default {
     async getFormulaList() {
       if (!this.PositionID || this.loading) return;
       this.loading = true;
-      const resp = await this.api.getFormulaList(this.PositionID).catch(() => {});
+      const resp = await this.api.getFormulaList({ [this.PositionType]: this.PositionID }).catch(() => {});
       this.loading = false;
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         this.localTableData = resp.data.Data;

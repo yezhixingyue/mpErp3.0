@@ -36,7 +36,7 @@
       </div>
     </section>
     <footer>
-      <el-button type="primary" @click="onSubmit">保存</el-button>
+      <el-button type="primary" @click="onSubmit" :disabled='!curCheckedList||curCheckedList.length===0'>保存</el-button>
       <el-button @click="onCancle">取消</el-button>
     </footer>
   </el-drawer>
@@ -354,6 +354,9 @@ export default {
           &:active {
             background: linear-gradient(to right, #428dfa, #26bcf9);
           }
+        }
+        &.is-disabled {
+          background: #ccc !important;
         }
       }
     }

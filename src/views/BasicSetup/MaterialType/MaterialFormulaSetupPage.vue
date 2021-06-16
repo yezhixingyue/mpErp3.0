@@ -3,6 +3,7 @@
     v-if="PositionID"
     class="mp-erp-material-type-page-formula-set-page-wrap"
     :PositionID='PositionID'
+    PositionType='MaterialTypeID'
     :moduleIndex='0'
     :NowEditFormulaData='NowEditFormulaData'
     :pageTitle='materialTypeName'

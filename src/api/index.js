@@ -519,8 +519,8 @@ const api = {
   getFormulaCalculate(data) { // POST /Api/Formula/Calculate 公式测试计算
     return instance.post('/Api/Formula/Calculate', data);
   },
-  getFormulaList(positionID) { // GET /Api/Formula/List 获取公式列表
-    return instance.get(`/Api/Formula/List?positionID=${positionID}`);
+  getFormulaList(data) { // POST /Api/Formula/List 获取公式列表
+    return instance.post('/Api/Formula/List', data);
   },
   getFormulaRemove(id) { // DELETE /Api/Formula/Remove    公式删除
     return instance.delete(`/Api/Formula/Remove?id=${id}`);

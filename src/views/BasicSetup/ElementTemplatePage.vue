@@ -74,8 +74,10 @@ export default {
 <style lang='scss'>
 .mp-erp-basic-setup-element-set-common-comp-wrap {
   padding-left: 20px;
+  padding-bottom: 40px;
   > header {
-    padding: 20px 0;
+    // padding: 20px 0;
+    padding-top: 0px;
     line-height: 15px;
     box-sizing: border-box;
     height: 15px;

@@ -8,8 +8,8 @@
       <LRWidthDragAutoChangeComp leftWidth='45%' v-if="curProduct">
         <template v-slot:left>
           <ContentLeft
-           :curProduct='curProduct'
            ref='oLeft'
+           :curProduct='curProduct'
            :curPart='curPart'
            @MaterialSaveSubmit='onMaterialSaveSubmit'
            @MaterialSortSubmit='onMaterialSortSubmit'
@@ -18,7 +18,13 @@
            />
         </template>
         <template v-slot:right>
-          <ContentRight />
+          <ContentRight
+           ref='oRight'
+           :curProduct='curProduct'
+           :curPart='curPart'
+           :SizeGroup='SizeGroup'
+           @SizeGroupSubmit='onSizeGroupSubmit'
+           />
         </template>
       </LRWidthDragAutoChangeComp>
     </main>
@@ -47,8 +53,7 @@ export default {
       ProductName: '',
       titleType: '',
       MaterialList: [],
-      SizeList: [],
-      SizeGroup: [],
+      SizeGroup: null,
     };
   },
   computed: {
@@ -90,9 +95,8 @@ export default {
       const resp = await _fetchFunc(_temp).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
         // 获取数据成功
-        const { MaterialList, SizeList, SizeGroup } = resp.data.Data;
+        const { MaterialList, SizeGroup } = resp.data.Data;
         if (MaterialList) this.MaterialList = MaterialList;
-        if (SizeList) this.SizeList = SizeList;
         if (SizeGroup) this.SizeGroup = SizeGroup;
       }
     },
@@ -148,6 +152,18 @@ export default {
           this.$refs.oLeft.MaterialHiddentVisible = false;
         };
         this.messageBox.successSingle('设置客户隐藏成功', cb, cb);
+      }
+    },
+    async onSizeGroupSubmit(data) {
+      const { ProductID, PartID } = this;
+      const temp = { ProductID, PartID, ...data };
+      const resp = await this.api.getProductGroupSizeSet(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          this.SizeGroup = temp;
+          this.$refs.oRight.SizeGroupVisible = false;
+        };
+        this.messageBox.successSingle('设置尺寸组成功', cb, cb);
       }
     },
   },

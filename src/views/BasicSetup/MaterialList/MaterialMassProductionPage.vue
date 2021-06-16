@@ -20,8 +20,8 @@
       </ul>
     </main>
     <footer>
-      <el-button type="primary" @click="onSubmit" class="blue-full-color-btn-styles is-blue-button">保存</el-button>
-      <el-button @click="onGoback('')">返回</el-button>
+      <el-button type="primary" @click="onSubmit" :disabled='ElementList.length === 0' class="blue-full-color-btn-styles is-blue-button">保存</el-button>
+      <el-button class="goback" @click="onGoback('')">返回</el-button>
     </footer>
   </section>
 </template>
@@ -231,6 +231,9 @@ export default {
       border-radius: 3px;
       & + button.el-button {
         margin-left: 30px;
+      }
+      &.blue-full-color-btn-styles.is-disabled {
+        background-color: #ccc;
       }
     }
   }

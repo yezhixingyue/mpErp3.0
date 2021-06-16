@@ -16,8 +16,8 @@
         <div v-for="it in showData" :key="it.Type">
           <span class="title">{{getTitle(it.Type)}}</span>
           <div>
-            <TipsSpanButton :disabled='selectedElementIDs.includes(item.Element.ID)'
-             v-for="item in it.list" :key="item.Element.ID" @click.native="onSubmit(item)" :text='item.Element.Name' />
+            <TipsSpanButton :disabled='selectedElementIDs.includes(item.StoredContent)'
+             v-for="item in it.list" :key="item.StoredContent" @click.native="onSubmit(item)" :text='item.Element.Name' />
           </div>
         </div>
       </main>
@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     onSubmit(data) {
-      if (this.selectedElementIDs.includes(data.Element.ID)) return;
+      if (this.selectedElementIDs.includes(data.StoredContent)) return;
       this.$emit('submit', data);
       this.onCancle();
     },
