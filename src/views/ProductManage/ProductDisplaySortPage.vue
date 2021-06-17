@@ -12,13 +12,27 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   data() {
     return {
-      PositionID: '',
+      ProductID: '',
+      PartID: '',
       ProductName: '',
       titleType: '',
     };
+  },
+  computed: {
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
+    curProduct() {
+      if (!this.ProductID) return null;
+      return this.ProductManageList.find(it => it.ID === this.ProductID);
+    },
+    curPart() {
+      if (!this.PartID || !this.curProduct) return null;
+      return this.curProduct.PartList.find(it => it.ID === this.PartID);
+    },
   },
   methods: {
     getPositionID() {
@@ -26,15 +40,30 @@ export default {
         this.onGoBackClick();
         return;
       }
-      const { id, name, type } = this.$route.params;
-      if (!id || !name || !type) {
+      const { ProductID, PartID, name, type } = this.$route.params;
+      if (!ProductID || !PartID || !name || !type) {
         this.onGoBackClick();
         return;
       }
-      this.PositionID = id;
+      this.ProductID = ProductID;
+      this.PartID = PartID !== 'null' ? PartID : '';
       this.ProductName = name;
       this.titleType = type;
     },
+    // async getProductOrPartCraftData(dataType = ['Craft', 'CraftCondition']) { // 获取初始物料、常规尺寸与尺寸组信息
+    //   const ID = this.PartID ? this.PartID : this.ProductID;
+    //   const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
+    //   const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
+    //   const _temp = { ID, List };
+    //   const resp = await _fetchFunc(_temp).catch(() => {});
+    //   if (resp && resp.data && resp.data.Status === 1000) {
+    //     // 获取数据成功
+    //     console.log(resp);
+    //     // const { MaterialList, SizeGroup } = resp.data.Data;
+    //     // if (dataType.includes('Material') && MaterialList) this.MaterialList = MaterialList;
+    //     // if (dataType.includes('SizeGroup') && SizeGroup) this.SizeGroup = SizeGroup;
+    //   }
+    // },
     onGoBackClick() {
       this.$router.replace('/ProductManageList');
     },

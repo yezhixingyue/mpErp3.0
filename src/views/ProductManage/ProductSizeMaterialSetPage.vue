@@ -24,6 +24,8 @@
            :curPart='curPart'
            :SizeGroup='SizeGroup'
            @SizeGroupSubmit='onSizeGroupSubmit'
+           @GeneralSizeSubmit='onGeneralSizeSubmit'
+           @GeneralSizeRemove='onGeneralSizeRemove'
            />
         </template>
       </LRWidthDragAutoChangeComp>
@@ -87,17 +89,17 @@ export default {
     onGoBackClick() {
       this.$router.replace('/ProductManageList');
     },
-    async getMaterialSizeData() { // 获取初始物料、常规尺寸与尺寸组信息
+    async getMaterialSizeData(dataType = ['Material', 'SizeGroup', 'GeneralSize']) { // 获取初始物料、常规尺寸与尺寸组信息
       const ID = this.PartID ? this.PartID : this.ProductID;
       const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
-      const List = this.$utils.getIDFromListByNames(['Material', 'SizeGroup', 'GeneralSize'], this.ProductModuleKeyIDList);
+      const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
       const _temp = { ID, List };
       const resp = await _fetchFunc(_temp).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
         // 获取数据成功
         const { MaterialList, SizeGroup } = resp.data.Data;
-        if (MaterialList) this.MaterialList = MaterialList;
-        if (SizeGroup) this.SizeGroup = SizeGroup;
+        if (dataType.includes('Material') && MaterialList) this.MaterialList = MaterialList;
+        if (dataType.includes('SizeGroup') && SizeGroup) this.SizeGroup = SizeGroup;
       }
     },
     async onMaterialSaveSubmit([TypeID, dataList, isEdit]) { // 物料添加与编辑
@@ -160,10 +162,33 @@ export default {
       const resp = await this.api.getProductGroupSizeSet(temp).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
         const cb = () => {
-          this.SizeGroup = temp;
+          this.SizeGroup = JSON.parse(JSON.stringify(temp));
+          this.SizeGroup.SizeList = [];
           this.$refs.oRight.SizeGroupVisible = false;
         };
         this.messageBox.successSingle('设置尺寸组成功', cb, cb);
+      }
+    },
+    async onGeneralSizeSubmit(SizeList) {
+      const { ProductID, PartID } = this;
+      const temp = { ProductID, PartID, SizeList };
+      const resp = await this.api.getGeneralSizeSave(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          this.getMaterialSizeData(['SizeGroup', 'GeneralSize']);
+          this.$refs.oRight.GeneralSizeVisible = false;
+          this.SizeGroup.SizeList = [];
+        };
+        this.messageBox.successSingle('设置固定尺寸成功', cb, cb);
+      }
+    },
+    async onGeneralSizeRemove(ID) {
+      const resp = await this.api.getGeneralSizeRemove(ID).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          this.SizeGroup.SizeList = this.SizeGroup.SizeList.filter(it => it.ID !== ID);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
       }
     },
   },

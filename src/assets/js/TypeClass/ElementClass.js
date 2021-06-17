@@ -152,6 +152,10 @@ export default class ElementClassType {
           key: getRandomRangeId(8),
           Value: `${it.Value}`,
         }));
+        if (IsRadio) {
+          const t = this.OptionAttribute.OptionList.find(it => it.IsChecked);
+          if (t) this.OptionAttribute.defaultSingleOption = t.key;
+        }
       }
       if (UseTimes && OptionAttribute.UseTimes.MaxValue) {
         this.OptionAttribute.UseTimes.MinValue = UseTimes.MinValue;

@@ -41,9 +41,9 @@
         </ul>
       </el-form-item>
       <el-form-item label="使用次数：" prop="UseTimes" class="use-times-box" key="GroupUseTimes">
-        <el-input style='width:110px' v-model.number.trim="ruleGroupForm.UseTimes.MinValue" maxlength="20"></el-input>
+        <el-input style='width:110px' v-model.number.trim="ruleGroupForm.UseTimes.MinValue" maxlength="16"></el-input>
         <span>≤ 次数 ≤</span>
-        <el-input style='width:110px' v-model.number.trim="ruleGroupForm.UseTimes.MaxValue" maxlength="20"></el-input>
+        <el-input style='width:110px' v-model.number.trim="ruleGroupForm.UseTimes.MaxValue" maxlength="16"></el-input>
       </el-form-item>
       <el-form-item label="排列方式：" prop="Arrange" class="arrange-box" key="GroupArrange">
         <el-radio-group v-model="ruleGroupForm.IsHorizontalDisplay">
@@ -147,6 +147,10 @@ export default {
       // 1. 必填   2. 可以为0 但不能同时为0  3. 最大值必须大于等于最小值  4. 不能为负，最大不可设为-1  5. 可以均不填写 代表不限制 (不行 取消该条)
       if ((!MinValue && MinValue !== 0) || (!MaxValue && MaxValue !== 0)) {
         callback(new Error('请填写和补充最大最小值'));
+        return;
+      }
+      if (!this.$utils.getValueIsOrNotNumber(MinValue, true) || !this.$utils.getValueIsOrNotNumber(MaxValue, true)) {
+        callback(new Error('使用次数最小和最大值都应为整数类型'));
         return;
       }
       if (MinValue === 0 && MaxValue === 0) {

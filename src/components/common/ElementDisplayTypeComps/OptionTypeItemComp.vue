@@ -1,5 +1,13 @@
 <template>
-  <el-select v-model="checkVal" :placeholder="placeholder" v-if="!canRadio || options.length > 3" size="small">
+  <el-select
+   v-model="checkVal"
+   :placeholder="placeholder"
+   filterable
+   default-first-option
+   :allow-create='Allow'
+   v-if="!canRadio || options.length > 3"
+   size="small"
+   class="mp-erp-option-type-element-display-select-comp">
     <el-option
       v-for="item in options"
       :key="item.ID"
@@ -32,6 +40,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    Allow: { // 是否允许自定义
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     checkVal: {
@@ -46,4 +58,12 @@ export default {
 };
 </script>
 <style lang='scss'>
+.mp-erp-option-type-element-display-select-comp {
+  .el-input__inner {
+    font-size: 12px;
+    &::placeholder {
+      font-size: 12px;
+    }
+  }
+}
 </style>

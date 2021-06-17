@@ -384,12 +384,17 @@ const api = {
   getGeneralSizeSave(data) { // POST /Api/ProductSize/GeneralSizeSave 设置固定尺寸
     return instance.post('/Api/ProductSize/GeneralSizeSave', data);
   },
-  getGeneralSizeRemoveA(id) { // DELETE /Api/ProductSize/Remove  删除固定尺寸
-    // return instance.delete(`/Api/ProductSize/Remove?id=${id}`);
-    return instance.delete('/Api/ProductSize/Remove', { id });
+  getGeneralSizeRemove(id) { // DELETE /Api/ProductSize/Remove  删除固定尺寸
+    return instance.delete(`/Api/ProductSize/Remove?id=${id}`);
   },
   getProductGroupSizeSet(data) { // POST /Api/ProductSize/SetGroup 设置产品尺寸组
     return instance.post('/Api/ProductSize/SetGroup', data);
+  },
+  getProductCraftUsableSet(data) { // POST /Api/ProductCraft/SetUsable 设置产品或部件可用工艺
+    return instance.post('/Api/ProductCraft/SetUsable', data);
+  },
+  getProductCraftOrder(data) { // POST /Api/ProductCraft/Order 设置可用工艺排序
+    return instance.post('/Api/ProductCraft/Order', data);
   },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */

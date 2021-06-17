@@ -134,12 +134,12 @@ export default {
       const ID = data ? data.ID : this.itemData.ID;
       _name += (data ? `：${data.Name}` : '');
       const type = data ? '部件' : '产品';
-      if (path === 'ProductSizeMaterialSet') {
-        const PartID = data ? data.ID : null;
-        this.$router.push(`/${path}/${this.itemData.ID}/${PartID}/${_name}/${type}/${Date.now()}`);
+      if (path === 'ProductElementSet') {
+        this.$router.push(`/${path}/${ID}/${_name}/${type}/${Date.now()}`);
         return;
       }
-      this.$router.push(`/${path}/${ID}/${_name}/${type}/${Date.now()}`);
+      const PartID = data ? data.ID : null;
+      this.$router.push(`/${path}/${this.itemData.ID}/${PartID}/${_name}/${type}/${Date.now()}`);
     },
     onElementSaveClick(data) { // 产品与部件元素设置 data有值时为部件元素设置
       this.setCommonPathJump('ProductElementSet', data);

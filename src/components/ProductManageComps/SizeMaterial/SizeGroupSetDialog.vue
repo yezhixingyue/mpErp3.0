@@ -102,9 +102,13 @@ export default {
       }
       if (this.value && this.value.GroupInfo && this.value.SizeList.length > 0 && this.ruleForm.GroupInfo.ID !== this.value.GroupInfo.ID) {
         const cb = () => {
-          this.$emit('change', this.ruleForm);
+          const t = this.canUseGroupData.find(it => it.ID === this.ruleForm.GroupInfo.ID);
+          const GroupInfo = t || this.ruleForm.GroupInfo;
+          const temp = { ...this.ruleForm, GroupInfo };
+          this.$emit('change', temp);
         };
         this.messageBox.warnCancelBox('当前已设置尺寸组', '如果更改尺寸组，则所有固定尺寸将被清空，确定更改吗？', cb);
+        // this.messageBox.warnCancelBox('当前已设置尺寸组', '已有固定尺寸，请先清除固定尺寸后才可更改尺寸组');
         return;
       }
       const t = this.canUseGroupData.find(it => it.ID === this.ruleForm.GroupInfo.ID);

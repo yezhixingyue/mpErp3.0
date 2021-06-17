@@ -5,6 +5,7 @@
     title="设置固定尺寸"
     cancelText='关闭'
     :visible.sync="visible"
+    :disabled='SizeList && SizeList.length === 0'
     @submit="onSubmit"
     @cancle="onCancle"
     @open='onOpen'
@@ -28,26 +29,28 @@
           <el-input v-model.trim="item.Name" maxlength="20" size="small" class="name"></el-input>
           <ul class="flex-content">
             <li :style="`width:${autoWidth}`" v-for="(it,i) in ElementList" :key="it.ID">
-              <NumberTypeItemComp v-model="item.List[i].Second" v-if="it.Type === 1" :InputContent='it.NumbericAttribute.InputContent' />
-              <OptionTypeItemComp v-model="item.List[i].Second" v-if="it.Type === 2" :options='it.OptionAttribute.OptionList' :canRadio='false' />
+              <NumberTypeItemComp
+                v-if="it.Type === 1"
+                v-model="item.List[i].Second"
+               InputContent=''
+               :Allow='it.NumbericAttribute.Allow' />
+              <OptionTypeItemComp
+               v-if="it.Type === 2"
+               v-model="item.List[i].Second"
+               :options='it.OptionAttribute.OptionList'
+               :Allow='it.OptionAttribute.Allow'
+               :canRadio='false' />
             </li>
           </ul>
           <el-checkbox v-model="item.HiddenToCustomer">隐藏</el-checkbox>
           <div class="ctrl">
             <span class="del-btn" @click="onItemRemove(index)"><i></i> 删除</span>
             <div>
-              <span v-show="index < SizeList.length - 1"><i class="el-icon-bottom"></i> 下移</span>
+              <span v-show="index < SizeList.length - 1" @click="onOptionMove('down', index)"><i class="el-icon-bottom"></i> 下移</span>
             </div>
             <div>
-              <span v-show="index > 0"><i class="el-icon-top"></i> 上移</span>
+              <span v-show="index > 0" @click="onOptionMove('up', index)"><i class="el-icon-top"></i> 上移</span>
             </div>
-            <!-- <span class="del-btn" @click="onOptionItemRemove(it.key)"><i></i> 删除</span>
-            <div>
-              <span v-show="i < ruleForm.OptionAttribute.OptionList.length - 1"  @click="onOptionMove('down', i)"><i class="el-icon-bottom"></i> 下移</span>
-            </div>
-            <div>
-              <span v-show="i > 0" @click="onOptionMove('up', i)"><i class="el-icon-top"></i> 上移</span>
-            </div> -->
           </div>
         </li>
       </ul>
@@ -59,6 +62,8 @@
 import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
 import NumberTypeItemComp from '@/components/common/ElementDisplayTypeComps/NumberTypeItemComp.vue';
 import OptionTypeItemComp from '@/components/common/ElementDisplayTypeComps/OptionTypeItemComp.vue';
+import { elementValChecker } from '@/assets/js/checker';
+import { normalNameReg } from '@/assets/js/utils/regexp';
 
 export default {
   props: {
@@ -81,13 +86,6 @@ export default {
       ElementList: [],
       SizeList: [],
       template: null,
-      //  {
-      //   ID: '',
-      //   Name: '',
-      //   Index: 0,
-      //   HiddenToCustomer: false,
-      //   List: [],
-      // },
     };
   },
   computed: {
@@ -98,7 +96,36 @@ export default {
   },
   methods: {
     onSubmit() {
-      this.$emit('submit', this.ruleForm);
+      if (this.SizeList.length === 0) return this.setErrorAndReturn('至少需设置一行固定尺寸');
+      let i = this.SizeList.findIndex(it => !it.Name);
+      if (i > -1) return this.setErrorAndReturn(`第${i + 1}行未设置名称`);
+
+      i = this.SizeList.findIndex(it => !normalNameReg.test(it.Name));
+      if (i > -1) return this.setErrorAndReturn(`第${i + 1}行名称不合法，名称仅支持中文、英文(全角/半角)、+-_(全角/半角)`);
+
+      const allList = [...this.SizeList, ...this.SizeGroup.SizeList];
+      const names = allList.map(it => it.Name);
+      if (names.length > [...new Set(names)].length) return this.setErrorAndReturn('存在重复名称，请检查');
+
+      for (let index = 0; index < this.SizeList.length; index += 1) {
+        const { List } = this.SizeList[index];
+        for (let index2 = 0; index2 < List.length; index2 += 1) {
+          const { First, Second } = List[index2];
+          const element = this.ElementList.find(({ ID }) => First === ID);
+          if (element) {
+            const { result, msg } = elementValChecker(Second, element);
+            if (!result) return this.setErrorAndReturn(`第${index + 1}行${element.Name}${msg}`);
+          }
+        }
+      }
+      const eleStrs = allList.map(it => it.List).map(list => list.map(({ Second }) => Second).join(''));
+      if (eleStrs.length > [...new Set(eleStrs)].length) return this.setErrorAndReturn('存在设置项重复，请检查');
+      this.$emit('submit', this.SizeList);
+      return true;
+    },
+    setErrorAndReturn(msg) {
+      this.messageBox.failSingleError('保存失败', msg);
+      return false;
     },
     onCancle() { // 取消  关闭弹窗
       this.$emit('update:visible', false);
@@ -116,12 +143,20 @@ export default {
       const item = { ..._temp, Index, key };
       this.SizeList.push(item);
     },
+    onOptionMove(type, index) { // 排序
+      const [item] = this.SizeList.splice(index, 1);
+      const newIndex = type === 'up' ? index - 1 : index + 1;
+      this.SizeList.splice(newIndex, 0, item);
+      this.SizeList.forEach((it, i) => {
+        const _it = it;
+        _it.Index = i;
+      });
+    },
     onItemRemove(i) {
       this.SizeList.splice(i, 1);
     },
     initEditData() { // 数据初始化方法
       if (!this.SizeGroup || !this.SizeGroup.GroupInfo) return;
-      console.log(this.SizeGroup.GroupInfo.ElementList, this.SizeGroup.SizeList);
       this.ElementList = this.SizeGroup.GroupInfo.ElementList;
       this.SizeList = [];
       this.template = {
@@ -173,6 +208,7 @@ export default {
           flex: 1;
           display: flex;
           align-items: center;
+          max-width: 424px;
         }
       }
       > ul {
@@ -243,6 +279,9 @@ export default {
             width: 150px;
             flex: none;
             padding-right: 6px;
+            .el-input__inner {
+              font-size: 12px;
+            }
           }
           > .flex-content { // 表体伸缩区域
             flex: 1;

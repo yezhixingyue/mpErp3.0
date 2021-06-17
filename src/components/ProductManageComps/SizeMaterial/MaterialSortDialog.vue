@@ -1,8 +1,8 @@
 <template>
   <CommonDialogComp
     width="650px"
-    top='18vh'
-    title="一级组合排序"
+    top='12vh'
+    :title="title"
     :visible.sync="visible"
     @submit="onSubmit"
     @cancle="onCancle"
@@ -34,6 +34,10 @@ export default {
     value: {
       type: Array,
       default: () => [],
+    },
+    title: {
+      type: String,
+      default: '一级组合排序',
     },
   },
   components: {
@@ -77,7 +81,7 @@ export default {
       padding-top: 10px;
       width: 540px;
       min-height: 275px;
-      max-height: 360px;
+      max-height: 430px;
       overflow-y: auto;
       > li {
         height: 41px;

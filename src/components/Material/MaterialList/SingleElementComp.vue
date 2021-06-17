@@ -54,9 +54,15 @@ export default {
   },
   computed: {
     NumberOptions() {
-      if (this.Element.Type === 1 && this.Element.NumbericAttribute.InputContent) {
-        const res = this.$utils.getNumberValueList(this.Element.NumbericAttribute.InputContent);
-        return res;
+      if (this.Element.Type === 1) {
+        if (this.Element.NumbericAttribute.InputContent) {
+          const res = this.$utils.getNumberValueList(this.Element.NumbericAttribute.InputContent);
+          return res;
+        }
+        if (!this.Element.NumbericAttribute.InputContent
+         && (this.Element.NumbericAttribute.CheckedValue || this.Element.NumbericAttribute.CheckedValue === 0)) {
+          return [this.Element.NumbericAttribute.CheckedValue];
+        }
       }
       return [];
     },

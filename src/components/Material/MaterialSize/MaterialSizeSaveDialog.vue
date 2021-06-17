@@ -28,15 +28,15 @@
           <el-radio :label="false">多个尺寸</el-radio>
         </el-radio-group>
         <p v-if="ruleForm.SingleLenRadio" key="isSingleLenRadio">
-          <el-input style="width:110px" v-model.trim.number="ruleForm.SingleLength" maxlength="20"></el-input>
+          <el-input style="width:110px" v-model.trim.number="ruleForm.SingleLength" maxlength="16"></el-input>
           <span class="text">mm</span>
         </p>
         <p v-else key="isNotSingleLenRadio">
-          <el-input style="width:110px" v-model.trim.number="ruleForm.MinLength" maxlength="20"></el-input>
+          <el-input style="width:110px" v-model.trim.number="ruleForm.MinLength" maxlength="16"></el-input>
           <span class="text">≤ 长度 ≤</span>
-          <el-input style="width:110px;margin-right:12px" v-model.trim.number="ruleForm.MaxLength" maxlength="20"></el-input>
+          <el-input style="width:110px;margin-right:12px" v-model.trim.number="ruleForm.MaxLength" maxlength="16"></el-input>
           <span class="text">增量：</span>
-          <el-input style="width:110px" v-model.trim.number="ruleForm.LengthIncrement" maxlength="20"></el-input>
+          <el-input style="width:110px" v-model.trim.number="ruleForm.LengthIncrement" maxlength="16"></el-input>
           <span class="text">mm</span>
         </p>
         <el-checkbox v-model="ruleForm.IsLengthSplit">长度可加工</el-checkbox>
@@ -47,15 +47,15 @@
           <el-radio :label="false">多个尺寸</el-radio>
         </el-radio-group>
         <p v-if="ruleForm.SingleWidthRadio" key="isSingleWidthRadio">
-          <el-input style="width:110px" v-model.trim.number="ruleForm.SingleWidth" maxlength="20"></el-input>
+          <el-input style="width:110px" v-model.trim.number="ruleForm.SingleWidth" maxlength="16"></el-input>
           <span class="text">mm</span>
         </p>
         <p v-else key="isNotSingleWidthRadio">
-          <el-input style="width:110px" v-model.trim.number="ruleForm.MinWidth" maxlength="20"></el-input>
+          <el-input style="width:110px" v-model.trim.number="ruleForm.MinWidth" maxlength="16"></el-input>
           <span class="text">≤ 宽度 ≤</span>
-          <el-input style="width:110px;margin-right:12px" v-model.trim.number="ruleForm.MaxWidth" maxlength="20"></el-input>
+          <el-input style="width:110px;margin-right:12px" v-model.trim.number="ruleForm.MaxWidth" maxlength="16"></el-input>
           <span class="text">增量：</span>
-          <el-input style="width:110px" v-model.trim.number="ruleForm.WidthIncrement" maxlength="20"></el-input>
+          <el-input style="width:110px" v-model.trim.number="ruleForm.WidthIncrement" maxlength="16"></el-input>
           <span class="text">mm</span>
         </p>
         <el-checkbox v-model="ruleForm.IsWidthSplit">宽度可加工</el-checkbox>

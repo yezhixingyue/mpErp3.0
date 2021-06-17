@@ -3,8 +3,32 @@
     <header>
       <span>当前{{titleType}}：</span>
       <span>{{ProductName}}</span>
+      <p>
+        <el-button type="primary" size="small" @click="craftVisible = true">设置可用工艺</el-button>
+        <span class="text" :title="usableCraftText">{{usableCraftText}}</span>
+        <span class="blue-span" @click="sortVisible = true">设置排序</span>
+      </p>
     </header>
-    <main>产品与部件工艺内容区域</main>
+    <main>
+      <LRWidthDragAutoChangeComp leftWidth='45%' v-if="curProduct">
+        <template v-slot:left>
+          <ContentLeft
+           ref='oLeft'
+           :curProduct='curProduct'
+           :curPart='curPart'
+           />
+        </template>
+        <template v-slot:right>
+          <ContentRight
+           ref='oRight'
+           :curProduct='curProduct'
+           :curPart='curPart'
+           />
+        </template>
+      </LRWidthDragAutoChangeComp>
+      <UsableCraftSetDialog :usableCraftList='CraftList' :visible.sync='craftVisible' @submit="onUsableCraftSetSubmit" />
+      <MaterialSortDialog title="可用工艺排序" :visible.sync='sortVisible' v-model="SortListData" />
+    </main>
     <footer>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
@@ -12,31 +36,126 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
+import ContentLeft from '@/components/ProductManageComps/CraftSet/ContentLeft.vue';
+import ContentRight from '@/components/ProductManageComps/CraftSet/ContentRight.vue';
+import UsableCraftSetDialog from '@/components/ProductManageComps/CraftSet/UsableCraftSetDialog.vue';
+import MaterialSortDialog from '@/components/ProductManageComps/SizeMaterial/MaterialSortDialog.vue';
+
 export default {
+  components: {
+    LRWidthDragAutoChangeComp,
+    ContentLeft,
+    ContentRight,
+    UsableCraftSetDialog,
+    MaterialSortDialog,
+  },
   data() {
     return {
-      PositionID: '',
+      ProductID: '',
+      PartID: '',
       ProductName: '',
       titleType: '',
+      CraftList: [],
+      CraftConditionList: [],
+      craftVisible: false,
+      sortVisible: false,
     };
   },
+  computed: {
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
+    curProduct() {
+      if (!this.ProductID) return null;
+      return this.ProductManageList.find(it => it.ID === this.ProductID);
+    },
+    curPart() {
+      if (!this.PartID || !this.curProduct) return null;
+      return this.curProduct.PartList.find(it => it.ID === this.PartID);
+    },
+    usableCraftText() {
+      if (!this.CraftList || this.CraftList.length === 0) return '';
+      return this.CraftList.map(it => it.Name).join('、');
+    },
+    SortListData: {
+      get() {
+        if (!this.CraftList || !Array.isArray(this.CraftList) || this.CraftList.length === 0) return [];
+        return this.CraftList.map(({ ID, Name }) => ({ ID, Name }));
+      },
+      set(val) {
+        if (!val || val.length === 0) return;
+        this.onSortSubmit(val);
+      },
+    },
+  },
   methods: {
-    getPositionID() {
+    getPositionID() { // 获取初始url信息 并 触发初始数据获取
       if (!this.$route.params) {
         this.onGoBackClick();
         return;
       }
-      const { id, name, type } = this.$route.params;
-      if (!id || !name || !type) {
+      const { ProductID, PartID, name, type } = this.$route.params;
+      if (!ProductID || !PartID || !name || !type) {
         this.onGoBackClick();
         return;
       }
-      this.PositionID = id;
+      this.ProductID = ProductID;
+      this.PartID = PartID !== 'null' ? PartID : '';
       this.ProductName = name;
       this.titleType = type;
+      this.getProductOrPartCraftData();
+    },
+    async getProductOrPartCraftData(dataType = ['Craft', 'CraftCondition']) { // 获取初始可用工艺列表 及 已设置工艺条件列表
+      const ID = this.PartID ? this.PartID : this.ProductID;
+      const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
+      const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
+      const _temp = { ID, List };
+      const resp = await _fetchFunc(_temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        // 获取数据成功
+        const { CraftList, CraftConditionList } = resp.data.Data;
+        if (dataType.includes('Craft') && CraftList) this.CraftList = CraftList;
+        if (dataType.includes('CraftCondition') && CraftConditionList) this.CraftConditionList = CraftConditionList;
+      }
     },
     onGoBackClick() {
       this.$router.replace('/ProductManageList');
+    },
+    async onUsableCraftSetSubmit(data) {
+      const { ProductID, PartID } = this;
+      const List = data.map(it => it.ID);
+      const temp = { ProductID, PartID, List };
+      const resp = await this.api.getProductCraftUsableSet(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          this.CraftList = data;
+          this.craftVisible = false;
+        };
+        this.messageBox.successSingle('设置成功', cb, cb);
+      }
+    },
+    async onSortSubmit(list) { // 可用工艺排序
+      const { ProductID, PartID } = this;
+      const TypeList = list.map(it => it.ID);
+      const temp = { ProductID, PartID, TypeList };
+      const resp = await this.api.getProductCraftOrder(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          const _newList = [];
+          const _oldList = JSON.parse(JSON.stringify(this.CraftList));
+          TypeList.forEach(TypeID => {
+            _oldList.forEach((it, i) => {
+              if (it && it.Type.ID === TypeID) {
+                _newList.push(it);
+                _oldList.splice(i, 1, null);
+              }
+            });
+          });
+          this.CraftList = _newList;
+          this.sortVisible = false;
+        };
+        this.messageBox.successSingle('保存排序成功', cb, cb);
+      }
     },
   },
   mounted() {
@@ -58,11 +177,33 @@ export default {
     padding-bottom: 40px;
     line-height: 15px;
     box-sizing: border-box;
-    height: 15px;
+    height: 120px;
     font-size: 15px;
     color: #21CAE3;
     font-weight: bold;
     flex: none;
+    > p {
+      padding-top: 15px;
+      white-space: nowrap;
+      > button {
+        width: 125px;
+      }
+      > span {
+        font-size: 12px;
+        font-weight: 400;
+        margin-left: 18px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: middle;
+        &.text {
+          color: #999;
+          max-width: calc(100% - 220px);
+          min-width: 100px;
+        }
+      }
+    }
   }
   > main {
     flex: 1;

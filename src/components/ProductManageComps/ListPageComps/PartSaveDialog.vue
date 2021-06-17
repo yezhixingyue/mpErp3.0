@@ -23,10 +23,10 @@
         <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="请输入部件名称" maxlength="10" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="使用次数：" prop="UseTimes" class="use-times-box" key="GroupUseTimes">
-        <el-input style='width:110px' :disabled='isEdit&&curData.UseTimes.MinValue===1&&curData.UseTimes.MaxValue===1' maxlength="20"
+        <el-input style='width:110px' :disabled='isEdit&&curData.UseTimes.MinValue===1&&curData.UseTimes.MaxValue===1' maxlength="16"
          v-model.number.trim="ruleForm.UseTimes.MinValue"></el-input>
         <span>≤ 次数 ≤</span>
-        <el-input style='width:110px' :disabled='isEdit&&curData.UseTimes.MinValue===1&&curData.UseTimes.MaxValue===1' maxlength="20"
+        <el-input style='width:110px' :disabled='isEdit&&curData.UseTimes.MinValue===1&&curData.UseTimes.MaxValue===1' maxlength="16"
          v-model.number.trim="ruleForm.UseTimes.MaxValue"></el-input>
       </el-form-item>
       <!-- <el-form-item label="编辑时，需要注意以下几点：">
@@ -74,7 +74,7 @@ export default {
         Name: [
           { required: true, message: '请输入部件名称', trigger: 'blur' },
           { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
-          { pattern: normalNameReg, message: '只能使用中文、数字及字母组成，数字与字母不能使用全角字符', trigger: 'blur' },
+          { pattern: normalNameReg, message: '名称仅支持中文、英文(全角/半角)、+-_(全角/半角)', trigger: 'blur' },
         ],
         UseTimes: [
           { validator: this.checkUseTimes, trigger: 'change' },

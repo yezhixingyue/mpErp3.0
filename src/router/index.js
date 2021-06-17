@@ -441,7 +441,7 @@ export const routes = [
             component: () => import('../views/ProductManage/ProductSizeMaterialSetPage.vue'),
           },
           {
-            path: '/ProductCraftSet/:id/:name/:type/:times',
+            path: '/ProductCraftSet/:ProductID/:PartID/:name/:type/:times',
             name: 'ProductCraftSet',
             meta: {
               title: '产品工艺设置',
@@ -451,7 +451,7 @@ export const routes = [
             component: () => import('../views/ProductManage/ProductCraftSetPage.vue'),
           },
           {
-            path: '/ProductDisplaySort/:id/:name/:type/:times',
+            path: '/ProductDisplaySort/:ProductID/:PartID/:name/:type/:times',
             name: 'ProductDisplaySort',
             meta: {
               title: '显示排序设置',

@@ -151,11 +151,11 @@ export default {
         return;
       }
       if (!normalNameReg.test(Name)) {
-        this.messageBox.failSingleError('保存失败', '内部名称应由汉字字母或数字组成，不能包含符号等其它字符');
+        this.messageBox.failSingleError('保存失败', '名称仅支持中文、英文(全角/半角)、+-_(全角/半角)');
         return;
       }
       if (!normalNameReg.test(ShowName)) {
-        this.messageBox.failSingleError('保存失败', '内部名称应由汉字字母或数字组成，不能包含符号等其它字符');
+        this.messageBox.failSingleError('保存失败', '名称仅支持中文、英文(全角/半角)、+-_(全角/半角)');
         return;
       }
       this.$store.dispatch('productManage/getProductBaseInfoSave', [this.productData, this.goback]);

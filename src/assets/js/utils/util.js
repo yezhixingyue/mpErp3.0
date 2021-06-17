@@ -245,6 +245,34 @@ export const getIDFromListByNames = (Names, list, defaultKeys = { label: 'Name',
   return '';
 };
 
+/**
+ * @description: 通过分类列表数据 及 列表数据 来形成分级树形数据结构
+ * @param {*} list
+ * @param {*} classData
+ * @return {*}
+ */
+export const getTreeDataFromListAndClassifyData = (list, classData) => {
+  if (list.length === 0 || classData.length === 0) return [];
+  let _list = JSON.parse(JSON.stringify(classData));
+  list.forEach(it => {
+    const { FirstLevel, SecondLevel } = it.Classify;
+    const _lv1 = _list.find(lv1 => lv1.ID === FirstLevel.ID);
+    if (_lv1) {
+      const _lv2 = _lv1.children.find(lv2 => lv2.ID === SecondLevel.ID);
+      if (_lv2) {
+        if (!_lv2.children) _lv2.children = [];
+        _lv2.children.push(it);
+      }
+    }
+  });
+  _list.forEach(lv1 => {
+    const t = lv1;
+    t.children = t.children.filter(lv2 => lv2.children && lv2.children.length > 0);
+  });
+  _list = _list.filter(it => it.children && it.children.length > 0);
+  return _list;
+};
+
 export default {
   getStatusString,
   getExpress,
@@ -263,4 +291,5 @@ export default {
   getNumberValueList,
   calcDescartes,
   getIDFromListByNames,
+  getTreeDataFromListAndClassifyData,
 };

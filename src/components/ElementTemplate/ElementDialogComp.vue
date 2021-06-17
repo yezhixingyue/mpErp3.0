@@ -72,7 +72,7 @@
             <el-radio :label="false">
               <span>固定宽度</span>
               <el-input style='width:90px;margin-left:10px' :disabled='ruleForm.NumbericAttribute.IsWidthAdaption === true'
-               v-model.number.trim="ruleForm.NumbericAttribute.DisplayWidth" maxlength="20"></el-input>
+               v-model.number.trim="ruleForm.NumbericAttribute.DisplayWidth" maxlength="16"></el-input>
               <span style="font-size:12px;color:#a2a2a2;margin-left:6px">px</span>
             </el-radio>
           </el-radio-group>
@@ -148,7 +148,7 @@
             <el-radio :label="true">自动宽度</el-radio>
             <el-radio :label="false">
               <span>固定宽度</span>
-              <el-input style='width:90px;margin-left:10px' maxlength="20"
+              <el-input style='width:90px;margin-left:10px' maxlength="16"
                v-model.number.trim="ruleForm.OptionAttribute.DisplayWidth" :disabled='ruleForm.OptionAttribute.IsWidthAdaption === true'></el-input>
               <span style="font-size:12px;color:#a2a2a2;margin-left:6px">px</span>
             </el-radio>
@@ -180,9 +180,9 @@
         </el-form-item>
         <el-form-item label="项数限制：" prop="OptionAttribute.UseTimes" key="optionUseTimes"
          class="use-times-box" v-if="ruleForm.OptionAttribute.ChooseType !== 'single'">
-          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MinValue" maxlength="20"></el-input>
+          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MinValue" maxlength="16"></el-input>
           <span>≤ 项数 ≤</span>
-          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MaxValue" maxlength="20"></el-input>
+          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MaxValue" maxlength="16"></el-input>
           <span>项</span>
           <p class="tips-box" style="width:240px"><i class="el-icon-warning"></i> 不限制则不填写</p>
         </el-form-item>
@@ -192,10 +192,10 @@
           <el-input style='width:400px' v-model.trim="ruleForm.SwitchAttribute.Words"></el-input>
         </el-form-item>
         <el-form-item label="开值：" prop="SwitchAttribute.OpenValue" key="OpenValue">
-          <el-input style='width:120px' v-model.trim="ruleForm.SwitchAttribute.OpenValue"></el-input>
+          <el-input style='width:120px' v-model.trim="ruleForm.SwitchAttribute.OpenValue" maxlength="16"></el-input>
         </el-form-item>
         <el-form-item label="关值：" prop="SwitchAttribute.CloseValue" key="CloseValue">
-          <el-input style='width:120px' v-model.trim="ruleForm.SwitchAttribute.CloseValue"></el-input>
+          <el-input style='width:120px' v-model.trim="ruleForm.SwitchAttribute.CloseValue" maxlength="16"></el-input>
         </el-form-item>
         <el-form-item label="初始值：" prop="SwitchInitValue" class="switch-init-value-box" key="SwitchInitValue">
           <el-switch v-model="ruleForm.SwitchAttribute.DefaultOpen" active-text="初始开值"></el-switch>
@@ -547,7 +547,7 @@ export default {
     checkOptionList(rule, value, callback) {
       let t = this.ruleForm.OptionAttribute.OptionList.find(it => !it.HiddenToCustomer);
       if (!t && !this.ruleForm.HiddenToCustomer && this.ruleForm.OptionAttribute.OptionList.length > 0) {
-        callback(new Error('客户界面至少显示一个选择项，如果不希望客户选择，请勾选“用户界面隐藏”勾选项'));
+        callback(new Error('客户界面至少显示一个选择项，如果不希望客户选择，请勾选“客户界面隐藏”勾选项'));
         return;
       }
       t = this.ruleForm.OptionAttribute.OptionList.find(it => !it.Name);
