@@ -25,7 +25,7 @@
         <span style="width:210px">操作</span>
       </div>
       <ul>
-        <li class="content-item" v-for="(item, index) in SizeList" :key="item.key" >
+        <li class="content-item" v-for="(item, index) in SizeList" :key="item.key || item.ID" >
           <el-input v-model.trim="item.Name" maxlength="20" size="small" class="name"></el-input>
           <ul class="flex-content">
             <li :style="`width:${autoWidth}`" v-for="(it,i) in ElementList" :key="it.ID">
@@ -103,8 +103,7 @@ export default {
       i = this.SizeList.findIndex(it => !normalNameReg.test(it.Name));
       if (i > -1) return this.setErrorAndReturn(`第${i + 1}行名称不合法，名称仅支持中文、英文(全角/半角)、+-_(全角/半角)`);
 
-      const allList = [...this.SizeList, ...this.SizeGroup.SizeList];
-      const names = allList.map(it => it.Name);
+      const names = this.SizeList.map(it => it.Name);
       if (names.length > [...new Set(names)].length) return this.setErrorAndReturn('存在重复名称，请检查');
 
       for (let index = 0; index < this.SizeList.length; index += 1) {
@@ -118,7 +117,7 @@ export default {
           }
         }
       }
-      const eleStrs = allList.map(it => it.List).map(list => list.map(({ Second }) => Second).join(''));
+      const eleStrs = this.SizeList.map(it => it.List).map(list => list.map(({ Second }) => Second).join(''));
       if (eleStrs.length > [...new Set(eleStrs)].length) return this.setErrorAndReturn('存在设置项重复，请检查');
       this.$emit('submit', this.SizeList);
       return true;
@@ -158,7 +157,7 @@ export default {
     initEditData() { // 数据初始化方法
       if (!this.SizeGroup || !this.SizeGroup.GroupInfo) return;
       this.ElementList = this.SizeGroup.GroupInfo.ElementList;
-      this.SizeList = [];
+      this.SizeList = JSON.parse(JSON.stringify(this.SizeGroup.SizeList));
       this.template = {
         ID: '',
         Name: '',

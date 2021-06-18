@@ -396,6 +396,15 @@ const api = {
   getProductCraftOrder(data) { // POST /Api/ProductCraft/Order 设置可用工艺排序
     return instance.post('/Api/ProductCraft/Order', data);
   },
+  getProductCraftConditionSave(data) { // POST /Api/ProductCraft/ConditionSave 编辑产品工艺条件 -- 设置单选工艺
+    return instance.post('/Api/ProductCraft/ConditionSave', data);
+  },
+  getProductCraftConditionRemove(id) { // DELETE /Api/ProductCraft/ConditionRemove 删除单选工艺
+    return instance.delete(`/Api/ProductCraft/ConditionRemove?id=${id}`);
+  },
+  getProductCraftSetHidden(data) { // POST /Api/ProductCraft/SetHidden  设置工艺对客户隐藏
+    return instance.post('/Api/ProductCraft/SetHidden', data);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

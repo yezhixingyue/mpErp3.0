@@ -14,7 +14,12 @@
     <el-table-column prop="ShowName" label="显示名称"  min-width="240" show-overflow-tooltip></el-table-column>
     <el-table-column prop="ClassiftText" label="所属分类"  min-width="240" show-overflow-tooltip></el-table-column>
     <el-table-column prop="ElementText" label="元素"  min-width="240" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="GroupText" label="元素组"  min-width="240" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="GroupText" label="元素组"  min-width="240" show-overflow-tooltip>
+      <template slot-scope="scope">
+        <span v-for="it in scope.row.GroupList" :key='it.ID' :title="getTips(it.ElementList)">
+          {{it.Name}}（{{it.UseTimes.MinValue}}-{{it.UseTimes.MaxValue}}次）</span>
+      </template>
+    </el-table-column>
     <el-table-column label="操作" min-width="380">
       <div class="menu-list" slot-scope="scope">
         <span @click="onElementClick(scope.row)"><i></i>界面元素</span>
@@ -49,7 +54,6 @@ export default {
         ...it,
         ClassiftText: this.getClassiftText(it),
         ElementText: this.getElementText(it.ElementList),
-        GroupText: this.getGroupText(it),
       }));
     },
   },
@@ -81,9 +85,9 @@ export default {
       if (!list || !Array.isArray(list) || list.length === 0) return '';
       return list.map(it => it.Name).join('、');
     },
-    getGroupText(item) {
-      if (!item || !item.GroupList || item.GroupList.length === 0) return '';
-      return item.GroupList.map(it => `${it.Name}（${it.UseTimes.MinValue}-${it.UseTimes.MaxValue}次）`).join(' ');
+    getTips(list) {
+      if (!list || list.length === 0) return '';
+      return list.map(it => it.Name).join('、');
     },
   },
 };

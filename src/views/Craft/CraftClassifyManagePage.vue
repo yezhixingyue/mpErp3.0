@@ -26,6 +26,7 @@ export default {
     },
     onSortSuccess(list) {
       this.$store.commit('common/setCraftClassifyData', list);
+      this.$store.commit('basicSet/setCraftFetchData', true);
     },
   },
 };

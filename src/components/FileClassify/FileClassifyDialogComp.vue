@@ -23,7 +23,7 @@
         <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="请输入类目名称" maxlength="6" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="显示顺序：" prop="ShowIndex" key="ShowIndex">
-        <el-input style="width:150px;margin-right:10px" v-model.trim.number="ruleForm.ShowIndex" maxlength="16"></el-input>
+        <el-input style="width:150px;margin-right:10px" v-model.trim.number="ruleForm.ShowIndex" maxlength="15"></el-input>
         <span class="tips-box"><i class="el-icon-warning"></i> 注：数字越小显示越靠前</span>
       </el-form-item>
       <el-form-item label="文件类型：" prop="TypeList" key="TypeList">
@@ -74,6 +74,7 @@ export default {
         ],
         ShowIndex: [
           { required: true, message: '请设置显示顺序', trigger: 'blur' },
+          { type: 'number', message: '必须为数字类型', trigger: 'blur' },
         ],
         TypeList: [
           { type: 'array', required: true, message: '请选择文件类型', trigger: 'change' },

@@ -8,9 +8,9 @@ import { getValueIsOrNotNumber, getNumberValueList } from '../utils/util';
  */
 export const elementValChecker = (value, element) => {
   if (!value && value !== 0) return { msg: '值未设置', result: false };
-  const { Type, NumbericAttribute, OptionAttribute } = element; // 开关类型暂未判断 或可不需要
+  const { Type, NumbericAttribute, OptionAttribute, HiddenToCustomer } = element; // 开关类型暂未判断 或可不需要
   if (Type === 1) { // 数值类型元素
-    const { AllowDecimal, SectionList, InputContent } = NumbericAttribute;
+    const { AllowDecimal, SectionList, InputContent, Allow, AllowCustomer } = NumbericAttribute;
     const isConformNumberType = getValueIsOrNotNumber(+value, !AllowDecimal);
     if (!isConformNumberType) {
       const msg = `输入值错误，请输入正确的数字类型（${AllowDecimal ? '允许小数' : '不允许小数'}）`;
@@ -21,6 +21,12 @@ export const elementValChecker = (value, element) => {
       if (valueList.includes(`${value}`)) {
         return { msg: '', result: true };
       }
+      if (!Allow && !valueList.includes(`${value}`)) {
+        return { msg: `值不正确，不允许自定义，请从${valueList}中取值`, result: false };
+      }
+      if (!AllowCustomer && !HiddenToCustomer && !valueList.includes(`${value}`)) {
+        return { msg: `值不正确，不允许客户自定义，请从${valueList}中取值`, result: false };
+      }
       for (let i = 0; i < SectionList.length; i += 1) {
         const section = SectionList[i];
         const { MinValue, MaxValue, IsGeneralValue, Increment } = section;
@@ -30,7 +36,7 @@ export const elementValChecker = (value, element) => {
             return { msg, result: false };
           }
           if (IsGeneralValue) {
-            const msg = `输入值不合法，（${MinValue}, ${MaxValue}]区间内应从${InputContent}对应区间中取值`;
+            const msg = `输入值不合法，（${MinValue}, ${MaxValue}]区间内应从${valueList}对应区间中取值`;
             return { msg, result: false };
           }
         }

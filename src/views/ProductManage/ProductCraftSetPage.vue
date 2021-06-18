@@ -6,23 +6,25 @@
       <p>
         <el-button type="primary" size="small" @click="craftVisible = true">设置可用工艺</el-button>
         <span class="text" :title="usableCraftText">{{usableCraftText}}</span>
-        <span class="blue-span" @click="sortVisible = true">设置排序</span>
+        <span class="blue-span" @click="sortVisible = true" :class="CraftList && CraftList.length > 0 ? '' : 'disabled'">设置排序</span>
       </p>
     </header>
     <main>
-      <LRWidthDragAutoChangeComp leftWidth='45%' v-if="curProduct">
+      <LRWidthDragAutoChangeComp leftWidth='50%' v-if="curProduct">
         <template v-slot:left>
           <ContentLeft
            ref='oLeft'
-           :curProduct='curProduct'
-           :curPart='curPart'
+           :usableCraftList='CraftList'
+           :CraftConditionList='CraftConditionList'
+           @submit='onSingleCraftSaveSubmit'
+           @remove='onSingleCraftRemove'
            />
         </template>
         <template v-slot:right>
           <ContentRight
            ref='oRight'
-           :curProduct='curProduct'
-           :curPart='curPart'
+           :usableCraftList='CraftList'
+           @setHiddenCraftList='setHiddenCraftList'
            />
         </template>
       </LRWidthDragAutoChangeComp>
@@ -145,7 +147,7 @@ export default {
           const _oldList = JSON.parse(JSON.stringify(this.CraftList));
           TypeList.forEach(TypeID => {
             _oldList.forEach((it, i) => {
-              if (it && it.Type.ID === TypeID) {
+              if (it && it.ID === TypeID) {
                 _newList.push(it);
                 _oldList.splice(i, 1, null);
               }
@@ -155,6 +157,50 @@ export default {
           this.sortVisible = false;
         };
         this.messageBox.successSingle('保存排序成功', cb, cb);
+      }
+    },
+    async onSingleCraftSaveSubmit(data) {
+      const { ProductID, PartID } = this;
+      const temp = { ProductID, PartID, ...data };
+      const resp = await this.api.getProductCraftConditionSave(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const isEdit = !!data.ID;
+        const msg = isEdit ? '编辑单选工艺成功' : '添加单选工艺成功';
+        const cb = () => {
+          if (!isEdit) this.CraftConditionList.push({ ...temp, ID: resp.data.Data });
+          else {
+            const i = this.CraftConditionList.findIndex(it => it.ID === temp.ID);
+            if (i > -1) this.CraftConditionList.splice(i, 1, temp);
+          }
+          this.$refs.oLeft.visible = false;
+        };
+        this.messageBox.successSingle(msg, cb, cb);
+      }
+    },
+    async onSingleCraftRemove(data) {
+      if (!data) return;
+      const { ID } = data;
+      const resp = await this.api.getProductCraftConditionRemove(ID).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          const i = this.CraftConditionList.findIndex(it => it.ID === ID);
+          if (i > -1) this.CraftConditionList.splice(i, 1);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    async setHiddenCraftList(list) {
+      if (!list || list.length === 0) return;
+      const { ProductID, PartID } = this;
+      const List = list.filter(it => it.HiddenToCustomer).map(it => it.ID);
+      const temp = { ProductID, PartID, List };
+      const resp = await this.api.getProductCraftSetHidden(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          this.CraftList = list;
+          this.$refs.oRight.DisplayHiddenVisible = false;
+        };
+        this.messageBox.successSingle('设置成功', cb, cb);
       }
     },
   },
@@ -182,6 +228,7 @@ export default {
     color: #21CAE3;
     font-weight: bold;
     flex: none;
+    white-space: nowrap;
     > p {
       padding-top: 15px;
       white-space: nowrap;

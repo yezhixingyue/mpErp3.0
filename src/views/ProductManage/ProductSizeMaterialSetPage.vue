@@ -177,7 +177,7 @@ export default {
         const cb = () => {
           this.getMaterialSizeData(['SizeGroup', 'GeneralSize']);
           this.$refs.oRight.GeneralSizeVisible = false;
-          this.SizeGroup.SizeList = [];
+          // this.SizeGroup.SizeList = [];
         };
         this.messageBox.successSingle('设置固定尺寸成功', cb, cb);
       }
