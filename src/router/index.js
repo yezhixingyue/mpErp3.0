@@ -423,7 +423,7 @@ export const routes = [
             path: '/ProductElementSet/:id/:name/:type/:times',
             name: 'ProductElementSet',
             meta: {
-              title: '产品界面元素设置',
+              title: '界面元素设置 - 产品|部件管理',
               requiresAuth: true,
               // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
             },
@@ -434,7 +434,7 @@ export const routes = [
             path: '/ProductSizeMaterialSet/:ProductID/:PartID/:name/:type/:times',
             name: 'ProductSizeMaterialSet',
             meta: {
-              title: '尺寸物料设置',
+              title: '尺寸物料设置 - 产品|部件管理',
               requiresAuth: true,
               // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
             },
@@ -444,25 +444,85 @@ export const routes = [
             path: '/ProductCraftSet/:ProductID/:PartID/:name/:type/:times',
             name: 'ProductCraftSet',
             meta: {
-              title: '产品工艺设置',
+              title: '工艺设置 - 产品|部件管理',
               requiresAuth: true,
               // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
             },
             component: () => import('../views/ProductManage/ProductCraftSetPage.vue'),
           },
           {
-            path: '/ProductDisplaySort/:ProductID/:PartID/:name/:type/:times',
+            path: '/ProductDisplaySort/:ProductID/:PartID/:name/:type/:materialName/:times',
             name: 'ProductDisplaySort',
             meta: {
-              title: '显示排序设置',
+              title: '显示排序设置 - 产品管理',
               requiresAuth: true,
               // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
             },
             component: () => import('../views/ProductManage/ProductDisplaySortPage.vue'),
           },
+          {
+            path: '/ProductFactorySet/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductFactorySet',
+            meta: {
+              title: '工厂设置 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductFactorySetPage.vue'),
+          },
+          {
+            path: '/ProductFileSet/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductFileSet',
+            meta: {
+              title: '文件设置 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductFileSetPage.vue'),
+          },
+          {
+            path: '/ProductFormulaSet/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductFormulaSet',
+            meta: {
+              title: '公式设置 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductFormulaSetPage.vue'),
+          },
+          {
+            path: '/ProductInteractionSet/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductInteractionSet',
+            meta: {
+              title: '交互设置 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductInteractionSetPage.vue'),
+          },
+          {
+            path: '/ProductFileNameSet/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductFileNameSet',
+            meta: {
+              title: '文件名设置 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductFileNameSetPage.vue'),
+          },
+          {
+            path: '/ProductStockSet/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductStockSet',
+            meta: {
+              title: '库存设置 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/ProductStockSetPage.vue'),
+          },
         ],
       },
-      {
+      { // 工艺管理
         path: '/craftRootPage',
         name: 'craftRootPage',
         meta: {
@@ -585,7 +645,7 @@ export const routes = [
             component: () => import('../views/BasicSetup/MaterialType/MaterialTypeListPage.vue'),
           },
           {
-            path: '/MaterialFormulaList/:id/:name',
+            path: '/MaterialFormulaList/:id/:name/:timer',
             name: 'MaterialFormulaList',
             meta: {
               title: '物料公式列表',
@@ -595,7 +655,7 @@ export const routes = [
             component: () => import('../views/BasicSetup/MaterialType/MaterialFormulaListPage.vue'),
           },
           {
-            path: '/MaterialFormulaSetup/:id/:name',
+            path: '/MaterialFormulaSetup/:id/:name/:timer',
             name: 'MaterialFormulaSetup',
             meta: {
               title: '物料公式设置',

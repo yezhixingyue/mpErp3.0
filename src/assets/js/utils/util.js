@@ -9,6 +9,8 @@
  */
 import handleLoadingHOF from './handleLoading';
 
+import { normalNameReg } from './regexp';
+
 export function getStatusString(id, OrderStatusList) {
   const num = parseInt(id, 10);
   for (let i = 0; i < OrderStatusList.length; i += 1) {
@@ -273,6 +275,8 @@ export const getTreeDataFromListAndClassifyData = (list, classData) => {
   return _list;
 };
 
+export const checkName = name => normalNameReg.test(name);
+
 export default {
   getStatusString,
   getExpress,
@@ -292,4 +296,5 @@ export default {
   calcDescartes,
   getIDFromListByNames,
   getTreeDataFromListAndClassifyData,
+  checkName,
 };

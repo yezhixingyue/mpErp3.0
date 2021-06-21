@@ -84,9 +84,9 @@ export default {
   mounted() {
     this.getFormulaList();
   },
-  activated() {
-    this.getFormulaList();
-  },
+  // activated() {
+  //   this.getFormulaList();
+  // },
 };
 </script>
 <style lang='scss'>

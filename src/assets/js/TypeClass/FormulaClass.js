@@ -1,5 +1,6 @@
 import messageBox from '@/assets/js/utils/message';
 import { getValueIsOrNotNumber, getNumberValueList } from '@/assets/js/utils/util';
+import { NotChineseWideCharReg } from '@/assets/js/utils/regexp';
 
 export const FormulaUseModuleEnum = [
   { type: 'ProductProperty', label: '产品' },
@@ -89,7 +90,7 @@ export default class FormulaClass {
         for (let i = 0; i < AvailableValueList.length; i += 1) {
           const AvailableValue = AvailableValueList[i]; // 有效数值
 
-          if (typeof AvailableValue === 'number' && DefaultValue === AvailableValue) return false;
+          if (typeof AvailableValue === 'number' && +DefaultValue === AvailableValue) return false;
 
           if (typeof AvailableValue === 'object') {
             const { MinValue, MaxValue, IsGeneralValue, Increment, InputContent } = AvailableValue;
@@ -112,6 +113,12 @@ export default class FormulaClass {
       messageBox.failSingleError('操作失败', '请填写公式内容');
       return false;
     }
+
+    const matchRes = Content.match(NotChineseWideCharReg);
+    if (matchRes) {
+      messageBox.failSingleError('操作失败', `公式中[ ${matchRes} ]请转为半角字符`);
+      return false;
+    }
     // if (!Remark) {
     //   messageBox.failSingleError('操作失败', '请输入公式说明');
     //   return false;
@@ -131,6 +138,11 @@ export default class FormulaClass {
     // }
     if (!Content) {
       messageBox.failSingleError('计算失败', '请填写公式内容');
+      return false;
+    }
+    const matchRes = Content.match(NotChineseWideCharReg);
+    if (matchRes) {
+      messageBox.failSingleError('计算失败', `公式中[ ${matchRes} ]等字符为全角字符，请转换为半角`);
       return false;
     }
     if (PropertyList && PropertyList.length > 0) {

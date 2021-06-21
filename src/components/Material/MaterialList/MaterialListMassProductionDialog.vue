@@ -89,10 +89,12 @@ export default {
             if (valueList.includes(`${it.customValue}`)) {
               return false;
             }
+            let isInSection = false;
             for (let i = 0; i < SectionList.length; i += 1) {
               const section = SectionList[i];
               const { MinValue, MaxValue, IsGeneralValue, Increment } = section;
               if (+it.customValue > MinValue && (+it.customValue <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
+                isInSection = true;
                 if (!IsGeneralValue && (+it.customValue - MinValue) % Increment !== 0) {
                   return true;
                 }
@@ -101,6 +103,7 @@ export default {
                 }
               }
             }
+            if (!isInSection) return true;
           }
         }
         return false;

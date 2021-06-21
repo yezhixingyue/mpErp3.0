@@ -179,7 +179,7 @@ export default {
       } else {
         const _data = data;
         _data.ID = ID;
-        state.MaterialSizeList.push(_data);
+        state.MaterialSizeList.unshift(_data);
         state.MaterialSizeListDataNumber += 1;
       }
     },

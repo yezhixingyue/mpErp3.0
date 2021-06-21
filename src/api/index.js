@@ -405,6 +405,12 @@ const api = {
   getProductCraftSetHidden(data) { // POST /Api/ProductCraft/SetHidden  设置工艺对客户隐藏
     return instance.post('/Api/ProductCraft/SetHidden', data);
   },
+  getProductCraftSetGroup(data) { // POST /Api/ProductCraft/GroupSave  设置工艺分组
+    return instance.post('/Api/ProductCraft/GroupSave', data);
+  },
+  getProductSetDisplayOrder(data) { // POST /Api/Product/SetDisplayOrder  设置产品或部件排序
+    return instance.post('/Api/Product/SetDisplayOrder', data);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

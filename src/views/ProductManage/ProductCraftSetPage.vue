@@ -24,7 +24,9 @@
           <ContentRight
            ref='oRight'
            :usableCraftList='CraftList'
+           :CraftGroupList='CraftGroupList'
            @setHiddenCraftList='setHiddenCraftList'
+           @setGroupCraftList='setGroupCraftList'
            />
         </template>
       </LRWidthDragAutoChangeComp>
@@ -61,6 +63,7 @@ export default {
       titleType: '',
       CraftList: [],
       CraftConditionList: [],
+      CraftGroupList: [],
       craftVisible: false,
       sortVisible: false,
     };
@@ -107,7 +110,7 @@ export default {
       this.titleType = type;
       this.getProductOrPartCraftData();
     },
-    async getProductOrPartCraftData(dataType = ['Craft', 'CraftCondition']) { // 获取初始可用工艺列表 及 已设置工艺条件列表
+    async getProductOrPartCraftData(dataType = ['Craft', 'CraftCondition', 'CraftDisplayGroup']) { // 获取初始可用工艺列表 及 已设置工艺条件列表
       const ID = this.PartID ? this.PartID : this.ProductID;
       const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
       const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
@@ -115,9 +118,10 @@ export default {
       const resp = await _fetchFunc(_temp).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
         // 获取数据成功
-        const { CraftList, CraftConditionList } = resp.data.Data;
+        const { CraftList, CraftConditionList, CraftGroupList } = resp.data.Data;
         if (dataType.includes('Craft') && CraftList) this.CraftList = CraftList;
         if (dataType.includes('CraftCondition') && CraftConditionList) this.CraftConditionList = CraftConditionList;
+        if (dataType.includes('CraftDisplayGroup') && CraftGroupList) this.CraftGroupList = CraftGroupList;
       }
     },
     onGoBackClick() {
@@ -189,7 +193,7 @@ export default {
         this.messageBox.successSingle('删除成功', cb, cb);
       }
     },
-    async setHiddenCraftList(list) {
+    async setHiddenCraftList(list) { // 设置工艺对客户隐藏
       if (!list || list.length === 0) return;
       const { ProductID, PartID } = this;
       const List = list.filter(it => it.HiddenToCustomer).map(it => it.ID);
@@ -199,6 +203,19 @@ export default {
         const cb = () => {
           this.CraftList = list;
           this.$refs.oRight.DisplayHiddenVisible = false;
+        };
+        this.messageBox.successSingle('设置成功', cb, cb);
+      }
+    },
+    async setGroupCraftList(list) { // 设置工艺显示分组
+      if (!list || list.length === 0) return;
+      const { ProductID, PartID } = this;
+      const temp = { ProductID, PartID, List: list };
+      const resp = await this.api.getProductCraftSetGroup(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          this.CraftGroupList = list;
+          this.$refs.oRight.DisplayGroupingVisible = false;
         };
         this.messageBox.successSingle('设置成功', cb, cb);
       }

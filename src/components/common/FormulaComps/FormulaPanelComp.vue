@@ -343,9 +343,9 @@ export default {
   mounted() {
     this.initData();
   },
-  activated() {
-    this.initData();
-  },
+  // activated() {
+  //   this.initData();
+  // },
 };
 </script>
 <style lang='scss'>

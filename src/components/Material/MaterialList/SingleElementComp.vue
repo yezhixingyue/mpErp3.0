@@ -21,7 +21,7 @@
         <el-checkbox-group v-model="checkList">
           <el-checkbox v-for="it in Element.OptionAttribute.OptionList" :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-checkbox>
         </el-checkbox-group>
-        <div v-if="!Element.OptionAttribute.Allow" class="custom-box">
+        <div v-if="Element.OptionAttribute.Allow" class="custom-box">
           <el-checkbox v-model="customChecked">自定义</el-checkbox>
           <el-input v-show="customChecked" size="mini" v-model.trim="customValue"></el-input>
         </div>

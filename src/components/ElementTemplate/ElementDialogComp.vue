@@ -161,7 +161,7 @@
           </el-checkbox-group>
           <template v-if="optionDefine.includes('staff')">
             <span style="color: #585858">自定义数值：</span>
-            <el-input style='width:90px' v-model.trim="ruleForm.OptionAttribute.CustomizeValue"></el-input>
+            <el-input style='width:90px' v-model.trim="ruleForm.OptionAttribute.CustomizeValue" maxlength="15"></el-input>
           </template>
         </el-form-item>
         <el-form-item label="选择方式：" prop="optionChooseType" key="optionChooseType">

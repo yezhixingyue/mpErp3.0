@@ -41,6 +41,7 @@ export default {
       { Name: 'Interaction', ID: 11 }, // 交互
       { Name: 'Stock', ID: 13 }, // 库存
       { Name: 'CraftCondition', ID: 14 }, // 工艺条件
+      { Name: 'CraftDisplayGroup', ID: 15 }, // 工艺显示分组
     ],
   },
   getters: {

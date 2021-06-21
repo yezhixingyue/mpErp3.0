@@ -30,7 +30,7 @@
       </p>
       <draggable v-bind="dragOptions" v-model="UnionShowList" class="drag-wrap">
         <li v-for="(it, i) in UnionShowList" :key='JSON.stringify(it)'>
-          <span>{{getItemText(it)}}</span>
+          <span :title="getItemText(it)">{{getItemText(it)}}</span>
           <div class="ctrl">
             <span class="del-btn" @click="onItemRemove(i)"><i></i> 删除</span>
             <div>
@@ -193,6 +193,10 @@ export default {
         box-sizing: border-box;
         > span {
           font-size: 12px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 350px;
         }
         > .ctrl {
           font-size: 12px;

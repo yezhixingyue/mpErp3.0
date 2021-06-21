@@ -27,10 +27,12 @@ export const elementValChecker = (value, element) => {
       if (!AllowCustomer && !HiddenToCustomer && !valueList.includes(`${value}`)) {
         return { msg: `值不正确，不允许客户自定义，请从${valueList}中取值`, result: false };
       }
+      let isInSection = false;
       for (let i = 0; i < SectionList.length; i += 1) {
         const section = SectionList[i];
         const { MinValue, MaxValue, IsGeneralValue, Increment } = section;
         if (+value > MinValue && (+value <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
+          isInSection = true;
           if (!IsGeneralValue && (+value - MinValue) % Increment !== 0) {
             const msg = `输入值不合法，（${MinValue}, ${MaxValue}]区间内应符合增量为${Increment}`;
             return { msg, result: false };
@@ -40,6 +42,10 @@ export const elementValChecker = (value, element) => {
             return { msg, result: false };
           }
         }
+      }
+      if (!isInSection) {
+        const msg = '输入值不合法，不在分段控制范围内';
+        return { msg, result: false };
       }
     }
     return { msg: '', result: true };

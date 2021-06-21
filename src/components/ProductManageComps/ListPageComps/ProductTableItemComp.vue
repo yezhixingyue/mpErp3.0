@@ -17,12 +17,12 @@
         <TipsSpanButton text='尺寸物料' @click.native="onProductSizeMaterialSetClick(null)" />
         <TipsSpanButton text='工艺' @click.native="onProductCraftSetClick(null)" />
         <TipsSpanButton style="margin-right:60px" text='显示顺序' @click.native="onProductDisplaySortSetClick(null)" />
-        <TipsSpanButton text='工厂' />
-        <TipsSpanButton text='文件' />
-        <TipsSpanButton text='公式' />
-        <TipsSpanButton text='交互' />
-        <TipsSpanButton text='文件名设置' />
-        <TipsSpanButton text='库存' />
+        <TipsSpanButton text='工厂' @click.native="onProductFactorySetClick" />
+        <TipsSpanButton text='文件' @click.native="setCommonPathJump('ProductFileSet')" />
+        <TipsSpanButton text='公式' @click.native="setCommonPathJump('ProductFormulaSet')" />
+        <TipsSpanButton text='交互' @click.native="setCommonPathJump('ProductInteractionSet')" />
+        <TipsSpanButton text='文件名设置' @click.native="setCommonPathJump('ProductFileNameSet')" />
+        <TipsSpanButton text='库存' @click.native="setCommonPathJump('ProductStockSet')" />
       </div>
       <div class="img-menu-box">
         <span @click="onPartSaveClick(null)">
@@ -138,20 +138,29 @@ export default {
         this.$router.push(`/${path}/${ID}/${_name}/${type}/${Date.now()}`);
         return;
       }
+      if (path === 'ProductDisplaySort') {
+        const PartID = data ? data.ID : null;
+        const materialName = data ? data.MaterialDisplayName : this.itemData.MaterialDisplayName;
+        this.$router.push(`/${path}/${this.itemData.ID}/${PartID}/${_name}/${type}/${materialName}/${Date.now()}`);
+        return;
+      }
       const PartID = data ? data.ID : null;
       this.$router.push(`/${path}/${this.itemData.ID}/${PartID}/${_name}/${type}/${Date.now()}`);
     },
-    onElementSaveClick(data) { // 产品与部件元素设置 data有值时为部件元素设置
+    onElementSaveClick(data) { // 跳转产品与部件元素设置 data有值时为部件元素设置
       this.setCommonPathJump('ProductElementSet', data);
     },
-    onProductSizeMaterialSetClick(data) { // 尺寸物料设置
+    onProductSizeMaterialSetClick(data) { // 跳转尺寸物料设置
       this.setCommonPathJump('ProductSizeMaterialSet', data);
     },
-    onProductCraftSetClick(data) { // 工艺设置
+    onProductCraftSetClick(data) { // 跳转工艺设置
       this.setCommonPathJump('ProductCraftSet', data);
     },
-    onProductDisplaySortSetClick(data) { // 显示排序
+    onProductDisplaySortSetClick(data) { // 跳转显示排序
       this.setCommonPathJump('ProductDisplaySort', data);
+    },
+    onProductFactorySetClick() { // 产品工厂设置页面
+      this.setCommonPathJump('ProductFactorySet');
     },
     onPartSaveClick(data) { // 添加 | 编辑 部件 --- 打开弹窗
       this.curPartData = data;

@@ -40,7 +40,7 @@ export default {
     onFormulaSetupClick(data) {
       if (!this.PositionID || !this.materialTypeName) return;
       this.$store.commit('basicSet/setNowEditFormulaData', data);
-      this.$router.push(`/MaterialFormulaSetup/${this.PositionID}/${this.materialTypeName}`);
+      this.$router.push(`/MaterialFormulaSetup/${this.PositionID}/${this.materialTypeName}/${Date.now()}`);
     },
   },
   mounted() {

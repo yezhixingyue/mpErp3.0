@@ -78,7 +78,7 @@ export default {
     optionList() {
       const item = { ID: '', Name: '不选中' };
       if (!this.selectList || this.selectList.length === 0) return [item];
-      const _list = this.selectList.filter(it => it && it.ElementList.length === 0);
+      const _list = this.selectList.filter(it => it && (!it.ElementList || it.ElementList.length === 0));
       return [item, ..._list];
     },
     CraftConditionIDs() {

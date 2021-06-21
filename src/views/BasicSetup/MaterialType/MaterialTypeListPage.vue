@@ -106,7 +106,7 @@ export default {
     },
     onSetFormulaClick(itemData) {
       if (!itemData || !itemData.ID) return;
-      this.$router.push(`/MaterialFormulaList/${itemData.ID}/${itemData.Name}`);
+      this.$router.push(`/MaterialFormulaList/${itemData.ID}/${itemData.Name}/${Date.now()}`);
     },
     async getListData() {
       this.listDataLoading = true;

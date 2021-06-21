@@ -25,6 +25,7 @@ export default {
     return {
       PositionID: '',
       materialTypeName: '',
+      timer: '',
     };
   },
   computed: {
@@ -33,13 +34,14 @@ export default {
   methods: {
     getPositionID() {
       if (!this.$route.params) return;
-      const { id, name } = this.$route.params;
-      if (!id || !name) return;
+      const { id, name, timer } = this.$route.params;
+      if (!id || !name || !timer) return;
       this.PositionID = id;
       this.materialTypeName = name;
+      this.timer = timer;
     },
     onGoBackClick() {
-      this.$router.replace(`/MaterialFormulaList/${this.PositionID}/${this.materialTypeName}`);
+      this.$router.replace(`/MaterialFormulaList/${this.PositionID}/${this.materialTypeName}/${this.timer}`);
     },
     // eslint-disable-next-line no-unused-vars
     onSuccessSubmit(data) {

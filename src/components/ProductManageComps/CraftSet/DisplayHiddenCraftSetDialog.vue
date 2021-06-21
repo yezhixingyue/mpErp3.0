@@ -8,7 +8,7 @@
     @cancle="onCancle"
     @open='onOpen'
     @closed='onClosed'
-    class="mp-erp-comps-pruduct-module-single-craft-set-dialog-comp-wrap"
+    class="mp-erp-comps-pruduct-module-craft-hidden-set-dialog-comp-wrap"
    >
     <el-checkbox v-model="it.HiddenToCustomer" v-for="it in checkList" :key="it.ID" :title="it.Name">{{it.Name}}</el-checkbox>
   </CommonDialogComp>
@@ -60,13 +60,14 @@ export default {
       this.checkList = [];
     },
     initEditData() { // 数据初始化方法
+      console.log(this.value);
       this.checkList = JSON.parse(JSON.stringify(this.value));
     },
   },
 };
 </script>
 <style lang='scss'>
-.mp-erp-comps-pruduct-module-single-craft-set-dialog-comp-wrap {
+.mp-erp-comps-pruduct-module-craft-hidden-set-dialog-comp-wrap {
   .el-dialog__body {
     font-size: 14px;
     padding-left: 50px;
