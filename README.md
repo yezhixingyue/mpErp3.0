@@ -38,68 +38,68 @@
 
         售后类型    AfterSalesClass = 84,
 
-        /// <summary>
+
     /// 版本类型
     /// </summary>
     public enum VersionType : byte
     {
-        /// <summary>
+
         /// 生产工厂
         /// </summary>
         Factory = 1,
-        /// <summary>
+
         /// 销售区域
         /// </summary>
         SellArea = 3,
-        /// <summary>
+
         /// 工艺分类
         /// </summary>
         CraftClass = 5,
-        /// <summary>
+
         /// 产品分类(代客下单)
         /// </summary>
         ProductClass = 6,
-        /// <summary>
+
         /// 2.0版物料
         /// </summary>
         Material = 7,
-        /// <summary>
+
         /// 物料品牌
         /// </summary>
         MaterialBrand = 8,
-        /// <summary>
+
         /// 文章分类
         /// </summary>
         ArticleClass = 9,
-        /// <summary>
+
         /// 产品 仅编号及名称
         /// </summary>
         Product = 60,
-        /// <summary>
+
         /// 生产周期
         /// </summary>
         ProducePeriod = 61,
-        /// <summary>
+
         /// 客户端系统
         /// </summary>
         CustomerClient = 70,
-        /// <summary>
+
         /// 客户分类
         /// </summary>
         CustomerCategory = 71,
-        /// <summary>
+
         /// 员工端系统
         /// </summary>
         StaffClient = 80,
-        /// <summary>
+
         /// 部门
         /// </summary>
         Department = 81,
-        /// <summary>
+
         /// 职务
         /// </summary>
         Job = 82,
-        /// <summary>
+
         /// 权限
         /// </summary>
         Permission = 83,
@@ -840,15 +840,40 @@
 
 this.debounceClose = debounce(200, () => this.handleClosePopper()); 把组件中得200时间改成0
 
-
 public enum MultiLevelClassType : byte
-    {
-        /// <summary>
-        /// 工艺
-        /// </summary>
+        工艺
         Craft = 0,
-        /// <summary>
-        /// 代客下单
-        /// </summary>
+        代客下单
         ValetOrder = 1
-    }
+
+## 属性使用位 UseModule
+
+        物料类型公式
+        MaterialFormula = 0,
+
+        产品公式
+        ProductFormula = 1,
+
+        产品子公式
+        ProductSubFormula = 2,
+
+        计算公式
+        CalculateFormula = 3,
+
+        计算子公式
+        CalculateSubFormula = 4,
+
+        报价结果公式
+        PriceResultFormula = 5,
+
+        库存条件
+        StockConstraint = 11,
+
+        工厂条件
+        FactoryConstraint = 12,
+
+        文件条件
+        FileConstraint = 13,
+
+        交互条件
+        InteractionConstraint = 14

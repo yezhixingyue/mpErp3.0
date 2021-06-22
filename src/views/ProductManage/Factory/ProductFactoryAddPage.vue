@@ -5,6 +5,9 @@
       <span>{{ProductName}}</span>
     </header>
     <main>
+      <ContionCommonComp :moduleIndex='12' :PositionID='ProductID'>
+        hi 你好 右侧自定义区域
+      </ContionCommonComp>
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -14,6 +17,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import ContionCommonComp from '@/components/common/3.0Comps/ContionCommonComp.vue';
 
 export default {
   data() {
@@ -25,6 +29,7 @@ export default {
     };
   },
   components: {
+    ContionCommonComp,
   },
   computed: {
     ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
@@ -80,7 +85,7 @@ export default {
     //   }
     // },
     onGoBackClick() {
-      this.$router.replace('/ProductManageList');
+      this.$router.replace(`/ProductFactorySet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
     },
   },
   mounted() {
@@ -99,14 +104,20 @@ export default {
   flex-direction: column;
   > header {
     padding: 30px 0;
-    padding-bottom: 40px;
+    padding-bottom: 20px;
     line-height: 15px;
     box-sizing: border-box;
-    height: 15px;
+    // height: 15px;
     font-size: 15px;
     color: #21CAE3;
     font-weight: bold;
     flex: none;
+    > p {
+      padding-top: 45px;
+      > button {
+        font-size: 14px;
+      }
+    }
   }
   > main {
     flex: 1;

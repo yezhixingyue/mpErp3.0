@@ -27,7 +27,7 @@
             <main>
               <p class="module-title">已选元素概览</p>
               <ul>
-                <li v-for="(it, i) in FormulaData.PropertyList" :key="it.Element.StoredContent + '' + i">
+                <li v-for="(it, i) in FormulaData.PropertyList" :key="it.StoredContent + '' + i">
                   <span class="name" v-if="!it.TipsContent">{{it.DisplayContent}}</span>
                   <TipsSpanButton v-else class="name" :text='it.DisplayContent' :tipContent='it.TipsContent' />
                   <span class="default">
@@ -88,6 +88,7 @@
 
 <script>
 import FormulaClass from '@/assets/js/TypeClass/FormulaClass';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
 import TipsSpanButton from '@/components/common/NewComps/TipsSpanButton.vue';
 import FormulaPanelElementSelectDialog from './FormulaPanelElementSelectDialog.vue';
@@ -165,7 +166,7 @@ export default {
     },
   },
   methods: {
-    initData() {
+    async initData() {
       if (this.isloading) return;
       this.isloading = true;
       let temp;
@@ -173,82 +174,26 @@ export default {
       else {
         temp = { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex };
       }
-      console.log(this.NowEditFormulaData, temp);
       this.FormulaData = new FormulaClass(temp); // 初始化公式数据
-      this.getPropertyList(); // 获取属性列表信息
+      const propertyList = await PropertyClass.getPropertyList(this.PositionID, this.moduleIndex);
+      this.isloading = false;
+      if (propertyList) {
+        this.PropertyList = propertyList;
+        this.initPropertyListReplaceHelper();
+      }
+      // this.getPropertyList(); // 获取属性列表信息
     },
     onGoBackClick() {
       this.$emit('goback');
     },
-    async getPropertyList() {
-      const resp = await this.api.getFormulaPropertyList(this.PositionID, this.moduleIndex).catch(() => {});
-      this.isloading = false;
-      if (resp && resp.status === 200 && resp.data.Status === 1000) {
-        this.PropertyList = resp.data.Data.map(it => this.transformProperty(it)).filter(it => it);
-        this.initPropertyListReplaceHelper();
-      }
-    },
     initPropertyListReplaceHelper() { // 获取可用属性列表并转换完成后，对编辑数据时初始的PropertyList的数据进行修改操作（以获取到的可用属性为准）
       if (this.FormulaData.PropertyList.length === 0) return;
       this.FormulaData.PropertyList = this.FormulaData.PropertyList.map(it => {
-        const t = this.PropertyList.find(_it => _it.Element.ID === it.Element.ID && it.FixedType === _it.FixedType);
+        // eslint-disable-next-line max-len
+        const t = this.PropertyList.find(_it => (((_it.Element && it.Element && _it.Element.ID === it.Element.ID) || (!_it.Element && !it.Element)) && it.FixedType === _it.FixedType));
         if (t) return { ...t, DefaultValue: it.DefaultValue };
         return null;
       }).filter(it => it);
-    },
-    transformProperty(property) {
-      if (!property || Object.prototype.toString.call(property) !== '[object Object]') return null;
-      const { Element } = property;
-      if (!Element || Object.prototype.toString.call(Element) !== '[object Object]') return null;
-      const { Type, DefaultValue, NumbericAttribute, OptionAttribute, SwitchAttribute } = Element;
-      let TipsContent = '';
-      const AvailableValueList = []; // 子项可为数值 也可为对象信息(此时为限制范围)
-      if (DefaultValue || DefaultValue === 0) {
-        AvailableValueList.push(DefaultValue);
-        TipsContent += `隐藏运算值：${DefaultValue}；`;
-      }
-      switch (Type) {
-        case 1: // 1 数字值 DefaultValue NumbericAttribute
-          if (NumbericAttribute && Object.prototype.toString.call(NumbericAttribute) === '[object Object]') {
-            const { SectionList, InputContent, AllowDecimal } = NumbericAttribute;
-            if (SectionList && Array.isArray(SectionList) && SectionList.length > 0) {
-              const _list = SectionList.map(it => {
-                const { MinValue, MaxValue, IsGeneralValue, Increment } = it;
-                const str = IsGeneralValue ? `需从${InputContent}中取符合该范围取值` : `增量应为${Increment}`;
-                TipsContent += `范围在(${MinValue},${MaxValue}]时，${str}；`;
-                return { ...it, InputContent, AllowDecimal };
-              });
-              AvailableValueList.push(..._list);
-            }
-          }
-          break;
-        case 2: // 选项值 DefaultValue OptionAttribute
-          if (OptionAttribute && OptionAttribute.OptionList && Array.isArray(OptionAttribute.OptionList)) {
-            OptionAttribute.OptionList.forEach((option, i) => {
-              if (option.Value || option.Value === 0) {
-                AvailableValueList.push(option.Value);
-                TipsContent += `${i + 1}、 ${option.Name}（值：${option.Value}）；`;
-              }
-            });
-          }
-          break;
-        case 3: // 开关 DefaultValue SwitchAttribute
-          if (SwitchAttribute && Object.prototype.toString.call(SwitchAttribute) === '[object Object]') {
-            const { CloseValue, OpenValue } = SwitchAttribute;
-            if (OpenValue || OpenValue === 0) {
-              AvailableValueList.push(OpenValue);
-              TipsContent += `开值：${OpenValue}；`;
-            }
-            if (CloseValue || CloseValue === 0) {
-              AvailableValueList.push(CloseValue);
-              TipsContent += `关值：${CloseValue}`;
-            }
-          }
-          break;
-        default:
-          break;
-      }
-      return { ...property, TipsContent, AvailableValueList };
     },
     onElementAddClick() {
       this.selectVisible = true;

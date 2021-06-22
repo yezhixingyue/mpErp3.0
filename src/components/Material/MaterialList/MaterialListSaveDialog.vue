@@ -49,7 +49,7 @@
         <el-radio-group v-model="ruleForm[it.ID]" v-if="it.Type === 2 && it.OptionAttribute.OptionList.length <= 3">
           <el-radio v-for="item in it.OptionAttribute.OptionList" :key="item.ID" :label="item.ID">{{item.Name}}</el-radio>
         </el-radio-group> -->
-        <OptionTypeItemComp v-model="ruleForm[it.ID]" v-if="it.Type === 2" :options='it.OptionAttribute.OptionList' />
+        <OptionTypeItemComp v-model="ruleForm[it.ID]" v-if="it.Type === 2" :options='getOptions(it.OptionAttribute, it)' />
         <el-switch v-model="ruleForm[it.ID]" v-if="it.Type === 3" :active-text="it.SwitchAttribute.Words"></el-switch> <!-- 需转换布尔值为开值和关值 -->
       </el-form-item>
     </el-form>
@@ -247,6 +247,16 @@ export default {
         }
         callback();
       }
+    },
+    getOptions(OptionAttribute) {
+      const { OptionList } = OptionAttribute;
+      if (OptionList.length > 0) return OptionList;
+      // if (OptionList.length === 0 && (CustomizeValue || CustomizeValue === 0)) {
+      //   return [{
+
+      //   }];
+      // }
+      return [];
     },
     // eslint-disable-next-line no-unused-vars
     onNumberInpBlur(e, key) {

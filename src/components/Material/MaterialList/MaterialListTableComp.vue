@@ -69,9 +69,10 @@ export default {
           const t = ElementList.find(it => it.ID === ElementID);
           if (t) {
             if (t.Type === 2) { // 选项值
-              const { OptionList } = t.OptionAttribute;
+              const { OptionList, Allow, AllowCustomer } = t.OptionAttribute;
               const _t = OptionList.find(_it => _it.ID === t.CustomerInputValue);
               if (_t) list.push(_t.Name);
+              if (!_t && Allow && (AllowCustomer || t.HiddenToCustomer) && t.CustomerInputValue) list.push(t.CustomerInputValue);
             }
             if (t.Type === 3) { // 开关
               const { OpenValue, CloseValue } = t.SwitchAttribute;

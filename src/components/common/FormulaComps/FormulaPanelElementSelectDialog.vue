@@ -1,7 +1,7 @@
 <template>
   <CommonDialogComp
-    width="750px"
-    top='12vh'
+    width="850px"
+    top='10vh'
     title="添加元素"
     :visible.sync="visible"
     :showSubmit='false'
@@ -14,10 +14,13 @@
       <header></header>
       <main>
         <div v-for="it in showData" :key="it.Type">
-          <span class="title">{{getTitle(it.Type)}}</span>
-          <div>
+          <span class="title mp-common-title-wrap">{{getTitle(it.Type)}}</span>
+          <!-- 元素组类型 -->
+          <ElementGroupTypeShowComp v-if="it.Type === 2" :dataList='it.list' :selectedElementIDs='selectedElementIDs' />
+          <!-- 其它类型 -->
+          <div v-else>
             <TipsSpanButton :disabled='selectedElementIDs.includes(item.StoredContent)'
-             v-for="item in it.list" :key="item.StoredContent" @click.native="onSubmit(item)" :text='item.Element.Name' />
+             v-for="item in it.list" :key="item.StoredContent" @click.native="onSubmit(item)" :text='getTextName(item)' />
           </div>
         </div>
       </main>
@@ -28,12 +31,15 @@
 <script>
 import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
 import TipsSpanButton from '@/components/common/NewComps/TipsSpanButton.vue';
-import { ElementSelectTypeEnum, FormulaUseModuleEnum } from '@/assets/js/TypeClass/FormulaClass';
+import { FormulaUseModuleEnum } from '@/assets/js/TypeClass/FormulaClass';
+import { ElementSelectTypeEnum, PropertyFixedType } from '@/assets/js/TypeClass/PropertyClass';
+import ElementGroupTypeShowComp from './ElementGroupTypeShowComp.vue';
 
 export default {
   components: {
     CommonDialogComp,
     TipsSpanButton,
+    ElementGroupTypeShowComp,
   },
   props: {
     visible: {
@@ -93,11 +99,11 @@ export default {
       }; // 数据类型汇总对象列表
       this.list.forEach(it => { // 遍历每个属性列表，为每个列表属性归类
         // 1 确定位置
-        if (it.Product && it.Product.ID) _data.ProductProperty.push(it);
-        else if (it.Part && it.Part.ID) { // 可能有多个部件 所以部件这里还需划分： 暂以Part.ID为key值进行划分
+        if (it.Product && it.Product.ID && !it.Part) _data.ProductProperty.push(it);
+        else if (it.Product && it.Product.ID && it.Part && it.Part.ID) { // 可能有多个部件 所以部件这里还需划分： 暂以Part.ID为key值进行划分
           if (_data.PartProperty[it.Part.ID] && Array.isArray(_data.PartProperty[it.Part.ID])) _data.PartProperty[it.Part.ID].push(it);
           else _data.PartProperty[it.Part.ID] = [it];
-        } else if (it.Material && it.Material.ID) _data.MaterialProperty.push(it);
+        } else if (it.Material && it.Material.ID && !it.Product) _data.MaterialProperty.push(it);
       });
       // ↑ 完成分类
       // 2 对每个分类列表中的属性类型进行划分
@@ -110,6 +116,7 @@ export default {
     },
     protertyFilterHelper(data) { // 对划分开的各个数据列表按照属性类型继续划分，并返回结果
       // 先对数据进行筛选 去除没有内容的项
+      console.log(data);
       const temp = {};
       Object.keys(data).forEach((key) => {
         if (Array.isArray(data[key]) && data[key].length > 0) {
@@ -119,7 +126,10 @@ export default {
           const _temp = {};
           Object.keys(data[key]).forEach(subKey => {
             _temp[subKey] = this.protertySeparateHelper(data[key][subKey]);
-            if (key === 'PartProperty') this.panelList.push({ label: '部件', value: subKey }); // 部件名称后面需要自动修改
+            if (key === 'PartProperty') {
+              const t = this.panelList.find(it => it.value === subKey);
+              if (!t) this.panelList.push({ label: '部件', value: subKey }); // 部件名称后面需要自动修改
+            }
           });
           temp[key] = _temp; // 对象形式 -- 部件
         }
@@ -155,27 +165,41 @@ export default {
       }
       return '';
     },
+    getTextName(item) {
+      const { FixedType, Element } = item;
+      if (FixedType || FixedType === 0) {
+        const t = PropertyFixedType.find(it => it.ID === FixedType);
+        if (t) return t.Name;
+        return '';
+      }
+      if (Element && Element.Name) return Element.Name;
+      return '';
+    },
   },
 };
 </script>
 <style lang='scss'>
 .mp-erp-common-comps-formula-panel-comp-element-select-comp-wrap {
   .el-dialog__body {
-    padding-left: 67px;
+    padding-left: 50px;
     padding-right: 37px;
-    max-height: 360px;
+    max-height: 560px;
+    min-height: 280px;
     overflow-y: auto;
     > .show-panel-box{
       > main {
         > div {
-          display: flex;
-          padding-bottom: 15px;
-          > span {
+          // display: flex;
+          padding-bottom: 12px;
+          padding-top: 6px;
+          > span.title {
             width: 120px;
             overflow: hidden;
             white-space: nowrap;
             margin-right: 10px;
             flex: none;
+            color: #444;
+            padding-bottom: 12px;
           }
           > div {
             display: flex;
@@ -188,6 +212,18 @@ export default {
           }
         }
       }
+    }
+  }
+  .is-element {
+    font-size: 14px;
+    color: #428DFA;
+    cursor: pointer;
+    user-select: none;
+    &:hover {
+      color: #428cfadc;
+    }
+    &:active {
+      color: #0959cf;
     }
   }
 }

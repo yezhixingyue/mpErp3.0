@@ -7,11 +7,6 @@ export const FormulaUseModuleEnum = [
   { type: 'MaterialProperty', label: '物料' },
 ];
 
-export const ElementSelectTypeEnum = [
-  { label: '元素', ID: 0, nickName: '类型元素' },
-  { label: '物料尺寸', ID: 1, nickName: '尺寸' },
-];
-
 export default class FormulaClass {
   ID = '';
 

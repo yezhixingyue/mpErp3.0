@@ -21,10 +21,11 @@
         <el-checkbox-group v-model="checkList">
           <el-checkbox v-for="it in Element.OptionAttribute.OptionList" :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-checkbox>
         </el-checkbox-group>
-        <div v-if="Element.OptionAttribute.Allow" class="custom-box">
+        <span class="is-font-size-12 is-gray" v-if="checkList.length === 0">该元素未设置选择项</span>
+        <!-- <div v-if="Element.OptionAttribute.Allow && (Element.OptionAttribute.AllowCustomer || Element.HiddenToCustomer)" class="custom-box">
           <el-checkbox v-model="customChecked">自定义</el-checkbox>
           <el-input v-show="customChecked" size="mini" v-model.trim="customValue"></el-input>
-        </div>
+        </div> -->
       </template>
       <template v-if="Element.Type === 3">
         <el-checkbox-group v-model="checkList">

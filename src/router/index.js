@@ -468,7 +468,17 @@ export const routes = [
               requiresAuth: true,
               // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
             },
-            component: () => import('../views/ProductManage/ProductFactorySetPage.vue'),
+            component: () => import('../views/ProductManage/Factory/ProductFactorySetPage.vue'),
+          },
+          {
+            path: '/ProductFactoryAdd/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductFactoryAdd',
+            meta: {
+              title: '工厂策略添加 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/Factory/ProductFactoryAddPage.vue'),
           },
           {
             path: '/ProductFileSet/:ProductID/:PartID/:name/:type/:times',
