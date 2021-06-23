@@ -411,6 +411,7 @@ export default {
     .mp-erp-common-comps-formula-set-panel-comp-right-content-wrap {
       padding-left: 45px;
       padding-top: 15px;
+      overflow: hidden;
       > header {
         padding-bottom: 30px;
       }
@@ -499,6 +500,7 @@ export default {
                 color: #888E99;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                line-height: 16px;
                 &:first-of-type {
                   font-size: 13px;
                   width: 186px;

@@ -65,41 +65,45 @@ export default class FormulaClass {
     if (PropertyList && PropertyList.length > 0) {
       let t = PropertyList.find(it => !it.DefaultValue && it.DefaultValue !== 0);
       if (t) {
-        messageBox.failSingleError('操作失败', `${t.Element.Name}未设置空值`);
+        messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}未设置空值`);
         return false;
       }
       t = PropertyList.find(it => {
+        if (!it.Element) return false;
         const { Type, NumbericAttribute } = it.Element;
         const isInteger = !(Type === 1 && NumbericAttribute && NumbericAttribute.AllowDecimal);
         return !getValueIsOrNotNumber(it.DefaultValue, isInteger);
       });
       if (t) {
-        messageBox.failSingleError('操作失败', `${t.Element.Name}空值设置值不合法(检查是否为数字或是否允许小数)`);
+        messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不合法(检查是否为数字或是否允许小数)`);
         return false;
       }
       t = PropertyList.find(it => {
         const { DefaultValue, AvailableValueList } = it;
 
-        if (AvailableValueList.length === 0) return false;
+        if (AvailableValueList) {
+          if (AvailableValueList.length === 0) return false;
 
-        for (let i = 0; i < AvailableValueList.length; i += 1) {
-          const AvailableValue = AvailableValueList[i]; // 有效数值
+          for (let i = 0; i < AvailableValueList.length; i += 1) {
+            const AvailableValue = AvailableValueList[i]; // 有效数值
 
-          if (typeof AvailableValue === 'number' && +DefaultValue === AvailableValue) return false;
+            if (typeof AvailableValue === 'number' && +DefaultValue === AvailableValue) return false;
 
-          if (typeof AvailableValue === 'object') {
-            const { MinValue, MaxValue, IsGeneralValue, Increment, InputContent } = AvailableValue;
-            const valueList = getNumberValueList(InputContent);
-            if (valueList.includes(`${DefaultValue}`)) return false;
-            if (DefaultValue > MinValue && (DefaultValue <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
-              if (!IsGeneralValue && (DefaultValue - MinValue) % Increment === 0) return false;
+            if (typeof AvailableValue === 'object') {
+              const { MinValue, MaxValue, IsGeneralValue, Increment, InputContent } = AvailableValue;
+              const valueList = getNumberValueList(InputContent);
+              if (valueList.includes(`${DefaultValue}`)) return false;
+              if (DefaultValue > MinValue && (DefaultValue <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
+                if (!IsGeneralValue && (DefaultValue - MinValue) % Increment === 0) return false;
+              }
             }
           }
+          return true;
         }
-        return true;
+        return false;
       });
       if (t) {
-        messageBox.failSingleError('操作失败', `${t.Element.Name}空值设置值不合法，请检查其取值范围`);
+        messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不合法，请检查其取值范围`);
         return false;
       }
     }
@@ -143,12 +147,12 @@ export default class FormulaClass {
     if (PropertyList && PropertyList.length > 0) {
       let t = PropertyList.find(it => !it.CalculateValue && it.CalculateValue !== 0 && Content.includes(it.DisplayContent));
       if (t) {
-        messageBox.failSingleError('计算失败', `${t.Element.Name}未设置测试计算数值`);
+        messageBox.failSingleError('计算失败', `${t.Element ? t.Element.Name : t.DisplayContent}未设置测试计算数值`);
         return false;
       }
       t = PropertyList.find(it => Content.includes(it.DisplayContent) && !getValueIsOrNotNumber(it.CalculateValue));
       if (t) {
-        messageBox.failSingleError('计算失败', `${t.Element.Name}计算值不合法(检查是否为数字或是否允许小数)`);
+        messageBox.failSingleError('计算失败', `${t.Element ? t.Element.Name : t.DisplayContent}计算值不合法(检查是否为数字或是否允许小数)`);
         return false;
       }
     }

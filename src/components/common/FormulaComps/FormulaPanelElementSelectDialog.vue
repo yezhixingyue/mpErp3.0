@@ -10,13 +10,25 @@
     @open='onOpen'
     class="mp-erp-common-comps-formula-panel-comp-element-select-comp-wrap"
   >
-    <section v-if="showData" class="show-panel-box">
-      <header></header>
-      <main>
+    <section class="show-panel-box">
+      <header>
+        <el-radio-group v-model="panelRadio" size="mini" class="mp-common-tab-radio-box" v-if="panelList.length > 1">
+          <el-radio-button :label="it.value" v-for="it in panelList" :key="it.value">{{it.label}}</el-radio-button>
+        </el-radio-group>
+      </header>
+      <main v-if="showData" >
         <div v-for="it in showData" :key="it.Type">
           <span class="title mp-common-title-wrap">{{getTitle(it.Type)}}</span>
           <!-- 元素组类型 -->
-          <ElementGroupTypeShowComp v-if="it.Type === 2" :dataList='it.list' :selectedElementIDs='selectedElementIDs' />
+          <ElementGroupTypeShowComp v-if="it.Type === 2" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <!-- 元素类型 -->
+          <ElementTypeShowComp v-else-if="it.Type === 3" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <!-- 工艺类型 -->
+          <CraftTypeShowComp v-else-if="it.Type === 4" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <!-- 物料类型 -->
+          <MaterialTypeShowComp v-else-if="it.Type === 5" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <!-- 尺寸组类型 - 共用元素组组件 -->
+          <ElementGroupTypeShowComp v-else-if="it.Type === 6" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
           <!-- 其它类型 -->
           <div v-else>
             <TipsSpanButton :disabled='selectedElementIDs.includes(item.StoredContent)'
@@ -32,14 +44,20 @@
 import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
 import TipsSpanButton from '@/components/common/NewComps/TipsSpanButton.vue';
 import { FormulaUseModuleEnum } from '@/assets/js/TypeClass/FormulaClass';
-import { ElementSelectTypeEnum, PropertyFixedType } from '@/assets/js/TypeClass/PropertyClass';
+import PropertyClass, { ElementSelectTypeEnum } from '@/assets/js/TypeClass/PropertyClass';
 import ElementGroupTypeShowComp from './ElementGroupTypeShowComp.vue';
+import ElementTypeShowComp from './ElementTypeShowComp.vue';
+import CraftTypeShowComp from './CraftTypeShowComp.vue';
+import MaterialTypeShowComp from './MaterialTypeShowComp.vue';
 
 export default {
   components: {
     CommonDialogComp,
     TipsSpanButton,
     ElementGroupTypeShowComp,
+    ElementTypeShowComp,
+    CraftTypeShowComp,
+    MaterialTypeShowComp,
   },
   props: {
     visible: {
@@ -59,10 +77,10 @@ export default {
     return {
       propertyData: null,
       panelRadio: '', // 上方选项卡的值
-      panelList: [
+      panelList: [],
+      tempTabList: [
         { label: '产品', value: 'ProductProperty' },
         { label: '物料', value: 'MaterialProperty' },
-        // { label: '部件', value: 'PartProperty' }, // 部件应随数据动态添加
       ],
     };
   },
@@ -70,9 +88,22 @@ export default {
     showData() {
       if (this.propertyData && this.panelRadio) {
         if (this.propertyData[this.panelRadio]) return this.propertyData[this.panelRadio];
+        if (this.propertyData.PartProperty[this.panelRadio]) return this.propertyData.PartProperty[this.panelRadio];
       }
       return null;
     },
+    // tabList() {
+    //   if (!this.propertyData) return [];
+    //   const _temp = [];
+    //   if (this.propertyData.ProductProperty && this.propertyData.ProductProperty.length > 0) {
+    //     _temp.push({ Name: '产品', ID: 'ProductProperty' });
+    //   }
+    //   if (this.propertyData.PartProperty) {
+    //     const keys = Object.keys(this.propertyData.PartProperty);
+    //     if (keys && keys.length >)
+    //   }
+    //   return _temp;
+    // },
   },
   methods: {
     onSubmit(data) {
@@ -84,6 +115,7 @@ export default {
       this.$emit('update:visible', false);
     },
     getInitListData() {
+      this.panelList = [];
       if (!ElementSelectTypeEnum || !this.list) return;
       // 分类
       // 判断1. 判断所在位置： 产品 | 部件 | 都不是（如特定物料：物料类型元素 物料尺寸） 判断来源：Part（可为null） Product（可为null） 如果都为null则即不是产品也不是部件 -- 可形成顶部tab栏
@@ -101,8 +133,9 @@ export default {
         // 1 确定位置
         if (it.Product && it.Product.ID && !it.Part) _data.ProductProperty.push(it);
         else if (it.Product && it.Product.ID && it.Part && it.Part.ID) { // 可能有多个部件 所以部件这里还需划分： 暂以Part.ID为key值进行划分
-          if (_data.PartProperty[it.Part.ID] && Array.isArray(_data.PartProperty[it.Part.ID])) _data.PartProperty[it.Part.ID].push(it);
-          else _data.PartProperty[it.Part.ID] = [it];
+          const key = it.Part.Name || it.Part.ID;
+          if (_data.PartProperty[key] && Array.isArray(_data.PartProperty[key])) _data.PartProperty[key].push(it);
+          else _data.PartProperty[key] = [it];
         } else if (it.Material && it.Material.ID && !it.Product) _data.MaterialProperty.push(it);
       });
       // ↑ 完成分类
@@ -116,11 +149,12 @@ export default {
     },
     protertyFilterHelper(data) { // 对划分开的各个数据列表按照属性类型继续划分，并返回结果
       // 先对数据进行筛选 去除没有内容的项
-      console.log(data);
       const temp = {};
       Object.keys(data).forEach((key) => {
         if (Array.isArray(data[key]) && data[key].length > 0) {
           temp[key] = this.protertySeparateHelper(data[key]); // 数组形式 继续对其进行划分
+          const t = this.tempTabList.find(it => it.value === key);
+          if (t) this.panelList.push({ ...t });
         }
         if (Object.prototype.toString.call(data[key]) === '[object Object]' && Object.keys(data[key]).length > 0) {
           const _temp = {};
@@ -128,7 +162,7 @@ export default {
             _temp[subKey] = this.protertySeparateHelper(data[key][subKey]);
             if (key === 'PartProperty') {
               const t = this.panelList.find(it => it.value === subKey);
-              if (!t) this.panelList.push({ label: '部件', value: subKey }); // 部件名称后面需要自动修改
+              if (!t) this.panelList.push({ label: subKey, value: subKey }); // 部件名称后面需要自动修改
             }
           });
           temp[key] = _temp; // 对象形式 -- 部件
@@ -166,14 +200,7 @@ export default {
       return '';
     },
     getTextName(item) {
-      const { FixedType, Element } = item;
-      if (FixedType || FixedType === 0) {
-        const t = PropertyFixedType.find(it => it.ID === FixedType);
-        if (t) return t.Name;
-        return '';
-      }
-      if (Element && Element.Name) return Element.Name;
-      return '';
+      return PropertyClass.getProperyName(item);
     },
   },
 };
@@ -183,10 +210,12 @@ export default {
   .el-dialog__body {
     padding-left: 50px;
     padding-right: 37px;
-    max-height: 560px;
-    min-height: 280px;
+    height: 560px;
     overflow-y: auto;
     > .show-panel-box{
+      > header {
+        padding-bottom: 28px;
+      }
       > main {
         > div {
           // display: flex;

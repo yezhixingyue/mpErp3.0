@@ -93,10 +93,28 @@ export default class PropertyClass {
   static async getPropertyList(PositionID, moduleIndex) { // 获取弹窗属性列表并对其进行数据转换：附加校验和提示信息
     const resp = await api.getFormulaPropertyList(PositionID, moduleIndex).catch(() => {});
     if (resp && resp.status === 200 && resp.data.Status === 1000) {
-      const t = resp.data.Data.find(it => it.Part);
-      console.log(t);
+      // const t = resp.data.Data.filter(it => it.Part && it.Type === 5);
+      // console.log(t);
       return resp.data.Data.map(it => this.transform(it)).filter(it => it);
     }
     return undefined;
+  }
+
+  static getProperyName(item) {
+    const { FixedType, Element, Name, Type } = item;
+    if (FixedType || FixedType === 0) {
+      const t = PropertyFixedType.find(it => it.ID === FixedType);
+      if (t) return t.Name;
+      return '';
+    }
+    if (Element && Element.Name) return Element.Name;
+    if (!Element) {
+      if (Name) return Name;
+      if (Type || Type === 0) {
+        const _t = ElementSelectTypeEnum.find(it => it.ID === Type);
+        return _t ? _t.nickName : '';
+      }
+    }
+    return '';
   }
 }

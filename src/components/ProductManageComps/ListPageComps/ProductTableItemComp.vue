@@ -167,6 +167,11 @@ export default {
       this.visible = true;
     },
     onPartSaveSubmit(data) { // 部件添加与编辑数据提交保存
+      const t = this.itemData.PartList.find(it => it.Name === data.Name);
+      if (t) {
+        this.messageBox.failSingleError('保持失败', '部件名称不能与其它部件名称重复');
+        return;
+      }
       const cb = () => {
         this.visible = false;
       };

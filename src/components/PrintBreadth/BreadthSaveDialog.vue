@@ -136,7 +136,7 @@ export default {
           ],
         },
         Class: [
-          { required: true, message: '请选择所属分型', trigger: 'change' },
+          { required: true, message: '请选择所属分类', trigger: 'change' },
         ],
         ModeList: [
           { validator: this.checkModeList, trigger: 'change' },

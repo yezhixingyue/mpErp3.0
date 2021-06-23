@@ -380,3 +380,32 @@ button.border-blue-btn {
   border-radius: 3px;
   color: #26BCF9;
 }
+
+.el-radio-group.mp-common-tab-radio-box {
+  > label {
+    .el-radio-button__inner {
+      padding: 9px 34px;
+      color: #585858;
+      font-size: 14px;
+      border-color: #e5e5e5;
+    }
+    &.is-active {
+      position: relative;
+      .el-radio-button__inner{
+        color: #fff;
+        border-color: #26bcf9;
+        &::before {
+          content: '';
+          position: absolute;
+          height: 4px;
+          width: 4px;
+          border-radius: 50%;
+          background-color: #fff;
+          left: 21px;
+          transition: 0.2s ease-in-out;
+          top: calc(50% - 1px);
+        }
+      }
+    }
+  }
+}

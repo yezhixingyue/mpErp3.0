@@ -1,0 +1,168 @@
+<template>
+  <ul class="mp-erp-common-comps-on-element-select-dialog-craft-type-show-item-comp-wrap">
+    <li v-for="it in craftTypeList" :key="it.StoredContent">
+      <label class="is-element" @click="onItemClick(it)">{{it.Craft.Name}}
+        <template v-if="it._ElementList || it._ElementGroupList">：</template>
+      </label>
+      <div>
+        <ElementTypeShowComp :selectedElementIDs='selectedElementIDs' @submit="onItemClick" :ElementList='it._ElementList' />
+        <ElementGroupTypeShowComp :selectedElementIDs='selectedElementIDs' @submit="onItemClick" :ElementGroupList='it._ElementGroupList' />
+      </div>
+    </li>
+  </ul>
+</template>
+
+<script>
+// 工艺类型
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import ElementTypeShowComp from './ElementTypeShowComp.vue';
+import ElementGroupTypeShowComp from './ElementGroupTypeShowComp.vue';
+
+export default {
+  props: {
+    dataList: {
+      type: Array,
+      default: () => [],
+    },
+    selectedElementIDs: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  components: {
+    ElementTypeShowComp,
+    ElementGroupTypeShowComp,
+  },
+  computed: {
+    craftTypeList() {
+      if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
+      const _temp = [];
+      const _unjoinedList = [];
+      const _list = JSON.parse(JSON.stringify(this.dataList));
+      _list.forEach(it => {
+        const { Craft, Element, Group, FixedType } = it;
+        if (Craft && !Element && !Group && !(FixedType || FixedType === 0)) { // 工艺
+          _temp.push(it);
+        }
+        if (Craft && Element && !Group && !(FixedType || FixedType === 0)) { // 工艺上元素
+          const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
+          if (t) {
+            if (!t._ElementList) t._ElementList = [];
+            t._ElementList.push(it);
+          }
+          _unjoinedList.push(it);
+        }
+        if (Craft && Element && !Group && (FixedType || FixedType === 0)) { // 工艺上元素常量
+          const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
+          if (t) {
+            const _ele = t._ElementList.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === Element.ID);
+            if (_ele) {
+              if (!_ele._FixedTypeList) _ele._FixedTypeList = [];
+              _ele._FixedTypeList.push(it);
+            } else {
+              // 此处处理不可选择的元素类型
+              const _item = { ...Element, _FixedTypeList: [it] };
+              t._ElementList.push(_item);
+            }
+          }
+          _unjoinedList.push(it);
+        }
+        if (Craft && Element && Group && !(FixedType || FixedType === 0)) { // 工艺上元素组
+          const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
+          if (t) {
+            const _item = { ...Group, List: [it] };
+            if (!t._ElementGroupList) t._ElementGroupList = [];
+            const _group = t._ElementGroupList.find(_it => _it.ID === Group.ID);
+            if (_group) _group.List.push(it);
+            else t._ElementGroupList.push(_item);
+          }
+          _unjoinedList.push(it);
+        }
+        if (Craft && !Element && Group && (FixedType || FixedType === 0)) { // 工艺上元素组常量
+          const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
+          if (t) {
+            const _item = { ...Group, List: [], _FixedTypeList: [it] };
+            if (!t._ElementGroupList) t._ElementGroupList = [];
+            const _group = t._ElementGroupList.find(_it => _it.ID === Group.ID);
+            if (_group) {
+              if (!_group._FixedTypeList) _group._FixedTypeList = [];
+              _group._FixedTypeList.push(it);
+            } else {
+              t._ElementGroupList.push(_item);
+            }
+            _unjoinedList.push(it);
+          }
+          _unjoinedList.push(it);
+        }
+        if (Craft && Element && Group && (FixedType || FixedType === 0)) { // 工艺元素组中元素常量
+          const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
+          if (t) {
+            const _group = t._ElementGroupList.find(_it => _it.ID === Group.ID);
+            if (_group) {
+              const _ele = _group.List.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === Element.ID);
+              if (_ele) {
+                if (!_ele._FixedTypeList) _ele._FixedTypeList = [];
+                _ele._FixedTypeList.push(it);
+              } else {
+                // 此处处理不可选择的元素类型
+                const _item = { ...Element, _FixedTypeList: [it] };
+                _group.List.push(_item);
+              }
+            }
+            _unjoinedList.push(it);
+          }
+          _unjoinedList.push(it);
+        }
+        // 还需2种情况判断： 1. 工艺元素常量 2. 工艺元素组上常量 --- 已补充
+      });
+      return _temp;
+    },
+  },
+  methods: {
+    getName(item) {
+      return PropertyClass.getProperyName(item);
+    },
+    onItemClick(it) {
+      this.$emit('submit', it);
+    },
+  },
+};
+</script>
+<style lang='scss'>
+.mp-erp-common-comps-on-element-select-dialog-craft-type-show-item-comp-wrap {
+  > li {
+    display: flex;
+    line-height: 30px;
+    > label {
+      color: #585858;
+      font-size: 14px;
+      white-space: nowrap;
+      margin-right: 6px;
+      min-width: 5em;
+      flex: none;
+      .blue-span {
+        font-size: 12px;
+        margin: 0 12px;
+      }
+    }
+    > div {
+      flex: 1;
+    }
+    > ul {
+      display: flex;
+      flex: none;
+      flex-wrap: wrap;
+    }
+    .disabled {
+      user-select: none;
+      color: #585858 !important;
+      pointer-events: none;
+    }
+    .is-disabled {
+      user-select: none;
+      color: #cbcbcb !important;
+      pointer-events: none;
+    }
+  }
+}
+</style>

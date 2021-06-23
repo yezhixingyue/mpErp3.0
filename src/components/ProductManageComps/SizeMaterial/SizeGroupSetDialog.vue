@@ -76,7 +76,7 @@ export default {
         const t = ElementList.find(it => {
           const { Type, OptionAttribute } = it;
           if (Type === 3) return true;
-          if (Type === 2 && OptionAttribute && OptionAttribute.OptionList.length === 0) return true;
+          if (Type === 2 && OptionAttribute) return OptionAttribute.OptionList.length === 0 || !OptionAttribute.IsRadio;
           return false;
         });
         return !t;

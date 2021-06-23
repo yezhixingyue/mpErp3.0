@@ -107,7 +107,12 @@ export default {
     async onElementSaveSubmit(saveData) { // 元素保存： 添加 | 编辑
       if (!saveData) return;
       const saveType = saveData.ID ? '编辑' : '添加';
-      const resp = await this.api.getElementSave(saveData).catch(() => {});
+      const _saveData = saveData;
+      if (saveData.Type === 2 && saveData.OptionAttribute.UseTimes) {
+        const { MaxValue, MinValue } = saveData.OptionAttribute.UseTimes;
+        if (!MaxValue && !MinValue && (MinValue !== 0 || MaxValue !== 0)) delete _saveData.OptionAttribute.UseTimes;
+      }
+      const resp = await this.api.getElementSave(_saveData).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const temp = {
           saveType,

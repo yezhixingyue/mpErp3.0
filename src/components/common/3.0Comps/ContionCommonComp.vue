@@ -18,7 +18,7 @@
             <!-- 条件区域 -->
             <li></li>
           </ul>
-          <el-radio-group v-model="FilterType" size="small">
+          <el-radio-group v-model="FilterType" size="small" class="mp-common-tab-radio-box">
             <el-radio-button :label="1">满足所有条件</el-radio-button>
             <el-radio-button :label="2">满足任一条件</el-radio-button>
           </el-radio-group>
