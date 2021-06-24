@@ -17,7 +17,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import ContionCommonComp from '@/components/common/3.0Comps/ContionCommonComp.vue';
+import ContionCommonComp from '@/components/common/FormulaAndConditionComps/ContionCommonComp.vue';
 
 export default {
   data() {

@@ -62,6 +62,11 @@ export default {
     },
     async onRemoveClick(data) {
       if (!data || !data.ID) return;
+      this.messageBox.warnCancelBox('确定删除该公式吗', `公式名称：[ ${data.Name} ]`, () => {
+        this.handleRemove(data);
+      });
+    },
+    async handleRemove(data) {
       const resp = await this.api.getFormulaRemove(data.ID).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const cb = () => { this.setDataListRemove(data.ID); };

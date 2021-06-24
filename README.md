@@ -39,69 +39,54 @@
         售后类型    AfterSalesClass = 84,
 
 
-    /// 版本类型
-    /// </summary>
+    版本类型
+    </summary>
     public enum VersionType : byte
     {
 
-        /// 生产工厂
-        /// </summary>
+        生产工厂
         Factory = 1,
 
-        /// 销售区域
-        /// </summary>
+        销售区域
         SellArea = 3,
 
-        /// 工艺分类
-        /// </summary>
+        工艺分类
         CraftClass = 5,
 
-        /// 产品分类(代客下单)
-        /// </summary>
+        产品分类(代客下单)
         ProductClass = 6,
 
-        /// 2.0版物料
-        /// </summary>
+        2.0版物料
         Material = 7,
 
-        /// 物料品牌
-        /// </summary>
+        物料品牌
         MaterialBrand = 8,
 
-        /// 文章分类
-        /// </summary>
+        文章分类
         ArticleClass = 9,
 
-        /// 产品 仅编号及名称
-        /// </summary>
+        产品 仅编号及名称
         Product = 60,
 
-        /// 生产周期
-        /// </summary>
+        生产周期
         ProducePeriod = 61,
 
-        /// 客户端系统
-        /// </summary>
+        客户端系统
         CustomerClient = 70,
 
-        /// 客户分类
-        /// </summary>
+        客户分类
         CustomerCategory = 71,
 
-        /// 员工端系统
-        /// </summary>
+        员工端系统
         StaffClient = 80,
 
-        /// 部门
-        /// </summary>
+        部门
         Department = 81,
 
-        /// 职务
-        /// </summary>
+        职务
         Job = 82,
 
-        /// 权限
-        /// </summary>
+        权限
         Permission = 83,
     }
 
@@ -877,3 +862,72 @@ public enum MultiLevelClassType : byte
 
         交互条件
         InteractionConstraint = 14
+
+## 运算符号
+
+        等于
+        Equal = 1,
+
+        不等于
+        NotEqual = 2,
+
+        大于
+        GreaterThan = 3,
+
+        大于等于
+        GreaterThanOrEqual = 4,
+
+        小于
+        LessThan = 5,
+
+        小于等于
+        LessThanOrEqual = 6,
+
+        包含
+        Contain = 7,
+
+        不包含
+        NoContain = 8,
+
+
+        大于等于且小于等于
+        GreaterThanOrEqualMinAndLessThanOrEqualMax = 11,
+
+        大于且小于等于
+        GreaterThanAndLessThanOrEqualMax = 12,
+
+        大于等于且小于
+        GreaterThanOrEqualMinAndLessThanMax = 13,
+
+        大于且小于
+        GreaterThanMinAndLessThanMax = 14,
+
+
+        关联
+        Additional = 101,
+
+        排斥
+        Reject = 102
+
+## 属性值类型
+
+        值
+        Numeric = 0,
+
+        单选
+        Radio = 1,
+
+        多选
+        MultiChoice = 2,
+
+        多次使用选择项
+        MultiUsedOption = 3,
+
+        开关
+        Switch = 4,
+
+        工艺
+        Craft = 5,
+        
+        物料
+        Material = 6

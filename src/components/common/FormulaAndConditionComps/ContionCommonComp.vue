@@ -1,10 +1,10 @@
 <template>
   <LRWidthDragAutoChangeComp leftWidth='450px' class="mp-erp-new-comps-condtion-set-common-comp-wrap">
     <template v-slot:left>
-      <section class="left-content">
+      <section class="left-content" v-if="ruleForm">
         <header>
           <span class="label">优先级：</span>
-          <el-input v-model.trim.number="Priority" maxlength="15" size="small"></el-input>
+          <el-input v-model.trim.number="ruleForm.Priority" maxlength="15" size="small"></el-input>
           <span class="tips-box">
             <i class="el-icon-warning"></i> 注：数字越小优先级越高
           </span>
@@ -14,11 +14,23 @@
             <span class="mp-common-title-wrap">如果</span>
             <span class="blue-span" @click="visible=true">+ 添加条件</span>
           </p>
-          <ul>
-            <!-- 条件区域 -->
-            <li></li>
-          </ul>
-          <el-radio-group v-model="FilterType" size="small" class="mp-common-tab-radio-box">
+          <!-- 条件区域 -->
+          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="240px" class="constraint-ruleForm">
+            <el-form-item
+             v-for="(it, index) in ruleForm.Constraint.ItemList"
+             :key="it.key || it.ConstraintID || it.Property.StoredContent"
+             :prop="it.key || it.ConstraintID || it.Property.StoredContent">
+              <span slot="label" :title="it.Property.TipsContent || it.Property.DisplayContent.replace(/\[|\]/g, '')"
+                >{{it.Property.DisplayContent.replace(/\[|\]/g, '')}}</span>
+              <OperatorSelectorComp v-model="it.Operator" :valueList.sync='it.ValueList' :PropertyData='it.Property' />
+              <ValueSelectorComp v-model="it.ValueList" :PropertyData='it.Property'  />
+              <div class="del-btn" @click="onRemoveClick(index)">
+                <img src="@/assets/images/del.png" alt="">
+                <span>删除</span>
+              </div>
+            </el-form-item>
+          </el-form>
+          <el-radio-group v-model="ruleForm.Constraint.FilterType" size="small" class="mp-common-tab-radio-box">
             <el-radio-button :label="1">满足所有条件</el-radio-button>
             <el-radio-button :label="2">满足任一条件</el-radio-button>
           </el-radio-group>
@@ -36,8 +48,10 @@
 
 <script>
 import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
-import FormulaPanelElementSelectDialog from '@/components/common/FormulaComps/FormulaPanelElementSelectDialog.vue';
+import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import OperatorSelectorComp from './OperatorSelectorComp.vue';
+import ValueSelectorComp from './ValueSelectorComp.vue';
 
 export default {
   props: {
@@ -53,22 +67,29 @@ export default {
   components: {
     LRWidthDragAutoChangeComp,
     FormulaPanelElementSelectDialog, // 选择元素弹窗
+    OperatorSelectorComp,
+    ValueSelectorComp,
   },
   data() {
     return {
-      Priority: '', // 优先级
-      FilterType: 1,
       visible: false,
       PropertyList: [],
       selectedElementIDs: [],
       isWatching: true,
+      ruleForm: {
+        ID: '',
+        Priority: '', // 优先级
+        Constraint: {
+          ConstraintID: '',
+          FilterType: 1, // 满足所有 1   满足任一 2
+          ItemList: [],
+        },
+      },
+      rules: {},
     };
   },
   methods: {
-    onElementSelect(Element) {
-      console.log('onElementSelect', Element);
-    },
-    async getPropertyList() {
+    async getPropertyList() { // 获取属性列表数据
       const propertyList = await PropertyClass.getPropertyList(this.PositionID, this.moduleIndex);
       if (propertyList) {
         this.PropertyList = propertyList;
@@ -82,6 +103,19 @@ export default {
         if (t) return { ...t, DefaultValue: it.DefaultValue };
         return null;
       }).filter(it => it);
+    },
+    onElementSelect(Element) { // 属性弹窗种进行属性选择
+      const item = {
+        ConstraintID: '',
+        Property: Element,
+        Operator: '',
+        ValueList: [],
+        key: Math.random().toString(36).slice(-8),
+      };
+      this.ruleForm.Constraint.ItemList.push(item);
+    },
+    onRemoveClick(i) {
+      this.ruleForm.Constraint.ItemList.splice(i, 1);
     },
   },
   watch: {
@@ -134,8 +168,48 @@ export default {
             margin-left: 15px;
           }
         }
-        > ul {
+        > .el-form.constraint-ruleForm {
           flex: 1;
+          .el-form-item {
+            white-space: nowrap;
+            .el-form-item__label {
+              color: #888E99;
+              white-space: nowrap;
+              font-size: 13px;
+              margin-right: 6px;
+              line-height: 30px;
+            }
+            .el-form-item__content {
+              white-space: nowrap;
+              // height: 30px;
+              line-height: 26px;
+              display: flex;
+              align-items: flex-end;
+              > div {
+                flex: none;
+              }
+              .mp-erp-new-comps-condtion-set-common-comp-operator-comp-wrap {
+                margin-right: 15px;
+              }
+              .del-btn {
+                display: flex;
+                align-items: center;
+                font-size: 12px;
+                padding-left: 12px;
+                cursor: pointer;
+                height: 30px;
+                > span {
+                  margin-left: 10px;
+                  color: #a2a2a2;
+                  transition: color 0.1s ease-in-out;
+                  user-select: none;
+                }
+                &:hover > span {
+                  color: #444;
+                }
+              }
+            }
+          }
         }
         > .el-radio-group {
           width: 100%;

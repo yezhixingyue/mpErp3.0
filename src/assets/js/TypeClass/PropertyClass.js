@@ -28,6 +28,35 @@ export const PropertyFixedType = [
   { ID: 9, Name: '物料尺寸宽' },
 ];
 
+export const AllOperatorList = [ // 运算符号列表
+  { ID: 1, Name: '等于' },
+  { ID: 2, Name: '不等于' },
+  { ID: 3, Name: '大于' },
+  { ID: 4, Name: '大于等于' },
+  { ID: 5, Name: '小于' },
+  { ID: 6, Name: '小于等于' },
+  { ID: 7, Name: '包含' },
+  { ID: 8, Name: '不包含' },
+  { ID: 9, Name: '选中' },
+  { ID: 10, Name: '不选中' },
+  { ID: 11, Name: '≥值≤' },
+  { ID: 12, Name: '＞值≤' },
+  { ID: 13, Name: '≥值＜' },
+  { ID: 14, Name: '＞值＜' },
+  { ID: 101, Name: '关联' },
+  { ID: 102, Name: '排斥' },
+];
+
+export const ValueCompareType = [
+  { ID: 0, Name: '值' },
+  { ID: 1, Name: '单选' },
+  { ID: 2, Name: '多选' },
+  { ID: 3, Name: '多次使用选择项' },
+  { ID: 4, Name: '开关' },
+  { ID: 5, Name: '工艺' },
+  { ID: 6, Name: '物料' },
+];
+
 /**
  * @description: 主要用于公式及条件组件弹窗属性选择数据获取及其相关格式转换等
  * @param {*}
@@ -93,8 +122,12 @@ export default class PropertyClass {
   static async getPropertyList(PositionID, moduleIndex) { // 获取弹窗属性列表并对其进行数据转换：附加校验和提示信息
     const resp = await api.getFormulaPropertyList(PositionID, moduleIndex).catch(() => {});
     if (resp && resp.status === 200 && resp.data.Status === 1000) {
-      // const t = resp.data.Data.filter(it => it.Part && it.Type === 5);
-      // console.log(t);
+      const t = resp.data.Data.find(it => it.OperatorList && it.OperatorList.length > 10);
+      console.log(t);
+      if (t) {
+        // eslint-disable-next-line no-alert
+        alert('关系数量超出');
+      }
       return resp.data.Data.map(it => this.transform(it)).filter(it => it);
     }
     return undefined;

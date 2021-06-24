@@ -15,7 +15,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import FormulaPanelComp from '@/components/common/FormulaComps/FormulaPanelComp.vue';
+import FormulaPanelComp from '@/components/common/FormulaAndConditionComps/FormulaPanelComp.vue';
 
 export default {
   components: {
