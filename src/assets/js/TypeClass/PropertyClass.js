@@ -1,4 +1,5 @@
 import api from '@/api/index';
+import { getValueIsOrNotNumber, getNumberValueList } from '@/assets/js/utils/util';
 
 export const ElementSelectTypeEnum = [
   { label: '元素', ID: 0, nickName: '类型元素' },
@@ -67,11 +68,14 @@ export default class PropertyClass {
     const bool1 = !property || Object.prototype.toString.call(property) !== '[object Object]';
     if (bool1) return null;
     const { Element, FixedType } = property;
-    if (!Element || Object.prototype.toString.call(Element) !== '[object Object]' || FixedType || FixedType === 0) return property;
-    const { Type, DefaultValue, NumbericAttribute, OptionAttribute, SwitchAttribute } = Element;
+    if (!Element || Object.prototype.toString.call(Element) !== '[object Object]') return property;
+    if (FixedType || FixedType === 0) {
+      return property;
+    }
+    const { Type, DefaultValue, NumbericAttribute, OptionAttribute, SwitchAttribute, HiddenToCustomer } = Element;
     let TipsContent = '';
     const AvailableValueList = []; // 子项可为数值 也可为对象信息(此时为限制范围)
-    if (DefaultValue || DefaultValue === 0) {
+    if ((DefaultValue || DefaultValue === 0) && HiddenToCustomer) {
       AvailableValueList.push(DefaultValue);
       TipsContent += `隐藏运算值：${DefaultValue}；`;
     }
@@ -87,6 +91,9 @@ export default class PropertyClass {
               return { ...it, InputContent, AllowDecimal };
             });
             AvailableValueList.push(..._list);
+          } else {
+            AvailableValueList.push({ AllowDecimal, MinValue: -1, MaxValue: -1 });
+            TipsContent += '不限制分段范围控制';
           }
         }
         break;
@@ -149,5 +156,29 @@ export default class PropertyClass {
       }
     }
     return '';
+  }
+
+  static AvailableValueListChecker(val, AvailableValueList) {
+    if (AvailableValueList && Array.isArray(AvailableValueList)) {
+      for (let i = 0; i < AvailableValueList.length; i += 1) {
+        const AvailableValue = AvailableValueList[i]; // 有效数值
+
+        if (typeof AvailableValue === 'number' && +val === AvailableValue) return true;
+
+        if (typeof AvailableValue === 'object') {
+          const { MinValue, MaxValue, IsGeneralValue, Increment, InputContent, AllowDecimal } = AvailableValue;
+          if (MinValue === -1 && MaxValue === -1 && !IsGeneralValue && !Increment && !InputContent) {
+            return getValueIsOrNotNumber(val, !(AllowDecimal === false));
+          }
+          const valueList = getNumberValueList(InputContent);
+          if (valueList.includes(`${val}`)) return true;
+          if (val > MinValue && (val <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
+            if (!IsGeneralValue && (val - MinValue) % Increment === 0) return true;
+          }
+        }
+      }
+      return false;
+    }
+    return true;
   }
 }

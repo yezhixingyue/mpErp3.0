@@ -4,8 +4,8 @@
     <el-checkbox-group v-model="checkList">
       <el-checkbox
         v-for='(item, i) in itemList'
-        :label="item[defaultProps.label]"
-        :key='(item[defaultProps.value] + "-" + i)'
+        :label="useLabel?item[defaultProps.label]:item[defaultProps.value]"
+        :key='(item[defaultProps.value] + "-" + item[defaultProps.label] + i)'
         :disabled='isDisabled'
         >
         <el-tooltip popper-class="checkbox-tip" :visible-arrow='false' transition='none'
@@ -51,6 +51,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    useLabel: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     checkList: {
@@ -60,14 +64,14 @@ export default {
             const _t = this.itemList.find(
               item => item[this.defaultProps.value] === sub[this.defaultProps.value],
             );
-            if (_t) return _t[this.defaultProps.label];
+            if (_t) return this.useLabel ? _t[this.defaultProps.label] : _t[this.defaultProps.value];
             return null;
           },
         ).filter(_it => !!_it);
       },
       set(list) {
         let _list = list.map(
-          label => this.itemList.find(item => item[this.defaultProps.label] === label),
+          it => this.itemList.find(item => item[this.useLabel ? this.defaultProps.label : this.defaultProps.value] === it),
         );
         _list = _list.map(item => ({ [this.defaultProps.value]: item[this.defaultProps.value] }));
         this.$emit('change', _list);

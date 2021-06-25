@@ -2,12 +2,12 @@
   <el-dialog
   :title="title"
   :visible.sync="dialogVisible"
-  width="580px"
+  :width="width"
   v-dialogDrag
   :modal='false'
   class="mp-img-style-header mp-erp-common-check-box-dialog-comp-wrap"
   :before-close="handleClose">
-  <CheckboxGroupComp :showTitle='false' :itemList='list' :defaultProps='defaultProps' v-model="checkList" />
+  <CheckboxGroupComp :showTitle='false' :useLabel="false" :itemList='list' :defaultProps='defaultProps' v-model="checkList" />
   <span slot="footer" class="dialog-footer">
     <el-button type="primary" @click="onSubmitClick">保存</el-button>
     <el-button @click="handleClose">取消</el-button>
@@ -42,6 +42,10 @@ export default {
     value: {
       type: Array,
       default: () => [],
+    },
+    width: {
+      type: String,
+      default: '580px',
     },
     defaultProps: {
       type: Object,

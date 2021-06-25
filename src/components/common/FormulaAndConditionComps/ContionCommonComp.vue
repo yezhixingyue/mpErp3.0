@@ -1,5 +1,5 @@
 <template>
-  <LRWidthDragAutoChangeComp leftWidth='450px' class="mp-erp-new-comps-condtion-set-common-comp-wrap">
+  <LRWidthDragAutoChangeComp leftWidth='45%' class="mp-erp-new-comps-condtion-set-common-comp-wrap">
     <template v-slot:left>
       <section class="left-content" v-if="ruleForm">
         <header>
@@ -15,7 +15,7 @@
             <span class="blue-span" @click="visible=true">+ 添加条件</span>
           </p>
           <!-- 条件区域 -->
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="240px" class="constraint-ruleForm">
+          <el-form label-width="260px" class="constraint-ruleForm">
             <el-form-item
              v-for="(it, index) in ruleForm.Constraint.ItemList"
              :key="it.key || it.ConstraintID || it.Property.StoredContent"
@@ -39,9 +39,14 @@
       </section>
     </template>
     <template v-slot:right>
-      <div class="right-content">
-        <slot></slot>
-      </div>
+      <section class="right-content">
+        <header>
+          <p><span class="mp-common-title-wrap">则</span></p>
+        </header>
+        <main class="right-content-main-wrap">
+          <slot></slot>
+        </main>
+      </section>
     </template>
   </LRWidthDragAutoChangeComp>
 </template>
@@ -85,11 +90,28 @@ export default {
           ItemList: [],
         },
       },
-      rules: {},
     };
   },
+  computed: {
+    rules() {
+      const Constraint = {};
+      if (this.ruleForm && this.ruleForm.Constraint && Array.isArray(this.ruleForm.Constraint.ItemList)) {
+        const { ItemList } = this.ruleForm.Constraint;
+        ItemList.forEach(it => {
+          const prop = it.key || it.ConstraintID || it.Property.StoredContent;
+          const { Operator, ValueList, Property } = it;
+          console.log(Operator, ValueList, Property, prop);
+          Constraint[prop] = [
+            // { required: true, message: '请选择活动区域', trigger: 'change' },
+            { validator: this.conditionValueCheck, trigger: 'blur' },
+          ];
+        });
+      }
+      return { ...Constraint };
+    },
+  },
   methods: {
-    async getPropertyList() { // 获取属性列表数据
+    async getPropertyList() { // 获取属性列表数据 ---- 还原编辑信息尚未做
       const propertyList = await PropertyClass.getPropertyList(this.PositionID, this.moduleIndex);
       if (propertyList) {
         this.PropertyList = propertyList;
@@ -117,6 +139,85 @@ export default {
     onRemoveClick(i) {
       this.ruleForm.Constraint.ItemList.splice(i, 1);
     },
+    getConditonResult() {
+      const validateBool = this.validateRuleForm(); // 校验ruleForm信息
+      if (validateBool) return this.ruleForm; // 返回结果信息
+      return false;
+    },
+    PriorityChecker(Priority) { // 优先级校验
+      if (!Priority && Priority !== 0) {
+        this.alertError('请设置优先级');
+        return false;
+      }
+      if (!this.$utils.getValueIsOrNotNumber(Priority, true) || Priority < 0) {
+        this.alertError('优先级必须为大于等于0的整数类型');
+        return false;
+      }
+      return true;
+    },
+    EmptyValueChecker(ItemList) { // 条件非空校验
+      const i = ItemList.findIndex(it => {
+        const { Property, ValueList } = it;
+        const { ValueType } = Property;
+        return (ValueType !== 5) && (ValueList.length === 0 || (ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Value !== 0));
+      });
+      if (i > -1) {
+        this.alertError(`第${i + 1}行未设置属性值`);
+        return false;
+      }
+      return true;
+    },
+    NumberValueTypeItemChecker(ItemList) { // 数字值类型属性值校验
+      for (let i = 0; i < ItemList.length; i += 1) {
+        const { Property, ValueList } = ItemList[i];
+        const { ValueType, AvailableValueList, ValueRange } = Property;
+        if (ValueType === 0) { // 为0 数值校验
+          const val = ValueList[0].Value;
+          if (!this.$utils.getValueIsOrNotNumber(val)) {
+            this.alertError(`第${i + 1}行值应为数字类型`);
+            return false;
+          }
+          if (ValueRange) {
+            const { MinValue, MaxValue } = ValueRange;
+            if ((MinValue || MinValue === 0) && +val < MinValue) {
+              this.alertError(`第${i + 1}行值不能小于${MinValue}`);
+              return false;
+            }
+            if ((MaxValue || MaxValue === 0) && +val > MaxValue && MaxValue !== -1) {
+              this.alertError(`第${i + 1}行值不能大于${MaxValue}`);
+              return false;
+            }
+          }
+          // if (Operator === 1 && AvailableValueList) { // 相等类型 进入判断
+          if (AvailableValueList) { // 所有关系类型 进入判断
+            const checkres = PropertyClass.AvailableValueListChecker(val, AvailableValueList);
+            if (!checkres) {
+              this.alertError(`第${i + 1}行值不正确，请检查其可取值范围`);
+              return false;
+            }
+          }
+        }
+        if (ValueRange && ValueType !== 0) { // 有这种情况吗 --- 该校验未写
+          // const { MinValue, MaxValue } = ValueRange;
+        }
+      }
+      return true;
+    },
+    validateRuleForm() { // 信息校验
+      const { Priority, Constraint } = this.ruleForm;
+      if (!this.PriorityChecker(Priority)) return false; // 优先级校验
+
+      const { ItemList } = Constraint;
+      if (ItemList.length === 0) return true;
+      if (!this.EmptyValueChecker(ItemList)) return false; // 空值校验
+
+      if (!this.NumberValueTypeItemChecker(ItemList)) return false; // 空值校验
+
+      return true;
+    },
+    alertError(msg) {
+      this.messageBox.failSingleError('保存失败', msg);
+    },
   },
   watch: {
     PositionID(val) {
@@ -135,7 +236,8 @@ export default {
       height: 100%;
       > header {
         white-space: nowrap;
-        padding: 20px 0;
+        padding: 15px 0;
+        padding-top: 10px;
         .el-input {
           width: 110px;
           margin-right: 20px;
@@ -229,6 +331,16 @@ export default {
   > .right {
     > .right-content {
       padding-left: 5vw;
+      .mp-common-title-wrap {
+        color: #444;
+      }
+      > header {
+        padding-top: 70px;
+        padding-bottom: 30px;
+      }
+      > main {
+        font-size: 14px;
+      }
     }
   }
   span.label {

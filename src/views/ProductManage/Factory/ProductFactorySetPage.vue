@@ -8,7 +8,7 @@
       </p>
     </header>
     <main>
-      工厂设置页面
+      <FactoryTable :dataList='FactoryList' :loading='loading'  />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -18,6 +18,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import FactoryTable from '@/components/ProductManageComps/Factory/FactoryTable.vue';
 
 export default {
   data() {
@@ -27,9 +28,12 @@ export default {
       ProductName: '',
       titleType: '', // 产品 | 部件
       curEditData: null,
+      FactoryList: [],
+      loading: false,
     };
   },
   components: {
+    FactoryTable,
   },
   computed: {
     ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
@@ -57,25 +61,27 @@ export default {
       this.PartID = PartID !== 'null' ? PartID : '';
       this.ProductName = name;
       this.titleType = type;
-      // this.getProductOrderData();
+      this.getProductOrderData();
     },
     onFactorySaveClick(data) {
       this.curEditData = data;
       const path = `/ProductFactoryAdd/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`;
       this.$router.push(path);
     },
-    // async getProductOrderData(dataType = ['Order']) { // 获取初始物料、常规尺寸与尺寸组信息
-    //   const ID = this.PartID ? this.PartID : this.ProductID;
-    //   const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
-    //   const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
-    //   const _temp = { ID, List };
-    //   const resp = await _fetchFunc(_temp).catch(() => {});
-    //   if (resp && resp.data && resp.data.Status === 1000) {
-    //     // 获取数据成功
-    //     const { DisplayList } = resp.data.Data;
-    //     if (dataType.includes('Order') && DisplayList) this.DisplayList = DisplayList.map(it => ({ ...it, key: Math.random().toString(36).slice(-8) }));
-    //   }
-    // },
+    async getProductOrderData(dataType = ['Factory']) { // 获取初始工厂列表信息
+      const ID = this.PartID ? this.PartID : this.ProductID;
+      const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
+      const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
+      const _temp = { ID, List };
+      this.loading = false;
+      const resp = await _fetchFunc(_temp).catch(() => {});
+      this.loading = true;
+      if (resp && resp.data && resp.data.Status === 1000) {
+        // 获取数据成功
+        const { FactoryList } = resp.data.Data;
+        if (dataType.includes('Factory') && FactoryList) this.FactoryList = FactoryList;
+      }
+    },
     // async setDisplayOrderSubmit(list) { // 保存排序
     //   if (!list || list.length === 0) return;
     //   const { ProductID, PartID } = this;

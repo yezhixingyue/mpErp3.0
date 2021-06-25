@@ -1,6 +1,7 @@
 import messageBox from '@/assets/js/utils/message';
-import { getValueIsOrNotNumber, getNumberValueList } from '@/assets/js/utils/util';
+import { getValueIsOrNotNumber } from '@/assets/js/utils/util';
 import { NotChineseWideCharReg } from '@/assets/js/utils/regexp';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 export const FormulaUseModuleEnum = [
   { type: 'ProductProperty', label: '产品' },
@@ -78,32 +79,9 @@ export default class FormulaClass {
         messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不合法(检查是否为数字或是否允许小数)`);
         return false;
       }
-      t = PropertyList.find(it => {
-        const { DefaultValue, AvailableValueList } = it;
-
-        if (AvailableValueList) {
-          if (AvailableValueList.length === 0) return false;
-
-          for (let i = 0; i < AvailableValueList.length; i += 1) {
-            const AvailableValue = AvailableValueList[i]; // 有效数值
-
-            if (typeof AvailableValue === 'number' && +DefaultValue === AvailableValue) return false;
-
-            if (typeof AvailableValue === 'object') {
-              const { MinValue, MaxValue, IsGeneralValue, Increment, InputContent } = AvailableValue;
-              const valueList = getNumberValueList(InputContent);
-              if (valueList.includes(`${DefaultValue}`)) return false;
-              if (DefaultValue > MinValue && (DefaultValue <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
-                if (!IsGeneralValue && (DefaultValue - MinValue) % Increment === 0) return false;
-              }
-            }
-          }
-          return true;
-        }
-        return false;
-      });
+      t = PropertyList.find(({ DefaultValue, AvailableValueList }) => !PropertyClass.AvailableValueListChecker(DefaultValue, AvailableValueList));
       if (t) {
-        messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不合法，请检查其取值范围`);
+        messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不正确，请检查其取值范围`);
         return false;
       }
     }

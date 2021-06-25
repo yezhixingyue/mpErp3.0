@@ -36,6 +36,10 @@
           </div>
         </div>
       </main>
+      <main v-else class="null-box">
+        <img src="@/assets/images/null.png" alt="">
+        <p class="is-font-size-12 is-gray">暂无数据，请先添加</p>
+      </main>
     </section>
   </CommonDialogComp>
 </template>
@@ -239,6 +243,14 @@ export default {
               white-space: nowrap;
             }
           }
+        }
+      }
+      > .null-box {
+        text-align: center;
+        padding-right: 50px;
+        padding-top: 50px;
+        > p {
+          padding-top: 20px;
         }
       }
     }

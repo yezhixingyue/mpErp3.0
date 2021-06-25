@@ -1,7 +1,7 @@
 <template>
   <div class="mp-erp-new-comps-condtion-set-common-comp-value-select-comp-wrap" v-if="!isMultiple">
     <template v-if="ValueType === 0">
-      <el-input v-model.number.trim="localValue" maxlength="15" size="mini"></el-input>
+      <el-input v-model.trim="localValue" maxlength="15" size="mini"></el-input>
       <span v-if="Unit" class="unit" :title="Unit">{{Unit}}</span>
     </template>
     <!-- 可多选 -->

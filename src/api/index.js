@@ -411,6 +411,9 @@ const api = {
   getProductSetDisplayOrder(data) { // POST /Api/Product/SetDisplayOrder  设置产品或部件排序
     return instance.post('/Api/Product/SetDisplayOrder', data);
   },
+  getProductFactoryAddSave(data) { // POST /Api/ProductFactory/Add  设置产品工厂
+    return instance.post('/Api/ProductFactory/Add', data);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

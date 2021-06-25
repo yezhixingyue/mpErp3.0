@@ -34,7 +34,7 @@
         </div>
       </el-form-item>
       <el-form-item label="类型：" prop="Type">
-        <el-radio-group v-model="ruleForm.Type">
+        <el-radio-group v-model="ruleForm.Type" :disabled="this.title === '编辑界面元素'">
           <el-radio :label="it.Name" v-for="it in TypeEnum" :key="it.Name + it.label">{{it.label}}</el-radio>
         </el-radio-group>
         <div class="checked-box hidden-content-box" v-show="ruleForm.Type">

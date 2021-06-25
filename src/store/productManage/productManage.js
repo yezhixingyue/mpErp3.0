@@ -92,7 +92,7 @@ export default {
         }
       } else {
         const _temp = new Product(data);
-        state.ProductManageList.push(_temp);
+        state.ProductManageList.unshift(_temp);
         state.ProductManageListNumber += 1;
       }
     },
