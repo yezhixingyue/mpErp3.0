@@ -18,7 +18,7 @@
         <TipsSpanButton text='工艺' @click.native="onProductCraftSetClick(null)" />
         <TipsSpanButton style="margin-right:60px" text='显示顺序' @click.native="onProductDisplaySortSetClick(null)" />
         <TipsSpanButton text='工厂' @click.native="onProductFactorySetClick" />
-        <TipsSpanButton text='文件' @click.native="setCommonPathJump('ProductFileSet')" />
+        <TipsSpanButton text='文件' @click.native="setCommonPathJump('ProductFileList')" />
         <TipsSpanButton text='公式' @click.native="setCommonPathJump('ProductFormulaSet')" />
         <TipsSpanButton text='交互' @click.native="setCommonPathJump('ProductInteractionSet')" />
         <TipsSpanButton text='文件名设置' @click.native="setCommonPathJump('ProductFileNameSet')" />

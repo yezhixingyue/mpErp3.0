@@ -3,6 +3,7 @@ import messageBox from '@/assets/js/utils/message';
 import CommonClassType from '@/store/CommonClassType';
 import Product from '@/assets/js/TypeClass/ProductClass';
 import Part from '@/assets/js/TypeClass/PartClass';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 const initConditon = {
   ProductClass: {
@@ -43,6 +44,12 @@ export default {
       { Name: 'CraftCondition', ID: 14 }, // 工艺条件
       { Name: 'CraftDisplayGroup', ID: 15 }, // 工艺显示分组
     ],
+    ProductFactoryList: [], // 产品工厂列表
+    ProductFactoryPropertyList: [], // 工厂条件使用属性列表数据
+    curEditFactoryData: null, // 当前正在编辑的产品工厂数据
+    ProductFileList: [],
+    ProductFilePropertyList: [],
+    curEditFileData: null, // 当前正在编辑的产品文件数据
   },
   getters: {
   },
@@ -135,6 +142,48 @@ export default {
         }
       }
     },
+    setProductFactoryList(state, list) { // 设置产品工厂列表数据
+      state.ProductFactoryList = list;
+    },
+    setProductFactoryPropertyList(state, list) { // 工厂条件使用属性列表数据
+      state.ProductFactoryPropertyList = list;
+    },
+    setProductFactoryPropertyRemove(state, index) { // 删除产品工厂
+      state.ProductFactoryList.splice(index, 1);
+    },
+    setCurEditFactoryData(state, data) { // 设置当前正在编辑的产品工厂数据
+      state.curEditFactoryData = data;
+    },
+    setProductFactorySave(state, [data, isEdit]) { // 产品工厂添加或编辑成功后处理函数
+      if (!data) return;
+      if (!isEdit) {
+        state.ProductFactoryList.unshift(data);
+      } else {
+        const i = state.ProductFactoryList.findIndex(it => it.ID === data.ID);
+        if (i > -1) state.ProductFactoryList.splice(i, 1, data);
+      }
+    },
+    setProductFileList(state, list) { // 设置 产品文件 列表数据
+      state.ProductFileList = list;
+    },
+    setProductFilePropertyList(state, list) { // 产品文件条件使用属性列表数据
+      state.ProductFilePropertyList = list;
+    },
+    setProductFilePropertyRemove(state, index) { // 删除产品文件
+      state.ProductFileList.splice(index, 1);
+    },
+    setCurEditFileData(state, data) { // 设置当前正在编辑的产品文件数据
+      state.curEditFileData = data;
+    },
+    setProductFileSave(state, [data, isEdit]) { // 产品文件添加或编辑成功后处理函数
+      if (!data) return;
+      if (!isEdit) {
+        state.ProductFileList.unshift(data);
+      } else {
+        const i = state.ProductFileList.findIndex(it => it.ID === data.ID);
+        if (i > -1) state.ProductFileList.splice(i, 1, data);
+      }
+    },
   },
   actions: {
     async getManageProductList({ state, commit }, page = 1) { // 获取产品列表数据
@@ -214,6 +263,52 @@ export default {
       if (resp && resp.data && resp.data.Status === 1000) {
         commit('setMaterialDisplayNameChange', [ProductID, PartID, name]);
         if (cb) cb();
+      }
+    },
+    async getProductFactoryList({ commit }, data) { // 获取产品工厂列表数据
+      commit('setProductFactoryList', []);
+      const resp = await api.getProductModuleData(data).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        commit('setProductFactoryList', resp.data.Data.FactoryList);
+        return true;
+      }
+      return false;
+    },
+    async getProductFactoryPropertyList({ commit }, ProductID) { // 获取设置产品工厂条件属性列表数据
+      commit('setProductFactoryPropertyList', []);
+      const propertyList = await PropertyClass.getPropertyList(ProductID, 12);
+      if (propertyList) {
+        commit('setProductFactoryPropertyList', propertyList);
+      }
+    },
+    async getProductFactoryPropertyRemove({ commit }, [id, i]) { // 删除产品工厂
+      const resp = await api.getProductFactoryRemove(id).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => { commit('setProductFactoryPropertyRemove', i); };
+        messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    async getProductFileList({ commit }, data) { // 获取产品文件列表数据
+      commit('setProductFileList', []);
+      const resp = await api.getProductModuleData(data).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        commit('setProductFileList', resp.data.Data.FileList);
+        return true;
+      }
+      return false;
+    },
+    async getProductFilePropertyList({ commit }, ProductID) { // 获取设置产品文件关联属性列表数据
+      commit('setProductFilePropertyList', []);
+      const propertyList = await PropertyClass.getPropertyList(ProductID, 13);
+      if (propertyList) {
+        commit('setProductFilePropertyList', propertyList);
+      }
+    },
+    async getProductFilePropertyRemove({ commit }, [id, i]) { // 删除产品文件关联
+      const resp = await api.getProductFileRemove(id).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => { commit('setProductFilePropertyRemove', i); };
+        messageBox.successSingle('删除成功', cb, cb);
       }
     },
   },

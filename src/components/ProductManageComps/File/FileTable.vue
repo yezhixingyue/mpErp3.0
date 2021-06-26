@@ -1,12 +1,12 @@
 <template>
   <el-table
-    class="mp-erp-product-module-factory-list-page-factory-table-comp-wrap"
+    class="mp-erp-product-module-factory-list-page-file-table-comp-wrap"
     :max-height="h"
     :height="h"
     stripe
     border
     :data="localTableData"
-    key="mp-erp-product-module-factory-list-page-factory-table-comp-wrap"
+    key="mp-erp-product-module-factory-list-page-file-table-comp-wrap"
     fit
     style="width: 100%"
    >
@@ -36,8 +36,7 @@
     </el-table-column>
     <el-table-column prop="FilterTypeText" label="条件类型"  width="180" show-overflow-tooltip></el-table-column>
     <el-table-column prop="PriorityText" label="优先级"  width="140" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="defaultFactoryName" label="默认生产工厂"  width="180" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="unDelaultFactoryListName" label="可选生产工厂"  width="320" show-overflow-tooltip>
+    <el-table-column prop="FileInfoText" label="文件类目"  width="420" show-overflow-tooltip>
     </el-table-column>
     <el-table-column label="操作" width="240">
       <div class="menu-list" slot-scope="scope">
@@ -77,8 +76,7 @@ export default {
         ...it,
         PriorityText: `${it.Priority}级`,
         FilterTypeText: it.Constraint.FilterType === 1 ? '满足所有条件' : '满足任一条件',
-        defaultFactoryName: this.getDefaultFactory(it.FactoryList),
-        unDelaultFactoryListName: this.getUnDefaultFactory(it.FactoryList),
+        FileInfoText: this.getFileInfoText(it.FileList),
         conditionText: this.getConditionText(it.Constraint.ItemList),
       }));
     },
@@ -86,7 +84,7 @@ export default {
   mixins: [tableMixin],
   methods: {
     setHeight() {
-      const tempHeight = this.getHeight('.mp-erp-product-list-page-product-factory-set-comp-wrap > header', 110);
+      const tempHeight = this.getHeight('.mp-erp-product-list-page-product-file-list-page-wrap > header', 110);
       this.h = tempHeight;
     },
     onEditClick(itemData) {
@@ -95,13 +93,12 @@ export default {
     onRemoveClick(itemData) {
       this.$emit('remove', itemData);
     },
-    getDefaultFactory(list) {
-      const t = list.find(it => it.IsDefault);
-      return t ? t.Factory.FactoryName : '';
-    },
-    getUnDefaultFactory(list) {
-      const _list = list.filter(it => !it.IsDefault).map(it => it.Factory.FactoryName);
-      return _list.join('、');
+    getFileInfoText(list) {
+      if (!Array.isArray(list) || list.length === 0) return '';
+      return list.map(it => {
+        const { File, IsRequired } = it;
+        return `${File.Name}（${IsRequired ? '必须上传' : '可不上传'}）`;
+      }).join('、');
     },
     getConditionText(list) {
       const str = PropertyClass.getPropertyConditionText(list, this.PropertyList);
@@ -111,7 +108,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-product-module-factory-list-page-factory-table-comp-wrap {
+.mp-erp-product-module-factory-list-page-file-table-comp-wrap {
   border-top-color: rgb(230, 230, 230);
   border-left: 1px solid rgb(230, 230, 230);
   .el-table__header-wrapper thead tr th {

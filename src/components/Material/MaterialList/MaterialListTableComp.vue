@@ -11,7 +11,7 @@
     style="width: 100%"
    >
     <el-table-column prop="Type.Name" label="物料类型" width="260"></el-table-column>
-    <el-table-column prop="MaterialText" label="物料"  min-width="240" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="DisplayName" label="物料"  min-width="240" show-overflow-tooltip></el-table-column>
     <el-table-column label="操作" min-width="380" class-name='menu-column'>
       <div class="menu-list" slot-scope="scope">
         <span @click="onEditClick(scope.row)"><i></i>编辑</span>
@@ -43,7 +43,7 @@ export default {
       if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
       return this.dataList.map(it => ({
         ...it,
-        MaterialText: this.getMaterialText(it),
+        // MaterialText: this.getMaterialText(it),
       }));
     },
   },

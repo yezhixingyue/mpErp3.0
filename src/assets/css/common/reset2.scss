@@ -317,7 +317,7 @@ td.is-gray .cell{
   color: $--color-text-table-time;
 }
 .is-origin{
-  color: $--color-text-orgin;
+  color: $--color-text-orgin !important;
 }
 .is-gray{
   color: $--color-text-table-time !important;

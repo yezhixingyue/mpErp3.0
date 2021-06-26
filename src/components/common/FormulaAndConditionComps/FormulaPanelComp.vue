@@ -6,7 +6,7 @@
       <div>
         <div>
           <span>公式名称：</span>
-          <el-input size='small' style="width: 250px" v-model.trim="FormulaData.Name" maxlength="10" show-word-limit></el-input>
+          <el-input size='small' style="width: 250px" v-model.trim="FormulaData.Name" maxlength="6" show-word-limit></el-input>
         </div>
         <div>
           <span>结果单位：</span>
@@ -189,10 +189,8 @@ export default {
     initPropertyListReplaceHelper() { // 获取可用属性列表并转换完成后，对编辑数据时初始的PropertyList的数据进行修改操作（以获取到的可用属性为准）
       if (this.FormulaData.PropertyList.length === 0) return;
       this.FormulaData.PropertyList = this.FormulaData.PropertyList.map(it => {
-        // eslint-disable-next-line max-len
-        const t = this.PropertyList.find(_it => (((_it.Element && it.Element && _it.Element.ID === it.Element.ID) || (!_it.Element && !it.Element)) && it.FixedType === _it.FixedType));
-        if (t) return { ...t, DefaultValue: it.DefaultValue };
-        return null;
+        const t = PropertyClass.getPerfectPropertyByImperfectProperty(it, this.PropertyList);
+        return t ? { ...t, DefaultValue: it.DefaultValue } : null;
       }).filter(it => it);
     },
     onElementAddClick() {

@@ -7,7 +7,7 @@
       <el-select v-model="type" filterable placeholder="请选择" size="small">
         <el-option
           v-for="(item, i) in options"
-          :key="item.Name + i"
+          :key="item.Name + i + item.ID"
           :label="item.Name"
           :value="item.ID">
         </el-option>

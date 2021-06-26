@@ -1,11 +1,11 @@
 <template>
-  <section class="mp-erp-product-list-page-product-factory-set-comp-wrap">
+  <section class="mp-erp-product-list-page-product-factory-add-page-wrap">
     <header>
       <span>当前{{titleType}}：</span>
       <span>{{ProductName}}</span>
     </header>
     <main>
-      <ContionCommonComp :moduleIndex='12' :PositionID='ProductID' ref="oLeftCondition">
+      <ContionCommonComp ref="oLeftCondition" :PropertyList='ProductFactoryPropertyList' :curEditData='curEditFactoryData'>
         <div>
           <span>默认生产工厂：</span>
           <el-select v-model="defaultFactory" placeholder="请选择" size="small">
@@ -57,7 +57,7 @@ export default {
     ContionCommonComp,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductFactoryPropertyList', 'curEditFactoryData']),
     ...mapState('common', ['factoryList']),
     curProduct() {
       if (!this.ProductID) return null;
@@ -83,35 +83,11 @@ export default {
       this.PartID = PartID !== 'null' ? PartID : '';
       this.ProductName = name;
       this.titleType = type;
-      // this.getProductOrderData();
     },
-    // async getProductOrderData(dataType = ['Order']) { // 获取初始物料、常规尺寸与尺寸组信息
-    //   const ID = this.PartID ? this.PartID : this.ProductID;
-    //   const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
-    //   const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
-    //   const _temp = { ID, List };
-    //   const resp = await _fetchFunc(_temp).catch(() => {});
-    //   if (resp && resp.data && resp.data.Status === 1000) {
-    //     // 获取数据成功
-    //     const { DisplayList } = resp.data.Data;
-    //     if (dataType.includes('Order') && DisplayList) this.DisplayList = DisplayList.map(it => ({ ...it, key: Math.random().toString(36).slice(-8) }));
-    //   }
-    // },
-    // async setDisplayOrderSubmit(list) { // 保存排序
-    //   if (!list || list.length === 0) return;
-    //   const { ProductID, PartID } = this;
-    //   const List = list.map((it, Index) => ({ ...it, Index }));
-    //   const temp = { ProductID, PartID, List };
-    //   const resp = await this.api.getProductSetDisplayOrder(temp).catch(() => {});
-    //   if (resp && resp.data && resp.data.Status === 1000) {
-    //     const cb = () => {
-    //       this.onGoBackClick();
-    //     };
-    //     this.messageBox.successSingle('设置成功', cb, cb);
-    //   }
-    // },
     onGoBackClick() {
-      this.$router.replace(`/ProductFactorySet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
+      // this.$router.replace(`/ProductFactorySet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
+      // this.$router.go(-1);
+      this.$goback();
     },
     findFactoryByID(FactoryID) {
       return this.factoryList.find(it => it.FactoryID === FactoryID);
@@ -145,10 +121,12 @@ export default {
     async ProductFactorySubmitHandler(data) { // getProductFactoryAddSave
       const resp = await this.api.getProductFactoryAddSave(data).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
+        const isEdit = data.ID || data.ID === 0;
         const cb = () => {
+          this.$store.commit('productManage/setProductFactorySave', [{ ...data, ID: resp.data.Data }, isEdit]);
           this.onGoBackClick();
         };
-        const title = (data.ID || data.ID === 0) ? '编辑成功' : '添加成功';
+        const title = isEdit ? '编辑成功' : '添加成功';
         this.messageBox.successSingle(title, cb, cb);
       }
     },
@@ -156,11 +134,19 @@ export default {
   mounted() {
     this.getPositionID();
     this.$store.dispatch('common/getFactoryList');
+    if (!this.curEditFactoryData) return;
+    const { FactoryList } = this.curEditFactoryData;
+    if (!Array.isArray(FactoryList) || FactoryList.length === 0) return;
+    const _default = FactoryList.find(it => it.IsDefault);
+    if (_default) {
+      this.defaultFactory = _default.Factory.FactoryID;
+    }
+    this.checkedFactoryList = FactoryList.filter(it => !it.IsDefault).map(it => it.Factory.FactoryID);
   },
 };
 </script>
 <style lang='scss'>
-.mp-erp-product-list-page-product-factory-set-comp-wrap {
+.mp-erp-product-list-page-product-factory-add-page-wrap {
   padding-left: 20px;
   padding-right: 6px;
   height: 100%;

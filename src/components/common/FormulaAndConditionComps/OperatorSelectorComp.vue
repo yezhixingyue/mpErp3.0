@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { AllOperatorList } from '@/assets/js/TypeClass/PropertyClass';
+import { AllOperatorList, getTempMaterialListObj, getTempMaterialOptionList, getTempMaterialSelectedListShowText } from '@/assets/js/TypeClass/PropertyClass';
 import CheckboxDialogComp from '@/components/common/NewComps/CheckboxDialogComp.vue';
 import MaterialSelectDialog from './MaterialSelectDialog.vue';
 
@@ -84,82 +84,13 @@ export default {
       },
     },
     localMaterialListObj() { // 仅为物料时且列表数量大于3时使用
-      if (!this.localOptionList || !Array.isArray(this.localOptionList) || this.localOptionList.length === 0) return null;
-      const _list = this.localOptionList
-        .map(it => ({ ...it, list: it.Second.split(' ') }))
-        .map(it => ({ ...it, first: it.list[0], second: it.list.length > 1 ? it.list[1] : '', third: it.list.length > 2 ? it.list.slice(2).join(' ') : '' }));
-      const _obj = {};
-      _list.forEach(it => {
-        const { first, second, third, First, Second } = it;
-        if (!_obj[first]) _obj[first] = {};
-        if (!_obj[first][second]) _obj[first][second] = [];
-        _obj[first][second].push({ third, Data: { First, Second } });
-      });
-      return _obj;
+      return getTempMaterialListObj(this.localOptionList);
     },
     localMaterialOptionList() { // 仅为物料时且列表数量大于3时使用
-      if (!this.localMaterialListObj) return [];
-      const list = [];
-      Object.keys(this.localMaterialListObj).forEach(fKey => {
-        const second = this.localMaterialListObj[fKey];
-        const _temp1 = {};
-        _temp1.Name = fKey;
-        _temp1.List = [];
-        Object.keys(second).forEach(sKey => {
-          const thirdList = second[sKey];
-          const _temp2 = {};
-          _temp2.Name = sKey;
-          _temp2.List = [];
-          if (thirdList.length === 1 && !thirdList[0].third) {
-            const { Data } = thirdList[0];
-            _temp2.Data = Data;
-          } else {
-            thirdList.forEach(it => {
-              const { third, Data } = it;
-              const _temp3 = {};
-              _temp3.Name = third;
-              _temp3.Data = Data;
-              _temp2.List.push(_temp3);
-            });
-          }
-          _temp1.List.push(_temp2);
-        });
-        list.push(_temp1);
-      });
-      return list;
+      return getTempMaterialOptionList(this.localMaterialListObj);
     },
     localMaterialSelectedList() { // 已选择物料显示文字
-      if (!Array.isArray(this.checkList) || this.checkList.length === 0 || this.localMaterialOptionList.length === 0) return '';
-      const _list = this.localMaterialOptionList.map(lv1 => { // 找出并附加已选的物料信息
-        const List = lv1.List.map(lv2 => {
-          const lv3List = lv2.Data ? [{ Name: lv2.Name, Data: lv2.Data }] : lv2.List;
-          const SelectedList = lv3List.filter(it => this.checkList.includes(it.Data.First));
-          const isCheckedAll = lv3List.length === SelectedList.length;
-          return { ...lv2, SelectedList, isCheckedAll };
-        }).filter(it => it.SelectedList.length > 0);
-        let isCheckedAll = false;
-        if (lv1.List.length === List.length) {
-          const t = List.find(it => !it.isCheckedAll);
-          isCheckedAll = !t;
-        }
-        return { ...lv1, List, isCheckedAll };
-      }).filter(it => it.List.length > 0);
-
-      const _text = _list.map(lv1 => { // 从提取出的选择信息中转换出要显示的文字
-        const { Name, List } = lv1;
-        const text = lv1.isCheckedAll ? '全部' : List.map(lv2 => {
-          const { SelectedList, isCheckedAll, Data } = lv2;
-          let lv2Str = lv2.Name;
-          if (isCheckedAll && !Data) lv2Str = `${lv2Str}（全部）`;
-          else if (!Data) {
-            const names = SelectedList.map(_it => _it.Name).join('、');
-            lv2Str = `${lv2Str}（${names}）`;
-          }
-          return lv2Str;
-        }).join('、');
-        return `${Name}（${text}）`;
-      }).join('、');
-      return _text;
+      return getTempMaterialSelectedListShowText(this.checkList, this.localMaterialOptionList);
     },
   },
   data() {

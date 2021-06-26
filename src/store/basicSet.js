@@ -52,7 +52,7 @@ export default {
       const itemData = editData;
       if (saveType === '添加') {
         itemData.ID = ID;
-        state.ElementDataList.push(itemData);
+        state.ElementDataList.unshift(itemData);
       } else if (saveType === '编辑') {
         const i = state.ElementDataList.findIndex(it => it.ID === itemData.ID);
         if (i >= 0) state.ElementDataList.splice(i, 1, itemData);
@@ -91,7 +91,7 @@ export default {
       };
       if (saveType === '添加') {
         itemData.ID = ID;
-        state.ElementGroupDataList.push(itemData);
+        state.ElementGroupDataList.unshift(itemData);
         changeElementGroupProp();
       } else if (saveType === '编辑') {
         const i = state.ElementGroupDataList.findIndex(it => it.ID === itemData.ID);
@@ -155,8 +155,9 @@ export default {
     setBreadthSaveSuccess(state, { isEdit, data, ID, curClassID }) {
       const _classID = data.Class.ID;
       const _temp = isEdit ? data : { ...data, ID };
-      if (!isEdit && _classID === curClassID) state.BreadthList.push(_temp);
-      else if (isEdit) {
+      if (!isEdit && (_classID === curClassID || !curClassID)) {
+        state.BreadthList.unshift(_temp);
+      } else if (isEdit) {
         const i = state.BreadthList.findIndex(it => it.ID === _temp.ID);
         if (i >= 0) state.BreadthList.splice(i, 1, _temp);
       }
@@ -196,7 +197,7 @@ export default {
       const itemData = data;
       if (!isEdit) { // 添加
         itemData.ID = ID;
-        state.MaterialTypeList.push(itemData);
+        state.MaterialTypeList.unshift(itemData);
       } else { // 编辑
         const i = state.MaterialTypeList.findIndex(it => it.ID === itemData.ID);
         if (i >= 0) state.MaterialTypeList.splice(i, 1, itemData);
@@ -251,7 +252,7 @@ export default {
         const i = state.CraftDataList.findIndex(it => it.ID === itemData.ID);
         if (i > -1) state.CraftDataList.splice(i, 1, itemData);
       } else {
-        state.CraftDataList.push(itemData);
+        state.CraftDataList.unshift(itemData);
         state.CraftDataNumber += 1;
       }
     },

@@ -414,6 +414,15 @@ const api = {
   getProductFactoryAddSave(data) { // POST /Api/ProductFactory/Add  设置产品工厂
     return instance.post('/Api/ProductFactory/Add', data);
   },
+  getProductFactoryRemove(id) { // DELETE /Api/ProductFactory/Remove 删除产品工厂
+    return instance.delete(`/Api/ProductFactory/Remove?id=${id}`);
+  },
+  getProductFileSave(data) { // POST /Api/ProductFile/Add  设置产品文件关联
+    return instance.post('/Api/ProductFile/Add', data);
+  },
+  getProductFileRemove(id) { // DELETE /Api/ProductFile/Remove 删除产品文件关联
+    return instance.delete(`/Api/ProductFile/Remove?id=${id}`);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

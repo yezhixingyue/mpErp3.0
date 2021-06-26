@@ -18,8 +18,8 @@
           <el-form label-width="260px" class="constraint-ruleForm">
             <el-form-item
              v-for="(it, index) in ruleForm.Constraint.ItemList"
-             :key="it.key || it.ConstraintID || it.Property.StoredContent"
-             :prop="it.key || it.ConstraintID || it.Property.StoredContent">
+             :key="it.key || it.Property.StoredContent"
+             :prop="it.key || it.Property.StoredContent">
               <span slot="label" :title="it.Property.TipsContent || it.Property.DisplayContent.replace(/\[|\]/g, '')"
                 >{{it.Property.DisplayContent.replace(/\[|\]/g, '')}}</span>
               <OperatorSelectorComp v-model="it.Operator" :valueList.sync='it.ValueList' :PropertyData='it.Property' />
@@ -60,13 +60,13 @@ import ValueSelectorComp from './ValueSelectorComp.vue';
 
 export default {
   props: {
-    PositionID: {
-      type: String,
-      default: '',
+    PropertyList: {
+      type: Array,
+      default: () => [],
     },
-    moduleIndex: {
-      type: Number,
-      default: 0,
+    curEditData: {
+      type: Object,
+      default: null,
     },
   },
   components: {
@@ -78,9 +78,7 @@ export default {
   data() {
     return {
       visible: false,
-      PropertyList: [],
       selectedElementIDs: [],
-      isWatching: true,
       ruleForm: {
         ID: '',
         Priority: '', // 优先级
@@ -93,39 +91,32 @@ export default {
     };
   },
   computed: {
-    rules() {
-      const Constraint = {};
-      if (this.ruleForm && this.ruleForm.Constraint && Array.isArray(this.ruleForm.Constraint.ItemList)) {
-        const { ItemList } = this.ruleForm.Constraint;
-        ItemList.forEach(it => {
-          const prop = it.key || it.ConstraintID || it.Property.StoredContent;
-          const { Operator, ValueList, Property } = it;
-          console.log(Operator, ValueList, Property, prop);
-          Constraint[prop] = [
-            // { required: true, message: '请选择活动区域', trigger: 'change' },
-            { validator: this.conditionValueCheck, trigger: 'blur' },
-          ];
-        });
-      }
-      return { ...Constraint };
-    },
+    // rules() {
+    //   const Constraint = {};
+    //   if (this.ruleForm && this.ruleForm.Constraint && Array.isArray(this.ruleForm.Constraint.ItemList)) {
+    //     const { ItemList } = this.ruleForm.Constraint;
+    //     ItemList.forEach(it => {
+    //       const prop = it.key || it.ConstraintID || it.Property.StoredContent;
+    //       const { Operator, ValueList, Property } = it;
+    //       console.log(Operator, ValueList, Property, prop);
+    //       Constraint[prop] = [
+    //         // { required: true, message: '请选择活动区域', trigger: 'change' },
+    //         { validator: this.conditionValueCheck, trigger: 'blur' },
+    //       ];
+    //     });
+    //   }
+    //   return { ...Constraint };
+    // },
   },
   methods: {
-    async getPropertyList() { // 获取属性列表数据 ---- 还原编辑信息尚未做
-      const propertyList = await PropertyClass.getPropertyList(this.PositionID, this.moduleIndex);
-      if (propertyList) {
-        this.PropertyList = propertyList;
-        // this.initPropertyListReplaceHelper();
-      }
-    },
-    initPropertyListReplaceHelper() { // 获取可用属性列表并转换完成后，对编辑数据时初始的PropertyList的数据进行修改操作（以获取到的可用属性为准）
-      if (!this.FormulaData || this.FormulaData.PropertyList.length === 0) return;
-      this.FormulaData.PropertyList = this.FormulaData.PropertyList.map(it => {
-        const t = this.PropertyList.find(_it => _it.Element.ID === it.Element.ID && it.FixedType === _it.FixedType);
-        if (t) return { ...t, DefaultValue: it.DefaultValue };
-        return null;
-      }).filter(it => it);
-    },
+    // initPropertyListReplaceHelper() { // 获取可用属性列表并转换完成后，对编辑数据时初始的PropertyList的数据进行修改操作（以获取到的可用属性为准）
+    //   if (!this.FormulaData || this.FormulaData.PropertyList.length === 0) return;
+    //   this.FormulaData.PropertyList = this.FormulaData.PropertyList.map(it => {
+    //     const t = this.PropertyList.find(_it => _it.Element.ID === it.Element.ID && it.FixedType === _it.FixedType);
+    //     if (t) return { ...t, DefaultValue: it.DefaultValue };
+    //     return null;
+    //   }).filter(it => it);
+    // },
     onElementSelect(Element) { // 属性弹窗种进行属性选择
       const item = {
         ConstraintID: '',
@@ -219,13 +210,17 @@ export default {
       this.messageBox.failSingleError('保存失败', msg);
     },
   },
-  watch: {
-    PositionID(val) {
-      if (this.isWatching && val) {
-        this.getPropertyList();
-        this.isWatching = false;
-      }
-    },
+  mounted() {
+    if (!this.curEditData) return;
+    // 还原编辑数据 ↓
+    const { Priority, ID, Constraint } = this.curEditData;
+    this.ruleForm.ID = ID;
+    this.ruleForm.Priority = Priority;
+    const ItemList = Constraint.ItemList.map(it => {
+      const Property = PropertyClass.getPerfectPropertyByImperfectProperty(it.Property, this.PropertyList);
+      return Property ? { ...it, Property } : null;
+    }).filter(it => it);
+    this.ruleForm.Constraint = { ...Constraint, ItemList };
   },
 };
 </script>

@@ -22,6 +22,12 @@ VueRouter.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(error => error);
 };
 
+const NextHandler = (from, to, next) => {
+  console.log('from', from);
+  console.log('to', to);
+  store.commit('common/setLastPagePaths', from);
+  next();
+};
 
 /**
  * @description: 记录是否为首次初始化运行
@@ -35,7 +41,7 @@ let isInit = true;
  * @param {*} next
  * @param {*} Permission 权限信息列表
  */
-function handlePermission(to, next, Permission) {
+function handlePermission(to, next, Permission, from) {
   let key = Permission;
   if (!to.meta.PermissionInfo) { // 如果没有设定则予以通过
     key = true;
@@ -60,7 +66,7 @@ function handlePermission(to, next, Permission) {
       isInit = false;
     }
     NProgress.start();
-    next(); // 2.6 如果满足权限要求则允许跳转， 否则跳转提示页面
+    NextHandler(from, to, next); // 2.6 如果满足权限要求则允许跳转， 否则跳转提示页面
   } else next({ path: '/notauth' });
 }
 
@@ -481,6 +487,16 @@ export const routes = [
             component: () => import('../views/ProductManage/Factory/ProductFactoryAddPage.vue'),
           },
           {
+            path: '/ProductFileList/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductFileList',
+            meta: {
+              title: '文件列表 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/FilePages/ProductFileListPage.vue'),
+          },
+          {
             path: '/ProductFileSet/:ProductID/:PartID/:name/:type/:times',
             name: 'ProductFileSet',
             meta: {
@@ -488,7 +504,7 @@ export const routes = [
               requiresAuth: true,
               // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
             },
-            component: () => import('../views/ProductManage/ProductFileSetPage.vue'),
+            component: () => import('../views/ProductManage/FilePages/ProductFileSetPage.vue'),
           },
           {
             path: '/ProductFormulaSet/:ProductID/:PartID/:name/:type/:times',
@@ -903,7 +919,7 @@ router.beforeEach((to, from, next) => { // 使用全局路由导航守卫进行�
   const token = JSON.parse(sessionStorage.getItem('token')); // 2.1 获取到token信息，可能为undefined
   if (to.matched.some(record => record.meta.requiresAuth)) { // 2.2 判断要去往的页面中有无token要求，如果无则跳转否则则进入判断
     if (to.name === 'login') { // 2.3 登录页面不考虑，直接跳转
-      next();
+      NextHandler(from, to, next);
     } else if (token) { // 2.4 如果有token信息，获取到当前用户权限信息
       const permission = store.state.common.Permission;
       if (!permission || permission.Token !== token) {
@@ -911,11 +927,11 @@ router.beforeEach((to, from, next) => { // 使用全局路由导航守卫进行�
         getPermission(token).then(res => {
           if (Object.prototype.toString.call(res) === '[object Object]' && res.Token && res.Token === token) {
             store.commit('common/setPermission', res);
-            handlePermission(to, next, res.PermissionList);
+            handlePermission(to, next, res.PermissionList, from);
           }
         });
       } else if (permission.Token === token) {
-        handlePermission(to, next, permission.PermissionList);
+        handlePermission(to, next, permission.PermissionList, from);
       }
     } else { // 如果没有token，跳转登录或提示页面
       next({
@@ -924,12 +940,22 @@ router.beforeEach((to, from, next) => { // 使用全局路由导航守卫进行�
       });
     }
   } else {
-    next();
+    NextHandler(from, to, next);
   }
 });
 
 router.afterEach(() => {
   NProgress.done();
 });
+
+
+export const goBackLastPage = () => {
+  console.log(router);
+  const lastPaths = store.state.common.lastPagePaths;
+  console.log('lastPaths', lastPaths);
+  // router.replace(lastPaths || '/');
+};
+
+Vue.prototype.$goback = goBackLastPage;
 
 export default router;

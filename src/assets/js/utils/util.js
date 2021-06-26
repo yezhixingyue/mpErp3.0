@@ -178,8 +178,9 @@ export const getRandomRangeId = (num) => {
  */
 export const getValueIsOrNotNumber = (val, isInteger) => {
   if (!val && val !== 0) return false;
-  let _bool = !Number.isNaN(+val);
-  if (_bool && isInteger) _bool = Number.isInteger(+val);
+  const _val = typeof val === 'number' ? val : +val;
+  let _bool = !Number.isNaN(_val);
+  if (_bool && isInteger) _bool = Number.isInteger(_val);
   return _bool;
 };
 
@@ -242,6 +243,18 @@ export const getIDFromListByNames = (Names, list, defaultKeys = { label: 'Name',
   }
   if (Array.isArray(Names)) { // 传递进来的是Name列表模式，同样返回ID组成的列表
     const arr = Names.map(Name => list.find(it => it[defaultKeys.label] === Name)).filter(it => it).map(it => it[defaultKeys.value]);
+    return arr.length > 0 ? arr : '';
+  }
+  return '';
+};
+
+export const getNameFromListByIDs = (ids, list, defaultKeys = { label: 'Name', value: 'ID' }) => {
+  if (typeof ids === 'string' || typeof ids === 'number') { // 单个Name模式， 返回单个ID
+    const t = list.find(it => it[defaultKeys.value] === ids);
+    return t ? t[defaultKeys.label] : '';
+  }
+  if (Array.isArray(ids)) { // 传递进来的是Name列表模式，同样返回ID组成的列表
+    const arr = ids.map(ID => list.find(it => it[defaultKeys.value] === ID)).filter(it => it).map(it => it[defaultKeys.label]);
     return arr.length > 0 ? arr : '';
   }
   return '';

@@ -409,3 +409,44 @@ button.border-blue-btn {
     }
   }
 }
+
+.common-property-condition-text-tips-box {
+  line-height: 24px;
+  color: #585858;
+  .name {
+    color: #33BBD5;
+  }
+  .val {
+    color: #888;
+    font-weight: 700;
+  }
+  .type {
+    font-weight: 700;
+    margin-right: 1px;
+  }
+}
+
+.common-property-condition-text-content-box {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  > p {
+    flex: 1 0 auto;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline;
+    > span {
+      color: #444;
+      &:last-of-type {
+        color: #888;
+        font-weight: 700;
+      }
+      &.type {
+        color: #33BBD5;
+      }
+    }
+  }
+}

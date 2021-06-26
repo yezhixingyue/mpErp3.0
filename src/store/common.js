@@ -399,6 +399,7 @@ export default {
     /* 物料列表
     -------------------------------*/
     MaterialAllList: [], // 全部物料列表
+    lastPagePaths: [], // 上一个页面的path路径
   },
   getters: {
     /* 配送方式相关
@@ -699,6 +700,9 @@ export default {
     -------------------------------*/
     setMaterialAllList(state, list) { // 设置全部物料列表
       state.MaterialAllList = list;
+    },
+    setLastPagePaths(state, path) { // 设置上一个页面的path路径
+      state.lastPagePaths.push(path);
     },
   },
   actions: {

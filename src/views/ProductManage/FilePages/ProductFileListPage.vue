@@ -1,14 +1,14 @@
 <template>
-  <section class="mp-erp-product-list-page-product-factory-set-comp-wrap">
+  <section class="mp-erp-product-list-page-product-file-list-page-wrap">
     <header>
       <span>当前{{titleType}}：</span>
       <span>{{ProductName}}</span>
       <p>
-        <el-button type="primary" size="small" @click="onFactorySaveClick(null)">+添加工厂策略</el-button>
+        <el-button type="primary" size="small" @click="onFileSaveClick(null)">+添加关联</el-button>
       </p>
     </header>
     <main>
-      <FactoryTable :dataList='localTableData' :loading='loading' :PropertyList='ProductFactoryPropertyList' @remove='onRemove' @edit='onEdit' />
+      <FileTable :dataList='localTableData' :loading='loading' :PropertyList='ProductFilePropertyList' @remove='onRemove' @edit='onEdit' />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -18,7 +18,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import FactoryTable from '@/components/ProductManageComps/Factory/FactoryTable.vue';
+import FileTable from '@/components/ProductManageComps/File/FileTable.vue';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 export default {
@@ -33,10 +33,10 @@ export default {
     };
   },
   components: {
-    FactoryTable,
+    FileTable,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductFactoryList', 'ProductFactoryPropertyList']),
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductFileList', 'ProductFilePropertyList']),
     curProduct() {
       if (!this.ProductID) return null;
       return this.ProductManageList.find(it => it.ID === this.ProductID);
@@ -47,16 +47,16 @@ export default {
     },
     localTableData() {
       // eslint-disable-next-line max-len
-      if (!this.ProductFactoryList || this.ProductFactoryList.length === 0 || !this.ProductFactoryPropertyList || this.ProductFactoryPropertyList.length === 0) return [];
-      const _ProductFactoryList = JSON.parse(JSON.stringify(this.ProductFactoryList)).map(it => {
+      if (!this.ProductFileList || this.ProductFileList.length === 0 || !this.ProductFilePropertyList || this.ProductFilePropertyList.length === 0) return [];
+      const _ProductFileList = JSON.parse(JSON.stringify(this.ProductFileList)).map(it => {
         const { Constraint } = it;
         Constraint.ItemList = Constraint.ItemList.map(item => {
-          const Property = PropertyClass.getPerfectPropertyByImperfectProperty(item.Property, this.ProductFactoryPropertyList);
+          const Property = PropertyClass.getPerfectPropertyByImperfectProperty(item.Property, this.ProductFilePropertyList);
           return { ...item, Property };
         }).filter(_it => _it.Property);
         return { ...it, Constraint };
       });
-      return _ProductFactoryList;
+      return _ProductFileList;
     },
   },
   methods: {
@@ -77,32 +77,34 @@ export default {
       this.getProductOrderData();
       this.getPropertyList();
     },
-    onFactorySaveClick(data) {
-      this.$store.commit('productManage/setCurEditFactoryData', data);
-      const path = `/ProductFactoryAdd/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`;
+    onFileSaveClick(data) {
+      this.$store.commit('productManage/setCurEditFileData', data);
+      const path = `/ProductFileSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`;
       this.$router.push(path);
     },
-    async getProductOrderData(dataType = ['Factory']) { // 获取初始工厂列表信息
+    async getProductOrderData(dataType = ['File']) { // 获取初始工厂列表信息
       const ID = this.PartID ? this.PartID : this.ProductID;
       const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
       const _temp = { ID, List };
       this.loading = true;
-      await this.$store.dispatch('productManage/getProductFactoryList', _temp);
+      await this.$store.dispatch('productManage/getProductFileList', _temp);
       this.loading = false;
     },
     getPropertyList() {
-      this.$store.dispatch('productManage/getProductFactoryPropertyList', this.ProductID);
+      this.$store.dispatch('productManage/getProductFilePropertyList', this.ProductID);
     },
     onGoBackClick() {
       this.$router.replace('/ProductManageList');
     },
     onRemove(it, i) {
-      this.messageBox.warnCancelBox('确定删除该条设置吗', `默认工厂：[ ${it.defaultFactoryName} ]`, () => {
-        this.$store.dispatch('productManage/getProductFactoryPropertyRemove', [it.ID, i]);
+      const fileListStr = it.FileList.map(_it => _it.File.Name).join('、');
+      const msg = it.FileList.length > 2 ? `其中文件类目数量共 [ ${it.FileList.length} ]条` : `文件类目：[ ${fileListStr} ]`;
+      this.messageBox.warnCancelBox('确定删除该条文件类目设置吗', msg, () => {
+        this.$store.dispatch('productManage/getProductFilePropertyRemove', [it.ID, i]);
       });
     },
     onEdit(it) {
-      this.onFactorySaveClick(it);
+      this.onFileSaveClick(it);
     },
   },
   mounted() {
@@ -111,7 +113,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-product-list-page-product-factory-set-comp-wrap {
+.mp-erp-product-list-page-product-file-list-page-wrap {
   padding-left: 20px;
   padding-right: 6px;
   height: 100%;
@@ -133,6 +135,7 @@ export default {
       padding-top: 45px;
       > button {
         font-size: 14px;
+        width: 125px;
       }
     }
   }

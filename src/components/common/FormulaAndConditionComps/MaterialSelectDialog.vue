@@ -11,7 +11,7 @@
     class="mp-erp-comps-pruduct-module-factory-set-material-select-dialog-comp-wrap"
    >
     <div v-for="(lv1, index1) in optionList" :key="lv1.Name + '' + index1" class="lv1-item">
-      <span :title="lv1.Name">{{lv1.Name}}</span>
+      <span class="mp-common-title-wrap" :title="lv1.Name">{{lv1.Name}}</span>
       <ul>
         <li v-for="(lv2, index2) in lv1.List" :key="lv2.Name + '' + index2">
           <el-checkbox
@@ -121,6 +121,9 @@ export default {
         color: #444;
         flex: none;
         font-size: 15px;
+        &::before {
+          height: 16px;
+        }
       }
       > ul {
         > li {
