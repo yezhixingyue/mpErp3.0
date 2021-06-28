@@ -4,14 +4,16 @@
       <span>当前物料类型：</span>
       <span>{{materialTypeName}}</span>
     </header>
-    <CommonElementSetPageComp
-     v-if="PositionID"
-     :PositionID='PositionID'
-     :showGroup='false'
-     :canRemove='canRemove'
-     @elementSave='onElementSave'
-     @elementRemove='onElementRemove' />
-     <p class="tips-box"> <i class="el-icon-warning"></i> 物料类型添加界面元素时，如果添加的元素类型为选择项，不建议使用多选选择方式，如果使用多选选择方式也将按照单选方式处理</p>
+    <main>
+      <CommonElementSetPageComp
+      v-if="PositionID"
+      :PositionID='PositionID'
+      :showGroup='false'
+      :canRemove='canRemove'
+      @elementSave='onElementSave'
+      @elementRemove='onElementRemove' />
+      <p class="tips-box"> <i class="el-icon-warning"></i> 物料类型添加界面元素时，如果添加的元素类型为选择项，不建议使用多选选择方式，如果使用多选选择方式也将按照单选方式处理</p>
+    </main>
     <footer>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
@@ -77,9 +79,8 @@ export default {
 <style lang='scss'>
 .mp-erp-material-type-page-element-set-comp-wrap {
   padding-left: 20px;
-  position: relative;
   height: 100%;
-  padding-bottom: 105px;
+  padding-bottom: 25px;
   box-sizing: border-box;
   > header {
     padding: 30px 0;
@@ -95,13 +96,12 @@ export default {
     width: 800px;
     margin-top: 15px;
   }
+  > main {
+    min-height: calc(100% - 70px - 85px);
+  }
   > footer {
-    position: absolute;
     text-align: center;
     padding: 25px;
-    bottom: 20px;
-    left: 0;
-    right: 0;
     > button {
       width: 120px;
       height: 35px;

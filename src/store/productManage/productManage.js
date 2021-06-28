@@ -50,6 +50,12 @@ export default {
     ProductFileList: [],
     ProductFilePropertyList: [],
     curEditFileData: null, // 当前正在编辑的产品文件数据
+    /**
+     * 产品公式与子公式相关
+     */
+    curEditFormulaData: null,
+    curEditSubFormulaData: null,
+    curSubFormulaAddProperty: null,
   },
   getters: {
   },
@@ -184,6 +190,18 @@ export default {
         if (i > -1) state.ProductFileList.splice(i, 1, data);
       }
     },
+    /**
+     * 产品公式与子公式相关
+     */
+    setCurEditFormulaData(state, data) {
+      state.curEditFormulaData = data;
+    },
+    setCurEditSubFormulaData(state, data) {
+      state.curEditSubFormulaData = data;
+    },
+    setCurSubFormulaAddProperty(state, data) { // 添加子公式选中的属性
+      state.curSubFormulaAddProperty = data;
+    },
   },
   actions: {
     async getManageProductList({ state, commit }, page = 1) { // 获取产品列表数据
@@ -276,7 +294,7 @@ export default {
     },
     async getProductFactoryPropertyList({ commit }, ProductID) { // 获取设置产品工厂条件属性列表数据
       commit('setProductFactoryPropertyList', []);
-      const propertyList = await PropertyClass.getPropertyList(ProductID, 12);
+      const propertyList = await PropertyClass.getPropertyList({ ProductID, UseModule: 12 });
       if (propertyList) {
         commit('setProductFactoryPropertyList', propertyList);
       }
@@ -299,7 +317,7 @@ export default {
     },
     async getProductFilePropertyList({ commit }, ProductID) { // 获取设置产品文件关联属性列表数据
       commit('setProductFilePropertyList', []);
-      const propertyList = await PropertyClass.getPropertyList(ProductID, 13);
+      const propertyList = await PropertyClass.getPropertyList({ ProductID, UseModule: 13 });
       if (propertyList) {
         commit('setProductFilePropertyList', propertyList);
       }

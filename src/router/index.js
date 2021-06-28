@@ -507,14 +507,24 @@ export const routes = [
             component: () => import('../views/ProductManage/FilePages/ProductFileSetPage.vue'),
           },
           {
-            path: '/ProductFormulaSet/:ProductID/:PartID/:name/:type/:times',
+            path: '/ProductFormulaList/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductFormulaList',
+            meta: {
+              title: '公式列表 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/Formula/ProductFormulaListPage.vue'),
+          },
+          {
+            path: '/ProductFormulaSet/:ProductID/:PartID/:name/:type/:moduleIndex/:times',
             name: 'ProductFormulaSet',
             meta: {
               title: '公式设置 - 产品管理',
               requiresAuth: true,
               // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
             },
-            component: () => import('../views/ProductManage/ProductFormulaSetPage.vue'),
+            component: () => import('../views/ProductManage/Formula/ProductFormulaSetPage.vue'),
           },
           {
             path: '/ProductInteractionSet/:ProductID/:PartID/:name/:type/:times',

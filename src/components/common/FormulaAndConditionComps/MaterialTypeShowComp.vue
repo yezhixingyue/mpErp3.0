@@ -1,14 +1,22 @@
 <template>
   <ul class="mp-erp-common-comps-on-element-select-dialog-group-type-show-item-comp-wrap">
-    <li v-for="el in dataList" :key="el.StoredContent || el.ID">
-      <span
-        :class="{'has-child': el.FixedTypeList, disabled: !el.StoredContent, 'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)}"
-        class="is-element" @click="onItemClick(el)">{{getName(el)}}</span>
-      <div v-if="el.FixedTypeList">
-        （<span v-for="item in el.FixedTypeList" class="blue-span" :class="selectedElementIDs.includes(item.StoredContent)?'is-disabled':''"
-        @click="onItemClick(item)" :key="item.StoredContent">{{getName(item)}}</span>）
-      </div>
-    </li>
+    <template v-if="useType === 'formula'">
+      <li v-for="it in formulaMaterialList" :key="it.MaterialType.ID" class="formula-type">
+        <label>{{it.MaterialType.Name}}：</label>
+        <span class="is-element" v-for="el in it.List" :key="el.Element.ID" @click="onItemClick(el)">{{getName(el)}}</span>
+      </li>
+    </template>
+    <template v-else>
+      <li v-for="el in dataList" :key="el.StoredContent || el.ID">
+        <span
+          :class="{'has-child': el.FixedTypeList, disabled: !el.StoredContent, 'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)}"
+          class="is-element" @click="onItemClick(el)">{{getName(el)}}</span>
+        <div v-if="el.FixedTypeList">
+          （<span v-for="item in el.FixedTypeList" class="blue-span" :class="selectedElementIDs.includes(item.StoredContent)?'is-disabled':''"
+          @click="onItemClick(item)" :key="item.StoredContent">{{getName(item)}}</span>）
+        </div>
+      </li>
+    </template>
   </ul>
 </template>
 
@@ -26,48 +34,23 @@ export default {
       type: Array,
       default: () => [],
     },
+    useType: {
+      type: String,
+      default: 'condition',
+    },
   },
   computed: {
-    // groupList() {
-    //   if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
-    //   const _temp = [];
-    //   const _list = JSON.parse(JSON.stringify(this.dataList));
-    //  _list.forEach(it => {
-    //     const isPropertyFixedType = it.FixedType || it.FixedType === 0; // 是否常量
-    //     const t = _temp.find(_it => _it.Group.ID === it.Group.ID && _it.Group.Name === it.Group.Name);
-    //     if (t) {
-    //       if (it.Element) {
-    //         const item = isPropertyFixedType ? { ...it.Element, Group: it.Group } : it;
-    //         if (isPropertyFixedType) {
-    //           const _t = t.List.find(el => {
-    //             let bool = false;
-    //             if (el.Element) bool = el.Element.ID === item.ID;
-    //             if (!el.Element && el.FixedTypeList) bool = el.ID === item.ID;
-    //             return bool;
-    //           });
-    //           if (_t) {
-    //             if (!_t.FixedTypeList) _t.FixedTypeList = [];
-    //             _t.FixedTypeList.push(it);
-    //           } else {
-    //             t.List.push({ ...item, FixedTypeList: [it] });
-    //           }
-    //         } else {
-    //           t.List.push(it);
-    //         }
-    //       } else {
-    //         if (!t.GroupProps) t.GroupProps = [];
-    //         t.GroupProps.push(it);
-    //       }
-    //     } else if (it.Element) {
-    //       const item = isPropertyFixedType ? { ...it.Element, Group: it.Group } : it;
-    //       const _item = isPropertyFixedType ? { ...item, FixedTypeList: [it] } : it;
-    //       _temp.push({ Group: it.Group, List: [_item] });
-    //     } else {
-    //       _temp.push({ Group: { ...it.Group, GroupProps: [it] }, List: [] });
-    //     }
-    //   });
-    //   return _temp;
-    // },
+    formulaMaterialList() {
+      if (!this.dataList || this.useType !== 'formula' || this.dataList.length === 0) return [];
+      const list = [];
+      this.dataList.forEach(it => {
+        const { MaterialType } = it;
+        const _item = list.find(_it => _it.MaterialType.ID === MaterialType.ID);
+        if (_item) _item.List.push(it);
+        else list.push({ MaterialType, List: [it] });
+      });
+      return list;
+    },
   },
   methods: {
     getName(item) {
@@ -116,6 +99,15 @@ export default {
             margin: 0 12px;
             font-size: 12px;
           }
+        }
+      }
+    }
+
+    &.formula-type {
+      > span {
+        margin-right: 28px;
+        &:last-of-type {
+          margin-right: 0;
         }
       }
     }

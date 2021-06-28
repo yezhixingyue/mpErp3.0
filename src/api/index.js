@@ -423,6 +423,9 @@ const api = {
   getProductFileRemove(id) { // DELETE /Api/ProductFile/Remove 删除产品文件关联
     return instance.delete(`/Api/ProductFile/Remove?id=${id}`);
   },
+  getSubformulaUseableProperty(productID) { // GET /Api/Formula/SubformulaUseableProperty 获取可使用子公式的属性列表
+    return instance.get(`/Api/Formula/SubformulaUseableProperty?productID=${productID}`);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表
@@ -542,8 +545,8 @@ const api = {
   },
   /* 计算公式相关api
   ----------------------------------------------------------------------------------- */
-  getFormulaPropertyList(positionID, module = 0) { // GET /Api/Property/List  获取公式属性列表
-    return instance.get(`/Api/Property/List?module=${module}&positionID=${positionID}`);
+  getFormulaPropertyList(data) { // post /Api/Property/List  获取公式属性列表
+    return instance.post('/Api/Property/List', data);
   },
   getFormulaSave(data) { // POST /Api/Formula/Save 公式保存
     return instance.post('/Api/Formula/Save', data);

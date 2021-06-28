@@ -26,7 +26,7 @@
           <!-- 工艺类型 -->
           <CraftTypeShowComp v-else-if="it.Type === 4" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
           <!-- 物料类型 -->
-          <MaterialTypeShowComp v-else-if="it.Type === 5" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <MaterialTypeShowComp :useType='useType' v-else-if="it.Type === 5" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
           <!-- 尺寸组类型 - 共用元素组组件 -->
           <ElementGroupTypeShowComp v-else-if="it.Type === 6" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
           <!-- 其它类型 -->
@@ -75,6 +75,10 @@ export default {
     selectedElementIDs: {
       type: Array,
       default: () => [],
+    },
+    useType: {
+      type: String,
+      default: 'condition',
     },
   },
   data() {

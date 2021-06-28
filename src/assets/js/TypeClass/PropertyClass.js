@@ -209,8 +209,8 @@ export default class PropertyClass {
     return { ...property, TipsContent, AvailableValueList };
   }
 
-  static async getPropertyList(PositionID, moduleIndex) { // 获取弹窗属性列表并对其进行数据转换：附加校验和提示信息
-    const resp = await api.getFormulaPropertyList(PositionID, moduleIndex).catch(() => {});
+  static async getPropertyList(data) { // 获取弹窗属性列表并对其进行数据转换：附加校验和提示信息
+    const resp = await api.getFormulaPropertyList(data).catch(() => {});
     if (resp && resp.status === 200 && resp.data.Status === 1000) {
       const t = resp.data.Data.find(it => it.OperatorList && it.OperatorList.length > 10);
       console.log(t);

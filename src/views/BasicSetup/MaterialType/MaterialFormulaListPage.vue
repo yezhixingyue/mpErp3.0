@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import FormulaTableCrtlComp from '@/components/Material/MaterialType/FormulaTableCrtlComp.vue';
+import FormulaTableCrtlComp from '@/components/common/FormulaAndConditionComps/FormulaTableCrtlComp.vue';
 
 export default {
   data() {
@@ -51,7 +51,6 @@ export default {
 <style lang='scss'>
 .mp-erp-material-type-page-formula-list-page-wrap {
   padding-left: 20px;
-  position: relative;
   height: 100%;
   padding-bottom: 105px;
   box-sizing: border-box;
@@ -66,12 +65,9 @@ export default {
     font-weight: bold;
   }
   > footer {
-    position: absolute;
     text-align: center;
     padding: 25px;
-    bottom: 20px;
-    left: 0;
-    right: 0;
+    padding-top: 60px;
     > button {
       width: 120px;
       height: 35px;

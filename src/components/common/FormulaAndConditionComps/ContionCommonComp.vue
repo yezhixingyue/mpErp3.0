@@ -34,7 +34,8 @@
             <el-radio-button :label="1">满足所有条件</el-radio-button>
             <el-radio-button :label="2">满足任一条件</el-radio-button>
           </el-radio-group>
-          <FormulaPanelElementSelectDialog :visible.sync='visible' :list='PropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs' />
+          <FormulaPanelElementSelectDialog  useType='condition'
+           :visible.sync='visible' :list='PropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs' />
         </main>
       </section>
     </template>

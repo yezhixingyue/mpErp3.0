@@ -1,14 +1,12 @@
 <template>
   <section class="mp-erp-material-type-page-formula-set-comp-wrap">
     <header>
-      <span class="title">公式列表</span>
-      <span class="blue-span" @click="onSetupClick(null)">+添加公式</span>
+      <span class="title">子公式列表</span>
+      <span class="blue-span" @click="onSubFormulaAddClick">+添加子公式</span>
     </header>
     <main>
       <el-table
         class="mp-erp-common-formula-table-comp-wrap"
-        :max-height="formulaH"
-        :height="formulaH"
         stripe
         border
         :data="localTableData"
@@ -30,11 +28,14 @@
           <span v-show="!loading">暂无公式</span>
         </div>
       </el-table>
+      <SubFormulaAddAndSelectDialog :visible.sync='visible' :PropertyList='PropertyList' @submit='onSelectCompleted' />
     </main>
   </section>
 </template>
 
 <script>
+import SubFormulaAddAndSelectDialog from './SubFormulaAddAndSelectDialog.vue';
+
 export default {
   props: {
     PositionID: {
@@ -50,10 +51,15 @@ export default {
       default: '',
     },
   },
+  components: {
+    SubFormulaAddAndSelectDialog,
+  },
   data() {
     return {
       localTableData: [],
       loading: false,
+      PropertyList: null,
+      visible: false,
     };
   },
   methods: {
@@ -85,9 +91,27 @@ export default {
         this.localTableData = resp.data.Data;
       }
     },
+    onSubFormulaAddClick() {
+      this.visible = true;
+      this.getPropertyList();
+    },
+    async getPropertyList() {
+      if (this.PropertyList && Array.isArray(this.PropertyList) && this.PropertyList.length > 0) return;
+      const resp = await this.api.getSubformulaUseableProperty(this.PositionID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        this.PropertyList = resp.data.Data;
+      }
+    },
+    onSelectCompleted(selectedItem) { // 选择属性完成并开始添加子公式跳转页面
+      if (!selectedItem) return;
+      this.$emit('add', selectedItem);
+      this.visible = false;
+    },
   },
   mounted() {
     this.getFormulaList();
+    const oTable = document.querySelector('.mp-erp-material-type-page-formula-set-comp-wrap .mp-erp-common-formula-table-comp-wrap .el-table__body-wrapper');
+    if (oTable) oTable.style.minHeight = `${this.formulaH}px`;
   },
   // activated() {
   //   this.getFormulaList();

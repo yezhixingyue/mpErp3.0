@@ -7,6 +7,9 @@
     default-first-option
     :allow-create='Allow'
     :placeholder='placeholder'
+    @blur.native='onBlur'
+    @change.native='onBlur'
+    ref="oSelect"
     size="small"
     class="mp-erp-number-type-element-display-select-comp">
     <el-option
@@ -55,6 +58,19 @@ export default {
     },
   },
   methods: {
+    onBlur(e) {
+      this.$emit('change', e.target.value);
+    },
+  },
+  mounted() {
+    if (this.Allow) {
+      const _func = this.$refs.oSelect.onInputChange;
+      const oInpBox = this.$refs.oSelect.$children.find(it => it.$el.className.includes('el-input'));
+      this.$refs.oSelect.onInputChange = () => {
+        if (oInpBox) this.$emit('change', oInpBox.value);
+        _func();
+      };
+    }
   },
 };
 </script>

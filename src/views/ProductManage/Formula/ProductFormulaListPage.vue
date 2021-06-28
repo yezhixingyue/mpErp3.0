@@ -1,10 +1,13 @@
 <template>
-  <section class="mp-erp-product-list-page-product-factory-set-comp-wrap">
+  <section class="mp-erp-product-list-page-product-formula-list-page-wrap">
     <header>
       <span>当前{{titleType}}：</span>
       <span>{{ProductName}}</span>
     </header>
     <main>
+      <FormulaTableCrtlComp @setup='onFormulaSaveClick' v-if="ProductID" :formulaH='222' :PositionID='ProductID' PositionType='ProductID' />
+      <SubFormulaTableCrtlComp
+       @setup='onSubFormulaSaveClick' v-if="ProductID" :formulaH='222' @add='onSubFormulaAddClick' :PositionID='ProductID' PositionType='ProductID' />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -14,6 +17,8 @@
 
 <script>
 import { mapState } from 'vuex';
+import FormulaTableCrtlComp from '@/components/common/FormulaAndConditionComps/FormulaTableCrtlComp.vue';
+import SubFormulaTableCrtlComp from '@/components/common/FormulaAndConditionComps/SubFormulaTableCrtlComp.vue';
 
 export default {
   data() {
@@ -22,9 +27,12 @@ export default {
       PartID: '',
       ProductName: '',
       titleType: '', // 产品 | 部件
+      FormulaList: [],
     };
   },
   components: {
+    FormulaTableCrtlComp,
+    SubFormulaTableCrtlComp,
   },
   computed: {
     ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
@@ -54,31 +62,22 @@ export default {
       this.titleType = type;
       // this.getProductOrderData();
     },
-    // async getProductOrderData(dataType = ['Order']) { // 获取初始物料、常规尺寸与尺寸组信息
-    //   const ID = this.PartID ? this.PartID : this.ProductID;
-    //   const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
-    //   const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
-    //   const _temp = { ID, List };
-    //   const resp = await _fetchFunc(_temp).catch(() => {});
-    //   if (resp && resp.data && resp.data.Status === 1000) {
-    //     // 获取数据成功
-    //     const { DisplayList } = resp.data.Data;
-    //     if (dataType.includes('Order') && DisplayList) this.DisplayList = DisplayList.map(it => ({ ...it, key: Math.random().toString(36).slice(-8) }));
-    //   }
-    // },
-    // async setDisplayOrderSubmit(list) { // 保存排序
-    //   if (!list || list.length === 0) return;
-    //   const { ProductID, PartID } = this;
-    //   const List = list.map((it, Index) => ({ ...it, Index }));
-    //   const temp = { ProductID, PartID, List };
-    //   const resp = await this.api.getProductSetDisplayOrder(temp).catch(() => {});
-    //   if (resp && resp.data && resp.data.Status === 1000) {
-    //     const cb = () => {
-    //       this.onGoBackClick();
-    //     };
-    //     this.messageBox.successSingle('设置成功', cb, cb);
-    //   }
-    // },
+    onFormulaSaveClick(data) {
+      this.$store.commit('productManage/setCurEditFormulaData', data);
+      const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/1/${Date.now()}`;
+      console.log(path);
+      this.$router.push(path);
+    },
+    onSubFormulaSaveClick(data) {
+      this.$store.commit('productManage/setCurEditSubFormulaData', data);
+      const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/2/${Date.now()}`;
+      this.$router.push(path);
+    },
+    onSubFormulaAddClick(prop) {
+      this.$store.commit('productManage/setCurSubFormulaAddProperty', prop);
+      const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/2/${Date.now()}`;
+      this.$router.push(path);
+    },
     onGoBackClick() {
       this.$router.replace('/ProductManageList');
     },
@@ -89,7 +88,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-product-list-page-product-factory-set-comp-wrap {
+.mp-erp-product-list-page-product-formula-list-page-wrap {
   padding-left: 20px;
   padding-right: 6px;
   height: 100%;
@@ -111,6 +110,9 @@ export default {
   > main {
     flex: 1;
     padding-top: 15px;
+    .mp-erp-common-comps-formula-table-common-comp-wrap {
+      margin-bottom: 55px;
+    }
   }
   > footer {
     text-align: center;
