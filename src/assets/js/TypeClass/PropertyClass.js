@@ -302,8 +302,13 @@ export default class PropertyClass {
       const _name = DisplayContent.replace(/\[|\]/g, '');
       let _val = '';
       if (ValueList) {
-        if (ValueList.length === 1 && getValueIsOrNotNumber(ValueList[0].Value)) {
-          _val = ValueList[0].Value;
+        if (ValueList.length === 1) {
+          if ((ValueList[0].Value || ValueList[0].Value === 0) && getValueIsOrNotNumber(ValueList[0].Value)) {
+            _val = ValueList[0].Value;
+          }
+          if (!ValueList[0].Value && ValueList[0].Property && ValueList[0].Property.DisplayContent) {
+            _val = ValueList[0].Property.DisplayContent.replace(/\[|\]/, '');
+          }
         } else if (OptionList) {
           _val = ValueList.map(_it => OptionList.find(option => option.First === _it.Value)).filter(_it => _it).map(_it => _it.Second).join(' ');
           if (ValueType === 6) { // 为物料类型 对物料类型数据进行组合
@@ -321,5 +326,18 @@ export default class PropertyClass {
     }).filter(it => it);
 
     return _list;
+  }
+
+  static getPropIDsObj(data) {
+    if (!data) return {};
+    const temp = {};
+    Object.keys(data).forEach(key => {
+      if (['Product', 'Part', 'Group', 'Craft', 'Price'].includes(key)) {
+        if (data[key] && data[key].ID) temp[`${key}ID`] = data[key].ID;
+      } else if (['ProductID', 'PartID', 'GroupID', 'CraftID', 'PriceID'].includes(key)) {
+        if (data[key] || data[key] === 0) temp[key] = data[key];
+      }
+    });
+    return temp;
   }
 }

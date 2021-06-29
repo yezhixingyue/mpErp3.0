@@ -3,7 +3,7 @@
     <div class="left mp-scroll-wrap" :style="`width:${leftW}`" ref="oLeft">
       <slot name="left"></slot>
     </div>
-    <span class="vertical-line" @mousedown="onLineDown" :class="moving?'moving':''"><i></i></span>
+    <span v-if="!single" class="vertical-line" @mousedown="onLineDown" :class="moving?'moving':''"><i></i></span>
     <div class="right mp-scroll-wrap">
       <slot name="right"></slot> <!-- 使用方式： <template v-slot:right><p>右侧区域</p></template> -->
     </div>
@@ -16,6 +16,10 @@ export default {
     leftWidth: {
       type: String,
       default: '49%',
+    },
+    single: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

@@ -1,7 +1,10 @@
 <template>
   <ul class="mp-erp-common-comps-on-element-select-dialog-craft-type-show-item-comp-wrap">
-    <li v-for="it in craftTypeList" :key="it.StoredContent">
-      <label class="is-element" @click="onItemClick(it)">{{it.Craft.Name}}
+    <li v-for="it in craftTypeList" :key="it.StoredContent || it.Craft.ID">
+      <label
+        class="is-element"
+        :class="{'is-disabled': it.StoredContent&&selectedElementIDs.includes(it.StoredContent), 'no-element': !it.StoredContent}"
+        @click="onItemClick(it)">{{it.Craft.Name}}
         <template v-if="it._ElementList || it._ElementGroupList">：</template>
       </label>
       <div>
@@ -37,22 +40,36 @@ export default {
     craftTypeList() {
       if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
       const _temp = [];
-      const _unjoinedList = [];
       const _list = JSON.parse(JSON.stringify(this.dataList));
-      _list.forEach(it => {
-        const { Craft, Element, Group, FixedType } = it;
-        if (Craft && !Element && !Group && !(FixedType || FixedType === 0)) { // 工艺
-          _temp.push(it);
+      const getOneNewCraft = (Craft) => ({ Craft, _ElementList: [], _ElementGroupList: [] });
+      const addOneNewCraftToList = (Craft) => {
+        const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
+        if (!t) _temp.push(Craft);
+        else if (!t.StoredContent && Craft.StoredContent) {
+          const { _ElementList, _ElementGroupList } = t;
+          const _craft = { ...Craft, _ElementList, _ElementGroupList };
+          const i = _temp.findIndex(_it => Craft.ID === _it.Craft.ID);
+          _temp.splice(i, 1, _craft);
         }
-        if (Craft && Element && !Group && !(FixedType || FixedType === 0)) { // 工艺上元素
+      };
+      _list.forEach(it => {
+        const { Craft, Element, Group, FixedType, Formula } = it;
+        const ElementItem = Element || Formula;
+        if (Craft && !Element && !Group && !(FixedType || FixedType === 0) && !Formula) { // 工艺
+          addOneNewCraftToList(it);
+        }
+        if (Craft && Element && !Group && !(FixedType || FixedType === 0) && !Formula) { // 工艺上元素
           const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
           if (t) {
             if (!t._ElementList) t._ElementList = [];
             t._ElementList.push(it);
+          } else {
+            const _craft = getOneNewCraft(Craft);
+            _craft._ElementList.push(it);
+            addOneNewCraftToList(_craft);
           }
-          _unjoinedList.push(it);
         }
-        if (Craft && Element && !Group && (FixedType || FixedType === 0)) { // 工艺上元素常量
+        if (Craft && Element && !Group && (FixedType || FixedType === 0) && !Formula) { // 工艺上元素常量
           const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
           if (t) {
             const _ele = t._ElementList.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === Element.ID);
@@ -64,10 +81,14 @@ export default {
               const _item = { ...Element, _FixedTypeList: [it] };
               t._ElementList.push(_item);
             }
+          } else {
+            const _craft = getOneNewCraft();
+            const _item = { ...Element, _FixedTypeList: [it] };
+            _craft._ElementList.push(_item);
+            addOneNewCraftToList(_craft);
           }
-          _unjoinedList.push(it);
         }
-        if (Craft && Element && Group && !(FixedType || FixedType === 0)) { // 工艺上元素组
+        if (Craft && Element && Group && !(FixedType || FixedType === 0) && !Formula) { // 工艺上元素组
           const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
           if (t) {
             const _item = { ...Group, List: [it] };
@@ -75,10 +96,14 @@ export default {
             const _group = t._ElementGroupList.find(_it => _it.ID === Group.ID);
             if (_group) _group.List.push(it);
             else t._ElementGroupList.push(_item);
+          } else {
+            const _craft = getOneNewCraft(Craft);
+            const _item = { ...Group, List: [it] };
+            _craft._ElementGroupList.push(_item);
+            addOneNewCraftToList(_craft);
           }
-          _unjoinedList.push(it);
         }
-        if (Craft && !Element && Group && (FixedType || FixedType === 0)) { // 工艺上元素组常量
+        if (Craft && !ElementItem && Group && (FixedType || FixedType === 0)) { // 工艺上元素组常量
           const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
           if (t) {
             const _item = { ...Group, List: [], _FixedTypeList: [it] };
@@ -90,28 +115,37 @@ export default {
             } else {
               t._ElementGroupList.push(_item);
             }
-            _unjoinedList.push(it);
+          } else {
+            const _craft = getOneNewCraft(Craft);
+            const _item = { ...Group, List: [], _FixedTypeList: [it] };
+            _craft._ElementGroupList.push(_item);
+            addOneNewCraftToList(_craft);
           }
-          _unjoinedList.push(it);
         }
-        if (Craft && Element && Group && (FixedType || FixedType === 0)) { // 工艺元素组中元素常量
+        if (Craft && ElementItem && Group && (FixedType || FixedType === 0)) { // 工艺元素组中元素常量 及 子公式
           const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
           if (t) {
             const _group = t._ElementGroupList.find(_it => _it.ID === Group.ID);
             if (_group) {
-              const _ele = _group.List.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === Element.ID);
+              const _ele = _group.List.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === ElementItem.ID);
               if (_ele) {
                 if (!_ele._FixedTypeList) _ele._FixedTypeList = [];
                 _ele._FixedTypeList.push(it);
               } else {
                 // 此处处理不可选择的元素类型
-                const _item = { ...Element, _FixedTypeList: [it] };
+                const _item = { ...ElementItem, _FixedTypeList: [it] };
                 _group.List.push(_item);
               }
+            } else {
+              const _item = { ...Group, List: [{ ...ElementItem, _FixedTypeList: [it] }], _FixedTypeList: [] };
+              t._ElementGroupList.push(_item);
             }
-            _unjoinedList.push(it);
+          } else {
+            const _craft = getOneNewCraft(Craft);
+            const _item = { ...Group, List: [{ ...ElementItem, _FixedTypeList: [it] }], _FixedTypeList: [] };
+            _craft._ElementGroupList.push(_item);
+            addOneNewCraftToList(_craft);
           }
-          _unjoinedList.push(it);
         }
         // 还需2种情况判断： 1. 工艺元素常量 2. 工艺元素组上常量 --- 已补充
       });
@@ -123,6 +157,7 @@ export default {
       return PropertyClass.getProperyName(item);
     },
     onItemClick(it) {
+      if (!it.StoredContent) return;
       this.$emit('submit', it);
     },
   },
@@ -158,10 +193,13 @@ export default {
       color: #585858 !important;
       pointer-events: none;
     }
-    .is-disabled {
+    .is-disabled, .no-element {
       user-select: none;
       color: #cbcbcb !important;
       pointer-events: none;
+    }
+    .no-element {
+      color: #585858 !important;
     }
   }
 }

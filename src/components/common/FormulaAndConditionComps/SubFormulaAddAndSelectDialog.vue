@@ -26,6 +26,7 @@
         </li>
       </ul>
     </div>
+    <p class="tips-box is-pink"><i class="el-icon-warning"></i> 注：子公式目标设定后不允许更改</p>
   </CommonDialogComp>
 </template>
 
@@ -102,8 +103,8 @@ export default {
   .el-dialog__body {
     padding-left: 55px;
     padding-top: 35px;
-    padding-bottom: 90px;
-    height: 420px;
+    padding-bottom: 50px;
+    height: 460px;
     overflow-y: auto;
     .item {
       margin-bottom: 8px;
@@ -164,6 +165,13 @@ export default {
           }
         }
       }
+    }
+    position: relative;
+    > .tips-box {
+      position: absolute;
+      bottom: 5px;
+      width: 500px;
+      left: 150px;
     }
   }
 }

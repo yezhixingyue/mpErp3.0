@@ -1,25 +1,51 @@
 <template>
-  <section class="mp-erp-material-type-page-formula-set-comp-wrap">
+  <section class="mp-erp-material-type-page-sub-formula-set-comp-wrap">
     <header>
       <span class="title">子公式列表</span>
       <span class="blue-span" @click="onSubFormulaAddClick">+添加子公式</span>
     </header>
     <main>
       <el-table
-        class="mp-erp-common-formula-table-comp-wrap"
+        class="mp-erp-common-sub-formula-table-comp-wrap"
         stripe
         border
-        :data="localTableData"
-        key="mp-erp-common-formula-table-comp-wrap"
+        :data="tableDataList"
+        key="mp-erp-common-sub-formula-table-comp-wrap"
         fit
         style="width: 100%"
       >
-        <el-table-column prop="Name" label="名称" width="280"></el-table-column>
+        <el-table-column prop="Name" label="名称" width="220"></el-table-column>
+        <el-table-column prop="Content" label="数据筛选"  min-width="240">
+          <template slot-scope="scope">
+            <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box'>
+              <div slot="content">
+                <p v-for="(it, i) in scope.row.conditionText" :key="it.name + 'tips' + i">
+                  <span v-if="i > 0" class="type">{{scope.row.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+                  <span class="name">{{it.name}}</span>
+                  <span class="is-origin">{{it.operator}}</span>
+                  <span class="val">{{it.val}}</span>
+                  <span v-if="i === scope.row.conditionText.length - 1" style="margin-left:2px"> 。</span>
+                  <span v-else style="margin-left:2px">；</span>
+                </p>
+              </div>
+              <div class="common-property-condition-text-content-box">
+                <p v-for="(it, i) in scope.row.conditionText" :key="it.name + 'content' + i">
+                  <span v-if="i > 0" class="type">{{scope.row.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+                  <span>{{it.name}}</span>
+                  <span class="is-origin">{{it.operator}}</span>
+                  <span>{{it.val}}</span>
+                </p>
+              </div>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column prop="Content" label="公式"  min-width="240" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="Unit" label="单位"  width="120" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="UseTimes" label="使用次数"  width="160" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="Target" label="子公式目标"  width="220" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="Unit" label="单位"  width="80" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="UseTimes" label="使用次数"  width="100" show-overflow-tooltip></el-table-column>
         <el-table-column label="操作" width="240" class-name='menu-column'>
           <div class="menu-list" slot-scope="scope">
+            <span class="icon-span" @click="onFilterClick(scope.row)"><i></i>数据筛选</span>
             <span class="icon-span" @click="onSetupClick(scope.row)"><i></i>编辑</span>
             <span class="icon-span" @click="onRemoveClick(scope.row)"><i></i>删除</span>
           </div>
@@ -34,6 +60,7 @@
 </template>
 
 <script>
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import SubFormulaAddAndSelectDialog from './SubFormulaAddAndSelectDialog.vue';
 
 export default {
@@ -60,11 +87,41 @@ export default {
       loading: false,
       PropertyList: null,
       visible: false,
+      ComparePropertyList: [],
     };
+  },
+  computed: {
+    tableDataList() {
+      if (!this.localTableData || this.localTableData.length === 0) return [];
+      if (!this.ComparePropertyList || this.ComparePropertyList.length === 0) return this.localTableData;
+      const list = this.localTableData.map(it => {
+        if (!it.Constraint) return { ...it, conditionText: '无' };
+        const Constraint = {
+          ...it.Constraint,
+          ItemList: it.Constraint.ItemList.map(item => {
+            let { ValueList } = item;
+            if (ValueList && ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Property) {
+              const Property = PropertyClass.getPerfectPropertyByImperfectProperty(ValueList[0].Property, this.ComparePropertyList);
+              if (Property) ValueList = [{ Property }];
+            }
+            return {
+              ...item,
+              Property: PropertyClass.getPerfectPropertyByImperfectProperty(item.Property, this.ComparePropertyList),
+              ValueList,
+            };
+          }).filter(item => item.Property),
+        };
+        return { ...it, Constraint, conditionText: this.getConditionText(Constraint.ItemList) };
+      });
+      return list;
+    },
   },
   methods: {
     onSetupClick(data) { // data 为null时为新增 有数据时为编辑
       this.$emit('setup', data);
+    },
+    onFilterClick(data) { // data 为null时为新增 有数据时为编辑
+      this.$emit('filter', { ...data, ComparePropertyList: this.ComparePropertyList });
     },
     async onRemoveClick(data) {
       if (!data || !data.ID) return;
@@ -85,7 +142,7 @@ export default {
     async getFormulaList() {
       if (!this.PositionID || this.loading) return;
       this.loading = true;
-      const resp = await this.api.getFormulaList({ [this.PositionType]: this.PositionID }).catch(() => {});
+      const resp = await this.api.getFormulaList({ [this.PositionType]: this.PositionID, UseModule: 2 }).catch(() => {});
       this.loading = false;
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         this.localTableData = resp.data.Data;
@@ -102,15 +159,25 @@ export default {
         this.PropertyList = resp.data.Data;
       }
     },
+    async getComparePropertyList() {
+      const propertyList = await PropertyClass.getPropertyList({ [this.PositionType]: this.PositionID, UseModule: 16 });
+      if (propertyList) this.ComparePropertyList = propertyList;
+    },
     onSelectCompleted(selectedItem) { // 选择属性完成并开始添加子公式跳转页面
       if (!selectedItem) return;
       this.$emit('add', selectedItem);
       this.visible = false;
     },
+    getConditionText(list) {
+      const str = PropertyClass.getPropertyConditionText(list, this.PropertyList);
+      return str || '无';
+    },
   },
   mounted() {
     this.getFormulaList();
-    const oTable = document.querySelector('.mp-erp-material-type-page-formula-set-comp-wrap .mp-erp-common-formula-table-comp-wrap .el-table__body-wrapper');
+    this.getComparePropertyList();
+    // eslint-disable-next-line max-len
+    const oTable = document.querySelector('.mp-erp-material-type-page-sub-formula-set-comp-wrap .mp-erp-common-sub-formula-table-comp-wrap .el-table__body-wrapper');
     if (oTable) oTable.style.minHeight = `${this.formulaH}px`;
   },
   // activated() {
@@ -119,7 +186,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-material-type-page-formula-set-comp-wrap {
+.mp-erp-material-type-page-sub-formula-set-comp-wrap {
   > header {
     font-size: 14px;
     display: flex;
@@ -142,7 +209,7 @@ export default {
   > main {
     padding-right: 10px;
     padding-top: 30px;
-    .mp-erp-common-formula-table-comp-wrap {
+    .mp-erp-common-sub-formula-table-comp-wrap {
       border-top-color: rgb(230, 230, 230);
       border-left: 1px solid rgb(230, 230, 230);
       .el-table__header-wrapper thead tr th {
@@ -168,7 +235,6 @@ export default {
                 align-items: center;
                 justify-content: flex-start;
                 padding-right: 12px;
-                padding-left: 60px;
                 font-size: 12px;
                 > span.icon-span {
                   color: #a2a2a2;
@@ -189,6 +255,9 @@ export default {
                   }
                   &:last-of-type > i {
                     background: url(../../../assets/images/del.png) no-repeat center center/12px 16px;
+                  }
+                  &:first-of-type > i {
+                    background: url(../../../assets/images/filter.png) no-repeat center center/16px 15px;
                   }
                 }
                 > span.mp-common-tip-span-btn-box {

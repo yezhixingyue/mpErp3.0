@@ -863,6 +863,12 @@ public enum MultiLevelClassType : byte
         交互条件
         InteractionConstraint = 14
 
+        子公式筛选数据
+        SubFormulaConstraint = 15
+
+        子公式对比条件
+        SubFormulaCompareConstraint = 16
+
 ## 运算符号
 
         等于

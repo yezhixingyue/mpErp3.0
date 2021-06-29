@@ -3,7 +3,8 @@
     <template v-if="useType === 'formula'">
       <li v-for="it in formulaMaterialList" :key="it.MaterialType.ID" class="formula-type">
         <label>{{it.MaterialType.Name}}：</label>
-        <span class="is-element" v-for="el in it.List" :key="el.Element.ID" @click="onItemClick(el)">{{getName(el)}}</span>
+        <span class="is-element" v-for="el in it.List" :class="{'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)}"
+         :key="el.Element.ID" @click="onItemClick(el)">{{getName(el)}}</span>
       </li>
     </template>
     <template v-else>

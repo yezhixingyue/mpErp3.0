@@ -161,7 +161,7 @@ export default {
     user-select: none;
   }
   &.isMultiple {
-    width: 235px;
+    width: 255px;
     & + .del-btn {
       margin-left: 25px;
     }

@@ -560,6 +560,9 @@ const api = {
   getFormulaRemove(id) { // DELETE /Api/Formula/Remove    公式删除
     return instance.delete(`/Api/Formula/Remove?id=${id}`);
   },
+  getFormulaFilterSave(data) { // POST /Api/Formula/FilterSave 子公式筛选条件保存
+    return instance.post('/Api/Formula/FilterSave', data);
+  },
   /* 二级分类列表api
   ----------------------------------------------------------------------------------- */
   getClassSave(data) { // POST /Api/Class/Save  多级分类保存

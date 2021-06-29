@@ -47,6 +47,10 @@ export default {
       type: String,
       default: '',
     },
+    UseModule: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -77,7 +81,7 @@ export default {
     async getFormulaList() {
       if (!this.PositionID || this.loading) return;
       this.loading = true;
-      const resp = await this.api.getFormulaList({ [this.PositionType]: this.PositionID }).catch(() => {});
+      const resp = await this.api.getFormulaList({ [this.PositionType]: this.PositionID, UseModule: this.UseModule }).catch(() => {});
       this.loading = false;
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         this.localTableData = resp.data.Data;

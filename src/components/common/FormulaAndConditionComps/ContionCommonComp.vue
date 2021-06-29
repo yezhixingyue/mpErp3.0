@@ -1,8 +1,8 @@
 <template>
-  <LRWidthDragAutoChangeComp leftWidth='45%' class="mp-erp-new-comps-condtion-set-common-comp-wrap">
+  <LRWidthDragAutoChangeComp :leftWidth="single ? '100%' : leftWidth" class="mp-erp-new-comps-condtion-set-common-comp-wrap" :single='single'>
     <template v-slot:left>
       <section class="left-content" v-if="ruleForm">
-        <header>
+        <header v-if="showPriority">
           <span class="label">优先级：</span>
           <el-input v-model.trim.number="ruleForm.Priority" maxlength="15" size="small"></el-input>
           <span class="tips-box">
@@ -18,12 +18,20 @@
           <el-form label-width="260px" class="constraint-ruleForm">
             <el-form-item
              v-for="(it, index) in ruleForm.Constraint.ItemList"
-             :key="it.key || it.Property.StoredContent"
+             :key="it.key || it.Property.StoredContent + index"
              :prop="it.key || it.Property.StoredContent">
               <span slot="label" :title="it.Property.TipsContent || it.Property.DisplayContent.replace(/\[|\]/g, '')"
                 >{{it.Property.DisplayContent.replace(/\[|\]/g, '')}}</span>
               <OperatorSelectorComp v-model="it.Operator" :valueList.sync='it.ValueList' :PropertyData='it.Property' />
-              <ValueSelectorComp v-model="it.ValueList" :PropertyData='it.Property'  />
+              <ValueSelectorComp v-model="it.ValueList" :PropertyData='it.Property' :ComparePropertyList='ComparePropertyList'  />
+              <div class="setup-btn" @click="onSetupClick(index)" v-if="ComparePropertyList && ComparePropertyList.length > 0 && it.Property.ValueType !== 5">
+                <img src="@/assets/images/setup.png" alt="">
+                <span>设置</span>
+              </div>
+              <div class="setup-btn is-disabled" v-if="ComparePropertyList && ComparePropertyList.length > 0 && it.Property.ValueType === 5">
+                <img src="@/assets/images/setup.png" alt="">
+                <span>设置</span>
+              </div>
               <div class="del-btn" @click="onRemoveClick(index)">
                 <img src="@/assets/images/del.png" alt="">
                 <span>删除</span>
@@ -36,10 +44,13 @@
           </el-radio-group>
           <FormulaPanelElementSelectDialog  useType='condition'
            :visible.sync='visible' :list='PropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs' />
+          <FormulaPanelElementSelectDialog  useType='condition' v-if="ComparePropertyList && ComparePropertyList.length > 0"
+             showConstant :curTargetID='curTargetID'
+           :visible.sync='CompareVisible' :list='ComparePropertyList' @submit='onCompareElementSelect' :selectedElementIDs='selectedComparePropertyIDs' />
         </main>
       </section>
     </template>
-    <template v-slot:right>
+    <template v-slot:right v-if='!single'>
       <section class="right-content">
         <header>
           <p><span class="mp-common-title-wrap">则</span></p>
@@ -69,6 +80,26 @@ export default {
       type: Object,
       default: null,
     },
+    leftWidth: {
+      type: String,
+      default: '45%',
+    },
+    single: {
+      type: Boolean,
+      default: false,
+    },
+    ComparePropertyList: {
+      type: Array,
+      default: null,
+    },
+    showPriority: {
+      type: Boolean,
+      default: true,
+    },
+    curTargetID: {
+      type: String,
+      default: '',
+    },
   },
   components: {
     LRWidthDragAutoChangeComp,
@@ -89,6 +120,8 @@ export default {
           ItemList: [],
         },
       },
+      curSetupIndex: '',
+      CompareVisible: false,
     };
   },
   computed: {
@@ -108,6 +141,13 @@ export default {
     //   }
     //   return { ...Constraint };
     // },
+    selectedComparePropertyIDs() {
+      if (this.ComparePropertyList && this.ComparePropertyList.length > 0 && this.curSetupIndex > -1) {
+        const t = this.ruleForm.Constraint.ItemList[this.curSetupIndex];
+        if (t && t.Property) return [t.Property.StoredContent];
+      }
+      return [];
+    },
   },
   methods: {
     // initPropertyListReplaceHelper() { // 获取可用属性列表并转换完成后，对编辑数据时初始的PropertyList的数据进行修改操作（以获取到的可用属性为准）
@@ -137,13 +177,15 @@ export default {
       return false;
     },
     PriorityChecker(Priority) { // 优先级校验
-      if (!Priority && Priority !== 0) {
-        this.alertError('请设置优先级');
-        return false;
-      }
-      if (!this.$utils.getValueIsOrNotNumber(Priority, true) || Priority < 0) {
-        this.alertError('优先级必须为大于等于0的整数类型');
-        return false;
+      if (this.showPriority) {
+        if (!Priority && Priority !== 0) {
+          this.alertError('请设置优先级');
+          return false;
+        }
+        if (!this.$utils.getValueIsOrNotNumber(Priority, true) || Priority < 0) {
+          this.alertError('优先级必须为大于等于0的整数类型');
+          return false;
+        }
       }
       return true;
     },
@@ -151,7 +193,8 @@ export default {
       const i = ItemList.findIndex(it => {
         const { Property, ValueList } = it;
         const { ValueType } = Property;
-        return (ValueType !== 5) && (ValueList.length === 0 || (ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Value !== 0));
+        return (ValueType !== 5)
+         && (ValueList.length === 0 || (ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Value !== 0 && !ValueList[0].Property));
       });
       if (i > -1) {
         this.alertError(`第${i + 1}行未设置属性值`);
@@ -163,7 +206,7 @@ export default {
       for (let i = 0; i < ItemList.length; i += 1) {
         const { Property, ValueList } = ItemList[i];
         const { ValueType, AvailableValueList, ValueRange } = Property;
-        if (ValueType === 0) { // 为0 数值校验
+        if (ValueType === 0 && !ValueList[0].Property) { // 为0 数值校验
           const val = ValueList[0].Value;
           if (!this.$utils.getValueIsOrNotNumber(val)) {
             this.alertError(`第${i + 1}行值应为数字类型`);
@@ -210,18 +253,32 @@ export default {
     alertError(msg) {
       this.messageBox.failSingleError('保存失败', msg);
     },
+    onSetupClick(index) {
+      this.curSetupIndex = index;
+      this.CompareVisible = true;
+    },
+    onCompareElementSelect(Property) {
+      if (!Property) {
+        this.ruleForm.Constraint.ItemList[this.curSetupIndex].ValueList = [{ Value: '' }];
+        return;
+      }
+      this.ruleForm.Constraint.ItemList[this.curSetupIndex].ValueList = [{ Property }];
+    },
   },
   mounted() {
     if (!this.curEditData) return;
     // 还原编辑数据 ↓
     const { Priority, ID, Constraint } = this.curEditData;
-    this.ruleForm.ID = ID;
-    this.ruleForm.Priority = Priority;
-    const ItemList = Constraint.ItemList.map(it => {
-      const Property = PropertyClass.getPerfectPropertyByImperfectProperty(it.Property, this.PropertyList);
-      return Property ? { ...it, Property } : null;
-    }).filter(it => it);
-    this.ruleForm.Constraint = { ...Constraint, ItemList };
+    if (ID) this.ruleForm.ID = ID;
+    if (Priority || Priority === 0) this.ruleForm.Priority = Priority;
+    if (Constraint) {
+      const ItemList = Constraint.ItemList.map(it => {
+        const Property = PropertyClass.getPerfectPropertyByImperfectProperty(it.Property, this.PropertyList);
+        const key = Math.random().toString(36).slice(-8);
+        return Property ? { ...it, Property, key } : null;
+      }).filter(it => it);
+      this.ruleForm.Constraint = { ...Constraint, ItemList };
+    }
   },
 };
 </script>
@@ -275,7 +332,17 @@ export default {
               white-space: nowrap;
               font-size: 13px;
               margin-right: 6px;
-              line-height: 30px;
+              line-height: 31px;
+              height: 30px;
+              min-width: 260px;
+              width: 35% !important;
+              > span {
+                width: 100%;
+                display: inline-block;
+                overflow: hidden;
+                // text-overflow: ellipsis;
+                text-align: right;
+              }
             }
             .el-form-item__content {
               white-space: nowrap;
@@ -289,7 +356,7 @@ export default {
               .mp-erp-new-comps-condtion-set-common-comp-operator-comp-wrap {
                 margin-right: 15px;
               }
-              .del-btn {
+              .del-btn, .setup-btn {
                 display: flex;
                 align-items: center;
                 font-size: 12px;
@@ -304,6 +371,18 @@ export default {
                 }
                 &:hover > span {
                   color: #444;
+                }
+              }
+              .setup-btn {
+                margin-right: 12px;
+                padding-left: 24px;
+                &.is-disabled {
+                  > span {
+                    color: #cbcbcb !important;
+                  }
+                  > img {
+                    filter: grayscale(100%);
+                  }
                 }
               }
             }

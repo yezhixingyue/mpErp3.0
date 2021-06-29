@@ -5,12 +5,16 @@
         <template v-if="it.Group.GroupProps && it.Group.GroupProps.length > 0">
           （<span :class="selectedElementIDs.includes(gProp.StoredContent)?'is-disabled':''"
              class="blue-span" @click="onItemClick(gProp)" v-for="gProp in it.Group.GroupProps" :key="gProp.StoredContent">{{getName(gProp)}}</span>）
-        </template>：</label>
+        </template>
+        <template v-if="it.List.length > 0">：</template>
+      </label>
       <label v-if="!it.Group && it.Name">{{it.Name}}
         <template v-if="it._FixedTypeList && it._FixedTypeList.length > 0">
           （<span :class="selectedElementIDs.includes(gProp.StoredContent)?'is-disabled':''"
              class="blue-span" @click="onItemClick(gProp)" v-for="gProp in it._FixedTypeList" :key="gProp.StoredContent">{{getName(gProp)}}</span>）
-        </template>：</label>
+        </template >
+        <template v-if="it.List.length > 0">：</template>
+      </label>
       <ul>
         <li v-for="el in it.List" :key="el.StoredContent || el.ID">
           <span
@@ -54,8 +58,9 @@ export default {
       const _unjoinedList = [];
       const _list = JSON.parse(JSON.stringify(this.dataList));
       _list.forEach(it => {
-        const { Group, FixedType, Element } = it;
-        if (Element && Group && !(FixedType || FixedType === 0)) { // 组元素
+        const { Group, FixedType, Element, Formula } = it;
+        const ElementItem = Element || Formula;
+        if (Element && Group && !(FixedType || FixedType === 0) && !Formula) { // 组元素
           const t = _temp.find(_it => _it.ID === Group.ID);
           if (t) {
             if (!t.List) t.List = [];
@@ -64,7 +69,7 @@ export default {
             _temp.push({ ...Group, List: [it] });
           }
         }
-        if (!Element && Group && (FixedType || FixedType === 0)) { // 元素组组常量
+        if (!Element && Group && (FixedType || FixedType === 0) && !Formula) { // 元素组组常量
           const _group = _temp.find(_it => _it.ID === Group.ID);
           if (_group) {
             if (!_group._FixedTypeList) _group._FixedTypeList = [];
@@ -75,16 +80,16 @@ export default {
           }
           _unjoinedList.push(it);
         }
-        if (Element && Group && (FixedType || FixedType === 0)) { // 元素组中元素常量
+        if (ElementItem && Group && (FixedType || FixedType === 0)) { // 元素组中元素常量
           const _group = _temp.find(_it => _it.ID === Group.ID);
           if (_group) {
-            const _ele = _group.List.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === Element.ID);
+            const _ele = _group.List.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === ElementItem.ID);
             if (_ele) {
               if (!_ele._FixedTypeList) _ele._FixedTypeList = [];
               _ele._FixedTypeList.push(it);
             } else {
               // 此处处理不可选择的元素类型
-              const _item = { ...Element, _FixedTypeList: [it] };
+              const _item = { ...ElementItem, _FixedTypeList: [it] };
               _group.List.push(_item);
             }
           }

@@ -5,8 +5,8 @@
       <span>{{ProductName}}</span>
     </header>
     <main>
-      <FormulaTableCrtlComp @setup='onFormulaSaveClick' v-if="ProductID" :formulaH='222' :PositionID='ProductID' PositionType='ProductID' />
-      <SubFormulaTableCrtlComp
+      <FormulaTableCrtlComp @setup='onFormulaSaveClick' :UseModule='1' v-if="ProductID" :formulaH='222' :PositionID='ProductID' PositionType='ProductID' />
+      <SubFormulaTableCrtlComp @filter='onSubFormulaFilterClick'
        @setup='onSubFormulaSaveClick' v-if="ProductID" :formulaH='222' @add='onSubFormulaAddClick' :PositionID='ProductID' PositionType='ProductID' />
     </main>
     <footer>
@@ -62,18 +62,25 @@ export default {
       this.titleType = type;
       // this.getProductOrderData();
     },
-    onFormulaSaveClick(data) {
+    onFormulaSaveClick(data) { // 公式添加与编辑
       this.$store.commit('productManage/setCurEditFormulaData', data);
       const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/1/${Date.now()}`;
-      console.log(path);
       this.$router.push(path);
     },
-    onSubFormulaSaveClick(data) {
+    onSubFormulaFilterClick(data) { // 子公式数据筛选
+      this.$store.commit('productManage/setCurSubFormulaAddProperty', null);
+      this.$store.commit('productManage/setCurEditSubFormulaData', data);
+      const path = `/ProductFormulaFilter/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/15/${Date.now()}`;
+      this.$router.push(path);
+    },
+    onSubFormulaSaveClick(data) { // 子公式编辑
+      this.$store.commit('productManage/setCurSubFormulaAddProperty', null);
       this.$store.commit('productManage/setCurEditSubFormulaData', data);
       const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/2/${Date.now()}`;
       this.$router.push(path);
     },
-    onSubFormulaAddClick(prop) {
+    onSubFormulaAddClick(prop) { // 子公式添加
+      this.$store.commit('productManage/setCurEditSubFormulaData', null);
       this.$store.commit('productManage/setCurSubFormulaAddProperty', prop);
       const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/2/${Date.now()}`;
       this.$router.push(path);

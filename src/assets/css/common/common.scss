@@ -85,7 +85,7 @@
 
 .is-blue-button {
   background: linear-gradient(266deg, #36E0F9 0%, #26BCF9 100%);
-  border: none;
+  border: none !important;
   border-radius: 2px;
   color: #fff;
   &:hover, &:focus {
@@ -363,6 +363,10 @@
     position: relative;
     top: 1px;
     margin-right: 10px;
+  }
+  &.is-pink {
+    background: rgb(255, 248, 250);
+    color: #ff3769dc !important;
   }
 }
 

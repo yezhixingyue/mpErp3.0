@@ -527,6 +527,16 @@ export const routes = [
             component: () => import('../views/ProductManage/Formula/ProductFormulaSetPage.vue'),
           },
           {
+            path: '/ProductFormulaFilter/:ProductID/:PartID/:name/:type/:moduleIndex/:times',
+            name: 'ProductFormulaFilter',
+            meta: {
+              title: '数据筛选 - 子公式 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/Formula/ProductFormulaFilterPage.vue'),
+          },
+          {
             path: '/ProductInteractionSet/:ProductID/:PartID/:name/:type/:times',
             name: 'ProductInteractionSet',
             meta: {

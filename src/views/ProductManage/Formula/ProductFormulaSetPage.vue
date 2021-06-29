@@ -6,6 +6,7 @@
     PositionType='ProductID'
     :moduleIndex='moduleIndex'
     :NowEditFormulaData='curEditFormulaData'
+    :curEditSubFormulaData='curEditSubFormulaData'
     :curSubFormulaAddProperty='curSubFormulaAddProperty'
     :pageTitle='ProductName'
     :pageLabel='`当前${titleType}`'

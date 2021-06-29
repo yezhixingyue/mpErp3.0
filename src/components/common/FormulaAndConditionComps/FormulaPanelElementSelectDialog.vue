@@ -15,6 +15,7 @@
         <el-radio-group v-model="panelRadio" size="mini" class="mp-common-tab-radio-box" v-if="panelList.length > 1">
           <el-radio-button :label="it.value" v-for="it in panelList" :key="it.value">{{it.label}}</el-radio-button>
         </el-radio-group>
+        <p v-else-if="DialogTitle">{{DialogTitle}}</p>
       </header>
       <main v-if="showData" >
         <div v-for="it in showData" :key="it.Type">
@@ -32,9 +33,12 @@
           <!-- 其它类型 -->
           <div v-else>
             <TipsSpanButton :disabled='selectedElementIDs.includes(item.StoredContent)'
-             v-for="item in it.list" :key="item.StoredContent" @click.native="onSubmit(item)" :text='getTextName(item)' />
+             v-for="item in it.list" :key="item.StoredContent" @click.native="onSubmit(item)" :text='getTextName(item) || item.DisplayContent || "未知名称"' />
           </div>
         </div>
+        <p class="constant" v-if="showConstant">
+          <span class="blue-span" @click="onConstantClick">常量</span>
+        </p>
       </main>
       <main v-else class="null-box">
         <img src="@/assets/images/null.png" alt="">
@@ -79,6 +83,18 @@ export default {
     useType: {
       type: String,
       default: 'condition',
+    },
+    DialogTitle: {
+      type: String,
+      default: '',
+    },
+    showConstant: {
+      type: Boolean,
+      default: false,
+    },
+    curTargetID: {
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -139,9 +155,14 @@ export default {
       }; // 数据类型汇总对象列表
       this.list.forEach(it => { // 遍历每个属性列表，为每个列表属性归类
         // 1 确定位置
-        if (it.Product && it.Product.ID && !it.Part) _data.ProductProperty.push(it);
-        else if (it.Product && it.Product.ID && it.Part && it.Part.ID) { // 可能有多个部件 所以部件这里还需划分： 暂以Part.ID为key值进行划分
-          const key = it.Part.Name || it.Part.ID;
+        if (it.Product && it.Product.ID && !it.Part) {
+          if (it.Product.ID === this.curTargetID && this.tempTabList && this.tempTabList[0].label) {
+            if (!this.tempTabList[0].label.includes('（当前）')) this.tempTabList[0].label += '（当前）';
+          }
+          _data.ProductProperty.push(it);
+        } else if (it.Product && it.Product.ID && it.Part && it.Part.ID) { // 可能有多个部件 所以部件这里还需划分： 暂以Part.ID为key值进行划分
+          let key = it.Part.Name || it.Part.ID;
+          if (this.curTargetID === it.Part.ID) key += '（当前目标）';
           if (_data.PartProperty[key] && Array.isArray(_data.PartProperty[key])) _data.PartProperty[key].push(it);
           else _data.PartProperty[key] = [it];
         } else if (it.Material && it.Material.ID && !it.Product) _data.MaterialProperty.push(it);
@@ -152,7 +173,11 @@ export default {
       this.propertyData = _temp;
       if (Object.keys(_temp).length > 0) {
         const [key] = Object.keys(_temp);
-        this.panelRadio = key;
+        if (Array.isArray(_temp[key])) this.panelRadio = key;
+        else if (Object.prototype.toString.call(_temp[key]) === '[object Object]') {
+          const [subkey] = Object.keys(_temp[key]);
+          if (Array.isArray(_temp[key][subkey])) this.panelRadio = subkey;
+        }
       }
     },
     protertyFilterHelper(data) { // 对划分开的各个数据列表按照属性类型继续划分，并返回结果
@@ -162,7 +187,10 @@ export default {
         if (Array.isArray(data[key]) && data[key].length > 0) {
           temp[key] = this.protertySeparateHelper(data[key]); // 数组形式 继续对其进行划分
           const t = this.tempTabList.find(it => it.value === key);
-          if (t) this.panelList.push({ ...t });
+          if (t) {
+            console.log(t, key, temp[key], this.curTargetID);
+            this.panelList.push({ ...t });
+          }
         }
         if (Object.prototype.toString.call(data[key]) === '[object Object]' && Object.keys(data[key]).length > 0) {
           const _temp = {};
@@ -170,7 +198,10 @@ export default {
             _temp[subKey] = this.protertySeparateHelper(data[key][subKey]);
             if (key === 'PartProperty') {
               const t = this.panelList.find(it => it.value === subKey);
-              if (!t) this.panelList.push({ label: subKey, value: subKey }); // 部件名称后面需要自动修改
+              if (!t) {
+                console.log(subKey, _temp[subKey]);
+                this.panelList.push({ label: subKey, value: subKey }); // 部件名称后面需要自动修改
+              }
             }
           });
           temp[key] = _temp; // 对象形式 -- 部件
@@ -210,6 +241,10 @@ export default {
     getTextName(item) {
       return PropertyClass.getProperyName(item);
     },
+    onConstantClick() {
+      this.$emit('submit', null);
+      this.onCancle();
+    },
   },
 };
 </script>
@@ -223,6 +258,11 @@ export default {
     > .show-panel-box{
       > header {
         padding-bottom: 28px;
+        > p {
+          font-weight: 700;
+          font-size: 15px;
+          color: #444;
+        }
       }
       > main {
         > div {
@@ -246,6 +286,17 @@ export default {
               padding-bottom: 10px;
               white-space: nowrap;
             }
+          }
+        }
+        > p.constant {
+          border-top: 1px solid #ddd;
+          margin-top: 15px;
+          padding-top: 15px;
+          position: relative;
+          left: -20px;
+          padding-left: 20px;
+          > span {
+            font-size: 14px;
           }
         }
       }

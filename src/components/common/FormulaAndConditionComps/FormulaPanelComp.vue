@@ -61,7 +61,7 @@
               <div class="test-box">
                 <div>
                   <div v-for="it in FormulaData.PropertyList" :key="it.DisplayContent">
-                    <span>{{it.DisplayContent}}：</span>
+                    <span :title="it.DisplayContent">{{it.DisplayContent}}：</span>
                     <el-input v-model.trim="it.CalculateValue" size="small" @input="onCalculateInput"
                      :disabled='!FormulaData.Content.includes(it.DisplayContent)'></el-input>
                     <span>{{it.Unit}}</span>
@@ -76,7 +76,7 @@
           </section>
         </template>
       </LRWidthDragAutoChangeComp>
-      <FormulaPanelElementSelectDialog useType='formula'
+      <FormulaPanelElementSelectDialog useType='formula' :DialogTitle="subFromulaDialogTitle"
         :visible.sync='selectVisible' :list='PropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs' />
     </main>
     <footer>
@@ -108,6 +108,10 @@ export default {
       default: null,
     },
     curSubFormulaAddProperty: {
+      type: Object,
+      default: null,
+    },
+    curEditSubFormulaData: {
       type: Object,
       default: null,
     },
@@ -171,35 +175,38 @@ export default {
     isSubFormula() { // 是否为子公式设置
       return this.moduleIndex === 2;
     },
+    subFromulaDialogTitle() {
+      if (!this.isSubFormula) return '';
+      if (this.curSubFormulaAddProperty) return `当前设置子公式：${this.curSubFormulaAddProperty.DisplayContent.replace(/\[|\]/g, '')}`;
+      return '';
+    },
   },
   methods: {
-    getPropIDsObj(data) {
-      const temp = {};
-      Object.keys(data).forEach(key => {
-        if (['Product', 'Part', 'Group', 'Craft'].includes(key)) {
-          if (data[key] && data[key].ID) temp[`${key}ID`] = data[key].ID;
-        }
-      });
-      return temp;
-    },
     async initData() {
       if (this.isloading) return;
       this.isloading = true;
       let temp;
-      if (this.NowEditFormulaData) temp = { ...this.NowEditFormulaData }; // 编辑 子公式编辑是否可涵盖在里面？ 尚不确定 。
-      else if (this.isSubFormula) {
+      // let isSubEdit = false;
+      let _IDsObj;
+      if (!this.isSubFormula) temp = { ...this.NowEditFormulaData }; // 编辑 子公式编辑是否可涵盖在里面？ 尚不确定 。 curEditSubFormulaData
+      else {
+        if (this.curEditSubFormulaData) { // 编辑
+          temp = { ...this.curEditSubFormulaData };
+          _IDsObj = PropertyClass.getPropIDsObj(this.curEditSubFormulaData);
+          console.log(_IDsObj, this.curEditSubFormulaData);
+          // isSubEdit = true;
+        }
         if (this.curSubFormulaAddProperty) { // 添加
-          console.log(this.curSubFormulaAddProperty);
-          const _IDsObj = this.getPropIDsObj(this.curSubFormulaAddProperty);
+          _IDsObj = PropertyClass.getPropIDsObj(this.curSubFormulaAddProperty);
           temp = { ..._IDsObj, UseModule: this.moduleIndex };
         }
+        _IDsObj.UseModule = this.moduleIndex;
         // 编辑时尚未处理 看是否可共用上面编辑模式
-      } else {
-        temp = { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex };
       }
+      // if (isSubEdit) return;
 
       // 当上面编辑模式不能共用时 下面这个取值也需要修改
-      const _data4FetchProperty = this.NowEditFormulaData ? { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex } : temp;
+      const _data4FetchProperty = !this.isSubFormula ? { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex } : temp;
 
       this.FormulaData = new FormulaClass(temp); // 初始化公式数据
       const propertyList = await PropertyClass.getPropertyList(_data4FetchProperty);

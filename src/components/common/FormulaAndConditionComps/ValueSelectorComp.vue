@@ -1,6 +1,7 @@
 <template>
-  <div class="mp-erp-new-comps-condtion-set-common-comp-value-select-comp-wrap" v-if="!isMultiple">
-    <template v-if="ValueType === 0">
+  <div class="mp-erp-new-comps-condtion-set-common-comp-value-select-comp-wrap" v-if="!isMultiple || ValProperty" >
+    <span class="pshow" v-if="ValProperty" :title="ValProperty.DisplayContent.replace(/\[|\]/g, '')">{{ValProperty.DisplayContent.replace(/\[|\]/g, '')}}</span>
+    <template v-if="ValueType === 0 && !ValProperty">
       <el-input v-model.trim="localValue" maxlength="15" size="mini"></el-input>
       <span v-if="Unit" class="unit" :title="Unit">{{Unit}}</span>
     </template>
@@ -15,7 +16,7 @@
     </el-select> -->
     <!-- 可多选 -->
     <!-- <span class="blue-span" v-else-if="ValueType === 6">设置</span> -->
-    <el-select v-model="localValue" v-else-if="ValueType !== 5 && !isMultiple" placeholder="请选择" size="mini" key="ValueType!5">
+    <el-select v-model="localValue" v-else-if="ValueType !== 5 && !isMultiple && !ValProperty" placeholder="请选择" size="mini" key="ValueType!5">
       <el-option
         v-for="item in localOptionList"
         :key="item.First"
@@ -34,14 +35,7 @@ export default {
     prop: 'value',
     event: 'change',
   },
-  // props: {
-  //   PropertyData: {
-  //     type: Object,
-  //     default: null,
-  //   },
-  //   value: {},
-  // },
-  props: ['PropertyData', 'value'],
+  props: ['PropertyData', 'value', 'ComparePropertyList'],
   computed: {
     localOptionList() {
       if (!this.PropertyData || !Array.isArray(this.PropertyData.OptionList) || this.PropertyData.OptionList.length === 0) return [];
@@ -55,13 +49,19 @@ export default {
         return Array.isArray(this.value) ? [] : '';
       },
       set(val) {
-        console.log(val);
         const _list = this.isMultiple ? val.map(Value => ({ Value })) : [{ Value: val }];
         this.$emit('change', _list);
       },
     },
     isMultiple() {
       return this.ValueType === 1 || this.ValueType === 6;
+    },
+    ValProperty() {
+      if (Array.isArray(this.value) && this.value.length === 1) {
+        if (this.value[0].Property && !this.value[0].Value) return this.value[0].Property;
+        return null;
+      }
+      return null;
     },
   },
   data() {
@@ -77,14 +77,17 @@ export default {
     this.ValueType = ValueType;
     this.OptionList = OptionList;
     this.Unit = Unit;
-    console.log(this.PropertyData);
+    if (OptionList && OptionList.length > 0 && ValueType !== 5 && !this.isMultiple && ValueType !== 0) {
+      console.log(OptionList);
+      this.localValue = OptionList[0].First;
+    }
   },
 };
 </script>
 <style lang='scss'>
 .mp-erp-new-comps-condtion-set-common-comp-value-select-comp-wrap {
   width: 120px;
-  padding-right: 40px;
+  padding-right: 60px;
   vertical-align: middle;
   overflow: hidden;
   display: inline-block;
@@ -125,6 +128,12 @@ export default {
         display: inline-block;
       }
     }
+  }
+  > .pshow {
+    font-size: 12px;
+    line-height: 30px;
+    overflow: hidden;
+    color: #888;
   }
 }
 </style>
