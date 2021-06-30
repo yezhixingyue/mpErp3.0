@@ -69,16 +69,34 @@ export default class FormulaClass {
         messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}未设置空值`);
         return false;
       }
+      console.log(PropertyList);
       t = PropertyList.find(it => {
-        if (!it.Element) return false;
+        if (!it.Element) {
+          return !getValueIsOrNotNumber(it.DefaultValue);
+        }
         const { Type, NumbericAttribute } = it.Element;
         const isInteger = !(Type === 1 && NumbericAttribute && NumbericAttribute.AllowDecimal);
         return !getValueIsOrNotNumber(it.DefaultValue, isInteger);
       });
       if (t) {
-        messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不合法(检查是否为数字或是否允许小数)`);
+        messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不正确(检查是否为数字或是否允许小数)`);
         return false;
       }
+      for (let i = 0; i < PropertyList.length; i += 1) {
+        const it = PropertyList[i];
+        if (it.ValueRange) {
+          const { MinValue, MaxValue } = it.ValueRange;
+          if ((MinValue || MinValue === 0) && +it.DefaultValue < MinValue) {
+            messageBox.failSingleError('操作失败', `${it.Element ? it.Element.Name : it.DisplayContent}空值设置值不能小于${MinValue}`);
+            return false;
+          }
+          if ((MaxValue || MaxValue === 0) && +it.DefaultValue > MaxValue && MaxValue !== -1) {
+            messageBox.failSingleError('操作失败', `${it.Element ? it.Element.Name : it.DisplayContent}空值设置值不能大于${MaxValue}`);
+            return false;
+          }
+        }
+      }
+
       t = PropertyList.find(({ DefaultValue, AvailableValueList }) => !PropertyClass.AvailableValueListChecker(DefaultValue, AvailableValueList));
       if (t) {
         messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不正确，请检查其取值范围`);

@@ -44,6 +44,22 @@ export default {
       { Name: 'CraftCondition', ID: 14 }, // 工艺条件
       { Name: 'CraftDisplayGroup', ID: 15 }, // 工艺显示分组
     ],
+    RiskWarningTypeList: [ // 风险提示形式列表
+      { Name: '弹出对话框', ID: 2 },
+      { Name: '页面提示', ID: 3 },
+    ],
+    RiskWarningRangeList: [ // 风险提示范围列表
+      { Name: '代客下单', ID: 1 },
+      { Name: '自助上传', ID: 2 },
+      { Name: '微信报价', ID: 3 },
+    ],
+    ControlTypeList: [ // 产品交互类型列表 交互模块使用(同上)
+      { Name: 'interaction', ID: 0 },
+      { Name: 'subInteraction', ID: 1 },
+      { Name: 'compare', ID: 2 },
+      { Name: 'subCompare', ID: 3 },
+      { Name: 'risk', ID: 4 },
+    ],
     ProductFactoryList: [], // 产品工厂列表
     ProductFactoryPropertyList: [], // 工厂条件使用属性列表数据
     curEditFactoryData: null, // 当前正在编辑的产品工厂数据
@@ -56,6 +72,10 @@ export default {
     curEditFormulaData: null,
     curEditSubFormulaData: null,
     curSubFormulaAddProperty: null,
+    /**
+     * 交互
+     */
+    curInteractionData: null,
   },
   getters: {
   },
@@ -201,6 +221,12 @@ export default {
     },
     setCurSubFormulaAddProperty(state, data) { // 添加子公式选中的属性
       state.curSubFormulaAddProperty = data;
+    },
+    /**
+     * 交互
+     */
+    setCurInteractionData(state, data) {
+      state.curInteractionData = data;
     },
   },
   actions: {

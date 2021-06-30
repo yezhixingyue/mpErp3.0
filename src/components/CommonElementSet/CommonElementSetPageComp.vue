@@ -162,13 +162,13 @@ export default {
     },
     fetchData() {
       this.getElementList();
-      this.getElementGroupList();
+      if (this.showGroup) this.getElementGroupList();
       this.$emit('copyGroupSuccess');
     },
   },
   mounted() {
     this.getElementList();
-    this.getElementGroupList();
+    if (this.showGroup) this.getElementGroupList();
   },
 };
 </script>

@@ -20,7 +20,7 @@
         <TipsSpanButton text='工厂' @click.native="onProductFactorySetClick" />
         <TipsSpanButton text='文件' @click.native="setCommonPathJump('ProductFileList')" />
         <TipsSpanButton text='公式' @click.native="setCommonPathJump('ProductFormulaList')" />
-        <TipsSpanButton text='交互' @click.native="setCommonPathJump('ProductInteractionSet')" />
+        <TipsSpanButton text='交互' @click.native="setCommonPathJump('ProductInteractionList')" />
         <TipsSpanButton text='文件名设置' @click.native="setCommonPathJump('ProductFileNameSet')" />
         <TipsSpanButton text='库存' @click.native="setCommonPathJump('ProductStockSet')" />
       </div>
@@ -167,9 +167,9 @@ export default {
       this.visible = true;
     },
     onPartSaveSubmit(data) { // 部件添加与编辑数据提交保存
-      const t = this.itemData.PartList.find(it => it.Name === data.Name);
+      const t = this.itemData.PartList.find(it => it.Name === data.Name && it.ID !== data.ID);
       if (t) {
-        this.messageBox.failSingleError('保持失败', '部件名称不能与其它部件名称重复');
+        this.messageBox.failSingleError('保存失败', '部件名称不能与其它部件名称重复');
         return;
       }
       const cb = () => {
@@ -190,9 +190,10 @@ export default {
 .mp-erp-product-manage-table-item-comp-wrap {
   // padding: 0 5px;
   padding-top: 10px;
+  width: 1718px;
   > header {
     display: flex;
-    min-width: 1700px;
+    min-width: 1704px;
     height: 44px;
     border: 1px solid #f8f8f8;
     box-sizing: border-box;

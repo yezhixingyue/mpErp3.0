@@ -1,10 +1,20 @@
 <template>
-  <section class="mp-erp-product-list-page-product-factory-set-comp-wrap">
+  <section class="mp-erp-product-list-page-product-interaction-list-page-wrap">
     <header>
       <span>当前{{titleType}}：</span>
       <span>{{ProductName}}</span>
     </header>
     <main>
+      <!-- 界面交互 -->
+      <DisplayInteractionComp @setup="(data) => onSetupPageJump('interaction', data)" />
+      <!-- 对比验证 -->
+      <CompareInteractionComp @setup="(data) => onSetupPageJump('compare', data)" />
+      <!-- 风险提示 -->
+      <RiskWarningComp @setup="(data) => onSetupPageJump('risk', data)" />
+      <!-- 子交互 -->
+      <SubInteractionComp />
+      <!-- 子对比 -->
+      <SubCompareComp />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -14,6 +24,11 @@
 
 <script>
 import { mapState } from 'vuex';
+import DisplayInteractionComp from '@/components/ProductManageComps/Interaction/ListTableComps/DisplayInteractionComp.vue';
+import CompareInteractionComp from '@/components/ProductManageComps/Interaction/ListTableComps/CompareInteractionComp.vue';
+import RiskWarningComp from '@/components/ProductManageComps/Interaction/ListTableComps/RiskWarningComp.vue';
+import SubInteractionComp from '@/components/ProductManageComps/Interaction/ListTableComps/SubInteractionComp.vue';
+import SubCompareComp from '@/components/ProductManageComps/Interaction/ListTableComps/SubCompareComp.vue';
 
 export default {
   data() {
@@ -25,6 +40,11 @@ export default {
     };
   },
   components: {
+    DisplayInteractionComp,
+    CompareInteractionComp,
+    RiskWarningComp,
+    SubInteractionComp,
+    SubCompareComp,
   },
   computed: {
     ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
@@ -82,6 +102,13 @@ export default {
     onGoBackClick() {
       this.$router.replace('/ProductManageList');
     },
+    onSetupPageJump(setType, data) {
+      console.log(setType);
+      this.$store.commit('productManage/setCurInteractionData', data);
+      // eslint-disable-next-line max-len
+      const path = `/ProductInteractionSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${setType}/${Date.now()}`;
+      this.$router.push(path);
+    },
   },
   mounted() {
     this.getPositionID();
@@ -89,7 +116,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-product-list-page-product-factory-set-comp-wrap {
+.mp-erp-product-list-page-product-interaction-list-page-wrap {
   padding-left: 20px;
   padding-right: 6px;
   height: 100%;
@@ -111,6 +138,23 @@ export default {
   > main {
     flex: 1;
     padding-top: 15px;
+    > section {
+      padding-bottom: 45px;
+      > header {
+        padding-bottom: 20px;
+        > .mp-common-title-wrap {
+          font-size: 15px;
+          color: #444;
+          width: 7em;
+          &::before {
+            height: 16px;
+          }
+        }
+        > .blue-span {
+          font-size: 14px;
+        }
+      }
+    }
   }
   > footer {
     text-align: center;

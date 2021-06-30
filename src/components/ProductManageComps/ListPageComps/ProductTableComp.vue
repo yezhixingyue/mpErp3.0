@@ -40,7 +40,7 @@ export default {
 <style lang='scss'>
 .mp-erp-product-manage-table-comp-wrap {
   height: 100%;
-  overflow-y: auto;
+  overflow-y: overlay;
   background-color: #fff;
   margin-top: 10px;
   .empty-box {
@@ -64,6 +64,8 @@ export default {
     // width: 100%;
     width: 1720px;
     height: 100%;
+    // min-height: 100%;
+    // overflow: hidden;
     border: 1px solid #e6e6e6;
     box-sizing: border-box;
     > .list-header {

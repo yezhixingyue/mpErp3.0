@@ -4,6 +4,7 @@
     top='20vh'
     title="根据元素组模板添加"
     :visible.sync="visible"
+    :disabled='!radio'
     cancelText='关闭'
     @cancle="onCancle"
     @submit="onSubmit"

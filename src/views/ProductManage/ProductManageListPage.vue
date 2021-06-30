@@ -28,6 +28,7 @@
        :watchPage='condition4ProductManageList.Page'
        :handlePageChange='handlePageChange'
        :count='ProductManageListNumber'
+       center
        :pageSize='condition4ProductManageList.PageSize'
        />
     </footer>

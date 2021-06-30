@@ -30,6 +30,7 @@
           <MaterialTypeShowComp :useType='useType' v-else-if="it.Type === 5" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
           <!-- 尺寸组类型 - 共用元素组组件 -->
           <ElementGroupTypeShowComp v-else-if="it.Type === 6" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <ElementTypeShowComp v-else-if="it.Type === 8" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
           <!-- 其它类型 -->
           <div v-else>
             <TipsSpanButton :disabled='selectedElementIDs.includes(item.StoredContent)'
@@ -262,6 +263,12 @@ export default {
           font-weight: 700;
           font-size: 15px;
           color: #444;
+        }
+        .el-radio-button {
+          margin-bottom: 2px;
+          .el-radio-button__inner {
+            box-shadow: -1px 0 0 #eee;
+          }
         }
       }
       > main {

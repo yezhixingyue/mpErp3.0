@@ -484,6 +484,9 @@ const api = {
   getFileInfoRemove(id) { // DELETE /Api/FileInfo/Remove 文件类目删除
     return instance.delete(`/Api/FileInfo/Remove?id=${id}`);
   },
+  getProductControlSave(data) { // POST /Api/Product/ControlSave  产品交互/对比/风险提示保存
+    return instance.post('/Api/Product/ControlSave', data);
+  },
   /* 印刷幅面api
   ----------------------------------------------------------------------------------- */
   getBreadthClassList() { // GET /Api/BreadthClass/List 印刷幅面分类列表

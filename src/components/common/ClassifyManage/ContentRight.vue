@@ -99,13 +99,16 @@ export default {
         align-items: center;
         padding: 5px 0;
         > .el-input {
-          width: 320px;
+          min-width: 320px;
+          max-width: 400px;
           height: 30px;
+          margin-bottom: 4px;
           > input {
             border-top: none;
             border-left: none;
             border-right: none;
             height: inherit;
+            padding-right: 50px;
           }
         }
         > .menu-box {

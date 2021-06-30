@@ -77,8 +77,7 @@ export default {
     this.ValueType = ValueType;
     this.OptionList = OptionList;
     this.Unit = Unit;
-    if (OptionList && OptionList.length > 0 && ValueType !== 5 && !this.isMultiple && ValueType !== 0) {
-      console.log(OptionList);
+    if (OptionList && OptionList.length > 0 && ValueType !== 5 && !this.isMultiple && ValueType !== 0 && !this.ValProperty) {
       this.localValue = OptionList[0].First;
     }
   },

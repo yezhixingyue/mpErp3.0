@@ -99,6 +99,9 @@
     border: 1px solid #428dfa;
     color: #fff;
   }
+  &.is-disabled {
+    background: #ccc !important;
+  }
 }
 
 /* 自定义表格文字提示框样式

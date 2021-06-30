@@ -11,7 +11,7 @@
     style="width: 100%"
    >
     <el-table-column prop="Type.Name" label="物料类型" width="260"></el-table-column>
-    <el-table-column prop="DisplayName" label="物料"  min-width="240" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="MaterialText" label="物料"  min-width="240" show-overflow-tooltip></el-table-column>
     <el-table-column label="操作" min-width="380" class-name='menu-column'>
       <div class="menu-list" slot-scope="scope">
         <span @click="onEditClick(scope.row)"><i></i>编辑</span>
@@ -43,7 +43,7 @@ export default {
       if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
       return this.dataList.map(it => ({
         ...it,
-        // MaterialText: this.getMaterialText(it),
+        MaterialText: this.getMaterialText(it),
       }));
     },
   },
@@ -62,26 +62,30 @@ export default {
       });
     },
     getMaterialText(item) {
-      const { ElementList, UnionShowList } = item.Type;
+      const { ElementList } = item.Type;
+      let { UnionShowList } = item.Type;
       const list = [];
+      if (UnionShowList.length === 0) UnionShowList = ElementList.map(it => [it.ID]);
       UnionShowList.forEach(lv1List => {
         lv1List.forEach(ElementID => {
           const t = ElementList.find(it => it.ID === ElementID);
           if (t) {
+            const { Name, IsNameHidden } = t;
+            const _text = IsNameHidden ? '' : Name;
             if (t.Type === 2) { // 选项值
               const { OptionList, Allow, AllowCustomer } = t.OptionAttribute;
               const _t = OptionList.find(_it => _it.ID === t.CustomerInputValue);
-              if (_t) list.push(_t.Name);
-              if (!_t && Allow && (AllowCustomer || t.HiddenToCustomer) && t.CustomerInputValue) list.push(t.CustomerInputValue);
+              if (_t) list.push(`${_text}${_t.Name}`);
+              if (!_t && Allow && (AllowCustomer || t.HiddenToCustomer) && t.CustomerInputValue) list.push(`${_text}${t.CustomerInputValue}`);
             }
             if (t.Type === 3) { // 开关
               const { OpenValue, CloseValue } = t.SwitchAttribute;
               let text = +t.CustomerInputValue === OpenValue ? '开' : '';
               if (!text) text = +t.CustomerInputValue === CloseValue ? '关' : '';
-              list.push(text);
+              list.push(`${_text}${text}`);
             }
             if (t.Type === 1) {
-              list.push(`${t.CustomerInputValue}${t.Unit}`);
+              list.push(`${_text}${t.CustomerInputValue}${t.Unit}`);
             }
           }
         });

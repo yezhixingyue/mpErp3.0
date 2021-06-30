@@ -51,7 +51,7 @@
     </LRWidthDragAutoChangeComp>
     <footer>
       <el-button class="blue-full-color-btn-styles is-blue-button " type="primary" @click="submit">保存</el-button>
-      <el-button @click="goback"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
+      <el-button @click="goback" class="goback"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
     </footer>
   </section>
 </template>
@@ -318,6 +318,9 @@ export default {
       width: 120px;
       height: 35px !important;
       padding: 0;
+      &.goback {
+        margin-left: 30px;
+      }
     }
   }
 }

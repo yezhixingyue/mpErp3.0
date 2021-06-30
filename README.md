@@ -869,6 +869,8 @@ public enum MultiLevelClassType : byte
         子公式对比条件
         SubFormulaCompareConstraint = 16
 
+        右侧交互结果弹窗 18
+
 ## 运算符号
 
         等于
@@ -937,3 +939,20 @@ public enum MultiLevelClassType : byte
         
         物料
         Material = 6
+
+## 产品控制类型
+
+        界面交互
+        UIInteraction = 0,
+
+        子交互
+        SubInteraction = 1,
+
+        对比
+        Compare = 2,
+
+        子对比
+        SubCompare = 3,
+
+        风险提示
+        RiskTips = 4

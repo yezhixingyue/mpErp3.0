@@ -28,6 +28,7 @@ export const PropertyFixedType = [
   { ID: 7, Name: '常规尺寸' },
   { ID: 8, Name: '物料尺寸长' },
   { ID: 9, Name: '物料尺寸宽' },
+  { ID: 10, Name: '选项' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表

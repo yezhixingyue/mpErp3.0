@@ -537,14 +537,24 @@ export const routes = [
             component: () => import('../views/ProductManage/Formula/ProductFormulaFilterPage.vue'),
           },
           {
-            path: '/ProductInteractionSet/:ProductID/:PartID/:name/:type/:times',
+            path: '/ProductInteractionList/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductInteractionList',
+            meta: {
+              title: '交互设置列表 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/Interaction/ProductInteractionListPage.vue'),
+          },
+          {
+            path: '/ProductInteractionSet/:ProductID/:PartID/:name/:type/:setType/:times',
             name: 'ProductInteractionSet',
             meta: {
               title: '交互设置 - 产品管理',
               requiresAuth: true,
               // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
             },
-            component: () => import('../views/ProductManage/ProductInteractionSetPage.vue'),
+            component: () => import('../views/ProductManage/Interaction/ProductInteractionSetPage.vue'),
           },
           {
             path: '/ProductFileNameSet/:ProductID/:PartID/:name/:type/:times',

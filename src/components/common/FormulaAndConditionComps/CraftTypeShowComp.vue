@@ -72,6 +72,7 @@ export default {
         if (Craft && Element && !Group && (FixedType || FixedType === 0) && !Formula) { // 工艺上元素常量
           const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
           if (t) {
+            if (!t._ElementList) t._ElementList = [];
             const _ele = t._ElementList.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === Element.ID);
             if (_ele) {
               if (!_ele._FixedTypeList) _ele._FixedTypeList = [];
@@ -125,6 +126,7 @@ export default {
         if (Craft && ElementItem && Group && (FixedType || FixedType === 0)) { // 工艺元素组中元素常量 及 子公式
           const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
           if (t) {
+            if (!t._ElementGroupList) t._ElementGroupList = [];
             const _group = t._ElementGroupList.find(_it => _it.ID === Group.ID);
             if (_group) {
               const _ele = _group.List.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === ElementItem.ID);

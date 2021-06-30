@@ -13,9 +13,13 @@
        single
        :curTargetID='curTargetID'
        :ComparePropertyList='ComparePropertyList' />
+       <div v-if="(!propertyList || propertyList.length === 0) && !loading" class="empty">
+         <img src="@/assets/images/null.png" alt="">
+         <p class="tips-box is-pink"><i class="el-icon-warning"></i> 暂无可用的属性列表, 该子公式尚不可设置数据筛选</p>
+       </div>
     </main>
     <footer>
-      <el-button @click="onSubmitClick" class="is-blue-button" type="primary">保存</el-button>
+      <el-button :disabled='!propertyList || propertyList.length === 0' @click="onSubmitClick" class="is-blue-button" type="primary">保存</el-button>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
     </footer>
   </section>
@@ -37,6 +41,7 @@ export default {
       propertyList: [],
       ComparePropertyList: [],
       curEditData: null,
+      loading: false,
     };
   },
   components: {
@@ -84,7 +89,9 @@ export default {
       if (Constraint) this.curEditData = { Constraint };
       if (ComparePropertyList) this.ComparePropertyList = ComparePropertyList;
       const idObj = PropertyClass.getPropIDsObj(this.curEditSubFormulaData);
+      this.loading = true;
       const propertyList = await PropertyClass.getPropertyList({ ...idObj, UseModule: this.moduleIndex });
+      this.loading = false;
       if (propertyList) this.propertyList = propertyList;
     },
     onSubmitClick() {
@@ -185,6 +192,16 @@ export default {
         > .el-radio-group.mp-common-tab-radio-box {
           width: 782px;
         }
+        .el-form.constraint-ruleForm {
+          flex: unset !important;
+        }
+      }
+    }
+    > .empty {
+      padding-top: 50px;
+      > img {
+        margin-left: 20px;
+        margin-bottom: 18px;
       }
     }
   }

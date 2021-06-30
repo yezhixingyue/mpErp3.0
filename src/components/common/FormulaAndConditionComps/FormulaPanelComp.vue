@@ -188,13 +188,13 @@ export default {
       let temp;
       // let isSubEdit = false;
       let _IDsObj;
-      if (!this.isSubFormula) temp = { ...this.NowEditFormulaData }; // 编辑 子公式编辑是否可涵盖在里面？ 尚不确定 。 curEditSubFormulaData
-      else {
+      if (!this.isSubFormula) {
+        if (this.NowEditFormulaData) temp = { ...this.NowEditFormulaData }; // 编辑 子公式编辑是否可涵盖在里面？ 尚不确定 。 curEditSubFormulaData
+        else temp = { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex };
+      } else {
         if (this.curEditSubFormulaData) { // 编辑
           temp = { ...this.curEditSubFormulaData };
           _IDsObj = PropertyClass.getPropIDsObj(this.curEditSubFormulaData);
-          console.log(_IDsObj, this.curEditSubFormulaData);
-          // isSubEdit = true;
         }
         if (this.curSubFormulaAddProperty) { // 添加
           _IDsObj = PropertyClass.getPropIDsObj(this.curSubFormulaAddProperty);
@@ -207,7 +207,6 @@ export default {
 
       // 当上面编辑模式不能共用时 下面这个取值也需要修改
       const _data4FetchProperty = !this.isSubFormula ? { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex } : temp;
-
       this.FormulaData = new FormulaClass(temp); // 初始化公式数据
       const propertyList = await PropertyClass.getPropertyList(_data4FetchProperty);
       this.isloading = false;

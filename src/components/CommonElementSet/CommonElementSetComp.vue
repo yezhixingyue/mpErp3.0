@@ -137,6 +137,11 @@ export default {
     },
     // 下面为元素组处理方法 ↓
     onElementGroupSetClick(groupItemData) { // 打开元素组设置弹窗 并设置其编辑数据（添加设为null）
+      if (!groupItemData && (!this.ElementDataList || this.ElementDataList.length === 0)) {
+        // 添加
+        this.messageBox.failSingleError('操作失败', '请先添加界面元素');
+        return;
+      }
       this.curElementGroupEditData = groupItemData || null;
       this.elementGroupVisible = true;
     },
@@ -228,7 +233,7 @@ export default {
   },
   mounted() {
     if (!this.isCommon) {
-      this.$store.dispatch('basicSet/getElementGroupList');
+      if (this.showGroup) this.$store.dispatch('basicSet/getElementGroupList');
       this.$store.dispatch('basicSet/getElementList');
     }
   },

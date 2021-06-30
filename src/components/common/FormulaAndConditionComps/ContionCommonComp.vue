@@ -53,7 +53,7 @@
     <template v-slot:right v-if='!single'>
       <section class="right-content">
         <header>
-          <p><span class="mp-common-title-wrap">则</span></p>
+          <p><span class="mp-common-title-wrap">{{rightTitle}}</span><slot name="title"></slot></p>
         </header>
         <main class="right-content-main-wrap">
           <slot></slot>
@@ -99,6 +99,10 @@ export default {
     curTargetID: {
       type: String,
       default: '',
+    },
+    rightTitle: {
+      type: String,
+      default: '则',
     },
   },
   components: {
@@ -317,10 +321,17 @@ export default {
           flex: none;
           .mp-common-title-wrap {
             color: #444;
+            font-size: 15px;
+            position: relative;
+            top: 1px;
+            &::before {
+              height: 16px;
+            }
           }
           .blue-span {
             font-size: 13px;
             margin-left: 15px;
+            line-height: 16px;
           }
         }
         > .el-form.constraint-ruleForm {
@@ -408,10 +419,20 @@ export default {
       padding-left: 5vw;
       .mp-common-title-wrap {
         color: #444;
+        font-size: 15px;
+        min-width: 2em;
+        position: relative;
+        top: 1px;
+        &::before {
+          height: 16px;
+        }
       }
       > header {
         padding-top: 70px;
         padding-bottom: 30px;
+        .mp-common-title-wrap {
+          margin-right: 25px;
+        }
       }
       > main {
         font-size: 14px;
