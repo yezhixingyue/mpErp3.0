@@ -6,15 +6,15 @@
     </header>
     <main>
       <!-- 界面交互 -->
-      <DisplayInteractionComp @setup="(data) => onSetupPageJump('interaction', data)" />
+      <DisplayInteractionTable @setup="onSetupPageJump('interaction', $event)" />
       <!-- 对比验证 -->
-      <CompareInteractionComp @setup="(data) => onSetupPageJump('compare', data)" />
+      <CompareInteractionTable @setup="onSetupPageJump('compare', $event)" />
       <!-- 风险提示 -->
-      <RiskWarningComp @setup="(data) => onSetupPageJump('risk', data)" />
+      <RiskWarningTable @setup="onSetupPageJump('risk', $event)" :dataList='RiskWarningDataList' :PropertyList='InteractionLeftPropertyList' />
       <!-- 子交互 -->
-      <SubInteractionComp />
+      <SubInteractionTable />
       <!-- 子对比 -->
-      <SubCompareComp />
+      <SubCompareTable />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -24,11 +24,12 @@
 
 <script>
 import { mapState } from 'vuex';
-import DisplayInteractionComp from '@/components/ProductManageComps/Interaction/ListTableComps/DisplayInteractionComp.vue';
-import CompareInteractionComp from '@/components/ProductManageComps/Interaction/ListTableComps/CompareInteractionComp.vue';
-import RiskWarningComp from '@/components/ProductManageComps/Interaction/ListTableComps/RiskWarningComp.vue';
-import SubInteractionComp from '@/components/ProductManageComps/Interaction/ListTableComps/SubInteractionComp.vue';
-import SubCompareComp from '@/components/ProductManageComps/Interaction/ListTableComps/SubCompareComp.vue';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import DisplayInteractionTable from '@/components/ProductManageComps/Interaction/ListTableComps/DisplayInteractionTable.vue';
+import CompareInteractionTable from '@/components/ProductManageComps/Interaction/ListTableComps/CompareInteractionTable.vue';
+import RiskWarningTable from '@/components/ProductManageComps/Interaction/ListTableComps/RiskWarningTable.vue';
+import SubInteractionTable from '@/components/ProductManageComps/Interaction/ListTableComps/SubInteractionTable.vue';
+import SubCompareTable from '@/components/ProductManageComps/Interaction/ListTableComps/SubCompareTable.vue';
 
 export default {
   data() {
@@ -40,14 +41,15 @@ export default {
     };
   },
   components: {
-    DisplayInteractionComp,
-    CompareInteractionComp,
-    RiskWarningComp,
-    SubInteractionComp,
-    SubCompareComp,
+    DisplayInteractionTable,
+    CompareInteractionTable,
+    RiskWarningTable,
+    SubInteractionTable,
+    SubCompareTable,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
+    // eslint-disable-next-line max-len
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductInteractionDataList', 'ControlTypeList', 'InteractionLeftPropertyList']),
     curProduct() {
       if (!this.ProductID) return null;
       return this.ProductManageList.find(it => it.ID === this.ProductID);
@@ -55,6 +57,24 @@ export default {
     curPart() {
       if (!this.PartID || !this.curProduct) return null;
       return this.curProduct.PartList.find(it => it.ID === this.PartID);
+    },
+    localInteractionDataList() {
+      if (!Array.isArray(this.ProductInteractionDataList) || this.ProductInteractionDataList.length === 0) return [];
+      const list = this.ProductInteractionDataList.map(it => {
+        const { Constraint } = it;
+        let { ItemList } = Constraint;
+        ItemList = ItemList
+          .map(item => ({ ...item, Property: PropertyClass.getPerfectPropertyByImperfectProperty(item.Property, this.InteractionLeftPropertyList) }))
+          .filter(item => item.Property);
+        return { ...it, Constraint: { ...Constraint, ItemList } };
+      });
+      return list;
+    },
+    RiskWarningDataList() {
+      if (!Array.isArray(this.localInteractionDataList) || this.localInteractionDataList.length === 0) return [];
+      const ControlType = this.$utils.getIDFromListByNames('risk', this.ControlTypeList);
+      const list = this.localInteractionDataList.filter(it => it.ControlType === ControlType);
+      return list;
     },
   },
   methods: {
@@ -72,38 +92,22 @@ export default {
       this.PartID = PartID !== 'null' ? PartID : '';
       this.ProductName = name;
       this.titleType = type;
-      // this.getProductOrderData();
+      this.getProductOrderData();
+      this.$store.dispatch('productManage/getInteractionLeftPropertyList', this.ProductID);
     },
-    // async getProductOrderData(dataType = ['Order']) { // 获取初始物料、常规尺寸与尺寸组信息
-    //   const ID = this.PartID ? this.PartID : this.ProductID;
-    //   const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
-    //   const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
-    //   const _temp = { ID, List };
-    //   const resp = await _fetchFunc(_temp).catch(() => {});
-    //   if (resp && resp.data && resp.data.Status === 1000) {
-    //     // 获取数据成功
-    //     const { DisplayList } = resp.data.Data;
-    //     if (dataType.includes('Order') && DisplayList) this.DisplayList = DisplayList.map(it => ({ ...it, key: Math.random().toString(36).slice(-8) }));
-    //   }
-    // },
-    // async setDisplayOrderSubmit(list) { // 保存排序
-    //   if (!list || list.length === 0) return;
-    //   const { ProductID, PartID } = this;
-    //   const List = list.map((it, Index) => ({ ...it, Index }));
-    //   const temp = { ProductID, PartID, List };
-    //   const resp = await this.api.getProductSetDisplayOrder(temp).catch(() => {});
-    //   if (resp && resp.data && resp.data.Status === 1000) {
-    //     const cb = () => {
-    //       this.onGoBackClick();
-    //     };
-    //     this.messageBox.successSingle('设置成功', cb, cb);
-    //   }
-    // },
+    async getProductOrderData(dataType = ['Interaction']) { // 获取初始交互列表信息
+      const ID = this.PartID ? this.PartID : this.ProductID;
+      const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
+      const _temp = { ID, List };
+      this.loading = true;
+      await this.$store.dispatch('productManage/getProductInteractionDataList', _temp);
+      this.loading = false;
+    },
     onGoBackClick() {
       this.$router.replace('/ProductManageList');
     },
     onSetupPageJump(setType, data) {
-      console.log(setType);
+      console.log(data);
       this.$store.commit('productManage/setCurInteractionData', data);
       // eslint-disable-next-line max-len
       const path = `/ProductInteractionSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${setType}/${Date.now()}`;

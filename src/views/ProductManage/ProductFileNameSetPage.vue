@@ -1,5 +1,5 @@
 <template>
-  <section class="mp-erp-product-list-page-product-factory-set-comp-wrap">
+  <section class="mp-erp-product-list-page-product-file-name-set-comp-wrap">
     <header>
       <span>当前{{titleType}}：</span>
       <span>{{ProductName}}</span>
@@ -89,7 +89,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-product-list-page-product-factory-set-comp-wrap {
+.mp-erp-product-list-page-product-file-name-set-comp-wrap {
   padding-left: 20px;
   padding-right: 6px;
   height: 100%;

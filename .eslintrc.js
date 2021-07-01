@@ -20,6 +20,10 @@ module.exports = {
     "import/no-cycle": 'off',
     'max-len': ['error', { code: 160 }],
     "object-curly-newline": "off",
+    "import/extensions":  ['error', 'always', {
+      'js': 'never',
+      'vue': 'ignorePackages'
+    }]
   },
   overrides: [
     {

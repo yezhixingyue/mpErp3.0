@@ -308,6 +308,7 @@ export default {
   getNumberValueList,
   calcDescartes,
   getIDFromListByNames,
+  getNameFromListByIDs,
   getTreeDataFromListAndClassifyData,
   checkName,
 };

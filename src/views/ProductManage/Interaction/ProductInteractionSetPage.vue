@@ -1,12 +1,12 @@
 <template>
 <!-- 界面交互 -->
-  <section class="mp-erp-product-list-page-product-factory-set-comp-wrap">
+  <section class="mp-erp-product-list-page-product-interaction-set-page-wrap">
     <header>
       <span>当前{{titleType}}：</span>
       <span>{{ProductName}}</span>
     </header>
     <main>
-      <ContionCommonComp ref="oLeftCondition" :PropertyList='PropertyList' leftWidth='40%' :curEditData='curInteractionData' :rightTitle='rightTitle'>
+      <ContionCommonComp ref="oLeftComp" :PropertyList='InteractionLeftPropertyList' leftWidth='40%' :curEditData='curInteractionData' :rightTitle='rightTitle'>
         <template slot='title'>
           <span class="blue-span" v-if="setType==='interaction'" @click="visible=true">+ 添加结果</span>
           <template v-if="setType==='compare'">
@@ -15,13 +15,12 @@
           </template>
         </template>
         <!-- 交互设置面板 -->
-        <InteractionPanel v-if="setType==='interaction'" :ComparePropertyList='ComparePropertyList' />
+        <InteractionPanel v-if="setType==='interaction'" :ComparePropertyList='ComparePropertyList' :visibleDialog.sync='visible' />
         <!-- 对比设置面板 -->
         <ComparePanel v-if="setType==='compare'" :drawerVisible.sync='drawer' />
         <!-- 风险提示设置面板 -->
-        <RiskPanel v-if="setType==='risk'" ref="oRisk" />
+        <RiskPanel v-if="setType==='risk'" ref="oRisk" :initData='curInteractionData' />
       </ContionCommonComp>
-      <FormulaPanelElementSelectDialog  :visible.sync='visible' :list='ComparePropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs'/>
     </main>
     <footer>
       <el-button @click="onSubmitClick" type="primary">保存</el-button>
@@ -37,7 +36,6 @@ import ContionCommonComp from '@/components/common/FormulaAndConditionComps/Cont
 import RiskPanel from '@/components/ProductManageComps/Interaction/RightPanels/RiskPanel.vue';
 import ComparePanel from '@/components/ProductManageComps/Interaction/RightPanels/ComparePanel.vue';
 import InteractionPanel from '@/components/ProductManageComps/Interaction/RightPanels/InteractionPanel.vue';
-import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
 
 export default {
   data() {
@@ -47,11 +45,9 @@ export default {
       ProductName: '',
       titleType: '', // 产品 | 部件
       setType: '',
-      PropertyList: [],
       ComparePropertyList: [], // 右侧属性选择弹窗中使用到的属性列表
       drawer: false,
       visible: false,
-      selectedElementIDs: [], // 后面改为计算属性
     };
   },
   components: {
@@ -59,10 +55,9 @@ export default {
     RiskPanel,
     ComparePanel,
     InteractionPanel,
-    FormulaPanelElementSelectDialog,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'curInteractionData', 'ControlTypeList']),
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'curInteractionData', 'ControlTypeList', 'InteractionLeftPropertyList']),
     curProduct() {
       if (!this.ProductID) return null;
       return this.ProductManageList.find(it => it.ID === this.ProductID);
@@ -93,12 +88,7 @@ export default {
       this.ProductName = name;
       this.titleType = type;
       this.setType = setType;
-      this.getLeftPropertyList();
       this.getRightPropertyList();
-    },
-    async getLeftPropertyList() {
-      const list = await PropertyClass.getPropertyList({ UseModule: 14, ProductID: this.ProductID });
-      if (list) this.PropertyList = list;
     },
     async getRightPropertyList() {
       let UseModule;
@@ -118,9 +108,10 @@ export default {
     },
     onGoBackClick() {
       this.$router.replace(`/ProductInteractionList/${this.ProductID}/${this.PartID || 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
+      // this.$goback();
     },
     onSubmitClick() { // 点击保存
-      const condition = this.$refs.oLeftCondition.getConditonResult();
+      const condition = this.$refs.oLeftComp.getConditonResult();
       if (!condition) return;
       let result;
       if (this.setType === 'risk') {
@@ -137,12 +128,10 @@ export default {
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
           this.onGoBackClick();
+          this.$store.commit('productManage/setProductInteractionDataListChange', data);
         };
         this.messageBox.successSingle('保存成功', cb, cb);
       }
-    },
-    onElementSelect(e) {
-      console.log('onElementSelect', e);
     },
   },
   mounted() {
@@ -151,7 +140,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-product-list-page-product-factory-set-comp-wrap {
+.mp-erp-product-list-page-product-interaction-set-page-wrap {
   padding-left: 20px;
   padding-right: 6px;
   height: 100%;

@@ -45,7 +45,16 @@ export default {
       _list.forEach(it => {
         const isPropertyFixedType = it.FixedType || it.FixedType === 0; // 是否常量
         if (!isPropertyFixedType) {
-          _temp.push({ ...it, _FixedTypeList: [] });
+          const i = _temp.findIndex(el => (el.Element ? el.Element.ID : el.ID) === it.Element.ID);
+          if (i > -1) {
+            if (!_temp[i].StoredContent && it.StoredContent) {
+              const { _FixedTypeList } = _temp[i];
+              const _newItem = { ...it, _FixedTypeList };
+              _temp.splice(i, 1, _newItem);
+            }
+          } else {
+            _temp.push({ ...it, _FixedTypeList: [] });
+          }
         } else {
           // 1. 由于数据返回时常量数据必定返回在其对应的元素数据之后，所以不考虑实际有t，但t在后面从而找不到数据的情况
           // 2. 由于元素只有多选时才会出现常量类型数据，且多选元素也必可点击，所以t肯定会被找着，所以不考虑t未找到的情况

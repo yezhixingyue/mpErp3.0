@@ -46,8 +46,8 @@ export const AllOperatorList = [ // 运算符号列表
   { ID: 12, Name: '＞值≤' },
   { ID: 13, Name: '≥值＜' },
   { ID: 14, Name: '＞值＜' },
-  { ID: 101, Name: '关联' },
-  { ID: 102, Name: '排斥' },
+  { ID: 21, Name: '禁用' },
+  { ID: 22, Name: '隐藏' },
 ];
 
 export const ValueCompareType = [
@@ -58,6 +58,7 @@ export const ValueCompareType = [
   { ID: 4, Name: '开关' },
   { ID: 5, Name: '工艺' },
   { ID: 6, Name: '物料' },
+  { ID: 7, Name: '控制' },
 ];
 
 // 下面3个方法主要用于已选择的物料类型在页面上的展示，会对其进行分类提交处理 使用地方：1条件关系选择为物料时 2 工厂列表物料显示文字处理 等

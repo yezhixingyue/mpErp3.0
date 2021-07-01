@@ -76,6 +76,8 @@ export default {
      * 交互
      */
     curInteractionData: null,
+    ProductInteractionDataList: [],
+    InteractionLeftPropertyList: [],
   },
   getters: {
   },
@@ -228,6 +230,21 @@ export default {
     setCurInteractionData(state, data) {
       state.curInteractionData = data;
     },
+    setProductInteractionDataList(state, list) {
+      state.ProductInteractionDataList = list;
+    },
+    setInteractionLeftPropertyList(state, list) {
+      state.InteractionLeftPropertyList = list;
+    },
+    setProductInteractionDataListChange(state, item) { // 新增或编辑后对仓库上的列表数据进行修改
+      if (!item) return;
+      if (item.ID) {
+        const i = state.ProductInteractionDataList.findIndex(it => it.ID === item.ID);
+        if (i > -1) state.ProductInteractionDataList.splice(i, 1, item);
+      } else {
+        state.ProductInteractionDataList.unshift(item);
+      }
+    },
   },
   actions: {
     async getManageProductList({ state, commit }, page = 1) { // 获取产品列表数据
@@ -353,6 +370,22 @@ export default {
       if (resp && resp.data.Status === 1000) {
         const cb = () => { commit('setProductFilePropertyRemove', i); };
         messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    async getProductInteractionDataList({ commit }, data) { // 获取产品交互列表数据
+      commit('setProductInteractionDataList', []);
+      const resp = await api.getProductModuleData(data).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        commit('setProductInteractionDataList', resp.data.Data.ControlList);
+        return true;
+      }
+      return false;
+    },
+    async getInteractionLeftPropertyList({ commit }, ProductID) { // 获取交互左侧弹窗属性列表数据
+      commit('setInteractionLeftPropertyList', []);
+      const list = await PropertyClass.getPropertyList({ UseModule: 14, ProductID });
+      if (list) {
+        commit('setInteractionLeftPropertyList', list);
       }
     },
   },

@@ -73,44 +73,4 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-product-list-page-product-factory-set-comp-wrap {
-  padding-left: 20px;
-  padding-right: 6px;
-  height: 100%;
-  padding-bottom: 45px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  > header {
-    padding: 30px 0;
-    padding-bottom: 40px;
-    line-height: 15px;
-    box-sizing: border-box;
-    height: 15px;
-    font-size: 15px;
-    color: #21CAE3;
-    font-weight: bold;
-    flex: none;
-  }
-  > main {
-    flex: 1;
-    padding-top: 15px;
-  }
-  > footer {
-    text-align: center;
-    padding: 25px;
-    flex: none;
-    > button {
-      width: 120px;
-      height: 35px;
-      border: 1px solid #26BCF9;
-      border-radius: 3px;
-      padding: 0;
-      &:last-of-type {
-        color: #26BCF9;
-        margin-left: 30px;
-      }
-    }
-  }
-}
 </style>

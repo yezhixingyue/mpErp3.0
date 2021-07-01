@@ -129,6 +129,7 @@ export default {
     color: #21CAE3;
     font-weight: bold;
     flex: none;
+    height: 144px;
     > p {
       padding-top: 45px;
       > button {

@@ -62,7 +62,16 @@ export default {
           const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
           if (t) {
             if (!t._ElementList) t._ElementList = [];
-            t._ElementList.push(it);
+            const i = t._ElementList.findIndex(el => (el.Element ? el.Element.ID : el.ID) === Element.ID);
+            if (i > -1) {
+              if (!t._ElementList[i].StoredContent && it.StoredContent) {
+                const { _FixedTypeList } = t._ElementList[i];
+                const _newItem = { ...it, _FixedTypeList };
+                t._ElementList.splice(i, 1, _newItem);
+              }
+            } else {
+              t._ElementList.push(it);
+            }
           } else {
             const _craft = getOneNewCraft(Craft);
             _craft._ElementList.push(it);
@@ -89,14 +98,44 @@ export default {
             addOneNewCraftToList(_craft);
           }
         }
-        if (Craft && Element && Group && !(FixedType || FixedType === 0) && !Formula) { // 工艺上元素组
+        if (Craft && !Element && Group && !(FixedType || FixedType === 0) && !Formula) { // 工艺上元素组
+          const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
+          if (t) {
+            const _item = { ...it, List: [] };
+            if (!t._ElementGroupList) t._ElementGroupList = [];
+            const i = t._ElementGroupList.findIndex(_it => (_it.Group ? _it.Group.ID : _it.ID) === Group.ID);
+            if (i > -1) {
+              if (!t._ElementGroupList[i].StoredContent && it.StoredContent) {
+                const { List } = t._ElementGroupList[i];
+                const _newItem = { ...it, List };
+                t._ElementGroupList.splice(i, 1, _newItem);
+              }
+            } else t._ElementGroupList.push(_item);
+          } else {
+            const _craft = getOneNewCraft(Craft);
+            const _item = { ...it, List: [] };
+            _craft._ElementGroupList.push(_item);
+            addOneNewCraftToList(_craft);
+          }
+        }
+        if (Craft && Element && Group && !(FixedType || FixedType === 0) && !Formula) { // 工艺上元素组元素
           const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
           if (t) {
             const _item = { ...Group, List: [it] };
             if (!t._ElementGroupList) t._ElementGroupList = [];
-            const _group = t._ElementGroupList.find(_it => _it.ID === Group.ID);
-            if (_group) _group.List.push(it);
-            else t._ElementGroupList.push(_item);
+            const _group = t._ElementGroupList.find(_it => (_it.Group ? _it.Group.ID : _it.ID) === Group.ID);
+            if (_group) {
+              const i = _group.List.findIndex(_it => _it.ID === Element.ID);
+              if (i > -1) {
+                if (!_group.List[i].StoredContent && it.StoredContent) {
+                  const { _FixedTypeList } = _group.List[i];
+                  const _newItem = { ...it, _FixedTypeList };
+                  _group.List.splice(i, 1, _newItem);
+                }
+              } else {
+                _group.List.push(it);
+              }
+            } else t._ElementGroupList.push(_item);
           } else {
             const _craft = getOneNewCraft(Craft);
             const _item = { ...Group, List: [it] };
@@ -109,7 +148,7 @@ export default {
           if (t) {
             const _item = { ...Group, List: [], _FixedTypeList: [it] };
             if (!t._ElementGroupList) t._ElementGroupList = [];
-            const _group = t._ElementGroupList.find(_it => _it.ID === Group.ID);
+            const _group = t._ElementGroupList.find(_it => (_it.Group ? _it.Group.ID : _it.ID) === Group.ID);
             if (_group) {
               if (!_group._FixedTypeList) _group._FixedTypeList = [];
               _group._FixedTypeList.push(it);
@@ -127,7 +166,7 @@ export default {
           const t = _temp.find(_it => Craft.ID === _it.Craft.ID);
           if (t) {
             if (!t._ElementGroupList) t._ElementGroupList = [];
-            const _group = t._ElementGroupList.find(_it => _it.ID === Group.ID);
+            const _group = t._ElementGroupList.find(_it => (_it.Group ? _it.Group.ID : _it.ID) === Group.ID);
             if (_group) {
               const _ele = _group.List.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === ElementItem.ID);
               if (_ele) {

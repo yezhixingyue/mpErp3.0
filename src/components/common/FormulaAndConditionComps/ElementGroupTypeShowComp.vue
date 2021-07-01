@@ -1,7 +1,9 @@
 <template>
   <ul class="mp-erp-common-comps-on-element-select-dialog-group-type-show-item-comp-wrap">
     <li v-for="it in groupList" :key="it.Group ? it.Group.ID : it.ID">
-      <label v-if="it.Group">{{it.Group.Name}}
+      <label v-if="it.Group">
+        <span class="is-element" @click="onItemClick(it)" v-if="it.StoredContent">{{it.Group.Name}}</span>
+        <span v-else>{{it.Group.Name}}</span>
         <template v-if="it.Group.GroupProps && it.Group.GroupProps.length > 0">
           （<span :class="selectedElementIDs.includes(gProp.StoredContent)?'is-disabled':''"
              class="blue-span" @click="onItemClick(gProp)" v-for="gProp in it.Group.GroupProps" :key="gProp.StoredContent">{{getName(gProp)}}</span>）
@@ -60,17 +62,41 @@ export default {
       _list.forEach(it => {
         const { Group, FixedType, Element, Formula } = it;
         const ElementItem = Element || Formula;
+        if (!ElementItem && Group && !(FixedType || FixedType === 0)) { // 元素组
+          console.log(it);
+          const i = _temp.findIndex(_it => (_it.Group ? _it.Group.ID : _it.ID) === Group.ID);
+          if (i > -1) {
+            if (!_temp[i].StoredContent && it.StoredContent) {
+              let { List, _FixedTypeList } = _temp[i];
+              List = List || [];
+              _FixedTypeList = _FixedTypeList || [];
+              const _item = { ...it, List, _FixedTypeList };
+              _temp.splice(i, 1, _item);
+            }
+          } else {
+            _temp.push({ ...it, _FixedTypeList: [], List: [] });
+          }
+        }
         if (Element && Group && !(FixedType || FixedType === 0) && !Formula) { // 组元素
-          const t = _temp.find(_it => _it.ID === Group.ID);
+          const t = _temp.find(_it => (_it.Group ? _it.Group.ID : _it.ID) === Group.ID);
           if (t) {
             if (!t.List) t.List = [];
-            t.List.push(it);
+            const i = t.List.findIndex(el => (el.Element ? el.Element.ID : el.ID) === Element.ID);
+            if (i > -1) {
+              if (!t.List[i].StoredContent && it.StoredContent) {
+                const { _FixedTypeList } = t.List[i];
+                const _newItem = { ...it, _FixedTypeList };
+                t.List.splice(i, 1, _newItem);
+              }
+            } else {
+              t.List.push(it);
+            }
           } else {
             _temp.push({ ...Group, List: [it] });
           }
         }
         if (!Element && Group && (FixedType || FixedType === 0) && !Formula) { // 元素组组常量
-          const _group = _temp.find(_it => _it.ID === Group.ID);
+          const _group = _temp.find(_it => (_it.Group ? _it.Group.ID : _it.ID) === Group.ID);
           if (_group) {
             if (!_group._FixedTypeList) _group._FixedTypeList = [];
             _group._FixedTypeList.push(it);
@@ -81,7 +107,7 @@ export default {
           _unjoinedList.push(it);
         }
         if (ElementItem && Group && (FixedType || FixedType === 0)) { // 元素组中元素常量
-          const _group = _temp.find(_it => _it.ID === Group.ID);
+          const _group = _temp.find(_it => (_it.Group ? _it.Group.ID : _it.ID) === Group.ID);
           if (_group) {
             const _ele = _group.List.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === ElementItem.ID);
             if (_ele) {
@@ -92,8 +118,9 @@ export default {
               const _item = { ...ElementItem, _FixedTypeList: [it] };
               _group.List.push(_item);
             }
+          } else {
+            _temp.push({ ...Group, _FixedTypeList: [it], List: [] });
           }
-          _unjoinedList.push(it);
         }
       });
       return _temp;

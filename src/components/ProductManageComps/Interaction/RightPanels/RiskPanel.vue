@@ -2,7 +2,7 @@
   <div class="mp-erp-product-manage-comps-interaction-right-panels-risk-panel-container">
     <p>
       <span>提示内容：</span>
-      <el-input size='small' v-model.trim="FailTips" maxlength="50" show-word-limit></el-input>
+      <el-input size='small' v-model.trim="FailTips" maxlength="200" show-word-limit></el-input>
     </p>
     <p>
       <span>提示形式：</span>
@@ -36,6 +36,12 @@
 import { mapState } from 'vuex';
 
 export default {
+  props: {
+    initData: {
+      type: Object,
+      default: null,
+    },
+  },
   computed: {
     ...mapState('productManage', ['RiskWarningTypeList', 'RiskWarningRangeList']),
   },
@@ -44,6 +50,8 @@ export default {
       FailTips: '',
       DisplayMode: '',
       AreaList: [],
+      ID: '',
+      ControlID: '',
     };
   },
   methods: {
@@ -55,6 +63,8 @@ export default {
             FailTips: this.FailTips,
             DisplayMode: this.DisplayMode,
             AreaList: this.AreaList,
+            ID: this.ID,
+            ControlID: this.ControlID,
           }],
         };
       }
@@ -75,6 +85,17 @@ export default {
       }
       return true;
     },
+  },
+  mounted() {
+    if (this.initData && Array.isArray(this.initData.List) && this.initData.List.length === 1) { // 编辑时还原数据
+      const [obj] = this.initData.List;
+      const { AreaList, DisplayMode, FailTips, ID, ControlID } = obj;
+      this.AreaList = AreaList;
+      this.DisplayMode = DisplayMode;
+      this.FailTips = FailTips;
+      this.ID = ID;
+      this.ControlID = ControlID;
+    }
   },
 };
 </script>
@@ -97,6 +118,9 @@ export default {
     > .el-input {
       max-width: 600px;
       min-width: 300px;
+      .el-input__inner {
+        padding-right: 65px;
+      }
     }
     > .el-radio-group {
       .el-radio {
