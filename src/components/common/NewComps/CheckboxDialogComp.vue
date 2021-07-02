@@ -68,7 +68,6 @@ export default {
         return this.visible;
       },
       set(bool) {
-        console.log(bool);
         this.$emit('update:visible', bool);
       },
     },
@@ -90,7 +89,13 @@ export default {
   },
   watch: {
     visible(bool) {
-      if (bool) this.checkList = this.value;
+      if (bool) {
+        this.checkList = this.value.map(it => {
+          if (Object.prototype.toString.call(it) === '[object Object]') return it;
+          if (typeof it === 'string') return { [this.defaultProps.value]: it };
+          return it;
+        });
+      }
     },
   },
 };

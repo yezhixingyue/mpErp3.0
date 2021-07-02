@@ -78,6 +78,9 @@ export default {
     curInteractionData: null,
     ProductInteractionDataList: [],
     InteractionLeftPropertyList: [],
+    InteractionRightPropertyList: [],
+    CompareLeftPropertyList: [],
+    CompareRightPropertyList: [],
   },
   getters: {
   },
@@ -233,8 +236,11 @@ export default {
     setProductInteractionDataList(state, list) {
       state.ProductInteractionDataList = list;
     },
-    setInteractionLeftPropertyList(state, list) {
-      state.InteractionLeftPropertyList = list;
+    setInteractionPropertyList(state, [leftList, rightList, compareLeft, compareRight]) {
+      state.InteractionLeftPropertyList = Array.isArray(leftList) ? leftList : [];
+      state.InteractionRightPropertyList = Array.isArray(rightList) ? rightList : [];
+      state.CompareLeftPropertyList = Array.isArray(compareLeft) ? compareLeft : [];
+      state.CompareRightPropertyList = Array.isArray(compareRight) ? compareRight : [];
     },
     setProductInteractionDataListChange(state, item) { // 新增或编辑后对仓库上的列表数据进行修改
       if (!item) return;
@@ -381,12 +387,19 @@ export default {
       }
       return false;
     },
-    async getInteractionLeftPropertyList({ commit }, ProductID) { // 获取交互左侧弹窗属性列表数据
-      commit('setInteractionLeftPropertyList', []);
-      const list = await PropertyClass.getPropertyList({ UseModule: 14, ProductID });
+    async getInteractionPropertyList({ commit }, ProductID) { // 获取交互左侧弹窗属性列表数据
+      commit('setInteractionPropertyList', []);
+      const list = await Promise.all([
+        PropertyClass.getPropertyList({ UseModule: 14, ProductID }),
+        PropertyClass.getPropertyList({ UseModule: 18, ProductID }),
+        PropertyClass.getPropertyList({ UseModule: 19, ProductID }), // 对比主属性
+        PropertyClass.getPropertyList({ UseModule: 20, ProductID }), // 对比从属性
+      ]);
       if (list) {
-        commit('setInteractionLeftPropertyList', list);
+        commit('setInteractionPropertyList', list);
+        return true;
       }
+      return false;
     },
   },
 };

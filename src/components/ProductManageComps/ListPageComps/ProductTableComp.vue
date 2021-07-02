@@ -80,10 +80,12 @@ export default {
       > span {
         display: inline-block;
         &.name {
-          width: 125px;
+          width: 140px;
+          padding-right: 5px;
         }
         &.show-name {
-          width: 175px;
+          width: 140px;
+          padding-right: 15px;
         }
         &.classify {
           width: 200px;

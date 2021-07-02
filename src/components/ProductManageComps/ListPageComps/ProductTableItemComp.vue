@@ -206,6 +206,8 @@ export default {
         display: flex;
         white-space: nowrap;
         overflow: hidden;
+        height: 36px;
+        line-height: 36px;
         > span {
           white-space: nowrap;
           overflow: hidden;
@@ -213,10 +215,12 @@ export default {
           font-size: 14px;
           text-align: center;
           &.name {
-            width: 125px;
+            width: 140px;
+            padding-right: 5px;
           }
           &.show-name {
-            width: 175px;
+            width: 140px;
+            padding-right: 15px;
           }
         }
       }
@@ -338,13 +342,16 @@ export default {
       height: 40px;
       font-size: 12px;
       > div {
+        height: 30px;
+        line-height: 30px;
         &:first-of-type {
           color: #585858;
-          width: 125px;
+          width: 140px;
           white-space: nowrap;
           overflow: hidden;
           text-align: center;
-          margin-right: 60px;
+          text-overflow: ellipsis;
+          margin-right: 48px;
         }
         &:nth-of-type(2) {
           > span {

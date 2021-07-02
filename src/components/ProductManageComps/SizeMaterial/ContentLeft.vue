@@ -25,7 +25,7 @@
           </div>
           <div class="menu">
             <span @click="onMaterialSaveClick(it)"> <i class="edit"></i> 编辑</span>
-            <span> <i></i> 删除</span>
+            <span @click="onMaterialRemoveClick(it)"> <i></i> 删除</span>
           </div>
         </li>
       </ul>
@@ -183,7 +183,7 @@ export default {
         return;
       }
       if (!normalNameReg.test(this.title)) {
-        this.messageBox.failSingle('名称仅支持中文、英文(全角/半角)、+-_(全角/半角)');
+        this.messageBox.failSingle('名称仅支持中文、英文(全角/半角)、+-_(全角/半角)、数字等');
         return;
       }
       const cb = () => { this.isTitleEditing = false; };
@@ -198,6 +198,11 @@ export default {
       }
       this.curEditMaterialData = data;
       this.MaterialSaveVisible = true;
+    },
+    onMaterialRemoveClick(data) {
+      this.messageBox.warnCancelBox('确定删除该类物料吗?', `物料种类：[ ${data.Name} ]`, () => {
+        this.$emit('MaterialTypeRemove', data);
+      });
     },
   },
   mounted() {

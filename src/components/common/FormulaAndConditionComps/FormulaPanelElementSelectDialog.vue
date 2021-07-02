@@ -189,7 +189,6 @@ export default {
           temp[key] = this.protertySeparateHelper(data[key]); // 数组形式 继续对其进行划分
           const t = this.tempTabList.find(it => it.value === key);
           if (t) {
-            console.log(t, key, temp[key], this.curTargetID);
             this.panelList.push({ ...t });
           }
         }
@@ -200,7 +199,6 @@ export default {
             if (key === 'PartProperty') {
               const t = this.panelList.find(it => it.value === subKey);
               if (!t) {
-                console.log(subKey, _temp[subKey]);
                 this.panelList.push({ label: subKey, value: subKey }); // 部件名称后面需要自动修改
               }
             }

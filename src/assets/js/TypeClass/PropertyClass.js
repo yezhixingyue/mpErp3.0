@@ -48,6 +48,7 @@ export const AllOperatorList = [ // 运算符号列表
   { ID: 14, Name: '＞值＜' },
   { ID: 21, Name: '禁用' },
   { ID: 22, Name: '隐藏' },
+  { ID: 23, Name: '必选' },
 ];
 
 export const ValueCompareType = [
@@ -309,7 +310,7 @@ export default class PropertyClass {
             _val = ValueList[0].Value;
           }
           if (!ValueList[0].Value && ValueList[0].Property && ValueList[0].Property.DisplayContent) {
-            _val = ValueList[0].Property.DisplayContent.replace(/\[|\]/, '');
+            _val = ValueList[0].Property.DisplayContent.replace(/\[|\]/g, '');
           }
         } else if (OptionList) {
           _val = ValueList.map(_it => OptionList.find(option => option.First === _it.Value)).filter(_it => _it).map(_it => _it.Second).join(' ');

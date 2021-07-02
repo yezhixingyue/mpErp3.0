@@ -372,8 +372,10 @@ const api = {
   getProductMaterialSave(data) { // POST /Api/ProductMaterial/Save 设置产品或部件物料
     return instance.post('/Api/ProductMaterial/Save', data);
   },
-  getProductMaterialRemove({ productID, partID, typeID }) { // PUT /Api/ProductMaterial/Remove 根据物料类型删除物料
-    return instance.put('/Api/ProductMaterial/Remove', { productID, partID, typeID });
+  getProductMaterialRemove({ productID, partID, typeID }) { // delete /Api/ProductMaterial/Remove 根据物料类型删除物料
+    let queryStr = `?productID=${productID}&typeID=${typeID}`;
+    if (partID) queryStr += `&partID=${partID}`;
+    return instance.delete(`/Api/ProductMaterial/Remove${queryStr}`);
   },
   getProductMaterialOrder(data) { // POST /Api/ProductMaterial/Order 设置物料排序
     return instance.post('/Api/ProductMaterial/Order', data);

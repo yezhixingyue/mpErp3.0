@@ -187,8 +187,8 @@ export const getValueIsOrNotNumber = (val, isInteger) => {
 /**
  * @description:  判断是否为正整数 返回bool值
  * @param {*} value
- * @param {*} canInfinite 是否允许无限大
- * @param {*} canZero 是否允许等于0
+ * @param {*} canInfinite 是否允许无限大 即是否可为-1
+ * @param {*} canZero 是否允许等于0 是否可为0
  * @return {*}
  */
 export const isPositiveInteger = (value, canInfinite, canZero) => {

@@ -5,16 +5,19 @@
       <span>{{ProductName}}</span>
     </header>
     <main>
-      <!-- 界面交互 -->
-      <DisplayInteractionTable @setup="onSetupPageJump('interaction', $event)" />
-      <!-- 对比验证 -->
-      <CompareInteractionTable @setup="onSetupPageJump('compare', $event)" />
-      <!-- 风险提示 -->
-      <RiskWarningTable @setup="onSetupPageJump('risk', $event)" :dataList='RiskWarningDataList' :PropertyList='InteractionLeftPropertyList' />
-      <!-- 子交互 -->
-      <SubInteractionTable />
-      <!-- 子对比 -->
-      <SubCompareTable />
+      <template v-if="showTable">
+        <!-- 界面交互 -->
+        <RiskWarningTable
+        @setup="onSetupPageJump('interaction', $event)" type='interaction' :dataList='InteractionDataList' :PropertyList='InteractionLeftPropertyList' />
+        <!-- 对比验证 -->
+        <CompareInteractionTable @setup="onSetupPageJump('compare', $event)" />
+        <!-- 风险提示 -->
+        <RiskWarningTable @setup="onSetupPageJump('risk', $event)" type='risk' :dataList='RiskWarningDataList' :PropertyList='InteractionLeftPropertyList' />
+        <!-- 子交互 -->
+        <SubInteractionTable />
+        <!-- 子对比 -->
+        <SubCompareTable />
+      </template>
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -25,7 +28,6 @@
 <script>
 import { mapState } from 'vuex';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
-import DisplayInteractionTable from '@/components/ProductManageComps/Interaction/ListTableComps/DisplayInteractionTable.vue';
 import CompareInteractionTable from '@/components/ProductManageComps/Interaction/ListTableComps/CompareInteractionTable.vue';
 import RiskWarningTable from '@/components/ProductManageComps/Interaction/ListTableComps/RiskWarningTable.vue';
 import SubInteractionTable from '@/components/ProductManageComps/Interaction/ListTableComps/SubInteractionTable.vue';
@@ -38,18 +40,18 @@ export default {
       PartID: '',
       ProductName: '',
       titleType: '', // 产品 | 部件
+      showTable: false,
     };
   },
   components: {
-    DisplayInteractionTable,
     CompareInteractionTable,
     RiskWarningTable,
     SubInteractionTable,
     SubCompareTable,
   },
   computed: {
-    // eslint-disable-next-line max-len
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductInteractionDataList', 'ControlTypeList', 'InteractionLeftPropertyList']),
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductInteractionDataList',
+      'ControlTypeList', 'InteractionLeftPropertyList', 'InteractionRightPropertyList']),
     curProduct() {
       if (!this.ProductID) return null;
       return this.ProductManageList.find(it => it.ID === this.ProductID);
@@ -60,13 +62,32 @@ export default {
     },
     localInteractionDataList() {
       if (!Array.isArray(this.ProductInteractionDataList) || this.ProductInteractionDataList.length === 0) return [];
-      const list = this.ProductInteractionDataList.map(it => {
-        const { Constraint } = it;
+      const list = JSON.parse(JSON.stringify(this.ProductInteractionDataList)).map(it => {
+        const { Constraint, List } = it;
+        const _list = List.map(_it => {
+          let { Property } = _it;
+          // let { Property, CompareProperty } = _it;
+          if (!Property) return _it;
+          if (Property) Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.InteractionRightPropertyList);
+          // if (CompareProperty) CompareProperty = PropertyClass.getPerfectPropertyByImperfectProperty(CompareProperty, this.InteractionRightPropertyList);
+          return { ..._it, Property };
+          // return { ..._it, Property, CompareProperty };
+        });
         let { ItemList } = Constraint;
         ItemList = ItemList
-          .map(item => ({ ...item, Property: PropertyClass.getPerfectPropertyByImperfectProperty(item.Property, this.InteractionLeftPropertyList) }))
+          .map(item => {
+            const { Property, ValueList } = item;
+            if (Array.isArray(ValueList) && ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Property) {
+              ValueList[0].Property = PropertyClass.getPerfectPropertyByImperfectProperty(ValueList[0].Property, this.InteractionLeftPropertyList);
+            }
+            return {
+              ...item,
+              Property: PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.InteractionLeftPropertyList),
+              ValueList,
+            };
+          })
           .filter(item => item.Property);
-        return { ...it, Constraint: { ...Constraint, ItemList } };
+        return { ...it, Constraint: { ...Constraint, ItemList }, List: _list };
       });
       return list;
     },
@@ -76,9 +97,15 @@ export default {
       const list = this.localInteractionDataList.filter(it => it.ControlType === ControlType);
       return list;
     },
+    InteractionDataList() {
+      if (!Array.isArray(this.localInteractionDataList) || this.localInteractionDataList.length === 0) return [];
+      const ControlType = this.$utils.getIDFromListByNames('interaction', this.ControlTypeList);
+      const list = this.localInteractionDataList.filter(it => it.ControlType === ControlType);
+      return list;
+    },
   },
   methods: {
-    getPositionID() {
+    async getPositionID() {
       if (!this.$route.params) {
         this.onGoBackClick();
         return;
@@ -93,7 +120,8 @@ export default {
       this.ProductName = name;
       this.titleType = type;
       this.getProductOrderData();
-      this.$store.dispatch('productManage/getInteractionLeftPropertyList', this.ProductID);
+      await this.$store.dispatch('productManage/getInteractionPropertyList', this.ProductID);
+      this.showTable = true;
     },
     async getProductOrderData(dataType = ['Interaction']) { // 获取初始交互列表信息
       const ID = this.PartID ? this.PartID : this.ProductID;
@@ -107,7 +135,6 @@ export default {
       this.$router.replace('/ProductManageList');
     },
     onSetupPageJump(setType, data) {
-      console.log(data);
       this.$store.commit('productManage/setCurInteractionData', data);
       // eslint-disable-next-line max-len
       const path = `/ProductInteractionSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${setType}/${Date.now()}`;

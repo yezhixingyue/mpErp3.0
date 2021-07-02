@@ -14,6 +14,7 @@
            @MaterialSaveSubmit='onMaterialSaveSubmit'
            @MaterialSortSubmit='onMaterialSortSubmit'
            @MaterialSetHiddenSubmit='onMaterialSetHiddenSubmit'
+           @MaterialTypeRemove='onMaterialTypeRemoveClick'
            :MaterialList='MaterialList'
            />
         </template>
@@ -154,6 +155,20 @@ export default {
           this.$refs.oLeft.MaterialHiddentVisible = false;
         };
         this.messageBox.successSingle('设置客户隐藏成功', cb, cb);
+      }
+    },
+    async onMaterialTypeRemoveClick(data) {
+      console.log('onMaterialTypeRemoveClick', data);
+      if (!data) return;
+      const { ID } = data;
+      const { ProductID, PartID } = this;
+      const temp = { productID: ProductID, partID: PartID, typeID: ID };
+      const resp = await this.api.getProductMaterialRemove(temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          this.MaterialList = this.MaterialList.filter(it => it.Type.ID !== ID);
+        };
+        this.messageBox.successSingle('删除类型成功', cb, cb);
       }
     },
     async onSizeGroupSubmit(data) {

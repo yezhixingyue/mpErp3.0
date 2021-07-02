@@ -6,7 +6,8 @@
       <span>{{ProductName}}</span>
     </header>
     <main>
-      <ContionCommonComp ref="oLeftComp" :PropertyList='InteractionLeftPropertyList' leftWidth='40%' :curEditData='curInteractionData' :rightTitle='rightTitle'>
+      <ContionCommonComp ref="oLeftComp" :ComparePropertyList='ComparePropertyList' :PropertyList='InteractionLeftPropertyList'
+       leftWidth='40%' :curEditData='curInteractionData' :rightTitle='rightTitle'>
         <template slot='title'>
           <span class="blue-span" v-if="setType==='interaction'" @click="visible=true">+ 添加结果</span>
           <template v-if="setType==='compare'">
@@ -15,7 +16,12 @@
           </template>
         </template>
         <!-- 交互设置面板 -->
-        <InteractionPanel v-if="setType==='interaction'" :ComparePropertyList='ComparePropertyList' :visibleDialog.sync='visible' />
+        <InteractionPanel
+         v-if="setType==='interaction'"
+         ref="oInteraction"
+         :initData='curInteractionData'
+         :ComparePropertyList='InteractionRightPropertyList'
+         :visibleDialog.sync='visible' />
         <!-- 对比设置面板 -->
         <ComparePanel v-if="setType==='compare'" :drawerVisible.sync='drawer' />
         <!-- 风险提示设置面板 -->
@@ -31,7 +37,6 @@
 
 <script>
 import { mapState } from 'vuex';
-import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import ContionCommonComp from '@/components/common/FormulaAndConditionComps/ContionCommonComp.vue';
 import RiskPanel from '@/components/ProductManageComps/Interaction/RightPanels/RiskPanel.vue';
 import ComparePanel from '@/components/ProductManageComps/Interaction/RightPanels/ComparePanel.vue';
@@ -45,7 +50,6 @@ export default {
       ProductName: '',
       titleType: '', // 产品 | 部件
       setType: '',
-      ComparePropertyList: [], // 右侧属性选择弹窗中使用到的属性列表
       drawer: false,
       visible: false,
     };
@@ -57,7 +61,8 @@ export default {
     InteractionPanel,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'curInteractionData', 'ControlTypeList', 'InteractionLeftPropertyList']),
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'curInteractionData', 'ControlTypeList',
+      'InteractionLeftPropertyList', 'InteractionRightPropertyList', 'CompareLeftPropertyList', 'CompareRightPropertyList']),
     curProduct() {
       if (!this.ProductID) return null;
       return this.ProductManageList.find(it => it.ID === this.ProductID);
@@ -70,6 +75,10 @@ export default {
       if (this.setType === 'risk') return '则进行风险提示：';
       if (this.setType === 'compare') return '则必须满足';
       return '则';
+    },
+    ComparePropertyList() {
+      if (this.setType === 'risk' || this.setType === 'compare') return this.InteractionLeftPropertyList;
+      return null;
     },
   },
   methods: {
@@ -88,23 +97,6 @@ export default {
       this.ProductName = name;
       this.titleType = type;
       this.setType = setType;
-      this.getRightPropertyList();
-    },
-    async getRightPropertyList() {
-      let UseModule;
-      switch (this.setType) {
-        case 'interaction':
-          UseModule = 18;
-          break;
-        case 'compare':
-          // UseModule = 18; // 不确定
-          break;
-        default:
-          break;
-      }
-      if (!UseModule && UseModule !== 0) return;
-      const list = await PropertyClass.getPropertyList({ UseModule, ProductID: this.ProductID });
-      if (list) this.ComparePropertyList = list;
     },
     onGoBackClick() {
       this.$router.replace(`/ProductInteractionList/${this.ProductID}/${this.PartID || 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
@@ -116,6 +108,9 @@ export default {
       let result;
       if (this.setType === 'risk') {
         result = this.$refs.oRisk.getSubmitInfo();
+      }
+      if (this.setType === 'interaction') {
+        result = this.$refs.oInteraction.getSubmitInfo();
       }
       if (!result) return;
       const ControlType = this.$utils.getIDFromListByNames(this.setType, this.ControlTypeList);

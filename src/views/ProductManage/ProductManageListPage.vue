@@ -11,7 +11,7 @@
         class="search-section"
         :typeList="[['KeyWords', '']]"
         title=""
-        placeholder='请输入产品名称'
+        placeholder='请输入产品内部名称'
         :requestFunc='getManageProductList'
         :changePropsFunc='setObjForListData'
         :word='condition4ProductManageList.KeyWords'

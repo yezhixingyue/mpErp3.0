@@ -63,7 +63,6 @@ export default {
         const { Group, FixedType, Element, Formula } = it;
         const ElementItem = Element || Formula;
         if (!ElementItem && Group && !(FixedType || FixedType === 0)) { // 元素组
-          console.log(it);
           const i = _temp.findIndex(_it => (_it.Group ? _it.Group.ID : _it.ID) === Group.ID);
           if (i > -1) {
             if (!_temp[i].StoredContent && it.StoredContent) {

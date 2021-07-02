@@ -74,7 +74,7 @@ export default {
         Name: [
           { required: true, message: '请输入部件名称', trigger: 'blur' },
           { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
-          { pattern: normalNameReg, message: '名称仅支持中文、英文(全角/半角)、+-_(全角/半角)', trigger: 'blur' },
+          { pattern: normalNameReg, message: '名称仅支持中文、英文(全角/半角)、+-_(全角/半角)、数字等', trigger: 'blur' },
         ],
         UseTimes: [
           { validator: this.checkUseTimes, trigger: 'change' },
@@ -120,6 +120,15 @@ export default {
       // 1. 必填   2. 可以为0 但不能同时为0  3. 最大值必须大于等于最小值  4. 不能为负，最大不可设为-1  5. 可以均不填写 代表不限制 (不行 取消该条)
       if ((!MinValue && MinValue !== 0) || (!MaxValue && MaxValue !== 0)) {
         callback(new Error('请填写和补充最大最小值'));
+        return;
+      }
+      console.log(MinValue, MaxValue, this.$utils.isPositiveInteger(MinValue, false, true));
+      if (!this.$utils.isPositiveInteger(MinValue, false, true)) {
+        callback(new Error('最小值应为数字类型且不小于0'));
+        return;
+      }
+      if (!this.$utils.isPositiveInteger(MaxValue)) {
+        callback(new Error('最大值应为数字类型且必须为正整数'));
         return;
       }
       if (MinValue === 0 && MaxValue === 0) {

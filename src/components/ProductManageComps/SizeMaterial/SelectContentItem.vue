@@ -10,7 +10,8 @@
       </div>
     </div>
     <div v-show="showContent && extend" class="content">
-      <el-checkbox :value='checkedIDList.includes(it.ID)' @change='change(it)' v-for="it in itemData.List" :key="'item-check'+it.ID">
+      <el-checkbox :title="it.itemContent"
+      :value='checkedIDList.includes(it.ID)' @change='change(it)' v-for="it in itemData.List" :key="'item-check'+it.ID">
         {{it.itemContent}}
       </el-checkbox>
     </div>

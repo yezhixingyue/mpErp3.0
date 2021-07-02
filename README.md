@@ -871,6 +871,10 @@ public enum MultiLevelClassType : byte
 
         右侧交互结果弹窗 18
 
+        对比主属性 19
+
+        对比从属性 20
+
 ## 运算符号
 
         等于
