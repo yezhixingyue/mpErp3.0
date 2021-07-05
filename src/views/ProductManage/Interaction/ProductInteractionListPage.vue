@@ -7,16 +7,18 @@
     <main>
       <template v-if="showTable">
         <!-- 界面交互 -->
-        <RiskWarningTable
-        @setup="onSetupPageJump('interaction', $event)" type='interaction' :dataList='InteractionDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @setup="onSetupPageJump" type='interaction' :dataList='InteractionDataList' :PropertyList='InteractionLeftPropertyList' />
         <!-- 对比验证 -->
-        <CompareInteractionTable @setup="onSetupPageJump('compare', $event)" />
+        <CommonInteractionTable @setup="onSetupPageJump" type='compare' :dataList='CompareDataList' :PropertyList='InteractionLeftPropertyList' />
         <!-- 风险提示 -->
-        <RiskWarningTable @setup="onSetupPageJump('risk', $event)" type='risk' :dataList='RiskWarningDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @setup="onSetupPageJump" type='risk' :dataList='RiskWarningDataList' :PropertyList='InteractionLeftPropertyList' />
         <!-- 子交互 -->
-        <SubInteractionTable />
+        <CommonInteractionTable @setup="onSetupPageJump" type='subInteraction' :dataList='subInteractionDataList' :PropertyList='InteractionLeftPropertyList' />
         <!-- 子对比 -->
-        <SubCompareTable />
+        <CommonInteractionTable  @setup="onSetupPageJump" type='subCompare' :dataList='subCompareDataList' :PropertyList='InteractionLeftPropertyList' />
+        <!-- 子交互 子对比选择属性弹窗组件 -->
+        <SubFormulaAddAndSelectDialog :visible.sync='visible' :PropertyList='subDialogPropertyList'
+         @submit='onSelectCompleted' :title='dialogTitle' :initDataStr='initDialogDataStr' />
       </template>
     </main>
     <footer>
@@ -28,10 +30,8 @@
 <script>
 import { mapState } from 'vuex';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
-import CompareInteractionTable from '@/components/ProductManageComps/Interaction/ListTableComps/CompareInteractionTable.vue';
-import RiskWarningTable from '@/components/ProductManageComps/Interaction/ListTableComps/RiskWarningTable.vue';
-import SubInteractionTable from '@/components/ProductManageComps/Interaction/ListTableComps/SubInteractionTable.vue';
-import SubCompareTable from '@/components/ProductManageComps/Interaction/ListTableComps/SubCompareTable.vue';
+import CommonInteractionTable from '@/components/ProductManageComps/Interaction/CommonInteractionTable.vue';
+import SubFormulaAddAndSelectDialog from '@/components/common/FormulaAndConditionComps/SubFormulaAddAndSelectDialog.vue';
 
 export default {
   data() {
@@ -41,17 +41,20 @@ export default {
       ProductName: '',
       titleType: '', // 产品 | 部件
       showTable: false,
+      visible: false,
+      setType4SubInteractionAndSubCompare: '', // 记录打开弹窗时的目的类型：子交互 | 子对比
+      itemData4SubInteractionAndSubCompare: null,
+      subDialogPropertyList: [],
+      initDialogDataStr: '',
     };
   },
   components: {
-    CompareInteractionTable,
-    RiskWarningTable,
-    SubInteractionTable,
-    SubCompareTable,
+    CommonInteractionTable,
+    SubFormulaAddAndSelectDialog,
   },
   computed: {
     ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductInteractionDataList',
-      'ControlTypeList', 'InteractionLeftPropertyList', 'InteractionRightPropertyList']),
+      'ControlTypeList', 'InteractionLeftPropertyList', 'InteractionRightPropertyList', 'CompareLeftPropertyList', 'CompareRightPropertyList']),
     curProduct() {
       if (!this.ProductID) return null;
       return this.ProductManageList.find(it => it.ID === this.ProductID);
@@ -65,13 +68,13 @@ export default {
       const list = JSON.parse(JSON.stringify(this.ProductInteractionDataList)).map(it => {
         const { Constraint, List } = it;
         const _list = List.map(_it => {
-          let { Property } = _it;
-          // let { Property, CompareProperty } = _it;
+          let { Property, CompareProperty } = _it;
           if (!Property) return _it;
-          if (Property) Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.InteractionRightPropertyList);
-          // if (CompareProperty) CompareProperty = PropertyClass.getPerfectPropertyByImperfectProperty(CompareProperty, this.InteractionRightPropertyList);
-          return { ..._it, Property };
-          // return { ..._it, Property, CompareProperty };
+          if (CompareProperty && Property) {
+            Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.CompareLeftPropertyList);
+            CompareProperty = PropertyClass.getPerfectPropertyByImperfectProperty(CompareProperty, this.CompareRightPropertyList);
+          } else if (Property) Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.InteractionRightPropertyList);
+          return { ..._it, Property, CompareProperty };
         });
         let { ItemList } = Constraint;
         ItemList = ItemList
@@ -92,16 +95,24 @@ export default {
       return list;
     },
     RiskWarningDataList() {
-      if (!Array.isArray(this.localInteractionDataList) || this.localInteractionDataList.length === 0) return [];
-      const ControlType = this.$utils.getIDFromListByNames('risk', this.ControlTypeList);
-      const list = this.localInteractionDataList.filter(it => it.ControlType === ControlType);
-      return list;
+      return this.getTargetDataList('risk');
     },
     InteractionDataList() {
-      if (!Array.isArray(this.localInteractionDataList) || this.localInteractionDataList.length === 0) return [];
-      const ControlType = this.$utils.getIDFromListByNames('interaction', this.ControlTypeList);
-      const list = this.localInteractionDataList.filter(it => it.ControlType === ControlType);
-      return list;
+      return this.getTargetDataList('interaction');
+    },
+    CompareDataList() {
+      return this.getTargetDataList('compare');
+    },
+    subInteractionDataList() {
+      return this.getTargetDataList('subInteraction');
+    },
+    subCompareDataList() {
+      return this.getTargetDataList('subCompare');
+    },
+    dialogTitle() {
+      if (this.setType4SubInteractionAndSubCompare === 'subCompare') return '添加子对比';
+      if (this.setType4SubInteractionAndSubCompare === 'subInteraction') return '添加子交互';
+      return '';
     },
   },
   methods: {
@@ -120,6 +131,7 @@ export default {
       this.ProductName = name;
       this.titleType = type;
       this.getProductOrderData();
+      this.getPropertyList4SubInteractionAndSubCompare();
       await this.$store.dispatch('productManage/getInteractionPropertyList', this.ProductID);
       this.showTable = true;
     },
@@ -134,11 +146,69 @@ export default {
     onGoBackClick() {
       this.$router.replace('/ProductManageList');
     },
-    onSetupPageJump(setType, data) {
+    handleJumpToNewPage(setType, data) {
       this.$store.commit('productManage/setCurInteractionData', data);
-      // eslint-disable-next-line max-len
-      const path = `/ProductInteractionSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${setType}/${Date.now()}`;
+      const { ProductID, ProductName, titleType } = this;
+      const PartID = this.PartID ? this.PartID : 'null';
+      const path = `/ProductInteractionSet/${ProductID}/${PartID}/${ProductName}/${titleType}/${setType}/${Date.now()}`;
       this.$router.push(path);
+    },
+    async onSetupPageJump(setType, data) {
+      if (setType !== 'subCompare' && setType !== 'subInteraction') {
+        this.handleJumpToNewPage(setType, data);
+      } else {
+        const bool = await this.getPropertyList4SubInteractionAndSubCompare();
+        if (bool) {
+          this.setType4SubInteractionAndSubCompare = setType;
+          this.itemData4SubInteractionAndSubCompare = data;
+          if (data && data.target) {
+            const str = JSON.stringify(data.target);
+            if (str !== '{}') this.initDialogDataStr = str;
+            else this.initDialogDataStr = '';
+          } else {
+            this.initDialogDataStr = '';
+          }
+          this.visible = true;
+        }
+      }
+    },
+    getTargetDataList(targetType) {
+      if (!targetType || !Array.isArray(this.localInteractionDataList) || this.localInteractionDataList.length === 0) return [];
+      const ControlType = this.$utils.getIDFromListByNames(targetType, this.ControlTypeList);
+      let list = this.localInteractionDataList.filter(it => it.ControlType === ControlType);
+      if (targetType === 'subCompare' || targetType === 'subInteraction') {
+        list = list.map(it => ({
+          ...it,
+          target: this.getItemTarget(it, this.subDialogPropertyList),
+        }));
+      }
+      return list;
+    },
+    getItemTarget(item, list) {
+      const { ProductID, PartID, CraftID, GroupID } = item;
+      const t = list.find(it => {
+        const { Product, Part, Craft, Group } = it;
+        if (!((Product && ProductID && Product.ID === ProductID) || (!Product && !ProductID))) return false;
+        if (!((Part && PartID && Part.ID === PartID) || (!Part && !PartID))) return false;
+        if (!((Craft && CraftID && Craft.ID === CraftID) || (!Craft && !CraftID))) return false;
+        if (!((Group && GroupID && Group.ID === GroupID) || (!Group && !GroupID))) return false;
+        return true;
+      });
+      return t || {};
+    },
+    async getPropertyList4SubInteractionAndSubCompare() { // 获取子公式子对比数据
+      if (this.subDialogPropertyList && Array.isArray(this.subDialogPropertyList) && this.subDialogPropertyList.length > 0) return true;
+      const resp = await this.api.getSubformulaUseableProperty(this.ProductID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        this.subDialogPropertyList = resp.data.Data;
+        return true;
+      }
+      return false;
+    },
+    onSelectCompleted(e) { // 选择组件完成
+      if (!e) return;
+      this.$store.commit('productManage/setSubTargetData', e);
+      this.handleJumpToNewPage(this.setType4SubInteractionAndSubCompare, this.itemData4SubInteractionAndSubCompare);
     },
   },
   mounted() {

@@ -274,10 +274,34 @@
     .el-message-box__header{
         height: 80px;
         .el-message-box__title{
-            height: 80px;
-            line-height: 80px;
+            height: 96px;
+            line-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            overflow: hidden;
+            position: relative;
+            top: -10px;
+            > span {
+              display: flex;
+              justify-content: center;
+              line-height: 30px;
+              max-height: 90px;
+              overflow: hidden;
+              position: relative;
+              padding-left: 70px;
+              min-height: 36px;
+              padding-right: 10px;
+            }
             > span::before {
                 vertical-align: -12%;
+                flex: 1 0 auto;
+                margin-left: 20px;
+                // height: 36px;
+                position: absolute;
+                top: calc(50% - 18px);
+                left: 0;
             }
         }
     }

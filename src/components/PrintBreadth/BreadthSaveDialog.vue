@@ -25,13 +25,13 @@
       <el-form-item label="最小物料尺寸：" key="MinMaterialSize">
         <el-col :span="6.6">
           <el-form-item prop="MinMaterialSize.Length">
-            <el-input style="width:110px" v-model.trim.number="ruleForm.MinMaterialSize.Length" maxlength="15" placeholder="长"></el-input>
+            <el-input style="width:110px" v-model.trim.number="ruleForm.MinMaterialSize.Length" maxlength="9" placeholder="长"></el-input>
             <span style="margin: 0 10px">X</span>
           </el-form-item>
         </el-col>
         <el-col :span="6.6">
           <el-form-item prop="MinMaterialSize.Width">
-            <el-input style="width:110px" v-model.trim.number="ruleForm.MinMaterialSize.Width" maxlength="15" placeholder="宽"></el-input>
+            <el-input style="width:110px" v-model.trim.number="ruleForm.MinMaterialSize.Width" maxlength="9" placeholder="宽"></el-input>
             <span style="margin-left:10px;color:#a2a2a2">mm</span>
           </el-form-item>
         </el-col>
@@ -39,13 +39,13 @@
       <el-form-item label="最大物料尺寸：" key="MaxMaterialSize">
         <el-col :span="6.6">
           <el-form-item prop="MaxMaterialSize.Length">
-            <el-input style="width:110px" v-model.trim.number="ruleForm.MaxMaterialSize.Length" maxlength="15" placeholder="长"></el-input>
+            <el-input style="width:110px" v-model.trim.number="ruleForm.MaxMaterialSize.Length" maxlength="9" placeholder="长"></el-input>
             <span style="margin: 0 10px">X</span>
           </el-form-item>
         </el-col>
         <el-col :span="6.6">
           <el-form-item prop="MaxMaterialSize.Width">
-            <el-input style="width:110px" v-model.trim.number="ruleForm.MaxMaterialSize.Width" maxlength="15" placeholder="宽"></el-input>
+            <el-input style="width:110px" v-model.trim.number="ruleForm.MaxMaterialSize.Width" maxlength="9" placeholder="宽"></el-input>
             <span style="margin:0 10px;color:#a2a2a2">mm</span>
           </el-form-item>
         </el-col>
@@ -61,8 +61,8 @@
           <el-checkbox v-model="it.checked">{{it.Name}}</el-checkbox>
           <template v-if="it.checked">
             <span style="margin:0 4px 0 28px;">白边：</span>
-            <el-input style="width:100px" v-model.trim.number="it.WhiteEdge.Length" maxlength="15" placeholder="长"></el-input>
-            <el-input style="width:100px;margin-left:25px" v-model.trim.number="it.WhiteEdge.Width" maxlength="15" placeholder="宽"></el-input>
+            <el-input style="width:100px" v-model.trim.number="it.WhiteEdge.Length" maxlength="9" placeholder="长"></el-input>
+            <el-input style="width:100px;margin-left:25px" v-model.trim.number="it.WhiteEdge.Width" maxlength="9" placeholder="宽"></el-input>
             <span style="margin-left:10px;color:#a2a2a2">mm</span>
           </template>
         </div>

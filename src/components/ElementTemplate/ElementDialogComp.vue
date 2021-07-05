@@ -42,7 +42,7 @@
           <el-checkbox class="checked-item" v-model="ruleForm.HiddenToCustomer">客户界面隐藏</el-checkbox>
           <div v-show="ruleForm.HiddenToCustomer">
             <span>隐藏时运算值：</span>
-            <el-input v-model.trim="ruleForm.DefaultValue" maxlength="15"></el-input>
+            <el-input v-model.trim="ruleForm.DefaultValue" maxlength="9"></el-input>
           </div>
         </div>
       </el-form-item>
@@ -58,7 +58,7 @@
           <p class="tips-box"><i class="el-icon-warning"></i> 可为空，用空格、逗号分开，分隔符不限全角半角</p>
         </el-form-item>
         <el-form-item label="默认选择：" prop="NumbericAttribute.NumberDefaultValue" key="NumberDefaultValue">
-          <el-input style='width:120px' v-model.trim="ruleForm.NumbericAttribute.CheckedValue" maxlength="15"></el-input>
+          <el-input style='width:120px' v-model.trim="ruleForm.NumbericAttribute.CheckedValue" maxlength="9"></el-input>
           <span style="font-size:12px;color:#a2a2a2;margin-left:12px">可为空</span>
         </el-form-item>
         <el-form-item label="单位：" prop="NumbericAttribute.NumberValueUnit" key="NumberValueUnit">
@@ -73,7 +73,7 @@
             <el-radio :label="false">
               <span>固定宽度</span>
               <el-input style='width:90px;margin-left:10px' :disabled='ruleForm.NumbericAttribute.IsWidthAdaption === true'
-               v-model.number.trim="ruleForm.NumbericAttribute.DisplayWidth" maxlength="15"></el-input>
+               v-model.number.trim="ruleForm.NumbericAttribute.DisplayWidth" maxlength="9"></el-input>
               <span style="font-size:12px;color:#a2a2a2;margin-left:6px">px</span>
             </el-radio>
           </el-radio-group>
@@ -92,13 +92,13 @@
           <ul class="limit-list-box">
             <li v-for="it in ruleForm.NumbericAttribute.SectionList" :key="it.key">
               <div>
-                <el-input style='width:110px' v-model.trim="it.MinValue" maxlength="15"></el-input>
+                <el-input style='width:110px' v-model.trim="it.MinValue" maxlength="9"></el-input>
                 <span class="text" style="margin:0 8px">＜值≤</span>
-                <el-input style='width:110px' v-model.trim="it.MaxValue" maxlength="15"></el-input>
+                <el-input style='width:110px' v-model.trim="it.MaxValue" maxlength="9"></el-input>
               </div>
               <div style="padding:0 32px">
                 <span class="text" style="margin-right: 6px">增量</span>
-                <el-input style='width:110px;margin-right:12px' v-model.trim="it.Increment" maxlength="15" :disabled='it.IsGeneralValue'></el-input>
+                <el-input style='width:110px;margin-right:12px' v-model.trim="it.Increment" maxlength="9" :disabled='it.IsGeneralValue'></el-input>
                 <el-checkbox class="checked-item" v-model="it.IsGeneralValue">符合常规数值</el-checkbox>
               </div>
               <span class="text del-btn" @click="onLimitDelClick(it.key)"><i></i> 删除</span>
@@ -149,7 +149,7 @@
             <el-radio :label="true">自动宽度</el-radio>
             <el-radio :label="false">
               <span>固定宽度</span>
-              <el-input style='width:90px;margin-left:10px' maxlength="15"
+              <el-input style='width:90px;margin-left:10px' maxlength="9"
                v-model.number.trim="ruleForm.OptionAttribute.DisplayWidth" :disabled='ruleForm.OptionAttribute.IsWidthAdaption === true'></el-input>
               <span style="font-size:12px;color:#a2a2a2;margin-left:6px">px</span>
             </el-radio>
@@ -162,7 +162,7 @@
           </el-checkbox-group>
           <template v-if="optionDefine.includes('staff')">
             <span style="color: #585858">自定义数值：</span>
-            <el-input style='width:90px' v-model.trim="ruleForm.OptionAttribute.CustomizeValue" maxlength="15"></el-input>
+            <el-input style='width:90px' v-model.trim="ruleForm.OptionAttribute.CustomizeValue" maxlength="9"></el-input>
           </template>
         </el-form-item>
         <el-form-item label="选择方式：" prop="optionChooseType" key="optionChooseType">
@@ -181,9 +181,9 @@
         </el-form-item>
         <el-form-item label="项数限制：" prop="OptionAttribute.UseTimes" key="optionUseTimes"
          class="use-times-box" v-if="ruleForm.OptionAttribute.ChooseType !== 'single'">
-          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MinValue" maxlength="15"></el-input>
+          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MinValue" maxlength="9"></el-input>
           <span>≤ 项数 ≤</span>
-          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MaxValue" maxlength="15"></el-input>
+          <el-input style='width:110px' v-model.number.trim="ruleForm.OptionAttribute.UseTimes.MaxValue" maxlength="9"></el-input>
           <span>项</span>
           <p class="tips-box" style="width:240px"><i class="el-icon-warning"></i> 不限制则不填写</p>
         </el-form-item>
@@ -193,10 +193,10 @@
           <el-input style='width:400px' v-model.trim="ruleForm.SwitchAttribute.Words"></el-input>
         </el-form-item>
         <el-form-item label="开值：" prop="SwitchAttribute.OpenValue" key="OpenValue">
-          <el-input style='width:120px' v-model.trim="ruleForm.SwitchAttribute.OpenValue" maxlength="15"></el-input>
+          <el-input style='width:120px' v-model.trim="ruleForm.SwitchAttribute.OpenValue" maxlength="9"></el-input>
         </el-form-item>
         <el-form-item label="关值：" prop="SwitchAttribute.CloseValue" key="CloseValue">
-          <el-input style='width:120px' v-model.trim="ruleForm.SwitchAttribute.CloseValue" maxlength="15"></el-input>
+          <el-input style='width:120px' v-model.trim="ruleForm.SwitchAttribute.CloseValue" maxlength="9"></el-input>
         </el-form-item>
         <el-form-item label="初始值：" prop="SwitchInitValue" class="switch-init-value-box" key="SwitchInitValue">
           <el-switch v-model="ruleForm.SwitchAttribute.DefaultOpen" active-text="初始开值"></el-switch>

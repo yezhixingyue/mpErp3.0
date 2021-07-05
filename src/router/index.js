@@ -564,7 +564,7 @@ export const routes = [
               requiresAuth: true,
               // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
             },
-            component: () => import('../views/ProductManage/ProductFileNameSetPage.vue'),
+            component: () => import('../views/ProductManage/FileName/ProductFileNameSetPage.vue'),
           },
           {
             path: '/ProductStockSet/:ProductID/:PartID/:name/:type/:times',

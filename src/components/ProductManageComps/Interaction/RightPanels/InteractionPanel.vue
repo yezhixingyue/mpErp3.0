@@ -105,7 +105,6 @@ export default {
       return AllOperatorList.filter(it => OperatorList.includes(it.ID));
     },
     onElementSelect(prop) {
-      console.log('onElementSelect', prop);
       const item = this.transformOnePropItem(prop);
       if (item) this.localList.push(item);
     },

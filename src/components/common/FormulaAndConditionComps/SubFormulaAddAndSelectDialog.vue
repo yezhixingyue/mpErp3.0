@@ -26,7 +26,7 @@
         </li>
       </ul>
     </div>
-    <p class="tips-box is-pink"><i class="el-icon-warning"></i> 注：子公式目标设定后不允许更改</p>
+    <p class="tips-box is-pink" v-if="warnTitle"><i class="el-icon-warning"></i> 注：{{warnTitle}}目标设定后不允许更改</p>
   </CommonDialogComp>
 </template>
 
@@ -42,6 +42,18 @@ export default {
     PropertyList: {
       type: Array,
       default: null,
+    },
+    warnTitle: {
+      type: String,
+      default: '',
+    },
+    title: {
+      type: String,
+      default: '添加子公式',
+    },
+    initDataStr: {
+      type: String,
+      default: '',
     },
   },
   components: {
@@ -75,7 +87,6 @@ export default {
   },
   data() {
     return {
-      title: '添加子公式',
       selectValue: '',
     };
   },
@@ -92,7 +103,12 @@ export default {
     onClosed() { // 关闭 重置表单
     },
     initEditData() { // 数据初始化方法
-      this.selectValue = '';
+      if (this.initDataStr) {
+        const t = this.PropertyList.find(it => JSON.stringify(it) === this.initDataStr);
+        this.selectValue = t || '';
+      } else {
+        this.selectValue = '';
+      }
     },
   },
 };

@@ -4,7 +4,7 @@
       <section class="left-content" v-if="ruleForm">
         <header v-if="showPriority">
           <span class="label">优先级：</span>
-          <el-input v-model.trim.number="ruleForm.Priority" maxlength="15" size="small"></el-input>
+          <el-input v-model.trim.number="ruleForm.Priority" maxlength="9" size="small"></el-input>
           <span class="tips-box">
             <i class="el-icon-warning"></i> 注：数字越小优先级越高
           </span>

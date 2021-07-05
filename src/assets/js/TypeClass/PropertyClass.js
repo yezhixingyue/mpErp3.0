@@ -282,7 +282,14 @@ export default class PropertyClass {
       if (Type !== imperfectProp.Type) return false;
       return true;
     });
-    return t || null;
+    if (t) {
+      if (t.FixedType === 255) { // 常量
+        const { DefaultValue } = imperfectProp;
+        return { ...t, DefaultValue };
+      }
+      return t;
+    }
+    return null;
   }
 
   static getMaterialListShowText(checkList, OptionList) {

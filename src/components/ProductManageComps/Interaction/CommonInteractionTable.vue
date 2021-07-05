@@ -22,7 +22,9 @@
                 </p>
               </template>
               <p v-else>{{item.conditionText}}</p>
-              <p class="if-box" style="margin-right:5px"><span class="is-origin">则：</span></p>
+              <p class="if-box" style="margin-right:5px">
+                <span class="is-origin">{{type === 'compare' ? '则必须满足' : '则'}}</span>
+              </p>
               <p v-for="(res, ri) in item.result" :key="res + ri">{{res}}</p>
             </div>
             <div class="common-property-condition-text-content-box">
@@ -36,7 +38,9 @@
                 </p>
               </template>
               <p v-else>{{item.conditionText}}</p>
-              <p class="if-box" style="margin-left:10px;margin-right:5px"><span class="is-origin">则</span></p>
+              <p class="if-box" style="margin-left:10px;margin-right:5px">
+                <span class="is-origin">{{type === 'compare' ? '则必须满足' : '则'}}</span>
+              </p>
               <p>
                 <em v-for="(res,ri) in item.result" :key="res + ri" style="margin-right:4px">{{res}}
                   <i style="color:#33BBD5;font-weight:700;font-size:13px" v-if="ri < item.result.length - 1">；</i>
@@ -45,7 +49,9 @@
             </div>
           </el-tooltip>
         </div>
-        <!-- <span class="part-name">部件1</span> -->
+        <span class="part-name" v-if="item.target" :title="item.target.DisplayContent?item.target.DisplayContent.replace(/\[|\]/g, ''):'未知'">
+          {{item.target.DisplayContent?item.target.DisplayContent.replace(/\[|\]/g, ''):'未知'}}
+        </span>
         <span class="priority-box">优先级：{{item.Priority}}</span>
         <CtrlMenus @edit='onSetupClick(item)' @remove='onRemoveClick(item)' />
       </div>
@@ -104,7 +110,7 @@ export default {
   },
   methods: {
     onSetupClick(data) {
-      this.$emit('setup', data);
+      this.$emit('setup', this.type, data);
     },
     onRemoveClick(data) {
       this.$emit('remove', data);
@@ -124,7 +130,7 @@ export default {
         const Mode = this.$utils.getNameFromListByIDs(DisplayMode, this.RiskWarningTypeList);
         return [`${RiskWarningRange} ${Mode}：${FailTips}`];
       }
-      if (control.Name === 'interaction' && Array.isArray(List)) { // 交互
+      if ((control.Name === 'interaction' || control.Name === 'subInteraction') && Array.isArray(List)) { // 交互
         if (List.length === 0) return '空';
         const _list = List.map(_it => {
           const { Property, Operator, OptionList } = _it;
@@ -148,6 +154,20 @@ export default {
             }
           }
           return `${OperatorText} ${_Name} ${optionText}`;
+        });
+        return _list;
+      }
+      if ((control.Name === 'compare' || control.Name === 'subCompare') && Array.isArray(List)) { // 交互
+        if (List.length === 0) return '空';
+        const _list = List.map(_it => {
+          const { Property, Operator, CompareProperty, DefaultValue } = _it;
+          if (!Property || !CompareProperty) return '';
+          let OperatorText = this.$utils.getNameFromListByIDs(Operator, AllOperatorList);
+          OperatorText = OperatorText || '未知关系';
+          const _Name = Property.DisplayContent.replace(/\[|\]/g, '');
+          let _CompareName = CompareProperty.DisplayContent.replace(/\[|\]/g, '');
+          if (CompareProperty.FixedType === 255) _CompareName = DefaultValue;
+          return `${_Name} ${OperatorText} ${_CompareName}`;
         });
         return _list;
       }
@@ -186,6 +206,9 @@ export default {
         width: 165px;
         min-width: 120px;
         padding-left: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       > .ctrl-menus-container {
         width: 230px;

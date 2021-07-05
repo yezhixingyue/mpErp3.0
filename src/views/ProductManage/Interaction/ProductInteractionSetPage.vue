@@ -9,21 +9,27 @@
       <ContionCommonComp ref="oLeftComp" :ComparePropertyList='ComparePropertyList' :PropertyList='InteractionLeftPropertyList'
        leftWidth='40%' :curEditData='curInteractionData' :rightTitle='rightTitle'>
         <template slot='title'>
-          <span class="blue-span" v-if="setType==='interaction'" @click="visible=true">+ 添加结果</span>
-          <template v-if="setType==='compare'">
-            <span class="blue-span" @click="visible=true">+ 添加</span>
+          <span class="blue-span" v-if="setType==='interaction' || setType==='subInteraction'" @click="visible=true">+ 添加结果</span>
+          <template v-if="setType==='compare' || setType==='subCompare'">
+            <span class="blue-span" @click="onCompareAddClick">+ 添加</span>
             <span class="intro" @click="drawer=true"> <i>?</i> 说明</span>
           </template>
         </template>
         <!-- 交互设置面板 -->
         <InteractionPanel
-         v-if="setType==='interaction'"
+         v-if="setType==='interaction' || setType==='subInteraction'"
          ref="oInteraction"
          :initData='curInteractionData'
          :ComparePropertyList='InteractionRightPropertyList'
          :visibleDialog.sync='visible' />
         <!-- 对比设置面板 -->
-        <ComparePanel v-if="setType==='compare'" :drawerVisible.sync='drawer' />
+        <ComparePanel
+         v-if="setType==='compare' || setType==='subCompare'"
+         ref="oComparePanel"
+         :initData='curInteractionData'
+         :drawerVisible.sync='drawer'
+         :leftPropertyList='CompareLeftPropertyList'
+         :rightPropertyList='CompareRightPropertyList' />
         <!-- 风险提示设置面板 -->
         <RiskPanel v-if="setType==='risk'" ref="oRisk" :initData='curInteractionData' />
       </ContionCommonComp>
@@ -37,6 +43,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import ContionCommonComp from '@/components/common/FormulaAndConditionComps/ContionCommonComp.vue';
 import RiskPanel from '@/components/ProductManageComps/Interaction/RightPanels/RiskPanel.vue';
 import ComparePanel from '@/components/ProductManageComps/Interaction/RightPanels/ComparePanel.vue';
@@ -61,7 +68,7 @@ export default {
     InteractionPanel,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'curInteractionData', 'ControlTypeList',
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'curInteractionData', 'ControlTypeList', 'subTargetData',
       'InteractionLeftPropertyList', 'InteractionRightPropertyList', 'CompareLeftPropertyList', 'CompareRightPropertyList']),
     curProduct() {
       if (!this.ProductID) return null;
@@ -77,7 +84,7 @@ export default {
       return '则';
     },
     ComparePropertyList() {
-      if (this.setType === 'risk' || this.setType === 'compare') return this.InteractionLeftPropertyList;
+      if (this.setType === 'risk' || this.setType === 'compare' || this.setType === 'subCompare') return this.InteractionLeftPropertyList;
       return null;
     },
   },
@@ -109,13 +116,17 @@ export default {
       if (this.setType === 'risk') {
         result = this.$refs.oRisk.getSubmitInfo();
       }
-      if (this.setType === 'interaction') {
+      if (this.setType === 'interaction' || this.setType === 'subInteraction') {
         result = this.$refs.oInteraction.getSubmitInfo();
+      }
+      if (this.setType === 'compare' || this.setType === 'subCompare') {
+        result = this.$refs.oComparePanel.getSubmitInfo();
       }
       if (!result) return;
       const ControlType = this.$utils.getIDFromListByNames(this.setType, this.ControlTypeList);
       if (!ControlType && ControlType !== 0) return;
-      const temp = { ...condition, ...result, ProductID: this.ProductID, ControlType };
+      const idsObj = PropertyClass.getPropIDsObj(this.subTargetData);
+      const temp = { ...condition, ...result, ProductID: this.ProductID, ControlType, ...idsObj };
       this.handleSubmit(temp);
     },
     async handleSubmit(data) {
@@ -127,6 +138,9 @@ export default {
         };
         this.messageBox.successSingle('保存成功', cb, cb);
       }
+    },
+    onCompareAddClick() {
+      this.$refs.oComparePanel.onItemAddClick();
     },
   },
   mounted() {

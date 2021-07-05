@@ -179,7 +179,7 @@ export default {
       vertical-align: middle;
     }
     > .el-checkbox {
-      width: 40px;
+      width: 60px;
       margin-bottom: 10px;
     }
     > .btn > span {

@@ -54,7 +54,7 @@
           <span v-show="!loading">暂无公式</span>
         </div>
       </el-table>
-      <SubFormulaAddAndSelectDialog :visible.sync='visible' :PropertyList='PropertyList' @submit='onSelectCompleted' />
+      <SubFormulaAddAndSelectDialog :visible.sync='visible' :PropertyList='PropertyList' @submit='onSelectCompleted' warnTitle='子公式' />
     </main>
   </section>
 </template>

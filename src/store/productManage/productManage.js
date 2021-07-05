@@ -40,6 +40,7 @@ export default {
       { Name: 'Order', ID: 9 }, // 显示顺序
       { Name: 'Formula', ID: 10 }, // 公式
       { Name: 'Interaction', ID: 11 }, // 交互
+      { Name: 'FalseWords', ID: 12 }, // 通假字
       { Name: 'Stock', ID: 13 }, // 库存
       { Name: 'CraftCondition', ID: 14 }, // 工艺条件
       { Name: 'CraftDisplayGroup', ID: 15 }, // 工艺显示分组
@@ -81,6 +82,7 @@ export default {
     InteractionRightPropertyList: [],
     CompareLeftPropertyList: [],
     CompareRightPropertyList: [],
+    subTargetData: null, // 子交互 子对比 跳转页面前选择的属性数据
   },
   getters: {
   },
@@ -250,6 +252,9 @@ export default {
       } else {
         state.ProductInteractionDataList.unshift(item);
       }
+    },
+    setSubTargetData(state, data) {
+      state.subTargetData = data;
     },
   },
   actions: {

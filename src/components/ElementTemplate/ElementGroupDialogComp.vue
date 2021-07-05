@@ -41,9 +41,9 @@
         </ul>
       </el-form-item>
       <el-form-item label="使用次数：" prop="UseTimes" class="use-times-box" key="GroupUseTimes">
-        <el-input style='width:110px' v-model.number.trim="ruleGroupForm.UseTimes.MinValue" maxlength="15"></el-input>
+        <el-input style='width:110px' v-model.number.trim="ruleGroupForm.UseTimes.MinValue" maxlength="9"></el-input>
         <span>≤ 次数 ≤</span>
-        <el-input style='width:110px' v-model.number.trim="ruleGroupForm.UseTimes.MaxValue" maxlength="15"></el-input>
+        <el-input style='width:110px' v-model.number.trim="ruleGroupForm.UseTimes.MaxValue" maxlength="9"></el-input>
       </el-form-item>
       <el-form-item label="排列方式：" prop="Arrange" class="arrange-box" key="GroupArrange">
         <el-radio-group v-model="ruleGroupForm.IsHorizontalDisplay">

@@ -2,7 +2,7 @@
   <div class="mp-erp-new-comps-condtion-set-common-comp-value-select-comp-wrap" v-if="!isMultiple || ValProperty" >
     <span class="pshow" v-if="ValProperty" :title="ValProperty.DisplayContent.replace(/\[|\]/g, '')">{{ValProperty.DisplayContent.replace(/\[|\]/g, '')}}</span>
     <template v-if="ValueType === 0 && !ValProperty">
-      <el-input v-model.trim="localValue" maxlength="15" size="mini"></el-input>
+      <el-input v-model.trim="localValue" maxlength="9" size="mini"></el-input>
       <span v-if="Unit" class="unit" :title="Unit">{{Unit}}</span>
     </template>
     <!-- 可多选 -->

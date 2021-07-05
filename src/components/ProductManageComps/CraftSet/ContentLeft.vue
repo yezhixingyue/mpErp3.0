@@ -12,7 +12,7 @@
           <div class="required">{{it.IsRequired?'必选':''}}</div>
           <div class="select">
             <template v-if="it.IsRequired">
-              <span>初始选中：</span><span>{{getDefaultCraftName(it.DefaultCraft)}}</span>
+              <span>初始选中：</span><span :title="getDefaultCraftName(it.DefaultCraft)">{{getDefaultCraftName(it.DefaultCraft)}}</span>
             </template>
           </div>
           <div class="ctrl">

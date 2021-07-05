@@ -70,12 +70,13 @@ export default {
     },
     onSubmitClick() {
       // console.log('onSubmitClick', this.list);
-      const t = this.list.find(it => !it.ClassName);
-      if (t) {
-        this.messageBox.warnSingleError('请检查分类名称是否输入，或删除空项', null, null, '保存失败');
-        return;
-      }
-      this.$emit('submit', this.list);
+      // const t = this.list.find(it => !it.ClassName);
+      // if (t) {
+      //   this.messageBox.warnSingleError('请检查分类名称是否输入，或删除空项', null, null, '保存失败');
+      //   return;
+      // }
+      const list = this.list.filter(it => it.ClassName);
+      this.$emit('submit', list);
     },
   },
   watch: {
