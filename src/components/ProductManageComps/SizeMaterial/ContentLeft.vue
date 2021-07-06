@@ -225,6 +225,8 @@ export default {
       color: #585858;
       flex: none;
       white-space: nowrap;
+        line-height: 20px;
+        height: 20px;
       &.title {
         color: #888E99;
         margin-left: 22px;

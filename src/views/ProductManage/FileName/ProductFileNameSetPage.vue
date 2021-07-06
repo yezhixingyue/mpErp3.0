@@ -32,6 +32,10 @@
     </header>
     <main>
       <ExplainDrawer :visible.sync='drawer' />
+      <template v-if="productData">
+        <ItemContentShow key="product" :itemData='productData' @change='onItemDataChange' show />
+        <ItemContentShow isPart v-for="it in productData.PartList" :key='it.ID' :itemData='it' @change='onItemDataChange' />
+      </template>
     </main>
     <footer>
       <el-button @click="onSubmitClick" type="primary">保存</el-button>
@@ -43,10 +47,12 @@
 <script>
 import { mapState } from 'vuex';
 import ExplainDrawer from '@/components/ProductManageComps/FileName/ExplainDrawer.vue';
+import ItemContentShow from '@/components/ProductManageComps/FileName/ItemContentShow';
 
 export default {
   components: {
     ExplainDrawer,
+    ItemContentShow,
   },
   computed: {
     ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
@@ -103,6 +109,71 @@ export default {
     onExplainClick() {
       this.drawer = true;
     },
+    onItemDataChange(e) { // 监听数据改变
+      if (!this.productData || !e) return;
+      const { isPart, ID } = e;
+      if (!isPart) { // 产品上
+        this.handleDataChange(this.productData, e);
+      } else { // 部件上
+        const t = this.productData.PartList.find(it => it.ID === ID);
+        if (!t) return;
+        this.handleDataChange(t, e);
+      }
+    },
+    handleDataChange(data, e) { // 处理数据改变
+      const { position, FalseWords, GroupID, CraftID, ElementID } = e;
+      const _data = data;
+      console.log(e);
+      if (position === 'self') { // 自身名称
+        _data.FalseWords = FalseWords;
+      }
+      if (position === 'element') { // 元素
+        this.handleElementTypeDataChange(_data, e);
+      }
+      if (position === 'group' && GroupID) { // 元素组
+        this.handleGroupTypeDataChange(_data, e);
+      }
+      if (position === 'craft' && CraftID) { // 工艺
+        const t = _data.CraftList.find(it => it.ID === CraftID);
+        if (!t) return;
+        if (e.ElementID && e.ElementID === CraftID) t.FalseWords = FalseWords; // 工艺本身
+        else if (e.ElementID && !e.GroupID) this.handleElementTypeDataChange(t, e); // 工艺上元素
+        else if (e.ElementID && e.GroupID) this.handleGroupTypeDataChange(t, e); // 工艺上元素组
+      }
+      if (position === 'SizeGroup') { // 尺寸组
+        if (_data.SizeGroup && _data.SizeGroup.GroupInfo && _data.SizeGroup.GroupInfo.ID === GroupID) {
+          if (GroupID === ElementID) { // 尺寸组本身
+            _data.SizeGroup.GroupInfo.FalseWords = FalseWords;
+          } else {
+            this.handleElementTypeDataChange(_data.SizeGroup.GroupInfo, e);
+          }
+        }
+      }
+      if (position === 'material') { // 物料
+        _data.MaterialFalseWords = FalseWords;
+      }
+    },
+    handleElementTypeDataChange(data, payload) { // 处理元素类型 或 元素选项类型值修改的方法
+      if (!data || !payload) return;
+      const { ElementID, OptionID, FalseWords } = payload;
+      const t = data.ElementList.find(it => it.ID === ElementID);
+      if (!t) return;
+      if (!OptionID) t.FalseWords = FalseWords;
+      else if (t.OptionAttribute && t.OptionAttribute.OptionList && t.OptionAttribute.OptionList.length > 0) {
+        const o = t.OptionAttribute.OptionList.find(it => it.ID === OptionID);
+        if (o) o.FalseWords = FalseWords;
+      }
+    },
+    handleGroupTypeDataChange(data, payload) { // 元素组数据修改处理
+      const { GroupID, ElementID, FalseWords } = payload;
+      const group = data.GroupList.find(it => it.ID === GroupID);
+      if (!group) return;
+      if (group.ID === ElementID) { // 部件本身
+        group.FalseWords = FalseWords;
+      } else {
+        this.handleElementTypeDataChange(group, payload);
+      }
+    },
     onSubmitClick() {
       console.log('onSubmitClick');
     },
@@ -122,6 +193,7 @@ export default {
   background-color: #f5f5f5;
   padding: 10px;
   overflow: auto;
+  overflow-y: overlay;
   > header {
     padding: 30px 0;
     line-height: 15px;

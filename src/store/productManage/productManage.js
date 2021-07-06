@@ -61,6 +61,11 @@ export default {
       { Name: 'subCompare', ID: 3 },
       { Name: 'risk', ID: 4 },
     ],
+    FileNameEnumList: [ // 产品交互类型列表 交互模块使用(同上)
+      { Name: '单位不显示', ID: 0 },
+      { Name: '所有维度都显示单位', ID: 1 },
+      { Name: '仅在最后位置显示', ID: 2 },
+    ],
     ProductFactoryList: [], // 产品工厂列表
     ProductFactoryPropertyList: [], // 工厂条件使用属性列表数据
     curEditFactoryData: null, // 当前正在编辑的产品工厂数据

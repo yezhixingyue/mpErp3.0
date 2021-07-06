@@ -1,5 +1,5 @@
 <template>
-  <el-input v-model.trim="content" v-if="!InputContent" size="small" class="mp-erp-number-type-element-display-input-comp"></el-input>
+  <el-input v-model.trim="content" v-if="!InputContent" size="small" class="mp-erp-number-type-element-display-input-comp" maxlength="9"></el-input>
   <el-select
     v-else
     v-model="content"
@@ -63,7 +63,7 @@ export default {
     },
   },
   mounted() {
-    if (this.Allow) {
+    if (this.Allow && this.$refs.oSelect) {
       const _func = this.$refs.oSelect.onInputChange;
       const oInpBox = this.$refs.oSelect.$children.find(it => it.$el.className.includes('el-input'));
       this.$refs.oSelect.onInputChange = () => {
