@@ -22,7 +22,7 @@
         <TipsSpanButton text='公式' @click.native="setCommonPathJump('ProductFormulaList')" />
         <TipsSpanButton text='交互' @click.native="setCommonPathJump('ProductInteractionList')" />
         <TipsSpanButton text='文件名设置' @click.native="setCommonPathJump('ProductFileNameSet')" />
-        <TipsSpanButton text='库存' @click.native="setCommonPathJump('ProductStockSet')" />
+        <TipsSpanButton text='库存' @click.native="setCommonPathJump('ProductStockList')" />
       </div>
       <div class="img-menu-box">
         <span @click="onPartSaveClick(null)">
@@ -35,7 +35,7 @@
           <i></i>删除
         </span>
       </div>
-      <div class="extend-box" @click="extend = !extend">
+      <div class="extend-box" @click="extend = !extend" :class="itemData.PartList&&itemData.PartList.length>0 ? '' : 'disabled'">
         <span v-if="!extend">展开</span>
         <span v-else>隐藏</span>
         <i v-if="!extend" class="el-icon-caret-bottom"></i>
@@ -193,7 +193,7 @@ export default {
   width: 1718px;
   > header {
     display: flex;
-    min-width: 1704px;
+    min-width: 1703px;
     height: 44px;
     border: 1px solid #f8f8f8;
     box-sizing: border-box;
@@ -313,6 +313,8 @@ export default {
         justify-content: center;
         position: relative;
         top: -1px;
+        height: 30px;
+        line-height: 30px;
         > i {
           font-size: 18px;
           color: #cbcbcb;
@@ -323,14 +325,30 @@ export default {
           position: relative;
           top: 1px;
           color: #a2a2a2;
+          transition: color 0.06s ease-in-out;
+        }
+        &:hover {
+          > span {
+            color: #444;
+          }
+        }
+        &.disabled {
+          pointer-events: none;
+          > span {
+            color: #ddd;
+          }
+          > i {
+            filter: grayscale(1);
+            color: #ddd;
+          }
         }
       }
     }
     transition: border-color 0.02s ease-in-out;
     &:hover {
       border-color: #ccc;
-      border-left-color: #f5f5f5;
-      box-shadow: -1px 0 0 0 #ccc;
+      // border-left-color: #f5f5f5;
+      box-shadow: -2px 0 0  #ccc;
       // background-color: #e5e5e5;
       // border-color: #eee;
     }

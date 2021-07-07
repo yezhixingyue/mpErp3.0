@@ -92,6 +92,10 @@ export default {
         this.onSortSubmit(val);
       },
     },
+    CraftListIDs() {
+      if (!Array.isArray(this.CraftList) || this.CraftList.length === 0) return [];
+      return this.CraftList.map(it => it.ID);
+    },
   },
   methods: {
     getPositionID() { // 获取初始url信息 并 触发初始数据获取
@@ -136,9 +140,25 @@ export default {
         const cb = () => {
           this.CraftList = data;
           this.craftVisible = false;
+          this.handleCraftListChange4CraftConditionList();
+          this.handleCraftListChange4CraftGroupList();
         };
         this.messageBox.successSingle('设置成功', cb, cb);
       }
+    },
+    handleCraftListChange4CraftConditionList() {
+      this.CraftConditionList.forEach(it => {
+        const item = it;
+        item.List = it.List.filter(_it => this.CraftListIDs.includes(_it));
+      });
+      this.CraftConditionList = this.CraftConditionList.filter(it => it.List.length > 0);
+    },
+    handleCraftListChange4CraftGroupList() {
+      this.CraftGroupList.forEach(it => {
+        const item = it;
+        item.List = it.List.filter(_it => this.CraftListIDs.includes(_it));
+      });
+      this.CraftGroupList = this.CraftGroupList.filter(it => it.List.length > 0);
     },
     async onSortSubmit(list) { // 可用工艺排序
       const { ProductID, PartID } = this;

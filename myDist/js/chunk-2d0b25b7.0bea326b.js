@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["chunk-2d0b25b7"],{2487:function(e,t,n){"use strict";n.r(t);var a={name:"MaterialListRootPage"},r=n("2877"),u=Object(r.a)(a,(function(){var e=this.$createElement;return(this._self._c||e)("router-view")}),[],!1,null,null,null);t.default=u.exports}}]);

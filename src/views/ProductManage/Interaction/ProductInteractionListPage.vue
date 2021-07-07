@@ -7,15 +7,20 @@
     <main>
       <template v-if="showTable">
         <!-- 界面交互 -->
-        <CommonInteractionTable @setup="onSetupPageJump" type='interaction' :dataList='InteractionDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='interaction'
+         :dataList='InteractionDataList' :PropertyList='InteractionLeftPropertyList' />
         <!-- 对比验证 -->
-        <CommonInteractionTable @setup="onSetupPageJump" type='compare' :dataList='CompareDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='compare'
+         :dataList='CompareDataList' :PropertyList='InteractionLeftPropertyList' />
         <!-- 风险提示 -->
-        <CommonInteractionTable @setup="onSetupPageJump" type='risk' :dataList='RiskWarningDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='risk'
+         :dataList='RiskWarningDataList' :PropertyList='InteractionLeftPropertyList' />
         <!-- 子交互 -->
-        <CommonInteractionTable @setup="onSetupPageJump" type='subInteraction' :dataList='subInteractionDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='subInteraction'
+         :dataList='subInteractionDataList' :PropertyList='InteractionLeftPropertyList' />
         <!-- 子对比 -->
-        <CommonInteractionTable  @setup="onSetupPageJump" type='subCompare' :dataList='subCompareDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @remove='onTableItemRemove'  @setup="onSetupPageJump" type='subCompare'
+         :dataList='subCompareDataList' :PropertyList='InteractionLeftPropertyList' />
         <!-- 子交互 子对比选择属性弹窗组件 -->
         <SubFormulaAddAndSelectDialog :visible.sync='visible' :PropertyList='subDialogPropertyList'
          @submit='onSelectCompleted' :title='dialogTitle' :initDataStr='initDialogDataStr' />
@@ -76,20 +81,22 @@ export default {
           } else if (Property) Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.InteractionRightPropertyList);
           return { ..._it, Property, CompareProperty };
         });
-        let { ItemList } = Constraint;
-        ItemList = ItemList
-          .map(item => {
-            const { Property, ValueList } = item;
-            if (Array.isArray(ValueList) && ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Property) {
-              ValueList[0].Property = PropertyClass.getPerfectPropertyByImperfectProperty(ValueList[0].Property, this.InteractionLeftPropertyList);
-            }
-            return {
-              ...item,
-              Property: PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.InteractionLeftPropertyList),
-              ValueList,
-            };
-          })
-          .filter(item => item.Property);
+        let ItemList = [];
+        if (Constraint) {
+          ItemList = Constraint.ItemList
+            .map(item => {
+              const { Property, ValueList } = item;
+              if (Array.isArray(ValueList) && ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Property) {
+                ValueList[0].Property = PropertyClass.getPerfectPropertyByImperfectProperty(ValueList[0].Property, this.InteractionLeftPropertyList);
+              }
+              return {
+                ...item,
+                Property: PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.InteractionLeftPropertyList),
+                ValueList,
+              };
+            })
+            .filter(item => item.Property);
+        }
         return { ...it, Constraint: { ...Constraint, ItemList }, List: _list };
       });
       return list;
@@ -209,6 +216,14 @@ export default {
       if (!e) return;
       this.$store.commit('productManage/setSubTargetData', e);
       this.handleJumpToNewPage(this.setType4SubInteractionAndSubCompare, this.itemData4SubInteractionAndSubCompare);
+    },
+    onTableItemRemove(data) {
+      if (!data) return;
+      const label = this.ControlTypeList.find(it => it.ID === data.ControlType);
+      const msg = label ? `交互类型：[ ${label} ]` : '';
+      this.messageBox.warnCancelBox('确定删除该条设置吗', msg, () => {
+        this.$store.dispatch('productManage/getProductControlRemove', data.ID);
+      });
     },
   },
   mounted() {

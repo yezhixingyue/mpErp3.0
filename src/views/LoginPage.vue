@@ -12,7 +12,7 @@
               v-model.trim="ruleForm.Password" @keyup.enter.native="submitForm" ></el-input>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="submitForm">登陆</el-button>
+            <el-button type="primary" @click="submitForm">登录</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
     </el-form>

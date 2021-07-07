@@ -90,6 +90,13 @@ export default {
       return getTempMaterialOptionList(this.localMaterialListObj);
     },
     localMaterialSelectedList() { // 已选择物料显示文字
+      if (this.ValueType !== 6) {
+        const list = this.checkList.map(it => {
+          const t = this.localOptionList.find(_it => _it.First === it.First);
+          return t && t.Second ? t.Second : '';
+        }).filter(it => it);
+        return list.join('、');
+      }
       return getTempMaterialSelectedListShowText(this.checkList, this.localMaterialOptionList);
     },
   },

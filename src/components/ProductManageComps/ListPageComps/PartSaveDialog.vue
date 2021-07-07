@@ -35,7 +35,7 @@
         <p class="tips-box">③、 多至多次：不能改为1至1次，影响很大。改为0至多次，有些影响。</p>
       </el-form-item> -->
         <p class="remark">编辑时，需要注意以下几点：</p>
-        <p class="tips-box"><i class="el-icon-warning"></i> 使用次数1至1次时：使用次数不能更改，影响很大</p>
+        <p class="tips-box"><i class="el-icon-warning"></i> 使用次数1至1次时：使用次数不能更改，影响很大。</p>
         <p class="tips-box"><i class="el-icon-warning"></i> 1至多次：不能改为1至1次，影响很大。改为0至多次，有些影响。</p>
         <p class="tips-box"><i class="el-icon-warning"></i> 多至多次：不能改为1至1次，影响很大。改为0至多次，有些影响。</p>
     </el-form>

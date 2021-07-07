@@ -12,7 +12,7 @@
   >
     <section class="show-panel-box">
       <header>
-        <el-radio-group v-model="panelRadio" size="mini" class="mp-common-tab-radio-box" v-if="panelList.length > 1">
+        <el-radio-group v-model="panelRadio" size="mini" class="mp-common-tab-radio-box" v-if="panelList.length > 1 && !fixedPartName">
           <el-radio-button :label="it.value" v-for="it in panelList" :key="it.value">{{it.label}}</el-radio-button>
         </el-radio-group>
         <p v-else-if="DialogTitle">{{DialogTitle}}</p>
@@ -94,6 +94,10 @@ export default {
       default: false,
     },
     curTargetID: {
+      type: String,
+      default: '',
+    },
+    fixedPartName: {
       type: String,
       default: '',
     },
@@ -180,6 +184,9 @@ export default {
           if (Array.isArray(_temp[key][subkey])) this.panelRadio = subkey;
         }
       }
+      if (this.fixedPartName) {
+        this.panelRadio = this.fixedPartName === '产品' ? 'ProductProperty' : this.fixedPartName;
+      }
     },
     protertyFilterHelper(data) { // 对划分开的各个数据列表按照属性类型继续划分，并返回结果
       // 先对数据进行筛选 去除没有内容的项
@@ -189,6 +196,7 @@ export default {
           temp[key] = this.protertySeparateHelper(data[key]); // 数组形式 继续对其进行划分
           const t = this.tempTabList.find(it => it.value === key);
           if (t) {
+            console.log(t);
             this.panelList.push({ ...t });
           }
         }
@@ -199,6 +207,7 @@ export default {
             if (key === 'PartProperty') {
               const t = this.panelList.find(it => it.value === subKey);
               if (!t) {
+                console.log(data);
                 this.panelList.push({ label: subKey, value: subKey }); // 部件名称后面需要自动修改
               }
             }

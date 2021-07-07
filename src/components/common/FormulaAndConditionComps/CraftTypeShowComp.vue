@@ -92,7 +92,7 @@ export default {
               t._ElementList.push(_item);
             }
           } else {
-            const _craft = getOneNewCraft();
+            const _craft = getOneNewCraft(Craft);
             const _item = { ...Element, _FixedTypeList: [it] };
             _craft._ElementList.push(_item);
             addOneNewCraftToList(_craft);

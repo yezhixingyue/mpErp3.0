@@ -42,10 +42,10 @@
             <el-radio-button :label="1">满足所有条件</el-radio-button>
             <el-radio-button :label="2">满足任一条件</el-radio-button>
           </el-radio-group>
-          <FormulaPanelElementSelectDialog  useType='condition'
+          <FormulaPanelElementSelectDialog  useType='condition' :fixedPartName='fixedPartName' :DialogTitle='DialogTitle'
            :visible.sync='visible' :list='PropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs' />
           <FormulaPanelElementSelectDialog  useType='condition' v-if="ComparePropertyList && ComparePropertyList.length > 0"
-             showConstant :curTargetID='curTargetID'
+             showConstant :curTargetID='curTargetID' :fixedPartName='fixedPartName' :DialogTitle='DialogTitle'
            :visible.sync='CompareVisible' :list='ComparePropertyList' @submit='onCompareElementSelect' :selectedElementIDs='selectedComparePropertyIDs' />
         </main>
       </section>
@@ -103,6 +103,14 @@ export default {
     rightTitle: {
       type: String,
       default: '则',
+    },
+    fixedPartName: {
+      type: String,
+      default: '',
+    },
+    DialogTitle: {
+      type: String,
+      default: '',
     },
   },
   components: {

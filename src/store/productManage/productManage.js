@@ -55,11 +55,11 @@ export default {
       { Name: '微信报价', ID: 3 },
     ],
     ControlTypeList: [ // 产品交互类型列表 交互模块使用(同上)
-      { Name: 'interaction', ID: 0 },
-      { Name: 'subInteraction', ID: 1 },
-      { Name: 'compare', ID: 2 },
-      { Name: 'subCompare', ID: 3 },
-      { Name: 'risk', ID: 4 },
+      { Name: 'interaction', ID: 0, label: '界面交互' },
+      { Name: 'subInteraction', ID: 1, label: '子交互' },
+      { Name: 'compare', ID: 2, label: '对比验证' },
+      { Name: 'subCompare', ID: 3, label: '子对比' },
+      { Name: 'risk', ID: 4, label: '风险提示' },
     ],
     FileNameEnumList: [ // 产品交互类型列表 交互模块使用(同上)
       { Name: '单位不显示', ID: 0 },
@@ -88,6 +88,12 @@ export default {
     CompareLeftPropertyList: [],
     CompareRightPropertyList: [],
     subTargetData: null, // 子交互 子对比 跳转页面前选择的属性数据
+    /**
+     * 库存
+     */
+    StockLeftPropertyList: [], // 条件弹窗属性列表数据
+    StockRightPropertyList: [], // 条件弹窗属性列表数据
+    ProductStockDataList: [], // 库存列表数据
   },
   getters: {
   },
@@ -243,6 +249,9 @@ export default {
     setProductInteractionDataList(state, list) {
       state.ProductInteractionDataList = list;
     },
+    setProductInteractionDataListRemove(state, id) {
+      state.ProductInteractionDataList = state.ProductInteractionDataList.filter(it => it.ID !== id);
+    },
     setInteractionPropertyList(state, [leftList, rightList, compareLeft, compareRight]) {
       state.InteractionLeftPropertyList = Array.isArray(leftList) ? leftList : [];
       state.InteractionRightPropertyList = Array.isArray(rightList) ? rightList : [];
@@ -260,6 +269,62 @@ export default {
     },
     setSubTargetData(state, data) {
       state.subTargetData = data;
+    },
+    /**
+     * 库存
+     */
+    setProductStockPropertyList(state, [leftList, rightList]) {
+      state.StockLeftPropertyList = Array.isArray(leftList) ? leftList : [];
+      state.StockRightPropertyList = Array.isArray(rightList) ? rightList : [];
+    },
+    setProductStockDataList(state, list) {
+      state.ProductStockDataList = list;
+    },
+    setProductStockSave(state, data) { // 库存规格保存
+      if (!data.PartID) {
+        state.ProductStockDataList.StockList.unshift(data);
+      } else {
+        const t = state.ProductStockDataList.PartList.find(it => it.ID === data.PartID);
+        if (t) t.StockList.unshift(data);
+      }
+    },
+    setProductStockSetWarning(state, data) { // 设置库存预警
+      if (!data.PartID) {
+        state.ProductStockDataList.MinNumber = data.MinNumber;
+        state.ProductStockDataList.WarningMobile = data.Mobile;
+      } else {
+        const t = state.ProductStockDataList.PartList.find(it => it.ID === data.PartID);
+        if (t) {
+          t.MinNumber = data.MinNumber;
+          t.WarningMobile = data.Mobile;
+        }
+      }
+    },
+    setProductStockUpdate(state, data) { // 更新库存数量
+      let list;
+      if (!data.PartID) {
+        list = state.ProductStockDataList.StockList;
+      } else {
+        const t = state.ProductStockDataList.PartList.find(it => it.ID === data.PartID);
+        if (t) list = t.StockList;
+      }
+      if (list) {
+        const t = list.find(it => it.ID === data.id);
+        if (t) t.Number = data.number;
+      }
+    },
+    setProductStockRemove(state, data) { // 删除库存条目
+      let list;
+      if (!data.PartID) {
+        list = state.ProductStockDataList.StockList;
+      } else {
+        const t = state.ProductStockDataList.PartList.find(it => it.ID === data.PartID);
+        if (t) list = t.StockList;
+      }
+      if (list) {
+        const i = list.findIndex(it => it.ID === data.id);
+        if (i > -1) list.splice(i, 1);
+      }
     },
   },
   actions: {
@@ -397,6 +462,15 @@ export default {
       }
       return false;
     },
+    async getProductControlRemove({ commit }, id) {
+      const resp = await api.getProductControlRemove(id).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setProductInteractionDataListRemove', id);
+        };
+        messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
     async getInteractionPropertyList({ commit }, ProductID) { // 获取交互左侧弹窗属性列表数据
       commit('setInteractionPropertyList', []);
       const list = await Promise.all([
@@ -410,6 +484,58 @@ export default {
         return true;
       }
       return false;
+    },
+    async getProductStockPropertyList({ commit }, ProductID) { // 获取产品库存规则添加属性列表数据
+      commit('setProductStockPropertyList', []);
+      const list = await Promise.all([
+        PropertyClass.getPropertyList({ UseModule: 11, ProductID }),
+        PropertyClass.getPropertyList({ UseModule: 21, ProductID }),
+      ]);
+      if (list) {
+        commit('setProductStockPropertyList', list);
+        return true;
+      }
+      return false;
+    },
+    async getProductStockSave({ commit }, [data, callback]) { // 保存库存规格
+      const resp = await api.getProductStockSave(data).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          const temp = { ...data, ID: resp.data.Data };
+          commit('setProductStockSave', temp);
+          if (callback) callback();
+        };
+        messageBox.successSingle('添加成功', cb, cb);
+      }
+    },
+    async getProductStockSetWarning({ commit }, data) { // 设置库存预警
+      const resp = await api.getProductStockSetWarning(data).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setProductStockSetWarning', data);
+        };
+        messageBox.successSingle('设置库存预警成功', cb, cb);
+      }
+    },
+    async getProductStockUpdate({ commit }, data) { // 更新库存数量
+      const { id, number } = data;
+      const resp = await api.getProductStockUpdate(id, number).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setProductStockUpdate', data);
+        };
+        messageBox.successSingle('更新库存数量成功', cb, cb);
+      }
+    },
+    async getProductStockRemove({ commit }, data) { // 删除库存条目
+      const { id } = data;
+      const resp = await api.getProductStockRemove(id).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setProductStockRemove', data);
+        };
+        messageBox.successSingle('删除成功', cb, cb);
+      }
     },
   },
 };

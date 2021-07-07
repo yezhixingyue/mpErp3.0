@@ -13,15 +13,18 @@
         <ul class="right">
           <li>
             <span>分隔符：</span>
-            <el-input size="small" v-model.trim="productData.SplitChars"></el-input>
+            <el-input size="small" @focus="onInpFocus('SplitChars')" @blur="onInpBlur" v-model="SplitChars"></el-input>
+            <div :class="showTipType === 'SplitChars' ? 'active':''" class="tip">只可输入 , ' | / 和空格等5种符号</div>
           </li>
           <li>
             <span>部件开始结束符号：</span>
-            <el-input size="small" v-model.trim="productData.PartSplitChars"></el-input>
+            <el-input size="small" @focus="onInpFocus('PartSplitChars')" @blur="onInpBlur" v-model.trim="PartSplitChars"></el-input>
+            <div :class="showTipType === 'PartSplitChars' ? 'active':''" class="tip">只可输入【】 {} []  《》 &lt; &gt; () （）等符号，必须成对出现</div>
           </li>
           <li>
             <span>元素组开始结束符号：</span>
-            <el-input size="small" v-model.trim="productData.GroupSplitChars"></el-input>
+            <el-input size="small" @focus="onInpFocus('GroupSplitChars')" @blur="onInpBlur" v-model.trim="GroupSplitChars"></el-input>
+            <div :class="showTipType === 'GroupSplitChars' ? 'active':''" class="tip">只可输入【】 {} []  《》 &lt; &gt; () （）等符号，必须成对出现，且不可与其它分隔符重复</div>
           </li>
           <li class="explain" @click="onExplainClick">
             <i>?</i>
@@ -46,6 +49,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import { SplitCharsReg, GroupAndPartSplitCharsReg } from '@/assets/js/utils/regexp';
 import ExplainDrawer from '@/components/ProductManageComps/FileName/ExplainDrawer.vue';
 import ItemContentShow from '@/components/ProductManageComps/FileName/ItemContentShow';
 
@@ -64,6 +68,30 @@ export default {
       if (!this.PartID || !this.curProduct) return null;
       return this.curProduct.PartList.find(it => it.ID === this.PartID);
     },
+    SplitChars: {
+      get() {
+        return this.productData ? this.productData.SplitChars : '';
+      },
+      set(val) {
+        this.productData.SplitChars = val.replace(SplitCharsReg, '');
+      },
+    },
+    PartSplitChars: {
+      get() {
+        return this.productData ? this.productData.PartSplitChars : '';
+      },
+      set(val) {
+        this.productData.PartSplitChars = val.replace(GroupAndPartSplitCharsReg, '');
+      },
+    },
+    GroupSplitChars: {
+      get() {
+        return this.productData ? this.productData.GroupSplitChars : '';
+      },
+      set(val) {
+        this.productData.GroupSplitChars = val.replace(GroupAndPartSplitCharsReg, '');
+      },
+    },
   },
   data() {
     return {
@@ -73,6 +101,7 @@ export default {
       titleType: '', // 产品 | 部件
       productData: null,
       drawer: false,
+      showTipType: '',
     };
   },
   methods: {
@@ -174,8 +203,23 @@ export default {
         this.handleElementTypeDataChange(group, payload);
       }
     },
-    onSubmitClick() {
-      console.log('onSubmitClick');
+    async onSubmitClick() {
+      if (!this.productData) return;
+      const { SplitChars, PartSplitChars, GroupSplitChars } = this.productData;
+      if (!GroupSplitChars || !SplitChars || !PartSplitChars) {
+        this.messageBox.failSingleError('保存失败', '分隔符必填，请输入及补充分隔符');
+        return;
+      }
+      const resp = await this.api.getProductSetFalseWords(this.productData).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        this.messageBox.successSingle('设置成功', this.onGoBackClick, this.onGoBackClick);
+      }
+    },
+    onInpFocus(type) {
+      this.showTipType = type;
+    },
+    onInpBlur() {
+      this.showTipType = '';
     },
   },
   mounted() {
@@ -275,6 +319,21 @@ export default {
               > span {
                 color: #444;
               }
+            }
+          }
+          position: relative;
+          > div.tip {
+            position: absolute;
+            bottom: -52px;
+            font-size: 12px;
+            height: 50px;
+            line-height: 18px;
+            opacity: 0;
+            left: 0;
+            right: 0;
+            transition: 0.1s ease-in-out;
+            &.active {
+              opacity: 1;
             }
           }
         }

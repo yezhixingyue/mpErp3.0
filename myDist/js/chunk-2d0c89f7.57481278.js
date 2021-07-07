@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["chunk-2d0c89f7"],{5655:function(e,n,t){"use strict";t.r(n);var u={name:"CouponPage"},c=t("2877"),o=Object(c.a)(u,(function(){var e=this.$createElement;return(this._self._c||e)("router-view")}),[],!1,null,null,null);n.default=o.exports}}]);

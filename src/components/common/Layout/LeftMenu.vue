@@ -21,9 +21,9 @@
       <p @click="handleClick" class="login-out-box" :class="isCollapse?'hiden':'show'" v-show="showLoginout">
         <template v-if="!isCollapse">
           <i class="el-icon-switch-button not-c"></i>
-          <span>退出登陆</span>
+          <span>退出登录</span>
         </template>
-        <TipsSpanButton tipContent='退出登陆' v-else><i class="el-icon-switch-button"></i></TipsSpanButton>
+        <TipsSpanButton tipContent='退出登录' v-else><i class="el-icon-switch-button"></i></TipsSpanButton>
       </p>
     </el-scrollbar>
   </div>
@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     handleClick() { // 退出
-      this.messageBox.warnCancelNullMsg('确定退出登陆吗?', () => {
+      this.messageBox.warnCancelNullMsg('确定退出登录吗?', () => {
         sessionStorage.removeItem('token');
         this.$router.replace('/login');
       });

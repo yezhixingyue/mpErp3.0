@@ -567,14 +567,24 @@ export const routes = [
             component: () => import('../views/ProductManage/FileName/ProductFileNameSetPage.vue'),
           },
           {
-            path: '/ProductStockSet/:ProductID/:PartID/:name/:type/:times',
-            name: 'ProductStockSet',
+            path: '/ProductStockList/:ProductID/:PartID/:name/:type/:times',
+            name: 'ProductStockList',
             meta: {
               title: '库存设置 - 产品管理',
               requiresAuth: true,
               // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
             },
-            component: () => import('../views/ProductManage/ProductStockSetPage.vue'),
+            component: () => import('../views/ProductManage/Stock/ProductStockListPage.vue'),
+          },
+          {
+            path: '/ProductStockSpecificationAdd/:ProductID/:PartID/:name/:type/:fixedPartName/:times',
+            name: 'ProductStockSpecificationAdd',
+            meta: {
+              title: '库存规格设置 - 产品管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/ProductManage/Stock/ProductStockSpecificationAddPage.vue'),
           },
         ],
       },
@@ -965,7 +975,7 @@ router.beforeEach((to, from, next) => { // 使用全局路由导航守卫进行�
       }
     } else { // 如果没有token，跳转登录或提示页面
       next({
-        path: '/notauth', // 此处应当跳转登录页面
+        path: '/login', // 此处应当跳转登录页面
         // query: { redirect: to.fullPath },
       });
     }

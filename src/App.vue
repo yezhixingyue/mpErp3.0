@@ -4,10 +4,7 @@
     <section>
       <HeaderTabs v-if="key" />
       <main>
-        <!-- {{temp()}} -->
-        <!-- <keep-alive> -->
-          <router-view />
-        <!-- </keep-alive> -->
+        <router-view />
       </main>
     </section>
     <div class="mp-general-loading-wrap"></div>
@@ -24,15 +21,8 @@ export default {
   },
   computed: {
     key() {
-      return process.env.NODE_ENV === 'development' && this.$route.name !== 'login';
+      return this.$route.name !== 'login';
     },
-  },
-  data() {
-    return {
-      temp() {
-        return <div> Hello world! </div>;
-      },
-    };
   },
 };
 </script>

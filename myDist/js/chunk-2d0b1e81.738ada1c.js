@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["chunk-2d0b1e81"],{"229d":function(e,n,t){"use strict";t.r(n);var r={name:"CraftRootPage"},u=t("2877"),a=Object(u.a)(r,(function(){var e=this.$createElement;return(this._self._c||e)("router-view")}),[],!1,null,null,null);n.default=a.exports}}]);

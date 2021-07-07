@@ -42,6 +42,8 @@ export default {
   height: 100%;
   overflow-y: overlay;
   background-color: #fff;
+  border: 1px solid #e6e6e6;
+  border-top: none;
   margin-top: 10px;
   .empty-box {
     width: 1500px;
@@ -66,8 +68,9 @@ export default {
     height: 100%;
     // min-height: 100%;
     // overflow: hidden;
-    border: 1px solid #e6e6e6;
     box-sizing: border-box;
+    // border: 1px solid #fff;
+    border-top: 1px solid #e6e6e6;
     > .list-header {
       height: 36px;
       background-color: #f5f5f5;

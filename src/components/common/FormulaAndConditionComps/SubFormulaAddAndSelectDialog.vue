@@ -115,7 +115,7 @@ export default {
 </script>
 <style lang='scss'>
 .mp-erp-comps-common-sub-formula-add-and-select-dialog-comp-wrap {
-
+  // position: relative;
   .el-dialog__body {
     padding-left: 55px;
     padding-top: 35px;
@@ -182,13 +182,15 @@ export default {
         }
       }
     }
-    position: relative;
     > .tips-box {
       position: absolute;
-      bottom: 5px;
+      bottom: 85px;
       width: 500px;
       left: 150px;
     }
+  }
+  .el-dialog__footer {
+    padding-top: 50px;
   }
 }
 </style>

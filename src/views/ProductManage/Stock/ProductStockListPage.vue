@@ -1,10 +1,14 @@
 <template>
-  <section class="mp-erp-product-list-page-product-stock-set-comp-wrap">
+  <section class="mp-erp-product-list-page-product-stock-list-page-wrap">
     <header>
       <span>当前{{titleType}}：</span>
       <span>{{ProductName}}</span>
     </header>
     <main>
+      <template v-if="ProductStockDataList">
+        <StockTable @add="onSpecificationAddClick('null', '产品')" :itemData='ProductStockDataList' />
+        <StockTable @add="onSpecificationAddClick(it.ID, it.Name)" :title="it.Name" v-for="it in ProductStockDataList.PartList" :key="it.ID" :itemData='it' />
+      </template>
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -14,6 +18,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import StockTable from '@/components/ProductManageComps/Stock/StockTable';
 
 export default {
   data() {
@@ -22,12 +27,14 @@ export default {
       PartID: '',
       ProductName: '',
       titleType: '', // 产品 | 部件
+      // StockList: [],
     };
   },
   components: {
+    StockTable,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'StockLeftPropertyList', 'ProductStockDataList', 'StockRightPropertyList']),
     curProduct() {
       if (!this.ProductID) return null;
       return this.ProductManageList.find(it => it.ID === this.ProductID);
@@ -52,35 +59,27 @@ export default {
       this.PartID = PartID !== 'null' ? PartID : '';
       this.ProductName = name;
       this.titleType = type;
-      // this.getProductOrderData();
+      this.getProductOrderData();
+      this.$store.dispatch('productManage/getProductStockPropertyList', this.ProductID);
     },
-    // async getProductOrderData(dataType = ['Order']) { // 获取初始物料、常规尺寸与尺寸组信息
-    //   const ID = this.PartID ? this.PartID : this.ProductID;
-    //   const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
-    //   const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
-    //   const _temp = { ID, List };
-    //   const resp = await _fetchFunc(_temp).catch(() => {});
-    //   if (resp && resp.data && resp.data.Status === 1000) {
-    //     // 获取数据成功
-    //     const { DisplayList } = resp.data.Data;
-    //     if (dataType.includes('Order') && DisplayList) this.DisplayList = DisplayList.map(it => ({ ...it, key: Math.random().toString(36).slice(-8) }));
-    //   }
-    // },
-    // async setDisplayOrderSubmit(list) { // 保存排序
-    //   if (!list || list.length === 0) return;
-    //   const { ProductID, PartID } = this;
-    //   const List = list.map((it, Index) => ({ ...it, Index }));
-    //   const temp = { ProductID, PartID, List };
-    //   const resp = await this.api.getProductSetDisplayOrder(temp).catch(() => {});
-    //   if (resp && resp.data && resp.data.Status === 1000) {
-    //     const cb = () => {
-    //       this.onGoBackClick();
-    //     };
-    //     this.messageBox.successSingle('设置成功', cb, cb);
-    //   }
-    // },
+    async getProductOrderData(dataType = ['Part', 'Stock']) { // 获取初始部件及库存信息
+      const ID = this.PartID ? this.PartID : this.ProductID;
+      const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
+      const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
+      const _temp = { ID, List };
+      this.$store.commit('productManage/setProductStockDataList', []);
+      const resp = await _fetchFunc(_temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        this.$store.commit('productManage/setProductStockDataList', resp.data.Data);
+      }
+    },
     onGoBackClick() {
       this.$router.replace('/ProductManageList');
+    },
+    onSpecificationAddClick(PartID, fixedPartName) {
+      const { ProductID, ProductName, titleType } = this;
+      const path = `/ProductStockSpecificationAdd/${ProductID}/${PartID}/${ProductName}/${titleType}/${fixedPartName}/${Date.now()}`;
+      this.$router.push(path);
     },
   },
   mounted() {
@@ -89,7 +88,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-product-list-page-product-stock-set-comp-wrap {
+.mp-erp-product-list-page-product-stock-list-page-wrap {
   padding-left: 20px;
   padding-right: 6px;
   height: 100%;
@@ -111,6 +110,9 @@ export default {
   > main {
     flex: 1;
     padding-top: 15px;
+    > section {
+      margin-bottom: 50px;
+    }
   }
   > footer {
     text-align: center;

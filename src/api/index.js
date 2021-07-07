@@ -428,6 +428,27 @@ const api = {
   getSubformulaUseableProperty(productID) { // GET /Api/Formula/SubformulaUseableProperty 获取可使用子公式的属性列表
     return instance.get(`/Api/Formula/SubformulaUseableProperty?productID=${productID}`);
   },
+  getProductSetFalseWords(data) { // POST /Api/Product/SetFalseWords 设置通假字 文件名设置
+    return instance.post('/Api/Product/SetFalseWords', data);
+  },
+  getProductControlSave(data) { // POST /Api/Product/ControlSave  产品交互/对比/风险提示保存
+    return instance.post('/Api/Product/ControlSave', data);
+  },
+  getProductControlRemove(id) { // delete /Api/Product/ControlRemove 产品交互/对比/风险提示删除
+    return instance.delete(`/Api/Product/ControlRemove?id=${id}`);
+  },
+  getProductStockSave(data) { // POST /Api/ProductStock/Save  产品库存规格保存
+    return instance.post('/Api/ProductStock/Save', data);
+  },
+  getProductStockSetWarning(data) { // POST /Api/ProductStock/SetWarning  设置库存预警
+    return instance.post('/Api/ProductStock/SetWarning', data);
+  },
+  getProductStockUpdate(id, number) { // PUT /Api/ProductStock/Update   更新库存数量
+    return instance.put(`/Api/ProductStock/Update?id=${id}&number=${number}`);
+  },
+  getProductStockRemove(id) { // DELETE /Api/ProductStock/Remove   删除库存信息
+    return instance.delete(`/Api/ProductStock/Remove?id=${id}`);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表
@@ -485,9 +506,6 @@ const api = {
   },
   getFileInfoRemove(id) { // DELETE /Api/FileInfo/Remove 文件类目删除
     return instance.delete(`/Api/FileInfo/Remove?id=${id}`);
-  },
-  getProductControlSave(data) { // POST /Api/Product/ControlSave  产品交互/对比/风险提示保存
-    return instance.post('/Api/Product/ControlSave', data);
   },
   /* 印刷幅面api
   ----------------------------------------------------------------------------------- */

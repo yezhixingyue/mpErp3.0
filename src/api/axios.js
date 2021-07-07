@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Loading, Message } from 'element-ui';
 import router from '@/router';
-import setToken2SessionStorage from '../assets/js/utils/cookie'; // 获取cookie中的token信息存入到会话缓存中
+// import setToken2SessionStorage from '../assets/js/utils/cookie'; // 获取cookie中的token信息存入到会话缓存中
 import store from '../store';
 import messageBox from '../assets/js/utils/message';
 
@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'development') {
   // const str = 'DsEs';
   // sessionStorage.setItem('token', JSON.stringify(str));
 } else {
-  setToken2SessionStorage();
+  // setToken2SessionStorage();
 }
 
 let loadingInstance;
@@ -21,7 +21,7 @@ axios.interceptors.request.use(
     closeTip = curConfig.closeTip;
     const { closeLoading } = curConfig;
     if (!token) {
-      setToken2SessionStorage();
+      // setToken2SessionStorage();
       token = sessionStorage.getItem('token');
     }
     curConfig.headers.common.Authorization = `Bearer ${JSON.parse(token)}`;
@@ -61,7 +61,7 @@ axios.interceptors.response.use(
 
     // eslint-disable-next-line max-len
     if (!_statusList2NotNeed2Toast.includes(response.data.Status) && !_list2NotNeed2Toast.includes(response.config.url.split('?')[0]) && !closeTip) {
-      if ([7025, 8037].includes(response.data.Status) && process.env.NODE_ENV === 'development') {
+      if ([7025, 8037].includes(response.data.Status)) {
         messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`, () => router.replace('/login'));
       } else {
         messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`);
@@ -92,12 +92,12 @@ axios.interceptors.response.use(
         let _func = null;
         switch (error.response.status) {
           case 401:
-            if (process.env.NODE_ENV === 'development') {
-              _func = () => {
-                // console.log('loginloginlogin_func');
-                router.replace('/login');
-              };
-            }
+            // if (process.env.NODE_ENV === 'development') {
+            _func = () => {
+              // console.log('loginloginlogin_func');
+              router.replace('/login');
+            };
+            // }
             messageBox.failSingleError(undefined, '[ 错误 401：请重新登录! ]', _func);
             localStorage.removeItem('staffDetailData');
             key = true;

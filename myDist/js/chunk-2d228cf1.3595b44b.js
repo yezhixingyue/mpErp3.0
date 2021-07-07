@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["chunk-2d228cf1"],{db85:function(e,n,t){"use strict";t.r(n);var a={name:"MaterialTypeRootPage"},r=t("2877"),u=Object(r.a)(a,(function(){var e=this.$createElement;return(this._self._c||e)("router-view")}),[],!1,null,null,null);n.default=u.exports}}]);

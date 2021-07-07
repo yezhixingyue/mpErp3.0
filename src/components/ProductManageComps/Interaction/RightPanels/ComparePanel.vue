@@ -46,9 +46,9 @@
       </template>
       <div class="drawer-content">
         <div>设置时请注意逻辑悖论，例如：</div>
-        <p>如果 A > B 则必须满足 A &lt;= B</p>
+        <p>如果 A > B 则必须满足 A &lt;= B；</p>
         <p>如果 A &lt;= B 则必须满足 A > B；</p>
-        <p>那么将一直提示错误，无法下单。再如：</p>
+        <p style="margin: 15px 0">那么将一直提示错误，无法下单。再如：</p>
         <p>如果 A > B 则必须满足 C > D；</p>
         <p>如果 A &lt;= B 则必须满足 C &lt;= D；</p>
         <p>如果 C > D 则必须满足 A &lt; B；</p>
