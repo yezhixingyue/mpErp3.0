@@ -588,6 +588,30 @@ export const routes = [
           },
         ],
       },
+      { // 产品定价
+        path: '/priceRootPage',
+        name: 'priceRootPage',
+        meta: {
+          title: '产品定价',
+          icon: 'el-icon-s-goods',
+          pageName: 'PriceRootPage',
+          requiresAuth: true,
+        },
+        redirect: '/PriceManageList',
+        component: () => import('../views/Price/PriceRootPage.vue'),
+        children: [
+          {
+            path: '/PriceManageList',
+            name: 'PriceManageList',
+            meta: {
+              title: '工艺管理',
+              requiresAuth: true,
+              // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+            },
+            component: () => import('../views/Price/PriceManageListPage.vue'),
+          },
+        ],
+      },
       { // 工艺管理
         path: '/craftRootPage',
         name: 'craftRootPage',

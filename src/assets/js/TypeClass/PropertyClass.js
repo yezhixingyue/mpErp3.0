@@ -216,7 +216,6 @@ export default class PropertyClass {
     const resp = await api.getFormulaPropertyList(data).catch(() => {});
     if (resp && resp.status === 200 && resp.data.Status === 1000) {
       const t = resp.data.Data.find(it => it.OperatorList && it.OperatorList.length > 10);
-      console.log(t);
       if (t) {
         // eslint-disable-next-line no-alert
         alert('关系数量超出');
@@ -349,5 +348,32 @@ export default class PropertyClass {
       }
     });
     return temp;
+  }
+
+  static getConstraintAndTextByImperfectConstraint(Constraint, PropertyList) {
+    let _Constraint = null;
+    let _ConditionText = '无';
+    // if (!Constraint) return { ...it, conditionText: '无' };
+    if (Constraint) {
+      const ItemList = Constraint.ItemList.map(item => {
+        let { ValueList } = item;
+        if (ValueList && ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Property) {
+          const Property = this.getPerfectPropertyByImperfectProperty(ValueList[0].Property, PropertyList);
+          if (Property) ValueList = [{ Property }];
+        }
+        return {
+          ...item,
+          Property: this.getPerfectPropertyByImperfectProperty(item.Property, PropertyList),
+          ValueList,
+        };
+      }).filter(item => item.Property);
+
+      _Constraint = { ...Constraint, ItemList };
+      _ConditionText = this.getPropertyConditionText(ItemList, this.PropertyList);
+      _ConditionText = _ConditionText || '无';
+    }
+
+    return [_Constraint, _ConditionText];
+    // return _Constraint;
   }
 }

@@ -96,22 +96,26 @@ export default {
       if (!this.ComparePropertyList || this.ComparePropertyList.length === 0) return this.localTableData;
       const list = this.localTableData.map(it => {
         if (!it.Constraint) return { ...it, conditionText: '无' };
-        const Constraint = {
-          ...it.Constraint,
-          ItemList: it.Constraint.ItemList.map(item => {
-            let { ValueList } = item;
-            if (ValueList && ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Property) {
-              const Property = PropertyClass.getPerfectPropertyByImperfectProperty(ValueList[0].Property, this.ComparePropertyList);
-              if (Property) ValueList = [{ Property }];
-            }
-            return {
-              ...item,
-              Property: PropertyClass.getPerfectPropertyByImperfectProperty(item.Property, this.ComparePropertyList),
-              ValueList,
-            };
-          }).filter(item => item.Property),
-        };
-        return { ...it, Constraint, conditionText: this.getConditionText(Constraint.ItemList) };
+        const [Constraint, conditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.ComparePropertyList);
+        // const Constraint = {
+        //   ...it.Constraint,
+        //   ItemList: it.Constraint.ItemList.map(item => {
+        //     let { ValueList } = item;
+        //     if (ValueList && ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Property) {
+        //       const Property = PropertyClass.getPerfectPropertyByImperfectProperty(ValueList[0].Property, this.ComparePropertyList);
+        //       if (Property) ValueList = [{ Property }];
+        //     }
+        //     const Property = PropertyClass.getPerfectPropertyByImperfectProperty(item.Property, this.ComparePropertyList);
+        //     console.log('Property', Property);
+        //     return {
+        //       ...item,
+        //       Property,
+        //       ValueList,
+        //     };
+        //   }).filter(item => item.Property),
+        // };
+        // return { ...it, Constraint, conditionText: this.getConditionText(Constraint.ItemList) };
+        return { ...it, Constraint, conditionText };
       });
       return list;
     },
@@ -168,10 +172,10 @@ export default {
       this.$emit('add', selectedItem);
       this.visible = false;
     },
-    getConditionText(list) {
-      const str = PropertyClass.getPropertyConditionText(list, this.PropertyList);
-      return str || '无';
-    },
+    // getConditionText(list) {
+    //   const str = PropertyClass.getPropertyConditionText(list);
+    //   return str || '无';
+    // },
   },
   mounted() {
     this.getFormulaList();

@@ -6,8 +6,23 @@
     </header>
     <main>
       <template v-if="ProductStockDataList">
-        <StockTable @add="onSpecificationAddClick('null', '产品')" :itemData='ProductStockDataList' />
-        <StockTable @add="onSpecificationAddClick(it.ID, it.Name)" :title="it.Name" v-for="it in ProductStockDataList.PartList" :key="it.ID" :itemData='it' />
+        <StockTable
+         @add="onSpecificationAddClick('null', '产品')"
+         :ProductID='ProductID'
+         PartID=''
+         :itemData='ProductStockDataList'
+         :leftPropertyList='StockLeftPropertyList'
+         :rightPropertyList='StockRightPropertyList' />
+        <StockTable
+         @add="onSpecificationAddClick(it.ID, it.Name)"
+         :title="it.Name"
+         :PartID="it.ID"
+         :ProductID='ProductID'
+         v-for="it in ProductStockDataList.PartList"
+         :key="it.ID"
+         :itemData='it'
+         :leftPropertyList='StockLeftPropertyList'
+         :rightPropertyList='StockRightPropertyList' />
       </template>
     </main>
     <footer>
@@ -67,7 +82,7 @@ export default {
       const _fetchFunc = this.PartID ? this.api.getPartModuleData : this.api.getProductModuleData;
       const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
       const _temp = { ID, List };
-      this.$store.commit('productManage/setProductStockDataList', []);
+      this.$store.commit('productManage/setProductStockDataList', null);
       const resp = await _fetchFunc(_temp).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
         this.$store.commit('productManage/setProductStockDataList', resp.data.Data);
@@ -110,13 +125,20 @@ export default {
   > main {
     flex: 1;
     padding-top: 15px;
+    min-width: 1120px;
+    padding-right: 5px;
     > section {
       margin-bottom: 50px;
+      &:last-of-type {
+        margin-bottom: 30px;
+      }
     }
   }
   > footer {
     text-align: center;
     padding: 25px;
+    padding-bottom: 40px;
+    padding-right: 240px;
     flex: none;
     > button {
       width: 120px;

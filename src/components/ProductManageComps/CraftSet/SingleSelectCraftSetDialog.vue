@@ -20,7 +20,7 @@
       <div>
         <template v-if="ruleForm && ruleForm.IsRequired">
           <span>初始选中：</span>
-          <el-select  v-model="ruleForm.DefaultCraft" placeholder="请选择" size="mini">
+          <el-select  v-model="DefaultCraft" placeholder="请选择" size="mini">
             <el-option
               v-for="item in optionList"
               :key="item.ID"
@@ -93,6 +93,17 @@ export default {
       if (!this.usableCraftList || this.usableCraftList.length === 0) return [];
       if (this.CraftConditionIDs.length === 0) return this.usableCraftList;
       return this.usableCraftList.filter(it => !this.CraftConditionIDs.includes(it.ID));
+    },
+    DefaultCraft: {
+      get() {
+        const { DefaultCraft } = this.ruleForm;
+        const list = this.optionList.map(it => it.ID).filter(it => it);
+        if (list.includes(DefaultCraft)) return DefaultCraft;
+        return '';
+      },
+      set(val) {
+        this.ruleForm.DefaultCraft = val;
+      },
     },
   },
   methods: {

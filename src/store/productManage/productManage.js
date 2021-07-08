@@ -93,7 +93,7 @@ export default {
      */
     StockLeftPropertyList: [], // 条件弹窗属性列表数据
     StockRightPropertyList: [], // 条件弹窗属性列表数据
-    ProductStockDataList: [], // 库存列表数据
+    ProductStockDataList: null, // 库存列表数据
   },
   getters: {
   },
@@ -508,21 +508,24 @@ export default {
         messageBox.successSingle('添加成功', cb, cb);
       }
     },
-    async getProductStockSetWarning({ commit }, data) { // 设置库存预警
+    async getProductStockSetWarning({ commit }, [data, callback]) { // 设置库存预警
       const resp = await api.getProductStockSetWarning(data).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
           commit('setProductStockSetWarning', data);
+          if (callback) callback();
         };
         messageBox.successSingle('设置库存预警成功', cb, cb);
       }
     },
-    async getProductStockUpdate({ commit }, data) { // 更新库存数量
+    async getProductStockUpdate({ commit }, [data, callback]) { // 更新库存数量
       const { id, number } = data;
+      console.log(id, number, data);
       const resp = await api.getProductStockUpdate(id, number).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
           commit('setProductStockUpdate', data);
+          if (callback) callback();
         };
         messageBox.successSingle('更新库存数量成功', cb, cb);
       }

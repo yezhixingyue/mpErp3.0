@@ -105,12 +105,13 @@ export default {
 .mp-erp-comps-pruduct-module-usable-craft-set-dialog-comp-wrap {
   .el-dialog__body {
     font-size: 14px;
-    padding-left: 50px;
+    padding-left: 40px;
     padding-right: 20px;
     height: 548px;
     > .el-tabs {
       > .el-tabs__header {
         border: none;
+        margin-left: -10px;
         .el-tabs__nav {
           border: none;
           .el-tabs__item {
@@ -120,7 +121,7 @@ export default {
             line-height: 30px;
             padding: 0 25px;
             color: #444;
-            font-size: 14px;
+            font-size: 13px;
             transition: none;
             user-select: none;
             box-sizing: border-box;
@@ -154,10 +155,24 @@ export default {
             &:last-of-type {
               border-radius: 0px 3px 3px 0px;
               box-shadow: 1px 0 0 0 #e5e5e5;
+              border-right: 1px solid #e5e5e5;
               &.is-active {
                 box-shadow: 1px 0 0 0 #26BCF9;
+                border-right: 1px solid #26BCF9;
               }
             }
+          }
+        }
+        .el-tabs__nav-next, .el-tabs__nav-prev {
+          height: 32px;
+          line-height: 32px;
+          color: #999;
+          i {
+            font-weight: 700;
+          }
+          &.is-disabled {
+            cursor: pointer !important;
+            color: #999;
           }
         }
       }

@@ -13,11 +13,13 @@
     <section class="drawer-content">
       <aside>
         <el-scrollbar wrap-class="scrollbar-wrapper">
-          <span v-for="it in typeList" :key='`aside${it.ID}`'
-          :class="{ active: activeType===it.ID, disabled: !canSelectTypeIDList.includes(it.ID) }"
-           @click="onLabelClick(it)" :title='it.Name'>
-            {{it.Name}}
-          </span>
+          <div>
+            <span v-for="it in typeList" :key='`aside${it.ID}`'
+            :class="{ active: activeType===it.ID, disabled: !canSelectTypeIDList.includes(it.ID) }"
+            @click="onLabelClick(it)" :title='it.Name'>
+              {{it.Name}}
+            </span>
+          </div>
         </el-scrollbar>
       </aside>
       <div class="content">
@@ -249,49 +251,51 @@ export default {
         }
         .el-scrollbar__view {
           height: 100%;
-          display: flex;
-          flex-direction: column;
           flex: none;
           width: 150px;
-          border-right: 1px solid #eee;
           font-size: 14px;
           box-sizing: border-box;
-          > span {
-            flex: none;
-            height: 40px;
-            padding: 10px 0;
-            box-sizing: border-box;
-            line-height: 20px;
-            cursor: pointer;
-            color: #585858;
-            width: 100%;
-            padding-right: 5px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            position: relative;
-            transition: color 0.12s ease-in-out;
-            &::after {
-              content: '';
-              position: absolute;
-              right: 0;
-              top: 0;
-              bottom: 0;
-              width: 3px;
-              background-color: #26BCF9;
-              opacity: 0;
-              transition: opacity 0.2s ease-in-out;
-            }
-            &.active {
-              color: #26BCF9;
+          > div{
+            display: flex;
+            border-right: 1px solid #eee;
+            flex-direction: column;
+             > span {
+              flex: none;
+              height: 40px;
+              padding: 10px 0;
+              box-sizing: border-box;
+              line-height: 20px;
+              cursor: pointer;
+              color: #585858;
+              width: 100%;
+              padding-right: 5px;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              position: relative;
+              transition: color 0.12s ease-in-out;
               &::after {
-                opacity: 1;
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 3px;
+                background-color: #26BCF9;
+                opacity: 0;
+                transition: opacity 0.2s ease-in-out;
               }
-            }
-            &.disabled {
-              color: #cbcbcb;
-              user-select: none;
-              pointer-events: none;
+              &.active {
+                color: #26BCF9;
+                &::after {
+                  opacity: 1;
+                }
+              }
+              &.disabled {
+                color: #cbcbcb;
+                user-select: none;
+                pointer-events: none;
+              }
             }
           }
         }

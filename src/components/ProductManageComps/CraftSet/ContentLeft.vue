@@ -71,8 +71,9 @@ export default {
     },
     getDefaultCraftName(ID) {
       if (!ID) return '未设置';
-      const t = this.usableCraftList.find(_it => _it.ID === ID);
-      return t ? t.Name : '';
+      const _list = this.usableCraftList.filter(it => it && (!it.ElementList || it.ElementList.length === 0));
+      const t = _list.find(_it => _it.ID === ID);
+      return t ? t.Name : '未设置';
     },
     onItemRemove(it) {
       this.messageBox.warnCancelBox('确定删除该单选工艺设置吗', `该设置共包含有${it.List.length}种工艺`, () => {

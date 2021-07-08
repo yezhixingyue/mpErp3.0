@@ -449,6 +449,11 @@ const api = {
   getProductStockRemove(id) { // DELETE /Api/ProductStock/Remove   删除库存信息
     return instance.delete(`/Api/ProductStock/Remove?id=${id}`);
   },
+  /* 价格管理api
+  ----------------------------------------------------------------------------------- */
+  // getManageProductLists(data) { //  POST /Api/Product/List  获取产品列表数据
+  //   return instance.post('/Api/Product/List', data);
+  // },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

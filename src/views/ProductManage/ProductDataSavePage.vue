@@ -28,13 +28,13 @@
           <p>所属产品分类：</p>
           <div v-for="it of twoLevelsMultipleProductClassifyList4Sort" :key="'ProductSaveClassifyType' + it.ID">
             <p>
-              <span class="title">{{getClassifyTypeName(it.Type)}}：</span>
+              <span class="title" :title="getClassifyTypeName(it.Type)">{{getClassifyTypeName(it.Type)}}：</span>
               <span v-if="!hideClassTypes.includes(it.Type)" class="hide-box" @click="onHideClick(it.Type)">隐藏 <i class="el-icon-arrow-up"></i> </span>
               <span v-else class="hide-box" @click="onShowClick(it.Type)">展开 <i class="el-icon-arrow-right"></i> </span>
             </p>
             <ul class="classify-list-wrap" v-show="!hideClassTypes.includes(it.Type)">
               <li v-for="lv1 of it.List" :key="`${lv1.ClassName}--${lv1.ID}`">
-                <span class="title">{{lv1.ClassName}}：</span>
+                <span class="title sub" :title="lv1.ClassName"><i>{{lv1.ClassName}}</i>：</span>
                 <div v-if="lv1.children && lv1.children.length > 0">
                   <el-checkbox
                    v-for="lv2 of lv1.children" :key="`${lv2.ClassName}--${lv2.ID}`"
@@ -307,6 +307,17 @@ export default {
           flex: none;
           overflow: hidden;
           white-space: nowrap;
+          text-overflow: ellipsis;
+          &.sub > i {
+            width: 7em;
+            text-align: right;
+            flex: none;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
+          }
         }
       }
     }

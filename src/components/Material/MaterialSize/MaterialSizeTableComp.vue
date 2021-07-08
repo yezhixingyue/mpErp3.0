@@ -70,7 +70,8 @@ export default {
       max = max === -1 ? '无限' : `${max}mm`;
 
       const splitStr = split ? '可加工' : '不可加工';
-      const sizeStr = (!min && min !== 0) ? `${max}` : `${min}<=值<=${max} 增量：${increment}`;
+      const incrementText = increment ? `增量：${increment}` : '';
+      const sizeStr = (!min && min !== 0) ? `${max}` : `${min}<=值<=${max} ${incrementText}`;
 
       return `${sizeStr}（${splitStr}）`;
     },

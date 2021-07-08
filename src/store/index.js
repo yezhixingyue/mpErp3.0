@@ -15,6 +15,7 @@ import promoteStore from './Promote/promoteStore';
 import deposit from './deposit/deposit';
 import statistic from './statistic/statisticAnalysis';
 import productManage from './productManage/productManage';
+import priceManage from './Price/priceManage';
 import layout from './layout';
 import basicSet from './basicSet';
 import packageModule from './package';
@@ -39,6 +40,7 @@ export default new Vuex.Store({
     timelimit,
     statistic,
     productManage,
+    priceManage,
     layout,
     basicSet,
     packageModule,

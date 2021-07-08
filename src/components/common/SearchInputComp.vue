@@ -1,11 +1,12 @@
 <template>
   <section class="mp-common-comps-search-box">
     <span class="text" v-if="title">{{title}}：</span>
-    <input
+    <el-input
       @keydown.enter="onKeyWordSubmit"
       v-model.trim='inpVal'
       spellcheck="false"
       :placeholder="placeholder"
+      size="mini"
       type="text"
     />
     <button class="mp-search-box-btn" @click="onKeyWordSubmit">
@@ -58,16 +59,6 @@ export default {
       default: 0,
     },
   },
-  // computed: {
-  //   inpValue: {
-  //     get() {
-  //       return this.word;
-  //     },
-  //     set(newVal) {
-  //       this.changePropsFunc([this.typeList[0], newVal]);
-  //     },
-  //   },
-  // },
   data() {
     return {
       inpVal: '',
@@ -120,22 +111,34 @@ export default {
     line-height: 28px;
     min-width: 5em;
   }
-  > input {
-    height: 28px;
-    line-height: 28px;
+  > .el-input {
     width: 130px;
-    padding: 0 0 0 3px;
-    display: inline-block;
-    vertical-align: top;
-    border: 1px solid $--border-color-base;
-    &::placeholder {
-      font-size: 12px;
-      color: $--color-text-secondary;
+    > input {
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+      padding: 0 4px;
+      &::placeholder {
+        font-size: 12px;
+        color: $--color-text-secondary;
+      }
     }
-    box-sizing: border-box;
-    outline: none;
-    font-size: 12px;
   }
+  // > input {
+  //   height: 28px;
+  //   line-height: 28px;
+  //   width: 130px;
+  //   padding: 0 0 0 3px;
+  //   display: inline-block;
+  //   vertical-align: top;
+  //   border: 1px solid $--border-color-base;
+  //   &::placeholder {
+  //     font-size: 12px;
+  //     color: $--color-text-secondary;
+  //   }
+  //   box-sizing: border-box;
+  //   outline: none;
+  //   font-size: 12px;
+  // }
   > button {
     border: none;
     height: 28px;
@@ -189,10 +192,6 @@ export default {
     border: 1px solid $--color-primary;
     height: 28px;
     cursor: pointer;
-  }
-  > input {
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
   }
   > button.mp-search-box-btn > i {
     display: block;
