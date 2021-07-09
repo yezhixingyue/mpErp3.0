@@ -702,7 +702,13 @@ export default {
       state.MaterialAllList = list;
     },
     setLastPagePaths(state, path) { // 设置上一个页面的path路径
+      console.log(path);
+      state.lastPagePaths = state.lastPagePaths.filter(it => it.name !== path.name);
       state.lastPagePaths.push(path);
+    },
+    setLastPagePathsFilterAfterGoback(state, name) { // 回转页面信息后删除掉回转前的路由信息,
+      state.lastPagePaths = state.lastPagePaths.filter(it => it.name !== name);
+      console.log(state.lastPagePaths, name);
     },
   },
   actions: {

@@ -22,6 +22,7 @@ import EChartComp from '@/components/StatisticAnalyseComps/ChartComps/EChartComp
 import DateAndChartTypeSetupComp from '@/components/StatisticAnalyseComps/ChartComps/DateAndChartTypeSetupComp.vue';
 
 export default {
+  name: 'StatisticFormViewPage',
   components: {
     EChartComp,
     DateAndChartTypeSetupComp,

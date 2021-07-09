@@ -23,6 +23,7 @@ import DepositAddPageLeftComp from '@/components/Deposit/Main/DepositAddPageLeft
 import DepositAddPageRightComp from '@/components/Deposit/Main/DepositAddPageRightComp.vue';
 
 export default {
+  name: 'DepositSettingsPage',
   components: {
     normalBtn,
     normalBtnFull,

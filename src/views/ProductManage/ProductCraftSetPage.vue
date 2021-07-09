@@ -48,6 +48,7 @@ import UsableCraftSetDialog from '@/components/ProductManageComps/CraftSet/Usabl
 import MaterialSortDialog from '@/components/ProductManageComps/SizeMaterial/MaterialSortDialog.vue';
 
 export default {
+  name: 'ProductCraftSetPage',
   components: {
     LRWidthDragAutoChangeComp,
     ContentLeft,

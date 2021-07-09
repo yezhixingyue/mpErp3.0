@@ -19,6 +19,7 @@ import normalBtn from '@/components/common/normalBtn.vue';
 import LimitSetContentComp from '@/components/TimeLimitComps/Content/LimitSetContentComp.vue';
 
 export default {
+  name: 'timeLimitSet',
   components: {
     normalBtnFull,
     normalBtn,

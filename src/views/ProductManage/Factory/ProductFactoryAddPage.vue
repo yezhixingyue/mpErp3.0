@@ -43,6 +43,7 @@ import { mapState } from 'vuex';
 import ContionCommonComp from '@/components/common/FormulaAndConditionComps/ContionCommonComp.vue';
 
 export default {
+  name: 'ProductFactoryAddPage',
   data() {
     return {
       ProductID: '',

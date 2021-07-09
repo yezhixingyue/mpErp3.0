@@ -27,6 +27,7 @@ import { mapState } from 'vuex';
 import ContionCommonComp from '@/components/common/FormulaAndConditionComps/ContionCommonComp.vue';
 
 export default {
+  name: 'ProductFileSetPage',
   data() {
     return {
       ProductID: '',

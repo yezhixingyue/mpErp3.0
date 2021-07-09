@@ -39,6 +39,7 @@ import CommonInteractionTable from '@/components/ProductManageComps/Interaction/
 import SubFormulaAddAndSelectDialog from '@/components/common/FormulaAndConditionComps/SubFormulaAddAndSelectDialog.vue';
 
 export default {
+  name: 'ProductInteractionList',
   data() {
     return {
       ProductID: '',
@@ -220,7 +221,7 @@ export default {
     onTableItemRemove(data) {
       if (!data) return;
       const label = this.ControlTypeList.find(it => it.ID === data.ControlType);
-      const msg = label ? `交互类型：[ ${label} ]` : '';
+      const msg = label ? `交互类型：[ ${label.label} ]` : '';
       this.messageBox.warnCancelBox('确定删除该条设置吗', msg, () => {
         this.$store.dispatch('productManage/getProductControlRemove', data.ID);
       });

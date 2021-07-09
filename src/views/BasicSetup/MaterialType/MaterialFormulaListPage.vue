@@ -17,6 +17,7 @@
 import FormulaTableCrtlComp from '@/components/common/FormulaAndConditionComps/FormulaTableCrtlComp.vue';
 
 export default {
+  name: 'MaterialFormulaListPage',
   data() {
     return {
       PositionID: '',

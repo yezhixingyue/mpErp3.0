@@ -22,6 +22,7 @@ import PageContentRight from '@/components/StatisticAnalyseComps/AddEditPageComp
 import { mapState } from 'vuex';
 
 export default {
+  name: 'StatisticalFormAddEditPage',
   components: {
     PageContentLeft,
     PageContentRight,

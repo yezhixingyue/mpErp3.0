@@ -20,6 +20,7 @@ import { mapState } from 'vuex';
 import FormulaPanelComp from '@/components/common/FormulaAndConditionComps/FormulaPanelComp.vue';
 
 export default {
+  name: 'ProductFormulaSetPage',
   data() {
     return {
       ProductID: '',

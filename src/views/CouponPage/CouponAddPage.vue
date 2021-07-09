@@ -28,6 +28,7 @@ import CouponAddPageRightComp from '@/components/Coupon/Main/CouponAddPageRightC
 import { mapState, mapActions } from 'vuex';
 
 export default {
+  name: 'CouponAddPage',
   components: {
     normalBtn,
     normalBtnFull,

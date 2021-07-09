@@ -43,6 +43,7 @@ import NewProductClassifySelectComp from '@/components/common/SelectorComps/NewP
 import { mapState } from 'vuex';
 
 export default {
+  name: 'PriceManageListPage',
   components: {
     SearchInputComp,
     // ProductTableComp,
@@ -82,6 +83,7 @@ export default {
   },
   mounted() {
     this.getPriceManageList();
+    console.log(this.$store.state.cachedViews);
   },
 };
 </script>

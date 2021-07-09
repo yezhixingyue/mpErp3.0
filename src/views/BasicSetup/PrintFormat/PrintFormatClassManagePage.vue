@@ -27,6 +27,7 @@ import { mapState } from 'vuex';
 import BreadthClassSaveDialog from '@/components/PrintBreadth/BreadthClassSaveDialog.vue';
 
 export default {
+  name: 'PrintFormatClassManagePage',
   components: {
     BreadthClassSaveDialog,
   },

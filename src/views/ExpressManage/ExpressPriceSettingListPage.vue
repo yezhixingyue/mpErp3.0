@@ -6,6 +6,7 @@
 
 <script>
 export default {
+  name: 'ExpressPriceSettingListPage',
 };
 </script>
 <style lang='scss'>

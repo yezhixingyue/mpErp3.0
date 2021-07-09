@@ -45,6 +45,7 @@ import ContionCommonComp from '@/components/common/FormulaAndConditionComps/Cont
 import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
 
 export default {
+  name: 'ProductStockSpecificationAdd',
   data() {
     return {
       ProductID: '',

@@ -28,6 +28,7 @@ import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannel
 import ListContentComp from '@/components/TimeLimitComps/Content/ListContentComp.vue';
 
 export default {
+  name: 'timeLimitList',
   components: {
     OrderChannelSelector,
     ListContentComp,

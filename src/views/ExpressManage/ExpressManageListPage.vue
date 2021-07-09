@@ -55,6 +55,7 @@
 import ExpressManageListTableComp from '@/components/ExpressManageComps/ExpressManageListTableComp.vue';
 
 export default {
+  name: 'ExpressListPage',
   components: {
     ExpressManageListTableComp,
   },

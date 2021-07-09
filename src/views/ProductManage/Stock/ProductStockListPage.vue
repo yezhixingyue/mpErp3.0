@@ -36,6 +36,7 @@ import { mapState } from 'vuex';
 import StockTable from '@/components/ProductManageComps/Stock/StockTable';
 
 export default {
+  name: 'ProductStockList',
   data() {
     return {
       ProductID: '',

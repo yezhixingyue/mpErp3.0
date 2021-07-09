@@ -22,6 +22,7 @@ import FileTable from '@/components/ProductManageComps/File/FileTable.vue';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 export default {
+  name: 'ProductFileListPage',
   data() {
     return {
       ProductID: '',

@@ -15,6 +15,7 @@
 import CommonElementSetPageComp from '@/components/CommonElementSet/CommonElementSetPageComp.vue';
 
 export default {
+  name: 'ProductElementSetPage',
   components: {
     CommonElementSetPageComp,
   },

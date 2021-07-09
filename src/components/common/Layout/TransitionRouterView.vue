@@ -1,6 +1,6 @@
 <template>
   <transition name="fade-transform" mode="out-in">
-    <keep-alive :include='curTabPagesNameList'>
+    <keep-alive :include='[...curTabPagesNameList, "CraftManageList"]'>
       <router-view :key="key" v-if="showCommonView" />
     </keep-alive>
   </transition>

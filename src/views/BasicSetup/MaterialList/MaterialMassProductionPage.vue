@@ -31,6 +31,7 @@ import { mapState } from 'vuex';
 import MaterialListMassProductionDialog from '@/components/Material/MaterialList/MaterialListMassProductionDialog.vue';
 
 export default {
+  name: 'MaterialMassProductionPage',
   components: {
     MaterialListMassProductionDialog,
   },

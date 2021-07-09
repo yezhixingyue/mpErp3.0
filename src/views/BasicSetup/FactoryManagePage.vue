@@ -25,6 +25,7 @@ import FactoryManageDialog from '@/components/FactoryManage/FactoryManageDialog.
 import { mapState, mapGetters } from 'vuex';
 
 export default {
+  name: 'FactoryManagePage',
   components: {
     FactoryManageHeader,
     FactoryManageTable,

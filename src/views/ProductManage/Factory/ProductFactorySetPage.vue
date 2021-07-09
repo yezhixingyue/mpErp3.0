@@ -22,6 +22,7 @@ import FactoryTable from '@/components/ProductManageComps/Factory/FactoryTable.v
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 export default {
+  name: 'ProductFactorySetPage',
   data() {
     return {
       ProductID: '',

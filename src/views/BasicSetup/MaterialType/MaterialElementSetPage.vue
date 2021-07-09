@@ -25,6 +25,7 @@ import CommonElementSetPageComp from '@/components/CommonElementSet/CommonElemen
 import { mapState } from 'vuex';
 
 export default {
+  name: 'MaterialElementSetPage',
   components: {
     CommonElementSetPageComp,
   },

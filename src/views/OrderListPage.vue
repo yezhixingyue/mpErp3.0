@@ -45,7 +45,7 @@ export default {
   computed: {
     ...mapState('orderModule', ['orderTotalCount', 'orderTotalAmount', 'isTableLoading', 'objForOrderList', 'orderListData']),
     ...mapGetters('timeSelectModule', ['TodayDate']),
-    ...mapGetters('layout', ['curTabPagesNameList']),
+    // ...mapGetters('layout', ['curTabPagesNameList']),
     // ...mapState
   },
   methods: {

@@ -11,6 +11,7 @@ import CouponDeatilListHeader from '@/components/Coupon/Header/CouponDeatilListH
 import CouponDeatilListContentComp from '@/components/Coupon/Main/CouponDeatilListContentComp.vue';
 
 export default {
+  name: 'CouponDetailPage',
   components: {
     CouponDeatilListHeader,
     CouponDeatilListContentComp,

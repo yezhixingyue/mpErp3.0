@@ -15,6 +15,7 @@ import ClassifyContentComp from '@/components/common/ClassifyManage/ClassifyCont
 import { mapState, mapGetters } from 'vuex';
 
 export default {
+  name: 'ProductClassifyManagePage',
   components: {
     ClassifyContentComp,
   },

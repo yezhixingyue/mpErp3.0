@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  name: 'StatisticSummaryViewPage',
   methods: {
     onGoBackClick() {
       this.$router.replace('/StatisticalSummary');

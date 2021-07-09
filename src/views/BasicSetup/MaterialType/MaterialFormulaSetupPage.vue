@@ -18,6 +18,7 @@ import { mapState } from 'vuex';
 import FormulaPanelComp from '@/components/common/FormulaAndConditionComps/FormulaPanelComp.vue';
 
 export default {
+  name: 'MaterialFormulaSetupPage',
   components: {
     FormulaPanelComp,
   },

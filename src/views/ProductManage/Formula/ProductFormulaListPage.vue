@@ -21,6 +21,7 @@ import FormulaTableCrtlComp from '@/components/common/FormulaAndConditionComps/F
 import SubFormulaTableCrtlComp from '@/components/common/FormulaAndConditionComps/SubFormulaTableCrtlComp.vue';
 
 export default {
+  name: 'ProductFormulaListPage',
   data() {
     return {
       ProductID: '',

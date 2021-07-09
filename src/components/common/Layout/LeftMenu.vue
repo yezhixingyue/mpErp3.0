@@ -31,6 +31,7 @@
 
 <script>
 import { routes } from '@/router';
+import { getJudgmentWhetherIsSamePage } from '@/router/getLastRouteInfoByName';
 import { mapState } from 'vuex';
 import TipsSpanButton from '../NewComps/TipsSpanButton.vue';
 
@@ -47,13 +48,19 @@ export default {
     },
     getShowMenuList() { // 初始化获取左侧按钮列表
       if (!routes || routes.length === 0) return;
-      const list = routes.filter(it => !it.meta || !it.meta.hideMenu);
+      const list = routes.filter(it => (!it.meta || !it.meta.hideMenu) && (it.meta && it.meta.icon)).map(_it => {
+        if (!Array.isArray(_it.children)) return _it;
+        return {
+          ..._it,
+          children: _it.children.filter(child => child.meta && child.meta.icon),
+        };
+      });
       this.menuList = list;
       this.defaultOpeneds = list.map((it, i) => `${i + 1}`);
     },
     onMenuItemClick(route, index) { // 点击左侧导航栏按钮事件：1 跳转路由 2 动态改变头部按钮列表
       if (index) this.defaultActive = index;
-      let _path = route.redirect || route.path;
+      let _path = route.redirect || route.path; // 此处报错
       const targetTab = this.editableTabs.find(it => it.name === index);
       if (targetTab) { // 处理页面路径变化后的情况
         _path = targetTab.path;
@@ -105,13 +112,6 @@ export default {
         if (bool) this.onMenuItemClick(route, this.defaultActive);
       }
     },
-    getJudgmentWhetherIsSamePage(newRoute, oldRoute) { // 获取当前路径变化是否在同一个页面路由内进行 返回 boolean
-      if (!newRoute || !oldRoute) return false;
-      if (newRoute.matched.length >= 2 && oldRoute.matched.length >= 2) {
-        return newRoute.matched[0].path === oldRoute.matched[0].path && newRoute.matched[1].path === oldRoute.matched[1].path;
-      }
-      return false;
-    },
   },
   computed: {
     ...mapState('layout', ['editableTabs', 'leftMenuDefaultActive', 'isLeftCollapse', 'editableTabsValue']),
@@ -143,7 +143,8 @@ export default {
   },
   watch: {
     curRoute(newRoute, oldRoute) { // 动态改变活动菜单索引 ----- 只刷新初始化时执行一次
-      const bool = this.getJudgmentWhetherIsSamePage(newRoute, oldRoute);
+      const bool = getJudgmentWhetherIsSamePage(newRoute, oldRoute);
+      console.log(bool);
       if (bool) {
         // 相同最小页面模块内调整
         if (this.defaultActive === this.editableTabsValue) {

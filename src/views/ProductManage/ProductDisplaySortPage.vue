@@ -22,6 +22,7 @@ import { mapState } from 'vuex';
 import draggable from 'vuedraggable';
 
 export default {
+  name: 'ProductDisplaySortPage',
   data() {
     return {
       ProductID: '',

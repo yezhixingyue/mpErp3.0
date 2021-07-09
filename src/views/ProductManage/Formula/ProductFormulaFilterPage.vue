@@ -31,6 +31,7 @@ import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import ContionCommonComp from '@/components/common/FormulaAndConditionComps/ContionCommonComp.vue';
 
 export default {
+  name: 'ProductFormulaFilterPage',
   data() {
     return {
       ProductID: '',

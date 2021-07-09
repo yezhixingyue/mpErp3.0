@@ -10,6 +10,7 @@ import DepositListPageHeader from '@/components/Deposit/Header/DepositListPageHe
 import DepositListPageMain from '@/components/Deposit/Main/DepositListPageMain.vue';
 
 export default {
+  name: 'DepositListPage',
   components: {
     DepositListPageHeader,
     DepositListPageMain,

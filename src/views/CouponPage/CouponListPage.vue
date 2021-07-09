@@ -28,6 +28,7 @@ import CouponTableListComp from '../../components/Coupon/Main/CouponTableListCom
 import Dialog2GenerateCoupons from '../../components/Coupon/Main/Dialog2GenerateCoupons.vue';
 
 export default {
+  name: 'CouponListPage',
   components: {
     CouponHeader,
     CouponTableListComp,

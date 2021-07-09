@@ -10,6 +10,7 @@ import PromoteAddMain from '@/components/Promote/Main/PromoteAddMainIndex.vue';
 import PromoteAddEditDeatilFooter from '@/components/Promote/Footer/PromoteAddEditDeatilFooter.vue';
 
 export default {
+  name: 'PromoteAddPage',
   components: {
     PromoteAddEditDeatilFooter,
     PromoteAddMain,

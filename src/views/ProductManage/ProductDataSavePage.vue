@@ -62,6 +62,7 @@ import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragA
 import { normalNameReg } from '@/assets/js/utils/regexp';
 
 export default {
+  name: 'ProductDataSavePage',
   data() {
     return {
       title: '',

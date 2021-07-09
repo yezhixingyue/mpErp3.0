@@ -24,6 +24,7 @@ import Count from '@/components/common/Count.vue';
 import { mapState } from 'vuex';
 
 export default {
+  name: 'StatisticalSummaryPage',
   components: {
     Count,
     StatisticSummaryListTable,

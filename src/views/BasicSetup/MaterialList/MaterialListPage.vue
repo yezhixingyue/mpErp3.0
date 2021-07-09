@@ -36,6 +36,7 @@ import MaterialListTableComp from '@/components/Material/MaterialList/MaterialLi
 import MaterialListSaveDialog from '@/components/Material/MaterialList/MaterialListSaveDialog.vue';
 
 export default {
+  name: 'MaterialListPage',
   components: {
     CountComp,
     MaterialListTableComp,

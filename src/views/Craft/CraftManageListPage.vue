@@ -26,6 +26,7 @@ import CountComp from '@/components/common/Count.vue';
 import { mapGetters, mapState } from 'vuex';
 
 export default {
+  name: 'CraftManageList',
   components: {
     CraftSaveDialog,
     CraftListTableComp,

@@ -10,6 +10,7 @@ import ClassifyContentComp from '@/components/common/ClassifyManage/ClassifyCont
 import { mapGetters } from 'vuex';
 
 export default {
+  name: 'CraftClassifyManagePage',
   components: {
     ClassifyContentComp,
   },

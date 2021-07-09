@@ -50,6 +50,7 @@ import ComparePanel from '@/components/ProductManageComps/Interaction/RightPanel
 import InteractionPanel from '@/components/ProductManageComps/Interaction/RightPanels/InteractionPanel.vue';
 
 export default {
+  name: 'ProductInteractionSet',
   data() {
     return {
       ProductID: '',

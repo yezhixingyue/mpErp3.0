@@ -10,6 +10,7 @@ import PromoteHeader from '@/components/Promote/Header/PromoteHeaderIndex.vue';
 import PromoteMain from '@/components/Promote/Main/PromoteListMainIndex.vue';
 
 export default {
+  name: 'PromoteListPage',
   components: {
     PromoteHeader,
     PromoteMain,

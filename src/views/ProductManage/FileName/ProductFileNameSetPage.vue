@@ -54,6 +54,7 @@ import ExplainDrawer from '@/components/ProductManageComps/FileName/ExplainDrawe
 import ItemContentShow from '@/components/ProductManageComps/FileName/ItemContentShow';
 
 export default {
+  name: 'ProductFileNameSet',
   components: {
     ExplainDrawer,
     ItemContentShow,

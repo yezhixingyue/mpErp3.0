@@ -44,6 +44,7 @@ import ContentRight from '@/components/ProductManageComps/SizeMaterial/ContentRi
 import { mapState } from 'vuex';
 
 export default {
+  name: 'ProductSizeMaterialSetPage',
   components: {
     LRWidthDragAutoChangeComp,
     ContentLeft,

@@ -6,6 +6,7 @@
 
 <script>
 export default {
+  name: 'ExpressPriceAddEditPage',
 };
 </script>
 <style lang='scss'>

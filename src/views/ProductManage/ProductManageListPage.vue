@@ -43,6 +43,7 @@ import NewProductClassifySelectComp from '@/components/common/SelectorComps/NewP
 import { mapState } from 'vuex';
 
 export default {
+  name: 'ProductManageList',
   components: {
     SearchInputComp,
     ProductTableComp,

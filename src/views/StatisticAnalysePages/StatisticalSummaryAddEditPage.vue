@@ -36,6 +36,7 @@ import SummaryEditDialog from '@/components/StatisticAnalyseComps/SummaryEditCom
 import { mapState } from 'vuex';
 
 export default {
+  name: 'StatisticalSummaryAddEditPage',
   components: {
     SummaryEditDialog,
   },
