@@ -10,6 +10,7 @@
       :PositionID='PositionID'
       :showGroup='false'
       :canRemove='canRemove'
+      :curUseElementModule='curUseElementModule'
       @elementSave='onElementSave'
       @elementRemove='onElementRemove' />
       <p class="tips-box"> <i class="el-icon-warning"></i> 物料类型添加界面元素时，如果添加的元素类型为选择项，不建议使用多选选择方式，如果使用多选选择方式也将按照单选方式处理</p>
@@ -37,6 +38,11 @@ export default {
   },
   computed: {
     ...mapState('basicSet', ['MaterialTypeList']),
+    ...mapState('common', ['useElementModuleList']),
+    curUseElementModule() {
+      const t = this.$utils.getIDFromListByNames('MaterialType', this.useElementModuleList);
+      return (t || t === 0) ? t : '';
+    },
   },
   methods: {
     getPositionID() {

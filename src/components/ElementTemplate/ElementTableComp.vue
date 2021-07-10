@@ -155,11 +155,13 @@ export default {
   border-top-color: rgb(230, 230, 230);
   border-left: 1px solid rgb(230, 230, 230);
   min-height: 222px;
+  overflow-x: auto;
   .el-table__header-wrapper thead tr th .cell {
     line-height: 36px;
     font-size: 14px;
   }
   .el-table__body-wrapper {
+    // overflow-x: hidden;
     .el-table__row {
       width: 100%;
       > td {

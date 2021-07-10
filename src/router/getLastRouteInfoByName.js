@@ -5,10 +5,16 @@ const findNameByList = (list, name, lastName, getType) => {
     for (let i = 0; i < list.length; i += 1) {
       const item = list[i];
       if (item.name === name) {
+        if (getType === 'children') return item.children;
         return lastName;
       }
-      const _lastName = getType === 'root' ? lastName : item.name;
-      const t = findNameByList(item.children, name, _lastName);
+      let _lastName;
+      if (getType === 'last') _lastName = item.name;
+      if (getType === 'root') _lastName = lastName;
+
+      const _getType = getType === 'children' ? 'children' : undefined;
+
+      const t = findNameByList(item.children, name, _lastName, _getType);
       if (t) return t;
     }
   }
@@ -32,8 +38,40 @@ export const getLastRouteInfoByName = (Name, getType = 'last') => { // getType ä
   return '';
 };
 
-let modulePageNames = routeConfig.routeTree.map(it => it.children || null).filter(it => it);
-modulePageNames = modulePageNames.reduce((prev, cur) => [...prev, ...cur]).map(it => it.name);
+const findChildren = (children) => {
+  const list = [];
+  if (Array.isArray(children)) {
+    children.forEach(it => {
+      list.push(it.name);
+      const _list = findChildren(it.children);
+      list.push(..._list);
+    });
+  }
+  return list;
+};
+
+export const getChildrenRouteNamesByParentRouteName = (parentRouteName) => {
+  if (!parentRouteName) return '';
+  const { routeTree } = routeConfig;
+  for (let i = 0; i < routeTree.length; i += 1) {
+    const lv1Route = routeTree[i];
+    for (let index2 = 0; index2 < lv1Route.children.length; index2 += 1) {
+      const lv2Route = lv1Route.children[index2];
+      if (lv2Route.name === parentRouteName) {
+        return findChildren(lv2Route.children);
+      }
+      const t = findNameByList(lv2Route.children, parentRouteName, lv2Route.name, 'children');
+      if (t) return findChildren(t);
+    }
+  }
+  return '';
+};
+
+export const modulePageNames = routeConfig.routeTree
+  .map(it => it.children || null)
+  .filter(it => it)
+  .reduce((prev, cur) => [...prev, ...cur]).map(it => it.name);
+
 
 export const getJudgmentWhetherIsSamePage = (newRoute, oldRoute) => {
   if (!newRoute || !oldRoute) return false;

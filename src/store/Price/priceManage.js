@@ -3,7 +3,7 @@ import api from '@/api/index';
 import CommonClassType from '@/store/CommonClassType';
 
 const initConditon = {
-  ProduceClass: {
+  ProductClass: {
     First: '',
     Second: '',
     Third: '',
@@ -12,6 +12,7 @@ const initConditon = {
   PageSize: 24,
   KeyWords: '',
   FieldType: 4,
+  NoPrice: false,
 };
 
 export default {

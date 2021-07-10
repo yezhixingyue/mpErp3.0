@@ -5,7 +5,7 @@ import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import messageBox from '../assets/js/utils/message';
 import store from '../store';
-import getLastRouteInfoByName from './getLastRouteInfoByName';
+import { getLastRouteInfoByName } from './getLastRouteInfoByName';
 
 /*  页面进度条
 ------------------------------------------ */
@@ -77,9 +77,6 @@ function handlePermission(to, next, Permission, from) {
 
 const handleRouterEach = router => {
   router.beforeEach((to, from, next) => { // 使用全局路由导航守卫进行权限控制
-    if (to.meta.title) { // 1. 根据路由元信息中title信息设置页面标题
-      document.title = to.meta.title;
-    }
     const token = JSON.parse(sessionStorage.getItem('token')); // 2.1 获取到token信息，可能为undefined
     if (to.matched.some(record => record.meta.requiresAuth)) { // 2.2 判断要去往的页面中有无token要求，如果无则跳转否则则进入判断
       if (to.name === 'login') { // 2.3 登录页面不考虑，直接跳转
@@ -108,7 +105,10 @@ const handleRouterEach = router => {
     }
   });
 
-  router.afterEach(() => {
+  router.afterEach((to) => {
+    if (to.meta.title) { // 1. 根据路由元信息中title信息设置页面标题
+      document.title = to.meta.title;
+    }
     NProgress.done();
   });
 

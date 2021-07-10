@@ -107,8 +107,8 @@ export default {
       this.setType = setType;
     },
     onGoBackClick() {
-      this.$router.replace(`/ProductInteractionList/${this.ProductID}/${this.PartID || 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
-      // this.$goback();
+      // this.$router.replace(`/ProductInteractionList/${this.ProductID}/${this.PartID || 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
+      this.$goback();
     },
     onSubmitClick() { // 点击保存
       const condition = this.$refs.oLeftComp.getConditonResult();

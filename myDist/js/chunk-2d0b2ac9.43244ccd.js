@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([["chunk-2d0b2ac9"],{"24b3":function(e,n,t){"use strict";t.r(n);var i={name:"TimeLimitPage"},u=t("2877"),a=Object(u.a)(i,(function(){var e=this.$createElement;return(this._self._c||e)("router-view")}),[],!1,null,null,null);n.default=a.exports}}]);

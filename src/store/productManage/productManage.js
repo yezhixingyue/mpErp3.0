@@ -94,6 +94,13 @@ export default {
     StockLeftPropertyList: [], // 条件弹窗属性列表数据
     StockRightPropertyList: [], // 条件弹窗属性列表数据
     ProductStockDataList: null, // 库存列表数据
+    /**
+     * 产品元素映射
+     */
+    ProductElementTypeList: [
+      { Name: '数量', ID: 0 },
+      { Name: '款数', ID: 1 },
+    ],
   },
   getters: {
   },
@@ -326,6 +333,17 @@ export default {
         if (i > -1) list.splice(i, 1);
       }
     },
+    setProductBindElementType(state, data) { // 绑定产品元素
+      const { ProductID, PartID, List } = data;
+      const t = state.ProductManageList.find(it => it.ID === ProductID);
+      if (t) {
+        if (!PartID) t.TypeList = List;
+        else {
+          const part = t.PartList.find(_it => _it.ID === PartID);
+          if (part) part.TypeList = List;
+        }
+      }
+    },
   },
   actions: {
     async getManageProductList({ state, commit }, page = 1) { // 获取产品列表数据
@@ -520,7 +538,6 @@ export default {
     },
     async getProductStockUpdate({ commit }, [data, callback]) { // 更新库存数量
       const { id, number } = data;
-      console.log(id, number, data);
       const resp = await api.getProductStockUpdate(id, number).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
@@ -538,6 +555,16 @@ export default {
           commit('setProductStockRemove', data);
         };
         messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    async getProductBindElementType({ commit }, [data, callback]) { // 绑定产品元素
+      const resp = await api.getProductBindElementType(data).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setProductBindElementType', data);
+          if (callback) callback();
+        };
+        messageBox.successSingle('保存成功', cb, cb);
       }
     },
   },

@@ -6,6 +6,7 @@
     :isLoadingGroup='isLoadingGroup'
     :PositionID='PositionID'
     :showGroup='showGroup'
+    :curUseElementModule='curUseElementModule'
     @saveElement='handleEditSubmitSuccess'
     @removeElement='onElementRemove'
     @saveElementGroup='handleGroupSaveSuccess'
@@ -36,6 +37,7 @@ export default {
       type: Function,
       default: null,
     },
+    curUseElementModule: {},
   },
   data() {
     return {

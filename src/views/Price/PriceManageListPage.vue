@@ -6,6 +6,7 @@
         <el-button type="primary" class="mp-common-btn-styles">适用范围模板</el-button>
         <el-button type="primary" class="mp-common-btn-styles">拼版规则设置</el-button>
         <NewProductClassifySelectComp v-model="ProductClass" />
+        <el-checkbox v-model="noPriceChecked">仅显示无报价产品</el-checkbox>
       </div>
       <search-input-comp
         class="search-section"
@@ -61,6 +62,15 @@ export default {
         this.getPriceManageList();
       },
     },
+    noPriceChecked: {
+      get() {
+        return this.condition4PriceManageList.NoPrice;
+      },
+      set(val) {
+        this.$store.commit('priceManage/setCondition4PriceManageList', [['NoPrice', ''], val]);
+        this.getPriceManageList();
+      },
+    },
   },
   data() {
     return {
@@ -109,6 +119,15 @@ export default {
       > button + button {
         margin-left: 20px !important;
         margin-right: 50px;
+      }
+      .el-checkbox {
+        font-size: 12px;
+        margin-left: 10px;
+        margin-right: 20px;
+        .el-checkbox__label {
+          font-size: 12px;
+          color: #585858;
+        }
       }
     }
     > section {

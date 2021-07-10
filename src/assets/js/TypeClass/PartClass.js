@@ -21,6 +21,8 @@ export default class Part {
 
   MaterialList = []; // 物料列表
 
+  MaterialDisplayName = '';
+
   GroupList = [];
 
   SizeList = [];

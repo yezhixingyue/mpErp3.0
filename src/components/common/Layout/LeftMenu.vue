@@ -31,7 +31,7 @@
 
 <script>
 import { routes } from '@/router';
-import { getJudgmentWhetherIsSamePage } from '@/router/getLastRouteInfoByName';
+import { getJudgmentWhetherIsSamePage, modulePageNames, getChildrenRouteNamesByParentRouteName } from '@/router/getLastRouteInfoByName';
 import { mapState } from 'vuex';
 import TipsSpanButton from '../NewComps/TipsSpanButton.vue';
 
@@ -144,13 +144,19 @@ export default {
   watch: {
     curRoute(newRoute, oldRoute) { // 动态改变活动菜单索引 ----- 只刷新初始化时执行一次
       const bool = getJudgmentWhetherIsSamePage(newRoute, oldRoute);
-      console.log(bool);
       if (bool) {
         // 相同最小页面模块内调整
         if (this.defaultActive === this.editableTabsValue) {
           // 修改目标路径名称 newRoute.path   另 借用store中this.editableTabsValue值
           this.$store.commit('layout/changeCurTabPath', newRoute.path);
         }
+        if (!modulePageNames.includes(newRoute.name)) {
+          this.$store.commit('layout/setOtherTabPageNames', newRoute);
+        }
+      }
+      const names = getChildrenRouteNamesByParentRouteName(newRoute.name);
+      if (Array.isArray(names)) {
+        this.$store.commit('layout/filterOtherTabPageNames', names);
       }
       if (this.defaultActive || !this.menuList || this.menuList.length === 0) return;
       this.setInitMenuDefaultActive(newRoute, true);

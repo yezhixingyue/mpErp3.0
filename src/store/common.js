@@ -400,6 +400,12 @@ export default {
     -------------------------------*/
     MaterialAllList: [], // 全部物料列表
     lastPagePaths: [], // 上一个页面的path路径
+    useElementModuleList: [
+      { Name: 'MaterialType', ID: 0 },
+      { Name: 'Craft', ID: 1 },
+      { Name: 'Product', ID: 2 },
+      { Name: 'Part', ID: 3 },
+    ],
   },
   getters: {
     /* 配送方式相关

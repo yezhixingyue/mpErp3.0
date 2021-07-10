@@ -86,9 +86,9 @@ export default {
       this.titleType = type;
     },
     onGoBackClick() {
-      this.$router.replace(`/ProductFactorySet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
+      // this.$router.replace(`/ProductFactorySet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
       // this.$router.go(-1);
-      // this.$goback();
+      this.$goback();
     },
     findFactoryByID(FactoryID) {
       return this.factoryList.find(it => it.FactoryID === FactoryID);

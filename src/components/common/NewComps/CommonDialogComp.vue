@@ -16,7 +16,7 @@
   :before-close="onCancleClick">
   <slot></slot>
   <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="onSubmitClick" v-if="showSubmit" :disabled='disabled'>{{submitText}}</el-button>
+    <el-button type="primary" :loading='loading' @click="onSubmitClick" v-if="showSubmit" :disabled='disabled'>{{loading?'加载中':submitText}}</el-button>
     <el-button type="danger"  @click="onDangerClick" v-if="showDanger">{{dangerText}}</el-button>
     <el-button @click="onCancleClick">{{cancelText}}</el-button>
   </span>
@@ -74,6 +74,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     dialogVisible: {
@@ -94,8 +98,10 @@ export default {
     onCancleClick() {
       this.$emit('cancle');
     },
-    onSubmitClick() {
+    onSubmitClick(evt) {
       if (!this.dialogVisible) return;
+      if (evt.target.nodeName === 'BUTTON') evt.target.blur();
+      else if (evt.target.parentNode.nodeName === 'BUTTON') evt.target.parentNode.blur();
       this.$emit('submit');
     },
     onDangerClick() {

@@ -85,7 +85,8 @@ export default {
               list.push(`${_text}${text}`);
             }
             if (t.Type === 1) {
-              list.push(`${_text}${t.CustomerInputValue}${t.Unit}`);
+              const _temp = t.Unit ? `${_text}${t.CustomerInputValue}${t.Unit}` : `${_text}${t.CustomerInputValue}`;
+              list.push(_temp);
             }
           }
         });

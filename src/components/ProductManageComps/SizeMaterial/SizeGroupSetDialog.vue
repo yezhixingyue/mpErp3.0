@@ -18,7 +18,7 @@
     </p>
     <p v-else-if="canUseGroupData.length === 0 && !loading" class="is-origin">
       <i class="el-icon-warning"></i>
-      <span>当前产品或部件尚没有合适的元素组可设置（1. 元素组使用次数须为1-1，2. 不能包含开关元素， 3. 不能包含选项数量为0的选择项元素）</span>
+      <span style="font-size:13px;letter-spacing:1px">当前产品或部件尚没有合适的元素组可设置（1. 元素组使用次数须为1-1，2. 不能包含开关元素， 3. 不能包含选项数量为0的选择项元素）</span>
     </p>
     <template v-else-if="ruleForm && !loading">
       <el-radio-group v-model="ruleForm.GroupInfo.ID">
@@ -100,11 +100,11 @@ export default {
         this.messageBox.failSingle('未发生更改，可选择关闭');
         return;
       }
-      if (this.value && this.value.GroupInfo && this.value.SizeList.length > 0 && this.ruleForm.GroupInfo.ID !== this.value.GroupInfo.ID) {
+      if (this.value && this.value.GroupInfo && this.ruleForm.GroupInfo.ID !== this.value.GroupInfo.ID) {
         const cb = () => {
           const t = this.canUseGroupData.find(it => it.ID === this.ruleForm.GroupInfo.ID);
           const GroupInfo = t || this.ruleForm.GroupInfo;
-          const temp = { ...this.ruleForm, GroupInfo };
+          const temp = { ...this.ruleForm, GroupInfo, SizeList: [] };
           this.$emit('change', temp);
         };
         this.messageBox.warnCancelBox('当前已设置尺寸组', '如果更改尺寸组，则所有固定尺寸将被清空，确定更改吗？', cb);

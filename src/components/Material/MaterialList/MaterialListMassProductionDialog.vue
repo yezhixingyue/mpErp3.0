@@ -120,7 +120,7 @@ export default {
       if (customChecked && customValue) _list.push(customValue);
       return _list.map(it => {
         let Third = it;
-        if (Type === 1) Third += Unit; // 数值类型 附上单位Unit
+        if (Type === 1) Third = Unit ? `${Third}${Unit}` : Third; // 数值类型 附上单位Unit
         else if (Type === 2) { // 选项值
           const { OptionList } = OptionAttribute;
           const t = OptionList.find(_it => _it.ID === it);

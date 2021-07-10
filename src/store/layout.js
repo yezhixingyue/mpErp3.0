@@ -8,15 +8,18 @@ export default {
       path: '/',
       closable: false,
     }],
+    otherTabPageNames: [],
     leftMenuDefaultActive: '',
     showCommonView: true,
     isLeftCollapse: false, // 控制左侧导航栏是否折叠
   },
   getters: {
     curTabPagesNameList(state) {
-      if (!state.editableTabs || state.editableTabs.length === 0) return [];
+      const otherList = state.otherTabPageNames.map(it => it.meta);
+      const list = [...state.editableTabs, ...otherList];
+      if (list.length === 0) return [];
       // return state.editableTabs.filter(it => !it.isNew && it.pageName).map(it => it.pageName);
-      return state.editableTabs.filter(it => it.pageName).map(it => it.pageName);
+      return list.filter(it => it.pageName).map(it => it.pageName);
     },
   },
   mutations: {
@@ -54,6 +57,13 @@ export default {
     changeCurTabPath(state, newPath) { // 页面内路由跳转时 记录其路径记录 方便页面跳转不会返回最初页面
       const targetTab = state.editableTabs.find(it => it.name === state.editableTabsValue);
       if (targetTab && targetTab.path !== newPath) targetTab.path = newPath;
+    },
+    setOtherTabPageNames(state, tabItem) {
+      const t = state.otherTabPageNames.find(it => it.name === tabItem.name);
+      if (!t) state.otherTabPageNames.push(tabItem);
+    },
+    filterOtherTabPageNames(state, routeNames) {
+      state.otherTabPageNames = state.otherTabPageNames.filter(it => !routeNames.includes(it.name));
     },
   },
   actions: {},

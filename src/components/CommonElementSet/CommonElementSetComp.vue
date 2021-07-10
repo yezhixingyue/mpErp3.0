@@ -73,6 +73,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    curUseElementModule: {},
   },
   components: {
     ElementDialogComp,
@@ -112,6 +113,7 @@ export default {
         const { MaxValue, MinValue } = saveData.OptionAttribute.UseTimes;
         if (!MaxValue && !MinValue && (MinValue !== 0 || MaxValue !== 0)) delete _saveData.OptionAttribute.UseTimes;
       }
+      if (this.curUseElementModule || this.curUseElementModule === 0) _saveData.Module = this.curUseElementModule;
       const resp = await this.api.getElementSave(_saveData).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const temp = {
@@ -148,11 +150,13 @@ export default {
     async onElementGroupSaveSubmit(saveData) {
       if (!saveData) return;
       const saveType = saveData.ID ? '编辑' : '添加';
-      const resp = await this.api.getElementGroupSave(saveData).catch(() => {});
+      const _saveData = saveData;
+      if (this.curUseElementModule || this.curUseElementModule === 0) _saveData.Module = this.curUseElementModule;
+      const resp = await this.api.getElementGroupSave(_saveData).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const temp = {
           saveType,
-          editData: saveData,
+          editData: _saveData,
           ID: resp.data.Data,
         };
         const callback = () => { this.handleGroupSaveSuccess(temp); };
@@ -196,7 +200,9 @@ export default {
       }
     },
     async fetchElementGroupCopy(data) {
-      const resp = await this.api.getElementGroupCopy(data).catch(() => {});
+      const _data = data;
+      if (this.curUseElementModule || this.curUseElementModule === 0) _data.Module = this.curUseElementModule;
+      const resp = await this.api.getElementGroupCopy(_data).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         // 拷贝成功 重新获取数据
         const cb = () => {

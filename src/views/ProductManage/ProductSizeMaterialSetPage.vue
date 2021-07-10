@@ -179,7 +179,7 @@ export default {
       if (resp && resp.data && resp.data.Status === 1000) {
         const cb = () => {
           this.SizeGroup = JSON.parse(JSON.stringify(temp));
-          this.SizeGroup.SizeList = [];
+          // this.SizeGroup.SizeList = [];
           this.$refs.oRight.SizeGroupVisible = false;
         };
         this.messageBox.successSingle('设置尺寸组成功', cb, cb);

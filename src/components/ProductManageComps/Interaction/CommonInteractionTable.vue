@@ -130,6 +130,9 @@ export default {
         const Mode = this.$utils.getNameFromListByIDs(DisplayMode, this.RiskWarningTypeList);
         return [`${RiskWarningRange} ${Mode}：${FailTips}`];
       }
+      if (control.Name === 'risk') {
+        return ['未获取到风险提示内容'];
+      }
       if ((control.Name === 'interaction' || control.Name === 'subInteraction') && Array.isArray(List)) { // 交互
         if (List.length === 0) return '空';
         const _list = List.map(_it => {

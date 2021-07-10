@@ -86,9 +86,9 @@ export default {
       if (t) t.IsRequired = !t.IsRequired;
     },
     onGoBackClick() {
-      this.$router.replace(`/ProductFileList/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
+      // this.$router.replace(`/ProductFileList/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
       // this.$router.go(-1);
-      // this.$goback();
+      this.$goback();
     },
     onSubmitClick() { // 点击保存
       const condition = this.$refs.oLeftCondition.getConditonResult();

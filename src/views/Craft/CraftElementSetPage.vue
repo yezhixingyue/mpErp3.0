@@ -7,6 +7,7 @@
     <CommonElementSetPageComp
      v-if="PositionID"
      :PositionID='PositionID'
+     :curUseElementModule='curUseElementModule'
      @elementSave='onElementSave'
      @elementRemove='onElementRemove'
      @elementGroupSave='onElementGroupSave'
@@ -35,6 +36,11 @@ export default {
   },
   computed: {
     ...mapState('basicSet', ['craftFetchData']),
+    ...mapState('common', ['useElementModuleList']),
+    curUseElementModule() {
+      const t = this.$utils.getIDFromListByNames('Craft', this.useElementModuleList);
+      return (t || t === 0) ? t : '';
+    },
     fetchData: {
       get() {
         return this.craftFetchData;

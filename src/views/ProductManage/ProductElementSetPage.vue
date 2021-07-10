@@ -4,7 +4,7 @@
       <span>当前{{titleType}}：</span>
       <span>{{ProductName}}</span>
     </header>
-    <CommonElementSetPageComp v-if="PositionID" :PositionID='PositionID' />
+    <CommonElementSetPageComp :curUseElementModule='curUseElementModule' v-if="PositionID" :PositionID='PositionID' />
     <footer>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
@@ -13,6 +13,7 @@
 
 <script>
 import CommonElementSetPageComp from '@/components/CommonElementSet/CommonElementSetPageComp.vue';
+import { mapState } from 'vuex';
 
 export default {
   name: 'ProductElementSetPage',
@@ -25,6 +26,15 @@ export default {
       ProductName: '',
       titleType: '',
     };
+  },
+  computed: {
+    ...mapState('common', ['useElementModuleList']),
+    curUseElementModule() {
+      const type = this.titleType === '部件' ? 'Part' : 'Product';
+      const t = this.$utils.getIDFromListByNames(type, this.useElementModuleList);
+      console.log(type, t, this.useElementModuleList);
+      return (t || t === 0) ? t : '';
+    },
   },
   methods: {
     getPositionID() {

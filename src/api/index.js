@@ -361,7 +361,7 @@ const api = {
     return instance.put(`/Api/Product/ChangeCustomOrderStatus?productID=${productID}`);
   },
   getMaterialDisplayNameChange(id, name, isProduct) { // PUT /Api/Product/SetMaterialDisplayName  设置物料显示名称( 产品 | 部件 )
-    return instance.put(`/Api/Product/SetMaterialDisplayName?id=${id}&name=${name}&isProduct=${isProduct}`);
+    return instance.post('/Api/Product/SetMaterialDisplayName', { id, name, isProduct });
   },
   getProductModuleData(data) { // 根据不同ID序号获取产品上不同数据类型 POST /Api/Product/DataModules
     return instance.post('/Api/Product/DataModules', data);
@@ -449,6 +449,9 @@ const api = {
   getProductStockRemove(id) { // DELETE /Api/ProductStock/Remove   删除库存信息
     return instance.delete(`/Api/ProductStock/Remove?id=${id}`);
   },
+  getProductBindElementType(data) { // POST /Api/Product/BindElementType 绑定产品元素类型
+    return instance.post('/Api/Product/BindElementType', data);
+  },
   /* 价格管理api
   ----------------------------------------------------------------------------------- */
   // getManageProductLists(data) { //  POST /Api/Product/List  获取产品列表数据
@@ -468,7 +471,7 @@ const api = {
   getElementSave(data) { // POST /Api/Element/Save  保存界面元素
     return instance.post('/Api/Element/Save', data);
   },
-  getElementList(data = null) { // GET /Api/Element/List 获取元素列表
+  getElementList(data = null, closeLoading = false) { // GET /Api/Element/List 获取元素列表
     let hash = '';
     if (data) {
       const { groupID, positionID } = data;
@@ -479,7 +482,7 @@ const api = {
       }
       hash = hash ? `?${hash}` : '';
     }
-    return instance.get(`/Api/Element/List${hash}`);
+    return instance.get(`/Api/Element/List${hash}`, { closeLoading });
   },
   getElementRemove(id) { // DELETE /Api/Element/Remove 元素删除
     return instance.delete(`/Api/Element/Remove?id=${id}`);

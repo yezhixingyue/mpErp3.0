@@ -208,7 +208,7 @@ export default {
       if (!this.productData) return;
       const { SplitChars, PartSplitChars, GroupSplitChars } = this.productData;
       if (!GroupSplitChars || !SplitChars || !PartSplitChars) {
-        this.messageBox.failSingleError('保存失败', '分隔符必填，请输入及补充分隔符');
+        this.messageBox.failSingleError('保存失败', '分隔符与开始结束符号必填，请输入及补充分隔符');
         return;
       }
       const resp = await this.api.getProductSetFalseWords(this.productData).catch(() => {});

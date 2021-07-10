@@ -133,7 +133,7 @@ export default {
       display: flex;
       padding-left: 50px;
       height: calc(100% - 100px);
-      width: 960px;
+      width: 98%;
       overflow-y: auto;
       flex-direction: column;
       > ul {

@@ -105,8 +105,8 @@ export default {
       this.$store.dispatch('productManage/getProductStockSave', [temp, this.onGoBackClick]);
     },
     onGoBackClick() {
-      this.$router.replace(`/ProductStockList/${this.ProductID}/null/${this.ProductName}/${this.titleType}/${Date.now()}`);
-      // this.$goback();
+      // this.$router.replace(`/ProductStockList/${this.ProductID}/null/${this.ProductName}/${this.titleType}/${Date.now()}`);
+      this.$goback();
     },
     onElementSelect(e) {
       this.rightData.Property = e;
