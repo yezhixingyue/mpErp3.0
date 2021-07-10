@@ -3,7 +3,7 @@
     <header>
       <!-- 顶部按钮及筛选区域 -->
       <div class="left">
-        <el-button type="primary" class="mp-common-btn-styles">适用范围模板</el-button>
+        <el-button type="primary" class="mp-common-btn-styles" @click="jumpAreaTempPage">适用范围模板</el-button>
         <el-button type="primary" class="mp-common-btn-styles">拼版规则设置</el-button>
         <NewProductClassifySelectComp v-model="ProductClass" />
         <el-checkbox v-model="noPriceChecked">仅显示无报价产品</el-checkbox>
@@ -22,7 +22,7 @@
         />
     </header>
     <main>
-      <!-- <ProductTableComp :listData='PriceManageList' /> -->
+      <PriceTableComp :listData='PriceManageList' />
     </main>
     <footer>
       <Count
@@ -38,7 +38,7 @@
 
 <script>
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
-// import ProductTableComp from '@/components/ProductManageComps/ListPageComps/ProductTableComp.vue';
+import PriceTableComp from '@/components/PriceComps/ListTable/PriceTableComp.vue';
 import Count from '@/components/common/Count.vue';
 import NewProductClassifySelectComp from '@/components/common/SelectorComps/NewProductClassifySelectComp.vue';
 import { mapState } from 'vuex';
@@ -47,7 +47,7 @@ export default {
   name: 'PriceManageListPage',
   components: {
     SearchInputComp,
-    // ProductTableComp,
+    PriceTableComp,
     Count,
     NewProductClassifySelectComp,
   },
@@ -90,10 +90,12 @@ export default {
     handlePageChange(page) {
       this.getPriceManageList(page);
     },
+    jumpAreaTempPage() {
+      this.$router.push('/AreaTemplate');
+    },
   },
   mounted() {
     this.getPriceManageList();
-    console.log(this.$store.state.cachedViews);
   },
 };
 </script>

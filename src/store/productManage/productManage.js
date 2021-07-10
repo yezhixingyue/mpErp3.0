@@ -376,7 +376,7 @@ export default {
         const isEdit = !!data.ID;
         const msg = isEdit ? '编辑成功' : '添加成功';
         const callback = () => {
-          commit('setProductSave', [isEdit, data]);
+          commit('setProductSave', [isEdit, { ...data, ID: resp.data.Data }]);
           if (cb) cb();
         };
         messageBox.successSingle(msg, callback, callback);

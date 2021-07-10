@@ -225,12 +225,13 @@ export default {
         overflow: hidden;
         height: 36px;
         line-height: 36px;
+        padding-left: 10px;
         > span {
           white-space: nowrap;
           overflow: hidden;
           color: #585858;
           font-size: 14px;
-          text-align: center;
+          // text-align: center;
           &.name {
             width: 140px;
             padding-right: 5px;
@@ -242,7 +243,7 @@ export default {
         }
       }
       &.classify-box {
-        width: 200px;
+        width: 190px;
         height: 26px;
         > span {
           display: inline-block;
@@ -250,7 +251,7 @@ export default {
           font-size: 12px;
           line-height: 26px;
           color: #585858;
-          text-align: center;
+          // text-align: center;
           width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -381,12 +382,14 @@ export default {
         line-height: 30px;
         &:first-of-type {
           color: #585858;
-          width: 140px;
+          width: 120px;
           white-space: nowrap;
           overflow: hidden;
-          text-align: center;
+          // text-align: center;
           text-overflow: ellipsis;
           margin-right: 48px;
+          padding-left: 25px;
+          transition: color 0.1s ease-in-out;
         }
         &:nth-of-type(2) {
           > span {
@@ -399,6 +402,10 @@ export default {
             margin-right: 25px;
           }
         }
+      }
+      &:hover > div:first-of-type {
+        color: #000;
+        // font-weight: 700;
       }
     }
     height: 0;
