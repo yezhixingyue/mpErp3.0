@@ -452,11 +452,14 @@ const api = {
   getProductBindElementType(data) { // POST /Api/Product/BindElementType 绑定产品元素类型
     return instance.post('/Api/Product/BindElementType', data);
   },
-  /* 价格管理api
+  /* 产品价格管理api
   ----------------------------------------------------------------------------------- */
-  // getManageProductLists(data) { //  POST /Api/Product/List  获取产品列表数据
-  //   return instance.post('/Api/Product/List', data);
-  // },
+  getMakeupRuleList() { // GET /Api/MakeupRule/List    获取拼版规则列表
+    return instance.get('/Api/MakeupRule/List');
+  },
+  getMakeupRuleSave(data) { //  POST /Api/MakeupRule/Save  拼版规则保存
+    return instance.post('/Api/MakeupRule/Save', data);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

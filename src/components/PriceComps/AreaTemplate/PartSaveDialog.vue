@@ -50,8 +50,7 @@ export default {
     };
   },
   methods: {
-    async onSubmit() {
-      console.log('submit');
+    onSubmit() { // 提交
     },
     onCancle() { // 取消  关闭弹窗
       this.$emit('update:visible', false);

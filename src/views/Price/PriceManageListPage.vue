@@ -4,7 +4,7 @@
       <!-- 顶部按钮及筛选区域 -->
       <div class="left">
         <el-button type="primary" class="mp-common-btn-styles" @click="jumpAreaTempPage">适用范围模板</el-button>
-        <el-button type="primary" class="mp-common-btn-styles">拼版规则设置</el-button>
+        <el-button type="primary" class="mp-common-btn-styles" @click="jumpMakeupRulePage">拼版规则设置</el-button>
         <NewProductClassifySelectComp v-model="ProductClass" />
         <el-checkbox v-model="noPriceChecked">仅显示无报价产品</el-checkbox>
       </div>
@@ -93,6 +93,9 @@ export default {
     jumpAreaTempPage() {
       this.$router.push('/AreaTemplate');
     },
+    jumpMakeupRulePage() {
+      this.$router.push('/MakeupRule');
+    },
   },
   mounted() {
     this.getPriceManageList();
@@ -106,8 +109,11 @@ export default {
   box-sizing: border-box;
   padding-left: 8px;
   background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
   > header {
-    height: 60px;
+    // height: 60px;
+    flex: none;
     padding-top: 13px;
     box-sizing: border-box;
     padding-left: 20px;
@@ -115,9 +121,11 @@ export default {
     align-items: flex-start;
     justify-content: space-between;
     background-color: #fff;
+    flex-wrap: wrap;
     > .left {
       display: flex;
       align-items: center;
+      margin-bottom: 15px;
       > button + button {
         margin-left: 20px !important;
         margin-right: 50px;
@@ -135,13 +143,18 @@ export default {
     > section {
       margin-right: 20px;
       white-space: nowrap;
+      margin-bottom: 15px;
     }
   }
   > main {
-    height: calc(100% - 60px - 60px);
+    // height: calc(100% - 60px - 60px);
+    flex: 1;
+    overflow: hidden;
+    padding-bottom: 10px;
   }
   > footer {
     height: 50px;
+    flex: none;
     box-sizing: border-box;
     // border-top: 1px solid #eee;
     padding-top: 2px;
