@@ -83,10 +83,13 @@ export default {
     },
     initEditData() { // 数据初始化方法
       this.title = this.EditData ? '编辑拼版规则' : '添加拼版规则';
+      const ID = this.EditData ? this.EditData.ID : '';
+      const RowNumber = this.EditData ? this.EditData.RowNumber : '';
+      const ColumnNumber = this.EditData ? this.EditData.ColumnNumber : '';
       this.ruleForm = {
-        ID: '',
-        RowNumber: '',
-        ColumnNumber: '',
+        ID,
+        RowNumber,
+        ColumnNumber,
       };
     },
   },

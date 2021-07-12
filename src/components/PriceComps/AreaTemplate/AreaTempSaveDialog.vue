@@ -1,7 +1,7 @@
 <template>
   <CommonDialogComp
     width="800px"
-    top='13vh'
+    top='8vh'
     :title="title"
     :visible.sync="visible"
     @submit="onSubmit"
@@ -15,14 +15,15 @@
       <el-input size="small" v-model.trim="ruleForm.Name" maxlength="10" show-word-limit></el-input>
     </div>
     <div class="content">
-      <AreaDialogTreeSelectComp v-model="ruleForm.RangeList" />
+      <NewAreaTreeSpreadComp v-model="ruleForm.Range" :list='allAreaTreeList' />
     </div>
   </CommonDialogComp>
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
 import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
-import AreaDialogTreeSelectComp from '@/components/common/SelectorComps/AreaDialogTreeSelectComp.vue';
+import NewAreaTreeSpreadComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp';
 
 export default {
   props: {
@@ -37,7 +38,11 @@ export default {
   },
   components: {
     CommonDialogComp,
-    AreaDialogTreeSelectComp,
+    NewAreaTreeSpreadComp,
+  },
+  computed: {
+    ...mapGetters('common', ['allAreaTreeList']),
+    ...mapState('common', ['areaList']),
   },
   data() {
     return {
@@ -45,7 +50,10 @@ export default {
       ruleForm: {
         ID: '',
         Name: '',
-        RangeList: [], // { "ItemID": 0, "Type": 0, "IncludeIncreased": true }
+        Range: {
+          IsIncludeIncreased: false,
+          AreaList: [],
+        },
       },
     };
   },
@@ -64,6 +72,9 @@ export default {
       this.title = this.EditData ? '编辑模板' : '新建模板';
     },
   },
+  mounted() {
+    this.$store.dispatch('common/getAreaList');
+  },
 };
 </script>
 <style lang='scss'>
@@ -71,6 +82,8 @@ export default {
 
   .el-dialog__body {
     padding-left: 50px;
+    height: 560px;
+    overflow-y: auto;
     > div.header {
       > span.label {
         font-size: 14px;

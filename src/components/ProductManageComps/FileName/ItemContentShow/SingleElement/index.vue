@@ -72,8 +72,9 @@ export default {
   > header {
     font-size: 14px;
     color: #444;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     margin-top: 14px;
+    line-height: 20px;
     max-width: 190px;
     overflow: hidden;
     white-space: nowrap;

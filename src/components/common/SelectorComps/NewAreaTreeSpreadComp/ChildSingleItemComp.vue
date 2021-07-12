@@ -1,0 +1,115 @@
+<template>
+  <section class="mp-erp-common-comps-new-tree-comp-child-single-item-comp-wrap">
+    <header>
+      <el-checkbox :class="{isIncreased:itemData.isIncreased}"
+       :style='`width:${leftWidth}`' :indeterminate="isIndeterminate" v-model="checkAll">{{itemData.ClassName}}</el-checkbox>
+    </header>
+    <main>
+      <el-checkbox-group v-model="checkList">
+        <el-checkbox :class="{isIncreased:it.isIncreased}"
+         :style='`width:${rightItemWidth}`' :label="it.ID" v-for="it in itemData.children" :key="it.ClassName">{{it.ClassName}}</el-checkbox>
+      </el-checkbox-group>
+    </main>
+  </section>
+</template>
+
+<script>
+import { getAllSubItemList, getSelectedItemsList } from './utils';
+
+export default {
+  props: {
+    itemData: {
+      type: Object,
+      default: () => ({}),
+    },
+    leftWidth: {
+      type: String,
+      default: '6em',
+    },
+    value: {
+      type: Object,
+      default: null,
+    },
+    rightItemWidth: {
+      type: String,
+      default: '8em',
+    },
+    title: {
+      type: String,
+      default: '地区',
+    },
+  },
+  computed: {
+    checkAll: {
+      get() {
+        if (this.itemData.isIncreased) {
+          console.log(this.itemData, this.value);
+          return this.selectedMinimumItemIDSList.includes(this.itemData.ID);
+        }
+        if (this.selectedMinimumItemListCount > 0 && this.selectedMinimumItemListCount === this.allMinimumItemList.length) return true;
+        return false;
+      },
+      set(bool) {
+        console.log('checkAll bool', bool);
+      },
+    },
+    isIndeterminate() {
+      return false;
+    },
+    selectedMinimumItemList() {
+      return getSelectedItemsList(this.value, this.title);
+    },
+    selectedMinimumItemIDSList() {
+      return this.selectedMinimumItemList.map(it => it.ID);
+    },
+    selectedMinimumItemListCount() {
+      return this.selectedMinimumItemList.length;
+    },
+    allMinimumItemList() {
+      return getAllSubItemList([this.itemData]);
+    },
+    checkList: {
+      get() {
+        return this.selectedMinimumItemIDSList;
+      },
+      set(list) {
+        console.log('checkList', list);
+      },
+    },
+  },
+};
+</script>
+<style lang='scss'>
+.mp-erp-common-comps-new-tree-comp-child-single-item-comp-wrap {
+  display: flex;
+  padding-top: 12px;
+  .el-checkbox {
+    margin-bottom: 12px;
+    .el-checkbox__label {
+      font-size: 12px;
+      color: #585858;
+      max-width: calc(100% - 24px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+  .el-checkbox-group {
+    .el-checkbox {
+      margin-right: 8px;
+    }
+  }
+  > header {
+    padding-right: 4px;
+    flex: none;
+    .el-checkbox__label {
+      font-weight: 700;
+    }
+  }
+  > main {
+    padding-top: 1px;
+  }
+}
+</style>

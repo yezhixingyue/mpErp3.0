@@ -460,6 +460,9 @@ const api = {
   getMakeupRuleSave(data) { //  POST /Api/MakeupRule/Save  拼版规则保存
     return instance.post('/Api/MakeupRule/Save', data);
   },
+  getMakeupRuleRemove(id) { // DELETE /Api/MakeupRule/Remove    拼版规则删除
+    return instance.delete('/Api/MakeupRule/Remove', { params: { id } });
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表
