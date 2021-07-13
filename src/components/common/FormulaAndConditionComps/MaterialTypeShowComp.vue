@@ -68,6 +68,11 @@ export default {
   > li {
     display: flex;
     line-height: 30px;
+    flex: none;
+    flex-wrap: wrap;
+    > span {
+      white-space: nowrap;
+    }
     > label {
       color: #585858;
       font-size: 14px;

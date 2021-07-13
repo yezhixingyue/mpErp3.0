@@ -5,7 +5,7 @@
       <span v-if="!data.isIncreased" @click="spread = !spread" :class="{spread:spread}">{{ spread ? '收起' : '展开' }} <i class="el-icon-caret-bottom"></i> </span>
     </header>
     <main v-show="spread" v-if="data.children">
-      <ChildSingleItemComp :value='getItemValue(it)' :title='title'
+      <ChildSingleItemComp :value='getItemValue(it)' :title='title' @change="onChildItemChange"
        :leftWidt='leftWidth' :rightItemWidth='rightItemWidth' v-for="it in data.children" :key="it.ID" :itemData='it' />
     </main>
   </section>
@@ -13,7 +13,7 @@
 
 <script>
 import ChildSingleItemComp from './ChildSingleItemComp';
-import { getAllSubItemList, getSelectedItemsList } from './utils';
+import { getAllSubItemList, getSelectedItemsList, getCheckAllListByCurDataList, getFormalData4SubmitAfterChange } from './utils';
 
 export default {
   props: {
@@ -52,11 +52,20 @@ export default {
         return false;
       },
       set(bool) {
-        console.log(bool);
+        if ((this.data.isIncreased)) {
+          this.$emit('change', this.data);
+        } else if (!bool && this.value) { // 清空当前项目
+          const temp = { ...this.value, IsIncludeIncreased: false, List: [] };
+          this.$emit('change', temp);
+        } else if (bool) { // 全选当前项目
+          const temp = getCheckAllListByCurDataList([this.data])[0];
+          this.$emit('change', temp);
+        }
       },
     },
     isIndeterminate() {
-      return false;
+      if (this.selectedMinimumItemListCount === 0 || this.selectedMinimumItemListCount === this.allMinimumItemList.length) return false;
+      return true;
     },
     selectedMinimumItemList() {
       return getSelectedItemsList(this.value, this.title);
@@ -86,8 +95,9 @@ export default {
       const t = this.value.List.find(it => it.ID === item.ID);
       return t || null;
     },
-    onItemChange(e) {
-      console.log('onItemChange', e);
+    onChildItemChange(item) {
+      const temp = getFormalData4SubmitAfterChange(item, this.value, this.data);
+      this.$emit('change', temp);
     },
   },
 };

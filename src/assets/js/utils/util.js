@@ -9,7 +9,7 @@
  */
 import handleLoadingHOF from './handleLoading';
 
-import { normalNameReg } from './regexp';
+import { normalNameReg, pointStartNumberReg } from './regexp';
 
 export function getStatusString(id, OrderStatusList) {
   const num = parseInt(id, 10);
@@ -178,6 +178,7 @@ export const getRandomRangeId = (num) => {
  */
 export const getValueIsOrNotNumber = (val, isInteger) => {
   if (!val && val !== 0) return false;
+  if (pointStartNumberReg.test(val)) return false;
   const _val = typeof val === 'number' ? val : +val;
   let _bool = !Number.isNaN(_val);
   if (_bool && isInteger) _bool = Number.isInteger(_val);

@@ -79,7 +79,7 @@ export default {
       },
       set(val) {
         const _val = val.filter(it => it || it === 0);
-        const _list = this.isMultiple ? _val.map(Value => ({ Value })) : [{ Value: _val }];
+        const _list = this.isMultiple ? _val.map(Value => ({ Value: Value.First ? Value.First : Value })) : [{ Value: _val }];
         this.$emit('update:valueList', _list);
       },
     },
@@ -92,7 +92,7 @@ export default {
     localMaterialSelectedList() { // 已选择物料显示文字
       if (this.ValueType !== 6) {
         const list = this.checkList.map(it => {
-          const t = this.localOptionList.find(_it => _it.First === it.First);
+          const t = this.localOptionList.find(_it => _it.First === (it.First ? it.First : it));
           return t && t.Second ? t.Second : '';
         }).filter(it => it);
         return list.join('、');

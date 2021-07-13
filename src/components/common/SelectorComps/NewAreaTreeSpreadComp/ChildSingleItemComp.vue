@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { getAllSubItemList, getSelectedItemsList } from './utils';
+import { getAllSubItemList, getSelectedItemsList, getCheckAllListByCurDataList } from './utils';
 
 export default {
   props: {
@@ -43,18 +43,26 @@ export default {
     checkAll: {
       get() {
         if (this.itemData.isIncreased) {
-          console.log(this.itemData, this.value);
           return this.selectedMinimumItemIDSList.includes(this.itemData.ID);
         }
         if (this.selectedMinimumItemListCount > 0 && this.selectedMinimumItemListCount === this.allMinimumItemList.length) return true;
         return false;
       },
       set(bool) {
-        console.log('checkAll bool', bool);
+        if ((this.itemData.isIncreased)) {
+          this.$emit('change', this.itemData);
+        } else if (!bool && this.value) { // 清空当前项目
+          const temp = { ...this.value, IsIncludeIncreased: false, List: [] };
+          this.$emit('change', temp);
+        } else if (bool) { // 全选当前项目
+          const temp = getCheckAllListByCurDataList([this.itemData])[0];
+          this.$emit('change', temp);
+        }
       },
     },
     isIndeterminate() {
-      return false;
+      if (this.selectedMinimumItemListCount === 0 || this.selectedMinimumItemListCount === this.allMinimumItemList.length) return false;
+      return true;
     },
     selectedMinimumItemList() {
       return getSelectedItemsList(this.value, this.title);
@@ -73,7 +81,12 @@ export default {
         return this.selectedMinimumItemIDSList;
       },
       set(list) {
-        console.log('checkList', list);
+        console.log('checkList', list, this.itemData);
+        const temp = { ...this.itemData };
+        temp.children = temp.children.filter(it => list.includes(it.ID));
+        const tempData = getCheckAllListByCurDataList([temp])[0];
+        console.log(tempData);
+        this.$emit('change', tempData);
       },
     },
   },

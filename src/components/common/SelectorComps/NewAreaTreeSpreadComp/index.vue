@@ -20,7 +20,7 @@
 
 <script>
 import SingleItemComp from './SingleItemComp.vue';
-import { getAllSubItemList, getSelectedItemsList, createOneNewIncreasedItem } from './utils';
+import { getAllSubItemList, getSelectedItemsList, createOneNewIncreasedItem, getCheckAllListByCurDataList, getFormalData4SubmitAfterChange } from './utils';
 
 export default {
   model: {
@@ -75,7 +75,7 @@ export default {
         return this.selectedMinimumItemListLengt === this.allMinimumItemListLength && this.selectedMinimumItemListLengt > 0;
       },
       set(bool) {
-        const temp = bool ? this.getCheckAllList(this.list) : { IsIncludeIncreased: false, AreaList: [] };
+        const temp = bool ? this.getCheckAllList(this.showList) : { IsIncludeIncreased: false, List: [] };
         this.$emit('change', temp);
       },
     },
@@ -103,28 +103,16 @@ export default {
       if (item.isIncreased) {
         return this.value.IsIncludeIncreased ? item : null;
       }
-      if (this.value.AreaList.length === 0) return null;
-      const t = this.value.AreaList.find(it => it.ID === item.ID);
+      if (this.value.List.length === 0) return null;
+      const t = this.value.List.find(it => it.ID === item.ID);
       return t || null;
     },
-    onItemChange(e) {
-      console.log('onItemChange', e);
+    onItemChange(item) {
+      const temp = getFormalData4SubmitAfterChange(item, this.value);
+      this.$emit('change', temp);
     },
     getCheckAllList(list) {
-      const getInfo = (_list) => {
-        const _tempList = _list.map(it => {
-          const { ID, ClassName, children } = it;
-          const Name = ClassName;
-          const _temp = { ID, Name, IsIncludeIncreased: true };
-          if (Array.isArray(children)) {
-            _temp.List = getInfo(children);
-          }
-          return _temp;
-        });
-        return _tempList;
-      };
-      const AreaList = getInfo(list);
-      return { IsIncludeIncreased: true, AreaList };
+      return getCheckAllListByCurDataList(list, true);
     },
   },
 };

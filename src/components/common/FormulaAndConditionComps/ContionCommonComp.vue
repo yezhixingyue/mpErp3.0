@@ -194,7 +194,8 @@ export default {
           this.alertError('请设置优先级');
           return false;
         }
-        if (!this.$utils.getValueIsOrNotNumber(Priority, true) || Priority < 0) {
+        console.log(Priority, this.$utils.getValueIsOrNotNumber(Priority), (!this.$utils.getValueIsOrNotNumber(Priority, true)) || Priority < 0);
+        if ((!this.$utils.getValueIsOrNotNumber(Priority, true)) || Priority < 0) {
           this.alertError('优先级必须为大于等于0的整数类型');
           return false;
         }
@@ -220,6 +221,7 @@ export default {
         const { ValueType, AvailableValueList, ValueRange } = Property;
         if (ValueType === 0 && !ValueList[0].Property) { // 为0 数值校验
           const val = ValueList[0].Value;
+          console.log(val);
           if (!this.$utils.getValueIsOrNotNumber(val)) {
             this.alertError(`第${i + 1}行值应为数字类型`);
             return false;

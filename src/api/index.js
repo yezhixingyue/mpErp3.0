@@ -463,6 +463,15 @@ const api = {
   getMakeupRuleRemove(id) { // DELETE /Api/MakeupRule/Remove    拼版规则删除
     return instance.delete('/Api/MakeupRule/Remove', { params: { id } });
   },
+  getApplyRangeTemplateList() { // GET /Api/ApplyRangeTemplate/List 获取使用范围模板列表
+    return instance.get('/Api/ApplyRangeTemplate/List');
+  },
+  getApplyRangeTemplateSave(data) { // POST /Api/ApplyRangeTemplate/Save 使用范围模板保存
+    return instance.post('/Api/ApplyRangeTemplate/Save', data);
+  },
+  getApplyRangeTemplateRemove(id) { // DELETE /Api/ApplyRangeTemplate/Remove  使用范围模板删除
+    return instance.delete('/Api/ApplyRangeTemplate/Remove', { params: { id } });
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

@@ -16,8 +16,11 @@ export const NotChineseWideCharReg = /[^\u4e00-\u9fa5\x00-\xff]/gm; // 非中文
 
 export const MobileReg = /^1[3456789]\d{9}$/; // 手机验证正则
 
+export const pointStartNumberReg = /^\.\d+$/;
+
 export default {
   MobileReg,
   normalNameReg,
   NotChineseWideCharReg,
+  pointStartNumberReg,
 };
