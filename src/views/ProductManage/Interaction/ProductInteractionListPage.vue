@@ -118,8 +118,12 @@ export default {
       return this.getTargetDataList('subCompare');
     },
     dialogTitle() {
-      if (this.setType4SubInteractionAndSubCompare === 'subCompare') return '添加子对比';
-      if (this.setType4SubInteractionAndSubCompare === 'subInteraction') return '添加子交互';
+      if (this.setType4SubInteractionAndSubCompare === 'subCompare') {
+        return this.initDialogDataStr ? '编辑子对比' : '添加子对比';
+      }
+      if (this.setType4SubInteractionAndSubCompare === 'subInteraction') {
+        return this.initDialogDataStr ? '编辑子交互' : '添加子交互';
+      }
       return '';
     },
   },
@@ -216,6 +220,7 @@ export default {
     onSelectCompleted(e) { // 选择组件完成
       if (!e) return;
       this.$store.commit('productManage/setSubTargetData', e);
+      this.visible = false;
       this.handleJumpToNewPage(this.setType4SubInteractionAndSubCompare, this.itemData4SubInteractionAndSubCompare);
     },
     onTableItemRemove(data) {

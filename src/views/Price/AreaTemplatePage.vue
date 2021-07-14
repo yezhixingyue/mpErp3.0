@@ -10,7 +10,7 @@
     </header>
     <main class="mp-scroll-wrap">
       <AreaTempSaveDialog :visible.sync='visible' :EditData='curEditData' @submit="handleSubmit" />
-      <ul>
+      <ul v-if="!allDataLoading">
         <li v-for="(it,i) in dataList" :key='it.ID'>
           <div class="content">{{it.Name}}</div>
           <div class="area">
@@ -50,6 +50,7 @@ export default {
       visible: false,
       dataList: [],
       loading: true,
+      allDataLoading: true,
     };
   },
   computed: {
@@ -72,7 +73,7 @@ export default {
       }
       const resp = await this.api.getApplyRangeTemplateSave(data).catch(() => {});
       if (resp && resp.data.Status === 1000) {
-        const title = data.ID ? '添加成功' : '编辑成功';
+        const title = !data.ID ? '添加成功' : '编辑成功';
         const cb = () => {
           if (data.ID) {
             const i = this.dataList.findIndex(it => it.ID === data.ID);
@@ -82,6 +83,7 @@ export default {
           }
           this.visible = false;
           this.curEditData = null;
+          this.$store.commit('priceManage/setApplyRangeTemplateList', [[], false]);
         };
         this.messageBox.successSingle(title, cb, cb);
       }
@@ -113,9 +115,10 @@ export default {
       return content;
     },
   },
-  mounted() {
+  async mounted() {
     this.getDataList();
-    this.$store.dispatch('common/getAreaList');
+    await this.$store.dispatch('common/getAreaList');
+    this.allDataLoading = false;
   },
 };
 </script>

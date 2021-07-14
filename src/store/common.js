@@ -717,10 +717,14 @@ export default {
   },
   actions: {
     async getAreaList({ state, commit }) { // 获取地区列表数据
-      if (state.areaList.length > 0) return;
+      if (state.areaList.length > 0) return true;
 
-      const resp = await api.getVersionValid({ Key: 3 });
-      if (resp.data.Status === 1000) commit('setAreaList', resp.data.Data);
+      const resp = await api.getVersionValid({ Key: 3 }).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        commit('setAreaList', resp.data.Data);
+        return true;
+      }
+      return false;
     },
     async getProductList({ state, commit }, { bool = false, key = 6 } = {}) { // 获取产品二级分类数据 2.0版本  3.0弃用
       if (state.productList.length > 0 && !bool) return true;

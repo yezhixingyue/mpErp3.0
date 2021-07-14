@@ -1,0 +1,16 @@
+{
+  "id": "2672534",
+  "name": "销售3.0",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "22874739",
+      "name": "订单管理",
+      "font_class": "dingdanguanli",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    }
+  ]
+}

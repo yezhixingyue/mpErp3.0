@@ -212,6 +212,7 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        line-height: 20px;
       }
       > .ctrl-menus-container {
         width: 230px;

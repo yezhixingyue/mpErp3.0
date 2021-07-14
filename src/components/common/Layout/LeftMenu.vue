@@ -267,9 +267,18 @@ export default {
         background-color: rgb(15, 29, 53);
         transition: 0.05s ease-in-out;
         user-select: none;
+        // display: flex;
+        // align-items: center;
         > i {
           margin-right: 6px;
           margin-top: -2px;
+          &.iconfont {
+            font-size: 15px;
+            margin-left: 4px;
+            margin-right: 10px;
+            // position: relative;
+            // top: 1px;
+          }
         }
         > i, > span {
           color: #fff;

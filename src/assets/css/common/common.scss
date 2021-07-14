@@ -467,3 +467,7 @@ button.border-blue-btn {
     }
   }
 }
+.el-tooltip__popper {
+  max-height: 60vh;
+  overflow-y: auto;
+}

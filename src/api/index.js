@@ -472,6 +472,15 @@ const api = {
   getApplyRangeTemplateRemove(id) { // DELETE /Api/ApplyRangeTemplate/Remove  使用范围模板删除
     return instance.delete('/Api/ApplyRangeTemplate/Remove', { params: { id } });
   },
+  getProductPriceSave(data) { // POST /Api/ProductPrice/Save  保存产品价格
+    return instance.post('/Api/ProductPrice/Save', data);
+  },
+  getProductPriceRemove(id) { // DELETE /Api/ProductPrice/Remove 产品价格删除
+    return instance.delete('/Api/ProductPrice/Remove', { params: { id } });
+  },
+  getPriceModeSetup(data) { // POST /Api/PriceMode/Setup  设置报价方式
+    return instance.post('/Api/PriceMode/Setup', data);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

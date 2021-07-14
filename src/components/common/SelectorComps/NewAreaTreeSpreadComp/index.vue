@@ -90,7 +90,8 @@ export default {
       return this.allMinimumItemList.length;
     },
     selectedMinimumItemListLengt() {
-      const list = getSelectedItemsList(this.value, this.title);
+      // 对绑定的value数据进行筛选，去掉已经不在当前全部树形数据列表中的子项，然后计算出数量
+      const list = getSelectedItemsList(this.value, this.title).map(it => it.ID).filter(it => this.allMinimumItemIDList.includes(it));
       return list.length;
     },
     isIndeterminate() {

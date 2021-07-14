@@ -11,7 +11,7 @@
         <span>{{itemData.PriceList ? itemData.PriceList.length : 0}}种报价</span>
       </div>
       <div class="img-menu-box">
-        <span @click="onPartSaveClick(null)">
+        <span @click="onPriceItemSaveClick(null)">
           <i></i>添加价格
         </span>
       </div>
@@ -29,32 +29,62 @@
     </header>
     <ul> <!-- 价格条目 -->
       <li v-for="it in itemData.PriceList" :key="it.PartID">
-        <div>
+        <div class="mode">
+          <span class="separate">
+            <i v-if="it.IsOwnPrice">单独设置</i>
+            <i v-else title="123">按 线下价格 固定报价 x 90%  专版x 50% 数码 x 58%
+            </i>
+          </span>
+          <TipsSpanButton @click.native="onIsOwnPriceSetClick(it)" text='设置报价方式'/>
+        </div>
+        <div class="menus" v-if="it.IsOwnPrice">
+          <TipsSpanButton text='数值转换' />
+          <TipsSpanButton text='拼版方案选择'>
+            <span>拼版方案选择（<i class="is-pink">2</i>/{{it.MakeupList ? it.MakeupList.length : 0}}）</span>
+          </TipsSpanButton>
+          <TipsSpanButton text='工艺费' />
+          <TipsSpanButton text='价格表'>
+            <span>价格表（{{it.CostList ? it.CostList.length : 0}}）</span>
+          </TipsSpanButton>
+          <TipsSpanButton text='报价方案'>
+            <span>报价方案（{{it.CostList ? it.CostList.length : 0}}）</span>
+          </TipsSpanButton>
+          <TipsSpanButton text='报价结果'>
+            <span>报价结果（{{it.ResultList ? it.ResultList.length : 0}}）</span>
+          </TipsSpanButton>
+        </div>
+        <div class="name">
+          <span>价格名称：</span>
           <span :title="it.Name">{{it.Name}}</span>
         </div>
-        <div>
-          <TipsSpanButton text='界面元素'/>
-          <TipsSpanButton text='尺寸物料' />
-          <TipsSpanButton text='工艺' />
-          <TipsSpanButton text='设置元素' />
-          <TipsSpanButton text='显示顺序' />
+        <div class="date">
+          <span>{{ it.CreateTime | format2LangTypeDate }}</span>
         </div>
-        <div>
-          <TipsSpanButton text='编辑' />
-          <TipsSpanButton text='删除'  isRed />
+        <div class="ctrl">
+          <CtrlMenus :showList="['edit','del','copy']" @copy='onPriceItemCopyClick(it)' @edit='onPriceItemSaveClick(it)' @remove='onPriceItemRemoveClick(it)' />
         </div>
       </li>
     </ul>
-    <!-- <PartSaveDialog :visible.sync='visible' :curData='curPartData' :ProductID='itemData.ID' @submit="onPartSaveSubmit" />
-    <ProductMapSetDialog :visible.sync='mapVisible' :curData='curPartData' :itemData='itemData' @submit="onMapSetSubmit" /> -->
+    <!-- 价格 添加|保存 -->
+    <PriceItemSaveDialog :productTitle="itemData.Name" :visible.sync='visible' :EditData='curData' @submit="handleSubmit" />
+    <!-- 报价方式设置 -->
+    <IsOwnPriceSetDialog
+     :productTitle="itemData.Name"
+     :visible.sync='isOwnPriceVisible'
+     :curPrice='curData'
+     :PriceList='itemData.PriceList'
+     @submit='IsOwnSetSubmitHandler'
+     />
   </section>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import TipsSpanButton from '@/components/common/NewComps/TipsSpanButton.vue';
-// import PartSaveDialog from './PartSaveDialog.vue';
-// import ProductMapSetDialog from './ProductMapSetDialog.vue';
+import PriceItemClass from '@/assets/js/TypeClass/PriceItemClass';
+import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
+import PriceItemSaveDialog from './PriceItemSaveDialog.vue';
+import IsOwnPriceSetDialog from './IsOwnPriceSetDialog.vue';
 
 export default {
   props: {
@@ -65,8 +95,9 @@ export default {
   },
   components: {
     TipsSpanButton,
-    // PartSaveDialog,
-    // ProductMapSetDialog,
+    PriceItemSaveDialog,
+    CtrlMenus,
+    IsOwnPriceSetDialog,
   },
   computed: {
     ...mapGetters('common', ['twoLevelsProductClassify']),
@@ -80,9 +111,66 @@ export default {
   data() {
     return {
       extend: false,
+      curData: null,
+      visible: false,
+      isOwnPriceVisible: false,
     };
   },
   methods: {
+    onPriceItemSaveClick(data) { // 编辑 | 保存产品价格条目
+      console.log(data);
+      this.$store.dispatch('common/getAreaList');
+      this.$store.dispatch('common/getUserClassify');
+      this.$store.dispatch('priceManage/getApplyRangeTemplateList');
+      this.curData = data ? JSON.parse(JSON.stringify(data)) : null;
+      this.visible = true;
+    },
+    async handleSubmit(data) { // 执行 编辑 | 保存 远程请求操作
+      const { Name, ID } = data;
+      const t = this.itemData.PriceList.find(it => it.Name === Name && it.ID !== ID);
+      if (t) {
+        this.messageBox.failSingleError('保存失败', '已存在相同的价格名称');
+        return;
+      }
+      const temp = { ...data, ProductID: this.itemData.ID };
+      const resp = await this.api.getProductPriceSave(temp).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const title = !ID ? '添加成功' : '编辑成功';
+        const cb = () => {
+          if (data.ID) { // 编辑
+            const _data = { ...this.curData, ...temp, ID: resp.data.Data };
+            this.$store.commit('priceManage/setPriceItemSave', [_data, 'edit']);
+          } else { // 添加
+            const _data = new PriceItemClass({ ...temp, ID: resp.data.Data });
+            this.$store.commit('priceManage/setPriceItemSave', [_data, 'add']);
+          }
+          this.visible = false;
+          this.curData = null;
+          this.extend = true;
+        };
+        this.messageBox.successSingle(title, cb, cb);
+      }
+    },
+    onPriceItemRemoveClick(data) {
+      this.messageBox.warnCancelBox('确定删除该条价格吗?', `价格名称：[ ${data.Name} ]`, () => {
+        this.$store.dispatch('priceManage/getPriceItemRemove', data);
+      });
+    },
+    onPriceItemCopyClick(data) { // 拷贝
+      console.log('onPriceItemCopyClick', data);
+    },
+    onIsOwnPriceSetClick(data) { // 设置报价方式
+      this.curData = data ? JSON.parse(JSON.stringify(data)) : null;
+      this.isOwnPriceVisible = true;
+    },
+    async IsOwnSetSubmitHandler(data) {
+      const cb = () => {
+        this.isOwnPriceVisible = false;
+      };
+      this.$store.dispatch('priceManage/getPriceModeSetup', [data, cb]);
+    },
+  },
+  mounted() {
   },
 };
 </script>
@@ -236,27 +324,56 @@ export default {
       align-items: center;
       height: 40px;
       font-size: 12px;
+      overflow: hidden;
+      width: 1700px;
       > div {
         height: 30px;
         line-height: 30px;
-        &:first-of-type {
-          color: #585858;
-          width: 140px;
-          white-space: nowrap;
+        flex: none;
+        &.mode {
+          flex: 1;
+          padding-left: 45px;
           overflow: hidden;
-          text-align: center;
-          text-overflow: ellipsis;
-          margin-right: 48px;
-        }
-        &:nth-of-type(2) {
-          > span {
-            margin-right: 25px;
+          display: flex;
+          > .separate {
+            color: #585858;
+            margin-right: 30px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: calc(100% - 100px);
+            // flex: 1;
           }
-          margin-right: 35px;
+          > .el-tooltip {
+            // margin-left: 32px;
+            flex: none;
+          }
         }
-        &:last-of-type {
+        &.menus {
+          padding-left: 35px;
           > span {
-            margin-right: 25px;
+            margin-right: 40px;
+          }
+        }
+        &.name {
+          width: 240px;
+          padding-left: 50px;
+          color: #585858;
+          > span {
+            line-height: 30px;
+          }
+        }
+        &.date {
+          width: 120px;
+          padding: 0 70px;
+          padding-left: 20px;
+          color: #999;
+        }
+        &.ctrl {
+          padding-right: 80px;
+          padding-left: 30px;
+          .ctrl-menus-container > span + span {
+            margin-left: 30px;
           }
         }
       }

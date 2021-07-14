@@ -17,7 +17,7 @@ const routes = { // 客户订单管理
       name: 'orderManage',
       meta: {
         title: '订单管理',
-        icon: 'el-icon-s-order',
+        icon: 'iconfont icon-dingdanguanli',
         pageName: 'Order',
         requiresAuth: true,
         PermissionInfo: ['PermissionManageOrder', 'HavePomission'],

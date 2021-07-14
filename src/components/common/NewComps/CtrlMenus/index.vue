@@ -1,10 +1,14 @@
 <template>
   <div class="ctrl-menus-container">
-    <span @click="onEditClick" :class="canEdit ? '' : 'disabled'">
+    <span @click="onCopyClick" :class="canCopy ? '' : 'disabled'" v-if="showList.includes('copy')">
+      <img src="@/assets/images/copy.png" alt="">
+      <i>拷贝</i>
+    </span>
+    <span @click="onEditClick" :class="canEdit ? '' : 'disabled'" v-if="showList.includes('edit')">
       <img src="@/assets/images/Compile.png" alt="">
       <i>编辑</i>
     </span>
-    <span @click="onRemoveClick" :class="canRemove ? '' : 'disabled'">
+    <span @click="onRemoveClick" :class="canRemove ? '' : 'disabled'" v-if="showList.includes('del')">
       <img src="@/assets/images/del.png" alt="">
       <i>删除</i>
     </span>
@@ -22,6 +26,14 @@ export default {
       type: Boolean,
       default: true,
     },
+    canCopy: {
+      type: Boolean,
+      default: true,
+    },
+    showList: {
+      type: Array,
+      default: () => ['edit', 'del'],
+    },
   },
   methods: {
     onEditClick() {
@@ -31,6 +43,10 @@ export default {
     onRemoveClick() {
       if (!this.canRemove) return;
       this.$emit('remove');
+    },
+    onCopyClick() {
+      if (!this.canCopy) return;
+      this.$emit('copy');
     },
   },
 };
