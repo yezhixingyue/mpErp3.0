@@ -25,7 +25,7 @@
               <p class="if-box" style="margin-right:5px">
                 <span class="is-origin">{{type === 'compare' ? '则必须满足' : '则'}}</span>
               </p>
-              <p v-for="(res, ri) in item.result" :key="res + ri">{{res}}</p>
+              <p v-for="(res, ri) in item.result.filter(_it => _it)" :key="res + ri">{{res}}</p>
             </div>
             <div class="common-property-condition-text-content-box">
               <p class="if-box"><span class="is-origin">如果</span> {{item.FilterTypeText}}</p>
@@ -42,7 +42,7 @@
                 <span class="is-origin">{{type === 'compare' ? '则必须满足' : '则'}}</span>
               </p>
               <p>
-                <em v-for="(res,ri) in item.result" :key="res + ri" style="margin-right:4px">{{res}}
+                <em v-for="(res,ri) in item.result.filter(_it => _it)" :key="res + ri" style="margin-right:4px">{{res}}
                   <i style="color:#33BBD5;font-weight:700;font-size:13px" v-if="ri < item.result.length - 1">；</i>
                 </em>
               </p>
@@ -78,6 +78,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    titleObj: {
+      type: Object,
+      default: null,
+    },
   },
   components: {
     CtrlMenus,
@@ -94,7 +98,7 @@ export default {
       }));
     },
     curTableType() {
-      return this.tableTypeList.find(it => it.type === this.type);
+      return this.titleObj ? this.titleObj : this.tableTypeList.find(it => it.type === this.type);
     },
   },
   data() {
@@ -105,6 +109,7 @@ export default {
         { title: '风险提示', btnText: '+ 添加风险提示', type: 'risk' },
         { title: '子交互', btnText: '+ 添加子交互', type: 'subInteraction' },
         { title: '子对比', btnText: '+ 添加子对比', type: 'subCompare' },
+        { title: '子对比', btnText: '+ 添加子对比', type: 'sizeCount' },
       ],
     };
   },
@@ -181,6 +186,21 @@ export default {
 </script>
 <style lang='scss'>
 .mp-erp-product-module-interaction-risk-warning-table-com-container {
+  > header {
+    padding-bottom: 20px;
+    > .mp-common-title-wrap {
+      font-size: 15px;
+      color: #444;
+      width: 7em;
+      margin-right: 1em;
+      &::before {
+        height: 16px;
+      }
+    }
+    > .blue-span {
+      font-size: 14px;
+    }
+  }
   > main {
     > div {
       display: flex;

@@ -962,3 +962,67 @@ public enum MultiLevelClassType : byte
 
         风险提示
         RiskTips = 4
+
+## 拼版控制类型 MakeupControlType
+
+        尺寸数量
+        SizeNumber = 0,
+
+        拼版幅面
+        Breadth = 1,
+
+        拼版规则
+        Rule = 2,
+
+        拼版算法
+        Algorism = 3,
+
+        印刷次数
+        PrintTimes = 4,
+
+        物料损耗
+        Wastage = 5
+
+## 裁切规则 CuttingRule
+
+        最大数量
+        None = 0,
+
+        通刀
+        TongDao = 1,
+
+        方向一致
+        SameDirection = 2
+    }
+
+## 印刷次数规则 PrintTimesRule
+
+        两倍纸张数量
+        TwoTimesMaterial = 0,
+
+        纸张数量
+        SameWithMaterial = 1
+
+## 损耗规则 WastageRule
+
+        物料损耗设为
+        Setup = 0,
+
+        物料损耗增加
+        Increment = 1
+
+## 损耗单位类型 WastageUnitType
+
+        未拼版数量
+        UnMakeupNumber = 1,
+
+        拼板后数量
+        MakeupNumber = 2
+
+## 损耗单位 WastageUnit
+
+        百分比
+        Percent = 0,
+
+        张
+        Paper = 1

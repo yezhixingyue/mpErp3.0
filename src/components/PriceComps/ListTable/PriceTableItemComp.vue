@@ -16,7 +16,7 @@
         </span>
       </div>
       <div class="text-menu-box">
-        <TipsSpanButton text='拼版控制' />
+        <TipsSpanButton @click.native="onMakeupCtrlClick" text='拼版控制' />
         <TipsSpanButton text='子条件'/>
         <TipsSpanButton text='计算公式'  />
       </div>
@@ -168,6 +168,16 @@ export default {
         this.isOwnPriceVisible = false;
       };
       this.$store.dispatch('priceManage/getPriceModeSetup', [data, cb]);
+    },
+    onMakeupCtrlClick() { // 跳转拼版控制页面
+      const { ID, Name, ClassifyList } = this.itemData;
+      let _name = '';
+      if (ClassifyList && ClassifyList.length > 0) {
+        const [{ FirstLevel }] = ClassifyList;
+        if (FirstLevel && FirstLevel.Name) _name = `${FirstLevel.Name} - `;
+      }
+      _name += Name;
+      this.$router.push({ name: 'MakeupCtrl', params: { name: _name, id: ID } });
     },
   },
   mounted() {

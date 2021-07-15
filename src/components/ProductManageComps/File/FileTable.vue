@@ -90,8 +90,8 @@ export default {
     onEditClick(itemData) {
       this.$emit('edit', itemData);
     },
-    onRemoveClick(itemData) {
-      this.$emit('remove', itemData);
+    onRemoveClick(itemData, i) {
+      this.$emit('remove', itemData, i);
     },
     getFileInfoText(list) {
       if (!Array.isArray(list) || list.length === 0) return '';

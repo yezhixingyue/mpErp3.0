@@ -481,6 +481,15 @@ const api = {
   getPriceModeSetup(data) { // POST /Api/PriceMode/Setup  设置报价方式
     return instance.post('/Api/PriceMode/Setup', data);
   },
+  getMakeupSolutionList(productID) { // GET /Api/MakeupSolution/List  获取拼版规则方案列表
+    return instance.get('/Api/MakeupSolution/List', { params: { productID } });
+  },
+  getMakeupSolutionSave(data) { // POST /Api/MakeupSolution/Save   拼版控制方案保存
+    return instance.post('/Api/MakeupSolution/Save', data);
+  },
+  getMakeupSolutionRemove(id) { // DELETE /Api/MakeupSolution/Remove   删除拼版控制方案
+    return instance.delete('/Api/MakeupSolution/Remove', { params: { id } });
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

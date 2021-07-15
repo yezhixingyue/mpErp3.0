@@ -13,14 +13,17 @@
     <div class="title">
       <span>规格：</span>
       <div class="content" v-if="itemData">
-        <p v-for="(_it, i) in itemData._ConditionText" :key="_it.name + 'tips' + i">
-          <span v-if="i > 0" class="type">{{itemData.Constraint.FilterType === 1 ? '且' : '或'}}</span>
-          <span class="name">{{_it.name}}</span>
-          <span class="is-origin">{{_it.operator}}</span>
-          <span class="val">{{_it.val}}</span>
-          <span v-if="i === itemData._ConditionText.length - 1" style="margin-left:2px"> 。</span>
-          <span v-else style="margin-left:2px">；</span>
-        </p>
+        <p v-if="typeof itemData._ConditionText === 'string'">{{itemData._ConditionText}}</p>
+        <template v-else>
+          <p v-for="(_it, i) in itemData._ConditionText" :key="_it.name + 'tips' + i">
+            <span v-if="i > 0" class="type">{{itemData.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+            <span class="name">{{_it.name}}</span>
+            <span class="is-origin">{{_it.operator}}</span>
+            <span class="val">{{_it.val}}</span>
+            <span v-if="i === itemData._ConditionText.length - 1 && i !== 0" style="margin-left:2px"> 。</span>
+            <span v-else style="margin-left:2px">；</span>
+          </p>
+        </template>
       </div>
     </div>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" class="demo-ruleForm" hide-required-asterisk>

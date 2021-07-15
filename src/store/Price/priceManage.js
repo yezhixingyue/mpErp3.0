@@ -1,6 +1,7 @@
 import api from '@/api/index';
 import messageBox from '@/assets/js/utils/message';
 import CommonClassType from '@/store/CommonClassType';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 const initConditon = {
   ProductClass: {
@@ -26,6 +27,15 @@ export default {
     isPriceDataLoading: false,
     ApplyRangeTemplateList: [], // 适用范围数据列表
     ApplyRangeTemplateListFetched: false,
+    MakeupControlTypeList: [
+      { Name: '尺寸数量', ID: 0 },
+      { Name: '拼版幅面', ID: 1 },
+      { Name: '拼版规则', ID: 2 },
+      { Name: '拼版算法', ID: 3 },
+      { Name: '印刷次数', ID: 4 },
+      { Name: '物料损耗', ID: 5 },
+    ],
+    MakeupLeftPropertyList: [], // 拼版控制左侧弹窗条件属性
   },
   getters: {
   },
@@ -88,10 +98,19 @@ export default {
             console.log(BasePriceID, ReferencePriceList);
             // 按比例计算  尚未写 ReferencePriceList
             // eslint-disable-next-line no-alert
-            alert('按比例计算  该情况尚未写');
+            alert('按比例计算  该情况有前置模块未完成 尚未写完');
           }
         }
       }
+    },
+    /** 拼版控制相关
+    ----------------------------------------- */
+    // eslint-disable-next-line no-unused-vars
+    setMakeupPropertyList(state, [leftList, rightList, compareLeft, compareRight]) {
+      state.MakeupLeftPropertyList = Array.isArray(leftList) ? leftList : [];
+      state.MakeupRightPropertyList = Array.isArray(rightList) ? rightList : [];
+      // state.CompareLeftPropertyList = Array.isArray(compareLeft) ? compareLeft : [];
+      // state.CompareRightPropertyList = Array.isArray(compareRight) ? compareRight : [];
     },
   },
   actions: {
@@ -107,7 +126,7 @@ export default {
         commit('setPriceManageList', [res.data.Data, res.data.DataNumber]);
       }
     },
-    async getPriceItemRemove({ commit }, { ProductID, ID }) {
+    async getPriceItemRemove({ commit }, { ProductID, ID }) { // 价格删除
       const resp = await api.getProductPriceRemove(ID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
@@ -137,6 +156,20 @@ export default {
         };
         messageBox.successSingle('保存成功', cb, cb);
       }
+    },
+    async getMakeupPropertyList({ commit }, ProductID) { // 获取拼版控制左侧弹窗属性列表数据
+      commit('setMakeupPropertyList', []);
+      const list = await Promise.all([
+        PropertyClass.getPropertyList({ UseModule: 14, ProductID }),
+        PropertyClass.getPropertyList({ UseModule: 18, ProductID }),
+        // PropertyClass.getPropertyList({ UseModule: 19, ProductID }), // 对比主属性
+        // PropertyClass.getPropertyList({ UseModule: 20, ProductID }), // 对比从属性
+      ]);
+      if (list) {
+        commit('setMakeupPropertyList', list);
+        return true;
+      }
+      return false;
     },
   },
 };

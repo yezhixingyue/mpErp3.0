@@ -92,8 +92,8 @@ export default {
     onEditClick(itemData) {
       this.$emit('edit', itemData);
     },
-    onRemoveClick(itemData) {
-      this.$emit('remove', itemData);
+    onRemoveClick(itemData, i) {
+      this.$emit('remove', itemData, i);
     },
     getDefaultFactory(list) {
       const t = list.find(it => it.IsDefault);

@@ -31,7 +31,29 @@ const routes = [
       requiresAuth: true,
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
     },
-    component: () => import('../../../views/Price/MakeupRuleePage.vue'),
+    component: () => import('../../../views/Price/MakeupRulePage.vue'),
+  },
+  {
+    path: '/MakeupCtrl/:name/:id',
+    name: 'MakeupCtrl',
+    meta: {
+      title: '拼版控制 - 价格',
+      pageName: 'MakeupCtrl',
+      requiresAuth: true,
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/MakeupCtrlPage'),
+  },
+  {
+    path: '/MakeupCtrlConditionSet/:ProductID/:PartID/:ProductName/:PartName/:SolutionName/:setType',
+    name: 'MakeupCtrlConditionSet',
+    meta: {
+      title: '设置拼版尺寸数量',
+      requiresAuth: true,
+      pageName: 'MakeupCtrlConditionSet',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/MakeupCtrlPage/MakeupCtrlConditionSetPage.vue'),
   },
 ];
 
@@ -40,6 +62,12 @@ const routeTree = {
   children: [
     { name: 'AreaTemplate', children: [] },
     { name: 'MakeupRule', children: [] },
+    {
+      name: 'MakeupCtrl',
+      children: [
+        { name: 'MakeupCtrlConditionSet', children: [] },
+      ],
+    },
   ],
 };
 
