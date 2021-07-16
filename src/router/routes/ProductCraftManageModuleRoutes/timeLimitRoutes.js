@@ -4,7 +4,7 @@ const routes = [
     name: 'timeLimitList',
     meta: {
       title: '工期列表',
-      icon: 'el-icon-s-marketing',
+      icon: 'iconfont icon-gongqiliebiao',
       pageName: 'timeLimitList',
       requiresAuth: true,
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],

@@ -82,23 +82,8 @@ export default {
           } else if (Property) Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.InteractionRightPropertyList);
           return { ..._it, Property, CompareProperty };
         });
-        let ItemList = [];
-        if (Constraint) {
-          ItemList = Constraint.ItemList
-            .map(item => {
-              const { Property, ValueList } = item;
-              if (Array.isArray(ValueList) && ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Property) {
-                ValueList[0].Property = PropertyClass.getPerfectPropertyByImperfectProperty(ValueList[0].Property, this.InteractionLeftPropertyList);
-              }
-              return {
-                ...item,
-                Property: PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.InteractionLeftPropertyList),
-                ValueList,
-              };
-            })
-            .filter(item => item.Property);
-        }
-        return { ...it, Constraint: { ...Constraint, ItemList }, List: _list };
+        const [_Constraint] = PropertyClass.getConstraintAndTextByImperfectConstraint(Constraint, this.InteractionLeftPropertyList);
+        return { ...it, Constraint: _Constraint, List: _list };
       });
       return list;
     },

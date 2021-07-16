@@ -16,7 +16,7 @@ const routes = { // 价格策略
       name: 'couponList',
       meta: {
         title: '优惠券',
-        icon: 'el-icon-s-ticket',
+        icon: 'iconfont icon-youhuiquan2',
         pageName: 'CouponListPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionCoupon', 'HavePomission'],
@@ -53,7 +53,7 @@ const routes = { // 价格策略
       meta: {
         requiresAuth: true,
         title: '促销活动',
-        icon: 'el-icon-s-claim',
+        icon: 'iconfont icon-cuxiaohuodong',
         pageName: 'PromoteListPage',
         PermissionInfo: ['PermissionPromote', 'HavePomission'],
       },

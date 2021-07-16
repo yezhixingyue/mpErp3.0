@@ -4,7 +4,7 @@ const routes = [
     name: 'PriceManageList',
     meta: {
       title: '产品定价',
-      icon: 'el-icon-s-goods',
+      icon: 'iconfont icon-chanpindingjia',
       pageName: 'PriceManageListPage',
       requiresAuth: true,
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
@@ -45,7 +45,7 @@ const routes = [
     component: () => import('../../../views/Price/MakeupCtrlPage'),
   },
   {
-    path: '/MakeupCtrlConditionSet/:ProductID/:PartID/:ProductName/:PartName/:SolutionName/:setType',
+    path: '/MakeupCtrlConditionSet/:ProductID/:PartID/:ProductName/:PartName/:SolutionName/:SolutionID/:setType',
     name: 'MakeupCtrlConditionSet',
     meta: {
       title: '设置拼版尺寸数量',
@@ -54,6 +54,17 @@ const routes = [
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
     },
     component: () => import('../../../views/Price/MakeupCtrlPage/MakeupCtrlConditionSetPage.vue'),
+  },
+  {
+    path: '/SetSubCondition/:name/:id',
+    name: 'SetSubCondition',
+    meta: {
+      title: '设置子条件 - 价格',
+      pageName: 'SetSubCondition',
+      requiresAuth: true,
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/SubConditionPage'),
   },
 ];
 
@@ -66,6 +77,12 @@ const routeTree = {
       name: 'MakeupCtrl',
       children: [
         { name: 'MakeupCtrlConditionSet', children: [] },
+      ],
+    },
+    {
+      name: 'SetSubCondition',
+      children: [
+        // { name: 'MakeupCtrlConditionSet', children: [] },
       ],
     },
   ],

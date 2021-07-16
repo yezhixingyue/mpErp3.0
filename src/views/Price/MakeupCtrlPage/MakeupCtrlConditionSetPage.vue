@@ -3,11 +3,11 @@
     <header>
       <span>当前产品：{{routeInfo.ProductName}}</span>
       <span>设置方案：{{routeInfo.SolutionName}}</span>
-      <span>设置部件：{{routeInfo.PartName}}部件1</span>
+      <span v-if="routeInfo.PartName">设置部件：{{routeInfo.PartName}}</span>
     </header>
     <main>
       <ContionCommonComp ref="oLeftComp" :ComparePropertyList='MakeupRightPropertyList' :PropertyList='MakeupLeftPropertyList'
-       leftWidth='40%' :curEditData='curInteractionData' :rightTitle='rightTitle'>
+       leftWidth='40%' :curEditData='curMakeupItemEditData' :rightTitle='rightTitle'>
         <template slot='title'>
           <!-- <span class="blue-span" v-if="routeInfo.setType==='interaction' || routeInfo.setType==='subInteraction'" @click="visible=true">+ 添加结果</span> -->
           <template v-if="routeInfo.setType==='0'">
@@ -18,10 +18,9 @@
          v-if="routeInfo.setType==='0'"
          ref="oSizeNumberPanel"
          :Name='routeInfo.PartName || "产品"'
-         :initData='null'
+         :initData='curMakeupItemEditData'
          :drawerVisible.sync='drawer'
-         :leftPropertyList='[]'
-         :rightPropertyList='[]'
+         :SizeNumberPropertyList='SizeNumberPropertyList'
          />
       </ContionCommonComp>
     </main>
@@ -34,7 +33,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+// import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import ContionCommonComp from '@/components/common/FormulaAndConditionComps/ContionCommonComp.vue';
 import SizeNumberPanel from '@/components/PriceComps/MakeupCtrl/RightPanels/SizeNumberPanel';
 
@@ -51,19 +50,19 @@ export default {
     SizeNumberPanel,
   },
   computed: {
-    ...mapState('productManage', ['curInteractionData', 'ControlTypeList', 'subTargetData']),
-    ...mapState('priceManage', ['MakeupLeftPropertyList', 'MakeupRightPropertyList']),
+    ...mapState('priceManage', ['MakeupLeftPropertyList', 'MakeupRightPropertyList', 'SizeNumberPropertyList', 'curMakeupItemEditData']),
     rightTitle() {
       return '则';
     },
     routeInfo() {
-      const { ProductID, PartID, ProductName, PartName, SolutionName, setType } = this.$route.params;
+      const { ProductID, PartID, ProductName, PartName, SolutionName, SolutionID, setType } = this.$route.params;
       return {
         ProductID,
         PartID: PartID === 'null' ? '' : PartID,
         ProductName,
         PartName: PartName === 'null' ? '' : PartName,
         SolutionName,
+        SolutionID,
         setType,
       };
     },
@@ -80,18 +79,15 @@ export default {
         result = this.$refs.oSizeNumberPanel.getSubmitInfo();
       }
       if (!result) return;
-      const ControlType = this.$utils.getIDFromListByNames(this.routeInfo.setType, this.ControlTypeList);
-      if (!ControlType && ControlType !== 0) return;
-      const idsObj = PropertyClass.getPropIDsObj(this.subTargetData);
-      const temp = { ...condition, ...result, ProductID: this.ProductID, ControlType, ...idsObj };
+      const { SolutionID, ProductID, PartID } = this.routeInfo;
+      const temp = { ...condition, ...result, SolutionID, ProductID, PartID };
       this.handleSubmit(temp);
     },
     async handleSubmit(data) {
-      const resp = await this.api.getProductControlSave(data).catch(() => {});
+      const resp = await this.api.getMakeupSolutionItemSave(data).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
           this.onGoBackClick();
-          this.$store.commit('productManage/setProductInteractionDataListChange', data);
         };
         this.messageBox.successSingle('保存成功', cb, cb);
       }

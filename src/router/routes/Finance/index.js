@@ -17,7 +17,7 @@ const routes = { // 财务管理
       name: 'finance',
       meta: {
         title: '财务管理',
-        icon: 'el-icon-s-finance',
+        icon: 'iconfont icon-caiwuguanli',
         pageName: 'FinancePage',
         requiresAuth: true,
         PermissionInfo: ['PermissionFinance', 'HavePomission'],
@@ -31,7 +31,7 @@ const routes = { // 财务管理
       name: 'fundBill',
       meta: {
         title: '客户流水',
-        icon: 'el-icon-tickets',
+        icon: 'iconfont icon-kehuliushui',
         pageName: 'FundBillPage',
         requiresAuth: true,
       },

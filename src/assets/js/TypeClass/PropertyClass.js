@@ -314,6 +314,12 @@ export default class PropertyClass {
         if (ValueList.length === 1) {
           if ((ValueList[0].Value || ValueList[0].Value === 0) && getValueIsOrNotNumber(ValueList[0].Value)) {
             _val = ValueList[0].Value;
+            if (Property && Property.DisplayContent) {
+              if (Array.isArray(Property.OptionList)) {
+                const t = Property.OptionList.find(_it => _it.First === _val);
+                if (t) _val = it.Second;
+              }
+            }
           }
           if (!ValueList[0].Value && ValueList[0].Property && ValueList[0].Property.DisplayContent) {
             _val = ValueList[0].Property.DisplayContent.replace(/\[|\]/g, '');
@@ -351,15 +357,15 @@ export default class PropertyClass {
     return temp;
   }
 
-  static getConstraintAndTextByImperfectConstraint(Constraint, PropertyList) {
+  static getConstraintAndTextByImperfectConstraint(Constraint, PropertyList, RightPropertyList) {
     let _Constraint = null;
     let _ConditionText = '无';
     // if (!Constraint) return { ...it, conditionText: '无' };
     if (Constraint) {
-      const ItemList = Constraint.ItemList.map(item => {
+      const ItemList = Array.isArray(Constraint.ItemList) ? Constraint.ItemList.map(item => {
         let { ValueList } = item;
-        if (ValueList && ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Property) {
-          const Property = this.getPerfectPropertyByImperfectProperty(ValueList[0].Property, PropertyList);
+        if (Array.isArray(ValueList) && ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Property) {
+          const Property = this.getPerfectPropertyByImperfectProperty(ValueList[0].Property, RightPropertyList || PropertyList);
           if (Property) ValueList = [{ Property }];
         }
         return {
@@ -367,7 +373,7 @@ export default class PropertyClass {
           Property: this.getPerfectPropertyByImperfectProperty(item.Property, PropertyList),
           ValueList,
         };
-      }).filter(item => item.Property);
+      }).filter(item => item.Property) : [];
 
       _Constraint = { ...Constraint, ItemList };
       _ConditionText = this.getPropertyConditionText(ItemList, this.PropertyList);

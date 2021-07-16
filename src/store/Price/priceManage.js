@@ -35,7 +35,12 @@ export default {
       { Name: '印刷次数', ID: 4 },
       { Name: '物料损耗', ID: 5 },
     ],
+    /** 拼版控制相关
+     ---------------------------------------- */
     MakeupLeftPropertyList: [], // 拼版控制左侧弹窗条件属性
+    MakeupRightPropertyList: [],
+    SizeNumberPropertyList: [],
+    curMakeupItemEditData: null,
   },
   getters: {
   },
@@ -109,8 +114,11 @@ export default {
     setMakeupPropertyList(state, [leftList, rightList, compareLeft, compareRight]) {
       state.MakeupLeftPropertyList = Array.isArray(leftList) ? leftList : [];
       state.MakeupRightPropertyList = Array.isArray(rightList) ? rightList : [];
-      // state.CompareLeftPropertyList = Array.isArray(compareLeft) ? compareLeft : [];
+      state.SizeNumberPropertyList = Array.isArray(compareLeft) ? compareLeft : [];
       // state.CompareRightPropertyList = Array.isArray(compareRight) ? compareRight : [];
+    },
+    setCurMakeupItemEditData(state, data) {
+      state.curMakeupItemEditData = data;
     },
   },
   actions: {
@@ -162,7 +170,7 @@ export default {
       const list = await Promise.all([
         PropertyClass.getPropertyList({ UseModule: 14, ProductID }),
         PropertyClass.getPropertyList({ UseModule: 18, ProductID }),
-        // PropertyClass.getPropertyList({ UseModule: 19, ProductID }), // 对比主属性
+        PropertyClass.getPropertyList({ UseModule: 22, ProductID }), // 设置尺寸数量
         // PropertyClass.getPropertyList({ UseModule: 20, ProductID }), // 对比从属性
       ]);
       if (list) {

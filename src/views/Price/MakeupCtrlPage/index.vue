@@ -26,31 +26,69 @@
         </div>
       </div>
     </header>
-    <main>
+    <main :class="isTableDataloading || isPropertyListLoading?'loading':''">
       <SolutionSaveDialog :visible.sync="solutionSaveVisible" :saveData='solutionSaveData' @submit="onSolutionSaveSubmit" />
-      <CommonInteractionTable
-       @remove='onTableItemRemove'
-       @setup="onSetupPageJump($event, '', '')"
-       :type='`${curControlType}`'
-       :titleObj="{title: '产品尺寸数量', btnText: '+ 添加拼版尺寸数量设置'}"
-       :dataList='[]'
-       :PropertyList='[]' />
+      <SolutionTableCom
+        @remove='onTableItemRemove'
+        @setup="onSetupPageJump($event, '', '')"
+        :type='`${curControlType}`'
+        :titleObj="{title: '产品尺寸数量', btnText: '+ 添加拼版尺寸数量设置'}"
+        :dataList='getTargetItemList()'
+        >
+        <template #title>
+          <p class="tips-box"> <i class="el-icon-warning"></i> 注：未设置的产品 / 部件，不拼版</p>
+        </template>
+      </SolutionTableCom>
+      <template v-if="curProduct && Array.isArray(curProduct.PartList)">
+        <SolutionTableCom
+        v-for="item in curProduct.PartList"
+        :key="item.ID"
+        @remove='onTableItemRemove'
+        @setup="onSetupPageJump($event, item.ID, item.Name)"
+        :type='`${curControlType}`'
+        :titleObj="{title: `${item.Name}产品尺寸数量`, btnText: '+ 添加拼版尺寸数量设置'}"
+        :dataList='getTargetItemList(item.ID)'
+        />
+      </template>
+      <SolutionTableCom
+        @remove='onTableItemRemove'
+        @setup="onSetupPageJump($event, '', '')"
+        :type='`${curControlType}`'
+        :titleObj="{title: '多个部件1混拼设置', btnText: '+ 添加条件'}"
+        :dataList='[]'
+        >
+        <template #title>
+          <div>
+            <span class="blue-span">设置默认</span>
+            <span class="is-gray is-font-size-12">默认：不混拼</span>
+            <span class="blue-span">相同条件设置</span>
+            <span class="is-gray is-font-size-12">工艺：覆膜 印面 印色 相同工艺：覆膜 印面 印色 相同工艺：覆膜 印面 印色 相同</span>
+            <span class="blue-span">排除数量设置</span>
+            <span class="is-gray is-font-size-12">子公式1</span>
+          </div>
+        </template>
+      </SolutionTableCom>
     </main>
+    <footer>
+      <el-button class="goback" @click="onGobackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
+    </footer>
   </section>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import SolutionSaveDialog from '@/components/PriceComps/MakeupCtrl/SolutionSaveDialog';
-import CommonInteractionTable from '@/components/ProductManageComps/Interaction/CommonInteractionTable.vue';
+import SolutionTableCom from '@/components/PriceComps/MakeupCtrl/SolutionTableCom.vue';
 
 export default {
+  name: 'MakeupCtrl',
   components: {
     SolutionSaveDialog,
-    CommonInteractionTable,
+    SolutionTableCom,
   },
   computed: {
-    ...mapState('priceManage', ['MakeupControlTypeList', 'MakeupLeftPropertyList', 'MakeupRightPropertyList']),
+    ...mapState('priceManage', ['MakeupControlTypeList', 'MakeupLeftPropertyList', 'MakeupRightPropertyList', 'SizeNumberPropertyList', 'PriceManageList']),
     curTypeSolutionList() {
       if (!this.solutionList || (!this.curControlType && this.curControlType !== 0) || this.solutionList.length === 0) return [];
       return this.solutionList.filter(it => it.Type === this.curControlType);
@@ -58,6 +96,23 @@ export default {
     curSolutionItem() {
       if (!this.curSolutionID) return null;
       return this.solutionList.find(it => it.ID === this.curSolutionID);
+    },
+    localSolutionDataList() {
+      if (!Array.isArray(this.MakeupRuleItemList) || this.MakeupRuleItemList.length === 0) return [];
+      const list = JSON.parse(JSON.stringify(this.MakeupRuleItemList)).map(it => {
+        const { Constraint } = it;
+        const [_Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
+          Constraint, this.MakeupLeftPropertyList, this.MakeupRightPropertyList,
+        );
+        return { ...it, Constraint: _Constraint, _ConditionText };
+      });
+      return list;
+    },
+    curProduct() {
+      if (Array.isArray(this.PriceManageList) && this.$route.params.id) {
+        return this.PriceManageList.find(it => it.ID === this.$route.params.id);
+      }
+      return null;
     },
   },
   data() {
@@ -68,9 +123,15 @@ export default {
       solutionSaveData: null,
       solutionList: [],
       isSolutionListLoading: true,
+      MakeupRuleItemList: [],
+      isTableDataloading: false,
+      isPropertyListLoading: true,
     };
   },
   methods: {
+    onGobackClick() {
+      this.$router.replace('/PriceManageList');
+    },
     onSolutionSaveClick(ID) {
       const data = ID ? this.solutionList.find(it => it.ID === ID) : null;
       const temp = {
@@ -144,30 +205,65 @@ export default {
     getTypeLength(type) {
       return this.solutionList.filter(it => it.Type === type).length;
     },
-    onTableItemRemove(e) {
-      console.log('onTableItemRemove', e);
+    async onTableItemRemove(e) {
+      if (!e || !e.ID) return;
+      const resp = await this.api.getMakeupSolutionItemRemove(e.ID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          this.MakeupRuleItemList = this.MakeupRuleItemList.filter(it => it.ID !== e.ID);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
+      }
     },
-    onSetupPageJump(e, PartID, PartName) { // 跳转条件配置页面
+    onSetupPageJump(data, PartID, PartName) { // 跳转条件配置页面
+      if (!data) return;
+      const [setType, editData] = data;
       const params = {
         ProductID: this.$route.params.id,
         PartID: PartID || 'null',
         ProductName: this.$route.params.name,
         PartName: PartName || 'null',
         SolutionName: this.curSolutionItem.Name,
-        setType: e,
+        SolutionID: this.curSolutionItem.ID,
+        setType,
       };
+      this.$store.commit('priceManage/setCurMakeupItemEditData', editData);
       this.$router.push({ name: 'MakeupCtrlConditionSet', params });
+    },
+    async getMakeupRuleItemList() { // 获取方案列表数据
+      if (!this.curSolutionID) return;
+      this.isTableDataloading = true;
+      const resp = await this.api.getMakeupRuleItemList(this.curSolutionID).catch(() => {});
+      this.isTableDataloading = false;
+      if (resp && resp.data.Status === 1000) {
+        this.MakeupRuleItemList = resp.data.Data;
+      }
+    },
+    getTargetItemList(PartID) {
+      if (!Array.isArray(this.localSolutionDataList)) return [];
+      if (PartID) {
+        return this.localSolutionDataList.filter(it => it.PartID === PartID);
+      }
+      return this.localSolutionDataList.filter(it => !it.PartID);
     },
   },
   watch: {
     curControlType() {
       if (this.curTypeSolutionList.length > 0) this.curSolutionID = this.curTypeSolutionList[0].ID;
       else this.curSolutionID = '';
+      this.MakeupRuleItemList = [];
+    },
+    curSolutionID() {
+      this.getMakeupRuleItemList();
     },
   },
-  mounted() {
+  async mounted() {
     this.getMakeupSolutionList();
-    this.$store.dispatch('priceManage/getMakeupPropertyList', this.$route.params.id);
+    await this.$store.dispatch('priceManage/getMakeupPropertyList', this.$route.params.id);
+    this.isPropertyListLoading = false;
+  },
+  activated() {
+    this.getMakeupRuleItemList();
   },
 };
 </script>
@@ -264,10 +360,26 @@ export default {
     background-color: #fff;
     padding-left: 20px;
     padding-top: 30px;
+    padding-right: 8px;
     // > .mp-erp-product-module-interaction-risk-warning-table-com-container {
     //   > header {
     //   }
     // }
+    &.loading {
+      > section {
+        opacity: 0.2;
+      }
+    }
+    .tips-box {
+      width: 300px;
+      margin-left: 35px;
+    }
+  }
+  > footer {
+    background-color: #fff;
+    padding: 20px;
+    text-align: center;
+    padding-right: 120px;
   }
 }
 </style>

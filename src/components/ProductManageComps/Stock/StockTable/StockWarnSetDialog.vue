@@ -65,7 +65,7 @@ export default {
           { type: 'integer', min: -1, message: '库存数量必须为大于等于-1的整数,可为0或-1', trigger: 'blur' },
         ],
         Mobile: [
-          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          // { required: true, message: '请输入手机号码', trigger: 'blur' },
           { validator: this.MobilesChecker, trigger: 'blur' },
         ],
       },
@@ -94,6 +94,10 @@ export default {
       this.ruleForm.Mobile = this.WarningMobile;
     },
     MobilesChecker(rule, value, callback) {
+      if (value === '') {
+        callback();
+        return;
+      }
       const mobiles = value.split(' ');
       for (let i = 0; i < mobiles.length; i += 1) {
         const mobile = mobiles[i];

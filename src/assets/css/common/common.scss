@@ -469,5 +469,18 @@ button.border-blue-btn {
 }
 .el-tooltip__popper {
   max-height: 60vh;
-  overflow-y: auto;
+  overflow: overlay;
+  box-sizing: border-box;
+  display: block;
+  height: auto;
+  line-height: 18px;
+  .popper__arrow {
+    display: none;
+  }
+}
+
+.el-menu-item .iconfont {
+  margin-right: 8px;
+  width: 22px;
+  text-align: left;
 }

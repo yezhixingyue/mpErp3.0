@@ -17,7 +17,7 @@ const routes = { // 客户订单管理
       name: 'orderManage',
       meta: {
         title: '订单管理',
-        icon: 'iconfont icon-dingdanguanli',
+        icon: 'iconfont icon-dingdanguanli1',
         pageName: 'Order',
         requiresAuth: true,
         PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
@@ -31,7 +31,7 @@ const routes = { // 客户订单管理
       name: 'transport',
       meta: {
         title: '运单管理',
-        icon: 'el-icon-s-unfold',
+        icon: 'iconfont icon-yundanguanli',
         pageName: 'PackageListPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
@@ -45,7 +45,7 @@ const routes = { // 客户订单管理
       name: 'paymentList',
       meta: {
         title: '付款单列表',
-        icon: 'el-icon-s-fold',
+        icon: 'iconfont icon-fukuandanliebiao',
         pageName: 'PaymentListPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionManageOrder', 'Obj', 'HelpSubmit'],
@@ -59,7 +59,7 @@ const routes = { // 客户订单管理
       name: 'service',
       meta: {
         title: '售后管理',
-        icon: 'el-icon-s-claim',
+        icon: 'iconfont icon-shouhouguanli',
         pageName: 'ServicePage',
         requiresAuth: true,
         PermissionInfo: ['PermissionManageOrder', 'Obj', 'ApplyAfterSales'],
@@ -73,7 +73,7 @@ const routes = { // 客户订单管理
       name: 'qutstandingpayment',
       meta: {
         title: '未付款订单',
-        icon: 'el-icon-s-release',
+        icon: 'iconfont icon-weifukuandingdan',
         pageName: 'QutstandingPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionManageOrder', 'Obj', 'HelpSubmit'],
@@ -87,7 +87,7 @@ const routes = { // 客户订单管理
       name: 'feedback',
       meta: {
         title: '售后申请列表',
-        icon: 'el-icon-s-comment',
+        icon: 'iconfont icon-shouhoushenqingliebiao',
         pageName: 'FeedbackPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],

@@ -877,6 +877,8 @@ public enum MultiLevelClassType : byte
 
         库存右侧属性选择弹窗列表 21
 
+        拼版控制尺寸数量属性列表 MakeupSizeNumberic = 22
+
 ## 运算符号
 
         等于

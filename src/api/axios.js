@@ -102,6 +102,10 @@ axios.interceptors.response.use(
             localStorage.removeItem('staffDetailData');
             key = true;
             break;
+          case 404:
+            messageBox.failSingleError('操作失败', '404 not found');
+            key = true;
+            break;
           case 413: // 处理文件导出错误
             b = new Blob([error.response.data]);
             r = new FileReader();

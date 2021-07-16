@@ -16,8 +16,8 @@
         </span>
       </div>
       <div class="text-menu-box">
-        <TipsSpanButton @click.native="onMakeupCtrlClick" text='拼版控制' />
-        <TipsSpanButton text='子条件'/>
+        <TipsSpanButton @click.native="jumpToPage('MakeupCtrl')" text='拼版控制' />
+        <TipsSpanButton @click.native="jumpToPage('SetSubCondition')" text='子条件'/>
         <TipsSpanButton text='计算公式'  />
       </div>
       <div class="extend-box" @click="extend = !extend" :class="itemData.PriceList&&itemData.PriceList.length>0 ? '' : 'disabled'">
@@ -169,7 +169,7 @@ export default {
       };
       this.$store.dispatch('priceManage/getPriceModeSetup', [data, cb]);
     },
-    onMakeupCtrlClick() { // 跳转拼版控制页面
+    jumpToPage(pathName) {
       const { ID, Name, ClassifyList } = this.itemData;
       let _name = '';
       if (ClassifyList && ClassifyList.length > 0) {
@@ -177,7 +177,7 @@ export default {
         if (FirstLevel && FirstLevel.Name) _name = `${FirstLevel.Name} - `;
       }
       _name += Name;
-      this.$router.push({ name: 'MakeupCtrl', params: { name: _name, id: ID } });
+      this.$router.push({ name: pathName, params: { name: _name, id: ID } });
     },
   },
   mounted() {

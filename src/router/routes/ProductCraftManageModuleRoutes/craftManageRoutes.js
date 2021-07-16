@@ -4,7 +4,7 @@ const routes = [
     name: 'CraftManageList',
     meta: {
       title: '工艺管理',
-      icon: 'el-icon-s-cooperation',
+      icon: 'iconfont icon-gongyiguanli',
       pageName: 'CraftManageList',
       requiresAuth: true,
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],

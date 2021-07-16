@@ -12,7 +12,7 @@
    >
     <div class="title">
       <span>规格：</span>
-      <div class="content" v-if="itemData">
+      <div class="content mp-scroll-wrap" v-if="itemData">
         <p v-if="typeof itemData._ConditionText === 'string'">{{itemData._ConditionText}}</p>
         <template v-else>
           <p v-for="(_it, i) in itemData._ConditionText" :key="_it.name + 'tips' + i">
@@ -112,10 +112,12 @@ export default {
     font-size: 14px;
     padding-left: 70px;
     padding-right: 20px;
-    height: 348px;
+    min-height: 348px;
+    max-height: 460px;
     .el-form-item {
       .el-input {
         width: 200px;
+        margin-right: 8px;
       }
       .el-form-item__label, .label {
         font-size: 14px;
@@ -127,7 +129,7 @@ export default {
       width: 420px;
     }
     .title {
-      padding-left: 160px;
+      padding-left: 152px;
       padding-bottom: 70px;
       padding-top: 10px;
       color: #585858;
@@ -137,6 +139,8 @@ export default {
       }
       > div.content {
         width: 480px;
+        max-height: 270px;
+        overflow-y: auto;
         p {
           margin-bottom: 8px;
           .type {

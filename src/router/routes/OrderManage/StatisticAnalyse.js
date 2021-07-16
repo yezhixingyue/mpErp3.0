@@ -4,7 +4,7 @@ const routes = [
     name: 'StatisticalList',
     meta: {
       title: '统计分析',
-      icon: 'el-icon-s-data',
+      icon: 'iconfont icon-tongjifenxi',
       pageName: 'StatisticAnalyseListPage',
       requiresAuth: true,
       scroll: 0,

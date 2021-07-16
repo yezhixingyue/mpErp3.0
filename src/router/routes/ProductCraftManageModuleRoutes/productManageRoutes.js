@@ -4,7 +4,7 @@ const routes = [
     name: 'ProductManageList',
     meta: {
       title: '产品管理',
-      icon: 'el-icon-s-management',
+      icon: 'iconfont icon-chanpinguanli',
       pageName: 'ProductManageList',
       requiresAuth: true,
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
