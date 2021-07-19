@@ -30,6 +30,7 @@ import BreadthSaveDialog from '@/components/PrintBreadth/BreadthSaveDialog.vue';
 import BreadthTableComp from '@/components/PrintBreadth/BreadthTableComp.vue';
 
 export default {
+  name: 'PrintFormatListPage',
   computed: {
     ...mapState('basicSet', ['BreadthCLassList', 'BreadthList']),
     listData() {

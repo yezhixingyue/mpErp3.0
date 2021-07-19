@@ -499,6 +499,24 @@ const api = {
   getMakeupRuleItemList(solutionID) { // GET /Api/MakeupRuleItem/List 获取拼版规则条目列表
     return instance.get('/Api/MakeupRuleItem/List', { params: { solutionID } });
   },
+  getMixtureMakeupList(id) { // GET /Api/MixtureMakeup/List // 获取混拼信息列表
+    return instance.get('/Api/MixtureMakeup/List', { params: { id } });
+  },
+  getMixtureMakeupItemSave(data) { // POST /Api/MixtureMakeupItem/Save  混拼信息条目保存 --- 设置混拼条件
+    return instance.post('/Api/MixtureMakeupItem/Save', data);
+  },
+  getMixtureMakeupItemRemove(id) { // DELETE /Api/MixtureMakeupItem/Remove  混拼条目删除 传入混拼条目ID
+    return instance.delete('/Api/MixtureMakeupItem/Remove', { params: { id } });
+  },
+  getMixtureMakeupChangeDefault(solutionID, partID) { // PUT /Api/MixtureMakeup/ChangeDefault 混拼默认选中设置
+    return instance.put('/Api/MixtureMakeup/ChangeDefault', '', { params: { solutionID, partID } });
+  },
+  getMixtureMakeupSamePropertySetup(data) { // POST /Api/MixtureMakeup/SamePropertySetup 混拼相同条件设置
+    return instance.post('/Api/MixtureMakeup/SamePropertySetup', data);
+  },
+  getMixtureMakeupExcludeNumberSetup(solutionID, partID, formularID) { // PUT /Api/MixtureMakeup/ExcludeNumberSetup  混拼数量排除公式设置
+    return instance.put('/Api/MixtureMakeup/ExcludeNumberSetup', { params: { solutionID, partID, formularID } });
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

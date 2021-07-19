@@ -135,7 +135,7 @@ export default {
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
           this.onGoBackClick();
-          this.$store.commit('productManage/setProductInteractionDataListChange', data);
+          this.$store.commit('productManage/setProductInteractionDataListChange', [data, resp.data.Data]);
         };
         this.messageBox.successSingle('保存成功', cb, cb);
       }

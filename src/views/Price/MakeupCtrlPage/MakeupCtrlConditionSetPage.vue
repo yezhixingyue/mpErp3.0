@@ -3,25 +3,26 @@
     <header>
       <span>当前产品：{{routeInfo.ProductName}}</span>
       <span>设置方案：{{routeInfo.SolutionName}}</span>
-      <span v-if="routeInfo.PartName">设置部件：{{routeInfo.PartName}}</span>
+      <span v-if="routeInfo.PartName">设置部件：{{routeInfo.PartName}} {{routeInfo.isMixin && '混拼条件'}}</span>
     </header>
     <main>
       <ContionCommonComp ref="oLeftComp" :ComparePropertyList='MakeupRightPropertyList' :PropertyList='MakeupLeftPropertyList'
        leftWidth='40%' :curEditData='curMakeupItemEditData' :rightTitle='rightTitle'>
         <template slot='title'>
           <!-- <span class="blue-span" v-if="routeInfo.setType==='interaction' || routeInfo.setType==='subInteraction'" @click="visible=true">+ 添加结果</span> -->
-          <template v-if="routeInfo.setType==='0'">
+          <template v-if="routeInfo.setType==='0' && !routeInfo.isMixin">
             <span class="intro" @click="drawer=true"> <i>?</i> 说明</span>
           </template>
         </template>
         <SizeNumberPanel
-         v-if="routeInfo.setType==='0'"
+         v-if="routeInfo.setType==='0' && !routeInfo.isMixin"
          ref="oSizeNumberPanel"
          :Name='routeInfo.PartName || "产品"'
          :initData='curMakeupItemEditData'
          :drawerVisible.sync='drawer'
          :SizeNumberPropertyList='SizeNumberPropertyList'
          />
+        <MakeupBreadthPaneL v-if="routeInfo.setType==='1'" />
       </ContionCommonComp>
     </main>
     <footer>
@@ -36,6 +37,7 @@ import { mapState } from 'vuex';
 // import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import ContionCommonComp from '@/components/common/FormulaAndConditionComps/ContionCommonComp.vue';
 import SizeNumberPanel from '@/components/PriceComps/MakeupCtrl/RightPanels/SizeNumberPanel';
+import MakeupBreadthPaneL from '@/components/PriceComps/MakeupCtrl/RightPanels/MakeupBreadthPaneL';
 
 export default {
   name: 'MakeupCtrlConditionSet',
@@ -48,14 +50,17 @@ export default {
   components: {
     ContionCommonComp,
     SizeNumberPanel,
+    MakeupBreadthPaneL,
   },
   computed: {
     ...mapState('priceManage', ['MakeupLeftPropertyList', 'MakeupRightPropertyList', 'SizeNumberPropertyList', 'curMakeupItemEditData']),
     rightTitle() {
+      if (this.routeInfo.isMixin) return '则允许混拼';
+      if (this.routeInfo.setType === '1') return '使用以下幅面';
       return '则';
     },
     routeInfo() {
-      const { ProductID, PartID, ProductName, PartName, SolutionName, SolutionID, setType } = this.$route.params;
+      const { ProductID, PartID, ProductName, PartName, SolutionName, SolutionID, setType, isMixin } = this.$route.params;
       return {
         ProductID,
         PartID: PartID === 'null' ? '' : PartID,
@@ -63,6 +68,7 @@ export default {
         PartName: PartName === 'null' ? '' : PartName,
         SolutionName,
         SolutionID,
+        isMixin,
         setType,
       };
     },
@@ -75,8 +81,10 @@ export default {
       const condition = this.$refs.oLeftComp.getConditonResult();
       if (!condition) return;
       let result;
-      if (this.routeInfo.setType === '0') {
+      if (this.routeInfo.setType === '0' && !this.routeInfo.isMixin) {
         result = this.$refs.oSizeNumberPanel.getSubmitInfo();
+      } else if (this.routeInfo.isMixin) {
+        result = {};
       }
       if (!result) return;
       const { SolutionID, ProductID, PartID } = this.routeInfo;
@@ -84,7 +92,12 @@ export default {
       this.handleSubmit(temp);
     },
     async handleSubmit(data) {
-      const resp = await this.api.getMakeupSolutionItemSave(data).catch(() => {});
+      let requestApi = this.api.getMakeupSolutionItemSave; // 保存普通的方案条目
+      if (this.routeInfo.isMixin) { // 添加的是混拼条目，此时调用不同的数据接口：getMixtureMakeupItemSave
+        console.log(data);
+        requestApi = this.api.getMixtureMakeupItemSave;
+      }
+      const resp = await requestApi(data).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
           this.onGoBackClick();
@@ -114,6 +127,7 @@ export default {
     height: 15px;
     color: #21CAE3;
     flex: none;
+    white-space: nowrap;
     > span {
       &:first-of-type {
         font-weight: bold;

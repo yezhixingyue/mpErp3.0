@@ -28,46 +28,56 @@
     </header>
     <main :class="isTableDataloading || isPropertyListLoading?'loading':''">
       <SolutionSaveDialog :visible.sync="solutionSaveVisible" :saveData='solutionSaveData' @submit="onSolutionSaveSubmit" />
-      <SolutionTableCom
-        @remove='onTableItemRemove'
-        @setup="onSetupPageJump($event, '', '')"
-        :type='`${curControlType}`'
-        :titleObj="{title: '产品尺寸数量', btnText: '+ 添加拼版尺寸数量设置'}"
-        :dataList='getTargetItemList()'
-        >
-        <template #title>
-          <p class="tips-box"> <i class="el-icon-warning"></i> 注：未设置的产品 / 部件，不拼版</p>
-        </template>
-      </SolutionTableCom>
-      <template v-if="curProduct && Array.isArray(curProduct.PartList)">
+      <template v-if="curSolutionItem">
         <SolutionTableCom
-        v-for="item in curProduct.PartList"
-        :key="item.ID"
-        @remove='onTableItemRemove'
-        @setup="onSetupPageJump($event, item.ID, item.Name)"
-        :type='`${curControlType}`'
-        :titleObj="{title: `${item.Name}产品尺寸数量`, btnText: '+ 添加拼版尺寸数量设置'}"
-        :dataList='getTargetItemList(item.ID)'
-        />
-      </template>
-      <SolutionTableCom
-        @remove='onTableItemRemove'
-        @setup="onSetupPageJump($event, '', '')"
-        :type='`${curControlType}`'
-        :titleObj="{title: '多个部件1混拼设置', btnText: '+ 添加条件'}"
-        :dataList='[]'
-        >
-        <template #title>
-          <div>
-            <span class="blue-span">设置默认</span>
-            <span class="is-gray is-font-size-12">默认：不混拼</span>
-            <span class="blue-span">相同条件设置</span>
-            <span class="is-gray is-font-size-12">工艺：覆膜 印面 印色 相同工艺：覆膜 印面 印色 相同工艺：覆膜 印面 印色 相同</span>
-            <span class="blue-span">排除数量设置</span>
-            <span class="is-gray is-font-size-12">子公式1</span>
-          </div>
+          @remove='onTableItemRemove'
+          @setup="onSetupPageJump($event, '', '')"
+          :type='`${curControlType}`'
+          :titleObj='getTitleObj(null, curControlType)'
+          :dataList='getTargetItemList()'
+          >
+          <template #title>
+            <p class="tips-box"> <i class="el-icon-warning"></i> {{tipsContent}}</p>
+          </template>
+        </SolutionTableCom>
+        <template v-if="curProduct && Array.isArray(curProduct.PartList)">
+          <SolutionTableCom
+          v-for="item in curProduct.PartList" :key="item.ID"
+          @remove='onTableItemRemove'
+          @setup="onSetupPageJump($event, item.ID, item.Name)"
+          :type='`${curControlType}`'
+          :titleObj='getTitleObj(item, curControlType)'
+          :dataList='getTargetItemList(item.ID)'
+          />
         </template>
-      </SolutionTableCom>
+        <!-- 混拼设置 -->
+        <template v-if="curControlType === 0">
+          <SolutionTableCom
+            v-for="item in canMixinMakeupPartList" :key="item.ID + 'mixin'"
+            @remove='onTableItemRemove'
+            @setup="onSetupPageJump($event, item.ID, item.Name, true)"
+            :type='`${curControlType}`'
+            :titleObj="{title: `多个 [ ${item.Name} ] 混拼设置`, btnText: '+ 添加条件'}"
+            :dataList='[]'
+            >
+            <template #title>
+              <div class="title-box">
+                <span class="blue-span" @click="getMixtureMakeupChangeDefault(item)">设置默认</span>
+                <span class="is-gray is-font-size-12">默认：不混拼</span>
+                <span class="blue-span">相同条件设置</span>
+                <span class="is-gray is-font-size-12 crafts">工艺：覆膜 印面 印色 相同工艺：覆膜 印面 印色 相同工艺：覆膜 印面 印色 相同</span>
+                <span class="blue-span">排除数量设置</span>
+                <span class="is-gray is-font-size-12">子公式1</span>
+              </div>
+            </template>
+          </SolutionTableCom>
+        </template>
+      </template>
+      <div v-else>
+        <p class="tips-box is-pink" style="margin: 0;width:300px"> <i  class="el-icon-warning"></i> 请设置并选择分类方案</p>
+      </div>
+      <PartMixinSetSaveDialog :visible.sync="mixinSetVisible" :saveData='mixinSaveData' @submit="onMixinSetSaveSubmit" />
+      <!-- <SubFormulaAddAndSelectDialog /> -->
     </main>
     <footer>
       <el-button class="goback" @click="onGobackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -79,13 +89,17 @@
 import { mapState } from 'vuex';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import SolutionSaveDialog from '@/components/PriceComps/MakeupCtrl/SolutionSaveDialog';
+import PartMixinSetSaveDialog from '@/components/PriceComps/MakeupCtrl/PartMixinSetSaveDialog';
 import SolutionTableCom from '@/components/PriceComps/MakeupCtrl/SolutionTableCom.vue';
+// import SubFormulaAddAndSelectDialog from '@/components/common/FormulaAndConditionComps/SubFormulaAddAndSelectDialog.vue';
 
 export default {
   name: 'MakeupCtrl',
   components: {
     SolutionSaveDialog,
     SolutionTableCom,
+    PartMixinSetSaveDialog,
+    // SubFormulaAddAndSelectDialog,
   },
   computed: {
     ...mapState('priceManage', ['MakeupControlTypeList', 'MakeupLeftPropertyList', 'MakeupRightPropertyList', 'SizeNumberPropertyList', 'PriceManageList']),
@@ -114,6 +128,36 @@ export default {
       }
       return null;
     },
+    canMixinMakeupPartList() { // 可以混拼的部件列表
+      if (!this.curProduct) return [];
+      return this.curProduct.PartList.filter(it => it.UseTimes && it.UseTimes.MaxValue > 1);
+    },
+    tipsContent() {
+      let tip = '';
+      switch (this.curControlType) {
+        case 0:
+          tip = '注：未设置的产品 / 部件，不拼版';
+          break;
+        case 1:
+          tip = '注：未指定幅面的产品 / 部件，不拼版';
+          break;
+        case 2:
+          tip = '适用于画册等需要按折手方式拼版的产品，不设置则认为按1张拼版';
+          break;
+        case 3:
+          tip = '未指定算法时，使用“考虑通刀”算法';
+          break;
+        case 4:
+          tip = '未设置的产品 / 部件，按物料数量计算';
+          break;
+        case 5:
+          tip = '损耗计算先匹配“物料损耗设为”数值的条目，仅匹配一条，如果没有，则损耗设为 0；然后匹配损耗增加条目，可匹配多条进行累加';
+          break;
+        default:
+          break;
+      }
+      return tip;
+    },
   },
   data() {
     return {
@@ -126,6 +170,9 @@ export default {
       MakeupRuleItemList: [],
       isTableDataloading: false,
       isPropertyListLoading: true,
+      mixinSetVisible: false,
+      mixinSaveData: null,
+      MixtureMakeupList: [], // 混拼数据列表
     };
   },
   methods: {
@@ -133,6 +180,7 @@ export default {
       this.$router.replace('/PriceManageList');
     },
     onSolutionSaveClick(ID) {
+      console.log('onSolutionSaveClick', ID);
       const data = ID ? this.solutionList.find(it => it.ID === ID) : null;
       const temp = {
         ID: data ? data.ID : '',
@@ -205,6 +253,17 @@ export default {
     getTypeLength(type) {
       return this.solutionList.filter(it => it.Type === type).length;
     },
+    getTitleObj(item) { // 获取表格头部标题
+      const str = this.$utils.getNameFromListByIDs(this.curControlType, this.MakeupControlTypeList);
+      let front = '+ 添加';
+      if ([1, 4].includes(this.curControlType)) front = '设置';
+      if ([0].includes(this.curControlType)) front = '+ 添加拼版';
+      const behind = front.includes('设置') ? '' : '设置';
+      return {
+        title: `${item ? item.Name : ''}产品${str}`,
+        btnText: `${front}${str}${behind}`,
+      };
+    },
     async onTableItemRemove(e) {
       if (!e || !e.ID) return;
       const resp = await this.api.getMakeupSolutionItemRemove(e.ID).catch(() => {});
@@ -215,7 +274,7 @@ export default {
         this.messageBox.successSingle('删除成功', cb, cb);
       }
     },
-    onSetupPageJump(data, PartID, PartName) { // 跳转条件配置页面
+    onSetupPageJump(data, PartID, PartName, isMixin) { // 跳转条件配置页面
       if (!data) return;
       const [setType, editData] = data;
       const params = {
@@ -225,6 +284,7 @@ export default {
         PartName: PartName || 'null',
         SolutionName: this.curSolutionItem.Name,
         SolutionID: this.curSolutionItem.ID,
+        isMixin: isMixin || false,
         setType,
       };
       this.$store.commit('priceManage/setCurMakeupItemEditData', editData);
@@ -246,6 +306,30 @@ export default {
       }
       return this.localSolutionDataList.filter(it => !it.PartID);
     },
+    async getMixtureMakeupList() { // 获取混拼列表
+      if (!this.curSolutionID || this.curControlType !== 0) return;
+      const resp = await this.api.getMixtureMakeupList(this.curSolutionID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        this.MixtureMakeupList = resp.data.Data;
+      }
+    },
+    async onMixinSetSaveSubmit(e) {
+      console.log('onMixinSetSaveSubmit', e);
+      if (!e) return;
+      const { solutionID, partID } = e;
+      const resp = await this.api.getMixtureMakeupChangeDefault(solutionID, partID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          console.log(resp);
+        };
+        this.messageBox.successSingle('设置成功', cb, cb);
+      }
+    },
+    getMixtureMakeupChangeDefault(item) {
+      const temp = { Part: item, solutionID: this.curSolutionID };
+      this.mixinSaveData = temp;
+      this.mixinSetVisible = true;
+    },
   },
   watch: {
     curControlType() {
@@ -255,6 +339,7 @@ export default {
     },
     curSolutionID() {
       this.getMakeupRuleItemList();
+      this.getMixtureMakeupList();
     },
   },
   async mounted() {
@@ -262,8 +347,15 @@ export default {
     await this.$store.dispatch('priceManage/getMakeupPropertyList', this.$route.params.id);
     this.isPropertyListLoading = false;
   },
-  activated() {
-    this.getMakeupRuleItemList();
+  beforeRouteEnter(to, from, next) {
+    if (from.name === 'MakeupCtrlConditionSet') {
+      next(vm => {
+        vm.getMakeupRuleItemList();
+        vm.getMixtureMakeupList();
+      });
+    } else {
+      next();
+    }
   },
 };
 </script>
@@ -366,13 +458,42 @@ export default {
     //   }
     // }
     &.loading {
-      > section {
+      > section, > div > section {
         opacity: 0.2;
       }
     }
     .tips-box {
-      width: 300px;
+      min-width: 300px;
       margin-left: 35px;
+      width: auto;
+      white-space: nowrap;
+    }
+    .title-box {
+      font-size: 12px;
+      padding-left: 20px;
+      white-space: nowrap;
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      > span {
+        line-height: 18px;
+        flex: 0 1 auto;
+        &.blue-span {
+          font-size: 13px;
+          width: 160px;
+          text-align: right;
+          margin-right: 6px;
+          &:first-of-type {
+            margin-right: 20px;
+          }
+        }
+        &.crafts {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          max-width: 560px;
+        }
+      }
     }
   }
   > footer {

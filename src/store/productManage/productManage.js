@@ -265,13 +265,13 @@ export default {
       state.CompareLeftPropertyList = Array.isArray(compareLeft) ? compareLeft : [];
       state.CompareRightPropertyList = Array.isArray(compareRight) ? compareRight : [];
     },
-    setProductInteractionDataListChange(state, item) { // 新增或编辑后对仓库上的列表数据进行修改
+    setProductInteractionDataListChange(state, [item, ID]) { // 新增或编辑后对仓库上的列表数据进行修改
       if (!item) return;
       if (item.ID) {
         const i = state.ProductInteractionDataList.findIndex(it => it.ID === item.ID);
         if (i > -1) state.ProductInteractionDataList.splice(i, 1, item);
       } else {
-        state.ProductInteractionDataList.unshift(item);
+        state.ProductInteractionDataList.unshift({ ...item, ID });
       }
     },
     setSubTargetData(state, data) {

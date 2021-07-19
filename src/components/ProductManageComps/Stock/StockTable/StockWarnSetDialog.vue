@@ -13,7 +13,7 @@
     <div class="title">
       <!-- <span>规格： {{title}}全部规格通用</span> -->
     </div>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" class="demo-ruleForm" hide-required-asterisk>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="204px" class="demo-ruleForm" hide-required-asterisk>
       <el-form-item label="" prop="MinNumber">
         <span class="label">库存数量 <i>≤</i></span>
         <el-input v-model.number.trim="ruleForm.MinNumber" size="small"></el-input>
@@ -112,7 +112,7 @@ export default {
         }
       }
       const len1 = mobiles.length;
-      const len2 = [...new Set(...mobiles)].length;
+      const len2 = [...new Set(mobiles)].length;
       if (len1 > len2) {
         callback(new Error('存在重复手机号 请检查'));
         return;

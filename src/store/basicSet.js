@@ -38,6 +38,15 @@ export default {
     craftFetchData: false,
   },
   getters: {
+    BreadthTreeList(state) {
+      if (!state.BreadthList || state.BreadthList.length === 0 || !state.BreadthCLassList || state.BreadthCLassList.length === 0) return [];
+      const ClassList = JSON.parse(JSON.stringify(state.BreadthCLassList));
+      ClassList.forEach(classItem => {
+        const _item = classItem;
+        _item.list = state.BreadthList.filter(it => it.Class && it.Class.ID === classItem.ID);
+      });
+      return ClassList.filter(it => it.list.length > 0);
+    },
   },
   mutations: {
     /* 设置界面元素列表数据

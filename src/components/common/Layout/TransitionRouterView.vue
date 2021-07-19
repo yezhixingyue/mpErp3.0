@@ -38,6 +38,7 @@ export default {
 .fade-transform-enter-active {
   transition: all .3s;
   overflow: hidden;
+  user-select: none;
 }
 
 .fade-transform-enter {

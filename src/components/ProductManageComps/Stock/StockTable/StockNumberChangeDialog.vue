@@ -26,7 +26,7 @@
         </template>
       </div>
     </div>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" class="demo-ruleForm" hide-required-asterisk>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="202px" class="demo-ruleForm" hide-required-asterisk>
       <el-form-item label="新库存：" prop="number">
         <el-input v-model.number.trim="ruleForm.number" size="small"></el-input>
         <span class="label">{{Unit}}</span>
@@ -129,13 +129,15 @@ export default {
       width: 420px;
     }
     .title {
-      padding-left: 152px;
+      padding-left: 148px;
       padding-bottom: 70px;
       padding-top: 10px;
       color: #585858;
       display: flex;
       > span {
         flex: none;
+        color: #888E99;
+        margin-right: 8px;
       }
       > div.content {
         width: 480px;

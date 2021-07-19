@@ -226,7 +226,10 @@ export default class PropertyClass {
   }
 
   static getProperyName(item) {
-    const { FixedType, Element, Name, Type } = item;
+    const { FixedType, Element, Name, Type, Formula } = item;
+    // if (DisplayContent) {
+    //   return DisplayContent.replace(/\[|\]/g, '');
+    // }
     if (FixedType || FixedType === 0) {
       const t = PropertyFixedType.find(it => it.ID === FixedType);
       if (t) return t.Name;
@@ -236,6 +239,10 @@ export default class PropertyClass {
     if (!Element) {
       if (Name) return Name;
       if (Type || Type === 0) {
+        if (Type === 7 && Formula && Formula.Name) {
+          // 公式
+          return Formula.Name;
+        }
         const _t = ElementSelectTypeEnum.find(it => it.ID === Type);
         return _t ? _t.nickName : '';
       }

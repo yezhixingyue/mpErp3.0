@@ -56,6 +56,9 @@
         <span class="priority-box">优先级：{{item.Priority}}</span>
         <CtrlMenus @edit='onSetupClick(item)' @remove='onRemoveClick(item)' />
       </div>
+      <div v-if="localTableData.length === 0">
+        <span style="margin-left:25px;color:#a2a2a2">暂无数据</span>
+      </div>
     </main>
   </section>
 </template>
@@ -142,6 +145,8 @@ export default {
     line-height: 28px;
     display: flex;
     align-items: center;
+    width: 100%;
+    overflow: hidden;
     > .mp-common-title-wrap {
       font-size: 15px;
       color: #444;
@@ -152,7 +157,9 @@ export default {
       }
     }
     > .blue-span {
+      flex: none;
       font-size: 14px;
+      white-space: nowrap;
     }
   }
   > main {

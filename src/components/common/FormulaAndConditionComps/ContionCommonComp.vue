@@ -329,6 +329,7 @@ export default {
           padding: 15px 0;
           padding-bottom: 30px;
           flex: none;
+          white-space: nowrap;
           .mp-common-title-wrap {
             color: #444;
             font-size: 15px;
@@ -433,6 +434,7 @@ export default {
         min-width: 2em;
         position: relative;
         top: 1px;
+        white-space: nowrap;
         &::before {
           height: 16px;
         }
