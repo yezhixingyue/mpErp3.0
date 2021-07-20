@@ -22,7 +22,7 @@
          :drawerVisible.sync='drawer'
          :SizeNumberPropertyList='SizeNumberPropertyList'
          />
-        <MakeupBreadthPaneL v-if="routeInfo.setType==='1'" />
+        <MakeupBreadthPaneL ref="oMakeupBreadthPaneL" :initData='curMakeupItemEditData' v-if="routeInfo.setType==='1'" />
       </ContionCommonComp>
     </main>
     <footer>
@@ -86,6 +86,9 @@ export default {
       } else if (this.routeInfo.isMixin) {
         result = {};
       }
+      if (this.routeInfo.setType === '1') {
+        result = this.$refs.oMakeupBreadthPaneL.getSubmitInfo();
+      }
       if (!result) return;
       const { SolutionID, ProductID, PartID } = this.routeInfo;
       const temp = { ...condition, ...result, SolutionID, ProductID, PartID };
@@ -142,6 +145,7 @@ export default {
   > main {
     flex: 1;
     padding-top: 15px;
+    overflow: hidden;
     .blue-span {
       font-size: 13px;
     }

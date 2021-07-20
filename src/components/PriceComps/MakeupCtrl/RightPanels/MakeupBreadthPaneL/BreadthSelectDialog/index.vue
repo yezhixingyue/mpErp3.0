@@ -3,6 +3,7 @@
     width="800px"
     top='8vh'
     title="选择幅面"
+    submitText='确定'
     :visible.sync="visible"
     @submit="onSubmit"
     @cancle="onCancle"
@@ -11,7 +12,7 @@
     class="mp-erp-comps-price-module-price-item-breadth-select-dialog-comp-wrap"
   >
     <el-checkbox v-model="checkAll" :indeterminate="isIndeterminateAll" class='check-all'>全选</el-checkbox>
-    <CheckItem v-for="it in BreadthTreeList" :key="it.ID" :data='it' />
+    <CheckItem v-for="it in BreadthTreeList" :key="it.ID" :itemData='it' v-model='checkedList' />
   </CommonDialogComp>
 </template>
 
@@ -26,8 +27,8 @@ export default {
       default: false,
     },
     saveData: {
-      type: Object,
-      default: null,
+      type: Array,
+      default: () => [],
     },
     BreadthTreeList: {
       type: Array,
@@ -39,24 +40,45 @@ export default {
     CheckItem,
   },
   computed: {
+    checkAllList() {
+      if (!Array.isArray(this.BreadthTreeList) || this.BreadthTreeList.length === 0) return [];
+      const _checkAllList = this.BreadthTreeList
+        .map(it => it.list.map(_it => ({ First: { ID: _it.ID }, Second: _it.ModeList.map(sub => sub.Mode) })))
+        .reduce((prev, next) => [...prev, ...next]);
+      return _checkAllList;
+    },
+    checkAllListModeList() {
+      if (this.checkAllList.length === 0) return [];
+      return this.checkAllList.map(it => it.Second).reduce((prev, next) => [...prev, ...next]);
+    },
+    checkedListModeList() { // 已选择的幅面包含的
+      if (this.checkedList.length === 0) return [];
+      return this.checkedList.map(it => it.Second).reduce((prev, next) => [...prev, ...next]);
+    },
     checkAll: {
       get() {
-        return false;
+        return (this.checkedListModeList.length > 0 && this.checkedListModeList.length === this.checkAllListModeList.length);
       },
       set(val) {
-        console.log(val);
+        this.checkedList = val ? this.checkAllList : [];
       },
     },
     isIndeterminateAll() {
-      return false;
+      return (this.checkedListModeList.length > 0 && this.checkedListModeList.length < this.checkAllListModeList.length);
     },
   },
   data() {
     return {
+      checkedList: [],
     };
   },
   methods: {
     async onSubmit() { // 提交
+      if (this.checkedList.length === 0) {
+        this.messageBox.failSingleError('选择失败', '请至少勾选一种印刷幅面');
+        return;
+      }
+      this.$emit('select', this.checkedList);
     },
     onCancle() { // 取消  关闭弹窗
       this.$emit('update:visible', false);
@@ -67,6 +89,8 @@ export default {
     onClosed() { // 关闭 重置表单
     },
     initEditData() { // 数据初始化方法
+      if (Array.isArray(this.saveData)) this.checkedList = this.saveData;
+      else this.checkedList = [];
     },
   },
 };
@@ -77,6 +101,7 @@ export default {
   .el-dialog__body {
     height: 600px;
     overflow: auto;
+    padding: 30px 50px;
     .check-all .el-checkbox__label {
       font-size: 14px;
     }
@@ -85,9 +110,10 @@ export default {
       color: #585858;
     }
     .collapse {
-      margin-left: 35px;
+      margin-left: 20px;
       cursor: pointer;
       user-select: none;
+      color: #a2a2a2;
       > i {
         width: 18px;
         height: 18px;

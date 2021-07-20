@@ -45,7 +45,7 @@ export default {
   },
   data() {
     return {
-      title: '添加方案',
+      title: '设置混拼默认行为',
       ruleForm: {
         solutionID: '',
         partID: '',
@@ -73,7 +73,7 @@ export default {
         this.$goback();
         return;
       }
-      this.ruleForm = { solutionID: this.saveData.solutionID, partID: this.saveData.Part.ID, radio: false };
+      this.ruleForm = { solutionID: this.saveData.solutionID, partID: this.saveData.Part.ID, radio: this.saveData.Part.mixinData.AllowMixture };
     },
   },
 };

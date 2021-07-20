@@ -54,17 +54,17 @@
         <template v-if="curControlType === 0">
           <SolutionTableCom
             v-for="item in canMixinMakeupPartList" :key="item.ID + 'mixin'"
-            @remove='onTableItemRemove'
+            @remove='onMixinTableItemRemove($event, item.ID)'
             @setup="onSetupPageJump($event, item.ID, item.Name, true)"
             :type='`${curControlType}`'
             :titleObj="{title: `多个 [ ${item.Name} ] 混拼设置`, btnText: '+ 添加条件'}"
-            :dataList='[]'
+            :dataList='item.mixinList'
             >
             <template #title>
               <div class="title-box">
                 <span class="blue-span" @click="getMixtureMakeupChangeDefault(item)">设置默认</span>
-                <span class="is-gray is-font-size-12">默认：不混拼</span>
-                <span class="blue-span">相同条件设置</span>
+                <span class="is-gray is-font-size-12">默认：{{item.mixinData.AllowMixture? '混拼' : '不混拼'}}</span>
+                <span class="blue-span" @click="onSamePropertySetupClick(item)">相同条件设置</span>
                 <span class="is-gray is-font-size-12 crafts">工艺：覆膜 印面 印色 相同工艺：覆膜 印面 印色 相同工艺：覆膜 印面 印色 相同</span>
                 <span class="blue-span">排除数量设置</span>
                 <span class="is-gray is-font-size-12">子公式1</span>
@@ -76,8 +76,14 @@
       <div v-else>
         <p class="tips-box is-pink" style="margin: 0;width:300px"> <i  class="el-icon-warning"></i> 请设置并选择分类方案</p>
       </div>
-      <PartMixinSetSaveDialog :visible.sync="mixinSetVisible" :saveData='mixinSaveData' @submit="onMixinSetSaveSubmit" />
+      <PartMixinDefaultSetSaveDialog :visible.sync="mixinDefaultSetVisible" :saveData='mixinDefaultSaveData' @submit="onMixinDefaultSetSaveSubmit" />
       <!-- <SubFormulaAddAndSelectDialog /> -->
+      <FormulaPanelElementSelectDialog
+       isMultiple
+       :visible.sync='SamePropertyVisible'
+       :list='curMixinSamePropertyList'
+       @submit='onSamePropertySelected'
+        />
     </main>
     <footer>
       <el-button class="goback" @click="onGobackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -89,8 +95,9 @@
 import { mapState } from 'vuex';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import SolutionSaveDialog from '@/components/PriceComps/MakeupCtrl/SolutionSaveDialog';
-import PartMixinSetSaveDialog from '@/components/PriceComps/MakeupCtrl/PartMixinSetSaveDialog';
+import PartMixinDefaultSetSaveDialog from '@/components/PriceComps/MakeupCtrl/PartMixinDefaultSetSaveDialog.vue';
 import SolutionTableCom from '@/components/PriceComps/MakeupCtrl/SolutionTableCom.vue';
+import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
 // import SubFormulaAddAndSelectDialog from '@/components/common/FormulaAndConditionComps/SubFormulaAddAndSelectDialog.vue';
 
 export default {
@@ -98,7 +105,8 @@ export default {
   components: {
     SolutionSaveDialog,
     SolutionTableCom,
-    PartMixinSetSaveDialog,
+    PartMixinDefaultSetSaveDialog,
+    FormulaPanelElementSelectDialog,
     // SubFormulaAddAndSelectDialog,
   },
   computed: {
@@ -112,15 +120,7 @@ export default {
       return this.solutionList.find(it => it.ID === this.curSolutionID);
     },
     localSolutionDataList() {
-      if (!Array.isArray(this.MakeupRuleItemList) || this.MakeupRuleItemList.length === 0) return [];
-      const list = JSON.parse(JSON.stringify(this.MakeupRuleItemList)).map(it => {
-        const { Constraint } = it;
-        const [_Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
-          Constraint, this.MakeupLeftPropertyList, this.MakeupRightPropertyList,
-        );
-        return { ...it, Constraint: _Constraint, _ConditionText };
-      });
-      return list;
+      return this.getReductionList(this.MakeupRuleItemList, this.MakeupLeftPropertyList, this.MakeupRightPropertyList);
     },
     curProduct() {
       if (Array.isArray(this.PriceManageList) && this.$route.params.id) {
@@ -130,7 +130,30 @@ export default {
     },
     canMixinMakeupPartList() { // 可以混拼的部件列表
       if (!this.curProduct) return [];
-      return this.curProduct.PartList.filter(it => it.UseTimes && it.UseTimes.MaxValue > 1);
+      return this.curProduct.PartList.filter(it => it.UseTimes && it.UseTimes.MaxValue > 1).map(it => {
+        let mixinData = {
+          AllowMixture: false,
+          ExcludeNumberFormula: null,
+          ID: '',
+          List: [],
+          PartID: it.PartID,
+          SamePropertyList: [],
+          SolutionID: this.curSolutionID,
+        };
+        let mixinList = [];
+        if (Array.isArray(this.MixtureMakeupList) && this.MixtureMakeupList.length > 0) {
+          const t = this.MixtureMakeupList.find(_it => _it.PartID === it.ID);
+          if (t) mixinData = t;
+          if (t && Array.isArray(t.List)) {
+            mixinList = this.getReductionList(t.List, this.MakeupLeftPropertyList, this.MakeupRightPropertyList);
+          }
+        }
+        return {
+          ...it,
+          mixinData,
+          mixinList,
+        };
+      });
     },
     tipsContent() {
       let tip = '';
@@ -170,12 +193,26 @@ export default {
       MakeupRuleItemList: [],
       isTableDataloading: false,
       isPropertyListLoading: true,
-      mixinSetVisible: false,
-      mixinSaveData: null,
+      mixinDefaultSetVisible: false,
+      mixinDefaultSaveData: null,
       MixtureMakeupList: [], // 混拼数据列表
+      SamePropertyData: {}, // 相同条件设置属性列表数据
+      curMixinSamePropertyList: [], // 当前打开的相同属性弹窗属性选择列表
+      SamePropertyVisible: false,
     };
   },
   methods: {
+    getReductionList(list, leftPropertyList, rightPropertyList) {
+      if (!Array.isArray(list) || list.length === 0) return [];
+      const _list = JSON.parse(JSON.stringify(list)).map(it => {
+        const { Constraint } = it;
+        const [_Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
+          Constraint, leftPropertyList, rightPropertyList,
+        );
+        return { ...it, Constraint: _Constraint, _ConditionText };
+      });
+      return _list;
+    },
     onGobackClick() {
       this.$router.replace('/PriceManageList');
     },
@@ -274,6 +311,17 @@ export default {
         this.messageBox.successSingle('删除成功', cb, cb);
       }
     },
+    async onMixinTableItemRemove(e, PartID) {
+      if (!e || !e.ID) return; // e.PartID
+      const resp = await this.api.getMixtureMakeupItemRemove(e.ID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          const t = this.MixtureMakeupList.find(it => it.PartID === PartID);
+          if (t) t.List = t.List.filter(it => it.ID !== e.ID);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
     onSetupPageJump(data, PartID, PartName, isMixin) { // 跳转条件配置页面
       if (!data) return;
       const [setType, editData] = data;
@@ -290,7 +338,7 @@ export default {
       this.$store.commit('priceManage/setCurMakeupItemEditData', editData);
       this.$router.push({ name: 'MakeupCtrlConditionSet', params });
     },
-    async getMakeupRuleItemList() { // 获取方案列表数据
+    async getMakeupRuleItemList() { // 获取混拼方案列表数据
       if (!this.curSolutionID) return;
       this.isTableDataloading = true;
       const resp = await this.api.getMakeupRuleItemList(this.curSolutionID).catch(() => {});
@@ -313,22 +361,48 @@ export default {
         this.MixtureMakeupList = resp.data.Data;
       }
     },
-    async onMixinSetSaveSubmit(e) {
-      console.log('onMixinSetSaveSubmit', e);
+    async onMixinDefaultSetSaveSubmit(e) {
       if (!e) return;
       const { solutionID, partID } = e;
       const resp = await this.api.getMixtureMakeupChangeDefault(solutionID, partID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
-          console.log(resp);
+          const t = this.MixtureMakeupList.find(_it => _it.PartID === partID);
+          if (t) t.AllowMixture = !t.AllowMixture;
+          else this.getMixtureMakeupList();
+          this.mixinDefaultSetVisible = false;
         };
         this.messageBox.successSingle('设置成功', cb, cb);
       }
     },
+    async onMixinSamePropertySetSaveSubmit(e) {
+      if (!e) return;
+      console.log(e);
+    },
     getMixtureMakeupChangeDefault(item) {
       const temp = { Part: item, solutionID: this.curSolutionID };
-      this.mixinSaveData = temp;
-      this.mixinSetVisible = true;
+      this.mixinDefaultSaveData = temp;
+      this.mixinDefaultSetVisible = true;
+    },
+    async onSamePropertySetupClick(item) { // 相同条件设置点击
+      this.curMixinSamePropertyList = await this.getSamePropertyList(item.ID);
+      this.SamePropertyVisible = true;
+    },
+    async getSamePropertyList(PartID) {
+      if (Array.isArray(this.SamePropertyData[PartID]) && this.SamePropertyData[PartID].length > 0) return this.SamePropertyData[PartID];
+      const resp = await PropertyClass.getPropertyList({ ProductID: this.$route.params.id, UseModule: 23, PartID });
+      this.SamePropertyData[PartID] = resp;
+      return resp;
+    },
+    getMixinDataList(ID) {
+      if (Array.isArray(this.MixtureMakeupList) && this.MixtureMakeupList.length > 0) {
+        const t = this.MixtureMakeupList.find(it => it.PartID === ID);
+        return t ? t.List : [];
+      }
+      return [];
+    },
+    onSamePropertySelected(e) {
+      console.log('onSamePropertySelected', e);
     },
   },
   watch: {

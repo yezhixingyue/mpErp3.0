@@ -198,6 +198,7 @@ export default {
     align-items: center;
     overflow: hidden;
     white-space: nowrap;
+    max-width: 1600px;
     > span {
       flex: none;
       &.mp-common-title-wrap {

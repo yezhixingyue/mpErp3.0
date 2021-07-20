@@ -24,7 +24,7 @@
               </template>
               <p v-else>{{item._ConditionText}}</p>
               <p class="if-box" style="margin-right:5px">
-                <span class="is-origin">{{type === 'compare' ? '则必须满足' : '则'}}</span>
+                <span class="is-origin">{{type === '1' ? '使用' : '则'}}</span>
               </p>
               <p v-for="(res, ri) in item.result.filter(_it => _it)" :key="res + ri">{{res}}</p>
             </div>
@@ -40,7 +40,7 @@
               </template>
               <p v-else>{{item._ConditionText}}</p>
               <p class="if-box" style="margin-left:10px;margin-right:5px">
-                <span class="is-origin">{{type === 'compare' ? '则必须满足' : '则'}}</span>
+                <span class="is-origin">{{type === '1' ? '使用' : '则'}}</span>
               </p>
               <p>
                 <em v-for="(res,ri) in item.result.filter(_it => _it)" :key="res + ri" style="margin-right:4px">{{res}}
@@ -67,6 +67,7 @@
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 import { PropertyFixedType } from '@/assets/js/TypeClass/PropertyClass';
 import { mapState } from 'vuex';
+import { MakeupMode } from '@/assets/js/TypeClass/PrintBreadth';
 
 export default {
   props: {
@@ -115,7 +116,8 @@ export default {
       const t = this.MakeupControlTypeList.find(_it => _it.ID === +this.type);
       if (!t) return ['未知结果'];
       if (t.Name === '尺寸数量') {
-        const { LengthFormula, WidthFormula, DifferentContentFormula, PrintNumberFormula } = item;
+        const { LengthFormula, WidthFormula, DifferentContentFormula, PrintNumberFormula, MixtureID } = item;
+        if (MixtureID) return ['允许混拼'];
         const getValue = ({ Value, FormulaName, Type }, title) => {
           let str = title;
           if (Value || Value === 0) str += Value;
@@ -131,6 +133,15 @@ export default {
         const number = getValue(DifferentContentFormula || {}, '纸张数量：');
         const count = getValue(PrintNumberFormula || {}, '印刷份数：');
         return [len, width, number, count];
+      }
+      if (t.Name === '拼版幅面') {
+        const { BreadthList } = item;
+        const str = BreadthList.map(it => {
+          const { First, Second } = it;
+          const modeText = this.$utils.getNameFromListByIDs(Second, MakeupMode).join('、');
+          return `${First.Name}（${modeText}）`;
+        }).join('、');
+        return [str];
       }
       return ['其它类型，暂未生成对应结果'];
     },

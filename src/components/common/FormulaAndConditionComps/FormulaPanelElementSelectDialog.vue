@@ -101,6 +101,10 @@ export default {
       type: String,
       default: '',
     },
+    isMultiple: { // 多选模式
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
