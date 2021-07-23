@@ -3,17 +3,17 @@
     <header>
       <span>当前产品：{{routeInfo.ProductName}}</span>
       <span>设置方案：{{routeInfo.SolutionName}}</span>
-      <span v-if="routeInfo.PartName">设置部件：{{routeInfo.PartName}} {{routeInfo.isMixin && '混拼条件'}}</span>
+      <span v-if="routeInfo.PartName">设置部件：{{routeInfo.PartName}} {{routeInfo.isMixin ? '混拼条件' : ''}}</span>
     </header>
     <main>
       <ContionCommonComp ref="oLeftComp" :ComparePropertyList='MakeupRightPropertyList' :PropertyList='MakeupLeftPropertyList'
        leftWidth='40%' :curEditData='curMakeupItemEditData' :rightTitle='rightTitle'>
         <template slot='title'>
-          <!-- <span class="blue-span" v-if="routeInfo.setType==='interaction' || routeInfo.setType==='subInteraction'" @click="visible=true">+ 添加结果</span> -->
           <template v-if="routeInfo.setType==='0' && !routeInfo.isMixin">
             <span class="intro" @click="drawer=true"> <i>?</i> 说明</span>
           </template>
         </template>
+        <!-- 尺寸数量面板 -->
         <SizeNumberPanel
          v-if="routeInfo.setType==='0' && !routeInfo.isMixin"
          ref="oSizeNumberPanel"
@@ -22,7 +22,12 @@
          :drawerVisible.sync='drawer'
          :SizeNumberPropertyList='SizeNumberPropertyList'
          />
-        <MakeupBreadthPaneL ref="oMakeupBreadthPaneL" :initData='curMakeupItemEditData' v-if="routeInfo.setType==='1'" />
+        <MakeupBreadthPaneL ref="oMakeupBreadthPaneL" :initData='curMakeupItemEditData' v-if="routeInfo.setType==='1'" /> <!-- 拼版幅面面板 -->
+        <MakeupRulePanel ref="oMakeupRulePanel" v-if="routeInfo.setType==='2'" :initData='curMakeupItemEditData' /> <!-- 拼版规则面板 -->
+        <!-- 拼版算法 切割规则 -->
+        <CuttingRulePanel ref="oCuttingRulePanel" v-if="routeInfo.setType==='3'" :initData='curMakeupItemEditData' :partName='routeInfo.PartName' />
+        <PrintTimesPanel ref="oPrintTimesPanel" v-if="routeInfo.setType==='4'" :initData='curMakeupItemEditData' /> <!-- 印刷次数 -->
+        <MaterialWastagePanel ref="oMaterialWastagePanel" v-if="routeInfo.setType==='5'" :initData='curMakeupItemEditData' /> <!-- 物料损耗 -->
       </ContionCommonComp>
     </main>
     <footer>
@@ -38,6 +43,10 @@ import { mapState } from 'vuex';
 import ContionCommonComp from '@/components/common/FormulaAndConditionComps/ContionCommonComp.vue';
 import SizeNumberPanel from '@/components/PriceComps/MakeupCtrl/RightPanels/SizeNumberPanel';
 import MakeupBreadthPaneL from '@/components/PriceComps/MakeupCtrl/RightPanels/MakeupBreadthPaneL';
+import MakeupRulePanel from '@/components/PriceComps/MakeupCtrl/RightPanels/MakeupRulePanel';
+import CuttingRulePanel from '@/components/PriceComps/MakeupCtrl/RightPanels/CuttingRulePanel';
+import PrintTimesPanel from '@/components/PriceComps/MakeupCtrl/RightPanels/PrintTimesPanel';
+import MaterialWastagePanel from '@/components/PriceComps/MakeupCtrl/RightPanels/MaterialWastagePanel';
 
 export default {
   name: 'MakeupCtrlConditionSet',
@@ -51,6 +60,10 @@ export default {
     ContionCommonComp,
     SizeNumberPanel,
     MakeupBreadthPaneL,
+    MakeupRulePanel,
+    CuttingRulePanel,
+    PrintTimesPanel,
+    MaterialWastagePanel,
   },
   computed: {
     ...mapState('priceManage', ['MakeupLeftPropertyList', 'MakeupRightPropertyList', 'SizeNumberPropertyList', 'curMakeupItemEditData']),
@@ -88,6 +101,12 @@ export default {
       }
       if (this.routeInfo.setType === '1') {
         result = this.$refs.oMakeupBreadthPaneL.getSubmitInfo();
+      }
+      if (this.routeInfo.setType === '2') {
+        result = this.$refs.oMakeupRulePanel.getSubmitInfo();
+      }
+      if (this.routeInfo.setType === '3') {
+        result = this.$refs.oCuttingRulePanel.getSubmitInfo();
       }
       if (!result) return;
       const { SolutionID, ProductID, PartID } = this.routeInfo;

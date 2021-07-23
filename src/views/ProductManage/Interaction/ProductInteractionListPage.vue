@@ -22,7 +22,7 @@
         <CommonInteractionTable @remove='onTableItemRemove'  @setup="onSetupPageJump" type='subCompare'
          :dataList='subCompareDataList' :PropertyList='InteractionLeftPropertyList' />
         <!-- 子交互 子对比选择属性弹窗组件 -->
-        <SubFormulaAddAndSelectDialog :visible.sync='visible' :PropertyList='subDialogPropertyList'
+        <SubFormulaAddAndSelectDialog :visible.sync='visible' :PropertyList='subDialogPropertyList' :loading='isSubDialogPropertyLoading'
          @submit='onSelectCompleted' :title='dialogTitle' :initDataStr='initDialogDataStr' />
       </template>
     </main>
@@ -52,6 +52,7 @@ export default {
       itemData4SubInteractionAndSubCompare: null,
       subDialogPropertyList: [],
       initDialogDataStr: '',
+      isSubDialogPropertyLoading: false,
     };
   },
   components: {
@@ -195,7 +196,9 @@ export default {
     },
     async getPropertyList4SubInteractionAndSubCompare() { // 获取子公式子对比数据
       if (this.subDialogPropertyList && Array.isArray(this.subDialogPropertyList) && this.subDialogPropertyList.length > 0) return true;
+      this.isSubDialogPropertyLoading = true;
       const resp = await this.api.getSubformulaUseableProperty(this.ProductID).catch(() => {});
+      this.isSubDialogPropertyLoading = false;
       if (resp && resp.data.Status === 1000) {
         this.subDialogPropertyList = resp.data.Data;
         return true;

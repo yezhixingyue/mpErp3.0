@@ -2,14 +2,18 @@
   <ul class="mp-erp-common-comps-on-element-select-dialog-craft-type-show-item-comp-wrap">
     <li v-for="it in craftTypeList" :key="it.StoredContent || it.Craft.ID">
       <label
+        v-if="!isMultiple || !it.StoredContent"
         class="is-element"
         :class="{'is-disabled': it.StoredContent&&selectedElementIDs.includes(it.StoredContent), 'no-element': !it.StoredContent}"
         @click="onItemClick(it)">{{it.Craft.Name}}
         <template v-if="it._ElementList || it._ElementGroupList">：</template>
       </label>
+      <el-checkbox v-else :value='MultipleCheckedIDList.includes(it.StoredContent)' @change="onCheckedItemChange($event, it)">{{it.Craft.Name}}</el-checkbox>
       <div>
-        <ElementTypeShowComp :selectedElementIDs='selectedElementIDs' @submit="onItemClick" :ElementList='it._ElementList' />
-        <ElementGroupTypeShowComp :selectedElementIDs='selectedElementIDs' @submit="onItemClick" :ElementGroupList='it._ElementGroupList' />
+        <ElementTypeShowComp :selectedElementIDs='selectedElementIDs' @submit="onItemClick" :ElementList='it._ElementList'
+        :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
+        <ElementGroupTypeShowComp :selectedElementIDs='selectedElementIDs' @submit="onItemClick" :ElementGroupList='it._ElementGroupList'
+        :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
       </div>
     </li>
   </ul>
@@ -28,6 +32,14 @@ export default {
       default: () => [],
     },
     selectedElementIDs: {
+      type: Array,
+      default: () => [],
+    },
+    isMultiple: { // 多选模式
+      type: Boolean,
+      default: false,
+    },
+    checkedList: { // 多选时已选中的属性列表
       type: Array,
       default: () => [],
     },
@@ -192,6 +204,10 @@ export default {
       });
       return _temp;
     },
+    MultipleCheckedIDList() {
+      if (!Array.isArray(this.checkedList)) return [];
+      return this.checkedList.map(it => it.StoredContent);
+    },
   },
   methods: {
     getName(item) {
@@ -200,6 +216,9 @@ export default {
     onItemClick(it) {
       if (!it.StoredContent) return;
       this.$emit('submit', it);
+    },
+    onCheckedItemChange(e, el) {
+      this.$emit('checked', e, el);
     },
   },
 };
@@ -219,6 +238,12 @@ export default {
       .blue-span {
         font-size: 12px;
         margin: 0 12px;
+      }
+      &.el-checkbox {
+        margin-right: 10px;
+        .el-checkbox__label {
+          color: #428dfa;
+        }
       }
     }
     > div {

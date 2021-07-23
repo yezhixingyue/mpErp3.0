@@ -20,7 +20,7 @@
         <span class="label">个时预警</span>
       </el-form-item>
       <el-form-item label="接收短信预警手机号：" prop="Mobile">
-        <el-input v-model="ruleForm.Mobile" size="small"></el-input>
+        <el-input v-model="ruleForm.Mobile" size="small" maxlength="200"></el-input>
       </el-form-item>
     </el-form>
     <p class="tips-box"> <i class="el-icon-warning"></i> 注：不填写则不进行短信预警，多个手机号用空格分开</p>

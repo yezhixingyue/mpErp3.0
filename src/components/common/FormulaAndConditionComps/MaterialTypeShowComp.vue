@@ -10,8 +10,10 @@
     <template v-else>
       <li v-for="el in dataList" :key="el.StoredContent || el.ID">
         <span
+          v-if="!isMultiple || !el.StoredContent"
           :class="{'has-child': el.FixedTypeList, disabled: !el.StoredContent, 'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)}"
           class="is-element" @click="onItemClick(el)">{{getName(el)}}</span>
+        <el-checkbox v-else :value='MultipleCheckedIDList.includes(el.StoredContent)' @change="onCheckedItemChange($event, el)">{{getName(el)}}</el-checkbox>
         <div v-if="el.FixedTypeList">
           （<span v-for="item in el.FixedTypeList" class="blue-span" :class="selectedElementIDs.includes(item.StoredContent)?'is-disabled':''"
           @click="onItemClick(item)" :key="item.StoredContent">{{getName(item)}}</span>）
@@ -39,6 +41,14 @@ export default {
       type: String,
       default: 'condition',
     },
+    isMultiple: { // 多选模式
+      type: Boolean,
+      default: false,
+    },
+    checkedList: { // 多选时已选中的属性列表
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     formulaMaterialList() {
@@ -52,6 +62,10 @@ export default {
       });
       return list;
     },
+    MultipleCheckedIDList() {
+      if (!Array.isArray(this.checkedList)) return [];
+      return this.checkedList.map(it => it.StoredContent);
+    },
   },
   methods: {
     getName(item) {
@@ -59,6 +73,9 @@ export default {
     },
     onItemClick(it) {
       this.$emit('submit', it);
+    },
+    onCheckedItemChange(e, el) {
+      this.$emit('checked', e, el);
     },
   },
 };

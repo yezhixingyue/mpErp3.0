@@ -67,7 +67,6 @@ export default {
     },
     getModeText(modeList) {
       const list = this.$utils.getNameFromListByIDs(modeList, MakeupMode);
-      console.log(modeList, list, MakeupMode);
       return list ? list.join('、') : '';
     },
     getSubmitInfo() {

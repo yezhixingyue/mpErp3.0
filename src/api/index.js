@@ -515,7 +515,10 @@ const api = {
     return instance.post('/Api/MixtureMakeup/SamePropertySetup', data);
   },
   getMixtureMakeupExcludeNumberSetup(solutionID, partID, formularID) { // PUT /Api/MixtureMakeup/ExcludeNumberSetup  混拼数量排除公式设置
-    return instance.put('/Api/MixtureMakeup/ExcludeNumberSetup', { params: { solutionID, partID, formularID } });
+    return instance.put('/Api/MixtureMakeup/ExcludeNumberSetup', '', { params: { solutionID, partID, formularID } });
+  },
+  getProductChildFormulaList(productID) { // GET /Api/ChildFormula/List 获取产品子公式列表
+    return instance.get('/Api/ChildFormula/List', { params: { productID } });
   },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */

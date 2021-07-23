@@ -180,6 +180,7 @@ export default {
       }
       const cb = () => {
         this.visible = false;
+        this.extend = true;
       };
       this.$store.dispatch('productManage/getProductPartSave', [data, cb]);
     },

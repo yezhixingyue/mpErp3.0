@@ -99,11 +99,11 @@ export default {
         this.messageBox.failSingleError('保存失败', '分组名称必填，请检查');
         return;
       }
-      const i = this.submitList.findIndex(it => !this.$utils.checkName(it.Name));
-      if (i > -1) {
-        this.messageBox.failSingleError('保存失败', `第${i + 1}行分组名称输入不符合规范，请检查`);
-        return;
-      }
+      // const i = this.submitList.findIndex(it => !this.$utils.checkName(it.Name));
+      // if (i > -1) {
+      //   this.messageBox.failSingleError('保存失败', `第${i + 1}行分组名称输入不符合规范，请检查`);
+      //   return;
+      // }
       const _nameList = this.submitList.map(it => it.Name);
       const _nameSetList = [...new Set(_nameList)];
       if (_nameList.length > _nameSetList.length) {

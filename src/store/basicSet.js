@@ -36,6 +36,7 @@ export default {
       FieldType: 3,
     },
     craftFetchData: false,
+    MakeupRuleList: [], // 拼版规则列表数据
   },
   getters: {
     BreadthTreeList(state) {
@@ -289,6 +290,11 @@ export default {
     setCraftFetchData(state, bool) {
       state.craftFetchData = bool; // 根据该值判断是否需要重新获取数据
     },
+    /* 拼版规则 ↓
+    -------------------------------*/
+    setMakeupRuleList(state, list) {
+      state.MakeupRuleList = list;
+    },
   },
   actions: {
     async getElementList({ state, commit }) { // 获取元素列表（暂固定为公共模板列表）
@@ -435,6 +441,15 @@ export default {
           commit('setCraftRemove', id);
         };
         messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    /* 拼版规则 ↓
+    -------------------------------*/
+    async getMakeupRuleList({ state, commit }) { // 列表数据
+      if (state.MakeupRuleList.length > 0) return;
+      const resp = await api.getMakeupRuleList().catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        commit('setMakeupRuleList', resp.data.Data);
       }
     },
   },

@@ -143,6 +143,12 @@ export default {
         }).join('、');
         return [str];
       }
+      if (t.Name === '拼版规则') {
+        const { RuleList } = item;
+        if (!Array.isArray(RuleList)) return '';
+        const str = RuleList.map(it => `${it.ColumnNumber}列 X ${it.RowNumber}行`).join('、');
+        return [`产品使用 ${str} 进行拼版`];
+      }
       return ['其它类型，暂未生成对应结果'];
     },
   },

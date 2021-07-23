@@ -2,7 +2,9 @@
   <ul class="mp-erp-common-comps-on-element-select-dialog-group-type-show-item-comp-wrap">
     <li v-for="it in groupList" :key="it.Group ? it.Group.ID : it.ID">
       <label v-if="it.Group">
-        <span class="is-element" @click="onItemClick(it)" v-if="it.StoredContent">{{it.Group.Name}}</span>
+        <el-checkbox :value='MultipleCheckedIDList.includes(it.StoredContent)'
+         v-if="isMultiple&&it.StoredContent" @change="onCheckedItemChange($event, it)">{{it.Group.Name}}</el-checkbox>
+        <span class="is-element" @click="onItemClick(it)" v-else-if="it.StoredContent">{{it.Group.Name}}</span>
         <span v-else>{{it.Group.Name}}</span>
         <template v-if="it.Group.GroupProps && it.Group.GroupProps.length > 0">
           （<span :class="selectedElementIDs.includes(gProp.StoredContent)?'is-disabled':''"
@@ -17,18 +19,9 @@
         </template >
         <template v-if="it.List.length > 0">：</template>
       </label>
-      <ul>
-        <li v-for="el in it.List" :key="el.StoredContent || el.ID">
-          <span
-           :class="{'has-child': el._FixedTypeList && el._FixedTypeList.length>0, disabled: !el.StoredContent,
-           'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)}"
-           class="is-element" @click="onItemClick(el)">{{getName(el)}}</span>
-          <div v-if="el._FixedTypeList && el._FixedTypeList.length>0">
-           （<span v-for="item in el._FixedTypeList" class="blue-span" :class="selectedElementIDs.includes(item.StoredContent)?'is-disabled':''"
-            @click="onItemClick(item)" :key="item.StoredContent">{{getName(item)}}</span>）
-          </div>
-        </li>
-      </ul>
+      <ElementTypeShowComp
+      :ElementList='it.List' :selectedElementIDs='selectedElementIDs' @submit="onItemClick"
+      :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
     </li>
   </ul>
 </template>
@@ -36,6 +29,7 @@
 <script>
 // 元素组类型
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import ElementTypeShowComp from './ElementTypeShowComp';
 
 export default {
   props: {
@@ -51,6 +45,17 @@ export default {
       type: Array,
       default: null,
     },
+    isMultiple: { // 多选模式
+      type: Boolean,
+      default: false,
+    },
+    checkedList: { // 多选时已选中的属性列表
+      type: Array,
+      default: () => [],
+    },
+  },
+  components: {
+    ElementTypeShowComp,
   },
   computed: {
     groupList() {
@@ -124,6 +129,10 @@ export default {
       });
       return _temp;
     },
+    MultipleCheckedIDList() {
+      if (!Array.isArray(this.checkedList)) return [];
+      return this.checkedList.map(it => it.StoredContent);
+    },
   },
   methods: {
     getName(item) {
@@ -131,6 +140,9 @@ export default {
     },
     onItemClick(it) {
       this.$emit('submit', it);
+    },
+    onCheckedItemChange(e, el) {
+      this.$emit('checked', e, el);
     },
   },
 };

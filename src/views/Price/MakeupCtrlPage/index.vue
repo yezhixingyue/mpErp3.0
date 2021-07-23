@@ -57,33 +57,37 @@
             @remove='onMixinTableItemRemove($event, item.ID)'
             @setup="onSetupPageJump($event, item.ID, item.Name, true)"
             :type='`${curControlType}`'
-            :titleObj="{title: `多个 [ ${item.Name} ] 混拼设置`, btnText: '+ 添加条件'}"
+            :titleObj="{title: `多个[ ${item.Name} ]混拼设置`, btnText: '+ 添加条件'}"
             :dataList='item.mixinList'
+            class="mixin-table"
             >
             <template #title>
               <div class="title-box">
                 <span class="blue-span" @click="getMixtureMakeupChangeDefault(item)">设置默认</span>
-                <span class="is-gray is-font-size-12">默认：{{item.mixinData.AllowMixture? '混拼' : '不混拼'}}</span>
+                <span class="mixture">默认：{{item.mixinData.AllowMixture? '混拼' : '不混拼'}}</span>
                 <span class="blue-span" @click="onSamePropertySetupClick(item)">相同条件设置</span>
-                <span class="is-gray is-font-size-12 crafts">工艺：覆膜 印面 印色 相同工艺：覆膜 印面 印色 相同工艺：覆膜 印面 印色 相同</span>
-                <span class="blue-span">排除数量设置</span>
-                <span class="is-gray is-font-size-12">子公式1</span>
+                <span class="is-gray is-font-size-12 crafts" :title="getSamePropertyListText(item)">{{getSamePropertyListText(item)}}</span>
+                <span class="blue-span" @click="onExcludeNumCtrlSetupClick(item)">排除数量设置</span>
+                <span class="is-gray is-font-size-12">{{item.mixinData.ExcludeNumberFormulaText}}</span>
               </div>
             </template>
           </SolutionTableCom>
         </template>
       </template>
-      <div v-else>
+      <div v-else-if="!isSolutionListLoading">
         <p class="tips-box is-pink" style="margin: 0;width:300px"> <i  class="el-icon-warning"></i> 请设置并选择分类方案</p>
       </div>
       <PartMixinDefaultSetSaveDialog :visible.sync="mixinDefaultSetVisible" :saveData='mixinDefaultSaveData' @submit="onMixinDefaultSetSaveSubmit" />
-      <!-- <SubFormulaAddAndSelectDialog /> -->
       <FormulaPanelElementSelectDialog
        isMultiple
+       title="相同条件设置"
        :visible.sync='SamePropertyVisible'
        :list='curMixinSamePropertyList'
-       @submit='onSamePropertySelected'
+       :MultipleCheckedList='setSameProperty&&setSameProperty.mixinData&&setSameProperty.mixinData.SamePropertyList
+        ?setSameProperty.mixinData.SamePropertyList:[]'
+       @select='onSamePropertySelected'
         />
+      <PartMixinExcludeNumCtrlDialog :visible.sync="ExcludeNumCtrlVisible" :curData='curExcludeNumCtrlData' @submit="onExcludeNumCtrlSubmit" />
     </main>
     <footer>
       <el-button class="goback" @click="onGobackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -98,7 +102,7 @@ import SolutionSaveDialog from '@/components/PriceComps/MakeupCtrl/SolutionSaveD
 import PartMixinDefaultSetSaveDialog from '@/components/PriceComps/MakeupCtrl/PartMixinDefaultSetSaveDialog.vue';
 import SolutionTableCom from '@/components/PriceComps/MakeupCtrl/SolutionTableCom.vue';
 import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
-// import SubFormulaAddAndSelectDialog from '@/components/common/FormulaAndConditionComps/SubFormulaAddAndSelectDialog.vue';
+import PartMixinExcludeNumCtrlDialog from '@/components/PriceComps/MakeupCtrl/PartMixinExcludeNumCtrlDialog.vue';
 
 export default {
   name: 'MakeupCtrl',
@@ -107,7 +111,7 @@ export default {
     SolutionTableCom,
     PartMixinDefaultSetSaveDialog,
     FormulaPanelElementSelectDialog,
-    // SubFormulaAddAndSelectDialog,
+    PartMixinExcludeNumCtrlDialog,
   },
   computed: {
     ...mapState('priceManage', ['MakeupControlTypeList', 'MakeupLeftPropertyList', 'MakeupRightPropertyList', 'SizeNumberPropertyList', 'PriceManageList']),
@@ -136,7 +140,7 @@ export default {
           ExcludeNumberFormula: null,
           ID: '',
           List: [],
-          PartID: it.PartID,
+          PartID: it.ID,
           SamePropertyList: [],
           SolutionID: this.curSolutionID,
         };
@@ -148,6 +152,11 @@ export default {
             mixinList = this.getReductionList(t.List, this.MakeupLeftPropertyList, this.MakeupRightPropertyList);
           }
         }
+        const ExcludeNumberFormulaList = this.ProductChildFormulaList.filter(_it => _it.PartID && _it.PartID === it.ID);
+        // const t = ExcludeNumberFormulaList.find(_it => _it.ID === mixinData.ExcludeNumberFormula);
+        const ExcludeNumberFormulaText = mixinData.ExcludeNumberFormula ? mixinData.ExcludeNumberFormula.Name : '无';
+        mixinData.ExcludeNumberFormulaText = ExcludeNumberFormulaText;
+        mixinData.ExcludeNumberFormulaList = ExcludeNumberFormulaList;
         return {
           ...it,
           mixinData,
@@ -199,6 +208,10 @@ export default {
       SamePropertyData: {}, // 相同条件设置属性列表数据
       curMixinSamePropertyList: [], // 当前打开的相同属性弹窗属性选择列表
       SamePropertyVisible: false,
+      setSameProperty: null, // 正在设置相同条件设置的部件项目数据
+      ExcludeNumCtrlVisible: false, // 排除数量设置弹窗开关
+      ProductChildFormulaList: [], // 产品子公式数据
+      curExcludeNumCtrlData: null,
     };
   },
   methods: {
@@ -358,7 +371,11 @@ export default {
       if (!this.curSolutionID || this.curControlType !== 0) return;
       const resp = await this.api.getMixtureMakeupList(this.curSolutionID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
-        this.MixtureMakeupList = resp.data.Data;
+        this.MixtureMakeupList = await Promise.all(resp.data.Data.map(async (it) => {
+          const list = await this.getSamePropertyList(it.PartID);
+          const SamePropertyList = it.SamePropertyList.map(_it => PropertyClass.getPerfectPropertyByImperfectProperty(_it, list));
+          return { ...it, SamePropertyList };
+        }));
       }
     },
     async onMixinDefaultSetSaveSubmit(e) {
@@ -385,6 +402,7 @@ export default {
       this.mixinDefaultSetVisible = true;
     },
     async onSamePropertySetupClick(item) { // 相同条件设置点击
+      this.setSameProperty = item;
       this.curMixinSamePropertyList = await this.getSamePropertyList(item.ID);
       this.SamePropertyVisible = true;
     },
@@ -401,8 +419,66 @@ export default {
       }
       return [];
     },
-    onSamePropertySelected(e) {
-      console.log('onSamePropertySelected', e);
+    async onSamePropertySelected(List) {
+      const temp = {
+        List,
+        PartID: this.setSameProperty.ID,
+        SolutionID: this.curSolutionID,
+      };
+      const resp = await this.api.getMixtureMakeupSamePropertySetup(temp).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          const t = this.MixtureMakeupList.find(_it => _it.PartID === this.setSameProperty.ID);
+          if (t) t.SamePropertyList = List;
+          else this.getMixtureMakeupList();
+          this.SamePropertyVisible = false;
+        };
+        this.messageBox.successSingle('保存成功', cb, cb);
+      }
+    },
+    getSamePropertyListText(item) {
+      if (item && item.mixinData && Array.isArray(item.mixinData.SamePropertyList) && item.mixinData.SamePropertyList.length > 0) {
+        return `${item.mixinData.SamePropertyList.map(it => it.DisplayContent.replace(/\[|\]/g, '')).join('、')} 相同`;
+      }
+      return '无';
+    },
+    onExcludeNumCtrlSetupClick(item) { // 排除数量控制点击开关
+      if (!item || !item.mixinData) return;
+      if (item.mixinData.ExcludeNumberFormulaList.length === 0) {
+        this.messageBox.failSingle('当前部件上没有设置子公式');
+        return;
+      }
+      this.curExcludeNumCtrlData = {
+        PartID: item.ID,
+        ExcludeNumberFormula: item.mixinData.ExcludeNumberFormula,
+        ExcludeNumberFormulaList: item.mixinData.ExcludeNumberFormulaList,
+      };
+      this.ExcludeNumCtrlVisible = true;
+    },
+    async getProductChildFormulaList() {
+      const resp = await this.api.getProductChildFormulaList(this.$route.params.id).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        this.ProductChildFormulaList = resp.data.Data;
+      }
+    },
+    async onExcludeNumCtrlSubmit(formularID) {
+      const { PartID, ExcludeNumberFormulaList } = this.curExcludeNumCtrlData;
+      const resp = await this.api.getMixtureMakeupExcludeNumberSetup(this.curSolutionID, PartID, formularID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          const t = this.MixtureMakeupList.find(_it => _it.PartID === PartID);
+          if (t) {
+            if (!formularID) {
+              t.ExcludeNumberFormula = null;
+            } else {
+              const targetFormular = ExcludeNumberFormulaList.find(it => it.ID === formularID);
+              if (targetFormular) t.ExcludeNumberFormula = targetFormular;
+            }
+          } else this.getMixtureMakeupList();
+          this.ExcludeNumCtrlVisible = false;
+        };
+        this.messageBox.successSingle('保存成功', cb, cb);
+      }
     },
   },
   watch: {
@@ -418,6 +494,7 @@ export default {
   },
   async mounted() {
     this.getMakeupSolutionList();
+    this.getProductChildFormulaList();
     await this.$store.dispatch('priceManage/getMakeupPropertyList', this.$route.params.id);
     this.isPropertyListLoading = false;
   },
@@ -566,6 +643,24 @@ export default {
           white-space: nowrap;
           text-overflow: ellipsis;
           max-width: 560px;
+          min-width: 3em;
+        }
+      }
+    }
+    .mixin-table {
+      > header {
+        padding-right: 15px;
+        box-sizing: border-box;
+        .mp-common-title-wrap {
+          min-width: 223px;
+        }
+        .title-box {
+          .mixture {
+            color: #989898;
+            font-size: 12px;
+            width: 6em;
+            flex: none;
+          }
         }
       }
     }

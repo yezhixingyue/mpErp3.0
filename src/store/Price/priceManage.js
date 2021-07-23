@@ -41,6 +41,27 @@ export default {
     MakeupRightPropertyList: [],
     SizeNumberPropertyList: [],
     curMakeupItemEditData: null,
+    CuttingRuleList: [
+      { Name: '最大数量', ID: 0 },
+      { Name: '考虑通刀', ID: 1 },
+      { Name: '方向一致', ID: 2 },
+    ],
+    PrintTimesRuleList: [
+      { Name: '两倍纸张数量', ID: 0 },
+      { Name: '纸张数量', ID: 1 },
+    ],
+    WastageRuleList: [
+      { Name: '物料损耗设为', ID: 0 },
+      { Name: '物料损耗增加', ID: 1 },
+    ],
+    WastageUnitTypeList: [
+      { Name: '未拼版数量', ID: 1 },
+      { Name: '拼板后数量', ID: 2 },
+    ],
+    WastageUnitList: [
+      { Name: '%', ID: 0 },
+      { Name: '张', ID: 1 },
+    ],
   },
   getters: {
   },

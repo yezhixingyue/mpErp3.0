@@ -2,12 +2,13 @@
   <CommonDialogComp
     width="850px"
     top='10vh'
-    title="添加元素"
+    :title="title"
     :visible.sync="visible"
-    :showSubmit='false'
+    :showSubmit='isMultiple'
     cancelText='关闭'
     @cancle="onCancle"
     @open='onOpen'
+    @submit="onMultipleSubmit"
     class="mp-erp-common-comps-formula-panel-comp-element-select-comp-wrap"
   >
     <section class="show-panel-box">
@@ -21,20 +22,46 @@
         <div v-for="it in showData" :key="it.Type">
           <span class="title mp-common-title-wrap">{{getTitle(it.Type)}}</span>
           <!-- 元素组类型 -->
-          <ElementGroupTypeShowComp v-if="it.Type === 2" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <ElementGroupTypeShowComp
+           v-if="it.Type === 2"
+           :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+           :isMultiple='isMultiple' @checked='onChecked' :checkedList='MultipleList' />
           <!-- 元素类型 -->
-          <ElementTypeShowComp v-else-if="it.Type === 3" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <ElementTypeShowComp
+           v-else-if="it.Type === 3"
+           :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+           :isMultiple='isMultiple' @checked='onChecked' :checkedList='MultipleList' />
           <!-- 工艺类型 -->
-          <CraftTypeShowComp v-else-if="it.Type === 4" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <CraftTypeShowComp
+           v-else-if="it.Type === 4"
+           :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+           :isMultiple='isMultiple' @checked='onChecked' :checkedList='MultipleList' />
           <!-- 物料类型 -->
-          <MaterialTypeShowComp :useType='useType' v-else-if="it.Type === 5" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <MaterialTypeShowComp
+           v-else-if="it.Type === 5" :useType='useType'
+           :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+           :isMultiple='isMultiple' @checked='onChecked' :checkedList='MultipleList' />
           <!-- 尺寸组类型 - 共用元素组组件 -->
-          <ElementGroupTypeShowComp v-else-if="it.Type === 6" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
-          <ElementTypeShowComp v-else-if="it.Type === 8" :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit" />
+          <ElementGroupTypeShowComp
+           v-else-if="it.Type === 6"
+           :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+           :isMultiple='isMultiple' @checked='onChecked' :checkedList='MultipleList' />
+          <ElementTypeShowComp
+           v-else-if="it.Type === 8"
+           :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+           :isMultiple='isMultiple' @checked='onChecked' :checkedList='MultipleList' />
           <!-- 其它类型 -->
           <div v-else>
-            <TipsSpanButton :disabled='selectedElementIDs.includes(item.StoredContent)'
-             v-for="item in it.list" :key="item.StoredContent" @click.native="onSubmit(item)" :text='getTextName(item) || item.DisplayContent || "未知名称"' />
+            <template v-if="!isMultiple">
+              <TipsSpanButton :disabled='selectedElementIDs.includes(item.StoredContent)'
+                v-for="item in it.list" :key="item.StoredContent" @click.native="onSubmit(item)" :text='getTextName(item) || item.DisplayContent || "未知名称"' />
+            </template>
+            <template v-else>
+              <el-checkbox
+               v-for="item in it.list" :key="item.StoredContent"
+               :value='MultipleCheckedIDList.includes(item.StoredContent)'
+               @change="onChecked($event, item)">{{getTextName(item) || item.DisplayContent || "未知名称"}}</el-checkbox>
+            </template>
           </div>
         </div>
         <p class="constant" v-if="showConstant">
@@ -105,6 +132,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    title: {
+      type: String,
+      default: '添加元素',
+    },
+    MultipleCheckedList: { // 多选模式下的初始传入选中数据数组
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -115,6 +150,7 @@ export default {
         { label: '产品', value: 'ProductProperty' },
         { label: '物料', value: 'MaterialProperty' },
       ],
+      MultipleList: [],
     };
   },
   computed: {
@@ -124,6 +160,10 @@ export default {
         if (this.propertyData.PartProperty[this.panelRadio]) return this.propertyData.PartProperty[this.panelRadio];
       }
       return null;
+    },
+    MultipleCheckedIDList() {
+      if (!Array.isArray(this.MultipleList)) return [];
+      return this.MultipleList.map(it => it.StoredContent);
     },
     // tabList() {
     //   if (!this.propertyData) return [];
@@ -143,6 +183,10 @@ export default {
       if (this.selectedElementIDs.includes(data.StoredContent)) return;
       this.$emit('submit', data);
       this.onCancle();
+    },
+    onChecked(isChecked, prop) {
+      if (isChecked) this.MultipleList.push(prop);
+      else this.MultipleList = this.MultipleList.filter(it => it.StoredContent !== prop.StoredContent);
     },
     onCancle() {
       this.$emit('update:visible', false);
@@ -239,6 +283,11 @@ export default {
     },
     onOpen() {
       this.getInitListData();
+      // MultipleList
+      this.setMultipleListInit();
+    },
+    setMultipleListInit() {
+      this.MultipleList = this.MultipleCheckedList.filter(it => it.StoredContent);
     },
     getTitle(Type) {
       const t = ElementSelectTypeEnum.find(it => it.ID === Type);
@@ -256,6 +305,13 @@ export default {
     onConstantClick() {
       this.$emit('submit', null);
       this.onCancle();
+    },
+    onMultipleSubmit() {
+      // if (this.MultipleList.length === 0) {
+      //   this.messageBox.failSingleError('保存失败', '请至少选中一个选项');
+      //   return;
+      // }
+      this.$emit('select', this.MultipleList);
     },
   },
 };

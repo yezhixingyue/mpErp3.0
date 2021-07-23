@@ -11,6 +11,11 @@
     @closed='onClosed'
     class="mp-erp-comps-common-sub-formula-add-and-select-dialog-comp-wrap"
   >
+    <div class="empty" v-if="!loading && selectDataList.length === 0">
+      <img src="@/assets/images/null.png" alt="">
+      <span class="is-font-size-12 is-gray">暂无数据</span>
+      <p class="tips-box is-pink"> <i class="el-icon-warning"></i> 当前产品上没有可设置的元素组或部件，暂无法设置！</p>
+    </div>
     <div v-for="it in selectDataList" :key="it.ID" class="item">
       <p>
         <el-radio v-if="it.Part" v-model="selectValue" :label="it.Part">{{it.Name}}</el-radio>
@@ -54,6 +59,10 @@ export default {
     initDataStr: {
       type: String,
       default: '',
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {
@@ -187,6 +196,21 @@ export default {
       bottom: 85px;
       width: 500px;
       left: 150px;
+    }
+    .empty {
+      padding: 25px 0;
+      margin-left: -25px;
+      height: 100%;
+      position: relative;
+      box-sizing: border-box;
+      > p {
+        position: absolute;
+        bottom: -50px;
+      }
+      > span {
+        margin-left: 15px;
+        vertical-align: 8px;
+      }
     }
   }
   .el-dialog__footer {

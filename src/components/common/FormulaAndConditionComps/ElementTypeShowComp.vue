@@ -2,13 +2,16 @@
   <ul class="mp-erp-common-comps-on-element-select-dialog-element-type-show-item-comp-wrap">
     <li v-for="el in elementList" :key="el.StoredContent || el.ID">
       <span
+        v-if="!isMultiple || !el.StoredContent"
         :class="{
           'has-child': el._FixedTypeList&&el._FixedTypeList.length > 0,
-          disabled: !el.StoredContent,
-          'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)
+          'disabled': !el.StoredContent,
+          'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent),
+          'is-element': true
         }"
-        class="is-element"
-        @click="onItemClick(el)">{{getName(el)}}</span>
+        @click="onItemClick(el)"
+        >{{getName(el)}}</span>
+      <el-checkbox :value='MultipleCheckedIDList.includes(el.StoredContent)' @change="onCheckedItemChange($event, el)" v-else>{{getName(el)}}</el-checkbox>
       <div v-if="el._FixedTypeList && el._FixedTypeList.length > 0">
         （<span v-for="item in el._FixedTypeList" class="blue-span" :class="selectedElementIDs.includes(item.StoredContent)?'is-disabled':''"
         @click="onItemClick(item)" :key="item.StoredContent">{{getName(item)}}</span>）
@@ -32,6 +35,14 @@ export default {
       default: null,
     },
     selectedElementIDs: {
+      type: Array,
+      default: () => [],
+    },
+    isMultiple: { // 多选模式
+      type: Boolean,
+      default: false,
+    },
+    checkedList: { // 多选时已选中的属性列表
       type: Array,
       default: () => [],
     },
@@ -69,6 +80,10 @@ export default {
       });
       return _temp;
     },
+    MultipleCheckedIDList() {
+      if (!Array.isArray(this.checkedList)) return [];
+      return this.checkedList.map(it => it.StoredContent);
+    },
   },
   methods: {
     getName(item) {
@@ -76,6 +91,9 @@ export default {
     },
     onItemClick(it) {
       this.$emit('submit', it);
+    },
+    onCheckedItemChange(e, el) {
+      this.$emit('checked', e, el);
     },
   },
 };
@@ -105,6 +123,12 @@ export default {
         margin: 0 12px;
         font-size: 12px;
       }
+    }
+    .el-checkbox {
+      .el-checkbox__label {
+        font-size: 13px;
+      }
+      margin-right: 12px;
     }
   }
   .disabled {
