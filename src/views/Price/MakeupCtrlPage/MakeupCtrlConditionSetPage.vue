@@ -108,6 +108,12 @@ export default {
       if (this.routeInfo.setType === '3') {
         result = this.$refs.oCuttingRulePanel.getSubmitInfo();
       }
+      if (this.routeInfo.setType === '4') {
+        result = this.$refs.oPrintTimesPanel.getSubmitInfo();
+      }
+      if (this.routeInfo.setType === '5') {
+        result = this.$refs.oMaterialWastagePanel.getSubmitInfo();
+      }
       if (!result) return;
       const { SolutionID, ProductID, PartID } = this.routeInfo;
       const temp = { ...condition, ...result, SolutionID, ProductID, PartID };

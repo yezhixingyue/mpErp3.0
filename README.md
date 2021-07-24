@@ -879,6 +879,16 @@ public enum MultiLevelClassType : byte
 
         拼版控制尺寸数量属性列表 MakeupSizeNumberic = 22
 
+        拼版混合相同条件设置  23
+
+        设置计算子公式条件筛选，目前看是和设置子公式条件筛选出来的数据一样  24
+
+        子交互 25
+
+        子对比 26
+
+        子条件 27
+
 ## 运算符号
 
         等于
@@ -1015,10 +1025,10 @@ public enum MultiLevelClassType : byte
 
 ## 损耗单位类型 WastageUnitType
 
-        未拼版数量
+        展开物料数量
         UnMakeupNumber = 1,
 
-        拼板后数量
+        印刷幅面物料数量
         MakeupNumber = 2
 
 ## 损耗单位 WastageUnit

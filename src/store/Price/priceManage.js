@@ -55,13 +55,17 @@ export default {
       { Name: '物料损耗增加', ID: 1 },
     ],
     WastageUnitTypeList: [
-      { Name: '未拼版数量', ID: 1 },
-      { Name: '拼板后数量', ID: 2 },
+      { Name: '展开物料数量', ID: 1 },
+      { Name: '印刷幅面物料数量', ID: 2 },
     ],
     WastageUnitList: [
       { Name: '%', ID: 0 },
       { Name: '张', ID: 1 },
     ],
+    /** 子条件
+    ----------------------------------------- */
+    ChildConditionPropertyList: [],
+    curChildConditionEditData: null,
   },
   getters: {
   },
@@ -114,6 +118,7 @@ export default {
     },
     setPriceModeSetup(state, data) { // 设置报价方式
       if (!data) return;
+      // eslint-disable-next-line no-unused-vars
       const { ID, ProductID, IsOwnPrice, BasePriceID, ReferencePriceList } = data;
       const t = state.PriceManageList.find(it => it.ID === ProductID);
       if (t) {
@@ -121,7 +126,7 @@ export default {
         if (targetPrice) {
           targetPrice.IsOwnPrice = IsOwnPrice;
           if (!IsOwnPrice) {
-            console.log(BasePriceID, ReferencePriceList);
+            // console.log(BasePriceID, ReferencePriceList);
             // 按比例计算  尚未写 ReferencePriceList
             // eslint-disable-next-line no-alert
             alert('按比例计算  该情况有前置模块未完成 尚未写完');
@@ -131,15 +136,21 @@ export default {
     },
     /** 拼版控制相关
     ----------------------------------------- */
-    // eslint-disable-next-line no-unused-vars
-    setMakeupPropertyList(state, [leftList, rightList, compareLeft, compareRight]) {
+    setMakeupPropertyList(state, [leftList, rightList, compareLeft]) {
       state.MakeupLeftPropertyList = Array.isArray(leftList) ? leftList : [];
       state.MakeupRightPropertyList = Array.isArray(rightList) ? rightList : [];
       state.SizeNumberPropertyList = Array.isArray(compareLeft) ? compareLeft : [];
-      // state.CompareRightPropertyList = Array.isArray(compareRight) ? compareRight : [];
     },
     setCurMakeupItemEditData(state, data) {
       state.curMakeupItemEditData = data;
+    },
+    /** 子条件
+    ----------------------------------------- */
+    setChildConditionPropertyList(state, list) {
+      state.ChildConditionPropertyList = list;
+    },
+    setCurChildConditionEditData(state, data) {
+      state.curChildConditionEditData = data;
     },
   },
   actions: {
@@ -192,13 +203,19 @@ export default {
         PropertyClass.getPropertyList({ UseModule: 14, ProductID }),
         PropertyClass.getPropertyList({ UseModule: 18, ProductID }),
         PropertyClass.getPropertyList({ UseModule: 22, ProductID }), // 设置尺寸数量
-        // PropertyClass.getPropertyList({ UseModule: 20, ProductID }), // 对比从属性
       ]);
       if (list) {
         commit('setMakeupPropertyList', list);
         return true;
       }
       return false;
+    },
+    async getChildConditionPropertyList({ commit }, PartIDs) {
+      commit('setChildConditionPropertyList', []);
+      const respList = await Promise.all(PartIDs.map(PartID => PropertyClass.getPropertyList({ UseModule: 27, PartID })));
+      if (respList) {
+        commit('setChildConditionPropertyList', respList);
+      }
     },
   },
 };

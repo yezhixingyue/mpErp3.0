@@ -6,11 +6,12 @@
         <div v-else>
           <p>{{res.name}}：</p>
           <p class="mp-tree-table-tooltip-item" v-for="(it,i) in res.list" :key='i'>{{it}}；</p>
+          <p class="mp-tree-table-tooltip-item" v-if="res.list.length === 0">不包含全部已有区域</p>
         </div>
       </div>
     </div>
     <div style="text-overflow: ellipsis;overflow: hidden;">
-      适用区域：{{showContent}}
+      适用区域<template v-if="showContent">：</template>{{showContent}}
     </div>
   </el-tooltip>
 </template>
@@ -26,7 +27,8 @@ export default {
       const _list = this.list.map(it => {
         if (typeof it === 'string') return it;
         if (typeof it === 'object') {
-          return `${it.name}：${it.list.join('；')}`;
+          if (it.list && it.list.length > 0) return `${it.name}：${it.list.join('；')}`;
+          return `${it.name}：不包含已有区域`;
         }
         return '';
       });

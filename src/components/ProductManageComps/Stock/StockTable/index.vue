@@ -14,22 +14,28 @@
               <span class="is-origin">规格</span>
               <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box'>
                 <div slot="content">
-                  <p v-for="(_it, i) in it._ConditionText" :key="_it.name + 'tips' + i">
-                    <span v-if="i > 0" class="type">{{it.Constraint.FilterType === 1 ? '且' : '或'}}</span>
-                    <span class="name">{{_it.name}}</span>
-                    <span class="is-origin">{{_it.operator}}</span>
-                    <span class="val">{{_it.val}}</span>
-                    <span v-if="i === it._ConditionText.length - 1" style="margin-left:2px"> 。</span>
-                    <span v-else style="margin-left:2px">；</span>
-                  </p>
+                  <template v-if="Array.isArray(it._ConditionText)">
+                    <p v-for="(_it, i) in it._ConditionText" :key="_it.name + 'tips' + i">
+                      <span v-if="i > 0" class="type">{{it.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+                      <span class="name">{{_it.name}}</span>
+                      <span class="is-origin">{{_it.operator}}</span>
+                      <span class="val">{{_it.val}}</span>
+                      <span v-if="i === it._ConditionText.length - 1" style="margin-left:2px"> 。</span>
+                      <span v-else style="margin-left:2px">；</span>
+                    </p>
+                  </template>
+                  <p v-else>{{it._ConditionText}}</p>
                 </div>
                 <div class="common-property-condition-text-content-box">
-                  <p v-for="(_it, i) in it._ConditionText" :key="_it.name + 'content' + i">
-                    <span v-if="i > 0" class="type">{{it.Constraint.FilterType === 1 ? '且' : '或'}}</span>
-                    <span>{{_it.name}}</span>
-                    <span class="is-origin">{{_it.operator}}</span>
-                    <span>{{_it.val}}</span>
-                  </p>
+                  <template v-if="Array.isArray(it._ConditionText)">
+                    <p v-for="(_it, i) in it._ConditionText" :key="_it.name + 'content' + i">
+                      <span v-if="i > 0" class="type">{{it.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+                      <span>{{_it.name}}</span>
+                      <span class="is-origin">{{_it.operator}}</span>
+                      <span>{{_it.val}}</span>
+                    </p>
+                  </template>
+                  <p v-else>{{it._ConditionText}}</p>
                 </div>
               </el-tooltip>
             </li>
@@ -114,7 +120,7 @@ export default {
           _ConditionText,
           _PropertyName: Property && Property.DisplayContent ? Property.DisplayContent.replace(/\[|\]/g, '') : '',
           _StockNumber: `${it.Number}${it.Unit}`,
-          _Warning: (this.itemData.MinNumber && this.itemData.MinNumber > 0) ? it.Number < this.itemData.MinNumber : false,
+          _Warning: (this.itemData.MinNumber && this.itemData.MinNumber > 0) ? it.Number <= this.itemData.MinNumber && it.Number !== -1 : false,
         };
       });
     },

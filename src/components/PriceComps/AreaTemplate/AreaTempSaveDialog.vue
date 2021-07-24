@@ -67,6 +67,10 @@ export default {
       if (bool) {
         const { ID, Name, Range } = this.ruleForm;
         const { IsIncludeIncreased, List } = Range;
+        if (List.length === 0 && !IsIncludeIncreased) {
+          this.messageBox.failSingleError('保存失败', '没有选中区域');
+          return;
+        }
         const temp = { ID, Name, AreaList: List, IsIncludeIncreasedArea: IsIncludeIncreased };
         this.$emit('submit', temp);
       }

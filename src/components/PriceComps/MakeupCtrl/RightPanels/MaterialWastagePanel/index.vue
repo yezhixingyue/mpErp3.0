@@ -1,11 +1,27 @@
 <template>
   <section class="mp-erp-price-module-makeup-ctrl-page-material-wastage-panel-wrap">
     <header>
-      <el-radio-group v-model="radio">
+      <el-radio-group v-model="Rule">
         <el-radio :label="it.ID" v-for="it in WastageRuleList" :key="it.ID">{{it.Name}}</el-radio>
       </el-radio-group>
       <div>
-        <el-input v-model="Value" size="small"></el-input>
+        <el-input v-model.trim="Value" size="mini" maxlength="9"></el-input>
+        <el-select v-model="Unit" size="mini">
+          <el-option
+            v-for="item in WastageUnitList"
+            :key="item.ID"
+            :label="item.Name"
+            :value="item.ID">
+          </el-option>
+        </el-select>
+        <el-select v-model="UnitType" size="mini">
+          <el-option
+            v-for="item in WastageUnitTypeList"
+            :key="item.ID"
+            :label="item.Name"
+            :value="item.ID">
+          </el-option>
+        </el-select>
       </div>
     </header>
     <main>
@@ -41,19 +57,48 @@ export default {
   computed: mapState('priceManage', ['WastageRuleList', 'WastageUnitTypeList', 'WastageUnitList']),
   data() {
     return {
-      radio: 1,
+      Rule: 0,
       Value: '',
-      Unit: '',
-      UnitType: '',
+      Unit: 0,
+      UnitType: 1,
     };
   },
   methods: {
     getSubmitInfo() {
+      const { Rule, Value, Unit, UnitType } = this;
+      if (!Value) {
+        this.messageBox.failSingleError('保存失败', '请设置损耗数量');
+        return null;
+      }
+      const bool = this.$utils.getValueIsOrNotNumber(Value, Unit !== 0);
+      if (!bool) {
+        this.messageBox.failSingleError('保存失败', '损耗数量输入不正确，应为数字类型，单位为%时可使用小数');
+        return null;
+      }
+      if (+Value < 0) {
+        this.messageBox.failSingleError('保存失败', '损耗数量不能为负');
+        return null;
+      }
       const Wastage = {
-        Rule: this.radio,
+        Rule,
+        Value,
+        Unit,
+        UnitType,
       };
       return { Wastage };
     },
+    initEditData() {
+      if (this.initData && this.initData.Wastage) {
+        const { Rule, Value, Unit, UnitType } = this.initData.Wastage;
+        this.Rule = (Rule || Rule === 0) ? Rule : 0;
+        this.Value = (Value || Value === 0) ? Value : 0;
+        this.Unit = (Unit || Unit === 0) ? Unit : 0;
+        this.UnitType = (UnitType || UnitType === 0) ? UnitType : 0;
+      }
+    },
+  },
+  mounted() {
+    this.initEditData();
   },
 };
 </script>
@@ -61,19 +106,32 @@ export default {
 .mp-erp-price-module-makeup-ctrl-page-material-wastage-panel-wrap {
   > header {
     padding-top: 5px;
-    > span {
-      font-size: 14px;
-      color: #888E99;
-      margin-right: 6px;
-    }
     .el-radio {
       margin-right: 40px;
+      margin-bottom: 30px;
       .el-radio__label {
         font-size: 12px;
         color: #444;
       }
       &:last-of-type {
         margin-right: 0;
+      }
+    }
+    > div {
+      display: flex;
+      > .el-input {
+        width: 95px;
+        margin-right: 15px;
+      }
+      .el-select {
+        width: 80px;
+        &:last-of-type {
+          width: 150px;
+          margin-left: 15px;
+        }
+      }
+      .el-input__inner {
+        font-size: 12px;
       }
     }
   }

@@ -52,7 +52,7 @@
           <el-checkbox class="checked-item" v-model="ruleForm.NumbericAttribute.AllowDecimal">允许小数</el-checkbox>
         </el-form-item>
         <el-form-item label="常规数值：" prop="NumbericAttribute.InputContent" key="InputContent">
-          <el-input style='width:600px' v-model="ruleForm.NumbericAttribute.InputContent"></el-input>
+          <el-input style='width:600px' v-model="ruleForm.NumbericAttribute.InputContent" maxlength="200"></el-input>
         </el-form-item>
         <el-form-item label="" class="tip-wrap">
           <p class="tips-box"><i class="el-icon-warning"></i> 可为空，用空格、逗号分开，分隔符不限全角半角</p>

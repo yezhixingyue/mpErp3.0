@@ -11,11 +11,11 @@
         </header>
         <main>
           <p class="section-title">
-            <span class="mp-common-title-wrap">如果</span>
+            <span class="mp-common-title-wrap">{{leftText}}</span>
             <span class="blue-span" @click="visible=true">+ 添加条件</span>
           </p>
           <!-- 条件区域 -->
-          <el-form label-width="260px" class="constraint-ruleForm">
+          <el-form label-width="260px" class="constraint-ruleForm mp-scroll-wrap" ref="oConstraintForm">
             <el-form-item
              v-for="(it, index) in ruleForm.Constraint.ItemList"
              :key="it.key || it.Property.StoredContent + index"
@@ -100,6 +100,10 @@ export default {
       type: String,
       default: '',
     },
+    leftText: {
+      type: String,
+      default: '如果',
+    },
     rightTitle: {
       type: String,
       default: '则',
@@ -111,6 +115,10 @@ export default {
     DialogTitle: {
       type: String,
       default: '',
+    },
+    canNotNull: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {
@@ -179,6 +187,9 @@ export default {
         key: Math.random().toString(36).slice(-8),
       };
       this.ruleForm.Constraint.ItemList.push(item);
+      setTimeout(() => {
+        this.$refs.oConstraintForm.$el.scrollTop = this.$refs.oConstraintForm.$el.scrollHeight;
+      }, 0);
     },
     onRemoveClick(i) {
       this.ruleForm.Constraint.ItemList.splice(i, 1);
@@ -194,7 +205,6 @@ export default {
           this.alertError('请设置优先级');
           return false;
         }
-        console.log(Priority, this.$utils.getValueIsOrNotNumber(Priority), (!this.$utils.getValueIsOrNotNumber(Priority, true)) || Priority < 0);
         if ((!this.$utils.getValueIsOrNotNumber(Priority, true)) || Priority < 0) {
           this.alertError('优先级必须为大于等于0的整数类型');
           return false;
@@ -221,7 +231,6 @@ export default {
         const { ValueType, AvailableValueList, ValueRange } = Property;
         if (ValueType === 0 && !ValueList[0].Property) { // 为0 数值校验
           const val = ValueList[0].Value;
-          console.log(val);
           if (!this.$utils.getValueIsOrNotNumber(val)) {
             this.alertError(`第${i + 1}行值应为数字类型`);
             return false;
@@ -257,7 +266,11 @@ export default {
       if (!this.PriorityChecker(Priority)) return false; // 优先级校验
 
       const { ItemList } = Constraint;
-      if (ItemList.length === 0) return true;
+      if (ItemList.length === 0) {
+        if (!this.canNotNull) return true;
+        this.alertError('请设置条件');
+        return false;
+      }
       if (!this.EmptyValueChecker(ItemList)) return false; // 空值校验
 
       if (!this.NumberValueTypeItemChecker(ItemList)) return false; // 空值校验
@@ -301,10 +314,13 @@ export default {
   > .left {
     > .left-content {
       height: 100%;
+      display: flex;
+      flex-direction: column;
       > header {
         white-space: nowrap;
         padding: 15px 0;
         padding-top: 10px;
+        flex: none;
         .el-input {
           width: 110px;
           margin-right: 20px;
@@ -322,9 +338,11 @@ export default {
         }
       }
       > main {
-        min-height: calc(100% - 72px);
+        // min-height: calc(100% - 72px);
         display: flex;
         flex-direction: column;
+        flex: 1;
+        overflow: hidden;
         > p.section-title {
           padding: 15px 0;
           padding-bottom: 30px;
@@ -347,6 +365,7 @@ export default {
         }
         > .el-form.constraint-ruleForm {
           flex: 1;
+          overflow-y: auto;
           .el-form-item {
             white-space: nowrap;
             .el-form-item__label {

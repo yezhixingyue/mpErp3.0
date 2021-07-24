@@ -8,7 +8,7 @@
     @cancle="onCancle"
     @open='onOpen'
     @closed='onClosed'
-    class="mp-erp-comps-price-module-price-item-save-dialog-comp-wrap"
+    class="mp-erp-comps-price-module-solution-item-save-dialog-comp-wrap"
   >
     <el-form :model="ruleForm" ref="ruleForm" label-width="100px" hide-required-asterisk>
       <el-form-item
@@ -76,7 +76,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-comps-price-module-price-item-save-dialog-comp-wrap {
+.mp-erp-comps-price-module-solution-item-save-dialog-comp-wrap {
 
   .el-dialog__body {
     padding-left: 100px;

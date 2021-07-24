@@ -36,7 +36,7 @@ export default {
     SubFormulaTableCrtlComp,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList']),
+    ...mapState('productManage', ['ProductManageList']),
     curProduct() {
       if (!this.ProductID) return null;
       return this.ProductManageList.find(it => it.ID === this.ProductID);

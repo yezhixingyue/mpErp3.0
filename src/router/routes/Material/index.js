@@ -6,7 +6,7 @@ const routes = { // 物料管理
   meta: {
     title: '物料管理',
     requiresAuth: true,
-    icon: 'el-icon-set-up',
+    icon: 'el-icon-s-management',
   },
   children: [
     /*  物料尺寸

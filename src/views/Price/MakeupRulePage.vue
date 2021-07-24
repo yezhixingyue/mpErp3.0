@@ -77,6 +77,7 @@ export default {
             if (i > -1) this.MakeupRuleList.splice(i, 1, newItem);
           }
           this.visible = false;
+          this.$store.commit('basicSet/setMakeupRuleList', []);
         };
         const title = isEdit ? '编辑成功' : '添加成功';
         this.messageBox.successSingle(title, cb, cb);
@@ -105,6 +106,7 @@ export default {
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
           this.MakeupRuleList.splice(i, 1);
+          this.$store.commit('basicSet/setMakeupRuleList', []);
         };
         this.messageBox.successSingle('删除成功', cb, cb);
       }

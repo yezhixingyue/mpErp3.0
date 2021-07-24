@@ -520,6 +520,15 @@ const api = {
   getProductChildFormulaList(productID) { // GET /Api/ChildFormula/List 获取产品子公式列表
     return instance.get('/Api/ChildFormula/List', { params: { productID } });
   },
+  getProductChildConditionList(productID) { // GET /Api/ChildCondition/List  获取产品子条件列表
+    return instance.get('/Api/ChildCondition/List', { params: { productID } });
+  },
+  getPartChildConditionSave(data) { // POST /Api/ChildCondition/Save  子条件保存
+    return instance.post('/Api/ChildCondition/Save', data);
+  },
+  getPartChildConditionRemove(id) { // DELETE /Api/ChildCondition/Remove 子条件删除
+    return instance.delete('/Api/ChildCondition/Remove', { params: { id } });
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

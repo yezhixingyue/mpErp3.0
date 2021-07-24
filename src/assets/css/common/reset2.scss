@@ -228,6 +228,9 @@ input.is-warn{
     background-color: $--color-text-secondary;
   }
 }
+.mp-scroll-wrap {
+  scroll-behavior: smooth;
+}
 .mp-scroll-wrap > .el-table__body-wrapper::-webkit-scrollbar ,.el-dropdown-menu.el-popper::-webkit-scrollbar{
   width: 6px;
   height: 8px;

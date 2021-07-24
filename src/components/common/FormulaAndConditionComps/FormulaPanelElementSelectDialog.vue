@@ -157,7 +157,7 @@ export default {
     showData() {
       if (this.propertyData && this.panelRadio) {
         if (this.propertyData[this.panelRadio]) return this.propertyData[this.panelRadio];
-        if (this.propertyData.PartProperty[this.panelRadio]) return this.propertyData.PartProperty[this.panelRadio];
+        if (this.propertyData.PartProperty && this.propertyData.PartProperty[this.panelRadio]) return this.propertyData.PartProperty[this.panelRadio];
       }
       return null;
     },

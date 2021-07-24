@@ -88,7 +88,7 @@ export default {
     CtrlMenus,
   },
   computed: {
-    ...mapState('priceManage', ['MakeupControlTypeList']),
+    ...mapState('priceManage', ['MakeupControlTypeList', 'WastageRuleList', 'WastageUnitTypeList', 'WastageUnitList', 'PrintTimesRuleList', 'CuttingRuleList']),
     localTableData() {
       if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
       return this.dataList.map(it => ({
@@ -145,9 +145,30 @@ export default {
       }
       if (t.Name === '拼版规则') {
         const { RuleList } = item;
-        if (!Array.isArray(RuleList)) return '';
+        if (!Array.isArray(RuleList)) return [''];
         const str = RuleList.map(it => `${it.ColumnNumber}列 X ${it.RowNumber}行`).join('、');
         return [`产品使用 ${str} 进行拼版`];
+      }
+      if (t.Name === '拼版算法') {
+        const { CuttingRule } = item;
+        if (!CuttingRule && CuttingRule !== 0) return [''];
+        const Text = this.$utils.getNameFromListByIDs(CuttingRule, this.CuttingRuleList);
+        return [`${this.titleObj.title}使用：${Text}算法`];
+      }
+      if (t.Name === '印刷次数') {
+        const { PrintTimes } = item;
+        if (!PrintTimes && PrintTimes !== 0) return [''];
+        const Text = this.$utils.getNameFromListByIDs(PrintTimes, this.PrintTimesRuleList);
+        return [`${this.titleObj.title}为：${Text}`];
+      }
+      if (t.Name === '物料损耗') {
+        const { Wastage } = item;
+        if (typeof Wastage !== 'object') return [''];
+        const { Rule, Value, Unit, UnitType } = Wastage;
+        const RuleText = this.$utils.getNameFromListByIDs(Rule, this.WastageRuleList);
+        const UnitText = this.$utils.getNameFromListByIDs(Unit, this.WastageUnitList);
+        const UnitTypeText = this.$utils.getNameFromListByIDs(UnitType, this.WastageUnitTypeList);
+        return [`${RuleText}：${Value}${UnitText}（ ${UnitTypeText} ）`];
       }
       return ['其它类型，暂未生成对应结果'];
     },

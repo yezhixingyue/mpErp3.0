@@ -7,7 +7,7 @@ const routes = { // 客户订单管理
   meta: {
     title: '客户订单管理',
     requiresAuth: true,
-    icon: 'el-icon-s-platform',
+    icon: 'el-icon-s-order',
   },
   children: [
     /*  订单管理

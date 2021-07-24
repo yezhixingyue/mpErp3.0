@@ -49,6 +49,14 @@ export default {
       };
       return temp;
     },
+    initEditData() {
+      if (this.initData) {
+        this.radio = (this.initData.CuttingRule || this.initData.CuttingRule === 0) ? this.initData.CuttingRule : 1;
+      }
+    },
+  },
+  mounted() {
+    this.initEditData();
   },
 };
 </script>

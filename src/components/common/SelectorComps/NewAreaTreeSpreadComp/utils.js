@@ -124,8 +124,9 @@ export const getSelectedContentBySelectedDataAndAllData = (item, treeData, title
             temp2.isCheckAll = true;
             temp2.content = `${temp2.content}：全部${title}`;
           } else {
-            const _content = temp2.children.map(it => it.ClassName).join('、');
-            temp2.content = `${temp2.content}：[${_content}]`;
+            let _content = temp2.children.map(it => it.ClassName).join('、');
+            _content = _content ? `：[${_content}]` : '';
+            temp2.content = `${temp2.content}${_content}`;
           }
         }
       });

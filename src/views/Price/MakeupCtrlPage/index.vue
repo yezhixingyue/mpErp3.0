@@ -230,7 +230,6 @@ export default {
       this.$router.replace('/PriceManageList');
     },
     onSolutionSaveClick(ID) {
-      console.log('onSolutionSaveClick', ID);
       const data = ID ? this.solutionList.find(it => it.ID === ID) : null;
       const temp = {
         ID: data ? data.ID : '',
@@ -310,7 +309,7 @@ export default {
       if ([0].includes(this.curControlType)) front = '+ 添加拼版';
       const behind = front.includes('设置') ? '' : '设置';
       return {
-        title: `${item ? item.Name : ''}产品${str}`,
+        title: `${item ? item.Name : '产品'}${str}`,
         btnText: `${front}${str}${behind}`,
       };
     },
@@ -373,7 +372,7 @@ export default {
       if (resp && resp.data.Status === 1000) {
         this.MixtureMakeupList = await Promise.all(resp.data.Data.map(async (it) => {
           const list = await this.getSamePropertyList(it.PartID);
-          const SamePropertyList = it.SamePropertyList.map(_it => PropertyClass.getPerfectPropertyByImperfectProperty(_it, list));
+          const SamePropertyList = it.SamePropertyList.map(_it => PropertyClass.getPerfectPropertyByImperfectProperty(_it, list)).filter(_it => _it);
           return { ...it, SamePropertyList };
         }));
       }
@@ -391,10 +390,6 @@ export default {
         };
         this.messageBox.successSingle('设置成功', cb, cb);
       }
-    },
-    async onMixinSamePropertySetSaveSubmit(e) {
-      if (!e) return;
-      console.log(e);
     },
     getMixtureMakeupChangeDefault(item) {
       const temp = { Part: item, solutionID: this.curSolutionID };
@@ -438,7 +433,7 @@ export default {
     },
     getSamePropertyListText(item) {
       if (item && item.mixinData && Array.isArray(item.mixinData.SamePropertyList) && item.mixinData.SamePropertyList.length > 0) {
-        return `${item.mixinData.SamePropertyList.map(it => it.DisplayContent.replace(/\[|\]/g, '')).join('、')} 相同`;
+        return `${item.mixinData.SamePropertyList.map(it => (it ? it.DisplayContent.replace(/\[|\]/g, '') : '')).filter(it => it).join('、')} 相同`;
       }
       return '无';
     },

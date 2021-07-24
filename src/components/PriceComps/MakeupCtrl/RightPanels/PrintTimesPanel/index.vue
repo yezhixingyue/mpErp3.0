@@ -32,6 +32,14 @@ export default {
       };
       return temp;
     },
+    initEditData() {
+      if (this.initData) {
+        this.radio = (this.initData.PrintTimes || this.initData.PrintTimes === 0) ? this.initData.PrintTimes : 1;
+      }
+    },
+  },
+  mounted() {
+    this.initEditData();
   },
 };
 </script>

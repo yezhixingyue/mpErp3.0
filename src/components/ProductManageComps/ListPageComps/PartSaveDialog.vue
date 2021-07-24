@@ -122,7 +122,6 @@ export default {
         callback(new Error('请填写和补充最大最小值'));
         return;
       }
-      console.log(MinValue, MaxValue, this.$utils.isPositiveInteger(MinValue, false, true));
       if (!this.$utils.isPositiveInteger(MinValue, false, true)) {
         callback(new Error('最小值应为数字类型且不小于0'));
         return;
@@ -184,7 +183,8 @@ export default {
     .tips-box {
       margin-bottom: 8px;
       margin-left: 185px;
-      width: 420px;
+      width: 440px;
+      letter-spacing: 1px;
       &:first-of-type {
         margin-top: 2px;
       }
@@ -195,6 +195,7 @@ export default {
       color: #a2a2a2;
       position: relative;
       top: 20px;
+      width: 170px;
     }
   }
 

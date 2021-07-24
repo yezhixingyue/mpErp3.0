@@ -56,15 +56,26 @@ const routes = [
     component: () => import('../../../views/Price/MakeupCtrlPage/MakeupCtrlConditionSetPage.vue'),
   },
   {
-    path: '/SetSubCondition/:name/:id',
-    name: 'SetSubCondition',
+    path: '/subConditionList/:name/:id',
+    name: 'subConditionList',
     meta: {
       title: '设置子条件 - 价格',
-      pageName: 'SetSubCondition',
+      pageName: 'subConditionList',
       requiresAuth: true,
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
     },
     component: () => import('../../../views/Price/SubConditionPage'),
+  },
+  {
+    path: '/subConditionSet/:ProductName/:PartID/:PartName',
+    name: 'subConditionSet',
+    meta: {
+      title: '添加子条件',
+      pageName: 'subConditionSet',
+      requiresAuth: true,
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/SubConditionPage/SubConditionSetPage'),
   },
 ];
 
@@ -80,9 +91,9 @@ const routeTree = {
       ],
     },
     {
-      name: 'SetSubCondition',
+      name: 'subConditionList',
       children: [
-        // { name: 'MakeupCtrlConditionSet', children: [] },
+        { name: 'subConditionSet', children: [] },
       ],
     },
   ],

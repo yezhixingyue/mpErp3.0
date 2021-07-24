@@ -17,7 +17,7 @@
       </div>
       <div class="text-menu-box">
         <TipsSpanButton @click.native="jumpToPage('MakeupCtrl')" text='拼版控制' />
-        <TipsSpanButton @click.native="jumpToPage('SetSubCondition')" text='子条件'/>
+        <TipsSpanButton @click.native="jumpToPage('subConditionList')" :disabled='canSetPartList.length === 0' text='子条件'/>
         <TipsSpanButton text='计算公式'  />
       </div>
       <div class="extend-box" @click="extend = !extend" :class="itemData.PriceList&&itemData.PriceList.length>0 ? '' : 'disabled'">
@@ -107,6 +107,14 @@ export default {
       if (!list || !Array.isArray(list) || list.length === 0) return '';
       return list.map(it => `${it.FirstLevel.Name}-${it.SecondLevel.Name}`).join('，');
     },
+    canSetPartList() {
+      if (!this.itemData || this.itemData.PartList.length === 0) return [];
+      return this.itemData.PartList.filter(it => it.UseTimes && it.UseTimes.MaxValue > 1);
+    },
+    subConditionTitleText() {
+      if (this.canSetPartList.length > 0) return '';
+      return '仅有可多次使用的部件时才可设置子条件';
+    },
   },
   data() {
     return {
@@ -118,7 +126,6 @@ export default {
   },
   methods: {
     onPriceItemSaveClick(data) { // 编辑 | 保存产品价格条目
-      console.log(data);
       this.$store.dispatch('common/getAreaList');
       this.$store.dispatch('common/getUserClassify');
       this.$store.dispatch('priceManage/getApplyRangeTemplateList');
@@ -278,6 +285,9 @@ export default {
           font-size: 14px;
           &:last-of-type {
             margin-right: 30px;
+          }
+          &.is-disabled {
+            color: #cbcbcb !important;
           }
         }
       }
