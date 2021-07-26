@@ -87,6 +87,8 @@ export default {
     InteractionRightPropertyList: [],
     CompareLeftPropertyList: [],
     CompareRightPropertyList: [],
+    subInteractionPropList: [],
+    subComparePropList: [],
     subTargetData: null, // 子交互 子对比 跳转页面前选择的属性数据
     /**
      * 库存
@@ -264,7 +266,15 @@ export default {
       state.InteractionRightPropertyList = Array.isArray(rightList) ? rightList : [];
       state.CompareLeftPropertyList = Array.isArray(compareLeft) ? compareLeft : [];
       state.CompareRightPropertyList = Array.isArray(compareRight) ? compareRight : [];
+      // state.subInteractionPropList = Array.isArray(subInteractionPropList) ? subInteractionPropList : [];
+      // state.subComparePropList = Array.isArray(subComparePropList) ? subComparePropList : [];
     },
+    // setSubInteractionPropList(state, list) { // 设置子交互列表数据
+    //   state.subInteractionPropList = list;
+    // },
+    // setSubComparePropList(state, list) { // 设置子对比列表数据
+    //   state.subComparePropList = list;
+    // },
     setProductInteractionDataListChange(state, [item, ID]) { // 新增或编辑后对仓库上的列表数据进行修改
       if (!item) return;
       if (item.ID) {

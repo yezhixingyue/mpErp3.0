@@ -1,9 +1,9 @@
 <template>
-  <section class="mp-erp-common-comps-formula-set-panel-comp--wrap" v-if="PropertyList && FormulaData">
+  <section class="mp-erp-common-comps-formula-set-panel-comp--wrap">
     <header>
       <span>{{pageLabel}}：</span>
       <span>{{pageTitle}}</span>
-      <div>
+      <div v-if="FormulaData">
         <div>
           <span>公式名称：</span>
           <el-input size='small' style="width: 250px" v-model.trim="FormulaData.Name" maxlength="6" show-word-limit></el-input>
@@ -15,7 +15,7 @@
       </div>
     </header>
     <main>
-      <LRWidthDragAutoChangeComp leftWidth='45%'>
+      <LRWidthDragAutoChangeComp leftWidth='45%' v-if="PropertyList && FormulaData">
         <template v-slot:left>
           <section class="mp-erp-common-comps-formula-set-panel-comp-left-content-wrap">
             <header>
@@ -76,7 +76,7 @@
           </section>
         </template>
       </LRWidthDragAutoChangeComp>
-      <FormulaPanelElementSelectDialog useType='formula' :DialogTitle="subFromulaDialogTitle"
+      <FormulaPanelElementSelectDialog useType='formula' :DialogTitle="subFromulaDialogTitle" v-if="PropertyList && FormulaData"
         :visible.sync='selectVisible' :list='PropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs' />
     </main>
     <footer>
@@ -213,11 +213,13 @@ export default {
       if (propertyList) {
         this.PropertyList = propertyList;
         this.initPropertyListReplaceHelper();
+      } else {
+        this.onGoBackClick();
       }
       // this.getPropertyList(); // 获取属性列表信息
     },
-    onGoBackClick() {
-      this.$emit('goback');
+    onGoBackClick(type) {
+      this.$emit('goback', type);
     },
     initPropertyListReplaceHelper() { // 获取可用属性列表并转换完成后，对编辑数据时初始的PropertyList的数据进行修改操作（以获取到的可用属性为准）
       if (this.FormulaData.PropertyList.length === 0) return;
@@ -281,7 +283,7 @@ export default {
         const msg = isEdit ? '编辑成功' : '添加成功';
         const callback = () => {
           this.$emit('successSubmit', [isEdit, data, resp.data.Data]);
-          this.onGoBackClick();
+          this.onGoBackClick('success');
         };
         this.messageBox.successSingle(msg, callback, callback);
       }

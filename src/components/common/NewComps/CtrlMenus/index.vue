@@ -4,6 +4,10 @@
       <img src="@/assets/images/copy.png" alt="">
       <i>拷贝</i>
     </span>
+    <span @click="onSelectClick" :class="canSelect ? '' : 'disabled'" v-if="showList.includes('select')">
+      <img src="@/assets/images/select.png" alt="">
+      <i>选择</i>
+    </span>
     <span @click="onEditClick" :class="canEdit ? '' : 'disabled'" v-if="showList.includes('edit')">
       <img src="@/assets/images/Compile.png" alt="">
       <i>编辑</i>
@@ -30,6 +34,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    canSelect: {
+      type: Boolean,
+      default: true,
+    },
     showList: {
       type: Array,
       default: () => ['edit', 'del'],
@@ -47,6 +55,10 @@ export default {
     onCopyClick() {
       if (!this.canCopy) return;
       this.$emit('copy');
+    },
+    onSelectClick() {
+      if (!this.canSelect) return;
+      this.$emit('select');
     },
   },
 };

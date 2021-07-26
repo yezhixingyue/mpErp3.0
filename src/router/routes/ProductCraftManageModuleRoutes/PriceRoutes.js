@@ -77,6 +77,50 @@ const routes = [
     },
     component: () => import('../../../views/Price/SubConditionPage/SubConditionSetPage'),
   },
+  {
+    path: '/PriceFormulaList/:id/:name/:timer',
+    name: 'PriceFormulaList',
+    meta: {
+      title: '计算公式 - 产品价格',
+      requiresAuth: true,
+      pageName: 'PriceFormulaListPage',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/Formula/PriceFormulaListPage.vue'),
+  },
+  {
+    path: '/PriceFormulaSet/:ProductID/:name/:moduleIndex',
+    name: 'PriceFormulaSet',
+    meta: {
+      title: '公式设置 - 产品价格',
+      requiresAuth: true,
+      pageName: 'PriceFormulaSetPage',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/Formula/PriceFormulaSetPage.vue'),
+  },
+  {
+    path: '/PriceFormulaFilter/:ProductID/:name/:moduleIndex',
+    name: 'PriceFormulaFilter',
+    meta: {
+      title: '数据筛选 - 子公式 - 产品价格',
+      requiresAuth: true,
+      pageName: 'PriceFormulaFilterPage',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/Formula/PriceFormulaFilterPage.vue'),
+  },
+  {
+    path: '/MakeupSolutionSet/:name/:id',
+    name: 'MakeupSolutionSet',
+    meta: {
+      title: '拼版方案选择',
+      requiresAuth: true,
+      pageName: 'MakeupSolutionSet',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/MakeupSolutionSetPage'),
+  },
 ];
 
 const routeTree = {
@@ -96,6 +140,14 @@ const routeTree = {
         { name: 'subConditionSet', children: [] },
       ],
     },
+    {
+      name: 'PriceFormulaList', // 计算公式列表
+      children: [
+        { name: 'PriceFormulaSet', children: [] }, // 价格公式设置
+        { name: 'PriceFormulaFilter', children: [] }, // 价格子公式数据筛选
+      ],
+    },
+    { name: 'MakeupSolutionSet', children: [] },
   ],
 };
 

@@ -66,6 +66,15 @@ export default {
     ----------------------------------------- */
     ChildConditionPropertyList: [],
     curChildConditionEditData: null,
+    /**
+     * 计算公式与子公式相关
+     */
+    curEditFormulaData: null,
+    curEditSubFormulaData: null,
+    curSubFormulaAddProperty: null,
+    /** 单条价格条目相关
+    ----------------------------------------- */
+    curPriceItem: null,
   },
   getters: {
   },
@@ -151,6 +160,23 @@ export default {
     },
     setCurChildConditionEditData(state, data) {
       state.curChildConditionEditData = data;
+    },
+    /**
+     * 计算公式与子公式相关
+     */
+    setCurEditFormulaData(state, data) {
+      state.curEditFormulaData = data;
+    },
+    setCurEditSubFormulaData(state, data) {
+      state.curEditSubFormulaData = data;
+    },
+    setCurSubFormulaAddProperty(state, data) { // 添加子公式选中的属性
+      state.curSubFormulaAddProperty = data;
+    },
+    /** 单条价格条目相关
+    ----------------------------------------- */
+    setCurPriceItem(state, data) {
+      state.curPriceItem = data;
     },
   },
   actions: {

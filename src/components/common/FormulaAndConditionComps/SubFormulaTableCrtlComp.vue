@@ -77,6 +77,14 @@ export default {
       type: String,
       default: '',
     },
+    UseModule: {
+      type: Number,
+      default: 2,
+    },
+    CompareUseModule: {
+      type: Number,
+      default: 16,
+    },
   },
   components: {
     SubFormulaAddAndSelectDialog,
@@ -146,7 +154,7 @@ export default {
     async getFormulaList() {
       if (!this.PositionID || this.loading) return;
       this.loading = true;
-      const resp = await this.api.getFormulaList({ [this.PositionType]: this.PositionID, UseModule: 2 }).catch(() => {});
+      const resp = await this.api.getFormulaList({ [this.PositionType]: this.PositionID, UseModule: this.UseModule }).catch(() => {});
       this.loading = false;
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         this.localTableData = resp.data.Data;
@@ -164,7 +172,7 @@ export default {
       }
     },
     async getComparePropertyList() {
-      const propertyList = await PropertyClass.getPropertyList({ [this.PositionType]: this.PositionID, UseModule: 16 });
+      const propertyList = await PropertyClass.getPropertyList({ [this.PositionType]: this.PositionID, UseModule: this.CompareUseModule });
       if (propertyList) this.ComparePropertyList = propertyList;
     },
     onSelectCompleted(selectedItem) { // 选择属性完成并开始添加子公式跳转页面

@@ -869,6 +869,8 @@ public enum MultiLevelClassType : byte
         子公式对比条件
         SubFormulaCompareConstraint = 16
 
+        对比验证和风险提示  17
+
         右侧交互结果弹窗 18
 
         对比主属性 19
@@ -888,6 +890,10 @@ public enum MultiLevelClassType : byte
         子对比 26
 
         子条件 27
+
+        价格子公式筛选 左 28
+
+        价格子公式筛选 右 29
 
 ## 运算符号
 

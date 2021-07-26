@@ -74,10 +74,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    PropertyList: {
-      type: Array,
-      default: () => [],
-    },
     titleObj: {
       type: Object,
       default: null,
@@ -121,7 +117,7 @@ export default {
       this.$emit('remove', data);
     },
     getConditionText(list) {
-      const str = PropertyClass.getPropertyConditionText(list, this.PropertyList);
+      const str = PropertyClass.getPropertyConditionText(list);
       return str || '空';
     },
     getShowResult(it) {

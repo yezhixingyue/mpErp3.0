@@ -95,7 +95,7 @@ export default {
     },
     canSelectPriceList() {
       if (!this.PriceList || this.PriceList.length === 0) return [];
-      return this.PriceList.filter(it => it.IsOwnPrice);
+      return this.PriceList.filter(it => it.IsOwnPrice && it.ID !== this.curPrice.ID);
     },
   },
   methods: {

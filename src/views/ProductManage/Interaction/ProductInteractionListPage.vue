@@ -7,20 +7,15 @@
     <main>
       <template v-if="showTable">
         <!-- 界面交互 -->
-        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='interaction'
-         :dataList='InteractionDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='interaction' :dataList='InteractionDataList' />
         <!-- 对比验证 -->
-        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='compare'
-         :dataList='CompareDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='compare' :dataList='CompareDataList' />
         <!-- 风险提示 -->
-        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='risk'
-         :dataList='RiskWarningDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='risk' :dataList='RiskWarningDataList' />
         <!-- 子交互 -->
-        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='subInteraction'
-         :dataList='subInteractionDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @remove='onTableItemRemove' @setup="onSetupPageJump" type='subInteraction' :dataList='subInteractionDataList' />
         <!-- 子对比 -->
-        <CommonInteractionTable @remove='onTableItemRemove'  @setup="onSetupPageJump" type='subCompare'
-         :dataList='subCompareDataList' :PropertyList='InteractionLeftPropertyList' />
+        <CommonInteractionTable @remove='onTableItemRemove'  @setup="onSetupPageJump" type='subCompare' :dataList='subCompareDataList' />
         <!-- 子交互 子对比选择属性弹窗组件 -->
         <SubFormulaAddAndSelectDialog :visible.sync='visible' :PropertyList='subDialogPropertyList' :loading='isSubDialogPropertyLoading'
          @submit='onSelectCompleted' :title='dialogTitle' :initDataStr='initDialogDataStr' />
@@ -60,7 +55,7 @@ export default {
     SubFormulaAddAndSelectDialog,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductInteractionDataList',
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductInteractionDataList', 'subComparePropList', 'subInteractionPropList',
       'ControlTypeList', 'InteractionLeftPropertyList', 'InteractionRightPropertyList', 'CompareLeftPropertyList', 'CompareRightPropertyList']),
     curProduct() {
       if (!this.ProductID) return null;
@@ -208,6 +203,8 @@ export default {
     onSelectCompleted(e) { // 选择组件完成
       if (!e) return;
       this.$store.commit('productManage/setSubTargetData', e);
+      // const idsObj = PropertyClass.getPropIDsObj(e);
+      // const resp = PropertyClass.getPropertyList()
       this.visible = false;
       this.handleJumpToNewPage(this.setType4SubInteractionAndSubCompare, this.itemData4SubInteractionAndSubCompare);
     },

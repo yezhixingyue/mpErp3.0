@@ -18,7 +18,7 @@
       <div class="text-menu-box">
         <TipsSpanButton @click.native="jumpToPage('MakeupCtrl')" text='拼版控制' />
         <TipsSpanButton @click.native="jumpToPage('subConditionList')" :disabled='canSetPartList.length === 0' text='子条件'/>
-        <TipsSpanButton text='计算公式'  />
+        <TipsSpanButton @click.native="jumpToPage('PriceFormulaList')" text='计算公式'  />
       </div>
       <div class="extend-box" @click="extend = !extend" :class="itemData.PriceList&&itemData.PriceList.length>0 ? '' : 'disabled'">
         <span v-if="!extend">展开</span>
@@ -39,8 +39,8 @@
         </div>
         <div class="menus" v-if="it.IsOwnPrice">
           <TipsSpanButton text='数值转换' />
-          <TipsSpanButton text='拼版方案选择'>
-            <span>拼版方案选择（<i class="is-pink">2</i>/{{it.MakeupList ? it.MakeupList.length : 0}}）</span>
+          <TipsSpanButton text='拼版方案选择' @click.native="onMakeupSolutionSetClick(it)">
+            <span>拼版方案选择（<i class="is-pink">{{it.MakeupList.filter(_it => _it.Solution).length}}</i>/{{it.MakeupList ? it.MakeupList.length : 0}}）</span>
           </TipsSpanButton>
           <TipsSpanButton text='工艺费' />
           <TipsSpanButton text='价格表'>
@@ -184,7 +184,13 @@ export default {
         if (FirstLevel && FirstLevel.Name) _name = `${FirstLevel.Name} - `;
       }
       _name += Name;
-      this.$router.push({ name: pathName, params: { name: _name, id: ID } });
+      const params = { name: _name, id: ID };
+      if (pathName === 'PriceFormulaList') params.timer = Date.now();
+      this.$router.push({ name: pathName, params });
+    },
+    onMakeupSolutionSetClick(item) {
+      this.$store.commit('priceManage/setCurPriceItem', item);
+      this.jumpToPage('MakeupSolutionSet');
     },
   },
   mounted() {

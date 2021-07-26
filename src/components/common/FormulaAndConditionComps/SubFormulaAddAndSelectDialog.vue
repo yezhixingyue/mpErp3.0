@@ -12,9 +12,10 @@
     class="mp-erp-comps-common-sub-formula-add-and-select-dialog-comp-wrap"
   >
     <div class="empty" v-if="!loading && selectDataList.length === 0">
-      <img src="@/assets/images/null.png" alt="">
-      <span class="is-font-size-12 is-gray">暂无数据</span>
-      <p class="tips-box is-pink"> <i class="el-icon-warning"></i> 当前产品上没有可设置的元素组或部件，暂无法设置！</p>
+      <div>
+        <img src="@/assets/images/null.png" alt="">
+        <span class="is-font-size-12 is-gray">暂无数据</span>
+      </div>
     </div>
     <div v-for="it in selectDataList" :key="it.ID" class="item">
       <p>
@@ -31,7 +32,11 @@
         </li>
       </ul>
     </div>
-    <p class="tips-box is-pink" v-if="warnTitle"><i class="el-icon-warning"></i> 注：{{warnTitle}}目标设定后不允许更改</p>
+    <template v-if="!loading && selectDataList.length > 0">
+      <p class="tips-box is-pink" v-if="warnTitle"><i class="el-icon-warning"></i> 注：{{warnTitle}}目标设定后不允许更改</p>
+      <p class="tips-box is-pink" v-else-if="isEdit"><i class="el-icon-warning"></i> 注：目标如果修改后，原已设置的条件中将会筛选清除掉不存在的属性条件</p>
+    </template>
+    <p class="tips-box is-pink" v-if="!loading && selectDataList.length === 0"> <i class="el-icon-warning"></i> 当前产品上没有可设置的元素组或部件，无法设置！</p>
   </CommonDialogComp>
 </template>
 
@@ -97,6 +102,7 @@ export default {
   data() {
     return {
       selectValue: '',
+      isEdit: false,
     };
   },
   methods: {
@@ -115,7 +121,9 @@ export default {
       if (this.initDataStr) {
         const t = this.PropertyList.find(it => JSON.stringify(it) === this.initDataStr);
         this.selectValue = t || '';
+        this.isEdit = true;
       } else {
+        this.isEdit = false;
         this.selectValue = '';
       }
     },
@@ -195,7 +203,7 @@ export default {
       position: absolute;
       bottom: 85px;
       width: 500px;
-      left: 150px;
+      left: calc(50% - 250px);
     }
     .empty {
       padding: 25px 0;
@@ -203,13 +211,21 @@ export default {
       height: 100%;
       position: relative;
       box-sizing: border-box;
+      > div {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        > span {
+          margin-left: 15px;
+          vertical-align: 5px;
+        }
+      }
       > p {
         position: absolute;
         bottom: -50px;
-      }
-      > span {
-        margin-left: 15px;
-        vertical-align: 8px;
+        left: calc(50% - 254px);
+        width: 500px;
       }
     }
   }

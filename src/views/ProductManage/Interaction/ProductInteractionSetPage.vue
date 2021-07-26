@@ -5,8 +5,8 @@
       <span>当前{{titleType}}：</span>
       <span>{{ProductName}}</span>
     </header>
-    <main>
-      <ContionCommonComp ref="oLeftComp" :ComparePropertyList='ComparePropertyList' :PropertyList='InteractionLeftPropertyList'
+    <main :class="{loading:loading}">
+      <ContionCommonComp ref="oLeftComp" :ComparePropertyList='ComparePropertyList' :PropertyList='LeftPropertyList' v-if="!loading"
        leftWidth='40%' :curEditData='curInteractionData' :rightTitle='rightTitle'>
         <template slot='title'>
           <span class="blue-span" v-if="setType==='interaction' || setType==='subInteraction'" @click="visible=true">+ 添加结果</span>
@@ -60,6 +60,8 @@ export default {
       setType: '',
       drawer: false,
       visible: false,
+      loading: true,
+      subTypePropertyList: [], // 属性列表 仅子对比或子交互时使用
     };
   },
   components: {
@@ -69,16 +71,9 @@ export default {
     InteractionPanel,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'curInteractionData', 'ControlTypeList', 'subTargetData',
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'curInteractionData', 'ControlTypeList',
+      'subTargetData', 'subComparePropList', 'subInteractionPropList',
       'InteractionLeftPropertyList', 'InteractionRightPropertyList', 'CompareLeftPropertyList', 'CompareRightPropertyList']),
-    curProduct() {
-      if (!this.ProductID) return null;
-      return this.ProductManageList.find(it => it.ID === this.ProductID);
-    },
-    curPart() {
-      if (!this.PartID || !this.curProduct) return null;
-      return this.curProduct.PartList.find(it => it.ID === this.PartID);
-    },
     rightTitle() {
       if (this.setType === 'risk') return '则进行风险提示：';
       if (this.setType === 'compare') return '则必须满足';
@@ -88,18 +83,14 @@ export default {
       if (this.setType === 'risk' || this.setType === 'compare' || this.setType === 'subCompare') return this.InteractionLeftPropertyList;
       return null;
     },
+    LeftPropertyList() {
+      if (this.setType === 'subCompare' || this.setType === 'subInteraction') return this.subTypePropertyList;
+      return this.InteractionLeftPropertyList;
+    },
   },
   methods: {
     getPositionID() {
-      if (!this.$route.params) {
-        this.onGoBackClick();
-        return;
-      }
       const { ProductID, PartID, name, type, setType } = this.$route.params;
-      if (!ProductID || !PartID || !name || !type || !setType) {
-        this.onGoBackClick();
-        return;
-      }
       this.ProductID = ProductID;
       this.PartID = PartID !== 'null' ? PartID : '';
       this.ProductName = name;
@@ -109,6 +100,21 @@ export default {
     onGoBackClick() {
       // this.$router.replace(`/ProductInteractionList/${this.ProductID}/${this.PartID || 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
       this.$goback();
+    },
+    async getSubPropList() {
+      if (this.setType !== 'subCompare' && this.setType !== 'subInteraction') {
+        this.loading = false;
+        return;
+      }
+      const idsObj = PropertyClass.getPropIDsObj(this.subTargetData);
+      let useModule;
+      if (this.setType === 'subInteraction') useModule = 25;
+      if (this.setType === 'subCompare') useModule = 26;
+      this.loading = true;
+      const resp = await PropertyClass.getPropertyList({ ...idsObj, useModule });
+      this.loading = false;
+      if (resp) this.subTypePropertyList = resp;
+      else this.$goback();
     },
     onSubmitClick() { // 点击保存
       const condition = this.$refs.oLeftComp.getConditonResult();
@@ -146,6 +152,7 @@ export default {
   },
   mounted() {
     this.getPositionID();
+    this.getSubPropList();
   },
 };
 </script>
@@ -172,6 +179,9 @@ export default {
   > main {
     flex: 1;
     padding-top: 15px;
+    &.loading {
+      opacity: 0.2;
+    }
     .blue-span {
       font-size: 13px;
       & + .intro {

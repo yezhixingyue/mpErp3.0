@@ -48,7 +48,7 @@ export default {
     },
     localTableData() {
       // eslint-disable-next-line max-len
-      if (!this.ProductFactoryList || this.ProductFactoryList.length === 0 || !this.ProductFactoryPropertyList || this.ProductFactoryPropertyList.length === 0) return [];
+      if (!this.ProductFactoryList || this.ProductFactoryList.length === 0) return [];
       const _ProductFactoryList = JSON.parse(JSON.stringify(this.ProductFactoryList)).map(it => {
         const { Constraint } = it;
         Constraint.ItemList = Constraint.ItemList.map(item => {

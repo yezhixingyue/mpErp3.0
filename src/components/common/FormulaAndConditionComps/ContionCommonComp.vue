@@ -461,6 +461,7 @@ export default {
       > header {
         padding-top: 70px;
         padding-bottom: 30px;
+        white-space: nowrap;
         .mp-common-title-wrap {
           margin-right: 25px;
         }
