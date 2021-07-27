@@ -36,7 +36,7 @@
           <i></i>删除
         </span>
       </div>
-      <div class="extend-box" @click="extend = !extend" :class="itemData.PartList&&itemData.PartList.length>0 ? '' : 'disabled'">
+      <div class="extend-box" @click="onExtendClick" :class="itemData.PartList&&itemData.PartList.length>0 ? '' : 'disabled'">
         <span v-if="!extend">展开</span>
         <span v-else>隐藏</span>
         <i v-if="!extend" class="el-icon-caret-bottom"></i>
@@ -120,6 +120,14 @@ export default {
     };
   },
   methods: {
+    onExtendClick() {
+      this.extend = !this.extend;
+      if (this.extend) {
+        sessionStorage.setItem('lastExtendProductID', this.itemData.ID);
+      } else {
+        sessionStorage.removeItem('lastExtendProductID');
+      }
+    },
     onProductSaveClick() { // 产品编辑
       this.$store.commit('productManage/setCurEditData', this.itemData);
       this.$router.push(`/ProductDataSave/${Date.now()}`);
@@ -200,6 +208,10 @@ export default {
       };
       this.$store.dispatch('productManage/getProductBindElementType', [data, callback]);
     },
+  },
+  mounted() {
+    const extendID = sessionStorage.getItem('lastExtendProductID');
+    if (extendID && extendID === this.itemData.ID) this.extend = true;
   },
 };
 </script>

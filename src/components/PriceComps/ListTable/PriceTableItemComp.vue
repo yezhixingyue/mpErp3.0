@@ -18,9 +18,9 @@
       <div class="text-menu-box">
         <TipsSpanButton @click.native="jumpToPage('MakeupCtrl')" text='拼版控制' />
         <TipsSpanButton @click.native="jumpToPage('subConditionList')" :disabled='canSetPartList.length === 0' text='子条件'/>
-        <TipsSpanButton @click.native="jumpToPage('PriceFormulaList')" text='计算公式'  />
+        <TipsSpanButton @click.native="jumpToPage('PriceFormulaList', true)" text='计算公式'  />
       </div>
-      <div class="extend-box" @click="extend = !extend" :class="itemData.PriceList&&itemData.PriceList.length>0 ? '' : 'disabled'">
+      <div class="extend-box" @click="onExtendClick" :class="itemData.PriceList&&itemData.PriceList.length>0 ? '' : 'disabled'">
         <span v-if="!extend">展开</span>
         <span v-else>隐藏</span>
         <i v-if="!extend" class="el-icon-caret-bottom"></i>
@@ -39,10 +39,10 @@
         </div>
         <div class="menus" v-if="it.IsOwnPrice">
           <TipsSpanButton text='数值转换' />
-          <TipsSpanButton text='拼版方案选择' @click.native="onMakeupSolutionSetClick(it)">
+          <TipsSpanButton text='拼版方案选择' @click.native="onPriceItemSetMenuClick(it, 'MakeupSolutionSet')">
             <span>拼版方案选择（<i class="is-pink">{{it.MakeupList.filter(_it => _it.Solution).length}}</i>/{{it.MakeupList ? it.MakeupList.length : 0}}）</span>
           </TipsSpanButton>
-          <TipsSpanButton text='工艺费' />
+          <TipsSpanButton text='工艺费' @click.native="onPriceItemSetMenuClick(it, 'CraftPriceSetPage')" />
           <TipsSpanButton text='价格表'>
             <span>价格表（{{it.CostList ? it.CostList.length : 0}}）</span>
           </TipsSpanButton>
@@ -125,6 +125,14 @@ export default {
     };
   },
   methods: {
+    onExtendClick() {
+      this.extend = !this.extend;
+      if (this.extend) {
+        sessionStorage.setItem('lastExtendProductID4Price', this.itemData.ID);
+      } else {
+        sessionStorage.removeItem('lastExtendProductID4Price');
+      }
+    },
     onPriceItemSaveClick(data) { // 编辑 | 保存产品价格条目
       this.$store.dispatch('common/getAreaList');
       this.$store.dispatch('common/getUserClassify');
@@ -176,24 +184,32 @@ export default {
       };
       this.$store.dispatch('priceManage/getPriceModeSetup', [data, cb]);
     },
-    jumpToPage(pathName) {
-      const { ID, Name, ClassifyList } = this.itemData;
+    getFullName() { // 获取当前产品全称： 类别 + 内部名称
+      const { Name, ClassifyList } = this.itemData;
       let _name = '';
       if (ClassifyList && ClassifyList.length > 0) {
         const [{ FirstLevel }] = ClassifyList;
         if (FirstLevel && FirstLevel.Name) _name = `${FirstLevel.Name} - `;
       }
       _name += Name;
-      const params = { name: _name, id: ID };
-      if (pathName === 'PriceFormulaList') params.timer = Date.now();
+      return _name;
+    },
+    jumpToPage(pathName, hasTimer) {
+      const params = {
+        name: this.getFullName(),
+        id: this.itemData.ID,
+      };
+      if (hasTimer) params.timer = Date.now();
       this.$router.push({ name: pathName, params });
     },
-    onMakeupSolutionSetClick(item) {
+    onPriceItemSetMenuClick(item, path, hasTimer = false) {
       this.$store.commit('priceManage/setCurPriceItem', item);
-      this.jumpToPage('MakeupSolutionSet');
+      this.jumpToPage(path, hasTimer);
     },
   },
   mounted() {
+    const extendID = sessionStorage.getItem('lastExtendProductID4Price');
+    if (extendID && extendID === this.itemData.ID) this.extend = true;
   },
 };
 </script>

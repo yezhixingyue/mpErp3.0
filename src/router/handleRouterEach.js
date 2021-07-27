@@ -28,8 +28,6 @@ VueRouter.prototype.push = function push(location) {
  * @return {*}
  */
 const NextHandler = (from, to, next) => {
-  // console.log('from', from);
-  // console.log('to', to);
   store.commit('common/setLastPagePaths', from);
   next();
 };
@@ -69,7 +67,7 @@ function handlePermission(to, next, Permission, from) {
       }
       isInit = false;
     }
-    NProgress.start();
+    if (from.name !== to.name) NProgress.start();
     NextHandler(from, to, next); // 2.6 如果满足权限要求则允许跳转， 否则跳转提示页面
   } else next({ path: '/notauth' });
 }

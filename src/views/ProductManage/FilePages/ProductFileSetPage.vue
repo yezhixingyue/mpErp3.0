@@ -41,7 +41,7 @@ export default {
     ContionCommonComp,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductFilePropertyList', 'curEditFileData']),
+    ...mapState('productManage', ['ProductManageList', 'ProductFilePropertyList', 'curEditFileData']),
     ...mapState('common', ['FileDataList']),
     curProduct() {
       if (!this.ProductID) return null;

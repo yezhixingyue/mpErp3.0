@@ -16,6 +16,14 @@
       <img src="@/assets/images/del.png" alt="">
       <i>删除</i>
     </span>
+    <span @click="onSetupCostClick" :class="canSetupCost ? '' : 'disabled'" v-if="showList.includes('setupCost')">
+      <img src="@/assets/images/setup.png" alt="">
+      <i>设置费用组成</i>
+    </span>
+    <span @click="onAllCostClick" :class="canAllCost ? '' : 'disabled'" v-if="showList.includes('allCost')">
+      <img src="@/assets/images/cost.png" alt="">
+      <i>总费用</i>
+    </span>
   </div>
 </template>
 
@@ -35,6 +43,14 @@ export default {
       default: true,
     },
     canSelect: {
+      type: Boolean,
+      default: true,
+    },
+    canSetupCost: {
+      type: Boolean,
+      default: true,
+    },
+    canAllCost: {
       type: Boolean,
       default: true,
     },
@@ -59,6 +75,14 @@ export default {
     onSelectClick() {
       if (!this.canSelect) return;
       this.$emit('select');
+    },
+    onAllCostClick() {
+      if (!this.canAllCost) return;
+      this.$emit('allCost');
+    },
+    onSetupCostClick() {
+      if (!this.canSetupCost) return;
+      this.$emit('setupCost');
     },
   },
 };

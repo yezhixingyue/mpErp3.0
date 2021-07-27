@@ -121,6 +121,28 @@ const routes = [
     },
     component: () => import('../../../views/Price/MakeupSolutionSetPage'),
   },
+  {
+    path: '/CraftPriceSetPage/:name/:id',
+    name: 'CraftPriceSetPage',
+    meta: {
+      title: '工艺费设置',
+      requiresAuth: true,
+      pageName: 'CraftPriceSetPage',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/CraftPriceSetPage'),
+  },
+  {
+    path: '/CompositionCostOfCraft/:name/:id',
+    name: 'CompositionCostOfCraft',
+    meta: {
+      title: '设置工艺费用组成',
+      requiresAuth: true,
+      pageName: 'CompositionCostOfCraft',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/CraftPriceSetPage/CompositionCostOfCraftPage'),
+  },
 ];
 
 const routeTree = {
@@ -147,7 +169,13 @@ const routeTree = {
         { name: 'PriceFormulaFilter', children: [] }, // 价格子公式数据筛选
       ],
     },
-    { name: 'MakeupSolutionSet', children: [] },
+    { name: 'MakeupSolutionSet', children: [] }, // 拼版方案选择
+    {
+      name: 'CraftPriceSetPage', // 工艺费设置
+      children: [
+        { name: 'CompositionCostOfCraft', children: [] }, // 工艺组成设置页面
+      ],
+    },
   ],
 };
 

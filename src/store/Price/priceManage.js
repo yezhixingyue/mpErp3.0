@@ -2,6 +2,7 @@ import api from '@/api/index';
 import messageBox from '@/assets/js/utils/message';
 import CommonClassType from '@/store/CommonClassType';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import { getIDFromListByNames } from '@/assets/js/utils/util';
 
 const initConditon = {
   ProductClass: {
@@ -75,6 +76,8 @@ export default {
     /** 单条价格条目相关
     ----------------------------------------- */
     curPriceItem: null,
+    ProductCraftDataObj: null, // 工艺费产品及部件工艺数据汇总对象
+    curCraftPriceItemData: null, // 正在设置工艺费用的单个工艺数据信息
   },
   getters: {
   },
@@ -178,6 +181,25 @@ export default {
     setCurPriceItem(state, data) {
       state.curPriceItem = data;
     },
+    setPriceItemMakeupSolutionChange(state, [ProductID, PriceID, Type, SolutionID]) { // 设置拼版方案选择
+      const t = state.PriceManageList.find(it => it.ID === ProductID);
+      if (t) {
+        const targetPrice = t.PriceList.find(it => it.ID === PriceID);
+        if (targetPrice) {
+          const targetType = targetPrice.MakeupList.find(it => it.Type === Type);
+          if (targetType) targetType.Solution = SolutionID;
+        }
+      }
+    },
+    setProductCraftDataObj(state, itemData) {
+      if (!itemData) return;
+      const { ID } = itemData;
+      if (!state.ProductCraftDataObj) state.ProductCraftDataObj = {};
+      state.ProductCraftDataObj[ID] = itemData;
+    },
+    setCurCraftPriceItemData(state, data) {
+      state.curCraftPriceItemData = data;
+    },
   },
   actions: {
     async getPriceManageList({ state, commit }, page = 1) { // 获取产品列表数据
@@ -242,6 +264,20 @@ export default {
       if (respList) {
         commit('setChildConditionPropertyList', respList);
       }
+    },
+    async getProductCraftData({ state, commit, rootState }, ProductID) { // 获取产品及部件工艺信息
+      if (state.ProductCraftDataObj && state.ProductCraftDataObj[ProductID]) {
+        return state.ProductCraftDataObj[ProductID];
+      }
+      const dataType = ['Craft', 'Part'];
+      const List = getIDFromListByNames(dataType, rootState.productManage.ProductModuleKeyIDList);
+      const _temp = { ID: ProductID, List };
+      const resp = await api.getProductModuleData(_temp).catch(() => {});
+      if (resp && resp.data && resp.data.Status === 1000) {
+        commit('setProductCraftDataObj', resp.data.Data);
+        return resp.data.Data;
+      }
+      return null;
     },
   },
 };

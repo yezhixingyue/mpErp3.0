@@ -11,20 +11,13 @@
          {{type.Name}}（{{getTypeLength(type.ID)}}）
         </el-radio-button>
       </el-radio-group>
-      <div class="crtl">
-        <el-scrollbar wrap-class="scrollbar-wrapper" v-if="!isSolutionListLoading">
-          <el-radio-group v-model="curSolutionID" size="small">
-            <el-radio-button v-for="it in curTypeSolutionList" :label="it.ID" :key="it.ID">{{it.Name}}</el-radio-button>
-          </el-radio-group>
-        </el-scrollbar>
-        <span v-else class="is-font-size-12 is-gray" style=""> 方案加载中...</span>
-        <span class="is-font-size-12 is-gray" v-if="!isSolutionListLoading && curTypeSolutionList.length === 0">该分类尚无方案，请添加</span>
-        <span class="blue-span" @click="onSolutionSaveClick(null)">+添加方案</span>
-        <div class="menus" v-if="curSolutionID">
-          <span @click="onSolutionSaveClick(curSolutionID)" class="blue-span">编辑当前方案名称</span>
-          <span class="red-span" @click="onRemoveClick">删除当前方案</span>
-        </div>
-      </div>
+      <TopRadioButtonComp
+        v-model="curSolutionID"
+       :loading='isSolutionListLoading'
+       :list='curTypeSolutionList'
+       @remove='onRemoveClick'
+       @itemSave='onSolutionSaveClick'
+       />
     </header>
     <main :class="isTableDataloading || isPropertyListLoading?'loading':''">
       <SolutionSaveDialog :visible.sync="solutionSaveVisible" :saveData='solutionSaveData' @submit="onSolutionSaveSubmit" />
@@ -103,6 +96,7 @@ import PartMixinDefaultSetSaveDialog from '@/components/PriceComps/MakeupCtrl/Pa
 import SolutionTableCom from '@/components/PriceComps/MakeupCtrl/SolutionTableCom.vue';
 import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
 import PartMixinExcludeNumCtrlDialog from '@/components/PriceComps/MakeupCtrl/PartMixinExcludeNumCtrlDialog.vue';
+import TopRadioButtonComp from '@/components/common/NewComps/TopRadioButtonComp';
 
 export default {
   name: 'MakeupCtrl',
@@ -112,6 +106,7 @@ export default {
     PartMixinDefaultSetSaveDialog,
     FormulaPanelElementSelectDialog,
     PartMixinExcludeNumCtrlDialog,
+    TopRadioButtonComp,
   },
   computed: {
     ...mapState('priceManage', ['MakeupControlTypeList', 'MakeupLeftPropertyList', 'MakeupRightPropertyList', 'SizeNumberPropertyList', 'PriceManageList']),
@@ -552,41 +547,6 @@ export default {
         &.is-active{
           &::before {
             opacity: 1;
-          }
-        }
-      }
-    }
-    > .crtl {
-      display: flex;
-      align-items: center;
-      height: 32px;
-      line-height: 32px;
-      margin-top: 23px;
-      > span {
-        font-size: 14px;
-        margin-right: 30px;
-        white-space: nowrap;
-        &.is-gray {
-          text-indent: 1em;
-        }
-      }
-      > .menus {
-        font-size: 12px;
-        white-space: nowrap;
-        > span {
-          margin-left: 30px;
-          line-height: 32px;
-          white-space: nowrap;
-        }
-      }
-      > .el-scrollbar {
-        overflow: hidden;
-        margin-right: 12px;
-        .el-radio-group {
-          white-space: nowrap;
-          .el-radio-button__inner {
-            width: auto;
-            min-width: 100px;
           }
         }
       }
