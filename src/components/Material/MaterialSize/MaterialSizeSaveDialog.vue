@@ -92,7 +92,7 @@ export default {
       rules: {
         Name: [
           { required: true, message: '请输入尺寸名称', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' },
         ],
         Length: [
           { validator: this.checkLength, trigger: 'change' },

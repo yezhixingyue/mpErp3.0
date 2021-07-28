@@ -87,7 +87,7 @@ export default {
     InteractionRightPropertyList: [],
     CompareLeftPropertyList: [],
     CompareRightPropertyList: [],
-    subInteractionPropList: [],
+    InteractionAllPropList: [],
     subComparePropList: [],
     subTargetData: null, // 子交互 子对比 跳转页面前选择的属性数据
     /**
@@ -261,12 +261,12 @@ export default {
     setProductInteractionDataListRemove(state, id) {
       state.ProductInteractionDataList = state.ProductInteractionDataList.filter(it => it.ID !== id);
     },
-    setInteractionPropertyList(state, [leftList, rightList, compareLeft, compareRight]) {
+    setInteractionPropertyList(state, [leftList, rightList, compareList, compareRightPartList, allPropList]) {
       state.InteractionLeftPropertyList = Array.isArray(leftList) ? leftList : [];
       state.InteractionRightPropertyList = Array.isArray(rightList) ? rightList : [];
-      state.CompareLeftPropertyList = Array.isArray(compareLeft) ? compareLeft : [];
-      state.CompareRightPropertyList = Array.isArray(compareRight) ? compareRight : [];
-      // state.subInteractionPropList = Array.isArray(subInteractionPropList) ? subInteractionPropList : [];
+      state.CompareLeftPropertyList = Array.isArray(compareList) ? compareList : [];
+      state.CompareRightPropertyList = Array.isArray(compareRightPartList) ? compareRightPartList : [];
+      state.InteractionAllPropList = Array.isArray(allPropList) ? allPropList : [];
       // state.subComparePropList = Array.isArray(subComparePropList) ? subComparePropList : [];
     },
     // setSubInteractionPropList(state, list) { // 设置子交互列表数据
@@ -502,10 +502,11 @@ export default {
     async getInteractionPropertyList({ commit }, ProductID) { // 获取交互左侧弹窗属性列表数据
       commit('setInteractionPropertyList', []);
       const list = await Promise.all([
-        PropertyClass.getPropertyList({ UseModule: 14, ProductID }),
-        PropertyClass.getPropertyList({ UseModule: 18, ProductID }),
-        PropertyClass.getPropertyList({ UseModule: 19, ProductID }), // 对比主属性
-        PropertyClass.getPropertyList({ UseModule: 20, ProductID }), // 对比从属性
+        PropertyClass.getPropertyList({ UseModule: 14, ProductID }), // 交互左侧
+        PropertyClass.getPropertyList({ UseModule: 18, ProductID }), // 交互右侧
+        PropertyClass.getPropertyList({ UseModule: 17, ProductID }), // 对比验证 风险提示
+        PropertyClass.getPropertyList({ UseModule: 19, ProductID }), // 对比右侧 主、从属性
+        PropertyClass.getPropertyList({ UseModule: 255, ProductID }), // 全部属性 用于子对比和子交互
       ]);
       if (list) {
         commit('setInteractionPropertyList', list);

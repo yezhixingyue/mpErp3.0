@@ -90,11 +90,11 @@ export default {
       rules: {
         Name: [
           { required: true, message: '请输入内部名称', trigger: 'blur' },
-          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' },
         ],
         ShowName: [
           { required: true, message: '请输入显示名称', trigger: 'blur' },
-          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' },
         ],
         Classify: [
           { validator: this.classifyValidator, trigger: 'change' },

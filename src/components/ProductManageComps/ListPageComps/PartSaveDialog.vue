@@ -73,7 +73,7 @@ export default {
       rules: {
         Name: [
           { required: true, message: '请输入部件名称', trigger: 'blur' },
-          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' },
           { pattern: normalNameReg, message: '名称仅支持中文、英文(全角/半角)、+-_(全角/半角)、数字等', trigger: 'blur' },
         ],
         UseTimes: [

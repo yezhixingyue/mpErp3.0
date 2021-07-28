@@ -16,9 +16,14 @@
   :before-close="onCancleClick">
   <slot></slot>
   <span slot="footer" class="dialog-footer">
-    <el-button type="primary" :loading='loading' @click="onSubmitClick" v-if="showSubmit" :disabled='disabled'>{{loading?'加载中':submitText}}</el-button>
-    <el-button type="danger"  @click="onDangerClick" v-if="showDanger">{{dangerText}}</el-button>
-    <el-button @click="onCancleClick">{{cancelText}}</el-button>
+    <div v-if="$slots['foot-tip']">
+      <slot name="foot-tip"></slot>
+    </div>
+    <p>
+      <el-button type="primary" :loading='loading' @click="onSubmitClick" v-if="showSubmit" :disabled='disabled'>{{loading?'加载中':submitText}}</el-button>
+      <el-button type="danger"  @click="onDangerClick" v-if="showDanger">{{dangerText}}</el-button>
+      <el-button @click="onCancleClick">{{cancelText}}</el-button>
+    </p>
   </span>
 </el-dialog>
 </template>
@@ -163,46 +168,53 @@ export default {
     justify-content: center;
     > .dialog-footer {
       padding: 10px 0;
-      > button {
-        height: 35px;
-        width: 120px;
-        padding: 0;
-        border-radius: 3px;
-        & + button {
-          margin-left: 20px;
-        }
-        &.el-button--default {
-          border-color: #26bcf9;
-          color: #26bcf9;
-          &:active {
-            border-color: #428dfa;
-            color: #428dfa;
+      > div {
+        margin-bottom: 20px;
+        text-align: left;
+      }
+      > p {
+        text-align: center;
+        > button {
+          height: 35px;
+          width: 120px;
+          padding: 0;
+          border-radius: 3px;
+          & + button {
+            margin-left: 20px;
           }
-        }
-        &.el-button--primary {
-          background: linear-gradient(to right, #26bcf9, #35dff9);
-          border: none;
-          &:hover {
-            opacity: 0.88;
+          &.el-button--default {
+            border-color: #26bcf9;
+            color: #26bcf9;
+            &:active {
+              border-color: #428dfa;
+              color: #428dfa;
+            }
           }
-          &:active {
-            background: linear-gradient(to right, #428dfa, #26bcf9);
+          &.el-button--primary {
+            background: linear-gradient(to right, #26bcf9, #35dff9);
+            border: none;
+            &:hover {
+              opacity: 0.88;
+            }
+            &:active {
+              background: linear-gradient(to right, #428dfa, #26bcf9);
+            }
           }
-        }
-        &.el-button--danger {
-          background: #FF3769;
-          border-color: #FF3769;
-          &:hover {
-            opacity: 0.88;
+          &.el-button--danger {
+            background: #FF3769;
+            border-color: #FF3769;
+            &:hover {
+              opacity: 0.88;
+            }
+            &:active {
+              border-color: #e4083f;
+              background: #e4083f;
+            }
           }
-          &:active {
-            border-color: #e4083f;
-            background: #e4083f;
+          &.is-disabled {
+            background: #cbcbcb !important;
+            opacity: 1 !important;
           }
-        }
-        &.is-disabled {
-          background: #cbcbcb !important;
-          opacity: 1 !important;
         }
       }
     }

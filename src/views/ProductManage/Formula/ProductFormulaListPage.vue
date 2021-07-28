@@ -65,7 +65,7 @@ export default {
     },
     onFormulaSaveClick(data) { // 公式添加与编辑
       this.$store.commit('productManage/setCurEditFormulaData', data);
-      const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/1/${Date.now()}`;
+      const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/1/${false}/${Date.now()}`;
       this.$router.push(path);
     },
     onSubFormulaFilterClick(data) { // 子公式数据筛选
@@ -77,13 +77,13 @@ export default {
     onSubFormulaSaveClick(data) { // 子公式编辑
       this.$store.commit('productManage/setCurSubFormulaAddProperty', null);
       this.$store.commit('productManage/setCurEditSubFormulaData', data);
-      const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/2/${Date.now()}`;
+      const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/2/${true}/${Date.now()}`;
       this.$router.push(path);
     },
     onSubFormulaAddClick(prop) { // 子公式添加
       this.$store.commit('productManage/setCurEditSubFormulaData', null);
       this.$store.commit('productManage/setCurSubFormulaAddProperty', prop);
-      const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/2/${Date.now()}`;
+      const path = `/ProductFormulaSet/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/2/${true}/${Date.now()}`;
       this.$router.push(path);
     },
     onGoBackClick() {

@@ -6,7 +6,7 @@
     </header>
     <main>
       <FormulaTableCrtlComp @setup='onFormulaSaveClick' :UseModule='3' v-if="ProductID" :formulaH='222' :PositionID='ProductID' PositionType='ProductID' />
-      <SubFormulaTableCrtlComp @filter='onSubFormulaFilterClick' :UseModule='4' :CompareUseModule='29'
+      <SubFormulaTableCrtlComp @filter='onSubFormulaFilterClick' :UseModule='4'
        @setup='onSubFormulaSaveClick' v-if="ProductID" :formulaH='222' @add='onSubFormulaAddClick' :PositionID='ProductID' PositionType='ProductID' />
     </main>
     <footer>
@@ -42,7 +42,7 @@ export default {
     },
     onFormulaSaveClick(data) { // 公式添加与编辑
       this.$store.commit('priceManage/setCurEditFormulaData', data);
-      const path = `/PriceFormulaSet/${this.ProductID}/${this.ProductName}/3`;
+      const path = `/PriceFormulaSet/${this.ProductID}/${this.ProductName}/3/false`;
       this.$router.push(path);
     },
     onSubFormulaFilterClick(data) { // 子公式数据筛选
@@ -54,13 +54,13 @@ export default {
     onSubFormulaSaveClick(data) { // 子公式编辑
       this.$store.commit('priceManage/setCurSubFormulaAddProperty', null);
       this.$store.commit('priceManage/setCurEditSubFormulaData', data);
-      const path = `/PriceFormulaSet/${this.ProductID}/${this.ProductName}/4`;
+      const path = `/PriceFormulaSet/${this.ProductID}/${this.ProductName}/4/true`;
       this.$router.push(path);
     },
     onSubFormulaAddClick(prop) { // 子公式添加
       this.$store.commit('priceManage/setCurEditSubFormulaData', null);
       this.$store.commit('priceManage/setCurSubFormulaAddProperty', prop);
-      const path = `/PriceFormulaSet/${this.ProductID}/${this.ProductName}/4`;
+      const path = `/PriceFormulaSet/${this.ProductID}/${this.ProductName}/4/true`;
       this.$router.push(path);
     },
     onGoBackClick() {

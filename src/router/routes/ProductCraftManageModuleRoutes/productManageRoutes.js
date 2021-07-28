@@ -134,7 +134,7 @@ const routes = [
     component: () => import('../../../views/ProductManage/Formula/ProductFormulaListPage.vue'),
   },
   {
-    path: '/ProductFormulaSet/:ProductID/:PartID/:name/:type/:moduleIndex/:times',
+    path: '/ProductFormulaSet/:ProductID/:PartID/:name/:type/:moduleIndex/:isSubFormula/:times',
     name: 'ProductFormulaSet',
     meta: {
       title: '公式设置 - 产品管理',

@@ -4,17 +4,23 @@
       <span>当前产品：</span>
       <span>{{ProductName}}</span>
       <span class="name">价格名称：{{PriceName}}</span>
-      <span class="name">设置工艺：{{curCraft.Name}}</span>
+      <span class="name" v-if="!isQuotationPage">设置工艺：{{curCraft.Name}}</span>
       <TopRadioButtonComp
         v-model="curCraftPriceID"
         title="费用"
-       :list='[]'
+       :list='SolutionList'
+       :loading='isSolutionLoading'
        @remove='onRemoveClick'
        @itemSave='onItemSaveClick'
        />
     </header>
     <main>
-      <CraftPriceTitleItemSaveDialog :visible.sync="visible" :rangeList='rangeList' :saveData='saveData' @submit="handleDialogSubmit" />
+      <CraftPriceTitleItemSaveDialog
+       :showGroup='!isQuotationPage'
+       :visible.sync="visible"
+       :rangeList='rangeList'
+       :saveData='saveData'
+       @submit="handleDialogSubmit" />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -34,9 +40,12 @@ export default {
     CraftPriceTitleItemSaveDialog,
   },
   computed: {
-    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem']),
+    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'PriceManageList']),
+    curProduct() {
+      return this.PriceManageList.find(it => it.ID === this.ProductID);
+    },
     curCraft() {
-      return this.curCraftPriceItemData.Craft || {};
+      return (this.curCraftPriceItemData && this.curCraftPriceItemData.Craft) || {};
     },
     rangeList() {
       if (!this.ProductData) return [];
@@ -73,11 +82,14 @@ export default {
       visible: false,
       saveData: null,
       ProductData: null,
+      isQuotationPage: false, // 是否为价格表页面
+      isSolutionLoading: true,
+      SolutionList: [],
     };
   },
   methods: {
     onGoBackClick() {
-      this.$router.replace('/PriceManageList');
+      this.$goback();
     },
     onRemoveClick() {
       this.messageBox.warnCancelBox('确定要删除当前方案吗', `方案名称：[ ${this.curSolutionItem ? this.curSolutionItem.Name : '未知方案名称'} ]`, () => {
@@ -92,19 +104,19 @@ export default {
         // ID: data ? data.ID : '',
         // Name: data ? data.Name : '',
         // GroupID
-        CraftPriceID: this.curCraftPriceID,
+        CraftPriceID: this.isQuotationPage ? '' : this.curCraftPriceID,
         // PartID: this.PartID,
         PriceID: this.PriceID,
-        CraftID: this.curCraft.ID,
+        CraftID: this.isQuotationPage ? '' : this.curCraft.ID,
         ID: '',
         Name: '',
-        GroupID: '6b3b7e2d-2b6a-4bb5-b1b8-ad5d009fb454',
+        GroupID: this.isQuotationPage ? '' : '', // ?
         PartID: '',
       };
       this.saveData = temp;
       this.visible = true;
     },
-    handleDialogSubmit(data) {
+    async handleDialogSubmit(data) {
       // const nameSameItem = this.solutionList.find(it => it.Name === data.Name);
       // if (nameSameItem) {
       //   if (nameSameItem.ID === data.ID) {
@@ -114,7 +126,14 @@ export default {
       //   }
       //   return;
       // }
-      // const resp = await this.api.getMakeupSolutionSave(data).catch(() => {});
+      const resp = await this.api.getPriceSolutionSave(data).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          console.log('价格方案保存成功后应该做的时候');
+          this.visible = false;
+        };
+        this.messageBox.successSingle('保存成功', cb, cb);
+      }
       console.log('handleDialogSubmit', data);
     },
     async getProductData() {
@@ -134,9 +153,15 @@ export default {
       });
       return list;
     },
+    async getPriceResultList() {
+      const resp = await this.api.getPriceResultList(this.PriceID).catch(() => {});
+      this.isSolutionLoading = false;
+      if (resp && resp.data.Status === 1000) this.SolutionList = resp.data.Data;
+    },
   },
   mounted() {
-    if (!this.curPriceItem || !this.curCraftPriceItemData || !this.curCraftPriceItemData.Craft) {
+    const isQuotationPage = this.$route.params.isQuotation; // 是否为价格表页面 否则为设置工艺费用组成页面
+    if (!isQuotationPage && (!this.curPriceItem || !this.curCraftPriceItemData || !this.curCraftPriceItemData.Craft)) {
       this.$goback();
       return;
     }
@@ -145,7 +170,15 @@ export default {
     this.PriceName = Name;
     this.ProductID = this.$route.params.id;
     this.ProductName = this.$route.params.name;
+
+    if (isQuotationPage) { // 价格表页面执行操作
+      this.isQuotationPage = isQuotationPage;
+    }
+    if (!isQuotationPage) { // 工艺费用组成设置页面
+      // 暂无操作
+    }
     this.getProductData();
+    this.getPriceResultList();
   },
 };
 </script>

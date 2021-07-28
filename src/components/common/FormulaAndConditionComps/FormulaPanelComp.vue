@@ -3,14 +3,15 @@
     <header>
       <span>{{pageLabel}}：</span>
       <span>{{pageTitle}}</span>
+      <slot name="title"></slot>
       <div v-if="FormulaData">
         <div>
-          <span>公式名称：</span>
+          <span>{{FormulaLabel}}：</span>
           <el-input size='small' style="width: 250px" v-model.trim="FormulaData.Name" maxlength="6" show-word-limit></el-input>
         </div>
-        <div>
+        <div v-if="!hiddenUnit">
           <span>结果单位：</span>
-          <el-input size='small' style="width: 100px" v-model.trim="FormulaData.Unit" maxlength="4" show-word-limit></el-input>
+          <el-input size='small' style="width: 125px" v-model.trim="FormulaData.Unit" maxlength="6" show-word-limit></el-input>
         </div>
       </div>
     </header>
@@ -22,7 +23,15 @@
               <p class="btn-box">
                 <el-button type="primary" size="small" @click='onElementAddClick'>+添加元素</el-button>
               </p>
-              <p class="tips-box"><i class="el-icon-warning"></i> 注：当为空值时设置的值指当某一界面元素被禁用/隐藏或者客户未选择未填写任何值时，以此值参与运算</p>
+              <p class="tips-box">
+                <span class="lt">
+                  <i class="el-icon-warning"></i>注：
+                </span>
+                <span class="rt">
+                  <i>当为空值时设置的值指当某一界面元素被禁用/隐藏或者客户未选择未填写任何值时，以此值参与运算</i>
+                  <i v-if="showFormTip">表数据指根据当前数据表匹配的结果数值，如果没有任何匹配，则此公式运算结果为空。</i>
+                </span>
+              </p>
             </header>
             <main>
               <p class="module-title">已选元素概览</p>
@@ -127,6 +136,22 @@ export default {
       type: String,
       default: '',
     },
+    hiddenUnit: {
+      type: Boolean,
+      default: false,
+    },
+    FormulaLabel: {
+      type: String,
+      default: '公式名称',
+    },
+    showFormTip: { // 是否展示表数据说明
+      type: Boolean,
+      default: false,
+    },
+    PriceID: {
+      type: String,
+      default: '',
+    },
   },
   components: {
     LRWidthDragAutoChangeComp,
@@ -173,7 +198,7 @@ export default {
       return this.FormulaData.Content;
     },
     isSubFormula() { // 是否为子公式设置
-      return this.moduleIndex === 2;
+      return this.moduleIndex === 2 || this.moduleIndex === 4;
     },
     subFromulaDialogTitle() {
       if (!this.isSubFormula) return '';
@@ -190,7 +215,7 @@ export default {
       let _IDsObj;
       if (!this.isSubFormula) {
         if (this.NowEditFormulaData) temp = { ...this.NowEditFormulaData }; // 编辑 子公式编辑是否可涵盖在里面？ 尚不确定 。 curEditSubFormulaData
-        else temp = { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex };
+        else temp = { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex, PriceID: this.PriceID };
       } else {
         if (this.curEditSubFormulaData) { // 编辑
           temp = { ...this.curEditSubFormulaData };
@@ -343,6 +368,11 @@ export default {
       color: #21CAE3;
       font-weight: bold;
     }
+    .name {
+      margin-left: 40px;
+      font-weight: 400;
+      font-size: 14px;
+    }
     > div {
       display: flex;
       padding-top: 45px;
@@ -377,6 +407,25 @@ export default {
         }
         > p.tips-box {
           width: 700px;
+          display: flex;
+          height: auto;
+          > .lt {
+            padding-top: 3px;
+            padding-right: 2px;
+            white-space: nowrap;
+          }
+          > .rt {
+            > i {
+              font-size: 12px;
+              padding: 6px 0 4px 0;
+              display: block;
+              line-height: 18px;
+              letter-spacing: 1px;
+              & + i {
+                padding: 3px 0 9px 0;
+              }
+            }
+          }
         }
       }
       > main {

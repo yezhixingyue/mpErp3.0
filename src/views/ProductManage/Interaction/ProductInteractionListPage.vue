@@ -55,7 +55,7 @@ export default {
     SubFormulaAddAndSelectDialog,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductInteractionDataList', 'subComparePropList', 'subInteractionPropList',
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductInteractionDataList', 'subComparePropList', 'InteractionAllPropList',
       'ControlTypeList', 'InteractionLeftPropertyList', 'InteractionRightPropertyList', 'CompareLeftPropertyList', 'CompareRightPropertyList']),
     curProduct() {
       if (!this.ProductID) return null;
@@ -69,16 +69,35 @@ export default {
       if (!Array.isArray(this.ProductInteractionDataList) || this.ProductInteractionDataList.length === 0) return [];
       const list = JSON.parse(JSON.stringify(this.ProductInteractionDataList)).map(it => {
         const { Constraint, List } = it;
+        console.log(it);
+        const type = this.$utils.getNameFromListByIDs(it.ControlType, this.ControlTypeList);
+        // console.log(type);
+        let _RightPropertyList = this.InteractionAllPropList;
+        let _LeftPropertyList = this.InteractionAllPropList;
+        switch (type) {
+          case 'interaction':
+            _RightPropertyList = this.InteractionRightPropertyList;
+            _LeftPropertyList = this.InteractionLeftPropertyList;
+            break;
+          case 'compare':
+            _RightPropertyList = this.CompareRightPropertyList;
+            _LeftPropertyList = this.CompareLeftPropertyList;
+            break;
+          // case 'subInteraction': // ?
+          //   _RightPropertyList = this.CompareRightPropertyList;
+          default:
+            break;
+        }
         const _list = List.map(_it => {
           let { Property, CompareProperty } = _it;
           if (!Property) return _it;
           if (CompareProperty && Property) {
-            Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.CompareLeftPropertyList);
-            CompareProperty = PropertyClass.getPerfectPropertyByImperfectProperty(CompareProperty, this.CompareRightPropertyList);
-          } else if (Property) Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.InteractionRightPropertyList);
+            Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, _RightPropertyList);
+            CompareProperty = PropertyClass.getPerfectPropertyByImperfectProperty(CompareProperty, _RightPropertyList);
+          } else if (Property) Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, _RightPropertyList);
           return { ..._it, Property, CompareProperty };
         });
-        const [_Constraint] = PropertyClass.getConstraintAndTextByImperfectConstraint(Constraint, this.InteractionLeftPropertyList);
+        const [_Constraint] = PropertyClass.getConstraintAndTextByImperfectConstraint(Constraint, _LeftPropertyList);
         return { ...it, Constraint: _Constraint, List: _list };
       });
       return list;

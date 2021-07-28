@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 09:37:02
- * @LastEditTime: 2021-06-07 09:42:10
+ * @LastEditTime: 2021-07-28 10:18:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue.config.js
@@ -18,6 +18,7 @@ module.exports = {
         // target: 'http://192.168.1.50:8050', // 正式
         // target: 'http://192.168.1.92:8055', // 测试
         target: 'http://192.168.3.68:8050', // 3.0
+        // target: 'http://192.168.1.92:8050', // 3.0 测试
         ws: true, // 开启websockets
         changeOrigin: true, // 开启代理
       },

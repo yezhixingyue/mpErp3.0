@@ -307,7 +307,7 @@ export default {
         SwitchAttribute: {
           Words: [
             { required: true, message: '请输入显示文字', trigger: 'blur' },
-            { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
+            { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' },
           ],
           OpenValue: [
             { required: true, message: '请设置开值数值', trigger: 'blur' },

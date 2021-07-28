@@ -122,7 +122,6 @@ export default {
     async handleSubmit(data) {
       let requestApi = this.api.getMakeupSolutionItemSave; // 保存普通的方案条目
       if (this.routeInfo.isMixin) { // 添加的是混拼条目，此时调用不同的数据接口：getMixtureMakeupItemSave
-        console.log(data);
         requestApi = this.api.getMixtureMakeupItemSave;
       }
       const resp = await requestApi(data).catch(() => {});

@@ -99,18 +99,18 @@ export default {
       rules: {
         FactoryName: [
           { required: true, message: '请输入工厂名称', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' },
         ],
         CityID: [
           { required: true, message: '请选择工厂地址', trigger: 'change' },
         ],
         Address: [
           { required: true, message: '请输入详细地址', trigger: 'blur' },
-          { min: 2, max: 60, message: '长度在 2 到 60 个字符', trigger: 'blur' },
+          { min: 1, max: 60, message: '长度在 1 到 60 个字符', trigger: 'blur' },
         ],
         LinkMan: [
           { required: true, message: '请输入联系人', trigger: 'blur' },
-          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' },
         ],
         Mobile: [
           { required: true, message: '请输入联系电话', trigger: 'blur' },

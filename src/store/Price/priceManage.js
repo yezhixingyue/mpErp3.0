@@ -78,6 +78,8 @@ export default {
     curPriceItem: null,
     ProductCraftDataObj: null, // 工艺费产品及部件工艺数据汇总对象
     curCraftPriceItemData: null, // 正在设置工艺费用的单个工艺数据信息
+    curQuotationSchemeData: null, // 当前正在编辑的报价方案数据
+    curQuotationResultData: null, // 报价结果
   },
   getters: {
   },
@@ -200,6 +202,28 @@ export default {
     setCurCraftPriceItemData(state, data) {
       state.curCraftPriceItemData = data;
     },
+    setCurQuotationSchemeData(state, data) {
+      state.curQuotationSchemeData = data;
+    },
+    setCurQuotationResultData(state, data) {
+      state.curQuotationResultData = data;
+    },
+    setPriceItemSolutionListChange(state, [ProductID, PriceID, isEdit, data, itemID]) {
+      const t = state.PriceManageList.find(it => it.ID === ProductID); // 目标产品
+      if (t) {
+        const t2 = t.PriceList.find(it => it.ID === PriceID); // 目标价格条目
+        if (t2) {
+          if (!isEdit) {
+            t2.SolutionList.unshift({ ...data, ID: itemID });
+            return;
+          }
+          const i = t2.SolutionList.findIndex(it => it.ID === itemID); // 目标方案索引
+          if (i > -1) {
+            t2.SolutionList.splice(i, 1, data);
+          }
+        }
+      }
+    },
   },
   actions: {
     async getPriceManageList({ state, commit }, page = 1) { // 获取产品列表数据
@@ -260,7 +284,8 @@ export default {
     },
     async getChildConditionPropertyList({ commit }, PartIDs) {
       commit('setChildConditionPropertyList', []);
-      const respList = await Promise.all(PartIDs.map(PartID => PropertyClass.getPropertyList({ UseModule: 27, PartID })));
+      const respList = await Promise.all(PartIDs.map(PartIDObj => PropertyClass.getPropertyList({ UseModule: 27, ...PartIDObj })));
+      console.log(respList);
       if (respList) {
         commit('setChildConditionPropertyList', respList);
       }

@@ -5,7 +5,7 @@
       <span>{{ProductName}}</span>
       <span class="price-name">价格名称：{{PriceName}}</span>
     </header>
-    <main>
+    <main v-loading='loading'>
       <CraftPriceTableComp
        v-for="it in CraftPriceSetList"
        :key="it.ID" :itemData='it'
@@ -86,17 +86,20 @@ export default {
       this.PriceResultList = PriceResultList;
     },
     onSetupCostClick(data) { // 设置费用组成
+      this.jumpPage('CompositionCostOfCraft', data);
+    },
+    onSetupAllCostClick(data) { // 设置总费用
+      this.jumpPage('CraftTotalPriceSetPage', data);
+    },
+    jumpPage(pathName, data) { // 共用跳转页面方法
       this.$store.commit('priceManage/setCurCraftPriceItemData', data);
       this.$router.push({
-        name: 'CompositionCostOfCraft',
+        name: pathName,
         params: {
           name: this.ProductName,
           id: this.ProductID,
         },
       });
-    },
-    onSetupAllCostClick(data) { // 设置总费用
-      console.log('onSetupAllCostClick', data);
     },
   },
   mounted() {

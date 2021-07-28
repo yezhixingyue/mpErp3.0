@@ -53,9 +53,9 @@ export default {
       });
     },
     selectList() {
-      if (!this.curSelectItem || !Array.isArray(this.solutionList)) return [{ ID: '', Name: '无' }];
+      if (!this.curSelectItem || !Array.isArray(this.solutionList)) return [];
       const list = this.solutionList.filter(it => it.Type === this.curSelectItem.Type);
-      return [...list, { ID: '', Name: '无' }];
+      return [...list];
     },
   },
   data() {

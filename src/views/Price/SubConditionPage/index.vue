@@ -88,8 +88,8 @@ export default {
       if (!this.curProduct || this.curProduct.PartList.length === 0) return [];
       return this.curProduct.PartList.filter(it => it.UseTimes && it.UseTimes.MaxValue > 1);
     },
-    canSetPartListIDs() {
-      return this.canSetPartList.map(it => it.ID);
+    canSetPartListIDs4Fetch() {
+      return this.canSetPartList.map(it => ({ ProductID: it.ProductID, PartID: it.ID }));
     },
     localChildConditionList() {
       return this.getReductionList(this.ChildConditionList, this.ChildConditionPropertyList);
@@ -129,7 +129,7 @@ export default {
       }, 100);
     },
     async fetchData() {
-      await Promise.all([this.getProductChildConditionList(), this.$store.dispatch('priceManage/getChildConditionPropertyList', this.canSetPartListIDs)]);
+      await Promise.all([this.getProductChildConditionList(), this.$store.dispatch('priceManage/getChildConditionPropertyList', this.canSetPartListIDs4Fetch)]);
       this.allLoading = false;
     },
     onEditClick(item) {

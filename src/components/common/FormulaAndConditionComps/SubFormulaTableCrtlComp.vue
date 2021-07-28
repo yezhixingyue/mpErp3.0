@@ -45,7 +45,7 @@
         <el-table-column prop="UseTimes" label="使用次数"  width="100" show-overflow-tooltip></el-table-column>
         <el-table-column label="操作" width="240" class-name='menu-column'>
           <div class="menu-list" slot-scope="scope">
-            <span class="icon-span" @click="onFilterClick(scope.row)"><i></i>数据筛选</span>
+            <span class="icon-span" @click="onFilterClick(scope.row)"><i></i>筛选数据</span>
             <span class="icon-span" @click="onSetupClick(scope.row)"><i></i>编辑</span>
             <span class="icon-span" @click="onRemoveClick(scope.row)"><i></i>删除</span>
           </div>
@@ -83,7 +83,7 @@ export default {
     },
     CompareUseModule: {
       type: Number,
-      default: 16,
+      default: 255,
     },
   },
   components: {

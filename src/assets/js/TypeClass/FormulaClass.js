@@ -30,7 +30,7 @@ export default class FormulaClass {
   constructor(initData) { // 初始化
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
     // eslint-disable-next-line max-len
-    const { ID, Name, Content, PositionID, UseModule, UseTimes, Unit, PropertyList, Remark, MaterialTypeID, PartID, ProductID, PriceID, GroupID, ElementID, CraftID } = JSON.parse(JSON.stringify(initData));
+    const { ID, Name, Content, PositionID, UseModule, UseTimes, Unit, PropertyList, Remark, MaterialTypeID, PartID, ProductID, PriceID, TableID, GroupID, ElementID, CraftID } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
     if (Content) this.Content = Content;
@@ -39,6 +39,7 @@ export default class FormulaClass {
     if (PartID) this.PartID = PartID;
     if (ProductID) this.ProductID = ProductID;
     if (PriceID) this.PriceID = PriceID;
+    if (TableID) this.TableID = TableID;
     if (GroupID) this.GroupID = GroupID;
     if (ElementID) this.ElementID = ElementID;
     if (CraftID) this.CraftID = CraftID;

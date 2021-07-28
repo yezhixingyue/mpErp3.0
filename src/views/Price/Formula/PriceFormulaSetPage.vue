@@ -12,7 +12,12 @@
     pageLabel='当前产品'
     @goback='onGoBackClick'
     @successSubmit='onSuccessSubmit'
-    />
+   >
+   <template #title>
+      <span class="name" v-if="formulaTarget">{{formulaTarget}}</span>
+      <span class="name">{{showFormulaName}}</span>
+    </template>
+  </FormulaPanelComp>
 </template>
 
 <script>
@@ -26,6 +31,8 @@ export default {
       ProductID: '',
       ProductName: '',
       moduleIndex: '',
+      formulaTarget: '-- 公式目标：产品',
+      showFormulaName: '',
     };
   },
   components: {
@@ -36,10 +43,22 @@ export default {
   },
   methods: {
     getPositionID() {
-      const { ProductID, name, moduleIndex } = this.$route.params;
+      const { ProductID, name, moduleIndex, isSubFormula } = this.$route.params;
       this.ProductID = ProductID;
       this.ProductName = name;
       this.moduleIndex = +moduleIndex;
+      if (!isSubFormula || isSubFormula === 'false') {
+        const text = this.curEditFormulaData ? this.curEditFormulaData.Name : '新增公式';
+        this.showFormulaName = `公式：${text}`;
+      } else if (isSubFormula === true || isSubFormula === 'true') {
+        const text = this.curEditSubFormulaData ? this.curEditSubFormulaData.Name : '新增子公式';
+        this.showFormulaName = `子公式：${text}`;
+        if (this.curSubFormulaAddProperty) {
+          this.formulaTarget = `-- 子公式目标：${this.curSubFormulaAddProperty.DisplayContent.replace(/\[|\]/g, '')}`;
+        } else if (this.curEditSubFormulaData) {
+          this.formulaTarget = `-- 子公式目标：${this.curEditSubFormulaData.Target || '未知目标'}`;
+        }
+      }
     },
     onGoBackClick(type) {
       if (type === 'success') {

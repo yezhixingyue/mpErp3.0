@@ -452,9 +452,6 @@ const api = {
   getProductBindElementType(data) { // POST /Api/Product/BindElementType 绑定产品元素类型
     return instance.post('/Api/Product/BindElementType', data);
   },
-  getPriceResultList(priceID) { // GET /Api/PriceResult/List  获取工艺费列表信息
-    return instance.get('/Api/PriceResult/List', { params: { priceID } });
-  },
   /* 产品价格管理api
   ----------------------------------------------------------------------------------- */
   getMakeupRuleList() { // GET /Api/MakeupRule/List    获取拼版规则列表
@@ -534,6 +531,12 @@ const api = {
   },
   getMakeupControlSolutionSetup(priceID, type, solutionID) { // PUT /Api/MakeupControl/Setup  拼版方案设置
     return instance.put('/Api/MakeupControl/Setup', '', { params: { priceID, type, solutionID } });
+  },
+  getPriceResultList(priceID) { // GET /Api/PriceResult/List  获取工艺费列表信息
+    return instance.get('/Api/PriceResult/List', { params: { priceID } });
+  },
+  getPriceSolutionSave(data) { // POST /Api/PriceSolution/Save  价格方案保存
+    return instance.post('/Api/PriceSolution/Save', data);
   },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */

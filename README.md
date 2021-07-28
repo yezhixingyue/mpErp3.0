@@ -851,6 +851,8 @@ public enum MultiLevelClassType : byte
         报价结果公式
         PriceResultFormula = 5,
 
+        报价方案公式 6,
+
         库存条件
         StockConstraint = 11,
 

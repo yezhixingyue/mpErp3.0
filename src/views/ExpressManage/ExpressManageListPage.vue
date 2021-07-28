@@ -71,7 +71,7 @@ export default {
       rules: {
         Name: [
           { required: true, message: '请输入名称', trigger: 'blur' },
-          { min: 2, max: 12, message: '长度在 2 到 12 个字符', trigger: 'blur' },
+          { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' },
         ],
         Classify: [
           { required: true, message: '请选择分类', trigger: 'change' },

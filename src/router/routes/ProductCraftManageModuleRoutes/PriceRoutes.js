@@ -89,7 +89,7 @@ const routes = [
     component: () => import('../../../views/Price/Formula/PriceFormulaListPage.vue'),
   },
   {
-    path: '/PriceFormulaSet/:ProductID/:name/:moduleIndex',
+    path: '/PriceFormulaSet/:ProductID/:name/:moduleIndex/:isSubFormula',
     name: 'PriceFormulaSet',
     meta: {
       title: '公式设置 - 产品价格',
@@ -121,6 +121,8 @@ const routes = [
     },
     component: () => import('../../../views/Price/MakeupSolutionSetPage'),
   },
+  /** 工艺费
+  --------------------------------------------------------------  */
   {
     path: '/CraftPriceSetPage/:name/:id',
     name: 'CraftPriceSetPage',
@@ -142,6 +144,78 @@ const routes = [
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
     },
     component: () => import('../../../views/Price/CraftPriceSetPage/CompositionCostOfCraftPage'),
+  },
+  {
+    path: '/CraftTotalPriceSetPage/:name/:id',
+    name: 'CraftTotalPriceSetPage',
+    meta: {
+      title: '工艺总费用',
+      requiresAuth: true,
+      pageName: 'CraftTotalPriceSetPage',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/CraftPriceSetPage/CraftTotalPriceSetPage'),
+  },
+  /** 报价表
+  --------------------------------------------------------------  */
+  {
+    path: '/QuotationList/:name/:id/:isQuotation',
+    name: 'QuotationList',
+    meta: {
+      title: '报价表',
+      requiresAuth: true,
+      pageName: 'CompositionCostOfCraft',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/CraftPriceSetPage/CompositionCostOfCraftPage'),
+  },
+  /** 报价方案
+  --------------------------------------------------------------  */
+  {
+    path: '/QuotationScheme/:name/:id/:timer',
+    name: 'QuotationScheme',
+    meta: {
+      title: '报价方案',
+      requiresAuth: true,
+      pageName: 'QuotationScheme',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/QuotationSchemePage'),
+  },
+  {
+    path: '/QuotationSchemeSet/:name/:id',
+    name: 'QuotationSchemeSet',
+    meta: {
+      title: '设置报价方案',
+      requiresAuth: true,
+      pageName: 'QuotationSchemeSet',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/QuotationSchemePage/QuotationSchemeSetPage.vue'),
+  },
+  /** 报价结果
+  --------------------------------------------------------------  */
+  {
+    path: '/QuotationResult/:name/:id',
+    name: 'QuotationResult',
+    meta: {
+      title: '报价结果',
+      requiresAuth: true,
+      pageName: 'QuotationResult',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/QuotationResultPage'),
+  },
+  {
+    path: '/QuotationResultSet/:name/:id',
+    name: 'QuotationResultSet',
+    meta: {
+      title: '设置报价结果',
+      requiresAuth: true,
+      pageName: 'QuotationResultSet',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/QuotationResultPage/QuotationResultSetPage.vue'),
   },
 ];
 
@@ -174,6 +248,24 @@ const routeTree = {
       name: 'CraftPriceSetPage', // 工艺费设置
       children: [
         { name: 'CompositionCostOfCraft', children: [] }, // 工艺组成设置页面
+        { name: 'CraftTotalPriceSetPage', children: [] }, // 工艺总费用设置页面
+      ],
+    },
+    {
+      name: 'QuotationList', // 报价表
+      children: [
+      ],
+    },
+    {
+      name: 'QuotationScheme', // 报价方案
+      children: [
+        { name: 'QuotationSchemeSet', children: [] },
+      ],
+    },
+    {
+      name: 'QuotationResult', // 报价结果
+      children: [
+        { name: 'QuotationResultSet', children: [] },
       ],
     },
   ],

@@ -70,7 +70,7 @@ export default {
       rules: {
         Name: [
           { required: true, message: '请输入文件类目名称', trigger: 'blur' },
-          { min: 2, max: 6, message: '长度在 2 到 6 个字符', trigger: 'blur' },
+          { min: 1, max: 6, message: '长度在 1 到 6 个字符', trigger: 'blur' },
         ],
         ShowIndex: [
           { required: true, message: '请设置显示顺序', trigger: 'blur' },
@@ -81,11 +81,11 @@ export default {
         ],
         Remark: [
           { required: true, message: '请输入说明文字', trigger: 'blur' },
-          { min: 2, max: 25, message: '长度在 2 到 25 个字符', trigger: 'blur' },
+          { min: 1, max: 25, message: '长度在 1 到 25 个字符', trigger: 'blur' },
         ],
         FailTips: [
           { required: true, message: '请输入未上传提示文字', trigger: 'blur' },
-          { min: 2, max: 40, message: '长度在 2 到 40 个字符', trigger: 'blur' },
+          { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'blur' },
         ],
       },
     };

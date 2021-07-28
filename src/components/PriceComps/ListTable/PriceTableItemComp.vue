@@ -18,7 +18,7 @@
       <div class="text-menu-box">
         <TipsSpanButton @click.native="jumpToPage('MakeupCtrl')" text='拼版控制' />
         <TipsSpanButton @click.native="jumpToPage('subConditionList')" :disabled='canSetPartList.length === 0' text='子条件'/>
-        <TipsSpanButton @click.native="jumpToPage('PriceFormulaList', true)" text='计算公式'  />
+        <TipsSpanButton @click.native="jumpToPage('PriceFormulaList', { timer: Date.now() })" text='计算公式'  />
       </div>
       <div class="extend-box" @click="onExtendClick" :class="itemData.PriceList&&itemData.PriceList.length>0 ? '' : 'disabled'">
         <span v-if="!extend">展开</span>
@@ -43,13 +43,13 @@
             <span>拼版方案选择（<i class="is-pink">{{it.MakeupList.filter(_it => _it.Solution).length}}</i>/{{it.MakeupList ? it.MakeupList.length : 0}}）</span>
           </TipsSpanButton>
           <TipsSpanButton text='工艺费' @click.native="onPriceItemSetMenuClick(it, 'CraftPriceSetPage')" />
-          <TipsSpanButton text='价格表'>
+          <TipsSpanButton text='价格表' @click.native="onPriceItemSetMenuClick(it, 'QuotationList', { isQuotation: true })">
             <span>价格表（{{it.CostList ? it.CostList.length : 0}}）</span>
           </TipsSpanButton>
-          <TipsSpanButton text='报价方案'>
-            <span>报价方案（{{it.CostList ? it.CostList.length : 0}}）</span>
+          <TipsSpanButton text='报价方案' @click.native="onPriceItemSetMenuClick(it, 'QuotationScheme', { timer: Date.now() })">
+            <span>报价方案（{{it.SolutionList ? it.SolutionList.length : 0}}）</span>
           </TipsSpanButton>
-          <TipsSpanButton text='报价结果'>
+          <TipsSpanButton text='报价结果' @click.native="onPriceItemSetMenuClick(it, 'QuotationResult')">
             <span>报价结果（{{it.ResultList ? it.ResultList.length : 0}}）</span>
           </TipsSpanButton>
         </div>
@@ -194,17 +194,17 @@ export default {
       _name += Name;
       return _name;
     },
-    jumpToPage(pathName, hasTimer) {
-      const params = {
+    jumpToPage(pathName, option) {
+      let params = {
         name: this.getFullName(),
         id: this.itemData.ID,
       };
-      if (hasTimer) params.timer = Date.now();
+      if (option) params = { ...option, ...params };
       this.$router.push({ name: pathName, params });
     },
-    onPriceItemSetMenuClick(item, path, hasTimer = false) {
+    onPriceItemSetMenuClick(item, path, option) {
       this.$store.commit('priceManage/setCurPriceItem', item);
-      this.jumpToPage(path, hasTimer);
+      this.jumpToPage(path, option);
     },
   },
   mounted() {

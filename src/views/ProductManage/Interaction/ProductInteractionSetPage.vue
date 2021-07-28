@@ -28,7 +28,7 @@
          ref="oComparePanel"
          :initData='curInteractionData'
          :drawerVisible.sync='drawer'
-         :leftPropertyList='CompareLeftPropertyList'
+         :leftPropertyList='CompareRightPropertyList'
          :rightPropertyList='CompareRightPropertyList' />
         <!-- 风险提示设置面板 -->
         <RiskPanel v-if="setType==='risk'" ref="oRisk" :initData='curInteractionData' />
@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'curInteractionData', 'ControlTypeList',
-      'subTargetData', 'subComparePropList', 'subInteractionPropList',
+      'subTargetData', 'subComparePropList',
       'InteractionLeftPropertyList', 'InteractionRightPropertyList', 'CompareLeftPropertyList', 'CompareRightPropertyList']),
     rightTitle() {
       if (this.setType === 'risk') return '则进行风险提示：';
@@ -80,12 +80,13 @@ export default {
       return '则';
     },
     ComparePropertyList() {
-      if (this.setType === 'risk' || this.setType === 'compare' || this.setType === 'subCompare') return this.InteractionLeftPropertyList;
+      if (this.setType === 'risk' || this.setType === 'compare' || this.setType === 'subCompare') return this.LeftPropertyList;
       return null;
     },
     LeftPropertyList() {
       if (this.setType === 'subCompare' || this.setType === 'subInteraction') return this.subTypePropertyList;
-      return this.InteractionLeftPropertyList;
+      if (this.setType === 'interaction') return this.InteractionLeftPropertyList;
+      return this.CompareLeftPropertyList;
     },
   },
   methods: {

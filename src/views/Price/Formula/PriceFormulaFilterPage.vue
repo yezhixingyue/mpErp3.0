@@ -3,6 +3,8 @@
     <header>
       <span>当前产品：</span>
       <span>{{ProductName}}</span>
+      <span class="other">-- 子公式目标：{{curEditSubFormulaData && curEditSubFormulaData.Target ? curEditSubFormulaData.Target : '未知目标'}}</span>
+      <span class="other">子公式：{{curEditSubFormulaData? curEditSubFormulaData.Name:'未知'}}</span>
     </header>
     <main>
       <ContionCommonComp
@@ -127,6 +129,11 @@ export default {
       > button {
         font-size: 14px;
       }
+    }
+    .other {
+      font-weight: 400;
+      font-size: 14px;
+      margin-left: 40px;
     }
   }
   > main {

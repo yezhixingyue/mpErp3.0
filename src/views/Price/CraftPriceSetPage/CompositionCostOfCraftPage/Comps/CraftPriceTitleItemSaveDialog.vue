@@ -8,7 +8,8 @@
     @cancle="onCancle"
     @open='onOpen'
     @closed='onClosed'
-    class="mp-erp-comps-price-module-solution-item-save-dialog-comp-wrap"
+    class="mp-erp-comps-price-module-price-solution-item-save-dialog-comp-wrap"
+    :class="showGroup?'show-group':''"
   >
     <el-form :model="ruleForm" ref="ruleForm" label-width="100px" hide-required-asterisk>
       <el-form-item
@@ -26,11 +27,21 @@
         <el-radio-group v-model="ruleForm.PartID">
           <el-radio :title="it.Name" :label="it.PartID" v-for="it in rangeList" :key="it.PartID || it.Name">{{it.Name}}</el-radio>
         </el-radio-group>
+        <p v-show="GroupList.length > 0">
+          <!-- <span>应用至所选范围内可多次使用的指定元素组（可不指定）：</span> -->
+        </p>
         <el-radio-group v-model="ruleForm.GroupID" v-show="GroupList.length > 0">
           <el-radio :title="it.Name" :label="it.ID" v-for="it in GroupList" :key="it.ID">{{it.Name}}</el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>
+    <template #foot-tip>
+      <p class="tips-box is-pink">
+        <i class="el-icon-warning"></i>
+        <span>注：应用范围只能在添加时设定，</span>
+        <span class="is-bold">后期不能更改 ！</span>
+      </p>
+    </template>
   </CommonDialogComp>
 </template>
 
@@ -51,14 +62,19 @@ export default {
       type: Array,
       default: () => [],
     },
+    showGroup: { // 是否展示工艺中可多次使用元素组，价格表页面不显示
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     CommonDialogComp,
   },
   computed: {
     GroupList() {
+      if (!this.showGroup) return [];
       const t = this.rangeList.find(it => it.PartID === this.ruleForm.PartID);
-      return t ? t.CraftGroupList : [];
+      return t ? [...t.CraftGroupList] : [];
     },
     // GroupListIDs() {
     //   return this.GroupList.map(it => it.ID);
@@ -114,13 +130,13 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-comps-price-module-solution-item-save-dialog-comp-wrap {
+.mp-erp-comps-price-module-price-solution-item-save-dialog-comp-wrap {
 
   .el-dialog__body {
     padding-left: 30px;
     padding-bottom: 10px;
     padding-top: 30px;
-    min-height: 225px;
+    min-height: 163px;
     .el-form {
       .el-form-item__label {
         font-size: 14px;
@@ -148,17 +164,25 @@ export default {
               top: 1px;
             }
           }
-          & + .el-radio-group {
-            border-top: 1px solid #eee;
-            margin-top: 18px;
-            width: 550px;
-            padding-top: 10px;
-            position: relative;
-          }
+        }
+        > p {
+          font-size: 12px;
+          color: #888E99;
+          margin-top: 25px;
+          height: 10px;
+          padding-top: 4px;
+          width: 360px;
+          border-top: 1px solid #eee;
         }
       }
     }
   }
-
+  .tips-box {
+    width: 400px;
+    margin: 0 auto;
+  }
+  &.show-group .el-dialog__body {
+    min-height: 260px;
+  }
 }
 </style>
