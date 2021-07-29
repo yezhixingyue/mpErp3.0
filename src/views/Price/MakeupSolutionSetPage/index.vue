@@ -37,14 +37,17 @@ export default {
     ...mapState('priceManage', ['curPriceItem', 'MakeupControlTypeList']),
     list() {
       return this.MakeupList.map(it => {
-        let SolutionName = '未设置';
+        let SolutionName = '';
         let unSetup = true;
-        if (it.Solution) {
-          unSetup = false;
-          SolutionName = '未知方案（获取名称失败）';
-          if (Array.isArray(this.solutionList)) {
-            const t = this.solutionList.find(_it => _it.ID === it.Solution);
-            if (t) SolutionName = t.Name;
+        if (!this.isSolutionListLoading) {
+          SolutionName = '未设置';
+          if (it.Solution) {
+            unSetup = false;
+            SolutionName = '未知方案（获取名称失败）';
+            if (Array.isArray(this.solutionList)) {
+              const t = this.solutionList.find(_it => _it.ID === it.Solution.ID);
+              if (t) SolutionName = t.Name;
+            }
           }
         }
         const targetType = this.MakeupControlTypeList.find(_it => _it.ID === it.Type);
@@ -95,8 +98,9 @@ export default {
         const cb = () => {
           // 设置数据修改： 当前页 及 列表页
           const t = this.MakeupList.find(it => it.Type === Type && it.PriceID === PriceID);
-          if (t) t.Solution = solutionID;
+          if (t) t.Solution = t.Solution ? { ...t.Solution, ID: solutionID } : { ID: solutionID };
           this.$store.commit('priceManage/setPriceItemMakeupSolutionChange', [this.$route.params.id, PriceID, Type, solutionID]);
+          this.visible = false;
         };
         this.messageBox.successSingle('设置成功', cb, cb);
       }
@@ -109,7 +113,7 @@ export default {
     }
     const { ID, MakeupList, Name } = this.curPriceItem;
     this.priceID = ID;
-    this.MakeupList = MakeupList;
+    this.MakeupList = JSON.parse(JSON.stringify(MakeupList));
     this.Name = Name;
     this.ProductName = this.$route.params.name;
     this.getMakeupSolutionList();

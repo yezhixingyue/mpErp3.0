@@ -83,7 +83,6 @@ export default {
       font-size: 14px;
       color: #585858;
       transition: 0.1s ease-in-out;
-      min-width: 800px;
       &:not(:last-of-type) {
         border-bottom: none;
       }

@@ -538,6 +538,18 @@ const api = {
   getPriceSolutionSave(data) { // POST /Api/PriceSolution/Save  价格方案保存
     return instance.post('/Api/PriceSolution/Save', data);
   },
+  getPriceSolutionRemove(id) { // DELETE /Api/PriceSolution/Remove  价格方案删除
+    return instance.delete('/Api/PriceSolution/Remove', { params: { id } });
+  },
+  getCraftPriceTagID(productID, priceID, craftID, partID) { // GET /Api/CraftPrice/Tag  获取工艺费列表中单个工艺对应条目ID
+    return instance.get('/Api/CraftPrice/Tag', { params: { productID, priceID, craftID, partID } });
+  },
+  getAllCraftPriceList(priceID) { // GET /Api/CraftPrice/List  获取价格条目中产品所有工艺费列表
+    return instance.get('/Api/CraftPrice/List', { params: { priceID } });
+  },
+  getPriceTableList(solutionID) { // GET /Api/PriceTable/List  获取价格表的费用列表
+    return instance.get('/Api/PriceTable/List', { params: { solutionID } });
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

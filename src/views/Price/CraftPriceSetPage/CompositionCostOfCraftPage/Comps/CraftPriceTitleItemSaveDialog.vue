@@ -24,13 +24,13 @@
       <el-form-item
         label="应用范围："
       >
-        <el-radio-group v-model="ruleForm.PartID">
+        <el-radio-group v-model="ruleForm.PartID" :disabled='!!(saveData && saveData.ID)'>
           <el-radio :title="it.Name" :label="it.PartID" v-for="it in rangeList" :key="it.PartID || it.Name">{{it.Name}}</el-radio>
         </el-radio-group>
         <p v-show="GroupList.length > 0">
           <!-- <span>应用至所选范围内可多次使用的指定元素组（可不指定）：</span> -->
         </p>
-        <el-radio-group v-model="ruleForm.GroupID" v-show="GroupList.length > 0">
+        <el-radio-group v-model="ruleForm.GroupID" v-show="GroupList.length > 0" :disabled='!!(saveData && saveData.ID)'>
           <el-radio :title="it.Name" :label="it.ID" v-for="it in GroupList" :key="it.ID">{{it.Name}}</el-radio>
         </el-radio-group>
       </el-form-item>
@@ -76,9 +76,6 @@ export default {
       const t = this.rangeList.find(it => it.PartID === this.ruleForm.PartID);
       return t ? [...t.CraftGroupList] : [];
     },
-    // GroupListIDs() {
-    //   return this.GroupList.map(it => it.ID);
-    // },
     curPartID() {
       return this.ruleForm.PartID;
     },
@@ -91,7 +88,6 @@ export default {
         Name: '',
         PartID: '',
         GroupID: '',
-        CraftPriceID: '',
         PriceID: '',
         CraftID: '',
       },
@@ -101,7 +97,23 @@ export default {
   methods: {
     async onSubmit() { // 提交
       const bool = await this.$refs.ruleForm.validate().catch(() => {});
-      if (bool) this.$emit('submit', this.ruleForm);
+      if (this.ruleForm.GroupID) {
+        const t = this.GroupList.find(it => it.ID === this.ruleForm.GroupID);
+        this.ruleForm.CraftID = t ? t.CraftID : '';
+      } else {
+        this.ruleForm.CraftID = '';
+      }
+      const { CraftID, GroupID, PartID } = this.ruleForm;
+      const ApplyRange = {
+        CraftID,
+        GroupID,
+        PartID,
+      };
+      const temp = { ...this.ruleForm, ApplyRange };
+      delete temp.CraftID;
+      delete temp.GroupID;
+      delete temp.PartID;
+      if (bool) this.$emit('submit', temp);
     },
     onCancle() { // 取消  关闭弹窗
       this.$emit('update:visible', false);
@@ -176,6 +188,9 @@ export default {
         }
       }
     }
+  }
+  .is-disabled .el-radio__label{
+    color: #cbcbcb !important;
   }
   .tips-box {
     width: 400px;

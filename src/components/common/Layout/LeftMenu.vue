@@ -155,6 +155,7 @@ export default {
         }
       }
       const names = getChildrenRouteNamesByParentRouteName(newRoute.name);
+      console.log(names);
       if (Array.isArray(names)) {
         this.$store.commit('layout/filterOtherTabPageNames', names);
       }

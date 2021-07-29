@@ -121,6 +121,7 @@ const handleRouterEach = router => {
     if (!curRouteName) return;
     // 1 首先找到其上一级的路由name名称
     const lastRouteName = getLastRouteInfoByName(curRouteName);
+    console.log(lastRouteName);
     if (!lastRouteName) return;
     // 2 然后根据该name名称在lastPaths中从后往前找到其上级name所对应的路径名称
     const lastPaths = store.state.common.lastPagePaths;

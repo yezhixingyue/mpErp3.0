@@ -10,7 +10,12 @@
       <!-- <span class="name">设置工艺：{{curCraft.Name}}</span> -->
     </header>
     <main>
-      报价结果页面
+      <ResultTableCom
+        @remove='onTableItemRemove'
+        @setup="onSetupPageJump($event, '', '')"
+        :titleObj='{title:"报价结果",btnText:"+ 添加条件"}'
+        :dataList='[]'
+        />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -20,10 +25,12 @@
 
 <script>
 import { mapState } from 'vuex';
+import ResultTableCom from './Comps/ResultTableCom.vue';
 
 export default {
   name: 'QuotationResult',
   components: {
+    ResultTableCom,
   },
   computed: {
     ...mapState('priceManage', ['curPriceItem']),
@@ -51,6 +58,32 @@ export default {
         name: 'QuotationResultSet',
         params: this.$route.params,
       }); // 跳转设置页面
+    },
+    async onTableItemRemove(e) {
+      if (!e || !e.ID) return;
+      const resp = await this.api.getMakeupSolutionItemRemove(e.ID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          this.MakeupRuleItemList = this.MakeupRuleItemList.filter(it => it.ID !== e.ID);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    onSetupPageJump(data, PartID, PartName, isMixin) { // 跳转条件配置页面
+      if (!data) return;
+      const [setType, editData] = data;
+      const params = {
+        ProductID: this.$route.params.id,
+        PartID: PartID || 'null',
+        ProductName: this.$route.params.name,
+        PartName: PartName || 'null',
+        SolutionName: this.curSolutionItem.Name,
+        SolutionID: this.curSolutionItem.ID,
+        isMixin: isMixin || false,
+        setType,
+      };
+      this.$store.commit('priceManage/setCurMakeupItemEditData', editData);
+      this.$router.push({ name: 'MakeupCtrlConditionSet', params });
     },
   },
   mounted() {

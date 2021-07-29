@@ -12,10 +12,13 @@ const findNameByList = (list, name, lastName, getType) => {
       if (getType === 'last') _lastName = item.name;
       if (getType === 'root') _lastName = lastName;
 
-      const _getType = getType === 'children' ? 'children' : undefined;
-
-      const t = findNameByList(item.children, name, _lastName, _getType);
-      if (t) return t;
+      // const _getType = getType === 'children' ? 'children' : undefined;
+      // console.log(getType, _getType);
+      const t = findNameByList(item.children, name, _lastName, getType);
+      if (t) {
+        console.log(t);
+        return t;
+      }
     }
   }
   return '';
@@ -23,6 +26,7 @@ const findNameByList = (list, name, lastName, getType) => {
 
 
 export const getLastRouteInfoByName = (Name, getType = 'last') => { // getType 为last时指返回上一级页面  为root时指返回当前模块的根页面
+  console.log(Name);
   if (!Name) return '';
   const { routeTree } = routeConfig;
   for (let i = 0; i < routeTree.length; i += 1) {
@@ -32,7 +36,10 @@ export const getLastRouteInfoByName = (Name, getType = 'last') => { // getType �
       const lv2Route = lv1Route.children[index2];
       if (lv2Route.name === Name) return '';
       const t = findNameByList(lv2Route.children, Name, lv2Route.name, getType);
-      if (t) return t;
+      if (t) {
+        console.log(37, t);
+        return t;
+      }
     }
   }
   return '';

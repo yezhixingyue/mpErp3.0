@@ -78,7 +78,20 @@ export default {
       }
     },
     onRemoveClick(it) {
-      console.log('onRemoveClick', it);
+      if (!it || !it.ID) return;
+      this.messageBox.warnCancelBox('确定删除该方案吗', `方案名称：[ ${it.Name} ]`, () => {
+        this.handleRemove(it);
+      });
+    },
+    async handleRemove(data) {
+      const resp = await this.api.getFormulaRemove(data.ID).catch(() => {});
+      if (resp && resp.status === 200 && resp.data.Status === 1000) {
+        const cb = () => {
+          this.FormulaList = this.FormulaList.filter(it => it.ID !== data.ID);
+          this.$store.commit('priceManage/setPriceItemSolutionListRemove', [this.ProductID, this.PriceID, data.ID]);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
+      }
     },
   },
   mounted() {

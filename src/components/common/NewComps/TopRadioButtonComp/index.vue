@@ -2,7 +2,7 @@
   <div class="mp-erp-common-comps-top-radio-button-comp-wrap">
     <el-scrollbar wrap-class="scrollbar-wrapper" v-if="!loading">
       <el-radio-group v-model="radio" size="small">
-        <el-radio-button v-for="it in list" :label="it.ID" :key="it.ID">{{it.Name}}</el-radio-button>
+        <el-radio-button v-for="it in list" :label="it.ID" :key="it.ID">{{it.ShowName ? `${it.ShowName}（${it.Count}）` : it.Name}}</el-radio-button>
       </el-radio-group>
     </el-scrollbar>
     <span v-else class="is-font-size-12 is-gray" style=""> {{title}}加载中...</span>
@@ -99,7 +99,7 @@ export default {
         font-size: 14px;
         padding: 5px 16px;
         padding-left: 20px;
-        width: 120px;
+        min-width: 120px;
         line-height: 20px;
       }
       position: relative;

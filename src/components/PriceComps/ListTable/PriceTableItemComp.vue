@@ -40,11 +40,12 @@
         <div class="menus" v-if="it.IsOwnPrice">
           <TipsSpanButton text='数值转换' />
           <TipsSpanButton text='拼版方案选择' @click.native="onPriceItemSetMenuClick(it, 'MakeupSolutionSet')">
-            <span>拼版方案选择（<i class="is-pink">{{it.MakeupList.filter(_it => _it.Solution).length}}</i>/{{it.MakeupList ? it.MakeupList.length : 0}}）</span>
+            <span>拼版方案选择（<i :class="it.MakeupList.filter(_it => _it.Solution).length < 6 ? 'is-pink' : ''"
+            >{{it.MakeupList.filter(_it => _it.Solution).length}}</i>/{{it.MakeupList ? it.MakeupList.length : 0}}）</span>
           </TipsSpanButton>
           <TipsSpanButton text='工艺费' @click.native="onPriceItemSetMenuClick(it, 'CraftPriceSetPage')" />
           <TipsSpanButton text='价格表' @click.native="onPriceItemSetMenuClick(it, 'QuotationList', { isQuotation: true })">
-            <span>价格表（{{it.CostList ? it.CostList.length : 0}}）</span>
+            <span>价格表（{{it.PriceTableList ? it.PriceTableList.length : 0}}）</span>
           </TipsSpanButton>
           <TipsSpanButton text='报价方案' @click.native="onPriceItemSetMenuClick(it, 'QuotationScheme', { timer: Date.now() })">
             <span>报价方案（{{it.SolutionList ? it.SolutionList.length : 0}}）</span>

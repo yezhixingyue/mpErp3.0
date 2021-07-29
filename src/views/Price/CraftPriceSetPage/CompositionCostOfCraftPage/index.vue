@@ -3,18 +3,26 @@
     <header>
       <span>当前产品：</span>
       <span>{{ProductName}}</span>
+      <span class="name" v-if="curPartName">当前部件：{{curPartName}}</span>
       <span class="name">价格名称：{{PriceName}}</span>
       <span class="name" v-if="!isQuotationPage">设置工艺：{{curCraft.Name}}</span>
       <TopRadioButtonComp
-        v-model="curCraftPriceID"
+        v-model="SolutionID"
         title="费用"
        :list='SolutionList'
-       :loading='isSolutionLoading'
+       :loading='false'
        @remove='onRemoveClick'
        @itemSave='onItemSaveClick'
        />
     </header>
     <main>
+      <PriceTableComp
+        @remove='onTableItemRemove'
+        @setup="onSetupPageJump($event, '', '')"
+        :titleObj='{title:"费用表",btnText:"+ 添加费用表"}'
+        :loading='isTableLoading'
+        :dataList='[]'
+        />
       <CraftPriceTitleItemSaveDialog
        :showGroup='!isQuotationPage'
        :visible.sync="visible"
@@ -32,17 +40,25 @@
 import { mapState } from 'vuex';
 import TopRadioButtonComp from '@/components/common/NewComps/TopRadioButtonComp';
 import CraftPriceTitleItemSaveDialog from './Comps/CraftPriceTitleItemSaveDialog.vue';
+import PriceTableComp from './Comps/PriceTableComp.vue';
 
 export default {
   name: 'CompositionCostOfCraft',
   components: {
     TopRadioButtonComp,
     CraftPriceTitleItemSaveDialog,
+    PriceTableComp,
   },
   computed: {
     ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'PriceManageList']),
     curProduct() {
       return this.PriceManageList.find(it => it.ID === this.ProductID);
+    },
+    curPartName() {
+      if (this.isQuotationPage || !this.curCraftPriceItemData || !this.ProductData) return '';
+      if (!this.curCraftPriceItemData.PartID) return '产品本身';
+      const t = this.ProductData.PartList.find(it => it.ID === this.curCraftPriceItemData.PartID);
+      return t ? t.Name : '';
     },
     curCraft() {
       return (this.curCraftPriceItemData && this.curCraftPriceItemData.Craft) || {};
@@ -71,92 +87,191 @@ export default {
       }
       return list;
     },
+    SolutionList() { // 费用条目列表
+      if (!this.curPriceItem) return [];
+      if (this.isQuotationPage) return this.insertShowName4SolutionList(this.curPriceItem.PriceTableList, this.ProductData) || [];
+      if (!this.CraftPriceID || !Array.isArray(this.curPriceItem.CraftPriceList)) return [];
+      const t = this.curPriceItem.CraftPriceList.find(it => it.ID === this.CraftPriceID);
+      return t ? this.insertShowName4SolutionList(t.PriceTableList, this.ProductData) : [];
+    },
+    curSolutionItem() {
+      if (!this.SolutionID) return null;
+      return this.SolutionList.find(it => it.ID === this.SolutionID);
+    },
   },
   data() {
     return {
+      SolutionID: '',
       PriceID: '',
       PriceName: '',
       ProductID: '',
       ProductName: '',
-      curCraftPriceID: '',
+      CraftPriceID: '',
       visible: false,
       saveData: null,
       ProductData: null,
       isQuotationPage: false, // 是否为价格表页面
-      isSolutionLoading: true,
-      SolutionList: [],
+      canLoadContentTableData: true, // 是否可在方案切换时获取表体数据
+      tableData: null,
+      isTableLoading: false,
     };
   },
   methods: {
-    onGoBackClick() {
+    onGoBackClick() { // 返回页面
       this.$goback();
     },
-    onRemoveClick() {
+    onRemoveClick() { // 删除
       this.messageBox.warnCancelBox('确定要删除当前方案吗', `方案名称：[ ${this.curSolutionItem ? this.curSolutionItem.Name : '未知方案名称'} ]`, () => {
-        // this.getMakeupSolutionRemove();
-        console.log(123, 'onRemoveClick');
+        this.getPriceSolutionRemove();
       });
     },
-    onItemSaveClick(ID) {
-      console.log('onItemSaveClick', ID);
-      // const data = ID ? this.solutionList.find(it => it.ID === ID) : null;
+    onItemSaveClick(ID) { // 添加 | 编辑方案   ok
+      const data = ID ? this.SolutionList.find(it => it.ID === ID) : null;
+      let PartID = '';
+      let CraftID = '';
+      let GroupID = '';
+      if (data && data.ApplyRange) {
+        PartID = data.ApplyRange.PartID || '';
+        CraftID = data.ApplyRange.CraftID || '';
+        GroupID = data.ApplyRange.GroupID || '';
+      }
       const temp = {
-        // ID: data ? data.ID : '',
-        // Name: data ? data.Name : '',
-        // GroupID
-        CraftPriceID: this.isQuotationPage ? '' : this.curCraftPriceID,
-        // PartID: this.PartID,
+        ID: data ? data.ID : '',
+        Name: data ? data.Name : '',
+        CraftPriceID: this.isQuotationPage ? '' : this.CraftPriceID,
         PriceID: this.PriceID,
-        CraftID: this.isQuotationPage ? '' : this.curCraft.ID,
-        ID: '',
-        Name: '',
-        GroupID: this.isQuotationPage ? '' : '', // ?
-        PartID: '',
+        PartID,
+        CraftID,
+        GroupID,
       };
       this.saveData = temp;
       this.visible = true;
     },
-    async handleDialogSubmit(data) {
-      // const nameSameItem = this.solutionList.find(it => it.Name === data.Name);
-      // if (nameSameItem) {
-      //   if (nameSameItem.ID === data.ID) {
-      //     this.messageBox.failSingleError('保存失败', '方案名称未发生更改');
-      //   } else {
-      //     this.messageBox.failSingleError('保存失败', '存在相同的方案名称');
-      //   }
-      //   return;
-      // }
+    async handleDialogSubmit(data) { // 方案提交
+      const nameSameItem = this.SolutionList.find(it => (
+        it.Name === data.Name
+        // && (it.ApplyRange.CraftID === data.ApplyRange.CraftID || (!it.ApplyRange.CraftID && !data.ApplyRange.CraftID))
+        // && (it.ApplyRange.GroupID === data.ApplyRange.GroupID || (!it.ApplyRange.GroupID && !data.ApplyRange.GroupID))
+        && (it.ApplyRange.PartID === data.ApplyRange.PartID || (!it.ApplyRange.PartID && !data.ApplyRange.PartID))
+      ));
+      if (nameSameItem) {
+        if (nameSameItem.ID === data.ID) {
+          this.messageBox.failSingleError('保存失败', '方案名称未发生更改');
+        } else {
+          this.messageBox.failSingleError('保存失败', '存在相同的方案名称且应用的部件相同');
+        }
+        return;
+      }
       const resp = await this.api.getPriceSolutionSave(data).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
-          console.log('价格方案保存成功后应该做的时候');
+          this.$store.commit('priceManage/setPriceItemSolutionItemChange', [
+            this.ProductID, this.PriceID, data, resp.data.Data, this.isQuotationPage, this.CraftPriceID,
+          ]); // 在数据仓库中改动
           this.visible = false;
+          if (this.SolutionList.length === 1 && !this.SolutionID) {
+            // 可以设置一个临时开关为true 以阻止此处下方列表数据的获取 -- 后面添加
+            this.canLoadContentTableData = false;
+          }
         };
         this.messageBox.successSingle('保存成功', cb, cb);
       }
-      console.log('handleDialogSubmit', data);
     },
-    async getProductData() {
+    async getProductData() { // 获取产品信息
       const data = await this.$store.dispatch('priceManage/getProductCraftData', this.ProductID);
       this.ProductData = data;
     },
-    getCraftGroupList(CraftList) { // 获取一个工艺列表中全部工艺中的可多次使用的元素组的数组列表
+    getCraftGroupList(CraftList) { // 获取一个工艺列表中全部工艺中的可多次使用的元素组的数组列表  -- 用于rangeList提取
       if (!Array.isArray(CraftList)) return [];
       const list = [];
       CraftList.forEach(Craft => {
         if (Array.isArray(Craft.GroupList)) {
           Craft.GroupList.forEach(Group => {
             const { UseTimes } = Group;
-            if (UseTimes && UseTimes.MaxValue > 1) list.push(Group);
+            if (UseTimes && UseTimes.MaxValue > 1) list.push({ ...Group, CraftID: Craft.ID });
           });
         }
       });
       return list;
     },
-    async getPriceResultList() {
-      const resp = await this.api.getPriceResultList(this.PriceID).catch(() => {});
-      this.isSolutionLoading = false;
-      if (resp && resp.data.Status === 1000) this.SolutionList = resp.data.Data;
+    insertShowName4SolutionList(list, ProductData) { // 为tab名附加部件名称信息 及 数据列表条数信息(还未完成 缺少数值更新)
+      if (!ProductData || !Array.isArray(ProductData.PartList)) return list;
+      return list.map(it => {
+        const { ApplyRange, Name } = it;
+        let _PartName = '';
+        if (ApplyRange.PartID) {
+          const t = ProductData.PartList.find(_it => _it.ID === ApplyRange.PartID);
+          if (t) {
+            _PartName = t.Name;
+          }
+        } else {
+          _PartName = '产品';
+        }
+        const Count = 0; // ------------- 后面补充赋值
+        const ShowName = _PartName ? `${Name} [ ${_PartName} ]` : Name;
+        return { ...it, ShowName, Count };
+      });
+    },
+    async getPriceSolutionRemove() { // 删除方案
+      const resp = await this.api.getPriceSolutionRemove(this.SolutionID).catch(() => {});
+      const cb = () => {
+        const i = this.SolutionList.findIndex(it => it.ID === this.SolutionID);
+        if (i > -1) {
+          this.$store.commit('priceManage/setPriceItemSolutionItemRemove', [
+            this.ProductID, this.PriceID, this.SolutionID, this.isQuotationPage, this.CraftPriceID,
+          ]); // 在数据仓库中改动
+          if (this.SolutionList.length > 0) this.SolutionID = this.SolutionList[0].ID;
+          else this.SolutionID = '';
+        }
+      };
+      if (resp && resp.data.Status === 1000) {
+        this.messageBox.successSingle('删除成功', cb, cb);
+      } else if (resp && resp.data.Status === 1004) {
+        cb();
+      }
+    },
+    async getPriceTableList() { // 获取费用表数据 根据顶部方案切换获取
+      this.tableData = null;
+      if (!this.SolutionID) return;
+      this.isTableLoading = true;
+      const resp = await this.api.getPriceTableList(this.SolutionID).catch(() => {});
+      this.isTableLoading = false;
+      if (resp && resp.data.Status === 1000) {
+        this.tableData = resp.data.Data;
+      }
+    },
+    async onTableItemRemove(e) { // 未写
+      if (!e || !e.ID) return;
+      const resp = await this.api.getMakeupSolutionItemRemove(e.ID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          this.MakeupRuleItemList = this.MakeupRuleItemList.filter(it => it.ID !== e.ID);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    onSetupPageJump(data) { // 跳转条件配置页面
+      const pathName = this.isQuotationPage ? 'QuotationPriceTableItemSet' : 'CraftPriceTableItemSet';
+      const params = {
+        id: this.ProductID,
+        name: this.ProductName,
+      };
+      this.$store.commit('priceManage/setCurSolutionItem', this.curSolutionItem);
+      this.$store.commit('priceManage/setCurEditPriceItemData', data);
+      this.$router.push({ name: pathName, params });
+    },
+  },
+  watch: {
+    SolutionList(newVal, oldVal) {
+      if (newVal.length > 0 && oldVal.length === 0 && !this.SolutionID) this.SolutionID = newVal[0].ID;
+    },
+    SolutionID(val) {
+      if (!val) return;
+      if (this.canLoadContentTableData) {
+        this.getPriceTableList();
+      } else {
+        this.canLoadContentTableData = true;
+      }
     },
   },
   mounted() {
@@ -176,30 +291,31 @@ export default {
     }
     if (!isQuotationPage) { // 工艺费用组成设置页面
       // 暂无操作
+      this.CraftPriceID = this.curCraftPriceItemData.Craft.CraftPriceID;
     }
     this.getProductData();
-    this.getPriceResultList();
   },
 };
 </script>
 <style lang='scss'>
 .mp-erp-price-module-craft-price-cost-composition-set-page-wrap {
-  padding-left: 20px;
-  padding-right: 6px;
-  height: 100%;
-  padding-bottom: 45px;
-  box-sizing: border-box;
+  padding: 0 10px;
+  background-color: #f5f5f5;
+  min-width: 980px;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   > header {
-    padding: 30px 0;
-    padding-bottom: 20px;
+    padding: 20px;
+    padding-bottom: 25px;
     line-height: 15px;
+    background-color: #fff;
     box-sizing: border-box;
     font-size: 15px;
     color: #21CAE3;
     font-weight: bold;
     flex: none;
+    white-space: nowrap;
     .name {
       font-weight: 400;
       margin-left: 80px;
@@ -211,8 +327,11 @@ export default {
   }
   > main {
     flex: 1;
-    padding-top: 15px;
-    padding-left: 5px;
+    margin-top: 10px;
+    background-color: #fff;
+    padding-left: 20px;
+    padding-top: 30px;
+    padding-right: 8px;
     .mp-common-title-wrap {
       color: #444;
       font-size: 15px;
@@ -225,10 +344,11 @@ export default {
     }
   }
   > footer {
+    background-color: #fff;
+    padding: 20px;
     text-align: center;
-    padding: 25px;
+    padding-right: 120px;
     flex: none;
-    padding-bottom: 5px;
     // width: 1100px;
     > button {
       width: 120px;

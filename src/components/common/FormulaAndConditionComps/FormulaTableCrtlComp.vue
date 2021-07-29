@@ -62,7 +62,7 @@ export default {
     onSetupClick(data) { // data 为null时为新增 有数据时为编辑
       this.$emit('setup', data);
     },
-    async onRemoveClick(data) {
+    onRemoveClick(data) {
       if (!data || !data.ID) return;
       this.messageBox.warnCancelBox('确定删除该公式吗', `公式名称：[ ${data.Name} ]`, () => {
         this.handleRemove(data);

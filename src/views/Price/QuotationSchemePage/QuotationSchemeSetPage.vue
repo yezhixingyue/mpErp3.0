@@ -47,7 +47,6 @@ export default {
   },
   methods: {
     onGoBackClick(type) {
-      console.log(type, type === 'success');
       if (type === 'success') {
         this.$router.push({
           name: 'QuotationScheme',
@@ -58,7 +57,6 @@ export default {
       }
     },
     onSuccessSubmit(e) {
-      console.log('onSuccessSubmit', e);
       if (!e) return;
       this.$store.commit('priceManage/setPriceItemSolutionListChange', [this.ProductID, this.PriceID, ...e]);
     },

@@ -37,10 +37,10 @@ export default {
         if (Array.isArray(CraftList) && CraftList.length > 0) {
           const temp = {
             Name,
-            ID,
+            ID, // 即CraftPriceID
             ProductID,
             PartID,
-            CraftList,
+            CraftList: CraftList.map(craft => ({ ...craft, ...this.getCraftPriceID(craft, PartID) })),
           };
           list.push(temp);
         }
@@ -85,11 +85,17 @@ export default {
       this.ProductData = ProductData;
       this.PriceResultList = PriceResultList;
     },
-    onSetupCostClick(data) { // 设置费用组成
-      this.jumpPage('CompositionCostOfCraft', data);
+    async onSetupCostClick(data) { // 设置费用组成
+      console.log(data);
+      const temp = await this.getDataInsertCraftPriceID(data);
+      console.log(temp);
+      if (!temp) return;
+      this.jumpPage('CompositionCostOfCraft', temp);
     },
-    onSetupAllCostClick(data) { // 设置总费用
-      this.jumpPage('CraftTotalPriceSetPage', data);
+    async onSetupAllCostClick(data) { // 设置总费用
+      const temp = await this.getDataInsertCraftPriceID(data);
+      if (!temp) return;
+      this.jumpPage('CraftTotalPriceSetPage', temp);
     },
     jumpPage(pathName, data) { // 共用跳转页面方法
       this.$store.commit('priceManage/setCurCraftPriceItemData', data);
@@ -100,6 +106,29 @@ export default {
           id: this.ProductID,
         },
       });
+    },
+    getCraftPriceID(craft, PartID) {
+      let CraftPriceID = '';
+      const t = this.curPriceItem.CraftPriceList.find(it => {
+        if (it.CraftID !== craft.ID) return false;
+        if (it.PartID && it.PartID === PartID) return true;
+        if (!it.PartID && !PartID) return true;
+        return false;
+      });
+      if (t) CraftPriceID = t.ID;
+      return { CraftPriceID };
+    },
+    async getDataInsertCraftPriceID(itemData) {
+      if (!itemData) return null;
+      const { Craft, PartID, ProductID } = itemData;
+      if (Craft.CraftPriceID) return itemData;
+      // 如果CraftPriceID不存在则远程请求获取
+      const resp = await this.api.getCraftPriceTagID(ProductID, this.PriceID, Craft.ID, PartID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const CraftPriceID = resp.data.Data;
+        return { ...itemData, Craft: { ...Craft, CraftPriceID } };
+      }
+      return null;
     },
   },
   mounted() {
@@ -126,6 +155,7 @@ export default {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  min-width: 1000px;
   > header {
     padding: 30px 0;
     padding-bottom: 20px;

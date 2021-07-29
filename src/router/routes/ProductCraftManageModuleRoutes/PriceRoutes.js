@@ -146,6 +146,17 @@ const routes = [
     component: () => import('../../../views/Price/CraftPriceSetPage/CompositionCostOfCraftPage'),
   },
   {
+    path: '/CraftPriceTableItemSet/:name/:id',
+    name: 'CraftPriceTableItemSet',
+    meta: {
+      title: '设置费用表',
+      requiresAuth: true,
+      pageName: 'CraftPriceTableItemSet',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/CraftPriceSetPage/PriceItemTableSetPage'),
+  },
+  {
     path: '/CraftTotalPriceSetPage/:name/:id',
     name: 'CraftTotalPriceSetPage',
     meta: {
@@ -168,6 +179,17 @@ const routes = [
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
     },
     component: () => import('../../../views/Price/CraftPriceSetPage/CompositionCostOfCraftPage'),
+  },
+  {
+    path: '/QuotationPriceTableItemSet/:name/:id',
+    name: 'QuotationPriceTableItemSet',
+    meta: {
+      title: '设置费用表',
+      requiresAuth: true,
+      pageName: 'CraftPriceTableItemSet',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/CraftPriceSetPage/PriceItemTableSetPage'),
   },
   /** 报价方案
   --------------------------------------------------------------  */
@@ -247,13 +269,19 @@ const routeTree = {
     {
       name: 'CraftPriceSetPage', // 工艺费设置
       children: [
-        { name: 'CompositionCostOfCraft', children: [] }, // 工艺组成设置页面
+        {
+          name: 'CompositionCostOfCraft',
+          children: [
+            { name: 'CraftPriceTableItemSet', children: [] },
+          ],
+        }, // 工艺组成设置页面
         { name: 'CraftTotalPriceSetPage', children: [] }, // 工艺总费用设置页面
       ],
     },
     {
       name: 'QuotationList', // 报价表
       children: [
+        { name: 'QuotationPriceTableItemSet', children: [] },
       ],
     },
     {

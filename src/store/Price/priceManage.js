@@ -80,6 +80,8 @@ export default {
     curCraftPriceItemData: null, // 正在设置工艺费用的单个工艺数据信息
     curQuotationSchemeData: null, // 当前正在编辑的报价方案数据
     curQuotationResultData: null, // 报价结果
+    curSolutionItem: null, // 设置费用表用到的当前费用方案条目数据
+    curEditPriceItemData: null, // 当前正在编辑的费用表数据信息
   },
   getters: {
   },
@@ -189,7 +191,7 @@ export default {
         const targetPrice = t.PriceList.find(it => it.ID === PriceID);
         if (targetPrice) {
           const targetType = targetPrice.MakeupList.find(it => it.Type === Type);
-          if (targetType) targetType.Solution = SolutionID;
+          if (targetType) targetType.Solution = { ID: SolutionID };
         }
       }
     },
@@ -208,7 +210,7 @@ export default {
     setCurQuotationResultData(state, data) {
       state.curQuotationResultData = data;
     },
-    setPriceItemSolutionListChange(state, [ProductID, PriceID, isEdit, data, itemID]) {
+    setPriceItemSolutionListChange(state, [ProductID, PriceID, isEdit, data, itemID]) { // 报价方案添加编辑后的处理函数，用于同步修改列表数据
       const t = state.PriceManageList.find(it => it.ID === ProductID); // 目标产品
       if (t) {
         const t2 = t.PriceList.find(it => it.ID === PriceID); // 目标价格条目
@@ -223,6 +225,63 @@ export default {
           }
         }
       }
+    },
+    setPriceItemSolutionListRemove(state, [ProductID, PriceID, itemID]) { // 报价方案删除
+      const t = state.PriceManageList.find(it => it.ID === ProductID); // 目标产品
+      if (t) {
+        const t2 = t.PriceList.find(it => it.ID === PriceID); // 目标价格条目
+        if (t2) {
+          t2.SolutionList = t2.SolutionList.filter(it => it.ID !== itemID);
+        }
+      }
+    },
+    setPriceItemSolutionItemRemove(state, [ProductID, PriceID, itemID, isQuotationPage, CraftPriceID]) { // 工艺费 - 价格表 顶部价格方案删除
+      const t = state.PriceManageList.find(it => it.ID === ProductID); // 目标产品
+      if (t) {
+        const t2 = t.PriceList.find(it => it.ID === PriceID); // 目标价格条目
+        if (t2) {
+          if (isQuotationPage) {
+            t2.PriceTableList = t2.PriceTableList.filter(it => it.ID !== itemID);
+          } else {
+            const t3 = t2.CraftPriceList.find(it => it.ID === CraftPriceID);
+            if (t3) {
+              t3.PriceTableList = t3.PriceTableList.filter(it => it.ID !== itemID);
+            }
+          }
+        }
+      }
+    },
+    setPriceItemSolutionItemChange(state, [ProductID, PriceID, itemData, itemID, isQuotationPage, CraftPriceID]) { // 工艺费 - 价格表 顶部价格方案编辑和添加
+      const t = state.PriceManageList.find(it => it.ID === ProductID); // 目标产品
+      if (t) {
+        const t2 = t.PriceList.find(it => it.ID === PriceID); // 目标价格条目
+        if (t2) {
+          const setFunc = list => {
+            if (!itemData.ID) { // 添加
+              list.push({ ...itemData, ID: itemID });
+            } else { // 编辑
+              const i = list.findIndex(it => it.ID === itemData.ID);
+              if (i > -1) list.splice(i, 1, itemData);
+            }
+          };
+          if (isQuotationPage) {
+            if (Array.isArray(t2.PriceTableList)) setFunc(t2.PriceTableList);
+            else t2.PriceTableList = [{ ...itemData, ID: itemID }];
+          } else {
+            const t3 = t2.CraftPriceList.find(it => it.ID === CraftPriceID);
+            if (t3) {
+              if (Array.isArray(t3.PriceTableList)) setFunc(t3.PriceTableList);
+              else t3.PriceTableList = [{ ...itemData, ID: itemID }];
+            }
+          }
+        }
+      }
+    },
+    setCurSolutionItem(state, data) {
+      state.curSolutionItem = data;
+    },
+    setCurEditPriceItemData(state, data) {
+      state.curEditPriceItemData = data;
     },
   },
   actions: {
