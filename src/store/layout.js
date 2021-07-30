@@ -56,6 +56,7 @@ export default {
     },
     changeCurTabPath(state, newPath) { // 页面内路由跳转时 记录其路径记录 方便页面跳转不会返回最初页面
       const targetTab = state.editableTabs.find(it => it.name === state.editableTabsValue);
+      console.log(state.editableTabs, state.editableTabsValue, targetTab, newPath);
       if (targetTab && targetTab.path !== newPath) targetTab.path = newPath;
     },
     setOtherTabPageNames(state, tabItem) {

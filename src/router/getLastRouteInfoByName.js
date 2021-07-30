@@ -16,7 +16,6 @@ const findNameByList = (list, name, lastName, getType) => {
       // console.log(getType, _getType);
       const t = findNameByList(item.children, name, _lastName, getType);
       if (t) {
-        console.log(t);
         return t;
       }
     }
@@ -26,7 +25,6 @@ const findNameByList = (list, name, lastName, getType) => {
 
 
 export const getLastRouteInfoByName = (Name, getType = 'last') => { // getType 为last时指返回上一级页面  为root时指返回当前模块的根页面
-  console.log(Name);
   if (!Name) return '';
   const { routeTree } = routeConfig;
   for (let i = 0; i < routeTree.length; i += 1) {
@@ -37,7 +35,6 @@ export const getLastRouteInfoByName = (Name, getType = 'last') => { // getType �
       if (lv2Route.name === Name) return '';
       const t = findNameByList(lv2Route.children, Name, lv2Route.name, getType);
       if (t) {
-        console.log(37, t);
         return t;
       }
     }
@@ -82,8 +79,8 @@ export const modulePageNames = routeConfig.routeTree
 
 export const getJudgmentWhetherIsSamePage = (newRoute, oldRoute) => {
   if (!newRoute || !oldRoute) return false;
-  const newRouteRootPageName = modulePageNames.includes(newRoute.name) ? newRoute.name : getLastRouteInfoByName(newRoute.name);
-  const oldRouteRootPageName = modulePageNames.includes(oldRoute.name) ? oldRoute.name : getLastRouteInfoByName(oldRoute.name);
+  const newRouteRootPageName = modulePageNames.includes(newRoute.name) ? newRoute.name : getLastRouteInfoByName(newRoute.name, 'root');
+  const oldRouteRootPageName = modulePageNames.includes(oldRoute.name) ? oldRoute.name : getLastRouteInfoByName(oldRoute.name, 'root');
   return newRouteRootPageName === oldRouteRootPageName;
 };
 

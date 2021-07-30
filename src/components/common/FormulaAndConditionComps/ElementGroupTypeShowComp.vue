@@ -6,20 +6,32 @@
          v-if="isMultiple&&it.StoredContent" @change="onCheckedItemChange($event, it)">{{it.Group.Name}}</el-checkbox>
         <span class="is-element" @click="onItemClick(it)" v-else-if="it.StoredContent">{{it.Group.Name}}</span>
         <span v-else>{{it.Group.Name}}</span>
-        <!-- <template v-if="it.Group.GroupProps && it.Group.GroupProps.length > 0">
-          （<span :class="selectedElementIDs.includes(gProp.StoredContent)?'is-disabled':''"
-             class="blue-span" @click="onItemClick(gProp)" v-for="gProp in it.Group.GroupProps" :key="gProp.StoredContent">{{getName(gProp)}}</span>）
-        </template> -->
         <template v-if="it._FixedTypeList && it._FixedTypeList.length > 0">
-          （<span :class="selectedElementIDs.includes(gProp.StoredContent)?'is-disabled':''"
-             class="blue-span" @click="onItemClick(gProp)" v-for="gProp in it._FixedTypeList" :key="gProp.StoredContent">{{getName(gProp)}}</span>）
+          （
+          <template v-if="!isMultiple">
+            <span :class="selectedElementIDs.includes(gProp.StoredContent)?'is-disabled':''"
+             class="blue-span" @click="onItemClick(gProp)" v-for="gProp in it._FixedTypeList" :key="gProp.StoredContent">{{getName(gProp)}}</span>
+          </template>
+          <template v-else>
+            <el-checkbox :value='MultipleCheckedIDList.includes(gProp.StoredContent)' v-for="gProp in it._FixedTypeList" :key="gProp.StoredContent"
+               @change="onCheckedItemChange($event, gProp)">{{getName(gProp)}}</el-checkbox>
+          </template>
+          ）
         </template >
         <template v-if="it.List.length > 0">：</template>
       </label>
       <label v-if="!it.Group && it.Name">{{it.Name}}
         <template v-if="it._FixedTypeList && it._FixedTypeList.length > 0">
-          （<span :class="selectedElementIDs.includes(gProp.StoredContent)?'is-disabled':''"
-             class="blue-span" @click="onItemClick(gProp)" v-for="gProp in it._FixedTypeList" :key="gProp.StoredContent">{{getName(gProp)}}</span>）
+          （
+          <template v-if="!isMultiple">
+            <span :class="selectedElementIDs.includes(gProp.StoredContent)?'is-disabled':''"
+             class="blue-span" @click="onItemClick(gProp)" v-for="gProp in it._FixedTypeList" :key="gProp.StoredContent">{{getName(gProp)}}</span>
+          </template>
+          <template v-else>
+            <el-checkbox :value='MultipleCheckedIDList.includes(gProp.StoredContent)' v-for="gProp in it._FixedTypeList" :key="gProp.StoredContent"
+               @change="onCheckedItemChange($event, gProp)">{{getName(gProp)}}</el-checkbox>
+          </template>
+          ）
         </template >
         <template v-if="it.List.length > 0">：</template>
       </label>
@@ -69,8 +81,8 @@ export default {
       const _unjoinedList = [];
       const _list = JSON.parse(JSON.stringify(this.dataList));
       _list.forEach(it => {
-        const { Group, FixedType, Element, Formula } = it;
-        const ElementItem = Element || Formula;
+        const { Group, FixedType, Element, Formula, Constraint } = it;
+        const ElementItem = Element || Formula || Constraint;
         if (!ElementItem && Group && !(FixedType || FixedType === 0)) { // 元素组
           const i = _temp.findIndex(_it => (_it.Group ? _it.Group.ID : _it.ID) === Group.ID);
           if (i > -1) {

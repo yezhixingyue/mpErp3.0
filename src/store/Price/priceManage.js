@@ -38,9 +38,8 @@ export default {
     ],
     /** 拼版控制相关
      ---------------------------------------- */
-    MakeupLeftPropertyList: [], // 拼版控制左侧弹窗条件属性
-    MakeupRightPropertyList: [],
-    SizeNumberPropertyList: [],
+    MakeupCtrlBeginPropList: [], // 拼版控制左侧弹窗条件属性
+    ProductFormulaPropertyList: [],
     curMakeupItemEditData: null,
     CuttingRuleList: [
       { Name: '最大数量', ID: 0 },
@@ -152,10 +151,10 @@ export default {
     },
     /** 拼版控制相关
     ----------------------------------------- */
-    setMakeupPropertyList(state, [leftList, rightList, compareLeft]) {
-      state.MakeupLeftPropertyList = Array.isArray(leftList) ? leftList : [];
-      state.MakeupRightPropertyList = Array.isArray(rightList) ? rightList : [];
-      state.SizeNumberPropertyList = Array.isArray(compareLeft) ? compareLeft : [];
+    setMakeupPropertyList(state, [MakeupCtrlBeginPropList, MakeupCtrlAfterPropList, ProductFormulaList]) {
+      state.MakeupCtrlBeginPropList = Array.isArray(MakeupCtrlBeginPropList) ? MakeupCtrlBeginPropList : [];
+      state.MakeupCtrlAfterPropList = Array.isArray(MakeupCtrlAfterPropList) ? MakeupCtrlAfterPropList : [];
+      state.ProductFormulaPropertyList = Array.isArray(ProductFormulaList) ? ProductFormulaList : [];
     },
     setCurMakeupItemEditData(state, data) {
       state.curMakeupItemEditData = data;
@@ -330,15 +329,17 @@ export default {
     },
     async getMakeupPropertyList({ commit }, ProductID) { // 获取拼版控制左侧弹窗属性列表数据
       commit('setMakeupPropertyList', []);
-      const list = await Promise.all([
-        PropertyClass.getPropertyList({ UseModule: 14, ProductID }),
-        PropertyClass.getPropertyList({ UseModule: 18, ProductID }),
-        PropertyClass.getPropertyList({ UseModule: 22, ProductID }), // 设置尺寸数量
+      const [MakeupCtrlBeginPropList, MakeupCtrlAfterPropList, ProductFormulaResp] = await Promise.all([
+        PropertyClass.getPropertyList({ UseModule: 12, ProductID }),
+        PropertyClass.getPropertyList({ UseModule: 30, ProductID }),
+        api.getProductFormulasList(ProductID).catch(() => {}), // 设置尺寸数量
       ]);
-      if (list) {
-        commit('setMakeupPropertyList', list);
+      const ProductFormulaList = ProductFormulaResp && ProductFormulaResp.data.Status === 1000 ? ProductFormulaResp.data.Data : [];
+      if (MakeupCtrlBeginPropList && MakeupCtrlAfterPropList && ProductFormulaResp && ProductFormulaResp.data.Status === 1000) {
+        commit('setMakeupPropertyList', [MakeupCtrlBeginPropList, MakeupCtrlAfterPropList, ProductFormulaList]);
         return true;
       }
+      commit('setMakeupPropertyList', [MakeupCtrlBeginPropList || [], MakeupCtrlAfterPropList || [], ProductFormulaList]);
       return false;
     },
     async getChildConditionPropertyList({ commit }, PartIDs) {

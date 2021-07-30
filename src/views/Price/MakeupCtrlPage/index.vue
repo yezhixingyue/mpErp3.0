@@ -109,7 +109,8 @@ export default {
     TopRadioButtonComp,
   },
   computed: {
-    ...mapState('priceManage', ['MakeupControlTypeList', 'MakeupLeftPropertyList', 'MakeupRightPropertyList', 'SizeNumberPropertyList', 'PriceManageList']),
+    ...mapState('priceManage', ['MakeupControlTypeList', 'MakeupCtrlBeginPropList', 'MakeupCtrlAfterPropList',
+      'ProductFormulaPropertyList', 'PriceManageList']),
     curTypeSolutionList() {
       if (!this.solutionList || (!this.curControlType && this.curControlType !== 0) || this.solutionList.length === 0) return [];
       return this.solutionList.filter(it => it.Type === this.curControlType);
@@ -119,7 +120,8 @@ export default {
       return this.solutionList.find(it => it.ID === this.curSolutionID);
     },
     localSolutionDataList() {
-      return this.getReductionList(this.MakeupRuleItemList, this.MakeupLeftPropertyList, this.MakeupRightPropertyList);
+      const propList = [0, 1].includes(this.curControlType) ? this.MakeupCtrlBeginPropList : this.MakeupCtrlAfterPropList;
+      return this.getReductionList(this.MakeupRuleItemList, propList);
     },
     curProduct() {
       if (Array.isArray(this.PriceManageList) && this.$route.params.id) {
@@ -144,10 +146,10 @@ export default {
           const t = this.MixtureMakeupList.find(_it => _it.PartID === it.ID);
           if (t) mixinData = t;
           if (t && Array.isArray(t.List)) {
-            mixinList = this.getReductionList(t.List, this.MakeupLeftPropertyList, this.MakeupRightPropertyList);
+            mixinList = this.getReductionList(t.List, this.MakeupCtrlBeginPropList);
           }
         }
-        const ExcludeNumberFormulaList = this.ProductChildFormulaList.filter(_it => _it.PartID && _it.PartID === it.ID);
+        const ExcludeNumberFormulaList = this.ProductFormulaPropertyList.filter(_it => _it.PartID && _it.PartID === it.ID);
         // const t = ExcludeNumberFormulaList.find(_it => _it.ID === mixinData.ExcludeNumberFormula);
         const ExcludeNumberFormulaText = mixinData.ExcludeNumberFormula ? mixinData.ExcludeNumberFormula.Name : '无';
         mixinData.ExcludeNumberFormulaText = ExcludeNumberFormulaText;
@@ -205,17 +207,16 @@ export default {
       SamePropertyVisible: false,
       setSameProperty: null, // 正在设置相同条件设置的部件项目数据
       ExcludeNumCtrlVisible: false, // 排除数量设置弹窗开关
-      ProductChildFormulaList: [], // 产品子公式数据
       curExcludeNumCtrlData: null,
     };
   },
   methods: {
-    getReductionList(list, leftPropertyList, rightPropertyList) {
+    getReductionList(list, leftPropertyList) {
       if (!Array.isArray(list) || list.length === 0) return [];
       const _list = JSON.parse(JSON.stringify(list)).map(it => {
         const { Constraint } = it;
         const [_Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
-          Constraint, leftPropertyList, rightPropertyList,
+          Constraint, leftPropertyList,
         );
         return { ...it, Constraint: _Constraint, _ConditionText };
       });
@@ -265,7 +266,10 @@ export default {
       this.isSolutionListLoading = false;
       if (resp && resp.data.Status === 1000) {
         this.solutionList = resp.data.Data;
-        if (this.solutionList.length > 0) this.curSolutionID = this.solutionList[0].ID;
+        if (this.solutionList.length > 0) {
+          const t = this.solutionList.find(it => it.Type === this.curControlType);
+          if (t) this.curSolutionID = t.ID;
+        }
       }
     },
     onRemoveClick() {
@@ -445,12 +449,6 @@ export default {
       };
       this.ExcludeNumCtrlVisible = true;
     },
-    async getProductChildFormulaList() {
-      const resp = await this.api.getProductChildFormulaList(this.$route.params.id).catch(() => {});
-      if (resp && resp.data.Status === 1000) {
-        this.ProductChildFormulaList = resp.data.Data;
-      }
-    },
     async onExcludeNumCtrlSubmit(formularID) {
       const { PartID, ExcludeNumberFormulaList } = this.curExcludeNumCtrlData;
       const resp = await this.api.getMixtureMakeupExcludeNumberSetup(this.curSolutionID, PartID, formularID).catch(() => {});
@@ -484,7 +482,6 @@ export default {
   },
   async mounted() {
     this.getMakeupSolutionList();
-    this.getProductChildFormulaList();
     await this.$store.dispatch('priceManage/getMakeupPropertyList', this.$route.params.id);
     this.isPropertyListLoading = false;
   },

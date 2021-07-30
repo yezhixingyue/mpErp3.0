@@ -70,10 +70,16 @@ export default {
           // 1. 由于数据返回时常量数据必定返回在其对应的元素数据之后，所以不考虑实际有t，但t在后面从而找不到数据的情况
           // 2. 由于元素只有多选时才会出现常量类型数据，且多选元素也必可点击，所以t肯定会被找着，所以不考虑t未找到的情况
           // 3. 后面根据情况可扩充该方法
-          const t = _temp.find(_it => (_it.Element ? _it.Element.ID : _it.ID) === (it.Element ? it.Element.ID : it.Formula.ID));
+          const t = _temp.find(_it => {
+            let ID = '';
+            if (it.Element) ID = it.Element.ID;
+            else if (it.Formula) ID = it.Formula.ID;
+            else if (it.Constraint) ID = it.Constraint.ID;
+            return (_it.Element ? _it.Element.ID : _it.ID) === ID;
+          });
           if (t) t._FixedTypeList.push(it);
           else {
-            const item = it.Element || it.Formula;
+            const item = it.Element || it.Formula || it.Constraint;
             _temp.push({ ...item, _FixedTypeList: [it] });
           }
         }

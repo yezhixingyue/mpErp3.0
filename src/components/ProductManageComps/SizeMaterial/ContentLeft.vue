@@ -183,7 +183,7 @@ export default {
         return;
       }
       if (!normalNameReg.test(this.title)) {
-        this.messageBox.failSingle('名称仅支持中文、英文(全角/半角)、+-_(全角/半角)、数字等');
+        this.messageBox.failSingle('名称仅支持中文、英文(全角/半角)、+-_(全角/半角)、数字(全角/半角)');
         return;
       }
       const cb = () => { this.isTitleEditing = false; };

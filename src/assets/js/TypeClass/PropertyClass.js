@@ -10,13 +10,42 @@ export const ElementSelectTypeEnum = [
   { label: ' 产品工艺', ID: 4, nickName: '工艺' },
   { label: ' 产品物料', ID: 5, nickName: '物料' },
   { label: ' 产品尺寸组', ID: 6, nickName: '尺寸组' },
-  { label: ' 公式', ID: 7, nickName: '公式' },
+  { label: ' 产品', ID: 7, nickName: '产品' },
   // { label: ' 子公式', ID: 8, nickName: '子公式' },
   // { label: ' 子条件', ID: 9, nickName: '子条件' },
   { label: ' 部件', ID: 10, nickName: '部件' },
   { label: ' 其他', ID: 254, nickName: '其他' },
   { label: ' 常量', ID: 255, nickName: '常量' },
 ];
+
+// export const UseModuleList = [
+//   { ID: 0, Name: '物料类型公式', label: 'MaterialFormula' },
+//   { ID: 1, Name: '产品公式', label: 'ProductFormula' },
+//   { ID: 2, Name: '产品子公式', label: 'ProductSubFormula' },
+//   { ID: 3, Name: '计算公式', label: 'CalculateFormula' },
+//   { ID: 4, Name: '计算子公式', label: 'CalculateSubFormula' },
+//   { ID: 5, Name: '报价结果公式', label: 'PriceResultFormula' },
+//   { ID: 6, Name: '报价方案公式', label: 'PriceSolutionFormula' },
+//   { ID: 11, Name: '库存条件', label: 'StockConstraint' },
+//   { ID: 12, Name: '工厂条件', label: 'FactoryConstraint' },
+//   { ID: 13, Name: '文件条件', label: 'FileConstraint' },
+//   { ID: 14, Name: '交互条件', label: 'InteractionConstraint' },
+//   { ID: 15, Name: '子公式筛选数据', label: 'SubFormulaConstraint' },
+//   { ID: 16, Name: '子公式对比条件', label: '' },
+//   { ID: 17, Name: '对比验证和风险提示', label: '' },
+//   { ID: 18, Name: '右侧交互结果弹窗', label: '' },
+//   { ID: 19, Name: '对比主属性', label: '' },
+//   { ID: 20, Name: '对比从属性', label: '' },
+//   { ID: 21, Name: '库存右侧弹窗属性', label: '' },
+//   { ID: 22, Name: '尺寸数量', label: 'MakeupSizeNumberic' },
+//   { ID: 23, Name: '拼版混合相同条件', label: '' },
+//   { ID: 24, Name: '子公式条件筛选', label: '' },
+//   { ID: 25, Name: '子交互', label: '' },
+//   { ID: 26, Name: '子对比', label: '' },
+//   { ID: 27, Name: '子条件', label: '' },
+//   { ID: 28, Name: '价格子公式筛选左', label: '' },
+//   { ID: 29, Name: '价格子公式筛选右', label: '' },
+// ];
 
 export const PropertyFixedType = [
   { ID: 0, Name: '已选项数' },
@@ -30,6 +59,8 @@ export const PropertyFixedType = [
   { ID: 8, Name: '物料尺寸长' },
   { ID: 9, Name: '物料尺寸宽' },
   { ID: 10, Name: '选项' },
+  { ID: 19, Name: '满足条数' },
+  { ID: 20, Name: '不满足条数' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表
@@ -226,11 +257,8 @@ export default class PropertyClass {
     return undefined;
   }
 
-  static getProperyName(item) {
-    const { FixedType, Element, Name, Type, Formula } = item;
-    // if (DisplayContent) {
-    //   return DisplayContent.replace(/\[|\]/g, '');
-    // }
+  static getProperyName(item) { // 传入一个属性 获取到其属性名称
+    const { FixedType, Element, Name, Type, Formula, Constraint } = item;
     if (FixedType || FixedType === 0) {
       const t = PropertyFixedType.find(it => it.ID === FixedType);
       if (t) return t.Name;
@@ -239,14 +267,10 @@ export default class PropertyClass {
     if (Element && Element.Name) return Element.Name;
     if (!Element) {
       if (Name) return Name;
-      if (Type || Type === 0) {
-        if (Type === 7 && Formula && Formula.Name) {
-          // 公式
-          return Formula.Name;
-        }
-        const _t = ElementSelectTypeEnum.find(it => it.ID === Type);
-        return _t ? _t.nickName : '';
-      }
+      if (Formula && Formula.Name) return Formula.Name; // 公式 | 子公式
+      if (Constraint && Constraint.Name) return Constraint.Name; // 子条件
+      const _t = ElementSelectTypeEnum.find(it => it.ID === Type);
+      return _t ? _t.nickName : '';
     }
     return '';
   }

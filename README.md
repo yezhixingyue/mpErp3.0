@@ -1046,3 +1046,23 @@ public enum MultiLevelClassType : byte
 
         张
         Paper = 1
+
+ public enum SizeNumberFormulaType:byte
+    {
+        /// <summary>
+        /// 展开长
+        /// </summary>
+        UnfoldLength=0,
+        /// <summary>
+        /// 展开宽
+        /// </summary>
+        UnfoldWidth = 1,
+        /// <summary>
+        /// 内容不同
+        /// </summary>
+        DifferentContent = 2,
+        /// <summary>
+        /// 印刷份数
+        /// </summary>
+        PrintNumber = 3,
+    }

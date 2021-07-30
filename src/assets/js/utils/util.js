@@ -11,6 +11,8 @@ import handleLoadingHOF from './handleLoading';
 
 import { normalNameReg, pointStartNumberReg } from './regexp';
 
+// import { UseModuleList } from '../TypeClass/PropertyClass';
+
 export function getStatusString(id, OrderStatusList) {
   const num = parseInt(id, 10);
   for (let i = 0; i < OrderStatusList.length; i += 1) {
@@ -261,6 +263,8 @@ export const getNameFromListByIDs = (ids, list, defaultKeys = { label: 'Name', v
   return '';
 };
 
+// export const getModuleName = (module) => getNameFromListByIDs(module, UseModuleList);
+
 /**
  * @description: 通过分类列表数据 及 列表数据 来形成分级树形数据结构
  * @param {*} list
@@ -310,6 +314,7 @@ export default {
   calcDescartes,
   getIDFromListByNames,
   getNameFromListByIDs,
+  // getModuleName,
   getTreeDataFromListAndClassifyData,
   checkName,
 };

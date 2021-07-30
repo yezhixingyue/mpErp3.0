@@ -7,8 +7,8 @@
       <FieldItem v-model="DifferentContentFormula" @select="onSelectClick" />
       <FieldItem v-model="PrintNumberFormula" @select="onSelectClick" />
     </ul>
-    <FormulaPanelElementSelectDialog
-     :visible.sync='visible' :list='SizeNumberPropertyList' @submit='onPropertySelected' :selectedElementIDs='selectedElementIDs'/>
+    <ProductFormulasSelectDialog :visible.sync='visible' :list='SizeNumberPropertyList'
+     :productData='productData' @select='onPropertySelected' :selectedIDs='selectedIDs' />
     <!-- 右侧说明抽屉面板 -->
     <el-drawer :visible.sync="drawer" size='470px' :show-close='false'>
       <template slot='title'>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
+import ProductFormulasSelectDialog from '@/components/common/FormulaAndConditionComps/ProductFormulasSelectDialog.vue';
 import FieldItem from './FieldItem.vue';
 
 export default {
@@ -67,7 +67,7 @@ export default {
     },
   },
   components: {
-    FormulaPanelElementSelectDialog,
+    ProductFormulasSelectDialog,
     FieldItem,
   },
   computed: {
@@ -79,16 +79,15 @@ export default {
         this.$emit('update:drawerVisible', val);
       },
     },
-    selectedElementIDs() {
+    selectedIDs() {
       if (!this.selectType || !this[this.selectType].Property) return [];
-      return [this[this.selectType].Property.StoredContent];
+      return [this[this.selectType].Property.ID];
     },
   },
   data() {
     return {
       LengthFormula: {
         FormulaID: '',
-        Type: '',
         Value: '',
         Property: null,
         label: '展开尺寸长度',
@@ -96,7 +95,6 @@ export default {
       },
       WidthFormula: {
         FormulaID: '',
-        Type: '',
         Value: '',
         Property: null,
         label: '展开尺寸宽度',
@@ -104,7 +102,6 @@ export default {
       },
       DifferentContentFormula: {
         FormulaID: '',
-        Type: '',
         Value: '',
         Property: null,
         label: '内容不同的展开物料数量',
@@ -112,7 +109,6 @@ export default {
       },
       PrintNumberFormula: {
         FormulaID: '',
-        Type: '',
         Value: '',
         Property: null,
         label: '共需要印刷多少份',
@@ -120,6 +116,7 @@ export default {
       },
       visible: false,
       selectType: '',
+      productData: null,
     };
   },
   methods: {
@@ -134,11 +131,9 @@ export default {
       if (!obj) return obj;
       const { Property, Value } = obj;
       const temp = { FormulaID: '' };
-      if (Value) temp.Value = Value;
-      else if (Property && Property.Type !== 255 && Property.Formula) {
-        temp.FormulaID = Property.Formula.ID;
-        temp.Type = Property.FixedType;
-      }
+      if (Property) {
+        temp.FormulaID = Property.ID;
+      } else if (Value) temp.Value = Value;
       return temp;
     },
     getSubmitInfo() {
@@ -154,7 +149,7 @@ export default {
       return null;
     },
     fieldItemChecker({ Property, Value, label }, isInteger) {
-      if (Property && Property.Type !== 255) return true;
+      if (Property) return true;
       if (!Value && Value !== 0) {
         this.messageBox.failSingleError('保存失败', `${label}未设置`);
         return false;
@@ -174,16 +169,21 @@ export default {
     getValueOrPropertyFromInitDataItem(data) {
       const temp = { Property: null, Value: '' };
       if (!data) return temp;
-      const { FormulaID, Type, Value } = data;
+      const { FormulaID, Value } = data;
       if (FormulaID) { // 属性
-        const t = this.SizeNumberPropertyList.find(it => it.Formula && it.Formula.ID === FormulaID && it.FixedType === Type);
+        const t = this.SizeNumberPropertyList.find(it => it.ID === FormulaID);
         if (t) temp.Property = t;
       }
       if (Value || Value === 0) temp.Value = Value;
       return temp;
     },
+    async getProductData() {
+      const resp = await this.$store.dispatch('priceManage/getProductCraftData', this.$route.params.ProductID);
+      if (resp) this.productData = resp;
+    },
   },
   mounted() {
+    this.getProductData();
     if (this.initData) { // 编辑时还原数据
       const { LengthFormula, WidthFormula, DifferentContentFormula, PrintNumberFormula } = this.initData;
       const LengthFormulaInitObj = this.getValueOrPropertyFromInitDataItem(LengthFormula);
@@ -224,11 +224,12 @@ export default {
       }
       .value {
         min-width: 15em;
-        margin-right: 1em;
+        margin-right: 26px;
         font-weight: 700;
         color: #585858;
+        text-align: right;
         &.showInput {
-          min-width: 2em;
+          min-width: 6em;
         }
       }
       .blue-span {

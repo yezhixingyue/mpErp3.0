@@ -144,6 +144,7 @@ export default {
   watch: {
     curRoute(newRoute, oldRoute) { // 动态改变活动菜单索引 ----- 只刷新初始化时执行一次
       const bool = getJudgmentWhetherIsSamePage(newRoute, oldRoute);
+      console.log(bool);
       if (bool) {
         // 相同最小页面模块内调整
         if (this.defaultActive === this.editableTabsValue) {
@@ -155,7 +156,6 @@ export default {
         }
       }
       const names = getChildrenRouteNamesByParentRouteName(newRoute.name);
-      console.log(names);
       if (Array.isArray(names)) {
         this.$store.commit('layout/filterOtherTabPageNames', names);
       }

@@ -517,8 +517,8 @@ const api = {
   getMixtureMakeupExcludeNumberSetup(solutionID, partID, formularID) { // PUT /Api/MixtureMakeup/ExcludeNumberSetup  混拼数量排除公式设置
     return instance.put('/Api/MixtureMakeup/ExcludeNumberSetup', '', { params: { solutionID, partID, formularID } });
   },
-  getProductChildFormulaList(productID) { // GET /Api/ChildFormula/List 获取产品子公式列表
-    return instance.get('/Api/ChildFormula/List', { params: { productID } });
+  getProductFormulasList(productID) { // GET /Api/ProductFormula/List 获取产品公式和子公式列表
+    return instance.get('/Api/ProductFormula/List', { params: { productID } });
   },
   getProductChildConditionList(productID) { // GET /Api/ChildCondition/List  获取产品子条件列表
     return instance.get('/Api/ChildCondition/List', { params: { productID } });

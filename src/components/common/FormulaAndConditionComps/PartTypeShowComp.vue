@@ -1,0 +1,120 @@
+<template>
+  <div v-if="localListData" class="mp-erp-common-comps-on-element-select-dialog-part-type-show-item-comp-wrap">
+    <div class="element">
+      <template v-if="!isMultiple">
+        <TipsSpanButton
+          v-for="item in localListData.Element"
+          :key="item.StoredContent"
+          @click.native="onSubmit(item)"
+          :disabled='selectedElementIDs.includes(item.StoredContent)'
+          :text='getTextName(item) || item.DisplayContent || "未知名称"' />
+      </template>
+      <template v-else>
+        <el-checkbox
+          v-for="item in localListData.Element" :key="item.StoredContent"
+          :value='MultipleCheckedIDList.includes(item.StoredContent)'
+          @change="onCheckedItemChange($event, item)">{{getTextName(item) || item.DisplayContent || "未知名称"}}</el-checkbox>
+    </template>
+    </div>
+    <p class="title mp-common-title-wrap" v-if="localListData.Formula.length > 0">公式</p>
+    <ElementTypeShowComp
+     :dataList='localListData.Formula' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+     :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
+    <p class="title mp-common-title-wrap" v-if="localListData.Constraint.length > 0">子条件</p>
+    <ElementTypeShowComp
+     :dataList='localListData.Constraint' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+     :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
+  </div>
+</template>
+
+<script>
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import TipsSpanButton from '@/components/common/NewComps/TipsSpanButton.vue';
+import ElementTypeShowComp from './ElementTypeShowComp';
+
+export default {
+  props: {
+    dataList: {
+      type: Array,
+      default: () => [],
+    },
+    ElementList: {
+      type: Array,
+      default: null,
+    },
+    selectedElementIDs: {
+      type: Array,
+      default: () => [],
+    },
+    isMultiple: { // 多选模式
+      type: Boolean,
+      default: false,
+    },
+    checkedList: { // 多选时已选中的属性列表
+      type: Array,
+      default: () => [],
+    },
+  },
+  components: {
+    ElementTypeShowComp,
+    TipsSpanButton,
+  },
+  computed: {
+    localListData() {
+      if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return null;
+      const obj = {
+        Element: [], // 元素
+        Formula: [], // 公式子公式
+        Constraint: [], // 子条件
+      };
+      this.dataList.forEach(prop => {
+        const { Formula, Constraint } = prop;
+        if (Formula && !Constraint) { // 公式
+          obj.Formula.push(prop);
+        } else if (!Formula && Constraint) { // 子条件
+          obj.Constraint.push(prop);
+        } else { // 其它 --- 平铺
+          obj.Element.push(prop);
+        }
+      });
+
+      return obj;
+    },
+    MultipleCheckedIDList() {
+      if (!Array.isArray(this.checkedList)) return [];
+      return this.checkedList.map(it => it.StoredContent);
+    },
+  },
+  methods: {
+    onSubmit(e) {
+      this.$emit('submit', e);
+    },
+    onCheckedItemChange(e, el) {
+      this.$emit('checked', e, el);
+    },
+    getTextName(item) {
+      return PropertyClass.getProperyName(item);
+    },
+  },
+};
+</script>
+<style lang='scss'>
+.mp-erp-common-comps-on-element-select-dialog-part-type-show-item-comp-wrap {
+  flex-direction: column;
+  > p.title {
+    display: block;
+    color: #444;
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+  > div.element {
+    padding: 10px 0;
+    > span + span {
+      margin-left: 28px;
+    }
+  }
+  > ul {
+    margin-bottom: 12px;
+  }
+}
+</style>

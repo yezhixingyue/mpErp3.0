@@ -12,7 +12,7 @@ export default {
   },
   render() {
     const propertyName = this.value.Property && this.value.Property.Type !== 255
-      ? this.value.Property.DisplayContent.replace(/\[|\]/g, '')
+      ? this.value.Property.Name
       : '';
 
     const handleInput = (val) => {

@@ -88,15 +88,15 @@ export default {
     },
     async getPropertyList() { // 获取关联属性列表数据
       if (!this.curEditSubFormulaData) return;
-      const { Constraint, ComparePropertyList } = this.curEditSubFormulaData;
+      const { Constraint } = this.curEditSubFormulaData;
       if (Constraint) this.curEditData = { Constraint };
       const idObj = PropertyClass.getPropIDsObj(this.curEditSubFormulaData);
       this.loading = true;
-      const propertyList = await PropertyClass.getPropertyList({ ...idObj, UseModule: this.moduleIndex });
-      // const [propertyList, ComparePropertyList] = await Promise.all([
-      //   PropertyClass.getPropertyList({ ...idObj, UseModule: this.moduleIndex }),
-      //   PropertyClass.getPropertyList({ ...idObj, UseModule: 16 }),
-      // ]);
+      // const propertyList = await PropertyClass.getPropertyList({ ...idObj, UseModule: this.moduleIndex });
+      const [propertyList, ComparePropertyList] = await Promise.all([
+        PropertyClass.getPropertyList({ ...idObj, UseModule: this.moduleIndex }),
+        PropertyClass.getPropertyList({ ...idObj, UseModule: 16 }),
+      ]);
       this.loading = false;
       if (propertyList) this.propertyList = propertyList;
       if (ComparePropertyList) this.ComparePropertyList = ComparePropertyList;

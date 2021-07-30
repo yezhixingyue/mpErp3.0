@@ -6,7 +6,7 @@
       <span v-if="routeInfo.PartName">设置部件：{{routeInfo.PartName}} {{routeInfo.isMixin ? '混拼条件' : ''}}</span>
     </header>
     <main>
-      <ContionCommonComp ref="oLeftComp" :ComparePropertyList='MakeupRightPropertyList' :PropertyList='MakeupLeftPropertyList'
+      <ContionCommonComp ref="oLeftComp" :ComparePropertyList='PropList' :PropertyList='PropList'
        leftWidth='40%' :curEditData='curMakeupItemEditData' :rightTitle='rightTitle'>
         <template slot='title'>
           <template v-if="routeInfo.setType==='0' && !routeInfo.isMixin">
@@ -20,7 +20,7 @@
          :Name='routeInfo.PartName || "产品"'
          :initData='curMakeupItemEditData'
          :drawerVisible.sync='drawer'
-         :SizeNumberPropertyList='SizeNumberPropertyList'
+         :SizeNumberPropertyList='ProductFormulaPropertyList'
          />
         <MakeupBreadthPaneL ref="oMakeupBreadthPaneL" :initData='curMakeupItemEditData' v-if="routeInfo.setType==='1'" /> <!-- 拼版幅面面板 -->
         <MakeupRulePanel ref="oMakeupRulePanel" v-if="routeInfo.setType==='2'" :initData='curMakeupItemEditData' /> <!-- 拼版规则面板 -->
@@ -66,11 +66,15 @@ export default {
     MaterialWastagePanel,
   },
   computed: {
-    ...mapState('priceManage', ['MakeupLeftPropertyList', 'MakeupRightPropertyList', 'SizeNumberPropertyList', 'curMakeupItemEditData']),
+    ...mapState('priceManage', ['MakeupCtrlBeginPropList', 'MakeupCtrlAfterPropList', 'ProductFormulaPropertyList', 'curMakeupItemEditData']),
     rightTitle() {
       if (this.routeInfo.isMixin) return '则允许混拼';
       if (this.routeInfo.setType === '1') return '使用以下幅面';
       return '则';
+    },
+    PropList() {
+      if (['0', '1'].includes(this.routeInfo.setType)) return this.MakeupCtrlBeginPropList;
+      return this.MakeupCtrlAfterPropList;
     },
     routeInfo() {
       const { ProductID, PartID, ProductName, PartName, SolutionName, SolutionID, setType, isMixin } = this.$route.params;

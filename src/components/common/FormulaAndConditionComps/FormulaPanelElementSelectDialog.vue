@@ -20,7 +20,7 @@
       </header>
       <main v-if="showData" >
         <div v-for="it in showData" :key="it.Type">
-          <span class="title mp-common-title-wrap">{{getTitle(it.Type)}}</span>
+          <span class="title mp-common-title-wrap" v-if="getTitle(it.Type)">{{getTitle(it.Type)}}</span>
           <!-- 元素组类型 -->
           <ElementGroupTypeShowComp
            v-if="it.Type === 2"
@@ -46,8 +46,14 @@
            v-else-if="it.Type === 6"
            :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
            :isMultiple='isMultiple' @checked='onChecked' :checkedList='MultipleList' />
-          <ElementTypeShowComp
-           v-else-if="it.Type === 8"
+          <!-- 产品属性 包含公式 子条件等 -->
+          <PartTypeShowComp
+           v-else-if="it.Type === 7"
+           :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+           :isMultiple='isMultiple' @checked='onChecked' :checkedList='MultipleList' />
+           <!-- 部件属性 包含公式 子条件 使用次数等-->
+          <PartTypeShowComp
+           v-else-if="it.Type === 10"
            :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
            :isMultiple='isMultiple' @checked='onChecked' :checkedList='MultipleList' />
           <!-- 其它类型 -->
@@ -85,6 +91,7 @@ import ElementGroupTypeShowComp from './ElementGroupTypeShowComp.vue';
 import ElementTypeShowComp from './ElementTypeShowComp.vue';
 import CraftTypeShowComp from './CraftTypeShowComp.vue';
 import MaterialTypeShowComp from './MaterialTypeShowComp.vue';
+import PartTypeShowComp from './PartTypeShowComp.vue';
 
 export default {
   components: {
@@ -94,6 +101,7 @@ export default {
     ElementTypeShowComp,
     CraftTypeShowComp,
     MaterialTypeShowComp,
+    PartTypeShowComp,
   },
   props: {
     visible: {
@@ -151,6 +159,7 @@ export default {
         { label: '物料', value: 'MaterialProperty' },
       ],
       MultipleList: [],
+      ExcludeShowTitleTypeList: [7, 10],
     };
   },
   computed: {
@@ -218,11 +227,16 @@ export default {
           if (this.curTargetID === it.Part.ID) key += '（当前目标）';
           if (_data.PartProperty[key] && Array.isArray(_data.PartProperty[key])) _data.PartProperty[key].push(it);
           else _data.PartProperty[key] = [it];
-        } else if (it.Material && it.Material.ID && !it.Product) _data.MaterialProperty.push(it);
+        } else if (it.Module === 0) _data.MaterialProperty.push(it);
+        // {
+        //   // const ModuleName = this.$utils.getModuleName(it.Module);
+        //   if (it.Module === 0) _data.MaterialProperty.push(it);
+        // }
       });
       // ↑ 完成分类
       // 2 对每个分类列表中的属性类型进行划分
       const _temp = this.protertyFilterHelper(_data); // 筛选空数组空对象 然后划分
+      // console.log(_data, _temp);
       this.propertyData = _temp;
       if (Object.keys(_temp).length > 0) {
         const [key] = Object.keys(_temp);
@@ -290,6 +304,7 @@ export default {
       this.MultipleList = this.MultipleCheckedList.filter(it => it.StoredContent);
     },
     getTitle(Type) {
+      if (this.ExcludeShowTitleTypeList.includes(Type)) return '';
       const t = ElementSelectTypeEnum.find(it => it.ID === Type);
       if (t) {
         if (Type !== 0) return t.nickName;
