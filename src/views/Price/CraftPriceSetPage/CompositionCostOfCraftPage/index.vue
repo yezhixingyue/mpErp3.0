@@ -41,6 +41,7 @@ import { mapState } from 'vuex';
 import TopRadioButtonComp from '@/components/common/NewComps/TopRadioButtonComp';
 import CraftPriceTitleItemSaveDialog from './Comps/CraftPriceTitleItemSaveDialog.vue';
 import PriceTableComp from './Comps/PriceTableComp.vue';
+import { insertShowName4SolutionList } from '../utils';
 
 export default {
   name: 'CompositionCostOfCraft',
@@ -89,10 +90,10 @@ export default {
     },
     SolutionList() { // 费用条目列表
       if (!this.curPriceItem) return [];
-      if (this.isQuotationPage) return this.insertShowName4SolutionList(this.curPriceItem.PriceTableList, this.ProductData) || [];
+      if (this.isQuotationPage) return insertShowName4SolutionList(this.curPriceItem.PriceTableList, this.ProductData) || [];
       if (!this.CraftPriceID || !Array.isArray(this.curPriceItem.CraftPriceList)) return [];
       const t = this.curPriceItem.CraftPriceList.find(it => it.ID === this.CraftPriceID);
-      return t ? this.insertShowName4SolutionList(t.PriceTableList, this.ProductData) : [];
+      return t ? insertShowName4SolutionList(t.PriceTableList, this.ProductData) : [];
     },
     curSolutionItem() {
       if (!this.SolutionID) return null;
@@ -194,24 +195,6 @@ export default {
       });
       return list;
     },
-    insertShowName4SolutionList(list, ProductData) { // 为tab名附加部件名称信息 及 数据列表条数信息(还未完成 缺少数值更新)
-      if (!ProductData || !Array.isArray(ProductData.PartList)) return list;
-      return list.map(it => {
-        const { ApplyRange, Name } = it;
-        let _PartName = '';
-        if (ApplyRange.PartID) {
-          const t = ProductData.PartList.find(_it => _it.ID === ApplyRange.PartID);
-          if (t) {
-            _PartName = t.Name;
-          }
-        } else {
-          _PartName = '产品';
-        }
-        const Count = 0; // ------------- 后面补充赋值
-        const ShowName = _PartName ? `${Name} [ ${_PartName} ]` : Name;
-        return { ...it, ShowName, Count };
-      });
-    },
     async getPriceSolutionRemove() { // 删除方案
       const resp = await this.api.getPriceSolutionRemove(this.SolutionID).catch(() => {});
       const cb = () => {
@@ -252,10 +235,7 @@ export default {
     },
     onSetupPageJump(data) { // 跳转条件配置页面
       const pathName = this.isQuotationPage ? 'QuotationPriceTableItemSet' : 'CraftPriceTableItemSet';
-      const params = {
-        id: this.ProductID,
-        name: this.ProductName,
-      };
+      const { params } = this.$route;
       this.$store.commit('priceManage/setCurSolutionItem', this.curSolutionItem);
       this.$store.commit('priceManage/setCurEditPriceItemData', data);
       this.$router.push({ name: pathName, params });

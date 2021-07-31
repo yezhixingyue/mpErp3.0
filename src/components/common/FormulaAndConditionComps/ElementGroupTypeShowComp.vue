@@ -4,7 +4,8 @@
       <label v-if="it.Group">
         <el-checkbox :value='MultipleCheckedIDList.includes(it.StoredContent)'
          v-if="isMultiple&&it.StoredContent" @change="onCheckedItemChange($event, it)">{{it.Group.Name}}</el-checkbox>
-        <span class="is-element" @click="onItemClick(it)" v-else-if="it.StoredContent">{{it.Group.Name}}</span>
+        <span class="is-element" @click="onItemClick(it)" :class="selectedElementIDs.includes(it.StoredContent)?'is-disabled':''"
+         v-else-if="it.StoredContent">{{it.Group.Name}}</span>
         <span v-else>{{it.Group.Name}}</span>
         <template v-if="it._FixedTypeList && it._FixedTypeList.length > 0">
           （

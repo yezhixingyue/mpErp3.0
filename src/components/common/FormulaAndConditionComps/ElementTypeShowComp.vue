@@ -56,7 +56,7 @@ export default {
       _list.forEach(it => {
         const isPropertyFixedType = it.FixedType || it.FixedType === 0; // 是否常量
         if (!isPropertyFixedType) {
-          const i = _temp.findIndex(el => (el.Element ? el.Element.ID : el.ID) === it.Element.ID);
+          const i = _temp.findIndex(el => this.getResultFor2PropsIsSame(el, it));
           if (i > -1) {
             if (!_temp[i].StoredContent && it.StoredContent) {
               const { _FixedTypeList } = _temp[i];
@@ -100,6 +100,13 @@ export default {
     },
     onCheckedItemChange(e, el) {
       this.$emit('checked', e, el);
+    },
+    getResultFor2PropsIsSame(el, it) { // 判断2个元素属性是否相同 目前可判断范围为元素和公式
+      if (el.Element) return el.Element.ID === it.Element && it.Element.ID;
+      if (el.Formula) return el.Formula.ID === it.Formula && it.Formula.ID;
+      if (el.ID && it.Element) return el.ID === it.Element.ID;
+      if (el.ID && it.Formula) return el.ID === it.Formula.ID;
+      return false;
     },
   },
 };

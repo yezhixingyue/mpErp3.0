@@ -181,7 +181,7 @@ const routes = [
     component: () => import('../../../views/Price/CraftPriceSetPage/CompositionCostOfCraftPage'),
   },
   {
-    path: '/QuotationPriceTableItemSet/:name/:id',
+    path: '/QuotationPriceTableItemSet/:name/:id/:isQuotation',
     name: 'QuotationPriceTableItemSet',
     meta: {
       title: '设置费用表',

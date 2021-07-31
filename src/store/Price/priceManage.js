@@ -81,6 +81,7 @@ export default {
     curQuotationResultData: null, // 报价结果
     curSolutionItem: null, // 设置费用表用到的当前费用方案条目数据
     curEditPriceItemData: null, // 当前正在编辑的费用表数据信息
+    PriceItemPropertyList: [], // 价格表 X Y轴属性选择列表数据
   },
   getters: {
   },
@@ -282,6 +283,9 @@ export default {
     setCurEditPriceItemData(state, data) {
       state.curEditPriceItemData = data;
     },
+    setPriceItemPropertyList(state, list) {
+      state.PriceItemPropertyList = list;
+    },
   },
   actions: {
     async getPriceManageList({ state, commit }, page = 1) { // 获取产品列表数据
@@ -345,7 +349,6 @@ export default {
     async getChildConditionPropertyList({ commit }, PartIDs) {
       commit('setChildConditionPropertyList', []);
       const respList = await Promise.all(PartIDs.map(PartIDObj => PropertyClass.getPropertyList({ UseModule: 27, ...PartIDObj })));
-      console.log(respList);
       if (respList) {
         commit('setChildConditionPropertyList', respList);
       }
@@ -363,6 +366,13 @@ export default {
         return resp.data.Data;
       }
       return null;
+    },
+    async getPriceTablePropertyList({ commit }, ProductID) { // 获取价格表X Y轴选择属性列表数据
+      commit('setPriceItemPropertyList', []);
+      const list = await PropertyClass.getPropertyList({ UseModule: 30, ProductID });
+      if (list) {
+        commit('setPriceItemPropertyList', list);
+      }
     },
   },
 };

@@ -6,7 +6,7 @@
     <main>
       <div v-for="item in itemData.CraftList" :key="item.ID">
         <span class="craft-name">{{item.Name}}</span>
-        <span class="cost">费用组成</span>
+        <span class="cost" :title="item._PriceSolutionShowCentent">{{item._PriceSolutionShowCentent}}</span>
         <span class="all-cost">总费用</span>
         <CtrlMenus :showList="['setupCost', 'allCost']" @setupCost='onSetupCostClick(item)' @allCost='onSetupAllCostClick(item)' />
       </div>

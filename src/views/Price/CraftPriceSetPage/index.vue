@@ -22,6 +22,7 @@
 <script>
 import { mapState } from 'vuex';
 import CraftPriceTableComp from './Comps/CraftPriceTableComp.vue';
+import { insertShowName4SolutionList } from './utils';
 
 export default {
   name: 'CraftPriceSetPage',
@@ -40,7 +41,7 @@ export default {
             ID, // 即CraftPriceID
             ProductID,
             PartID,
-            CraftList: CraftList.map(craft => ({ ...craft, ...this.getCraftPriceID(craft, PartID) })),
+            CraftList: CraftList.map(craft => ({ ...craft, ...this.getCraftPriceInfo(craft, PartID, this.ProductData) })),
           };
           list.push(temp);
         }
@@ -62,33 +63,21 @@ export default {
       ProductName: '',
       loading: true,
       ProductData: null,
-      PriceResultList: [],
     };
   },
   methods: {
     onGoBackClick() {
       this.$router.replace('/PriceManageList');
     },
-    async getPriceResultList() { // 获取工艺费列表信息
-      const resp = await this.api.getPriceResultList(this.PriceID).catch(() => {});
-      if (resp && resp.data.Status === 1000) {
-        return resp.data.Data;
-      }
-      return null;
-    },
     async fetchInitData() { // 初始获取含带工艺的产品信息 及 工艺费列表信息
-      const [ProductData, PriceResultList] = await Promise.all([
+      const [ProductData] = await Promise.all([
         this.$store.dispatch('priceManage/getProductCraftData', this.ProductID),
-        this.getPriceResultList(),
       ]);
       this.loading = false;
       this.ProductData = ProductData;
-      this.PriceResultList = PriceResultList;
     },
     async onSetupCostClick(data) { // 设置费用组成
-      console.log(data);
       const temp = await this.getDataInsertCraftPriceID(data);
-      console.log(temp);
       if (!temp) return;
       this.jumpPage('CompositionCostOfCraft', temp);
     },
@@ -107,16 +96,25 @@ export default {
         },
       });
     },
-    getCraftPriceID(craft, PartID) {
+    getCraftPriceInfo(craft, PartID, ProductData) {
       let CraftPriceID = '';
+      let _PriceSolutionShowCentent = '未设置';
       const t = this.curPriceItem.CraftPriceList.find(it => {
         if (it.CraftID !== craft.ID) return false;
         if (it.PartID && it.PartID === PartID) return true;
         if (!it.PartID && !PartID) return true;
         return false;
       });
-      if (t) CraftPriceID = t.ID;
-      return { CraftPriceID };
+      if (t) {
+        CraftPriceID = t.ID;
+        _PriceSolutionShowCentent = this.getPriceSolutionShowContent(t.PriceTableList, ProductData);
+      }
+      return { CraftPriceID, _PriceSolutionShowCentent };
+    },
+    getPriceSolutionShowContent(solutionList, ProductData) {
+      if (!Array.isArray(solutionList) || solutionList.length === 0) return '未设置';
+      const _solutionList = insertShowName4SolutionList(solutionList, ProductData);
+      return _solutionList.map(it => `${it.ShowName}（${it.Count}）`).join('、');
     },
     async getDataInsertCraftPriceID(itemData) {
       if (!itemData) return null;
@@ -141,7 +139,6 @@ export default {
     this.PriceName = Name;
     this.ProductID = this.$route.params.id;
     this.ProductName = this.$route.params.name;
-    // console.log(this.curPriceItem);
     this.fetchInitData();
   },
 };

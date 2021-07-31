@@ -42,6 +42,15 @@
     vertical-align: -15%;
     background: linear-gradient(233deg,  $--color-primary-light 0%, $--color-primary 100%);
   }
+  &.black {
+    color: #444;
+  }
+  &.f-15 {
+    font-size: 15px;
+    &::before {
+      height: 16px;
+    }
+  }
  }
 
  .mp-common-btn-styles {
