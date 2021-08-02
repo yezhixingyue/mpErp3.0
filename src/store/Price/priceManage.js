@@ -369,7 +369,7 @@ export default {
     },
     async getPriceTablePropertyList({ commit }, ProductID) { // 获取价格表X Y轴选择属性列表数据
       commit('setPriceItemPropertyList', []);
-      const list = await PropertyClass.getPropertyList({ UseModule: 30, ProductID });
+      const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID });
       if (list) {
         commit('setPriceItemPropertyList', list);
       }

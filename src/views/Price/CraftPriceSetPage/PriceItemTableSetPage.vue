@@ -45,8 +45,12 @@
        :visible.sync='AxisPropVisible'
        :selectedElementIDs='selectedElementIDs'
        :list='PriceItemPropertyList'
-       @submit='onAxisPropSelect' />
-       <AxisPropDataSetDialog ::visible.sync="AxisPropDataSetVisible" />
+       @submit='onAxisPropSelect' /> <!-- 横竖轴属性设置 -->
+       <AxisPropDataSetDialog :visible.sync="AxisPropDataSetVisible" :saveData='PriceTableData' :type='curAxisPropSetType' /> <!-- 横竖轴选中属性的数据设置 -->
+       <FormItemOptionDataSetDialog
+        :visible.sync="FormItemOptionSetVisible"
+        :saveData='PriceTableData'
+        @submit="onFormItemOptionDataSubmit" /> <!-- 表格单元项数据设置 如增量、起步价设置等 -->
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -59,12 +63,14 @@ import { mapState } from 'vuex';
 import PriceTableClass from '@/assets/js/TypeClass/PriceTableClass';
 import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
 import AxisPropDataSetDialog from '@/components/PriceComps/PriceTableItem/AxisPropDataSetDialog.vue';
+import FormItemOptionDataSetDialog from '@/components/PriceComps/PriceTableItem/FormItemOptionDataSetDialog.vue';
 
 export default {
   name: 'CraftPriceTableItemSet',
   components: {
     FormulaPanelElementSelectDialog,
     AxisPropDataSetDialog,
+    FormItemOptionDataSetDialog,
   },
   data() {
     return {
@@ -81,6 +87,7 @@ export default {
       curAxisPropSetType: '', // 当前正在设置的轴属性类型 X | Y
       selectedElementIDs: [],
       AxisPropDataSetVisible: false, // 控制横竖轴设置数据弹窗展示
+      FormItemOptionSetVisible: false, // 表单项目设置弹窗(起步价等)
     };
   },
   computed: {
@@ -102,7 +109,7 @@ export default {
       return this.PriceTableData?.Unit;
     },
     OtherDataUnit() { // 其它数据
-      return this.PriceTableData?.ElementList.map(it => (it.Unit ? `${it.Name}（单位：${it.Unit}` : `${it.Name}`)).join('、');
+      return this.PriceTableData?.DataList.map(it => (it.Unit ? `${it.Name}（单位：${it.Unit}）` : `${it.Name}`)).join('、');
     },
   },
   methods: {
@@ -147,19 +154,27 @@ export default {
       this.AxisPropVisible = true;
     },
     onAxisDataSetupClick(type) { // 横轴竖轴选中属性后的设置数据点击事件
+      console.log(type);
       this.curAxisPropSetType = type;
       this.AxisPropDataSetVisible = true;
     },
     onTableItemDataSetClick() { // 表单项设置
-      console.log('onTableItemDataSetClick, 设置表单项');
+      // ---------------------------------------------------------------- 表单项更改 会影响到表体内容
+      this.FormItemOptionSetVisible = true;
     },
     onAxisPropSelect(e) { // X Y轴设置选中属性事件
+      // ---------------------------------------------------------------- 切换属性 清空已设置数据 及 表体内容
       if (this.curAxisPropSetType === 'X') {
         this.PriceTableData.XAxis.Property = e;
       }
       if (this.curAxisPropSetType === 'Y') {
         this.PriceTableData.YAxis.Property = e;
       }
+    },
+    onFormItemOptionDataSubmit({ Unit, DataList }) {
+      this.PriceTableData.Unit = Unit;
+      this.PriceTableData.DataList = DataList;
+      this.FormItemOptionSetVisible = false;
     },
     onExcelImportClick() { // 导入表格点击
       console.log('onExcelImportClick');
@@ -289,6 +304,7 @@ export default {
           overflow: hidden;
           .blue-span {
             margin-right: 20px;
+            height: 24px;
           }
           > span {
             flex: none;

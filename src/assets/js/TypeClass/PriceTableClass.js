@@ -23,7 +23,10 @@ export default class PriceTableClass {
 
   XAxis = {
     Property: null,
-    Operator: 0, // ?
+    Operator: {
+      First: 6,
+      Second: 6,
+    },
     InputContent: '',
     IsCumsum: false, // 分段累加吗
     List: [],
@@ -45,13 +48,16 @@ export default class PriceTableClass {
 
   YAxis = {
     Property: null,
-    Operator: 0, // ?
+    Operator: {
+      First: 6,
+      Second: 6,
+    },
     InputContent: '',
     IsCumsum: false, // 分段累加吗
     List: [],
   }
 
-  ElementList = []; // 其它数据
+  DataList = []; // 其它数据
   // {
   //   Unit:"",
   //   Index:0,
@@ -75,7 +81,7 @@ export default class PriceTableClass {
 
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, PriceID, SolutionID, Unit, Constraint, Priority, XAxis, YAxis, ElementList, PriceList, FormulaList } = initData;
+    const { ID, PriceID, SolutionID, Unit, Constraint, Priority, XAxis, YAxis, DataList, PriceList, FormulaList } = initData;
     if (ID) this.ID = ID;
     if (PriceID) this.PriceID = PriceID;
     if (SolutionID) this.SolutionID = SolutionID;
@@ -84,7 +90,7 @@ export default class PriceTableClass {
     if (Priority || Priority === 0) this.Priority = Priority;
     if (XAxis) this.XAxis = XAxis;
     if (YAxis) this.YAxis = YAxis;
-    if (Array.isArray(ElementList)) this.ElementList = ElementList;
+    if (Array.isArray(DataList)) this.DataList = DataList;
     if (Array.isArray(PriceList)) this.PriceList = PriceList;
     if (Array.isArray(FormulaList)) this.FormulaList = FormulaList;
   }

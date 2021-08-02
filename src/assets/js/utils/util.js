@@ -1,4 +1,5 @@
 
+import { v4 as uuidv4 } from 'uuid';
 /**
  *
  *  获取订单列表中的订单状态信息，已基本不用，大部分场景由过滤器formatStatus代理
@@ -295,6 +296,13 @@ export const getTreeDataFromListAndClassifyData = (list, classData) => {
 
 export const checkName = name => normalNameReg.test(name);
 
+/**
+ * @description: 获取一个UUID
+ * @param {*}
+ * @return {*}
+ */
+export const getAUUID = () => uuidv4();
+
 export default {
   getStatusString,
   getExpress,
@@ -317,4 +325,5 @@ export default {
   // getModuleName,
   getTreeDataFromListAndClassifyData,
   checkName,
+  getAUUID,
 };

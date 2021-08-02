@@ -6,7 +6,9 @@
       <div v-if="productData">
         <div class="left">
           <el-checkbox v-model="productData.AllowAnalysisName">允许进行文件名解析</el-checkbox>
-          <el-checkbox v-model="productData.AllowBatchUpload">允许进行批量上传</el-checkbox>
+          <div>
+            <el-checkbox v-model="productData.AllowBatchUpload" v-show="productData.AllowAnalysisName">允许进行批量上传</el-checkbox>
+          </div>
           <el-checkbox v-model="productData.IsAppendWeight">附加重量</el-checkbox>
           <el-checkbox v-model="productData.IsAppendPrice">附加价格 （如果有的话）</el-checkbox>
         </div>
@@ -265,7 +267,10 @@ export default {
         flex-wrap: wrap;
         padding-top: 22px;
         border-right: 1px solid #eee;
-        > .el-checkbox {
+        > div {
+          width: 140px;
+        }
+        .el-checkbox {
           display: flex;
           align-items: center;
           width: 140px;

@@ -213,7 +213,7 @@ export default {
             }
           }
           if (prop === 'checkList') {
-            if (!it.checkList || it.checkList.length === 0) {
+            if ((!it.checkList || it.checkList.length === 0) && Array.isArray(it.OptionList) && it.OptionList.length > 0) {
               this.messageBox.failSingleError('保存失败', `第${i + 1}行元素没有勾选列表选项`);
               return false;
             }
