@@ -5,16 +5,16 @@
     </p>
     <div v-if="ElementList.length > 0">
       <div class="header">
-        <span style="width:150px;padding-right: 6px;">名称</span>
+        <span style="width:150px;padding-right: 6px;" v-if="!hiddenName">名称</span>
         <div>
           <span :style="`width:${autoWidth}`" v-for="it in ElementList" :key="it.ID" :title="it.Name">{{it.Name}}<i v-if="it.Unit">（{{it.Unit}}）</i></span>
         </div>
-        <span style="width:90px">客户隐藏</span>
+        <span style="width:90px" v-if="!hiddenCustomerSet">客户隐藏</span>
         <span style="width:210px">操作</span>
       </div>
       <ul>
         <li class="content-item" v-for="(item, index) in SizeList" :key="item.key || item.ID" >
-          <el-input v-model.trim="item.Name" maxlength="20" size="small" class="name"></el-input>
+          <el-input v-if="!hiddenName" v-model.trim="item.Name" maxlength="20" size="small" class="name"></el-input>
           <ul class="flex-content">
             <li :style="`width:${autoWidth}`" v-for="(it,i) in ElementList" :key="it.ID">
               <NumberTypeItemComp
@@ -30,13 +30,13 @@
                :canRadio='false' />
             </li>
           </ul>
-          <el-checkbox v-model="item.HiddenToCustomer">隐藏</el-checkbox>
+          <el-checkbox v-model="item.HiddenToCustomer" v-if="!hiddenCustomerSet">隐藏</el-checkbox>
           <div class="ctrl">
             <span class="del-btn" @click="onItemRemove(index)"><i></i> 删除</span>
-            <div>
+            <div v-if="!hiddenSort">
               <span v-show="index < SizeList.length - 1" @click="onOptionMove('down', index)"><i class="el-icon-bottom"></i> 下移</span>
             </div>
-            <div>
+            <div v-if="!hiddenSort">
               <span v-show="index > 0" @click="onOptionMove('up', index)"><i class="el-icon-top"></i> 上移</span>
             </div>
           </div>
@@ -66,6 +66,22 @@ export default {
       type: Object,
       default: null,
     },
+    hiddenName: {
+      type: Boolean,
+      default: false,
+    },
+    hiddenSort: {
+      type: Boolean,
+      default: false,
+    },
+    hiddenCustomerSet: {
+      type: Boolean,
+      default: false,
+    },
+    canEmpty: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     NumberTypeItemComp,
@@ -86,15 +102,18 @@ export default {
   },
   methods: {
     onSubmit() {
-      if (this.SizeList.length === 0) return this.setErrorAndReturn('至少需设置一行固定尺寸');
-      let i = this.SizeList.findIndex(it => !it.Name);
-      if (i > -1) return this.setErrorAndReturn(`第${i + 1}行未设置名称`);
+      if (this.SizeList.length === 0 && !this.canEmpty) return this.setErrorAndReturn('至少需设置一行固定尺寸');
+      let i;
+      if (!this.hiddenName) {
+        i = this.SizeList.findIndex(it => !it.Name);
+        if (i > -1) return this.setErrorAndReturn(`第${i + 1}行未设置名称`);
 
-      i = this.SizeList.findIndex(it => !normalNameReg.test(it.Name));
-      if (i > -1) return this.setErrorAndReturn(`第${i + 1}行名称不合法，名称仅支持中文、英文(全角/半角)、+-_(全角/半角)、数字(全角/半角)`);
+        i = this.SizeList.findIndex(it => !normalNameReg.test(it.Name));
+        if (i > -1) return this.setErrorAndReturn(`第${i + 1}行名称不合法，名称仅支持中文、英文(全角/半角)、+-_(全角/半角)、数字(全角/半角)`);
 
-      const names = this.SizeList.map(it => it.Name);
-      if (names.length > [...new Set(names)].length) return this.setErrorAndReturn('存在重复名称，请检查');
+        const names = this.SizeList.map(it => it.Name);
+        if (names.length > [...new Set(names)].length) return this.setErrorAndReturn('存在重复名称，请检查');
+      }
 
       for (let index = 0; index < this.SizeList.length; index += 1) {
         const { List } = this.SizeList[index];

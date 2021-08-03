@@ -18,6 +18,12 @@ export const MobileReg = /^1[3456789]\d{9}$/; // 手机验证正则
 
 export const pointStartNumberReg = /^\.\d+$/;
 
+// export const decimalReg = /^(([^0][0-9]+|0)\.([0-9]{1,2}))$/;
+
+// export const integerReg = /^([^0][0-9]+|0)$/;
+
+// export const numberReg = /^(([^0][0-9]+|0)\.([0-9]{1,2})$)|^([^0][0-9]+|0)$/;
+
 export default {
   MobileReg,
   normalNameReg,

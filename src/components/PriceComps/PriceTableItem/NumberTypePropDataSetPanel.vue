@@ -155,7 +155,7 @@ export default {
       }
     }
     &.intro {
-      padding-top: 23px;
+      padding-top: 30px;
       font-size: 12px;
       color: #999;
       > div {

@@ -41,16 +41,28 @@
       </div>
     </header>
     <main>
+      <!-- 横竖轴属性设置 -->
       <FormulaPanelElementSelectDialog
        :visible.sync='AxisPropVisible'
        :selectedElementIDs='selectedElementIDs'
        :list='PriceItemPropertyList'
-       @submit='onAxisPropSelect' /> <!-- 横竖轴属性设置 -->
-       <AxisPropDataSetDialog :visible.sync="AxisPropDataSetVisible" :saveData='PriceTableData' :type='curAxisPropSetType' /> <!-- 横竖轴选中属性的数据设置 -->
-       <FormItemOptionDataSetDialog
-        :visible.sync="FormItemOptionSetVisible"
-        :saveData='PriceTableData'
-        @submit="onFormItemOptionDataSubmit" /> <!-- 表格单元项数据设置 如增量、起步价设置等 -->
+       @submit='onAxisPropSelect' />
+
+      <!-- 横竖轴选中属性的数据设置 -->
+      <AxisPropDataSetDialog
+      :visible.sync="AxisPropDataSetVisible"
+      :saveData='PriceTableData'
+      :type='curAxisPropSetType'
+      @submit='onAxisDataSetSubmit' />
+
+      <!-- 表格单元项数据设置 如增量、起步价设置等 -->
+      <FormItemOptionDataSetDialog
+      :visible.sync="FormItemOptionSetVisible"
+      :saveData='PriceTableData'
+      @submit="onFormItemOptionDataSubmit" />
+
+      <!-- 表体 -->
+      <TableContentComp v-if="PriceTableData" :tableData='PriceTableData' />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -64,6 +76,7 @@ import PriceTableClass from '@/assets/js/TypeClass/PriceTableClass';
 import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
 import AxisPropDataSetDialog from '@/components/PriceComps/PriceTableItem/AxisPropDataSetDialog.vue';
 import FormItemOptionDataSetDialog from '@/components/PriceComps/PriceTableItem/FormItemOptionDataSetDialog.vue';
+import TableContentComp from '@/components/PriceComps/PriceTableItem/TableContentComp.vue';
 
 export default {
   name: 'CraftPriceTableItemSet',
@@ -71,6 +84,7 @@ export default {
     FormulaPanelElementSelectDialog,
     AxisPropDataSetDialog,
     FormItemOptionDataSetDialog,
+    TableContentComp,
   },
   data() {
     return {
@@ -163,21 +177,100 @@ export default {
       this.FormItemOptionSetVisible = true;
     },
     onAxisPropSelect(e) { // X Y轴设置选中属性事件
-      // ---------------------------------------------------------------- 切换属性 清空已设置数据 及 表体内容
-      if (this.curAxisPropSetType === 'X') {
-        this.PriceTableData.XAxis.Property = e;
-      }
-      if (this.curAxisPropSetType === 'Y') {
-        this.PriceTableData.YAxis.Property = e;
+      // ---------------------------------------------------------------- 切换属性 清空已设置数据 ok 及 表体内容 未好
+      let targetProp = null;
+      if (this.curAxisPropSetType === 'X') targetProp = this.PriceTableData.XAxis;
+      if (this.curAxisPropSetType === 'Y') targetProp = this.PriceTableData.YAxis;
+      if (targetProp) {
+        if (!targetProp.Property) targetProp.Property = e;
+        else {
+          this.messageBox.warnCancelBox('确定更改属性吗', '更改属性将会导致表格已填写数据全部清空', () => {
+            targetProp.Property = e;
+            targetProp.InputContent = '';
+            targetProp.List = [];
+            this.PriceTableData.PriceList = []; // 清除价格数据
+          });
+        }
       }
     },
-    onFormItemOptionDataSubmit({ Unit, DataList }) {
+    onAxisDataSetSubmit(data, axis) { // 设置轴数据
+      const { InputContent, Operator, List } = data;
+      let targetProp = null;
+      if (axis === 'X') targetProp = this.PriceTableData.XAxis;
+      if (axis === 'Y') targetProp = this.PriceTableData.YAxis;
+      if (targetProp) {
+        targetProp.InputContent = InputContent;
+        targetProp.Operator = { ...Operator };
+        const list = List.map(item => {
+          const { Value, Values } = item;
+          if (Value && (!Values || (Array.isArray(Values) && Values.length === 0))) {
+            const t = targetProp.List.find(it => it.Value && it.Value === Value);
+            return t || item;
+          }
+          const t = targetProp.List.find(it => it.Values && this.getIsOrNotSameBy2Array(it.Values, Values));
+          return t || item;
+        });
+        targetProp.List = [...list]; // 此处覆盖时，应该筛选下，已有的仍保留原有数据 ok
+      }
+      this.AxisPropDataSetVisible = false;
+      this.generatePriceListData();
+    },
+    generatePriceListData() { // 生成表单价格数据
+      // this.PriceTableData.PriceList
+      console.log('generatePriceListData 生成表单数据 X', this.PriceTableData.XAxis.List);
+      console.log('generatePriceListData 生成表单数据 Y', this.PriceTableData.YAxis.List);
+      const XPropList = this.PriceTableData.XAxis.List;
+      const YPropList = this.PriceTableData.YAxis.List;
+      if (!XPropList || !YPropList || XPropList.length === 0 || YPropList.length === 0) {
+        this.PriceTableData.PriceList = [];
+        return;
+      }
+      const list = [];
+      const _DataList = [{ ID: '', Name: '' }];
+      if (Array.isArray(this.PriceTableData.DataList) && this.PriceTableData.DataList.length > 0) {
+        _DataList.push(...this.PriceTableData.DataList);
+      }
+      XPropList.forEach(XProp => {
+        YPropList.forEach(YProp => {
+          const t = this.PriceTableData.PriceList.find(it => it.XAxisID === XProp.ID && it.YAxisID === YProp.ID);
+          if (!t) {
+            const temp = { XAxisID: XProp.ID, YAxisID: YProp.ID, List: [] };
+            _DataList.forEach(ItemData => {
+              temp.List.push({ First: ItemData.ID, Second: '' });
+            });
+            list.push(temp);
+          } else {
+            const _DataListIDs = _DataList.map(_it => _it.First);
+            const temp = { ...t, List: [...t.List.filter(_it => _DataListIDs.includes(_it.First))] };
+            _DataList.forEach(ItemData => {
+              // eslint-disable-next-line max-len
+              const t2 = temp.List.find(_it => (_it.First === ItemData.ID || (!ItemData.ID && (_it.First === '00000000-0000-0000-0000-000000000000' || !_it.First))));
+              if (!t2) temp.List.push({ First: ItemData.ID, Second: '' });
+            });
+            list.push(temp);
+          }
+        });
+      });
+      this.PriceTableData.PriceList = list;
+    },
+    onFormItemOptionDataSubmit({ Unit, DataList }) { // 设置表格单元数据
       this.PriceTableData.Unit = Unit;
       this.PriceTableData.DataList = DataList;
       this.FormItemOptionSetVisible = false;
     },
     onExcelImportClick() { // 导入表格点击
       console.log('onExcelImportClick');
+    },
+    getIsOrNotSameBy2Array(arr1, arr2) {
+      if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
+      if (arr1.length !== arr2.length || arr1.length === 0) return false;
+      let bool = true;
+      arr1.forEach(it => {
+        if (!bool) return;
+        const t = arr2.find(_it => _it.First === it.First);
+        if (!t || t.Second !== it.Second) bool = false;
+      });
+      return bool;
     },
   },
   created() {
@@ -191,7 +284,7 @@ export default {
 </script>
 <style lang='scss'>
 .mp-erp-price-module-price-table-common-set-page-wrap {
-  padding: 0 10px;
+  padding-left: 10px;
   background-color: #f5f5f5;
   min-width: 980px;
   min-height: 100%;
@@ -326,8 +419,9 @@ export default {
     flex: 1;
     background-color: #fff;
     padding-left: 20px;
-    padding-top: 30px;
+    padding-top: 0px;
     padding-right: 8px;
+    display: flex;
     &.loading {
       opacity: 0.2;
     }

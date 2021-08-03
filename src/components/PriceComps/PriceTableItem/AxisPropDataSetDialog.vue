@@ -1,7 +1,7 @@
 <template>
   <CommonDialogComp
     width="800px"
-    top='13vh'
+    top='10vh'
     :title="title"
     :visible.sync="visible"
     @submit="onSubmit"
@@ -18,8 +18,8 @@
     <!-- 数值类型 -->
     <NumberTypePropDataSetPanel v-if="curPropType==='number'" v-model="ruleForm.InputContent" :Operator.sync='ruleForm.Operator' :Property='Property' />
     <!-- 选项 与尺寸组 类型 -->
-    <OptionTypePropDataSetPanel v-if="curPropType==='option'||(curPropType==='groupsize'&&showPanel)"
-     :PropType='curPropType' :Property='Property' v-model="ruleForm.List" />
+    <OptionTypePropDataSetPanel v-if="(curPropType==='option'|| curPropType==='groupsize') && showPanel && Property" :SizeList='SizeList'
+     :PropType='curPropType' :Property='Property' v-model="ruleForm.List" ref='oSizePanel' />
   </CommonDialogComp>
 </template>
 
@@ -75,6 +75,7 @@ export default {
       title: '设置费用',
       showPanel: false,
       Property: null,
+      SizeList: [],
       ruleForm: {
         InputContent: '',
         Operator: {
@@ -87,6 +88,87 @@ export default {
   },
   methods: {
     async onSubmit() { // 提交
+      if (this.curPropType === 'groupsize') {
+        const list = this.$refs.oSizePanel.getInputSizeList();
+        if (!Array.isArray(list)) return;
+        list.forEach(it => {
+          this.ruleForm.List.push({ ID: this.$utils.getAUUID(), Values: it.List });
+        });
+      }
+      // 选项值校验
+      if (this.curPropType !== 'number') {
+        if (this.ruleForm.List.length === 0) {
+          this.messageBox.failSingleError('保存失败', '请添加内容');
+          return;
+        }
+      } else { // 数字类型 输入框校验
+        if (!this.ruleForm.InputContent) {
+          this.messageBox.failSingleError('保存失败', '请添加内容');
+          return;
+        }
+        const arr = this.ruleForm.InputContent.split(/,|，/).filter(it => it).map(it => it.split(' ').filter(_it => _it));
+        let t = arr.find(it => it.length > 0);
+        if (!t) {
+          this.messageBox.failSingleError('保存失败', '请添加内容');
+          return;
+        }
+        t = arr.find(it => it.length > 2);
+        if (t) {
+          this.messageBox.failSingleError('保存失败', '输入内容格式不正确');
+          return;
+        }
+        const strArr = arr.map(it => JSON.stringify(it));
+        if (strArr.length > [...new Set(strArr)].length) {
+          this.messageBox.failSingleError('保存失败', '存在重复项');
+          return;
+        }
+        const spreadArr = arr.reduce((prev, next) => [...prev, ...next], []);
+        t = spreadArr.find(it => !this.$utils.getValueIsOrNotNumber(it));
+        if (t) {
+          this.messageBox.failSingleError('保存失败', '输入内容中存在非数字类型');
+          return;
+        }
+        t = spreadArr.find(it => +it < 0 && it !== '-1');
+        if (t) {
+          this.messageBox.failSingleError('保存失败', '不能输入负数（-1除外）');
+          return;
+        }
+        t = arr.filter(it => it.length === 2).find(([item1, item2]) => item1 === item2);
+        if (t) {
+          this.messageBox.failSingleError('保存失败', '同一个项目中前后2个数值不能相同');
+          return;
+        }
+        let min = spreadArr[0];
+        let isError = false;
+        spreadArr.forEach((it, i) => {
+          if (i > 0 && !isError) {
+            if ((+it < +min || min === '-1') && it !== '-1') isError = true;
+            else min = it;
+          }
+        });
+        if (isError) {
+          this.messageBox.failSingleError('保存失败', '数字排序应按照从小到大顺序排列');
+          return;
+        }
+        let last = null;
+        arr.forEach(it => {
+          if (isError) return;
+          if (last) {
+            if (last.length === 1) {
+              isError = it[0] === last[0] && this.ruleForm.Operator.First === 6;
+            } else if (it[0] === last[1] && this.ruleForm.Operator.Second === 6) {
+              isError = it.length === 1 || (it.length > 1 && this.ruleForm.Operator.First === 6);
+            }
+          }
+          last = it;
+        });
+        if (isError) {
+          this.messageBox.failSingleError('保存失败', '存在相同数字且导致区间重叠');
+          return;
+        }
+        this.ruleForm.List = arr.map(list => ({ ID: this.$utils.getAUUID(), Value: list.join(' ') }));
+      }
+      this.$emit('submit', this.ruleForm, this.type);
     },
     onCancle() { // 取消  关闭弹窗
       this.$emit('update:visible', false);
@@ -106,12 +188,15 @@ export default {
         this.Property = prop.Property;
         this.ruleForm.InputContent = prop.InputContent;
         this.ruleForm.Operator = { ...prop.Operator };
-        this.ruleForm.List = Array.isArray(prop.List) ? JSON.parse(JSON.stringify(prop.List)) : [];
+        this.ruleForm.List = Array.isArray(prop.List) ? JSON.parse(JSON.stringify(prop.List.filter(it => !it.Values))) : [];
+        // eslint-disable-next-line max-len
+        this.SizeList = Array.isArray(prop.List) ? JSON.parse(JSON.stringify(prop.List.filter(it => it.Values).map(it => ({ List: it.Values, ID: it.ID })))) : [];
       } else {
         this.Property = null;
         this.ruleForm.InputContent = '';
         this.ruleForm.Operator = { First: 6, Second: 6 };
         this.ruleForm.List = [];
+        this.SizeList = [];
       }
       console.log(this.Property);
       this.showPanel = true;
@@ -127,7 +212,7 @@ export default {
     padding-right: 50px;
     padding-bottom: 10px;
     padding-top: 30px;
-    min-height: 440px;
+    min-height: 530px;
     overflow-y: auto;
     > p {
       color: #888E99;

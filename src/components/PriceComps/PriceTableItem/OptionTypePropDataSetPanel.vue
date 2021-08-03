@@ -4,7 +4,15 @@
       <el-checkbox :label="it.First" v-for="it in optionList" :key="it.First" :title="it.Second">{{it.Second}}</el-checkbox>
     </el-checkbox-group>
     <!-- 添加尺寸区域 type为groupSize时 -->
-    <SizeAddPanelComp />
+    <SizeAddPanelComp
+      ref='oPanel'
+      canEmpty
+      hiddenName
+      hiddenSort
+      hiddenCustomerSet
+      v-if="showSizePanel"
+      :Elements='Property.SizeGroup.ElementList'
+      :sizeTemp='template' :List='SizeList' />
   </div>
 </template>
 
@@ -25,12 +33,18 @@ export default {
       type: String,
       default: '',
     },
+    SizeList: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     SizeAddPanelComp,
   },
   data() {
     return {
+      template: null,
+      showSizePanel: false,
     };
   },
   computed: {
@@ -50,6 +64,27 @@ export default {
         this.$emit('input', list);
       },
     },
+  },
+  methods: {
+    getInputSizeList() {
+      return this.$refs.oPanel.onSubmit();
+    },
+  },
+  mounted() {
+    if (this.PropType === 'groupsize') {
+      this.template = {
+        ID: '',
+        Name: '',
+        Index: 0,
+        HiddenToCustomer: false,
+        List: [],
+      };
+      this.Property.SizeGroup.ElementList.forEach(it => {
+        const temp = { First: it.ID, Second: '' };
+        this.template.List.push(temp);
+      });
+      this.showSizePanel = true;
+    }
   },
 };
 </script>
@@ -74,6 +109,23 @@ export default {
       }
       > .el-checkbox__input {
         margin-top: 1px;
+      }
+    }
+  }
+  > .mp-erp-comps-pruduct-module-general-size-set-dialog-size-add-panel-comp-wrap {
+    .btn-box {
+      padding-left: 0;
+      padding-top: 15px;
+      padding-bottom: 10px;
+    }
+    > div {
+      > div.header {
+        > div {
+          max-width: 1000px;
+        }
+      }
+      > ul {
+        max-height: 360px;
       }
     }
   }
