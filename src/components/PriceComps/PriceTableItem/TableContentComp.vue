@@ -1,22 +1,22 @@
 <template>
-  <section class="mp-erp-comps-price-module-price-table-form-content-wrap">
+  <section class="mp-erp-comps-price-module-price-table-form-content-wrap mp-scroll-wrap hidden">
     <header>
       <span class="space"></span>
-      <span v-for="it in XAxisList" :key="it.ID">{{getItemName(it, tableData.XAxis)}}</span>
+      <span v-for="(it, XIndex) in XAxisList" :key="it.ID" :title="RowNameList[XIndex]">{{RowNameList[XIndex]}}</span>
     </header>
     <main>
-      <div v-for="col in YAxisList" :key="col.ID">
-        <span class="label">{{getItemName(col, tableData.YAxis)}}</span>
+      <div v-for="(col, YIndex) in YAxisList" :key="col.ID">
+        <span class="label" :title="ColNameList[YIndex]">{{ColNameList[YIndex]}}</span>
         <ul v-for="row in XAxisList" :key="row.ID">
           <li>
             <span></span>
-            <el-input :value="getInputValue(col.ID, row.ID, '')" maxlength="9" size="small" />
-            <span class="unit">{{ tableData.Unit || '' }}</span>
+            <el-input :value="getInputValue(col.ID, row.ID, '')" @input="onInputChange($event, col.ID, row.ID, '')" maxlength="9" size="small" />
+            <span class="unit" :title="tableData.Unit || ''">{{ tableData.Unit || '' }}</span>
           </li>
           <li v-for="it in tableData.DataList" :key="it.ID">
-            <span>{{it.Name}}</span>
-            <el-input :value="getInputValue(col.ID, row.ID, it.ID)" maxlength="9" size="small" />
-            <span class="unit">{{ it.Unit || '' }}</span>
+            <span :title="it.Name">{{it.Name}}</span>
+            <el-input :value="getInputValue(col.ID, row.ID, it.ID)" @input="onInputChange($event, col.ID, row.ID, it.ID)" maxlength="9" size="small" />
+            <span class="unit" :title="it.Unit || ''">{{ it.Unit || '' }}</span>
           </li>
         </ul>
       </div>
@@ -33,6 +33,14 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    YAxisList: {
+      type: Array,
+      default: () => [],
+    },
+    XAxisList: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     XOperator() {
@@ -41,26 +49,29 @@ export default {
     YOperator() {
       return this.tableData.YAxis.Operator;
     },
-    XAxisList() {
-      if (!this.tableData.XAxis.Property) return [];
-      return this.tableData.XAxis.List;
+    RowNameList() {
+      return this.XAxisList.map(it => this.getItemName(it, this.tableData.XAxis));
     },
-    YAxisList() {
-      if (!this.tableData.YAxis.Property) return [];
-      return this.tableData.YAxis.List;
+    ColNameList() {
+      return this.YAxisList.map(it => this.getItemName(it, this.tableData.YAxis));
     },
   },
   methods: {
     getItemName(it, AxisData) {
       const { Property, Operator } = AxisData;
+      if (!Property) return '';
       // 1. 获取到该属性的类型： 数字 | 选择项 | 尺寸
       if (Property.ValueType === 0) { // 数字类型 需要考虑关系
         const { Unit } = Property;
         const arr = it.Value.split(' ');
         if (arr.length === 1) return Unit ? `${arr[0]}${Unit}` : arr[0];
         if (arr.length === 2) {
-          const beginNum = arr[0];
-          const EndNum = Unit ? `${arr[1]}${Unit}` : arr[1];
+          let beginNum = arr[0];
+          let EndNum = Unit ? `${arr[1]}${Unit}` : arr[1];
+          if (EndNum === '-1') {
+            beginNum = Unit ? `${arr[0]}${Unit}` : arr[0];
+            EndNum = '无穷大';
+          }
           const FirstOperator = this.$utils.getNameFromListByIDs(Operator.First, AllOperatorList, { label: 'label', value: 'ID' });
           const SecondOperator = this.$utils.getNameFromListByIDs(Operator.Second, AllOperatorList, { label: 'label', value: 'ID' });
           return `${beginNum} ${FirstOperator} 值 ${SecondOperator} ${EndNum}`;
@@ -86,7 +97,12 @@ export default {
               let _unit = '';
               if (!isSameUnit) _unit = ElementList[i].Unit || '';
               else if (i === it.Values.length - 1) _unit = Unit || '';
-              return `${_it.Second}${_unit}`;
+              let _val = _it.Second;
+              if (ElementList[i].Type === 2) {
+                const _t = ElementList[i].OptionAttribute?.OptionList?.find(o => o.ID === _it.Second);
+                if (_t) _val = _t.Name;
+              }
+              return `${_val}${_unit}`;
             }).join('×');
           }
         }
@@ -99,25 +115,35 @@ export default {
       }
       return '未知标题';
     },
-    // eslint-disable-next-line no-unused-vars
     getInputValue(YAxisID, XAxisID, First) {
-      // console.log(YAxisID, XAxisID, First);
+      const t = this.tableData.PriceList.find(it => it.YAxisID === YAxisID && it.XAxisID === XAxisID);
+      if (t && Array.isArray(t.List)) {
+        const targetItem = t.List.find(it => it.First === First || (!First && (it.First === '00000000-0000-0000-0000-000000000000' || !it.First)));
+        if (targetItem) return targetItem.Second;
+      }
       return '';
+    },
+    onInputChange(val, YAxisID, XAxisID, First) {
+      this.$emit('itemInput', val, YAxisID, XAxisID, First);
+    },
+    onSubmitClick() {
+      if (this.disabled) return;
+      this.$emit('submit');
     },
   },
 };
 </script>
 <style lang='scss'>
 .mp-erp-comps-price-module-price-table-form-content-wrap {
-  display: flex;
-  flex: 1;
-  padding-right: 10px;
-  flex-direction: column;
+  // display: flex;
+  // flex: 1;
+  // padding-right: 10px;
+  // flex-direction: column;
+  overflow-x: auto;
   > header {
     line-height: 28px;
     background-color: #f5f5f5;
-    height: 28px;
-    padding: 5px 0;
+    height: 38px;
     color: #888E99;
     font-size: 14px;
     display: flex;
@@ -126,12 +152,24 @@ export default {
     > span {
       width: 248px;
       text-align: center;
+      overflow: hidden;
+      padding: 5px 0;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      background-color: #f5f5f5;
+      flex: none;
       &.space {
         width: 180px;
+      }
+      &:last-of-type {
+        margin-right: 10px;
       }
     }
   }
   > main {
+    padding-bottom: 10px;
+    display: inline-block;
+    min-width: 100%;
     > div {
       display: flex;
       border-bottom: 1px solid #eee;
@@ -145,13 +183,20 @@ export default {
         display: flex;
         align-items: center;
         min-height: 66px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        // flex: none;
+        // border-bottom: 1px solid #eee;
       }
       > ul {
         width: 248px;
         padding: 14px 0;
+        // border-bottom: 1px solid #eee;
         > li {
           display: flex;
           align-items: center;
+          flex: none;
           .el-input {
             width: 100px;
             padding: 4px 0;

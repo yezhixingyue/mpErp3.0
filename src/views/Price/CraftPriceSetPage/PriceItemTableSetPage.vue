@@ -46,6 +46,8 @@
        :visible.sync='AxisPropVisible'
        :selectedElementIDs='selectedElementIDs'
        :list='PriceItemPropertyList'
+       freeText='不限'
+       showConstant
        @submit='onAxisPropSelect' />
 
       <!-- 横竖轴选中属性的数据设置 -->
@@ -62,7 +64,20 @@
       @submit="onFormItemOptionDataSubmit" />
 
       <!-- 表体 -->
-      <TableContentComp v-if="PriceTableData" :tableData='PriceTableData' />
+      <!-- <el-scrollbar wrap-class="scrollbar-wrapper"> -->
+      <TableContentComp
+       v-if="PriceTableData"
+       :tableData='PriceTableData'
+       :XAxisList='XAxisList'
+       :YAxisList='YAxisList'
+       @itemInput='onPriceItemInput' />
+      <!-- </el-scrollbar> -->
+      <p class="submit">
+        <el-button type="primary" size="small" :disabled='disabled' @click="onTableSubmit" class="blue-full-color-btn-styles is-blue-button">保存表数据</el-button>
+      </p>
+
+      <!-- 结果公式列表 -->
+      <ResultFormulaTableCom />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -77,6 +92,7 @@ import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndCondi
 import AxisPropDataSetDialog from '@/components/PriceComps/PriceTableItem/AxisPropDataSetDialog.vue';
 import FormItemOptionDataSetDialog from '@/components/PriceComps/PriceTableItem/FormItemOptionDataSetDialog.vue';
 import TableContentComp from '@/components/PriceComps/PriceTableItem/TableContentComp.vue';
+import ResultFormulaTableCom from '@/components/PriceComps/PriceTableItem/ResultFormulaTableCom.vue';
 
 export default {
   name: 'CraftPriceTableItemSet',
@@ -85,6 +101,7 @@ export default {
     AxisPropDataSetDialog,
     FormItemOptionDataSetDialog,
     TableContentComp,
+    ResultFormulaTableCom,
   },
   data() {
     return {
@@ -125,6 +142,23 @@ export default {
     OtherDataUnit() { // 其它数据
       return this.PriceTableData?.DataList.map(it => (it.Unit ? `${it.Name}（单位：${it.Unit}）` : `${it.Name}`)).join('、');
     },
+    XAxisList() {
+      if (Array.isArray(this.PriceTableData.XAxis.List) && this.PriceTableData.XAxis.List.length > 0) return this.PriceTableData.XAxis.List;
+      if (!this.PriceTableData.XAxis.Property
+       && Array.isArray(this.PriceTableData.YAxis.List)
+       && this.PriceTableData.YAxis.List.length > 0) return [{ ID: '', Value: '' }];
+      return [];
+    },
+    YAxisList() {
+      if (Array.isArray(this.PriceTableData.YAxis.List) && this.PriceTableData.YAxis.List.length > 0) return this.PriceTableData.YAxis.List;
+      if (!this.PriceTableData.YAxis.Property
+       && Array.isArray(this.PriceTableData.XAxis.List)
+       && this.PriceTableData.XAxis.List.length > 0) return [{ ID: '', Value: '' }];
+      return [];
+    },
+    disabled() {
+      return this.XAxisList.length === 0 || this.YAxisList.length === 0;
+    },
   },
   methods: {
     getInitDataFromRoutePath() { // 初始通过路径params中获取页面信息
@@ -150,7 +184,7 @@ export default {
     async FetchInitDatas() { // 获取产品数据 X Y轴属性选择列表
       const [productData] = await Promise.all([
         this.$store.dispatch('priceManage/getProductCraftData', this.$route.params.id),
-        this.$store.dispatch('priceManage/getPriceTablePropertyList', this.$route.params.id),
+        // this.$store.dispatch('priceManage/getPriceTablePropertyList', this.$route.params.id),
       ]);
       this.productData = productData;
       this.loading = false;
@@ -179,19 +213,41 @@ export default {
     onAxisPropSelect(e) { // X Y轴设置选中属性事件
       // ---------------------------------------------------------------- 切换属性 清空已设置数据 ok 及 表体内容 未好
       let targetProp = null;
-      if (this.curAxisPropSetType === 'X') targetProp = this.PriceTableData.XAxis;
-      if (this.curAxisPropSetType === 'Y') targetProp = this.PriceTableData.YAxis;
+      let targetList = [];
+      if (this.curAxisPropSetType === 'X') {
+        targetProp = this.PriceTableData.XAxis;
+        targetList = this.XAxisList;
+      }
+      if (this.curAxisPropSetType === 'Y') {
+        targetProp = this.PriceTableData.YAxis;
+        targetList = this.YAxisList;
+      }
       if (targetProp) {
-        if (!targetProp.Property) targetProp.Property = e;
-        else {
+        let showTip = false;
+        if (targetList.length > 0) {
+          const t = this.PriceTableData.PriceList.find(it => it.List.find(_it => _it.Second));
+          if (t) showTip = true;
+        }
+        if (!showTip) {
+          this.handlePropSelectSuccess(e, targetProp);
+        } else {
           this.messageBox.warnCancelBox('确定更改属性吗', '更改属性将会导致表格已填写数据全部清空', () => {
-            targetProp.Property = e;
-            targetProp.InputContent = '';
-            targetProp.List = [];
-            this.PriceTableData.PriceList = []; // 清除价格数据
+            this.handlePropSelectSuccess(e, targetProp);
           });
         }
       }
+    },
+    handlePropSelectSuccess(e, targetProp) {
+      const prop = targetProp;
+      prop.Property = e;
+      prop.InputContent = '';
+      prop.List = [];
+      this.PriceTableData.PriceList = []; // 清除价格数据
+      if (e && e.ValueType === 0 && e.Element && e.Element.NumbericAttribute && e.Element.NumbericAttribute.GeneralValues) {
+        prop.InputContent = e.Element.NumbericAttribute.GeneralValues.join(',');
+        prop.List = e.Element.NumbericAttribute.GeneralValues.map(it => ({ ID: this.$utils.getAUUID(), Value: `${it}` }));
+      }
+      this.generatePriceListData();
     },
     onAxisDataSetSubmit(data, axis) { // 设置轴数据
       const { InputContent, Operator, List } = data;
@@ -216,11 +272,10 @@ export default {
       this.generatePriceListData();
     },
     generatePriceListData() { // 生成表单价格数据
-      // this.PriceTableData.PriceList
-      console.log('generatePriceListData 生成表单数据 X', this.PriceTableData.XAxis.List);
-      console.log('generatePriceListData 生成表单数据 Y', this.PriceTableData.YAxis.List);
-      const XPropList = this.PriceTableData.XAxis.List;
-      const YPropList = this.PriceTableData.YAxis.List;
+      // const XPropList = this.PriceTableData.XAxis.List;
+      // const YPropList = this.PriceTableData.YAxis.List;
+      const XPropList = this.XAxisList;
+      const YPropList = this.YAxisList;
       if (!XPropList || !YPropList || XPropList.length === 0 || YPropList.length === 0) {
         this.PriceTableData.PriceList = [];
         return;
@@ -230,6 +285,7 @@ export default {
       if (Array.isArray(this.PriceTableData.DataList) && this.PriceTableData.DataList.length > 0) {
         _DataList.push(...this.PriceTableData.DataList);
       }
+      const _DataListIDs = _DataList.map(_it => _it.ID);
       XPropList.forEach(XProp => {
         YPropList.forEach(YProp => {
           const t = this.PriceTableData.PriceList.find(it => it.XAxisID === XProp.ID && it.YAxisID === YProp.ID);
@@ -240,11 +296,11 @@ export default {
             });
             list.push(temp);
           } else {
-            const _DataListIDs = _DataList.map(_it => _it.First);
             const temp = { ...t, List: [...t.List.filter(_it => _DataListIDs.includes(_it.First))] };
             _DataList.forEach(ItemData => {
-              // eslint-disable-next-line max-len
-              const t2 = temp.List.find(_it => (_it.First === ItemData.ID || (!ItemData.ID && (_it.First === '00000000-0000-0000-0000-000000000000' || !_it.First))));
+              const t2 = temp.List.find(_it => (
+                _it.First === ItemData.ID || (!ItemData.ID && (_it.First === '00000000-0000-0000-0000-000000000000' || !_it.First))
+              ));
               if (!t2) temp.List.push({ First: ItemData.ID, Second: '' });
             });
             list.push(temp);
@@ -257,6 +313,7 @@ export default {
       this.PriceTableData.Unit = Unit;
       this.PriceTableData.DataList = DataList;
       this.FormItemOptionSetVisible = false;
+      this.generatePriceListData();
     },
     onExcelImportClick() { // 导入表格点击
       console.log('onExcelImportClick');
@@ -272,9 +329,54 @@ export default {
       });
       return bool;
     },
+    onPriceItemInput(val, YAxisID, XAxisID, First) {
+      const t = this.PriceTableData.PriceList.find(it => it.YAxisID === YAxisID && it.XAxisID === XAxisID);
+      if (t && Array.isArray(t.List)) {
+        const targetItem = t.List.find(it => it.First === First || (!First && (it.First === '00000000-0000-0000-0000-000000000000' || !it.First)));
+        if (targetItem) targetItem.Second = val;
+      }
+    },
+    async onTableSubmit() {
+      if (this.disabled) return;
+      const bool = this.tableSubmitChecker();
+      if (!bool) return;
+      const list = this.PriceTableData.PriceList.filter(it => it.List.map(_it => _it.Second).filter(_it => _it).length > 0); // 筛选掉为空的价格列表数据
+      const { ID, PriceID, SolutionID, XAxis, YAxis, DataList, Unit } = this.PriceTableData;
+      const temp = { ID, PriceID, SolutionID, XAxis, YAxis, DataList, Unit, PriceList: list };
+      const resp = await this.api.getPriceTableSave(temp).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          console.log('成功后的回调函数');
+        };
+        this.messageBox.successSingle('保存成功', cb, cb);
+      }
+    },
+    tableSubmitChecker() {
+      let t = this.PriceTableData.PriceList.find(it => it.List.find(_it => _it.Second && !this.$utils.getValueIsOrNotNumber(_it.Second)));
+      if (t) {
+        this.messageBox.failSingleError('保存失败', '表单项必须为数字值');
+        return false;
+      }
+      t = this.PriceTableData.PriceList.find(it => it.List.find(_it => _it.Second && _it.Second < 0));
+      if (t) {
+        this.messageBox.failSingleError('保存失败', '表单项输入值不能小于0');
+        return false;
+      }
+      t = this.PriceTableData.PriceList.find(it => {
+        const _list = it.List.map(_it => _it.Second).filter(_it => _it);
+        return _list.length > 0 && _list.length < it.List.length;
+      });
+      if (t) {
+        this.messageBox.failSingleError('保存失败', '同一表格单元内数据应同时填写或同时不填写');
+        return false;
+      }
+      return true;
+    },
   },
   created() {
-    this.PriceTableData = new PriceTableClass(this.curEditPriceItemData);
+    const initData = this.curEditPriceItemData || { ID: '', PriceID: this.curPriceItem?.ID, SolutionID: this.curSolutionItem?.ID };
+    this.PriceTableData = new PriceTableClass(initData); // 初始化价格类对象（添加|编辑）
+    this.generatePriceListData(); // 初始化价格表数据PriceList
   },
   mounted() {
     this.getInitDataFromRoutePath();
@@ -420,10 +522,21 @@ export default {
     background-color: #fff;
     padding-left: 20px;
     padding-top: 0px;
-    padding-right: 8px;
+    padding-right: 18px;
     display: flex;
+    flex-direction: column;
     &.loading {
       opacity: 0.2;
+    }
+    .submit {
+      text-align: right;
+      padding-top: 15px;
+      padding-right: 25px;
+      > button {
+        height: 35px !important;
+        font-size: 14px;
+        border-radius: 3px;
+      }
     }
   }
   > footer {

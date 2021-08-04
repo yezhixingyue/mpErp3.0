@@ -79,7 +79,7 @@ export default {
       ruleForm: {
         InputContent: '',
         Operator: {
-          First: 6,
+          First: 5,
           Second: 6,
         },
         List: [],
@@ -138,6 +138,11 @@ export default {
           this.messageBox.failSingleError('保存失败', '同一个项目中前后2个数值不能相同');
           return;
         }
+        t = arr.filter(it => it.length === 1).find(([item1]) => item1 === '-1');
+        if (t) {
+          this.messageBox.failSingleError('保存失败', '不能单独使用-1设置为一个项目');
+          return;
+        }
         let min = spreadArr[0];
         let isError = false;
         spreadArr.forEach((it, i) => {
@@ -194,11 +199,10 @@ export default {
       } else {
         this.Property = null;
         this.ruleForm.InputContent = '';
-        this.ruleForm.Operator = { First: 6, Second: 6 };
+        this.ruleForm.Operator = { First: 5, Second: 6 };
         this.ruleForm.List = [];
         this.SizeList = [];
       }
-      console.log(this.Property);
       this.showPanel = true;
     },
   },

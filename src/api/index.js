@@ -550,6 +550,9 @@ const api = {
   getPriceTableList(solutionID) { // GET /Api/PriceTable/List  获取价格表的费用列表
     return instance.get('/Api/PriceTable/List', { params: { solutionID } });
   },
+  getPriceTableSave(data) { // POST /Api/PriceTable/Save 价格表保存
+    return instance.post('/Api/PriceTable/Save', data);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

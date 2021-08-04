@@ -24,7 +24,7 @@ export default class PriceTableClass {
   XAxis = {
     Property: null,
     Operator: {
-      First: 6,
+      First: 5,
       Second: 6,
     },
     InputContent: '',
@@ -49,7 +49,7 @@ export default class PriceTableClass {
   YAxis = {
     Property: null,
     Operator: {
-      First: 6,
+      First: 5,
       Second: 6,
     },
     InputContent: '',

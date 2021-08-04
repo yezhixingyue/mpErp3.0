@@ -71,7 +71,7 @@
           </div>
         </div>
         <p class="constant" v-if="showConstant">
-          <span class="blue-span" @click="onConstantClick">常量</span>
+          <span class="blue-span" v-if="showConstant" @click="onConstantClick">{{freeText}}</span>
         </p>
       </main>
       <main v-else class="null-box">
@@ -143,6 +143,10 @@ export default {
     title: {
       type: String,
       default: '添加元素',
+    },
+    freeText: {
+      type: String,
+      default: '常量',
     },
     MultipleCheckedList: { // 多选模式下的初始传入选中数据数组
       type: Array,

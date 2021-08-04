@@ -82,6 +82,8 @@ export default {
     curSolutionItem: null, // 设置费用表用到的当前费用方案条目数据
     curEditPriceItemData: null, // 当前正在编辑的费用表数据信息
     PriceItemPropertyList: [], // 价格表 X Y轴属性选择列表数据
+    PriceTableList: [],
+    PriceTableConditionPropertyList: [],
   },
   getters: {
   },
@@ -283,8 +285,15 @@ export default {
     setCurEditPriceItemData(state, data) {
       state.curEditPriceItemData = data;
     },
-    setPriceItemPropertyList(state, list) {
-      state.PriceItemPropertyList = list;
+    // setPriceItemPropertyList(state, list) {
+    //   state.PriceItemPropertyList = list;
+    // },
+    setPriceTableList(state, list) { // 设置价格表数据 工艺费和价格表通用
+      state.PriceTableList = list;
+    },
+    setPriceTableConditionPropertyList(state, [ConditionPropertyList, AxisPropertyList]) { // 价格表条件属性列表
+      state.PriceTableConditionPropertyList = Array.isArray(ConditionPropertyList) ? ConditionPropertyList : [];
+      state.PriceItemPropertyList = Array.isArray(AxisPropertyList) ? AxisPropertyList : [];
     },
   },
   actions: {
@@ -367,11 +376,26 @@ export default {
       }
       return null;
     },
-    async getPriceTablePropertyList({ commit }, ProductID) { // 获取价格表X Y轴选择属性列表数据
-      commit('setPriceItemPropertyList', []);
-      const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID });
-      if (list) {
-        commit('setPriceItemPropertyList', list);
+    async getPriceTablePropertyLists({ commit }, ProductID) { // 获取价格表条件使用属性列表 及 价格表X Y轴选择属性列表数据
+      commit('setPriceTableConditionPropertyList', []);
+      const [ConditionPropertyList, AxisPropertyList] = await Promise.all([
+        PropertyClass.getPropertyList({ UseModule: 30, ProductID }),
+        PropertyClass.getPropertyList({ UseModule: 31, ProductID }),
+      ]);
+      commit('setPriceTableConditionPropertyList', [ConditionPropertyList || [], AxisPropertyList || []]);
+    },
+    // async getPriceTablePropertyList({ commit }, ProductID) { // 获取价格表X Y轴选择属性列表数据
+    //   commit('setPriceItemPropertyList', []);
+    //   const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID });
+    //   if (list) {
+    //     commit('setPriceItemPropertyList', list);
+    //   }
+    // },
+    async getPriceTableList({ commit }, SolutionID) {
+      commit('setPriceTableList', []);
+      const resp = await api.getPriceTableList(SolutionID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        commit('setPriceTableList', resp.data.Data);
       }
     },
   },

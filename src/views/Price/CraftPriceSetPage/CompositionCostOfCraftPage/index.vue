@@ -21,7 +21,7 @@
         @setup="onSetupPageJump($event, '', '')"
         :titleObj='{title:"费用表",btnText:"+ 添加费用表"}'
         :loading='isTableLoading'
-        :dataList='[]'
+        :dataList='tableDataList'
         />
       <CraftPriceTitleItemSaveDialog
        :showGroup='!isQuotationPage'
@@ -38,6 +38,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import TopRadioButtonComp from '@/components/common/NewComps/TopRadioButtonComp';
 import CraftPriceTitleItemSaveDialog from './Comps/CraftPriceTitleItemSaveDialog.vue';
 import PriceTableComp from './Comps/PriceTableComp.vue';
@@ -51,7 +52,7 @@ export default {
     PriceTableComp,
   },
   computed: {
-    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'PriceManageList']),
+    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'PriceManageList', 'PriceTableList', 'PriceTableConditionPropertyList']),
     curProduct() {
       return this.PriceManageList.find(it => it.ID === this.ProductID);
     },
@@ -99,6 +100,18 @@ export default {
       if (!this.SolutionID) return null;
       return this.SolutionList.find(it => it.ID === this.SolutionID);
     },
+    tableDataList() {
+      if (!Array.isArray(this.PriceTableList) || this.PriceTableList.length === 0) return [];
+      const ConditionPropertyList = this.PriceTableConditionPropertyList;
+      const _list = JSON.parse(JSON.stringify(this.PriceTableList)).map(it => {
+        const { Constraint } = it;
+        const [_Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
+          Constraint, ConditionPropertyList,
+        );
+        return { ...it, Constraint: _Constraint, _ConditionText };
+      });
+      return _list;
+    },
   },
   data() {
     return {
@@ -113,7 +126,6 @@ export default {
       ProductData: null,
       isQuotationPage: false, // 是否为价格表页面
       canLoadContentTableData: true, // 是否可在方案切换时获取表体数据
-      tableData: null,
       isTableLoading: false,
     };
   },
@@ -214,14 +226,12 @@ export default {
       }
     },
     async getPriceTableList() { // 获取费用表数据 根据顶部方案切换获取
-      this.tableData = null;
       if (!this.SolutionID) return;
       this.isTableLoading = true;
-      const resp = await this.api.getPriceTableList(this.SolutionID).catch(() => {});
+      await Promise.all([
+        this.$store.dispatch('priceManage/getPriceTableList', this.SolutionID),
+      ]);
       this.isTableLoading = false;
-      if (resp && resp.data.Status === 1000) {
-        this.tableData = resp.data.Data;
-      }
     },
     async onTableItemRemove(e) { // 未写
       if (!e || !e.ID) return;
@@ -274,6 +284,7 @@ export default {
       this.CraftPriceID = this.curCraftPriceItemData.Craft.CraftPriceID;
     }
     this.getProductData();
+    this.$store.dispatch('priceManage/getPriceTablePropertyLists', this.ProductID);
   },
 };
 </script>

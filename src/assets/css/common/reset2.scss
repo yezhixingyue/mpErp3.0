@@ -224,8 +224,19 @@ input.is-warn{
 .mp-scroll-wrap::-webkit-scrollbar-thumb ,.el-dropdown-menu.el-popper::-webkit-scrollbar-thumb {
   background-color: $--border-color-base;
   border-radius: 3px;
+  transition: background-color 0.1s ease-in-out;
   &:hover {
     background-color: $--color-text-secondary;
+  }
+}
+.hidden.mp-scroll-wrap{
+  &::-webkit-scrollbar-thumb {
+    // opacity: 0;
+    background-color: rgba($color: $--border-color-base, $alpha: 0)
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    // opacity: 0;
+    background-color: rgba($color: $--border-color-base, $alpha: 1)
   }
 }
 .mp-scroll-wrap {
