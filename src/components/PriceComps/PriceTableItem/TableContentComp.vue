@@ -1,23 +1,38 @@
 <template>
   <section class="mp-erp-comps-price-module-price-table-form-content-wrap mp-scroll-wrap hidden">
     <header>
-      <span class="space"></span>
-      <span v-for="(it, XIndex) in XAxisList" :key="it.ID" :title="RowNameList[XIndex]">{{RowNameList[XIndex]}}</span>
+      <span class="space" :style="`width:${labelWidth ? labelWidth + 'px' : 'auto'}`"></span>
+      <span :style="`width:${titleWidth}px`"
+       v-for="(it, XIndex) in XAxisList" :key="it.ID" :title="RowNameList[XIndex]">{{RowNameList[XIndex]}}</span>
     </header>
     <main>
       <div v-for="(col, YIndex) in YAxisList" :key="col.ID">
-        <span class="label" :title="ColNameList[YIndex]">{{ColNameList[YIndex]}}</span>
-        <ul v-for="row in XAxisList" :key="row.ID">
+        <span class="label" :title="ColNameList[YIndex]" :style="`width:${labelWidth ? labelWidth + 'px' : 'auto'}`"
+         ref="oLabelDoms">{{ColNameList[YIndex]}}</span>
+        <ul v-for="(row) in XAxisList" :key="row.ID" ref="oUlDoms">
           <li>
             <span></span>
-            <el-input :value="getInputValue(col.ID, row.ID, '')" @input="onInputChange($event, col.ID, row.ID, '')" maxlength="9" size="small" />
-            <span class="unit" :title="tableData.Unit || ''">{{ tableData.Unit || '' }}</span>
+            <span v-for="it in DataList" :key="it.ID">{{it.Name}}</span>
           </li>
-          <li v-for="it in tableData.DataList" :key="it.ID">
+          <li>
+            <el-input :value="getInputValue(col.ID, row.ID, '')" @input="onInputChange($event, col.ID, row.ID, '')" maxlength="9" size="small" />
+            <el-input v-for="it in DataList" :key="it.ID" :value="getInputValue(col.ID, row.ID, it.ID)"
+             @input="onInputChange($event, col.ID, row.ID, it.ID)" maxlength="9" size="small" />
+          </li>
+          <li>
+            <span class="unit">{{ Unit || '' }}</span>
+            <span v-for="it in DataList" :key="it.ID" class="unit" :title="it.Unit || ''">{{ it.Unit || '' }}</span>
+          </li>
+          <!-- <li>
+            <span></span>
+            <el-input :value="getInputValue(col.ID, row.ID, '')" @input="onInputChange($event, col.ID, row.ID, '')" maxlength="9" size="small" />
+            <span class="unit" :title="Unit || ''">{{ Unit || '' }}</span>
+          </li>
+          <li v-for="it in DataList" :key="it.ID">
             <span :title="it.Name">{{it.Name}}</span>
             <el-input :value="getInputValue(col.ID, row.ID, it.ID)" @input="onInputChange($event, col.ID, row.ID, it.ID)" maxlength="9" size="small" />
             <span class="unit" :title="it.Unit || ''">{{ it.Unit || '' }}</span>
-          </li>
+          </li> -->
         </ul>
       </div>
     </main>
@@ -55,6 +70,19 @@ export default {
     ColNameList() {
       return this.YAxisList.map(it => this.getItemName(it, this.tableData.YAxis));
     },
+    DataList() {
+      if (Array.isArray(this.tableData?.DataList)) return this.tableData.DataList;
+      return [];
+    },
+    Unit() {
+      return this.tableData.Unit;
+    },
+  },
+  data() {
+    return {
+      labelWidth: 80,
+      titleWidth: 161,
+    };
   },
   methods: {
     getItemName(it, AxisData) {
@@ -130,15 +158,37 @@ export default {
       if (this.disabled) return;
       this.$emit('submit');
     },
+    handleWidthChange() {
+      if (this.XAxisList.length === 0 || this.YAxisList.length === 0) return;
+      this.labelWidth = 0;
+      this.$nextTick(() => {
+        if (this.$refs.oLabelDoms.length > 0 && this.$refs.oUlDoms.length > 0) {
+          const maxLabelWidth = Math.max(...this.$refs.oLabelDoms.map(it => it.offsetWidth));
+          const oItem = this.$refs.oUlDoms[0];
+          this.labelWidth = maxLabelWidth || 80;
+          this.titleWidth = oItem.offsetWidth || 161;
+        }
+      });
+    },
+  },
+  watch: {
+    XAxisList() {
+      this.handleWidthChange();
+    },
+    YAxisList() {
+      this.handleWidthChange();
+    },
+    Unit() {
+      this.handleWidthChange();
+    },
+    DataList() {
+      this.handleWidthChange();
+    },
   },
 };
 </script>
 <style lang='scss'>
 .mp-erp-comps-price-module-price-table-form-content-wrap {
-  // display: flex;
-  // flex: 1;
-  // padding-right: 10px;
-  // flex-direction: column;
   overflow-x: auto;
   > header {
     line-height: 28px;
@@ -176,9 +226,6 @@ export default {
       > .label {
         color: #888E99;
         font-size: 14px;
-        width: 156px;
-        padding-right: 6px;
-        padding-left: 20px;
         line-height: 30px;
         display: flex;
         align-items: center;
@@ -186,17 +233,19 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        // flex: none;
-        // border-bottom: 1px solid #eee;
+        min-width: 80px;
+        box-sizing: border-box;
+        padding: 0 20px;
+        padding-right: 10px;
       }
       > ul {
-        width: 248px;
-        padding: 14px 0;
-        // border-bottom: 1px solid #eee;
+        padding: 14px 0px;
+        display: flex;
+        align-items: center;
         > li {
+          width: 100%;
           display: flex;
-          align-items: center;
-          flex: none;
+          flex-direction: column;
           .el-input {
             width: 100px;
             padding: 4px 0;
@@ -210,15 +259,20 @@ export default {
           > span {
             font-size: 12px;
             color: #585858;
-            width: 62px;
+            height: 38px;
+            line-height: 38px;
             text-align: right;
             padding-right: 5px;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+            flex: 1 1 auto;
+            padding-left: 15px;
             &.unit {
               color: #a2a2a2;
               text-align: left;
+              padding-left: 0;
+              padding-right: 15px;
             }
           }
         }

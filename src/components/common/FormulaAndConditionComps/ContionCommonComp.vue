@@ -22,7 +22,12 @@
              :prop="it.key || it.Property.StoredContent">
               <span slot="label" :title="it.Property.TipsContent || it.Property.DisplayContent.replace(/\[|\]/g, '')"
                 >{{it.Property.DisplayContent.replace(/\[|\]/g, '')}}</span>
-              <OperatorSelectorComp v-model="it.Operator" :valueList.sync='it.ValueList' :PropertyData='it.Property' />
+              <OperatorSelectorComp
+               v-model="it.Operator"
+               :valueList.sync='it.ValueList'
+               :PropertyData='it.Property'
+               :hasCompare='ComparePropertyList && ComparePropertyList.length > 0'
+               :hidden='!!(it.ValueList[0] && it.ValueList[0].Property)' />
               <ValueSelectorComp v-model="it.ValueList" :PropertyData='it.Property' :ComparePropertyList='ComparePropertyList'  />
               <div class="setup-btn" @click="onSetupClick(index)" v-if="ComparePropertyList && ComparePropertyList.length > 0 && it.Property.ValueType !== 5">
                 <img src="@/assets/images/setup.png" alt="">

@@ -69,7 +69,6 @@ export default {
       if (!Array.isArray(this.ProductInteractionDataList) || this.ProductInteractionDataList.length === 0) return [];
       const list = JSON.parse(JSON.stringify(this.ProductInteractionDataList)).map(it => {
         const { Constraint, List } = it;
-        console.log(it);
         const type = this.$utils.getNameFromListByIDs(it.ControlType, this.ControlTypeList);
         // console.log(type);
         let _RightPropertyList = this.InteractionAllPropList;

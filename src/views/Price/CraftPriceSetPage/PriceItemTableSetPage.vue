@@ -195,14 +195,14 @@ export default {
       this.$router.replace(({ name: pathName, params }));
     },
     onAxisPropSetupClick(type) { // 横轴竖轴属性点击设置 X | Y
-      if (type === 'X' && this.XAxisProp) this.selectedElementIDs = [this.XAxisProp.StoredContent];
-      else if (type === 'Y' && this.YAxisProp) this.selectedElementIDs = [this.YAxisProp.StoredContent];
-      else this.selectedElementIDs = [];
+      // if (type === 'X' && this.XAxisProp) this.selectedElementIDs = [this.XAxisProp.StoredContent];
+      // else if (type === 'Y' && this.YAxisProp) this.selectedElementIDs = [this.YAxisProp.StoredContent];
+      // else this.selectedElementIDs = [];
+      this.selectedElementIDs = [this.YAxisProp?.StoredContent, this.XAxisProp?.StoredContent].filter(it => it);
       this.curAxisPropSetType = type;
       this.AxisPropVisible = true;
     },
     onAxisDataSetupClick(type) { // 横轴竖轴选中属性后的设置数据点击事件
-      console.log(type);
       this.curAxisPropSetType = type;
       this.AxisPropDataSetVisible = true;
     },
@@ -252,11 +252,13 @@ export default {
     onAxisDataSetSubmit(data, axis) { // 设置轴数据
       const { InputContent, Operator, List } = data;
       let targetProp = null;
+      let lastList = [];
       if (axis === 'X') targetProp = this.PriceTableData.XAxis;
       if (axis === 'Y') targetProp = this.PriceTableData.YAxis;
       if (targetProp) {
         targetProp.InputContent = InputContent;
         targetProp.Operator = { ...Operator };
+        lastList = [...targetProp.List];
         const list = List.map(item => {
           const { Value, Values } = item;
           if (Value && (!Values || (Array.isArray(Values) && Values.length === 0))) {
@@ -269,11 +271,9 @@ export default {
         targetProp.List = [...list]; // 此处覆盖时，应该筛选下，已有的仍保留原有数据 ok
       }
       this.AxisPropDataSetVisible = false;
-      this.generatePriceListData();
+      this.generatePriceListData(axis, targetProp, lastList);
     },
-    generatePriceListData() { // 生成表单价格数据
-      // const XPropList = this.PriceTableData.XAxis.List;
-      // const YPropList = this.PriceTableData.YAxis.List;
+    generatePriceListData(changeAxis, targetProp, lastList) { // 生成表单价格数据 lastList 为上一次的属性列表 为获取旧ID对应的value使用
       const XPropList = this.XAxisList;
       const YPropList = this.YAxisList;
       if (!XPropList || !YPropList || XPropList.length === 0 || YPropList.length === 0) {
@@ -286,16 +286,65 @@ export default {
         _DataList.push(...this.PriceTableData.DataList);
       }
       const _DataListIDs = _DataList.map(_it => _it.ID);
+      const _PriceList = [...this.PriceTableData.PriceList];
       XPropList.forEach(XProp => {
         YPropList.forEach(YProp => {
-          const t = this.PriceTableData.PriceList.find(it => it.XAxisID === XProp.ID && it.YAxisID === YProp.ID);
-          if (!t) {
-            const temp = { XAxisID: XProp.ID, YAxisID: YProp.ID, List: [] };
-            _DataList.forEach(ItemData => {
-              temp.List.push({ First: ItemData.ID, Second: '' });
-            });
-            list.push(temp);
+          const i = _PriceList.findIndex(it => it.XAxisID === XProp.ID && it.YAxisID === YProp.ID);
+          if (i < 0) {
+            // 找不到的情况下， . // changeAxis 有才判断
+            // 1. 查看数据为数字值还是选项值，
+            // 2. 如果为数字值，则进一步查看，
+            // 3. 查看其是否在一个符合的区间范围内，
+            // 4. 如果在且该符号区间已不存在于当前列表中，继承该区间的填写值，并移除掉该区间，以防下次重复使用
+            if (changeAxis && targetProp && targetProp.Property.ValueType === 0 && _PriceList.length > 0) {
+              const _targetPropList = changeAxis === 'X' ? XPropList : YPropList;
+              const _targetProp = changeAxis === 'X' ? YProp : XProp;
+              const _targetProp2 = changeAxis === 'X' ? XProp : YProp;
+              const _targetPropID = changeAxis === 'X' ? 'YAxisID' : 'XAxisID';
+              const _filterPropID = changeAxis === 'X' ? 'XAxisID' : 'YAxisID';
+              const _CurXPropIDList = _targetPropList.map(_it => _it.ID);
+              const TList = _PriceList.filter(_it => _it[_targetPropID] === _targetProp.ID && !_CurXPropIDList.includes(_it[_filterPropID])).map(_it => {
+                const targetAxisProp = lastList.find(xp => xp.ID === _it[_filterPropID]);
+                if (!targetAxisProp) return '';
+                return { ..._it, TargetValue: targetAxisProp.Value };
+              }).filter(_it => _it);
+              if (TList.length === 0) {
+                const temp = { XAxisID: XProp.ID, YAxisID: YProp.ID, List: [] };
+                _DataList.forEach(ItemData => {
+                  temp.List.push({ First: ItemData.ID, Second: '' });
+                });
+                list.push(temp);
+              } else {
+                const _t = TList.find(_it => {
+                  const list1 = _it.TargetValue.split(' ');
+                  const list2 = _targetProp2.Value.split(' ');
+                  if (list1.length === 1 && list2.length === 1) return false;
+                  const len1 = list1.length + list2.length;
+                  const len2 = [...new Set([...list1, ...list2])].length;
+                  return len1 > len2;
+                });
+                if (_t) {
+                  const temp = { XAxisID: XProp.ID, YAxisID: YProp.ID, List: [..._t.List] };
+                  list.push(temp);
+                  const i2 = _PriceList.findIndex(_it => _it.YAxisID === _t.YAxisID && _it.XAxisID === _t.XAxisID);
+                  if (i2 > -1) _PriceList.splice(i2, 1);
+                } else {
+                  const temp = { XAxisID: XProp.ID, YAxisID: YProp.ID, List: [] };
+                  _DataList.forEach(ItemData => {
+                    temp.List.push({ First: ItemData.ID, Second: '' });
+                  });
+                  list.push(temp);
+                }
+              }
+            } else { // 不需要判断
+              const temp = { XAxisID: XProp.ID, YAxisID: YProp.ID, List: [] };
+              _DataList.forEach(ItemData => {
+                temp.List.push({ First: ItemData.ID, Second: '' });
+              });
+              list.push(temp);
+            }
           } else {
+            const t = _PriceList[i];
             const temp = { ...t, List: [...t.List.filter(_it => _DataListIDs.includes(_it.First))] };
             _DataList.forEach(ItemData => {
               const t2 = temp.List.find(_it => (
@@ -304,6 +353,7 @@ export default {
               if (!t2) temp.List.push({ First: ItemData.ID, Second: '' });
             });
             list.push(temp);
+            _PriceList.splice(i, 1);
           }
         });
       });

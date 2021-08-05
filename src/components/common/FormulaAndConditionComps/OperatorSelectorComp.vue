@@ -1,5 +1,5 @@
 <template>
-  <div class="mp-erp-new-comps-condtion-set-common-comp-operator-comp-wrap" :class="isMultiple?'isMultiple':''">
+  <div class="mp-erp-new-comps-condtion-set-common-comp-operator-comp-wrap" :class="{isMultiple: isMultiple, hidden: hidden, hasCompare: hasCompare }">
     <el-select v-model="localValue" v-if="showOption" placeholder="请选择" size="mini">
       <el-option
         v-for="item in localOperatorList"
@@ -11,8 +11,8 @@
     <div v-else  class="text-box">
       <span class="text">{{showText}}</span>
     </div>
-    <span v-if="isMultiple">下面任一选项时：</span>
-    <div v-if="isMultiple" class="multiple-select">
+    <span v-if="isMultiple && !hidden">下面任一选项时：</span>
+    <div v-if="isMultiple && !hidden" class="multiple-select">
       <el-checkbox-group v-model="checkList" v-if="localOptionList.length < 4">
         <el-checkbox v-for="it in localOptionList" :key="it.First" :label="it.First" :title="it.Second">{{it.Second}}</el-checkbox>
       </el-checkbox-group>
@@ -44,6 +44,14 @@ export default {
     },
     value: {},
     valueList: {},
+    hidden: {
+      type: Boolean,
+      default: false,
+    },
+    hasCompare: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     CheckboxDialogComp,
@@ -172,6 +180,12 @@ export default {
     & + .del-btn {
       margin-left: 25px;
     }
+    &.hasCompare {
+      width: 280px;
+    }
+  }
+  &.hidden {
+    width: 100px !important;
   }
   .multiple-select {
     height: 30px;
