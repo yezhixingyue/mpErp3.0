@@ -289,7 +289,8 @@ export default {
       const _PriceList = [...this.PriceTableData.PriceList];
       XPropList.forEach(XProp => {
         YPropList.forEach(YProp => {
-          const i = _PriceList.findIndex(it => it.XAxisID === XProp.ID && it.YAxisID === YProp.ID);
+          const i = _PriceList.findIndex(it => (it.XAxisID === XProp.ID || (!it.XAxisID && !XProp.ID))
+           && (it.YAxisID === YProp.ID || (!it.YAxisID && !YProp.ID)));
           if (i < 0) {
             // 找不到的情况下， . // changeAxis 有才判断
             // 1. 查看数据为数字值还是选项值，
@@ -345,11 +346,14 @@ export default {
             }
           } else {
             const t = _PriceList[i];
-            const temp = { ...t, List: [...t.List.filter(_it => _DataListIDs.includes(_it.First))] };
+            const temp = { ...t, List: [...t.List.filter(_it => _DataListIDs.includes(_it.First) || _it.First === '00000000-0000-0000-0000-000000000000')] };
             _DataList.forEach(ItemData => {
-              const t2 = temp.List.find(_it => (
-                _it.First === ItemData.ID || (!ItemData.ID && (_it.First === '00000000-0000-0000-0000-000000000000' || !_it.First))
-              ));
+              const t2 = temp.List.find(_it => {
+                const bool = (
+                  _it.First === ItemData.ID || (!ItemData.ID && (_it.First === '00000000-0000-0000-0000-000000000000' || !_it.First))
+                );
+                return bool;
+              });
               if (!t2) temp.List.push({ First: ItemData.ID, Second: '' });
             });
             list.push(temp);
@@ -380,13 +384,14 @@ export default {
       return bool;
     },
     onPriceItemInput(val, YAxisID, XAxisID, First) {
-      const t = this.PriceTableData.PriceList.find(it => it.YAxisID === YAxisID && it.XAxisID === XAxisID);
+      const t = this.PriceTableData.PriceList.find(it => (it.XAxisID === XAxisID || (!it.XAxisID && !XAxisID))
+           && (it.YAxisID === YAxisID || (!it.YAxisID && !YAxisID)));
       if (t && Array.isArray(t.List)) {
         const targetItem = t.List.find(it => it.First === First || (!First && (it.First === '00000000-0000-0000-0000-000000000000' || !it.First)));
         if (targetItem) targetItem.Second = val;
       }
     },
-    async onTableSubmit() {
+    async onTableSubmit() { // 保存表数据
       if (this.disabled) return;
       const bool = this.tableSubmitChecker();
       if (!bool) return;
@@ -396,7 +401,7 @@ export default {
       const resp = await this.api.getPriceTableSave(temp).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
-          console.log('成功后的回调函数');
+          this.$store.commit('priceManage/setPriceTableListItemChange', [temp, resp.data.Data]);
         };
         this.messageBox.successSingle('保存成功', cb, cb);
       }

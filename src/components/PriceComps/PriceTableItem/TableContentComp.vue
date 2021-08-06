@@ -144,7 +144,8 @@ export default {
       return '未知标题';
     },
     getInputValue(YAxisID, XAxisID, First) {
-      const t = this.tableData.PriceList.find(it => it.YAxisID === YAxisID && it.XAxisID === XAxisID);
+      const t = this.tableData.PriceList.find(it => (it.XAxisID === XAxisID || (!it.XAxisID && !XAxisID))
+           && (it.YAxisID === YAxisID || (!it.YAxisID && !YAxisID)));
       if (t && Array.isArray(t.List)) {
         const targetItem = t.List.find(it => it.First === First || (!First && (it.First === '00000000-0000-0000-0000-000000000000' || !it.First)));
         if (targetItem) return targetItem.Second;
@@ -184,6 +185,9 @@ export default {
     DataList() {
       this.handleWidthChange();
     },
+  },
+  mounted() {
+    this.handleWidthChange();
   },
 };
 </script>

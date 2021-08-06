@@ -8,6 +8,26 @@
       <img src="@/assets/images/select.png" alt="">
       <i>选择</i>
     </span>
+    <span @click="onSetupCostClick" :class="canSetupCost ? '' : 'disabled'" v-if="showList.includes('setupCost')">
+      <img src="@/assets/images/setup.png" alt="">
+      <i>{{setupCostText}}</i>
+    </span>
+    <span @click="onAllCostClick" :class="canAllCost ? '' : 'disabled'" v-if="showList.includes('allCost')">
+      <img src="@/assets/images/cost.png" alt="">
+      <i>总费用</i>
+    </span>
+    <span @click="onAllCostClick" :class="canAllCost ? '' : 'disabled'" v-if="showList.includes('allCost')">
+      <img src="@/assets/images/cost.png" alt="">
+      <i>总费用</i>
+    </span>
+    <span @click="onWriteClick" :class="canWrite ? '' : 'disabled'" v-if="showList.includes('write')">
+      <img src="@/assets/images/write2.png" alt="">
+      <i>{{writeText}}</i>
+    </span>
+    <span @click="onExportClick" :class="canExport ? '' : 'disabled'" v-if="showList.includes('export')">
+      <img src="@/assets/images/export.png" alt="">
+      <i>{{exportText}}</i>
+    </span>
     <span @click="onEditClick" :class="canEdit ? '' : 'disabled'" v-if="showList.includes('edit')">
       <img src="@/assets/images/Compile.png" alt="">
       <i>编辑</i>
@@ -15,14 +35,6 @@
     <span @click="onRemoveClick" :class="canRemove ? '' : 'disabled'" v-if="showList.includes('del')">
       <img src="@/assets/images/del.png" alt="">
       <i>删除</i>
-    </span>
-    <span @click="onSetupCostClick" :class="canSetupCost ? '' : 'disabled'" v-if="showList.includes('setupCost')">
-      <img src="@/assets/images/setup.png" alt="">
-      <i>设置费用组成</i>
-    </span>
-    <span @click="onAllCostClick" :class="canAllCost ? '' : 'disabled'" v-if="showList.includes('allCost')">
-      <img src="@/assets/images/cost.png" alt="">
-      <i>总费用</i>
     </span>
   </div>
 </template>
@@ -58,6 +70,26 @@ export default {
       type: Array,
       default: () => ['edit', 'del'],
     },
+    setupCostText: {
+      type: String,
+      default: '设置费用组成',
+    },
+    canExport: {
+      type: Boolean,
+      default: true,
+    },
+    exportText: {
+      type: String,
+      default: '导出表',
+    },
+    canWrite: {
+      type: Boolean,
+      default: true,
+    },
+    writeText: {
+      type: String,
+      default: '填写表数据',
+    },
   },
   methods: {
     onEditClick() {
@@ -83,6 +115,14 @@ export default {
     onSetupCostClick() {
       if (!this.canSetupCost) return;
       this.$emit('setupCost');
+    },
+    onExportClick() {
+      if (!this.canExport) return;
+      this.$emit('export');
+    },
+    onWriteClick() {
+      if (!this.canWrite) return;
+      this.$emit('write');
     },
   },
 };

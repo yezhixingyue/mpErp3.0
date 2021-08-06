@@ -18,7 +18,7 @@
     <main>
       <PriceTableComp
         @remove='onTableItemRemove'
-        @setup="onSetupPageJump($event, '', '')"
+        @write="onFormDataWritePageJump($event, '', '')"
         :titleObj='{title:"费用表",btnText:"+ 添加费用表"}'
         :loading='isTableLoading'
         :dataList='tableDataList'
@@ -52,7 +52,8 @@ export default {
     PriceTableComp,
   },
   computed: {
-    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'PriceManageList', 'PriceTableList', 'PriceTableConditionPropertyList']),
+    // eslint-disable-next-line max-len
+    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'PriceManageList', 'PriceTableList', 'PriceTableConditionPropertyList', 'PriceItemPropertyList']),
     curProduct() {
       return this.PriceManageList.find(it => it.ID === this.ProductID);
     },
@@ -104,11 +105,21 @@ export default {
       if (!Array.isArray(this.PriceTableList) || this.PriceTableList.length === 0) return [];
       const ConditionPropertyList = this.PriceTableConditionPropertyList;
       const _list = JSON.parse(JSON.stringify(this.PriceTableList)).map(it => {
-        const { Constraint } = it;
+        const { Constraint, XAxis, YAxis } = it;
         const [_Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
           Constraint, ConditionPropertyList,
         );
-        return { ...it, Constraint: _Constraint, _ConditionText };
+        let _XAxis = null;
+        let _YAxis = null;
+        if (XAxis) {
+          const XProperty = PropertyClass.getPerfectPropertyByImperfectProperty(XAxis.Property, this.PriceItemPropertyList);
+          _XAxis = { ...XAxis, Property: XProperty };
+        }
+        if (YAxis) {
+          const YProperty = PropertyClass.getPerfectPropertyByImperfectProperty(YAxis.Property, this.PriceItemPropertyList);
+          _YAxis = { ...YAxis, Property: YProperty };
+        }
+        return { ...it, Constraint: _Constraint, _ConditionText, XAxis: _XAxis, YAxis: _YAxis };
       });
       return _list;
     },
@@ -243,7 +254,7 @@ export default {
         this.messageBox.successSingle('删除成功', cb, cb);
       }
     },
-    onSetupPageJump(data) { // 跳转条件配置页面
+    onFormDataWritePageJump(data) { // 跳转条件配置页面
       const pathName = this.isQuotationPage ? 'QuotationPriceTableItemSet' : 'CraftPriceTableItemSet';
       const { params } = this.$route;
       this.$store.commit('priceManage/setCurSolutionItem', this.curSolutionItem);

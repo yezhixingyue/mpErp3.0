@@ -2,6 +2,7 @@ import api from '@/api/index';
 import messageBox from '@/assets/js/utils/message';
 import CommonClassType from '@/store/CommonClassType';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import PriceItemClass from '@/assets/js/TypeClass/PriceItemClass';
 import { getIDFromListByNames } from '@/assets/js/utils/util';
 
 const initConditon = {
@@ -290,6 +291,22 @@ export default {
     // },
     setPriceTableList(state, list) { // 设置价格表数据 工艺费和价格表通用
       state.PriceTableList = list;
+    },
+    setPriceTableListItemChange(state, [data, ID]) {
+      if (!data.ID) { // 新增
+        const temp = new PriceItemClass({ ...data, ID });
+        state.PriceTableList.unshift(temp);
+      } else { // 编辑
+        const t = state.PriceTableList.find(it => it.ID === ID);
+        if (t) {
+          const { XAxis, YAxis, DataList, Unit, PriceList } = data;
+          t.XAxis = XAxis;
+          t.YAxis = YAxis;
+          t.DataList = DataList;
+          t.Unit = Unit;
+          t.PriceList = PriceList;
+        }
+      }
     },
     setPriceTableConditionPropertyList(state, [ConditionPropertyList, AxisPropertyList]) { // 价格表条件属性列表
       state.PriceTableConditionPropertyList = Array.isArray(ConditionPropertyList) ? ConditionPropertyList : [];
