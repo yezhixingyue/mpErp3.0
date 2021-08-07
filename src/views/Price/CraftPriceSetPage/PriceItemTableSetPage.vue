@@ -10,7 +10,35 @@
         <span class="mp-common-title-wrap black f-15">{{curSolutionItem.ShowName}}</span>
         <div>
           <span class="blue-span" @click="onExcelImportClick">导入表</span>
-          <span class="condition">{{ConstraintContent}}</span>
+          <!-- <span class="condition">{{ConstraintContent}}</span> -->
+          <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
+            <div slot="content">
+              <p class="if-box"><span class="is-origin">如果</span> {{FilterTypeText}}：</p>
+              <template v-if="Array.isArray(PriceTableData._ConditionText)">
+                <p v-for="(it, i) in PriceTableData._ConditionText" :key="it.name + 'tips' + i">
+                  <span v-if="i > 0" class="type">{{PriceTableData.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+                  <span class="name">{{it.name}}</span>
+                  <span class="is-origin">{{it.operator}}</span>
+                  <span class="val">{{it.val}}</span>
+                  <span v-if="i === PriceTableData._ConditionText.length - 1" style="margin-left:2px"> 。</span>
+                  <span v-else style="margin-left:2px">；</span>
+                </p>
+              </template>
+              <p v-else>{{PriceTableData._ConditionText}}</p>
+            </div>
+            <div class="common-property-condition-text-content-box condition">
+              <p class="if-box"><span class="is-origin">如果</span> {{FilterTypeText}}</p>
+              <template v-if="Array.isArray(PriceTableData._ConditionText)">
+                <p v-for="(it, i) in PriceTableData._ConditionText" :key="it.name + 'content' + i">
+                  <span v-if="i > 0" class="type">{{PriceTableData.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+                  <span>{{it.name}}</span>
+                  <span>{{it.operator}}</span>
+                  <span>{{it.val}}</span>
+                </p>
+              </template>
+              <p v-else>{{PriceTableData._ConditionText}}</p>
+            </div>
+          </el-tooltip>
         </div>
       </div>
       <div class="setup">
@@ -111,10 +139,9 @@ export default {
       ProductID: '',
       ProductName: '',
       isQuotationPage: false,
-      checked: false,
       PriceTableData: null,
       AxisPropVisible: false, // 控制横竖轴属性选择弹窗展示
-      loading: true,
+      loading: false,
       curAxisPropSetType: '', // 当前正在设置的轴属性类型 X | Y
       selectedElementIDs: [],
       AxisPropDataSetVisible: false, // 控制横竖轴设置数据弹窗展示
@@ -159,6 +186,10 @@ export default {
     disabled() {
       return this.XAxisList.length === 0 || this.YAxisList.length === 0;
     },
+    FilterTypeText() {
+      if (!this.PriceTableData || !this.PriceTableData.Constraint) return '';
+      return this.PriceTableData.Constraint.FilterType === 1 ? '满足所有' : '满足任一';
+    },
   },
   methods: {
     getInitDataFromRoutePath() { // 初始通过路径params中获取页面信息
@@ -182,6 +213,7 @@ export default {
       }
     },
     async FetchInitDatas() { // 获取产品数据 X Y轴属性选择列表
+      this.loading = true;
       const [productData] = await Promise.all([
         this.$store.dispatch('priceManage/getProductCraftData', this.$route.params.id),
         // this.$store.dispatch('priceManage/getPriceTablePropertyList', this.$route.params.id),
@@ -429,13 +461,13 @@ export default {
     },
   },
   created() {
-    const initData = this.curEditPriceItemData || { ID: '', PriceID: this.curPriceItem?.ID, SolutionID: this.curSolutionItem?.ID };
+    const initData = JSON.parse(JSON.stringify(this.curEditPriceItemData)) || { ID: '', PriceID: this.curPriceItem?.ID, SolutionID: this.curSolutionItem?.ID };
     this.PriceTableData = new PriceTableClass(initData); // 初始化价格类对象（添加|编辑）
     this.generatePriceListData(); // 初始化价格表数据PriceList
   },
   mounted() {
     this.getInitDataFromRoutePath();
-    this.FetchInitDatas();
+    // this.FetchInitDatas();
   },
 };
 </script>

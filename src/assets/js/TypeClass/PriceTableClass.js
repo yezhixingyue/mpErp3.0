@@ -79,9 +79,11 @@ export default class PriceTableClass {
 
   FormulaList = [];
 
+  _ConditionText = '条件为空';
+
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, PriceID, SolutionID, Unit, Constraint, Priority, XAxis, YAxis, DataList, PriceList, FormulaList } = initData;
+    const { ID, PriceID, SolutionID, Unit, Constraint, Priority, XAxis, YAxis, DataList, PriceList, FormulaList, _ConditionText } = initData;
     if (ID) this.ID = ID;
     if (PriceID) this.PriceID = PriceID;
     if (SolutionID) this.SolutionID = SolutionID;
@@ -93,5 +95,6 @@ export default class PriceTableClass {
     if (Array.isArray(DataList)) this.DataList = DataList;
     if (Array.isArray(PriceList)) this.PriceList = PriceList;
     if (Array.isArray(FormulaList)) this.FormulaList = FormulaList;
+    if (Array.isArray(_ConditionText)) this._ConditionText = _ConditionText;
   }
 }

@@ -132,12 +132,16 @@ export default {
           > label {
             width: 130px;
             margin-right: 10px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
             font-weight: 700;
             color: #444;
             flex: none;
+            .el-checkbox__label {
+              width: 110px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              vertical-align: -5px;
+            }
           }
           > div.el-checkbox-group {
             white-space: normal;

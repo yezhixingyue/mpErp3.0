@@ -553,6 +553,12 @@ const api = {
   getPriceTableSave(data) { // POST /Api/PriceTable/Save 价格表保存
     return instance.post('/Api/PriceTable/Save', data);
   },
+  getPriceTableRemobe(id) { // DELETE /Api/PriceTable/Remove  价格表删除
+    return instance.delete('/Api/PriceTable/Remove', { params: { id } });
+  },
+  getPriceTableSetCondition(data) { // POST /Api/PriceTable/SetCondition  价格表设置条件
+    return instance.post('/Api/PriceTable/SetCondition', data);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

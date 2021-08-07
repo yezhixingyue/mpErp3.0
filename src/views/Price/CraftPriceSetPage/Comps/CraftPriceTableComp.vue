@@ -8,7 +8,7 @@
         <span class="craft-name">{{item.Name}}</span>
         <span class="cost" :title="item._PriceSolutionShowCentent">{{item._PriceSolutionShowCentent}}</span>
         <span class="all-cost">总费用</span>
-        <CtrlMenus :showList="['setupCost', 'allCost']" @setupCost='onSetupCostClick(item)' @allCost='onSetupAllCostClick(item)' />
+        <CtrlMenus :showList="['setup', 'allCost']" @setup='onSetupCostClick(item)' @allCost='onSetupAllCostClick(item)' />
       </div>
     </main>
   </section>
@@ -44,7 +44,7 @@ export default {
     },
     onSetupCostClick(item) { // 设置费用组成
       const temp = this.getSubmitData(item);
-      this.$emit('setupCost', temp);
+      this.$emit('setup', temp);
     },
     onSetupAllCostClick(item) { // 设置总费用
       const temp = this.getSubmitData(item);

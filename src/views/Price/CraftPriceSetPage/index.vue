@@ -9,7 +9,7 @@
       <CraftPriceTableComp
        v-for="it in CraftPriceSetList"
        :key="it.ID" :itemData='it'
-       @setupCost='onSetupCostClick'
+       @setup='onSetupCostClick'
        @allCost='onSetupAllCostClick'
        />
     </main>

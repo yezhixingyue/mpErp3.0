@@ -17,6 +17,8 @@
     </header>
     <main>
       <PriceTableComp
+        @export='onTableItemExport'
+        @setup='onTableItemConditionSetupClick'
         @remove='onTableItemRemove'
         @write="onFormDataWritePageJump($event, '', '')"
         :titleObj='{title:"费用表",btnText:"+ 添加费用表"}'
@@ -244,22 +246,32 @@ export default {
       ]);
       this.isTableLoading = false;
     },
-    async onTableItemRemove(e) { // 未写
+    async onTableItemRemove(e) { // ok
       if (!e || !e.ID) return;
-      const resp = await this.api.getMakeupSolutionItemRemove(e.ID).catch(() => {});
+      const resp = await this.api.getPriceTableRemobe(e.ID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
-          this.MakeupRuleItemList = this.MakeupRuleItemList.filter(it => it.ID !== e.ID);
+          this.$store.commit('priceManage/setPriceTableListItemRemove', e.ID);
         };
         this.messageBox.successSingle('删除成功', cb, cb);
       }
     },
-    onFormDataWritePageJump(data) { // 跳转条件配置页面
+    onFormDataWritePageJump(data) { // 填写表数据
       const pathName = this.isQuotationPage ? 'QuotationPriceTableItemSet' : 'CraftPriceTableItemSet';
       const { params } = this.$route;
       this.$store.commit('priceManage/setCurSolutionItem', this.curSolutionItem);
       this.$store.commit('priceManage/setCurEditPriceItemData', data);
       this.$router.push({ name: pathName, params });
+    },
+    onTableItemConditionSetupClick(data) { // 设置条件
+      const pathName = this.isQuotationPage ? 'QuotationPriceConditionSet' : 'CraftPriceTableConditionSet';
+      const { params } = this.$route;
+      this.$store.commit('priceManage/setCurSolutionItem', this.curSolutionItem);
+      this.$store.commit('priceManage/setCurEditPriceItemData', data);
+      this.$router.push({ name: pathName, params });
+    },
+    onTableItemExport(data) {
+      console.log('onTableItemExport', data);
     },
   },
   watch: {
@@ -301,10 +313,11 @@ export default {
 </script>
 <style lang='scss'>
 .mp-erp-price-module-craft-price-cost-composition-set-page-wrap {
-  padding: 0 10px;
+  // padding: 0 10px;
   background-color: #f5f5f5;
   min-width: 980px;
   min-height: 100%;
+  padding-left: 10px;
   display: flex;
   flex-direction: column;
   > header {

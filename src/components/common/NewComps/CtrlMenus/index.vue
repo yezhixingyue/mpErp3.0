@@ -8,7 +8,7 @@
       <img src="@/assets/images/select.png" alt="">
       <i>选择</i>
     </span>
-    <span @click="onSetupCostClick" :class="canSetupCost ? '' : 'disabled'" v-if="showList.includes('setupCost')">
+    <span @click="onSetupCostClick" :class="canSetupCost ? '' : 'disabled'" v-if="showList.includes('setup')">
       <img src="@/assets/images/setup.png" alt="">
       <i>{{setupCostText}}</i>
     </span>
@@ -114,7 +114,7 @@ export default {
     },
     onSetupCostClick() {
       if (!this.canSetupCost) return;
-      this.$emit('setupCost');
+      this.$emit('setup');
     },
     onExportClick() {
       if (!this.canExport) return;
