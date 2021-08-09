@@ -1,6 +1,6 @@
 <template>
-  <section class="mp-erp-common-comps-formula-set-panel-comp--wrap">
-    <header>
+  <section class="mp-erp-common-comps-formula-set-panel-comp--wrap" :class="{isSingle: isSingle}">
+    <header v-if="!hiddenHeader">
       <span>{{pageLabel}}：</span>
       <span>{{pageTitle}}</span>
       <slot name="title"></slot>
@@ -16,12 +16,13 @@
       </div>
     </header>
     <main>
-      <LRWidthDragAutoChangeComp leftWidth='45%' v-if="PropertyList && FormulaData">
+      <LRWidthDragAutoChangeComp :leftWidth='isSingle?"100%":"45%"' v-if="PropertyList && FormulaData" :single='isSingle'>
         <template v-slot:left>
           <section class="mp-erp-common-comps-formula-set-panel-comp-left-content-wrap">
             <header>
               <p class="btn-box">
-                <el-button type="primary" size="small" @click='onElementAddClick'>+添加元素</el-button>
+                <el-button type="primary" size="small" @click='onElementAddClick' v-if="!isSingle">+添加元素</el-button>
+                <span class="blue-span" @click='onElementAddClick' v-else>+添加元素</span>
               </p>
               <p class="tips-box">
                 <span class="lt">
@@ -29,12 +30,12 @@
                 </span>
                 <span class="rt">
                   <i>当为空值时设置的值指当某一界面元素被禁用/隐藏或者客户未选择未填写任何值时，以此值参与运算</i>
-                  <i v-if="showFormTip">表数据指根据当前数据表匹配的结果数值，如果没有任何匹配，则此公式运算结果为空。</i>
+                  <i v-if="isSingle">表数据指根据当前数据表匹配的结果数值，如果没有任何匹配，则此公式运算结果为空。</i>
                 </span>
               </p>
             </header>
             <main>
-              <p class="module-title">已选元素概览</p>
+              <p class="module-title" v-if="!isSingle">已选元素概览</p>
               <ul>
                 <li v-for="(it, i) in FormulaData.PropertyList" :key="it.StoredContent + '' + i">
                   <span class="name" v-if="!it.TipsContent">{{it.DisplayContent}}</span>
@@ -48,10 +49,43 @@
                   <span class="join blue-span" @click="joinElement(it)">加入 <i class="el-icon-d-arrow-right"></i> </span>
                 </li>
               </ul>
+              <!-- 相同公式面板1 后面提取公共组件 -->
+              <section class="mp-erp-common-comps-formula-set-panel-comp-right-content-wrap show-left" v-if="isSingle">
+                <header>
+                  <p class="module-title">公式</p>
+                </header>
+                <main>
+                  <el-input type="textarea" :autosize="{ minRows: 10, maxRows: 100}"  v-model.trim="FormulaData.Content" />
+                  <div class="ctrl-box">
+                    <span :class="it.isMini?'mini':''" v-for="it in ArithmeticOperatorList" :key='it.value'
+                    @click="onArithmeticOperatorClick(it)">{{it.label}}</span>
+                  </div>
+                  <p class="intro">
+                    <span>公式说明：</span>
+                    <el-input size="small" v-model.trim="FormulaData.Remark" maxlength="50" show-word-limit></el-input>
+                  </p>
+                  <p class="module-title">试算</p>
+                  <div class="test-box">
+                    <div>
+                      <div v-for="it in FormulaData.PropertyList" :key="it.DisplayContent">
+                        <span :title="it.DisplayContent">{{it.DisplayContent}}：</span>
+                        <el-input v-model.trim="it.CalculateValue" size="small" @input="onCalculateInput"
+                        :disabled='!FormulaData.Content.includes(it.DisplayContent)'></el-input>
+                        <span>{{it.Unit}}</span>
+                      </div>
+                    </div>
+                    <p>
+                      <span class="blue-span" @click="onCalculateClick" :class="!(FormulaData && FormulaData.Content) ? 'disabled' : ''">测试运算</span>
+                      <span v-if="CalculateRes || CalculateRes === 0">测试运算结果：<i class="is-pink">{{CalculateRes}}</i></span>
+                    </p>
+                  </div>
+                </main>
+              </section>
             </main>
           </section>
         </template>
-        <template v-slot:right>
+        <template v-slot:right v-if="!isSingle">
+          <!-- 相同公式面板2 后面提取公共组件 -->
           <section class="mp-erp-common-comps-formula-set-panel-comp-right-content-wrap">
             <header>
               <p class="module-title">公式</p>
@@ -88,7 +122,7 @@
       <FormulaPanelElementSelectDialog useType='formula' :DialogTitle="subFromulaDialogTitle" v-if="PropertyList && FormulaData"
         :visible.sync='selectVisible' :list='PropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs' />
     </main>
-    <footer>
+    <footer v-if="!isSingle">
       <el-button type="primary" @click="onSubmitClick">保存</el-button>
       <el-button @click="onGoBackClick" class="go-back">返回</el-button>
     </footer>
@@ -112,15 +146,19 @@ export default {
       type: Number,
       default: 0,
     },
-    NowEditFormulaData: {
+    NowEditFormulaData: { // 公式编辑数据 （非子公式）
       type: Object,
       default: null,
     },
-    curSubFormulaAddProperty: {
+    curSubFormulaAddProperty: { // 子公式添加使用
       type: Object,
       default: null,
     },
-    curEditSubFormulaData: {
+    curEditSubFormulaData: { // 子公式编辑数据
+      type: Object,
+      default: null,
+    },
+    Condition4getProperty: {
       type: Object,
       default: null,
     },
@@ -140,13 +178,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    hiddenHeader: {
+      type: Boolean,
+      default: false,
+    },
+    isSingle: {
+      type: Boolean,
+      default: false,
+    },
     FormulaLabel: {
       type: String,
       default: '公式名称',
-    },
-    showFormTip: { // 是否展示表数据说明
-      type: Boolean,
-      default: false,
     },
     PriceID: {
       type: String,
@@ -231,7 +273,8 @@ export default {
       // if (isSubEdit) return;
 
       // 当上面编辑模式不能共用时 下面这个取值也需要修改
-      const _data4FetchProperty = !this.isSubFormula ? { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex } : temp;
+      let _data4FetchProperty = !this.isSubFormula ? { [this.PositionType]: this.PositionID, UseModule: this.moduleIndex } : temp;
+      if (this.Condition4getProperty) _data4FetchProperty = this.Condition4getProperty;
       this.FormulaData = new FormulaClass(temp); // 初始化公式数据
       const propertyList = await PropertyClass.getPropertyList(_data4FetchProperty);
       this.isloading = false;
@@ -287,7 +330,7 @@ export default {
 
         this.FormulaData.Content = myField.value.substring(0, startPos) + value + myField.value.substring(endPos, myField.value.length);
 
-        await this.$nextTick(); // 这句是重点, 圈起来
+        await this.$nextTick();
 
         myField.focus();
 
@@ -336,6 +379,10 @@ export default {
     },
     onCalculateInput() {
       this.CalculateRes = '';
+    },
+    getFormulaData() {
+      const checkBool = FormulaClass.checkSubmit(this.FormulaData, this.hiddenHeader);
+      return checkBool ? this.FormulaData : null;
     },
   },
   watch: {
@@ -494,6 +541,7 @@ export default {
       padding-left: 45px;
       padding-top: 15px;
       overflow: hidden;
+      // min-width: 780px;
       > header {
         padding-bottom: 30px;
       }
@@ -552,6 +600,7 @@ export default {
         }
         > .test-box {
           padding-left: 15px;
+          padding-bottom: 10px;
           > p {
             > span {
               font-size: 14px;
@@ -594,6 +643,56 @@ export default {
                 margin: 0 4px;
               }
             }
+          }
+        }
+      }
+      &.show-left {
+        padding-left: 0;
+        .module-title {
+          padding-left: 0;
+          padding-bottom: 10px;
+          &::before {
+            display: none;
+          }
+        }
+        > header {
+          padding-bottom: 8px;
+        }
+        > main {
+          > .test-box {
+            > div > div {
+              margin-bottom: 10px;
+            }
+          }
+          > .intro {
+            padding-bottom: 32px;
+          }
+        }
+      }
+    }
+    .el-input {
+      input {
+        height: 30px;
+        line-height: 30px;
+      }
+    }
+  }
+
+  &.isSingle {
+    padding-left: 0px;
+    margin-top: -59px;
+    > main {
+      .mp-erp-common-comps-formula-set-panel-comp-left-content-wrap {
+        > header {
+          > .btn-box {
+            padding-left: 120px;
+            padding-bottom: 32px;
+          }
+        }
+        > main {
+          padding-top: 5px;
+          > ul {
+            padding-top: 24px;
           }
         }
       }

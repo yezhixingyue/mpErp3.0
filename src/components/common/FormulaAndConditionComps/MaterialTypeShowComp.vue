@@ -4,11 +4,11 @@
       <li v-for="it in formulaMaterialList" :key="it.MaterialType.ID" class="formula-type">
         <label>{{it.MaterialType.Name}}：</label>
         <span class="is-element" v-for="el in it.List" :class="{'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)}"
-         :key="el.Element.ID" @click="onItemClick(el)">{{getName(el)}}</span>
+         :key="el.Element ? el.Element.ID : el.StoredContent" @click="onItemClick(el)">{{getName(el)}}</span>
       </li>
     </template>
     <template v-else>
-      <li v-for="el in dataList" :key="el.StoredContent || el.ID">
+      <!-- <li v-for="el in dataList" :key="el.StoredContent || el.ID">
         <span
           v-if="!isMultiple || !el.StoredContent"
           :class="{'has-child': el.FixedTypeList, disabled: !el.StoredContent, 'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)}"
@@ -18,6 +18,26 @@
           （<span v-for="item in el.FixedTypeList" class="blue-span" :class="selectedElementIDs.includes(item.StoredContent)?'is-disabled':''"
           @click="onItemClick(item)" :key="item.StoredContent">{{getName(item)}}</span>）
         </div>
+      </li> -->
+      <li v-for="it in formulaMaterialList" :key="it.MaterialType.ID" class="condtion-list">
+        <label>{{it.MaterialType.Name}}：</label>
+        <ul>
+          <li  v-for="el in it.List" :key="el.Element ? el.Element.ID : el.StoredContent" >
+            <span
+              v-if="!isMultiple || !el.StoredContent"
+              :class="{
+                'has-child': el.FixedTypeList, disabled: !el.StoredContent,
+                'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)
+              }"
+              class="is-element" @click="onItemClick(el)">{{getName(el)}}</span>
+            <el-checkbox v-else :value='MultipleCheckedIDList.includes(el.StoredContent)' @change="onCheckedItemChange($event, el)"
+              >{{getName(el)}}</el-checkbox>
+            <div v-if="el.FixedTypeList">
+              （<span v-for="item in el.FixedTypeList" class="blue-span" :class="selectedElementIDs.includes(item.StoredContent)?'is-disabled':''"
+              @click="onItemClick(item)" :key="item.StoredContent">{{getName(item)}}</span>）
+            </div>
+          </li>
+        </ul>
       </li>
     </template>
   </ul>
@@ -52,11 +72,17 @@ export default {
   },
   computed: {
     formulaMaterialList() {
-      if (!this.dataList || this.useType !== 'formula' || this.dataList.length === 0) return [];
+      if (!this.dataList || this.dataList.length === 0) return [];
       const list = [];
       this.dataList.forEach(it => {
-        const { MaterialType } = it;
-        const _item = list.find(_it => _it.MaterialType.ID === MaterialType.ID);
+        let { MaterialType } = it;
+        if (!MaterialType) {
+          MaterialType = {
+            ID: it.StoredContent,
+            Name: it.DisplayContent.replace(/\[|\]/g, ''),
+          };
+        }
+        const _item = list.find(_it => _it.MaterialType?.ID === MaterialType?.ID);
         if (_item) _item.List.push(it);
         else list.push({ MaterialType, List: [it] });
       });
@@ -100,8 +126,17 @@ export default {
         margin: 0 12px;
       }
     }
+    &.condtion-list {
+      > label {
+        flex: none;
+        min-width: 5em;
+        text-align: right;
+      }
+    }
     > ul {
       display: flex;
+      flex-wrap: wrap;
+      flex: 1;
       > li {
         display: flex;
         > span {

@@ -50,13 +50,13 @@ export default class FormulaClass {
     if (PropertyList && Array.isArray(PropertyList) && PropertyList.length > 0) this.PropertyList = PropertyList;
   }
 
-  static checkSubmit(obj) { // 校验是否符合提交条件
+  static checkSubmit(obj, hiddenHeader) { // 校验是否符合提交条件
     if (!obj || Object.prototype.toString.call(obj) !== '[object Object]') {
       messageBox.failSingleError('操作失败', '获取提交信息出错');
       return false;
     }
     const { Name, PropertyList, Content } = obj;
-    if (!Name) {
+    if (!Name && !hiddenHeader) {
       messageBox.failSingleError('操作失败', '请输入公式名称');
       return false;
     }

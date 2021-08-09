@@ -261,6 +261,7 @@ export default {
       const { params } = this.$route;
       this.$store.commit('priceManage/setCurSolutionItem', this.curSolutionItem);
       this.$store.commit('priceManage/setCurEditPriceItemData', data);
+      this.$store.commit('priceManage/setResultFormulaList', []);
       this.$router.push({ name: pathName, params });
     },
     onTableItemConditionSetupClick(data) { // 设置条件

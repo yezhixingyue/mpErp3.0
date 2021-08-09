@@ -45,13 +45,13 @@
           </TipsSpanButton>
           <TipsSpanButton text='工艺费' @click.native="onPriceItemSetMenuClick(it, 'CraftPriceSetPage')" />
           <TipsSpanButton text='价格表' @click.native="onPriceItemSetMenuClick(it, 'QuotationList', { isQuotation: true })">
-            <span>价格表（{{it.PriceTableList ? it.PriceTableList.length : 0}}）</span>
+            <span style="min-width:75px">价格表（{{it.PriceTableList ? it.PriceTableList.length : 0}}）</span>
           </TipsSpanButton>
           <TipsSpanButton text='报价方案' @click.native="onPriceItemSetMenuClick(it, 'QuotationScheme', { timer: Date.now() })">
-            <span>报价方案（{{it.SolutionList ? it.SolutionList.length : 0}}）</span>
+            <span style="min-width:88px">报价方案（{{it.SolutionList ? it.SolutionList.length : 0}}）</span>
           </TipsSpanButton>
           <TipsSpanButton text='报价结果' @click.native="onPriceItemSetMenuClick(it, 'QuotationResult')">
-            <span>报价结果（{{it.ResultList ? it.ResultList.length : 0}}）</span>
+            <span style="min-width:88px">报价结果（{{it.ResultList ? it.ResultList.length : 0}}）</span>
           </TipsSpanButton>
         </div>
         <div class="name">
@@ -378,6 +378,7 @@ export default {
           padding-left: 45px;
           overflow: hidden;
           display: flex;
+          min-width: 200px;
           > .separate {
             color: #585858;
             margin-right: 30px;
@@ -396,10 +397,11 @@ export default {
           padding-left: 35px;
           > span {
             margin-right: 40px;
+            display: inline-block;
           }
         }
         &.name {
-          width: 240px;
+          width: 215px;
           padding-left: 50px;
           color: #585858;
           > span {
@@ -408,12 +410,12 @@ export default {
         }
         &.date {
           width: 120px;
-          padding: 0 70px;
+          padding: 0 80px;
           padding-left: 20px;
           color: #999;
         }
         &.ctrl {
-          padding-right: 80px;
+          padding-right: 20px;
           padding-left: 30px;
           .ctrl-menus-container > span + span {
             margin-left: 30px;

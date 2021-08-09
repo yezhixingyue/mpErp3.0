@@ -13,8 +13,8 @@
           <!-- <span class="condition">{{ConstraintContent}}</span> -->
           <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
             <div slot="content">
-              <p class="if-box"><span class="is-origin">如果</span> {{FilterTypeText}}：</p>
               <template v-if="Array.isArray(PriceTableData._ConditionText)">
+                <p class="if-box"><span class="is-origin">如果</span> {{FilterTypeText}}：</p>
                 <p v-for="(it, i) in PriceTableData._ConditionText" :key="it.name + 'tips' + i">
                   <span v-if="i > 0" class="type">{{PriceTableData.Constraint.FilterType === 1 ? '且' : '或'}}</span>
                   <span class="name">{{it.name}}</span>
@@ -27,8 +27,8 @@
               <p v-else>{{PriceTableData._ConditionText}}</p>
             </div>
             <div class="common-property-condition-text-content-box condition">
-              <p class="if-box"><span class="is-origin">如果</span> {{FilterTypeText}}</p>
               <template v-if="Array.isArray(PriceTableData._ConditionText)">
+                <p class="if-box"><span class="is-origin">如果</span> {{FilterTypeText}}</p>
                 <p v-for="(it, i) in PriceTableData._ConditionText" :key="it.name + 'content' + i">
                   <span v-if="i > 0" class="type">{{PriceTableData.Constraint.FilterType === 1 ? '且' : '或'}}</span>
                   <span>{{it.name}}</span>
@@ -48,14 +48,16 @@
             <span class="blue-span" @click="onAxisPropSetupClick('X')" :class="{disabled: loading}">设置</span>
             <span class="content">{{XAxisProp?XAxisProp.DisplayContent.replace(/\[|\]/g, ""):'未设置'}}</span>
             <span class="blue-span" @click="onAxisDataSetupClick('X')" :class="{disabled: !XAxisProp}">设置数据</span>
-            <el-checkbox :disabled='!XAxisProp' v-model="PriceTableData.XAxis.IsCumsum">分段累加</el-checkbox>
+            <el-checkbox :disabled='!XAxisProp || XAxisProp.ValueType !== 0 || PriceTableData.YAxis.IsCumsum'
+             v-model="PriceTableData.XAxis.IsCumsum">分段累加</el-checkbox>
           </li>
           <li>
             <span class="label">竖轴：</span>
             <span class="blue-span" @click="onAxisPropSetupClick('Y')" :class="{disabled: loading}">设置</span>
             <span class="content">{{YAxisProp?YAxisProp.DisplayContent.replace(/\[|\]/g, ""):'未设置'}}</span>
             <span class="blue-span" @click="onAxisDataSetupClick('Y')" :class="{disabled: !YAxisProp}">设置数据</span>
-            <el-checkbox :disabled='!YAxisProp' v-model="PriceTableData.YAxis.IsCumsum">分段累加</el-checkbox>
+            <el-checkbox :disabled='!YAxisProp || YAxisProp.ValueType !== 0 || PriceTableData.XAxis.IsCumsum'
+             v-model="PriceTableData.YAxis.IsCumsum">分段累加</el-checkbox>
           </li>
         </ul>
         <div class="r">
@@ -105,7 +107,9 @@
       </p>
 
       <!-- 结果公式列表 -->
-      <ResultFormulaTableCom />
+      <ResultFormulaTableCom
+       v-if="PriceTableData && PriceTableData.ID" @setup='onFormulaSetupClick' @remove="onFormulaRemove"
+       :fetchFormulaListData='fetchFormulaListData' :initFetch='initFetchResultFormula' />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -146,6 +150,7 @@ export default {
       selectedElementIDs: [],
       AxisPropDataSetVisible: false, // 控制横竖轴设置数据弹窗展示
       FormItemOptionSetVisible: false, // 表单项目设置弹窗(起步价等)
+      initFetchResultFormula: true,
     };
   },
   computed: {
@@ -189,6 +194,15 @@ export default {
     FilterTypeText() {
       if (!this.PriceTableData || !this.PriceTableData.Constraint) return '';
       return this.PriceTableData.Constraint.FilterType === 1 ? '满足所有' : '满足任一';
+    },
+    fetchFormulaListData() {
+      if (!this.PriceTableData || !this.PriceTableData.ID) return null;
+      return {
+        TableID: this.PriceTableData.ID,
+        ProductID: this.ProductID,
+        PriceID: this.PriceID,
+        UseModule: 5,
+      };
     },
   },
   methods: {
@@ -434,6 +448,7 @@ export default {
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
           this.$store.commit('priceManage/setPriceTableListItemChange', [temp, resp.data.Data]);
+          if (!this.PriceTableData.ID) this.PriceTableData.ID = resp.data.Data;
         };
         this.messageBox.successSingle('保存成功', cb, cb);
       }
@@ -459,15 +474,28 @@ export default {
       }
       return true;
     },
+    onFormulaSetupClick(e) { // 设置结果公式 (添加|编辑)
+      this.$store.commit('priceManage/setCurPriceTableItemResultFormulaInfo', [this.PriceTableData, e]);
+      const { params } = this.$route;
+      const pathName = this.isQuotationPage ? 'QuotationPriceResultFormulaSet' : 'CraftPriceTableResultFormulaSet';
+      this.$router.replace(({ name: pathName, params }));
+    },
+    async onFormulaRemove(e) { // 结果公式删除
+      const resp = await this.api.getFormulaRemove(e.ID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          this.$store.commit('priceManage/setResultFormulaItemRemove', e);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
   },
   created() {
     const initData = JSON.parse(JSON.stringify(this.curEditPriceItemData)) || { ID: '', PriceID: this.curPriceItem?.ID, SolutionID: this.curSolutionItem?.ID };
     this.PriceTableData = new PriceTableClass(initData); // 初始化价格类对象（添加|编辑）
     this.generatePriceListData(); // 初始化价格表数据PriceList
-  },
-  mounted() {
     this.getInitDataFromRoutePath();
-    // this.FetchInitDatas();
+    if (!this.fetchFormulaListData) this.initFetchResultFormula = false;
   },
 };
 </script>

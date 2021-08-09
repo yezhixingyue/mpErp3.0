@@ -237,7 +237,7 @@ export default {
       this.solutionSaveVisible = true;
     },
     async onSolutionSaveSubmit(data) { // 保存拼版方案
-      const nameSameItem = this.solutionList.find(it => it.Name === data.Name);
+      const nameSameItem = this.curTypeSolutionList.find(it => it.Name === data.Name);
       if (nameSameItem) {
         if (nameSameItem.ID === data.ID) {
           this.messageBox.failSingleError('保存失败', '方案名称未发生更改');
@@ -524,7 +524,7 @@ export default {
           font-size: 14px;
           padding: 5px 16px;
           padding-left: 20px;
-          width: 120px;
+          // width: 120px;
           line-height: 20px;
         }
         position: relative;

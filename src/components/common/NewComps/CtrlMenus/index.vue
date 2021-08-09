@@ -16,10 +16,10 @@
       <img src="@/assets/images/cost.png" alt="">
       <i>总费用</i>
     </span>
-    <span @click="onAllCostClick" :class="canAllCost ? '' : 'disabled'" v-if="showList.includes('allCost')">
+    <!-- <span @click="onAllCostClick" :class="canAllCost ? '' : 'disabled'" v-if="showList.includes('allCost')">
       <img src="@/assets/images/cost.png" alt="">
       <i>总费用</i>
-    </span>
+    </span> -->
     <span @click="onWriteClick" :class="canWrite ? '' : 'disabled'" v-if="showList.includes('write')">
       <img src="@/assets/images/write2.png" alt="">
       <i>{{writeText}}</i>

@@ -85,6 +85,9 @@ export default {
     PriceItemPropertyList: [], // 价格表 X Y轴属性选择列表数据
     PriceTableList: [],
     PriceTableConditionPropertyList: [],
+    curPriceTableItemData: null, // 当前正在设置结果公式的价格表信息（或工艺费价格表信息）
+    curPriceTableResultFormulaData: null, // 当前正在设置的结果公式数据信息
+    ResultFormulaList: [], // 结果公式列表数据
   },
   getters: {
   },
@@ -286,9 +289,9 @@ export default {
     setCurEditPriceItemData(state, data) {
       state.curEditPriceItemData = data;
     },
-    // setPriceItemPropertyList(state, list) {
-    //   state.PriceItemPropertyList = list;
-    // },
+    setPriceItemPropertyList(state, list) {
+      state.PriceItemPropertyList = list;
+    },
     setPriceTableList(state, list) { // 设置价格表数据 工艺费和价格表通用
       state.PriceTableList = list;
     },
@@ -321,6 +324,44 @@ export default {
     setPriceTableConditionPropertyList(state, [ConditionPropertyList, AxisPropertyList]) { // 价格表条件属性列表
       state.PriceTableConditionPropertyList = Array.isArray(ConditionPropertyList) ? ConditionPropertyList : [];
       state.PriceItemPropertyList = Array.isArray(AxisPropertyList) ? AxisPropertyList : [];
+    },
+    setCurPriceTableItemResultFormulaInfo(state, [tableData, formulaData]) { // 设置结果公式所需的相关数据(价格表数据与公式编辑数据)
+      state.curPriceTableItemData = tableData;
+      state.curPriceTableResultFormulaData = formulaData;
+    },
+    setResultFormulaList(state, list) { // 设置结果公式列表数据
+      state.ResultFormulaList = list;
+    },
+    setResultFormulaItemChange(state, [item, ID]) { // 编辑或添加结果公式
+      const t = state.PriceTableList.find(it => it.PriceID === item.PriceID && it.ID === item.TableID);
+      if (t) { // 对列表中数据进行修改 以保证同步最新
+        if (!t.FormulaList) t.FormulaList = [];
+        if (!item.ID) { // 新增
+          t.FormulaList.unshift({ ...item, ID });
+        } else { // 编辑
+          const i = t.FormulaList.findIndex(it => it.ID === ID);
+          if (i > -1) {
+            const _item = { ...t.FormulaList[i], ...item };
+            t.FormulaList.splice(i, 1, _item);
+          }
+        }
+      }
+      if (!item.ID) { // 新增
+        state.ResultFormulaList.unshift({ ...item, ID });
+      } else { // 编辑
+        const i = state.ResultFormulaList.findIndex(it => it.ID === ID);
+        if (i > -1) {
+          const _item = { ...state.ResultFormulaList[i], ...item };
+          state.ResultFormulaList.splice(i, 1, _item);
+        }
+      }
+    },
+    setResultFormulaItemRemove(state, item) { // 删除结果公式 工艺费结果公式、工艺总费用、价格表等3个共用
+      const t = state.PriceTableList.find(it => it.PriceID === item.PriceID && it.ID === item.TableID);
+      if (t && Array.isArray(t.FormulaList)) { // 对列表中数据进行修改 以保证同步最新
+        t.FormulaList = t.FormulaList.filter(it => it.ID !== item.ID);
+      }
+      state.ResultFormulaList = state.ResultFormulaList.filter(it => it.ID !== item.ID);
     },
   },
   actions: {
@@ -411,18 +452,26 @@ export default {
       ]);
       commit('setPriceTableConditionPropertyList', [ConditionPropertyList || [], AxisPropertyList || []]);
     },
-    // async getPriceTablePropertyList({ commit }, ProductID) { // 获取价格表X Y轴选择属性列表数据
-    //   commit('setPriceItemPropertyList', []);
-    //   const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID });
-    //   if (list) {
-    //     commit('setPriceItemPropertyList', list);
-    //   }
-    // },
+    async getConditionPropertyList({ state, commit }, ProductID) { // 获取工艺总费用表 条件属性列表
+      if (state.PriceItemPropertyList.length > 0 && state.PriceItemPropertyList[0].Product?.ID === ProductID) return;
+      commit('setPriceItemPropertyList', []);
+      const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID });
+      if (list) {
+        commit('setPriceItemPropertyList', list);
+      }
+    },
     async getPriceTableList({ commit }, SolutionID) {
       commit('setPriceTableList', []);
       const resp = await api.getPriceTableList(SolutionID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         commit('setPriceTableList', resp.data.Data);
+      }
+    },
+    async getResultFormulaList({ commit }, data) { // 获取结果公式列表数据
+      commit('setResultFormulaList', []);
+      const resp = await api.getFormulaList(data).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        commit('setResultFormulaList', resp.data.Data);
       }
     },
   },

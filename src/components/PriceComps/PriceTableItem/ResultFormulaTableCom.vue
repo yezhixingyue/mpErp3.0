@@ -8,7 +8,7 @@
         <i class="el-icon-warning"></i> 注：最终输出结果以下列公式运算结果为准，如果匹配不到任何公式，则此表输出结果为空。
       </span>
     </header>
-    <main>
+    <main :class="{ loading: loading }">
       <div v-for="item in localTableData" :key="item.ID">
         <div class="condition">
           <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
@@ -66,7 +66,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 export default {
   props: {
@@ -74,23 +76,37 @@ export default {
       type: Array,
       default: () => [],
     },
+    initFetch: {
+      type: Boolean,
+      default: true,
+    },
+    fetchFormulaListData: {
+      type: Object,
+      default: null,
+    },
   },
   components: {
     CtrlMenus,
   },
   computed: {
+    ...mapState('priceManage', ['ResultFormulaList', 'PriceItemPropertyList']),
     localTableData() {
-      if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
-      return this.dataList.map(it => ({
+      if (!this.ResultFormulaList || !Array.isArray(this.ResultFormulaList) || this.ResultFormulaList.length === 0) return [];
+      return this.ResultFormulaList.map(it => ({
         ...it,
         // eslint-disable-next-line no-nested-ternary
-        FilterTypeText: it.Constraint ? (it.Constraint.FilterType === 1 ? '满足所有' : '满足任一') : '未知满足关系',
+        FilterTypeText: it.Constraint ? (it.Constraint.FilterType === 1 ? '满足所有' : '满足任一') : '',
         result: this.getShowResult(it),
-      }));
+      })).map(it => {
+        if (!it.Constraint) return { ...it, _ConditionText: '无' };
+        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.PriceItemPropertyList);
+        return { ...it, Constraint, _ConditionText };
+      });
     },
   },
   data() {
     return {
+      loading: false,
     };
   },
   methods: {
@@ -103,9 +119,17 @@ export default {
       });
     },
     getShowResult(item) {
-      console.log(item);
-      return ['其它类型，暂未生成对应结果'];
+      return [item.Content || '未获取到公式'];
     },
+    async getFormulaList() {
+      if (!this.fetchFormulaListData) return;
+      this.loading = true;
+      await this.$store.dispatch('priceManage/getResultFormulaList', this.fetchFormulaListData);
+      this.loading = false;
+    },
+  },
+  mounted() {
+    if (this.initFetch) this.getFormulaList();
   },
 };
 </script>
@@ -125,8 +149,8 @@ export default {
     > .mp-common-title-wrap {
       font-size: 15px;
       color: #444;
-      min-width: 12em;
-      margin-right: 1em;
+      // min-width: 12em;
+      margin-right: 2.4em;
       &::before {
         height: 16px;
       }
@@ -135,6 +159,7 @@ export default {
       flex: none;
       font-size: 14px;
       white-space: nowrap;
+      margin-right: 1em;
     }
   }
   > main {
@@ -181,6 +206,9 @@ export default {
           border-top-color: #ccc;
         }
       }
+    }
+    &.loading {
+      opacity: 0.2;
     }
   }
 }

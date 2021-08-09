@@ -19,7 +19,7 @@ export default class PriceTableClass {
   //   ItemList: [],
   // }
 
-  Priority = '';
+  Priority = 0;
 
   XAxis = {
     Property: null,

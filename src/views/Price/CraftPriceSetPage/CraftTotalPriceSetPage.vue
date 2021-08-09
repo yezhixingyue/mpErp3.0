@@ -7,6 +7,9 @@
       <span class="name">设置工艺：{{curCraft.Name}}</span>
     </header>
     <main>
+      <ResultFormulaTableCom
+       @setup='onFormulaSetupClick' @remove="onFormulaRemove"
+       :fetchFormulaListData='fetchFormulaListData' />
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -16,15 +19,23 @@
 
 <script>
 import { mapState } from 'vuex';
+import ResultFormulaTableCom from '@/components/PriceComps/PriceTableItem/ResultFormulaTableCom.vue';
 
 export default {
   name: 'CraftTotalPriceSetPage',
   components: {
+    ResultFormulaTableCom,
   },
   computed: {
     ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem']),
     curCraft() {
       return this.curCraftPriceItemData.Craft || {};
+    },
+    fetchFormulaListData() {
+      return {
+        PriceID: this.curPriceItem?.ID || '',
+        CraftPriceID: this.curCraftPriceItemData?.Craft?.CraftPriceID || '',
+      };
     },
   },
   data() {
@@ -44,6 +55,28 @@ export default {
     //   const data = await this.$store.dispatch('priceManage/getProductCraftData', this.ProductID);
     //   this.ProductData = data;
     // },
+    async onFormulaRemove(e) { // 公式删除
+      const resp = await this.api.getFormulaRemove(e.ID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          this.$store.commit('priceManage/setResultFormulaItemRemove', e);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    onFormulaSetupClick(data) {
+      console.log('onFormulaSetupClick 跳转配置页面', data);
+      const { params } = this.$route;
+      // this.$store.commit('priceManage/setCurSolutionItem', this.curSolutionItem);
+      // this.$store.commit('priceManage/setCurEditPriceItemData', data);
+      // this.$store.commit('priceManage/setResultFormulaList', []);
+      this.$store.commit('priceManage/setCurPriceTableItemResultFormulaInfo', [null, data]);
+      this.$router.push({ name: 'CraftAllCostFormulaSet', params: { ...params, isAllCost: true } });
+    },
+  },
+  created() {
+    this.$store.commit('priceManage/setResultFormulaList', []);
+    this.$store.dispatch('priceManage/getConditionPropertyList', this.$route.params.id);
   },
   mounted() {
     if (!this.curPriceItem || !this.curCraftPriceItemData || !this.curCraftPriceItemData.Craft) {

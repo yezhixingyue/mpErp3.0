@@ -153,7 +153,7 @@ export default {
     getFormulaCount(it) {
       // console.log('getFormulaCount', it);
       if (!Array.isArray(it.FormulaList) || it.FormulaList.length === 0) return 0;
-      return '有值待补充';
+      return it.FormulaList.length;
     },
     onConditionSetupClick(data) { // 设置条件
       this.$emit('setup', data);
