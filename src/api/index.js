@@ -532,9 +532,6 @@ const api = {
   getMakeupControlSolutionSetup(priceID, type, solutionID) { // PUT /Api/MakeupControl/Setup  拼版方案设置
     return instance.put('/Api/MakeupControl/Setup', '', { params: { priceID, type, solutionID } });
   },
-  getPriceResultList(priceID) { // GET /Api/PriceResult/List  获取工艺费列表信息
-    return instance.get('/Api/PriceResult/List', { params: { priceID } });
-  },
   getPriceSolutionSave(data) { // POST /Api/PriceSolution/Save  价格方案保存
     return instance.post('/Api/PriceSolution/Save', data);
   },
@@ -558,6 +555,15 @@ const api = {
   },
   getPriceTableSetCondition(data) { // POST /Api/PriceTable/SetCondition  价格表设置条件
     return instance.post('/Api/PriceTable/SetCondition', data);
+  },
+  getPriceResultSetup(data) { // POST /Api/PriceResult/Setup 保存报价结果
+    return instance.post('/Api/PriceResult/Setup', data);
+  },
+  getPriceResultList(priceID) { // GET /Api/PriceResult/List 获取报价结果列表
+    return instance.get('/Api/PriceResult/List', { params: { priceID } });
+  },
+  getPriceResultRemove(id) { // DELETE /Api/PriceResult/Remove 报价结果删除
+    return instance.delete('/Api/PriceResult/Remove', { params: { id } });
   },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */

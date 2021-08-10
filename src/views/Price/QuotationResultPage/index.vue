@@ -4,17 +4,13 @@
       <span>当前产品：</span>
       <span>{{ProductName}}</span>
       <span class="name">价格名称：{{PriceName}}</span>
-      <p>
-        <el-button type="primary" size="small" @click="onQuotationResultSaveClick(null)">添加条件</el-button>
-      </p>
-      <!-- <span class="name">设置工艺：{{curCraft.Name}}</span> -->
     </header>
     <main>
       <ResultTableCom
         @remove='onTableItemRemove'
-        @setup="onSetupPageJump($event, '', '')"
+        @setup="onQuotationResultSaveClick"
         :titleObj='{title:"报价结果",btnText:"+ 添加条件"}'
-        :dataList='[]'
+        :dataList='curPriceItem.ResultList || []'
         />
     </main>
     <footer>
@@ -41,17 +37,12 @@ export default {
       PriceName: '',
       ProductID: '',
       ProductName: '',
-      // ProductData: null,
     };
   },
   methods: {
     onGoBackClick() {
       this.$goback();
     },
-    // async getProductData() {
-    //   const data = await this.$store.dispatch('priceManage/getProductCraftData', this.ProductID);
-    //   this.ProductData = data;
-    // },
     onQuotationResultSaveClick(data) { // 添加 | 编辑 报价结果
       this.$store.commit('priceManage/setCurQuotationResultData', data);
       this.$router.push({
@@ -61,29 +52,13 @@ export default {
     },
     async onTableItemRemove(e) {
       if (!e || !e.ID) return;
-      const resp = await this.api.getMakeupSolutionItemRemove(e.ID).catch(() => {});
+      const resp = await this.api.getPriceResultRemove(e.ID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
-          this.MakeupRuleItemList = this.MakeupRuleItemList.filter(it => it.ID !== e.ID);
+          this.$store.commit('priceManage/setPriceResultItemRemove', [e.ID, this.ProductID, this.PriceID]);
         };
         this.messageBox.successSingle('删除成功', cb, cb);
       }
-    },
-    onSetupPageJump(data, PartID, PartName, isMixin) { // 跳转条件配置页面
-      if (!data) return;
-      const [setType, editData] = data;
-      const params = {
-        ProductID: this.$route.params.id,
-        PartID: PartID || 'null',
-        ProductName: this.$route.params.name,
-        PartName: PartName || 'null',
-        SolutionName: this.curSolutionItem.Name,
-        SolutionID: this.curSolutionItem.ID,
-        isMixin: isMixin || false,
-        setType,
-      };
-      this.$store.commit('priceManage/setCurMakeupItemEditData', editData);
-      this.$router.push({ name: 'MakeupCtrlConditionSet', params });
     },
   },
   mounted() {
@@ -96,7 +71,8 @@ export default {
     this.PriceName = Name;
     this.ProductID = this.$route.params.id;
     this.ProductName = this.$route.params.name;
-    // this.getProductData();
+    this.$store.dispatch('priceManage/getConditionPropertyList', this.ProductID);
+    // this.$store.dispatch('priceManage/getQuotationResultSolutionList', [this.ProductID, this.PriceID]);
   },
 };
 </script>

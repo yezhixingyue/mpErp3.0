@@ -5,9 +5,15 @@
       <span>{{ProductName}}</span>
       <span class="name">价格名称：{{PriceName}}</span>
       <span class="name">设置工艺：{{curCraft.Name}}</span>
+      <p class="tips-box">
+        <i class="el-icon-warning"></i>
+        <span>注：工艺最终费用以下列公式运算结果为准，如果匹配不到任何公式，则此工艺费用为空。</span>
+      </p>
     </header>
     <main>
       <ResultFormulaTableCom
+       title="总费用公式列表"
+       hiddenTip
        @setup='onFormulaSetupClick' @remove="onFormulaRemove"
        :fetchFormulaListData='fetchFormulaListData' />
     </main>
@@ -33,8 +39,10 @@ export default {
     },
     fetchFormulaListData() {
       return {
+        ProductID: this.ProductID,
         PriceID: this.curPriceItem?.ID || '',
         CraftPriceID: this.curCraftPriceItemData?.Craft?.CraftPriceID || '',
+        UseModule: 6,
       };
     },
   },
@@ -49,7 +57,12 @@ export default {
   },
   methods: {
     onGoBackClick() {
-      this.$goback();
+      // this.$goback();
+      const { params } = this.$route;
+      this.$router.replace({
+        name: 'CraftPriceSetPage',
+        params,
+      });
     },
     // async getProductData() {
     //   const data = await this.$store.dispatch('priceManage/getProductCraftData', this.ProductID);
@@ -65,22 +78,14 @@ export default {
       }
     },
     onFormulaSetupClick(data) {
-      console.log('onFormulaSetupClick 跳转配置页面', data);
       const { params } = this.$route;
-      // this.$store.commit('priceManage/setCurSolutionItem', this.curSolutionItem);
-      // this.$store.commit('priceManage/setCurEditPriceItemData', data);
-      // this.$store.commit('priceManage/setResultFormulaList', []);
       this.$store.commit('priceManage/setCurPriceTableItemResultFormulaInfo', [null, data]);
       this.$router.push({ name: 'CraftAllCostFormulaSet', params: { ...params, isAllCost: true } });
     },
   },
   created() {
-    this.$store.commit('priceManage/setResultFormulaList', []);
-    this.$store.dispatch('priceManage/getConditionPropertyList', this.$route.params.id);
-  },
-  mounted() {
     if (!this.curPriceItem || !this.curCraftPriceItemData || !this.curCraftPriceItemData.Craft) {
-      this.$goback();
+      this.onGoBackClick();
       return;
     }
     const { ID, Name } = this.curPriceItem;
@@ -88,7 +93,8 @@ export default {
     this.PriceName = Name;
     this.ProductID = this.$route.params.id;
     this.ProductName = this.$route.params.name;
-    // this.getProductData();
+    this.$store.commit('priceManage/setResultFormulaList', []);
+    this.$store.dispatch('priceManage/getConditionPropertyList', this.$route.params.id);
   },
 };
 </script>
@@ -103,7 +109,7 @@ export default {
   flex-direction: column;
   > header {
     padding: 30px 0;
-    padding-bottom: 20px;
+    padding-bottom: 5px;
     line-height: 15px;
     box-sizing: border-box;
     font-size: 15px;
@@ -118,10 +124,16 @@ export default {
         margin-left: 40px;
       }
     }
+    .tips-box {
+      margin-top: 50px;
+      font-weight: 400;
+      width: 700px;
+      letter-spacing: 1px;
+    }
   }
   > main {
     flex: 1;
-    padding-top: 15px;
+    padding-top: 0px;
     padding-left: 5px;
     .mp-common-title-wrap {
       color: #444;

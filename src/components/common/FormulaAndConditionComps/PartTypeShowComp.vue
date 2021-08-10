@@ -1,5 +1,16 @@
 <template>
   <div v-if="localListData" class="mp-erp-common-comps-on-element-select-dialog-part-type-show-item-comp-wrap">
+    <p class="title mp-common-title-wrap" v-if="localListData.Formula.length > 0">公式</p>
+    <ElementTypeShowComp
+     :dataList='localListData.Formula' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+     :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
+
+    <p class="title mp-common-title-wrap" v-if="localListData.Constraint.length > 0">子条件</p>
+    <ElementTypeShowComp
+     :dataList='localListData.Constraint' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+     :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
+
+    <p class="title mp-common-title-wrap" v-if="localListData.Formula.length > 0">其它</p>
     <div class="element">
       <template v-if="!isMultiple">
         <TipsSpanButton
@@ -16,14 +27,6 @@
           @change="onCheckedItemChange($event, item)">{{getTextName(item) || item.DisplayContent || "未知名称"}}</el-checkbox>
     </template>
     </div>
-    <p class="title mp-common-title-wrap" v-if="localListData.Formula.length > 0">公式</p>
-    <ElementTypeShowComp
-     :dataList='localListData.Formula' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
-     :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
-    <p class="title mp-common-title-wrap" v-if="localListData.Constraint.length > 0">子条件</p>
-    <ElementTypeShowComp
-     :dataList='localListData.Constraint' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
-     :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
   </div>
 </template>
 
@@ -109,8 +112,19 @@ export default {
   }
   > div.element {
     padding: 10px 0;
-    > span + span {
-      margin-left: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    .mp-common-title-wrap {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    > span {
+      margin-right: 28px;
+      margin-bottom: 12px;
+      white-space: nowrap;
+      &:last-of-type {
+        margin-right: 0;
+      }
     }
   }
   > ul {

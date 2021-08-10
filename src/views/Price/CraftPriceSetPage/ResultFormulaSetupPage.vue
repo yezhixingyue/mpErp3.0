@@ -4,6 +4,7 @@
       <h2>{{$route.params.name}}</h2>
       <span>价格名称：{{curPriceItem ? curPriceItem.Name : ''}}</span>
       <span v-if="!isQuotationPage && curCraftPriceItemData">设置工艺：{{curCraftPriceItemData.Craft.Name}}</span>
+      <span v-if="isAllCostPage">总费用</span>
     </header>
     <main>
       <ContionCommonComp ref="oLeftComp" :ComparePropertyList='PriceItemPropertyList' :PropertyList='PriceItemPropertyList'
@@ -52,10 +53,17 @@ export default {
   computed: {
     ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'curPriceTableItemData', 'curPriceTableResultFormulaData', 'PriceItemPropertyList']),
     Condition4getFormulaProperty() {
+      if (this.isAllCostPage) {
+        return {
+          ProductID: this.ProductID,
+          PriceID: this.PriceID,
+          useModule: 6,
+        };
+      }
       return {
         ProductID: this.ProductID,
         PriceID: this.PriceID,
-        TableID: this.curPriceTableItemData.ID,
+        TableID: this.curPriceTableItemData?.ID || '',
         useModule: 5,
       };
     },
@@ -79,22 +87,21 @@ export default {
         this.isQuotationPage = isQuotationPage;
       }
       if (isAllCostPage) { // 价格表页面执行操作
-        console.log(isAllCostPage);
         this.isAllCostPage = isAllCostPage;
       }
       if (!isQuotationPage && this.curCraftPriceItemData && this.curCraftPriceItemData.Craft) { // 工艺费用组成设置页面
         // 暂无操作
         this.CraftPriceID = this.curCraftPriceItemData.Craft.CraftPriceID || '';
-        console.log(this.curCraftPriceItemData);
       }
     },
     onGoBackClick() { // 返回上一页
+      if (this.isAllCostPage) {
+        this.$router.replace(({ name: 'CraftTotalPriceSetPage', params: { name: this.$route.params.name, id: this.$route.params.id } }));
+        return;
+      }
       const { params } = this.$route;
       const pathName = this.isQuotationPage ? 'QuotationPriceTableItemSet' : 'CraftPriceTableItemSet';
       this.$router.replace(({ name: pathName, params }));
-    },
-    onSuccessSubmit() {
-      console.log('onSuccessSubmit 该方法在此处后面废弃');
     },
     onSubmitClick() {
       const condition = this.$refs.oLeftComp.getConditonResult();
@@ -114,7 +121,7 @@ export default {
         const msg = isEdit ? '编辑成功' : '添加成功';
         const callback = () => {
           // this.$emit('successSubmit', [isEdit, data, resp.data.Data]);
-          this.$store.commit('priceManage/setResultFormulaItemChange', [data, resp.data.Data]);
+          this.$store.commit('priceManage/setResultFormulaItemChange', [data, resp.data.Data, this.isAllCostPage]);
           this.onGoBackClick();
         };
         this.messageBox.successSingle(msg, callback, callback);

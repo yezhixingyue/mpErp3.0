@@ -17,6 +17,7 @@
     </header>
     <main>
       <PriceTableComp
+        :disabled='!SolutionID'
         @export='onTableItemExport'
         @setup='onTableItemConditionSetupClick'
         @remove='onTableItemRemove'
@@ -251,7 +252,7 @@ export default {
       const resp = await this.api.getPriceTableRemobe(e.ID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
-          this.$store.commit('priceManage/setPriceTableListItemRemove', e.ID);
+          this.$store.commit('priceManage/setPriceTableListItemRemove', [e, this.isQuotationPage, this.ProductID, this.CraftPriceID]);
         };
         this.messageBox.successSingle('删除成功', cb, cb);
       }
@@ -287,6 +288,9 @@ export default {
         this.canLoadContentTableData = true;
       }
     },
+  },
+  created() {
+    this.$store.commit('priceManage/setPriceTableList', []);
   },
   mounted() {
     const isQuotationPage = this.$route.params.isQuotation; // 是否为价格表页面 否则为设置工艺费用组成页面

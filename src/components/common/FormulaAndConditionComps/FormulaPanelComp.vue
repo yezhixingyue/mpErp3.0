@@ -38,12 +38,18 @@
               <p class="module-title" v-if="!isSingle">已选元素概览</p>
               <ul>
                 <li v-for="(it, i) in FormulaData.PropertyList" :key="it.StoredContent + '' + i">
-                  <span class="name" v-if="!it.TipsContent">{{it.DisplayContent}}</span>
+                  <span class="name" v-if="!it.TipsContent" :class="{'is-bold': it.Type === 8 || it.Type === 9}">{{it.DisplayContent}}</span>
                   <TipsSpanButton v-else class="name" :text='it.DisplayContent' :tipContent='it.TipsContent' />
                   <span class="default">
-                    <i>空值设为：</i>
-                    <el-input size="small" v-model.trim="it.DefaultValue"></el-input>
-                    <i> {{it.Unit}}</i>
+                    <template v-if="it.Type !== 8 && it.Type !== 9">
+                      <i>空值设为：</i>
+                      <el-input size="small" v-model.trim="it.DefaultValue"></el-input>
+                      <i> {{it.Unit}}</i>
+                    </template>
+                    <template v-if="it.Type === 9">
+                      <span class="cost-selected-text">{{getCostSelectedText(it)}}</span>
+                      <span class="blue-span" @click="onCostSetupClick(it)">选择</span>
+                    </template>
                   </span>
                   <span class="del" @click="deleteElement(it, i)"><i></i>删除</span>
                   <span class="join blue-span" @click="joinElement(it)">加入 <i class="el-icon-d-arrow-right"></i> </span>
@@ -119,6 +125,7 @@
           </section>
         </template>
       </LRWidthDragAutoChangeComp>
+      <FormulaCostOptionSetupDialog :visible.sync="CostSetupVisible" :prop='curSetupCostProp' @submit='onCostSetupSubmit' />
       <FormulaPanelElementSelectDialog useType='formula' :DialogTitle="subFromulaDialogTitle" v-if="PropertyList && FormulaData"
         :visible.sync='selectVisible' :list='PropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs' />
     </main>
@@ -135,6 +142,7 @@ import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
 import TipsSpanButton from '@/components/common/NewComps/TipsSpanButton.vue';
 import FormulaPanelElementSelectDialog from './FormulaPanelElementSelectDialog.vue';
+import FormulaCostOptionSetupDialog from './FormulaCostOptionSetupDialog.vue';
 
 export default {
   props: {
@@ -199,6 +207,7 @@ export default {
     LRWidthDragAutoChangeComp,
     FormulaPanelElementSelectDialog,
     TipsSpanButton,
+    FormulaCostOptionSetupDialog,
   },
   data() {
     return {
@@ -220,6 +229,8 @@ export default {
       ],
       CalculateRes: '',
       isloading: false,
+      CostSetupVisible: false, // 设置工艺费弹窗
+      curSetupCostProp: null,
     };
   },
   computed: {
@@ -384,6 +395,23 @@ export default {
       const checkBool = FormulaClass.checkSubmit(this.FormulaData, this.hiddenHeader);
       return checkBool ? this.FormulaData : null;
     },
+    getCostSelectedText(it) {
+      console.log(it);
+      return '待续';
+    },
+    onCostSetupClick(it) {
+      if (!it) return;
+      this.curSetupCostProp = it;
+      this.CostSetupVisible = true;
+    },
+    onCostSetupSubmit(e) {
+      console.log('onCostSetupSubmit', e, this.curSetupCostProp, this.FormulaData);
+      const t = this.FormulaData?.PropertyList.find(it => it.StoredContent === this.curSetupCostProp.StoredContent);
+      if (t) {
+        t.CraftOptionList = [...e];
+      }
+      this.CostSetupVisible = false;
+    },
   },
   watch: {
     watchContent() {
@@ -507,6 +535,18 @@ export default {
                 }
                 > i:last-of-type {
                   font-size: 12px;
+                }
+                > span {
+                  font-size: 12px;
+                  &.cost-selected-text {
+                    display: inline-block;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    vertical-align: bottom;
+                    width: 190px;
+                    padding-right: 5px;
+                  }
                 }
               }
               &.del {

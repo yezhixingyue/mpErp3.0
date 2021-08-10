@@ -88,6 +88,7 @@ export default {
     curPriceTableItemData: null, // 当前正在设置结果公式的价格表信息（或工艺费价格表信息）
     curPriceTableResultFormulaData: null, // 当前正在设置的结果公式数据信息
     ResultFormulaList: [], // 结果公式列表数据
+    // QuotationResultSolutionList: [], // 报价结果方案列表
   },
   getters: {
   },
@@ -213,7 +214,7 @@ export default {
     setCurQuotationSchemeData(state, data) {
       state.curQuotationSchemeData = data;
     },
-    setCurQuotationResultData(state, data) {
+    setCurQuotationResultData(state, data) { // 当前正在编辑的报价结果条目信息
       state.curQuotationResultData = data;
     },
     setPriceItemSolutionListChange(state, [ProductID, PriceID, isEdit, data, itemID]) { // 报价方案添加编辑后的处理函数，用于同步修改列表数据
@@ -264,7 +265,7 @@ export default {
         if (t2) {
           const setFunc = list => {
             if (!itemData.ID) { // 添加
-              list.push({ ...itemData, ID: itemID });
+              list.push({ ...itemData, ID: itemID, TableNumber: 0 });
             } else { // 编辑
               const i = list.findIndex(it => it.ID === itemData.ID);
               if (i > -1) list.splice(i, 1, itemData);
@@ -272,12 +273,12 @@ export default {
           };
           if (isQuotationPage) {
             if (Array.isArray(t2.PriceTableList)) setFunc(t2.PriceTableList);
-            else t2.PriceTableList = [{ ...itemData, ID: itemID }];
+            else t2.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
           } else {
             const t3 = t2.CraftPriceList.find(it => it.ID === CraftPriceID);
             if (t3) {
               if (Array.isArray(t3.PriceTableList)) setFunc(t3.PriceTableList);
-              else t3.PriceTableList = [{ ...itemData, ID: itemID }];
+              else t3.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
             }
           }
         }
@@ -295,10 +296,24 @@ export default {
     setPriceTableList(state, list) { // 设置价格表数据 工艺费和价格表通用
       state.PriceTableList = list;
     },
-    setPriceTableListItemChange(state, [data, ID]) { // 价格表编辑 | 添加
+    setPriceTableListItemChange(state, [data, ID, isQuotationPage, ProductID, CraftPriceID]) { // 价格表编辑 | 添加
       if (!data.ID) { // 新增
         const temp = new PriceTableClass({ ...data, ID });
         state.PriceTableList.unshift(temp);
+        // 下面为在解决方案下方表格添加时对产品数据中的TableNumber进行修改 对其进行+1操作
+        const target1 = state.PriceManageList.find(it => it.ID === ProductID); // 目标产品
+        if (target1) {
+          const target2 = target1.PriceList.find(it => it.ID === data.PriceID); // 目标价格条目
+          const setFunc = list => {
+            const _t = list.find(it => it.ID === data.SolutionID);
+            if (_t) _t.TableNumber += 1;
+          };
+          if (isQuotationPage) setFunc(target2.PriceTableList);
+          else {
+            const target3 = target2.CraftPriceList.find(it => it.ID === CraftPriceID);
+            if (target3) setFunc(target3.PriceTableList);
+          }
+        }
       } else { // 编辑
         const t = state.PriceTableList.find(it => it.ID === ID);
         if (t) {
@@ -311,8 +326,22 @@ export default {
         }
       }
     },
-    setPriceTableListItemRemove(state, id) { // 价格表删除
-      state.PriceTableList = state.PriceTableList.filter(it => it.ID !== id);
+    setPriceTableListItemRemove(state, [data, isQuotationPage, ProductID, CraftPriceID]) { // 价格表删除
+      state.PriceTableList = state.PriceTableList.filter(it => it.ID !== data.ID);
+      // 下面为在解决方案下方表格删除时对产品数据中的TableNumber进行修改 对其进行-1操作
+      const target1 = state.PriceManageList.find(it => it.ID === ProductID); // 目标产品
+      if (target1) {
+        const target2 = target1.PriceList.find(it => it.ID === data.PriceID); // 目标价格条目
+        const setFunc = list => {
+          const _t = list.find(it => it.ID === data.SolutionID);
+          if (_t) _t.TableNumber -= 1;
+        };
+        if (isQuotationPage) setFunc(target2.PriceTableList);
+        else {
+          const target3 = target2.CraftPriceList.find(it => it.ID === CraftPriceID);
+          if (target3) setFunc(target3.PriceTableList);
+        }
+      }
     },
     setPriceTableListItemCondition(state, { TableID, Constraint, Priority }) {
       const t = state.PriceTableList.find(it => it.ID === TableID);
@@ -332,20 +361,23 @@ export default {
     setResultFormulaList(state, list) { // 设置结果公式列表数据
       state.ResultFormulaList = list;
     },
-    setResultFormulaItemChange(state, [item, ID]) { // 编辑或添加结果公式
-      const t = state.PriceTableList.find(it => it.PriceID === item.PriceID && it.ID === item.TableID);
-      if (t) { // 对列表中数据进行修改 以保证同步最新
-        if (!t.FormulaList) t.FormulaList = [];
-        if (!item.ID) { // 新增
-          t.FormulaList.unshift({ ...item, ID });
-        } else { // 编辑
-          const i = t.FormulaList.findIndex(it => it.ID === ID);
-          if (i > -1) {
-            const _item = { ...t.FormulaList[i], ...item };
-            t.FormulaList.splice(i, 1, _item);
+    setResultFormulaItemChange(state, [item, ID, isAllCostPage]) { // 编辑或添加结果公式
+      if (!isAllCostPage) {
+        const t = state.PriceTableList.find(it => it.PriceID === item.PriceID && it.ID === item.TableID);
+        if (t) { // 对列表中数据进行修改 以保证同步最新
+          if (!t.FormulaList) t.FormulaList = [];
+          if (!item.ID) { // 新增
+            t.FormulaList.unshift({ ...item, ID });
+          } else { // 编辑
+            const i = t.FormulaList.findIndex(it => it.ID === ID);
+            if (i > -1) {
+              const _item = { ...t.FormulaList[i], ...item };
+              t.FormulaList.splice(i, 1, _item);
+            }
           }
         }
       }
+
       if (!item.ID) { // 新增
         state.ResultFormulaList.unshift({ ...item, ID });
       } else { // 编辑
@@ -362,6 +394,33 @@ export default {
         t.FormulaList = t.FormulaList.filter(it => it.ID !== item.ID);
       }
       state.ResultFormulaList = state.ResultFormulaList.filter(it => it.ID !== item.ID);
+    },
+    // setQuotationResultSolutionList(state, list) { // 设置报价结果中需要用到的方案列表
+    //   state.QuotationResultSolutionList = list;
+    // },
+    setPriceResultItemChange(state, [item, ID, ProductID, PriceID]) {
+      const t = state.PriceManageList.find(it => it.ID === ProductID);
+      if (t) {
+        const _price = t.PriceList.find(it => it.ID === PriceID);
+        if (_price) {
+          if (!item.ID) {
+            if (!_price.ResultList) _price.ResultList = [];
+            _price.ResultList.unshift({ ...item, ID });
+          } else { // 编辑
+            const i = _price.ResultList.findIndex(it => it.ID === ID);
+            if (i > -1) _price.ResultList.splice(i, 1, item);
+          }
+        }
+      }
+    },
+    setPriceResultItemRemove(state, [ID, ProductID, PriceID]) {
+      const t = state.PriceManageList.find(it => it.ID === ProductID);
+      if (t) {
+        const _price = t.PriceList.find(it => it.ID === PriceID);
+        if (_price) {
+          _price.ResultList = _price.ResultList.filter(it => it.ID !== ID);
+        }
+      }
     },
   },
   actions: {
@@ -474,5 +533,12 @@ export default {
         commit('setResultFormulaList', resp.data.Data);
       }
     },
+    // async getQuotationResultSolutionList({ commit }, [ProductID, PriceID]) { // 报价结果中获取方案列表
+    //   commit('setQuotationResultSolutionList', []);
+    //   const resp = await api.getFormulaList({ ProductID, UseModule: 6, PriceID }).catch(() => {});
+    //   if (resp && resp.data.Status === 1000) {
+    //     commit('setQuotationResultSolutionList', resp.data.Data);
+    //   }
+    // },
   },
 };

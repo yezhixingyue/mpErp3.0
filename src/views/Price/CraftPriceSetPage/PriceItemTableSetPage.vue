@@ -142,6 +142,7 @@ export default {
       PriceName: '',
       ProductID: '',
       ProductName: '',
+      CraftPriceID: '',
       isQuotationPage: false,
       PriceTableData: null,
       AxisPropVisible: false, // 控制横竖轴属性选择弹窗展示
@@ -201,6 +202,7 @@ export default {
         TableID: this.PriceTableData.ID,
         ProductID: this.ProductID,
         PriceID: this.PriceID,
+        CraftPriceID: this.CraftPriceID,
         UseModule: 5,
       };
     },
@@ -223,7 +225,7 @@ export default {
       }
       if (!isQuotationPage) { // 工艺费用组成设置页面
         // 暂无操作
-        // this.CraftPriceID = this.curCraftPriceItemData.Craft.CraftPriceID;
+        this.CraftPriceID = this.curCraftPriceItemData?.Craft?.CraftPriceID || '';
       }
     },
     async FetchInitDatas() { // 获取产品数据 X Y轴属性选择列表
@@ -447,7 +449,7 @@ export default {
       const resp = await this.api.getPriceTableSave(temp).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
-          this.$store.commit('priceManage/setPriceTableListItemChange', [temp, resp.data.Data]);
+          this.$store.commit('priceManage/setPriceTableListItemChange', [temp, resp.data.Data, this.isQuotationPage, this.ProductID, this.CraftPriceID]);
           if (!this.PriceTableData.ID) this.PriceTableData.ID = resp.data.Data;
         };
         this.messageBox.successSingle('保存成功', cb, cb);

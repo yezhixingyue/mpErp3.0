@@ -2,9 +2,9 @@
   <!-- 结果公式列表 -->
   <section class="mp-erp-price-module-price-table-result-formula-table-comp-container">
     <header>
-      <span class="mp-common-title-wrap">结果公式列表</span>
+      <span class="mp-common-title-wrap">{{title}}</span>
       <span class="blue-span" @click="onSetupClick(null)">+ 添加公式</span>
-      <span class="tips-box">
+      <span class="tips-box" v-if="!hiddenTip">
         <i class="el-icon-warning"></i> 注：最终输出结果以下列公式运算结果为准，如果匹配不到任何公式，则此表输出结果为空。
       </span>
     </header>
@@ -83,6 +83,14 @@ export default {
     fetchFormulaListData: {
       type: Object,
       default: null,
+    },
+    title: {
+      type: String,
+      default: '结果公式列表',
+    },
+    hiddenTip: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

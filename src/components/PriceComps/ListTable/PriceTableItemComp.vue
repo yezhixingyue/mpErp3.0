@@ -51,7 +51,8 @@
             <span style="min-width:88px">报价方案（{{it.SolutionList ? it.SolutionList.length : 0}}）</span>
           </TipsSpanButton>
           <TipsSpanButton text='报价结果' @click.native="onPriceItemSetMenuClick(it, 'QuotationResult')">
-            <span style="min-width:88px">报价结果（{{it.ResultList ? it.ResultList.length : 0}}）</span>
+            <span style="min-width:88px" :class="{disabled: !it.SolutionList || it.SolutionList.length === 0}"
+            >报价结果（{{it.ResultList ? it.ResultList.length : 0}}）</span>
           </TipsSpanButton>
         </div>
         <div class="name">

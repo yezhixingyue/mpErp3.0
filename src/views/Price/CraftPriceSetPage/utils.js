@@ -1,5 +1,5 @@
 export const insertShowName4SolutionList = (PriceTableList, ProductData) => { // 为tab名附加部件名称信息 及 数据列表条数信息(还未完成 缺少数值更新)
-  if (!ProductData || !Array.isArray(ProductData.PartList)) return PriceTableList;
+  if (!ProductData || !Array.isArray(ProductData.PartList) || !PriceTableList) return PriceTableList;
   return PriceTableList.map(it => {
     const { ApplyRange, Name, TableNumber } = it;
     let _PartName = '';

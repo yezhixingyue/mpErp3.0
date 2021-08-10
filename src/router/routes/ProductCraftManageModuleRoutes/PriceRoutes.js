@@ -336,7 +336,14 @@ const routeTree = {
             { name: 'CraftPriceTableConditionSet', children: [] },
           ],
         }, // 工艺组成设置页面
-        { name: 'CraftTotalPriceSetPage', children: [] }, // 工艺总费用设置页面
+        {
+          name: 'CraftTotalPriceSetPage',
+          children: [
+            {
+              name: 'CraftAllCostFormulaSet',
+              children: [],
+            },
+          ] }, // 工艺总费用设置页面
       ],
     },
     {

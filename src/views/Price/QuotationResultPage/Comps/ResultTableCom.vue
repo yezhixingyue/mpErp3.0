@@ -1,6 +1,6 @@
 <template>
   <!-- 风险提示组件 -->
-  <section class="mp-erp-price-module-makeup-ctrl-table-comp-container">
+  <section class="mp-erp-price-module-quotation-result-table-comp-container">
     <header v-if="titleObj">
       <span class="mp-common-title-wrap">{{titleObj.title}}</span>
       <span class="blue-span" @click="onSetupClick(null)">{{titleObj.btnText}}</span>
@@ -24,7 +24,7 @@
               </template>
               <p v-else>{{item._ConditionText}}</p>
               <p class="if-box" style="margin-right:5px">
-                <span class="is-origin">{{type === '1' ? '使用' : '则'}}</span>
+                <span class="is-origin">则使用下列报价方案</span>
               </p>
               <p v-for="(res, ri) in item.result.filter(_it => _it)" :key="res + ri">{{res}}</p>
             </div>
@@ -40,7 +40,7 @@
               </template>
               <p v-else>{{item._ConditionText}}</p>
               <p class="if-box" style="margin-left:10px;margin-right:5px">
-                <span class="is-origin">{{type === '1' ? '使用' : '则'}}</span>
+                <span class="is-origin">则使用下列报价方案</span>
               </p>
               <p>
                 <em v-for="(res,ri) in item.result.filter(_it => _it)" :key="res + ri" style="margin-right:4px">{{res}}
@@ -65,16 +65,11 @@
 
 <script>
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
-import { PropertyFixedType } from '@/assets/js/TypeClass/PropertyClass';
 import { mapState } from 'vuex';
-import { MakeupMode } from '@/assets/js/TypeClass/PrintBreadth';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 export default {
   props: {
-    type: {
-      type: String,
-      default: '',
-    },
     dataList: {
       type: Array,
       default: () => [],
@@ -88,15 +83,19 @@ export default {
     CtrlMenus,
   },
   computed: {
-    ...mapState('priceManage', ['MakeupControlTypeList', 'WastageRuleList', 'WastageUnitTypeList', 'WastageUnitList', 'PrintTimesRuleList', 'CuttingRuleList']),
+    ...mapState('priceManage', ['PriceItemPropertyList', 'curPriceItem']),
     localTableData() {
       if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
       return this.dataList.map(it => ({
         ...it,
         // eslint-disable-next-line no-nested-ternary
-        FilterTypeText: it.Constraint ? (it.Constraint.FilterType === 1 ? '满足所有' : '满足任一') : '未知满足关系',
+        FilterTypeText: it.Constraint ? (it.Constraint.FilterType === 1 ? '满足所有' : '满足任一') : '',
         result: this.getShowResult(it),
-      }));
+      })).map(it => {
+        if (!it.Constraint) return { ...it, _ConditionText: '无' };
+        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.PriceItemPropertyList);
+        return { ...it, Constraint, _ConditionText };
+      });
     },
   },
   data() {
@@ -105,78 +104,27 @@ export default {
   },
   methods: {
     onSetupClick(data) {
-      this.$emit('setup', [this.type, data]);
+      this.$emit('setup', data);
     },
     onRemoveClick(data) {
-      this.messageBox.warnCancelNullMsg('确定删除该条设置吗?', () => {
+      this.messageBox.warnCancelNullMsg('确定删除该条结果吗?', () => {
         this.$emit('remove', data);
       });
     },
     getShowResult(item) {
-      const t = this.MakeupControlTypeList.find(_it => _it.ID === +this.type);
-      if (!t) return ['未知结果'];
-      if (t.Name === '尺寸数量') {
-        const { LengthFormula, WidthFormula, DifferentContentFormula, PrintNumberFormula, MixtureID } = item;
-        if (MixtureID) return ['允许混拼'];
-        const getValue = ({ Value, FormulaName, Type }, title) => {
-          let str = title;
-          if (Value || Value === 0) str += Value;
-          else if (FormulaName) {
-            str += FormulaName;
-            const targetFixedTypeName = this.$utils.getNameFromListByIDs(Type, PropertyFixedType);
-            if (targetFixedTypeName) str += targetFixedTypeName;
-          } else str += '未获取到';
-          return str;
-        };
-        const len = getValue(LengthFormula || {}, '长：');
-        const width = getValue(WidthFormula || {}, '宽：');
-        const number = getValue(DifferentContentFormula || {}, '纸张数量：');
-        const count = getValue(PrintNumberFormula || {}, '印刷份数：');
-        return [len, width, number, count];
-      }
-      if (t.Name === '拼版幅面') {
-        const { BreadthList } = item;
-        const str = BreadthList.map(it => {
-          const { First, Second } = it;
-          const modeText = this.$utils.getNameFromListByIDs(Second, MakeupMode).join('、');
-          return `${First.Name}（${modeText}）`;
-        }).join('、');
-        return [str];
-      }
-      if (t.Name === '拼版规则') {
-        const { RuleList } = item;
-        if (!Array.isArray(RuleList)) return [''];
-        const str = RuleList.map(it => `${it.ColumnNumber}列 X ${it.RowNumber}行`).join('、');
-        return [`产品使用 ${str} 进行拼版`];
-      }
-      if (t.Name === '拼版算法') {
-        const { CuttingRule } = item;
-        if (!CuttingRule && CuttingRule !== 0) return [''];
-        const Text = this.$utils.getNameFromListByIDs(CuttingRule, this.CuttingRuleList);
-        return [`${this.titleObj.title}使用：${Text}算法`];
-      }
-      if (t.Name === '印刷次数') {
-        const { PrintTimes } = item;
-        if (!PrintTimes && PrintTimes !== 0) return [''];
-        const Text = this.$utils.getNameFromListByIDs(PrintTimes, this.PrintTimesRuleList);
-        return [`${this.titleObj.title}为：${Text}`];
-      }
-      if (t.Name === '物料损耗') {
-        const { Wastage } = item;
-        if (typeof Wastage !== 'object') return [''];
-        const { Rule, Value, Unit, UnitType } = Wastage;
-        const RuleText = this.$utils.getNameFromListByIDs(Rule, this.WastageRuleList);
-        const UnitText = this.$utils.getNameFromListByIDs(Unit, this.WastageUnitList);
-        const UnitTypeText = this.$utils.getNameFromListByIDs(UnitType, this.WastageUnitTypeList);
-        return [`${RuleText}：${Value}${UnitText}（ ${UnitTypeText} ）`];
-      }
-      return ['其它类型，暂未生成对应结果'];
+      const { List, UseMinPrice } = item;
+      const _SolutionList = this.curPriceItem?.SolutionList || [];
+      const list = List.map(it => _SolutionList.find(_it => _it.ID === it.ID)).filter(it => it).map(it => it.Name);
+      const first = list.join('、');
+      const second = UseMinPrice ? '（最低价）' : '（最高价）';
+      const all = first ? `${first}${second}` : '未知方案';
+      return [all];
     },
   },
 };
 </script>
 <style lang='scss'>
-.mp-erp-price-module-makeup-ctrl-table-comp-container {
+.mp-erp-price-module-quotation-result-table-comp-container {
   margin-bottom: 40px;
   > header {
     padding-bottom: 10px;
@@ -188,7 +136,7 @@ export default {
     > .mp-common-title-wrap {
       font-size: 15px;
       color: #444;
-      min-width: 12em;
+      min-width: 8em;
       margin-right: 1em;
       &::before {
         height: 16px;

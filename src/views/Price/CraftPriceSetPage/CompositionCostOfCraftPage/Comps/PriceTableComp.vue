@@ -1,9 +1,8 @@
 <template>
-  <!-- 风险提示组件 -->
   <section class="mp-erp-price-module-price-table-page-price-table-comp-container">
     <header v-if="titleObj">
       <span class="mp-common-title-wrap">{{titleObj.title}}</span>
-      <span class="blue-span" @click="onFormDataWriteClick(null)">{{titleObj.btnText}}</span>
+      <span class="blue-span" :class="{disabled: disabled}" @click="onFormDataWriteClick(null)">{{titleObj.btnText}}</span>
       <slot name="title"></slot>
     </header>
     <main>
@@ -95,6 +94,10 @@ export default {
       default: null,
     },
     loading: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },

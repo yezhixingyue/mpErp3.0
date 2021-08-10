@@ -65,15 +65,14 @@ export default class FormulaClass {
     //   return false;
     // }
     if (PropertyList && PropertyList.length > 0) {
-      let t = PropertyList.find(it => !it.DefaultValue && it.DefaultValue !== 0);
+      let t = PropertyList.find(it => !it.DefaultValue && it.DefaultValue !== 0 && it.Type !== 8);
       if (t) {
         messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}未设置空值`);
         return false;
       }
-      console.log(PropertyList);
       t = PropertyList.find(it => {
         if (!it.Element) {
-          return !getValueIsOrNotNumber(it.DefaultValue);
+          return !getValueIsOrNotNumber(it.DefaultValue) && !(it.Type === 8 && !it.DefaultValue);
         }
         const { Type, NumbericAttribute } = it.Element;
         const isInteger = !(Type === 1 && NumbericAttribute && NumbericAttribute.AllowDecimal);
