@@ -4,6 +4,7 @@
     top='8vh'
     title="设置报价方式"
     :visible.sync="visible"
+    :disabled='disabled'
     @submit="onSubmit"
     @cancle="onCancle"
     @open='onOpen'
@@ -32,17 +33,24 @@
         <el-radio :label="it.ID" v-for="it in canSelectPriceList" :key="it.ID">{{it.Name}}</el-radio>
       </el-radio-group>
       <div v-if="canSelectPriceList.length === 0" class="none-list">
-        <img src="@/assets/images/null.png" alt="">
-        <span class="remark">暂无可用基础价格，无法选中及保存</span>
+        <p class="tips-box remark is-pink"> <i class="el-icon-warning"></i> 无可用基础价格</p>
       </div>
       <template v-if="curSelectedPrice">
         <p class="mp-common-title-wrap" style="margin-top:25px">
           <span>设置比例</span>
         </p>
-        <div class="result">
-          <span class="remark" v-if="curSelectedPrice.SolutionList || curSelectedPrice.SolutionList.length === 0">
-            选中的价格无可用报价方案，无法设置比例
-          </span>
+        <div class="result mp-scroll-wrap">
+          <p class="tips-box remark is-pink" v-if="!curSelectedPrice.SolutionList || curSelectedPrice.SolutionList.length === 0">
+            <i class="el-icon-warning"></i>  该基础价格无报价方案
+          </p>
+          <ul v-else>
+            <li v-for="it in ruleForm.ReferencePriceList" :key="it.Solution.ID">
+              <span>{{it.Solution.Name}}</span>
+              <span>X</span>
+              <el-input v-model.trim="it.Percent" ></el-input>
+              <span>%</span>
+            </li>
+          </ul>
         </div>
       </template>
     </div>
@@ -90,12 +98,14 @@ export default {
     curSelectedPrice() {
       if (!this.PriceList || this.PriceList.length === 0 || !this.ruleForm.BasePriceID) return null;
       const t = this.PriceList.find(it => it.ID === this.ruleForm.BasePriceID);
-      if (!t) return null;
-      return t;
+      return t || null;
     },
     canSelectPriceList() {
       if (!this.PriceList || this.PriceList.length === 0) return [];
       return this.PriceList.filter(it => it.IsOwnPrice && it.ID !== this.curPrice.ID);
+    },
+    disabled() {
+      return !this.ruleForm.IsOwnPrice && (this.canSelectPriceList.length === 0 || !this.curSelectedPrice || this.ruleForm.ReferencePriceList.length === 0);
     },
   },
   methods: {
@@ -124,6 +134,11 @@ export default {
     },
     formDataChecker() {
       if (this.ruleForm.IsOwnPrice) return true;
+      const ids = this.PriceList.filter(it => !it.IsOwnPrice).map(it => it.BasePriceID);
+      if (ids.includes(this.ruleForm.ID)) {
+        this.messageBox.failSingleError('保存失败', '当前价格已被其它价格条目引用为基础价格');
+        return false;
+      }
       if (!this.ruleForm.BasePriceID) {
         this.messageBox.failSingleError('保存失败', '请选择基础价格');
         return false;
@@ -135,7 +150,7 @@ export default {
       // 对价格比例进行校验
       let t = this.ruleForm.ReferencePriceList.find(it => !this.$utils.getValueIsOrNotNumber(it.Percent));
       if (t) {
-        this.messageBox.failSingleError('保存失败', '价格比例必须为数字');
+        this.messageBox.failSingleError('保存失败', '价格比例不能为空且必须为数字');
         return false;
       }
       t = this.ruleForm.ReferencePriceList.find(it => it.Percent < 0);
@@ -143,7 +158,34 @@ export default {
         this.messageBox.failSingleError('保存失败', '价格比例不能小于0');
         return false;
       }
+      t = this.ruleForm.ReferencePriceList.find(it => it.Percent > 100);
+      if (t) {
+        this.messageBox.failSingleError('保存失败', '价格比例不能大于100%');
+        return false;
+      }
       return true;
+    },
+  },
+  watch: {
+    curSelectedPrice: {
+      handler(val) {
+        if (!this.visible || !val) return;
+        if (!Array.isArray(val.SolutionList)) {
+          this.ruleForm.ReferencePriceList = [];
+          return;
+        }
+        if (val.ID === this.curPrice.BasePriceID) {
+          this.ruleForm.ReferencePriceList = this.curPrice.ReferencePriceList;
+          return;
+        }
+        this.ruleForm.ReferencePriceList = val.SolutionList.map(it => ({
+          Solution: {
+            ID: it.ID,
+            Name: it.Name,
+          },
+          Percent: '',
+        }));
+      },
     },
   },
 };
@@ -187,7 +229,6 @@ export default {
     > .content {
       flex: 1;
       padding-top: 20px;
-      overflow-y: auto;
       > .mp-common-title-wrap {
         color: #444;
         padding-bottom: 12px;
@@ -223,12 +264,44 @@ export default {
       .result-none, .remark {
         font-size: 12px;
         color: #a2a2a2;
-        margin-left: 1.5em;
+        width: 500px;
       }
       .none-list {
         > span {
           position: relative;
           top: -5px;
+        }
+      }
+      .result {
+        overflow-y: auto;
+        height: 288px;
+        > ul {
+          > li {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            > span {
+              font-size: 12px;
+              color: #585858;
+              &:last-of-type {
+                color: #a2a2a2;
+              }
+              &:first-of-type {
+                font-size: 14px;
+                min-width: 6em;
+                margin-right: 6px;
+              }
+            }
+            .el-input {
+              width: 100px;
+              margin: 0 12px;
+              margin-left: 15px;
+              input {
+                height: 30px;
+                line-height: 30px;
+              }
+            }
+          }
         }
       }
     }

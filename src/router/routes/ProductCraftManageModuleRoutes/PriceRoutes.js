@@ -294,6 +294,30 @@ const routes = [
     },
     component: () => import('../../../views/Price/QuotationResultPage/QuotationResultSetPage.vue'),
   },
+  /** 报价结果
+  --------------------------------------------------------------  */
+  {
+    path: '/NumberSwapList/:name/:id',
+    name: 'NumberSwapList',
+    meta: {
+      title: '数值转换列表',
+      requiresAuth: true,
+      pageName: 'NumberSwapList',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/NumberSwap'),
+  },
+  {
+    path: '/NumberSwapSetup/:name/:id/:partName/:partID',
+    name: 'NumberSwapSetup',
+    meta: {
+      title: '设置数值转换',
+      requiresAuth: true,
+      pageName: 'NumberSwapSetup',
+      // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
+    },
+    component: () => import('../../../views/Price/NumberSwap/NumberSwapSetupPage.vue'),
+  },
 ];
 
 const routeTree = {
@@ -369,6 +393,12 @@ const routeTree = {
       name: 'QuotationResult', // 报价结果
       children: [
         { name: 'QuotationResultSet', children: [] },
+      ],
+    },
+    {
+      name: 'NumberSwapList', // 数值转换
+      children: [
+        { name: 'NumberSwapSetup', children: [] },
       ],
     },
   ],

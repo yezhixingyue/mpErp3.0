@@ -41,13 +41,13 @@
                   <span class="name" v-if="!it.TipsContent" :class="{'is-bold': it.Type === 8 || it.Type === 9}">{{it.DisplayContent}}</span>
                   <TipsSpanButton v-else class="name" :text='it.DisplayContent' :tipContent='it.TipsContent' />
                   <span class="default">
-                    <template v-if="it.Type !== 8 && it.Type !== 9">
+                    <template v-if="it.Type !== 8 && !(it.Type === 9 && it.CraftOptionList && it.CraftOptionList.length > 0)">
                       <i>空值设为：</i>
                       <el-input size="small" v-model.trim="it.DefaultValue"></el-input>
                       <i> {{it.Unit}}</i>
                     </template>
-                    <template v-if="it.Type === 9">
-                      <span class="cost-selected-text">{{getCostSelectedText(it)}}</span>
+                    <template v-if="it.Type === 9 && it.CraftOptionList && it.CraftOptionList.length > 0">
+                      <span class="cost-selected-text" :title="getCostSelectedText(it)">{{getCostSelectedText(it)}}</span>
                       <span class="blue-span" @click="onCostSetupClick(it)">选择</span>
                     </template>
                   </span>
@@ -396,8 +396,19 @@ export default {
       return checkBool ? this.FormulaData : null;
     },
     getCostSelectedText(it) {
-      console.log(it);
-      return '待续';
+      if (!it || !Array.isArray(it.CraftOptionList) || it.CraftOptionList.length === 0) return '';
+      const list = []; // [{ Name: '产品工艺', List: [] }]
+      it.CraftOptionList.filter(_it => _it.IsChecked).forEach(item => {
+        const Name = item.Part ? `${item.Part.Name}` : '产品';
+        const ValueText = item.DefaultValue || item.DefaultValue === 0 ? `（${item.DefaultValue}）` : '';
+        const t = list.find(_it => _it.Name === Name);
+        if (t) t.List.push(`${item.Name}${ValueText}`);
+        else list.push({ Name, List: [`${item.Name}${ValueText}`] });
+      });
+      return list.map(({ Name, List }) => {
+        const lists = List.join('、');
+        return `${Name}：${lists}`;
+      }).join(' ');
     },
     onCostSetupClick(it) {
       if (!it) return;
@@ -405,7 +416,6 @@ export default {
       this.CostSetupVisible = true;
     },
     onCostSetupSubmit(e) {
-      console.log('onCostSetupSubmit', e, this.curSetupCostProp, this.FormulaData);
       const t = this.FormulaData?.PropertyList.find(it => it.StoredContent === this.curSetupCostProp.StoredContent);
       if (t) {
         t.CraftOptionList = [...e];
@@ -530,6 +540,7 @@ export default {
                 width: 260px;
                 white-space: nowrap;
                 overflow: hidden;
+                line-height: 18px;
                 > .el-input {
                   width: 120px;
                 }

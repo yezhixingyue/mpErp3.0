@@ -59,6 +59,10 @@ export default {
       type: String,
       default: '',
     },
+    OpenType: {
+      type: String,
+      default: 'save',
+    },
   },
   components: {
     CommonDialogComp,
@@ -105,6 +109,7 @@ export default {
     },
     initEditData() { // 数据初始化方法
       this.title = this.EditData ? '编辑价格' : '添加价格';
+      if (this.OpenType === 'copy') this.title = '拷贝价格';
       const ID = this.EditData ? this.EditData.ID : '';
       const Name = this.EditData ? this.EditData.Name : '';
       const IsIncludeIncreased = this.EditData ? this.EditData.IsIncludeIncreasedArea : false;
@@ -121,7 +126,7 @@ export default {
         this.messageBox.failSingleError('保存失败', '请输入价格名称');
         return false;
       }
-      if (!this.ruleForm.Range.List.length === 0 && !this.ruleForm.Range.IsIncludeIncreased) {
+      if (this.ruleForm.Range.List.length === 0 && !this.ruleForm.Range.IsIncludeIncreased) {
         this.messageBox.failSingleError('保存失败', '请选择适用区域');
         return false;
       }

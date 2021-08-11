@@ -565,6 +565,18 @@ const api = {
   getPriceResultRemove(id) { // DELETE /Api/PriceResult/Remove 报价结果删除
     return instance.delete('/Api/PriceResult/Remove', { params: { id } });
   },
+  getNumberSwapList(priceID) { // GET /Api/NumberSwap/List  获取数值转换列表
+    return instance.get('/Api/NumberSwap/List', { params: { priceID } });
+  },
+  getNumberSwapSetup(data) { // POST /Api/NumberSwap/Setup  数值转换保存
+    return instance.post('/Api/NumberSwap/Setup', data);
+  },
+  getNumberSwapRemove(id) { // DELETE /Api/NumberSwap/Remove 数值转换删除
+    return instance.delete('/Api/NumberSwap/Remove', { params: { id } });
+  },
+  getProductPriceCopy(data) { // POST /Api/ProductPrice/Copy  复制价格
+    return instance.post('/Api/ProductPrice/Copy', data);
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

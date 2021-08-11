@@ -28,17 +28,17 @@
       </div>
     </header>
     <ul> <!-- 价格条目 -->
-      <li v-for="it in itemData.PriceList" :key="it.PartID">
+      <li v-for="it in localPriceList" :key="it.PartID">
         <div class="mode">
           <span class="separate">
             <i v-if="it.IsOwnPrice">单独设置</i>
-            <i v-else title="123">按 线下价格 固定报价 x 90%  专版x 50% 数码 x 58%
+            <i v-else :title="it.ProportionName">{{it.ProportionName}}
             </i>
           </span>
           <TipsSpanButton @click.native="onIsOwnPriceSetClick(it)" text='设置报价方式'/>
         </div>
         <div class="menus" v-if="it.IsOwnPrice">
-          <TipsSpanButton text='数值转换' />
+          <TipsSpanButton text='数值转换' @click.native="onPriceItemSetMenuClick(it, 'NumberSwapList')" />
           <TipsSpanButton text='拼版方案选择' @click.native="onPriceItemSetMenuClick(it, 'MakeupSolutionSet')">
             <span>拼版方案选择（<i :class="it.MakeupList.filter(_it => _it.Solution).length < 6 ? 'is-pink' : ''"
             >{{it.MakeupList.filter(_it => _it.Solution).length}}</i>/{{it.MakeupList ? it.MakeupList.length : 0}}）</span>
@@ -63,12 +63,15 @@
           <span>{{ it.CreateTime | format2LangTypeDate }}</span>
         </div>
         <div class="ctrl">
-          <CtrlMenus :showList="['edit','del','copy']" @copy='onPriceItemCopyClick(it)' @edit='onPriceItemSaveClick(it)' @remove='onPriceItemRemoveClick(it)' />
+          <CtrlMenus :showList="['edit','del','copy']"
+           @copy='onPriceItemSaveClick(it, "copy")'
+           @edit='onPriceItemSaveClick(it)'
+           @remove='onPriceItemRemoveClick(it)' />
         </div>
       </li>
     </ul>
-    <!-- 价格 添加|保存 -->
-    <PriceItemSaveDialog :productTitle="itemData.Name" :visible.sync='visible' :EditData='curData' @submit="handleSubmit" />
+    <!-- 价格 添加|保存 | 拷贝 -->
+    <PriceItemSaveDialog :productTitle="itemData.Name" :visible.sync='visible' :EditData='curData' @submit="handleSubmit" :OpenType='areaOpenType' />
     <!-- 报价方式设置 -->
     <IsOwnPriceSetDialog
      :productTitle="itemData.Name"
@@ -117,6 +120,13 @@ export default {
       if (this.canSetPartList.length > 0) return '';
       return '仅有可多次使用的部件时才可设置子条件';
     },
+    localPriceList() {
+      if (!this.itemData || !Array.isArray(this.itemData.PriceList)) return [];
+      return this.itemData.PriceList.map(it => ({
+        ...it,
+        ProportionName: this.getProportionName(it, this.itemData.PriceList),
+      }));
+    },
   },
   data() {
     return {
@@ -124,6 +134,7 @@ export default {
       curData: null,
       visible: false,
       isOwnPriceVisible: false,
+      areaOpenType: 'save',
     };
   },
   methods: {
@@ -135,21 +146,26 @@ export default {
         sessionStorage.removeItem('lastExtendProductID4Price');
       }
     },
-    onPriceItemSaveClick(data) { // 编辑 | 保存产品价格条目
+    onPriceItemSaveClick(data, type = 'save') { // 编辑 | 保存产品价格条目
       this.$store.dispatch('common/getAreaList');
       this.$store.dispatch('common/getUserClassify');
       this.$store.dispatch('priceManage/getApplyRangeTemplateList');
       this.curData = data ? JSON.parse(JSON.stringify(data)) : null;
+      this.areaOpenType = type;
       this.visible = true;
     },
     async handleSubmit(data) { // 执行 编辑 | 保存 远程请求操作
       const { Name, ID } = data;
-      const t = this.itemData.PriceList.find(it => it.Name === Name && it.ID !== ID);
+      const t = this.itemData.PriceList.find(it => it.Name === Name && !(it.ID === ID && this.areaOpenType === 'save'));
       if (t) {
         this.messageBox.failSingleError('保存失败', '已存在相同的价格名称');
         return;
       }
       const temp = { ...data, ProductID: this.itemData.ID };
+      if (this.areaOpenType === 'copy') {
+        this.$store.dispatch('priceManage/getPriceItemCopy', temp);
+        return;
+      }
       const resp = await this.api.getProductPriceSave(temp).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const title = !ID ? '添加成功' : '编辑成功';
@@ -172,9 +188,6 @@ export default {
       this.messageBox.warnCancelBox('确定删除该条价格吗?', `价格名称：[ ${data.Name} ]`, () => {
         this.$store.dispatch('priceManage/getPriceItemRemove', data);
       });
-    },
-    onPriceItemCopyClick(data) { // 拷贝
-      console.log('onPriceItemCopyClick', data);
     },
     onIsOwnPriceSetClick(data) { // 设置报价方式
       this.curData = data ? JSON.parse(JSON.stringify(data)) : null;
@@ -207,6 +220,20 @@ export default {
     onPriceItemSetMenuClick(item, path, option) {
       this.$store.commit('priceManage/setCurPriceItem', item);
       this.jumpToPage(path, option);
+    },
+    getProportionName(it, list) {
+      const { BasePriceID, IsOwnPrice, ReferencePriceList } = it;
+      if (IsOwnPrice) return '';
+      let BasePriceName = '未知价格';
+      let ReferencePrices = '';
+      if (BasePriceID) {
+        const t = list.find(_it => _it.ID === BasePriceID);
+        BasePriceName = t ? t.Name : '未知价格';
+      }
+      if (Array.isArray(ReferencePriceList)) {
+        ReferencePrices = ReferencePriceList.map(({ Percent, Solution }) => `${Solution.Name} × ${Percent}%`).join(' ');
+      }
+      return `按 ${BasePriceName} ${ReferencePrices} 计算`;
     },
   },
   mounted() {

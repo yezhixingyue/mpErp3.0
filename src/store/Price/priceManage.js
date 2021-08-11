@@ -88,7 +88,10 @@ export default {
     curPriceTableItemData: null, // 当前正在设置结果公式的价格表信息（或工艺费价格表信息）
     curPriceTableResultFormulaData: null, // 当前正在设置的结果公式数据信息
     ResultFormulaList: [], // 结果公式列表数据
+    AllPricePropertyList: [], // 全部价格使用的属性列表数据
     // QuotationResultSolutionList: [], // 报价结果方案列表
+    curNumberSwapData: null, // 当前正在编辑的数值转换信息
+    NumberSwapList: [], // 数值转换数据列表
   },
   getters: {
   },
@@ -141,7 +144,6 @@ export default {
     },
     setPriceModeSetup(state, data) { // 设置报价方式
       if (!data) return;
-      // eslint-disable-next-line no-unused-vars
       const { ID, ProductID, IsOwnPrice, BasePriceID, ReferencePriceList } = data;
       const t = state.PriceManageList.find(it => it.ID === ProductID);
       if (t) {
@@ -149,10 +151,8 @@ export default {
         if (targetPrice) {
           targetPrice.IsOwnPrice = IsOwnPrice;
           if (!IsOwnPrice) {
-            // console.log(BasePriceID, ReferencePriceList);
-            // 按比例计算  尚未写 ReferencePriceList
-            // eslint-disable-next-line no-alert
-            alert('按比例计算  该情况有前置模块未完成 尚未写完');
+            targetPrice.BasePriceID = BasePriceID;
+            targetPrice.ReferencePriceList = ReferencePriceList;
           }
         }
       }
@@ -189,6 +189,10 @@ export default {
     },
     /** 单条价格条目相关
     ----------------------------------------- */
+    // setPriceModeChange(state, data) {
+    //   if (!data) return;
+    //   const { ID, ProductID, IsOwnPrice, BasePriceID, ReferencePriceList } = data;
+    // },
     setCurPriceItem(state, data) {
       state.curPriceItem = data;
     },
@@ -422,6 +426,18 @@ export default {
         }
       }
     },
+    setAllPricePropertyList(state, list) {
+      state.AllPricePropertyList = list;
+    },
+    setCurNumberSwapData(state, data) { // 当前正在编辑的数值转换条目信息
+      state.curNumberSwapData = data;
+    },
+    setNumberSwapList(state, list) { // 设置数值转换列表
+      state.NumberSwapList = list;
+    },
+    setNumberSwapRemove(state, ID) {
+      state.NumberSwapList = state.NumberSwapList.filter(it => it.ID !== ID);
+    },
   },
   actions: {
     async getPriceManageList({ state, commit }, page = 1) { // 获取产品列表数据
@@ -443,6 +459,17 @@ export default {
           commit('setPriceItemRemove', [ProductID, ID]);
         };
         messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    // eslint-disable-next-line no-unused-vars
+    async getPriceItemCopy({ commit }, data) { // 拷贝价格条目
+      const resp = await api.getProductPriceCopy(data).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          // commit('setPriceItemRemove', [ProductID, ID]);
+          console.log(resp);
+        };
+        messageBox.successSingle('拷贝成功', cb, cb);
       }
     },
     async getApplyRangeTemplateList({ commit, state }) { // 获取范围模板列表
@@ -540,5 +567,20 @@ export default {
     //     commit('setQuotationResultSolutionList', resp.data.Data);
     //   }
     // },
+    async getAllPricePropertyList({ state, commit }, ProductID) { // 获取工艺总费用表 条件属性列表
+      if (state.AllPricePropertyList.length > 0 && state.AllPricePropertyList[0].Product?.ID === ProductID) return;
+      commit('setAllPricePropertyList', []);
+      const list = await PropertyClass.getPropertyList({ UseModule: 255, ProductID });
+      if (list) {
+        commit('setAllPricePropertyList', list);
+      }
+    },
+    async getNumberSwapList({ commit }, priceID) {
+      commit('setNumberSwapList', []);
+      const resp = await api.getNumberSwapList(priceID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        commit('setNumberSwapList', resp.data.Data || []);
+      }
+    },
   },
 };

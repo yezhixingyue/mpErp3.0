@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     onSubmit() { // 提交
-      if (this.radio === this.initData.Solution || (this.radio === '' && this.initData.Solution === null)) {
+      if (this.radio === this.initData.Solution?.ID || (this.radio === '' && this.initData.Solution === null)) {
         this.messageBox.failSingle('选中方案未发生更改');
         return;
       }
@@ -65,7 +65,7 @@ export default {
     },
     initEditData() { // 数据初始化方法
       this.radio = '';
-      if (this.initData) this.radio = this.initData.Solution || '';
+      if (this.initData) this.radio = this.initData.Solution?.ID || '';
     },
   },
 };
