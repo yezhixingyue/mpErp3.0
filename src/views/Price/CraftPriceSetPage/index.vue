@@ -99,6 +99,7 @@ export default {
     getCraftPriceInfo(craft, PartID, ProductData) {
       let CraftPriceID = '';
       let _PriceSolutionShowCentent = '未设置';
+      let _AllCostCount = 0;
       const t = this.curPriceItem.CraftPriceList.find(it => {
         if (it.CraftID !== craft.ID) return false;
         if (it.PartID && it.PartID === PartID) return true;
@@ -108,8 +109,9 @@ export default {
       if (t) {
         CraftPriceID = t.ID;
         _PriceSolutionShowCentent = this.getPriceSolutionShowContent(t.PriceTableList, ProductData);
+        _AllCostCount = t.FormulaList ? t.FormulaList.length : 0;
       }
-      return { CraftPriceID, _PriceSolutionShowCentent };
+      return { CraftPriceID, _PriceSolutionShowCentent, _AllCostCount };
     },
     getPriceSolutionShowContent(solutionList, ProductData) {
       if (!Array.isArray(solutionList) || solutionList.length === 0) return '未设置';

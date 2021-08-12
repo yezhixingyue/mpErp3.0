@@ -121,6 +121,7 @@ export default {
     > span {
       flex: none;
       margin-right: 28px;
+      // min-width: 3em;
       &.has-child {
         margin: 0;
       }

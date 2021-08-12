@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     onSubmit() { // 提交
-      if (this.curData && (this.radio === this.curData.ExcludeNumberFormula || (!this.radio && !this.curData.ExcludeNumberFormula))) {
+      if (this.curData && (this.radio === this.curData.ExcludeNumberFormula?.ID || (!this.radio && !this.curData.ExcludeNumberFormula))) {
         this.messageBox.failSingle('设置未发生更改');
         return;
       }

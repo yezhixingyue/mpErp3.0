@@ -151,7 +151,7 @@ export default {
         }
         const ExcludeNumberFormulaList = this.ProductFormulaPropertyList.filter(_it => _it.PartID && _it.PartID === it.ID);
         // const t = ExcludeNumberFormulaList.find(_it => _it.ID === mixinData.ExcludeNumberFormula);
-        const ExcludeNumberFormulaText = mixinData.ExcludeNumberFormula ? mixinData.ExcludeNumberFormula.Name : '无';
+        const ExcludeNumberFormulaText = mixinData.ExcludeNumberFormula ? `排除数量：${mixinData.ExcludeNumberFormula.Name}` : '未设置';
         mixinData.ExcludeNumberFormulaText = ExcludeNumberFormulaText;
         mixinData.ExcludeNumberFormulaList = ExcludeNumberFormulaList;
         return {

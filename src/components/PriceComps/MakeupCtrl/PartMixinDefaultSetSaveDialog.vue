@@ -80,7 +80,6 @@ export default {
       this.$refs.ruleForm.resetFields();
     },
     validator(rule, value, callback) {
-      console.log(value, this.saveData.Part.mixinData.AllowMixture);
       if (value === this.saveData.Part.mixinData.AllowMixture) {
         callback(new Error('默认行为设置未发生变化'));
         return;

@@ -36,11 +36,12 @@
               <li v-for="lv1 of it.List" :key="`${lv1.ClassName}--${lv1.ID}`">
                 <span class="title sub" :title="lv1.ClassName"><i>{{lv1.ClassName}}</i>：</span>
                 <div v-if="lv1.children && lv1.children.length > 0">
-                  <el-checkbox
+                  <el-radio
                    v-for="lv2 of lv1.children" :key="`${lv2.ClassName}--${lv2.ID}`"
                    :value='getCheckValue(it.Type, lv1.ID, lv2.ID)'
+                   :label="true"
                    @change='onCheckBoxChange(it.Type, lv1.ID, lv2.ID, lv1.ClassName, lv2.ClassName)'
-                   >{{lv2.ClassName}}</el-checkbox>
+                   >{{lv2.ClassName}}</el-radio>
                 </div>
                 <div class="none-lv2-box" v-else>空</div>
               </li>
@@ -109,21 +110,20 @@ export default {
         this.productData.ClassifyList = [];
       }
       const i = this.productData.ClassifyList.findIndex(it => it.Type === Type && it.FirstLevel.ID === FirstLevelID && it.SecondLevel.ID === SecondLevelID);
-      if (i > -1) this.productData.ClassifyList.splice(i, 1);
-      else {
-        const _temp = {
-          Type,
-          FirstLevel: {
-            ID: FirstLevelID,
-            Name: FirstLevelName,
-          },
-          SecondLevel: {
-            ID: SecondLevelID,
-            Name: SecondLevelName,
-          },
-        };
-        this.productData.ClassifyList.push(_temp);
-      }
+      if (i > -1) return;
+      this.productData.ClassifyList = this.productData.ClassifyList.filter(it => it.Type !== Type);
+      const _temp = {
+        Type,
+        FirstLevel: {
+          ID: FirstLevelID,
+          Name: FirstLevelName,
+        },
+        SecondLevel: {
+          ID: SecondLevelID,
+          Name: SecondLevelName,
+        },
+      };
+      this.productData.ClassifyList.push(_temp);
     },
     onHideClick(Type) {
       this.hideClassTypes.push(Type);
@@ -267,37 +267,33 @@ export default {
             display: flex;
             align-items: flex-start;
             > span.title {
-              line-height: 17px;
+              line-height: 16px;
               margin-right: 13px;
               color: #585858;
             }
             > .none-lv2-box {
               color: #a2a2a2;
-              line-height: 17px;
+              line-height: 14px;
               margin-bottom: 12px;
             }
             > div {
               flex-wrap: wrap;
               margin-bottom: 8px;
+              padding-top: 1px;
             }
-            .el-checkbox {
+            .el-radio {
               width: 125px;
               margin-right: 10px;
               margin-bottom: 8px;
-              .el-checkbox__label {
+              .el-radio__label {
                 font-size: 12px;
                 color: #585858;
                 max-width: 100px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 vertical-align: middle;
-              }
-              .el-checkbox__inner {
-                width: 13px;
-                height: 13px;
-                &::after {
-                  top: 0;
-                }
+                position: relative;
+                top: -1px;
               }
             }
           }
@@ -309,15 +305,19 @@ export default {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-          &.sub > i {
-            width: 7em;
-            text-align: right;
-            flex: none;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            display: inline-block;
-            vertical-align: middle;
+          &.sub {
+            position: relative;
+            top: -1px;
+            > i {
+              width: 7em;
+              text-align: right;
+              flex: none;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              display: inline-block;
+              vertical-align: middle;
+            }
           }
         }
       }

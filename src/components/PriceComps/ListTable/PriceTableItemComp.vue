@@ -1,5 +1,5 @@
 <template>
-  <section class="mp-erp-price-manage-table-item-comp-wrap" v-if="itemData" :class="extend ? 'extend': ''">
+  <section class="mp-erp-price-manage-table-item-comp-wrap" v-if="itemData" :class="extend ? 'extend': ''" ref="oWrap">
     <header>
       <div class="classify-box">
         <span :title="ClassifyText">{{ClassifyText}}</span>
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import TipsSpanButton from '@/components/common/NewComps/TipsSpanButton.vue';
 import PriceItemClass from '@/assets/js/TypeClass/PriceItemClass';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
@@ -106,6 +106,7 @@ export default {
   },
   computed: {
     ...mapGetters('common', ['twoLevelsProductClassify']),
+    ...mapState('priceManage', ['condition4PriceManageList', 'needScrollToExtend']),
     ClassifyText() { // 列表分类显示文字
       if (!this.itemData) return '';
       const list = this.itemData.ClassifyList;
@@ -163,7 +164,13 @@ export default {
       }
       const temp = { ...data, ProductID: this.itemData.ID };
       if (this.areaOpenType === 'copy') {
-        this.$store.dispatch('priceManage/getPriceItemCopy', temp);
+        const cb = () => {
+          this.visible = false;
+          this.curData = null;
+          sessionStorage.setItem('lastExtendProductID4Price', this.itemData.ID);
+          this.$store.dispatch('priceManage/getPriceManageList', this.condition4PriceManageList.Page);
+        };
+        this.$store.dispatch('priceManage/getPriceItemCopy', [temp, cb]);
         return;
       }
       const resp = await this.api.getProductPriceSave(temp).catch(() => {});
@@ -238,7 +245,16 @@ export default {
   },
   mounted() {
     const extendID = sessionStorage.getItem('lastExtendProductID4Price');
-    if (extendID && extendID === this.itemData.ID) this.extend = true;
+    if (extendID && extendID === this.itemData.ID) {
+      this.extend = true;
+      this.$nextTick(() => {
+        if (this.needScrollToExtend) {
+          const oDom = document.querySelector('.mp-erp-price-manage-table-comp-wrap');
+          oDom.scrollTop = this.$refs.oWrap.offsetTop - oDom.offsetTop - 10;
+          this.$store.commit('priceManage/setNeedScrollToExtend', false);
+        }
+      });
+    }
   },
 };
 </script>
@@ -429,8 +445,8 @@ export default {
           }
         }
         &.name {
-          width: 215px;
-          padding-left: 50px;
+          width: 210px;
+          padding-left: 40px;
           color: #585858;
           > span {
             line-height: 30px;
@@ -438,12 +454,12 @@ export default {
         }
         &.date {
           width: 120px;
-          padding: 0 80px;
+          padding: 0 60px;
           padding-left: 20px;
           color: #999;
         }
         &.ctrl {
-          padding-right: 20px;
+          padding-right: 40px;
           padding-left: 30px;
           .ctrl-menus-container > span + span {
             margin-left: 30px;

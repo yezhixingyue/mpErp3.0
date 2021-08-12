@@ -8,7 +8,7 @@
     </header>
     <main>
       <ContionCommonComp ref="oLeftComp" :ComparePropertyList='PriceItemPropertyList' :PropertyList='PriceItemPropertyList'
-       leftWidth='715px' :curEditData='curPriceTableResultFormulaData' rightTitle="使用此公式">
+       leftWidth='45%' :curEditData='curPriceTableResultFormulaData' rightTitle="使用此公式">
         <!-- 右侧公式设置 -->
         <FormulaPanelComp
           ref="oRightFormulaPanel"

@@ -40,6 +40,7 @@ export default {
     fetchFormulaListData() {
       return {
         ProductID: this.ProductID,
+        PartID: this.curCraftPriceItemData?.PartID || '',
         PriceID: this.curPriceItem?.ID || '',
         CraftPriceID: this.curCraftPriceItemData?.Craft?.CraftPriceID || '',
         UseModule: 6,
@@ -72,7 +73,7 @@ export default {
       const resp = await this.api.getFormulaRemove(e.ID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
-          this.$store.commit('priceManage/setResultFormulaItemRemove', e);
+          this.$store.commit('priceManage/setResultFormulaItemRemove', [e, true]);
         };
         this.messageBox.successSingle('删除成功', cb, cb);
       }

@@ -8,9 +8,10 @@
     </header>
     <main :class="{loading: loading}">
       <ContionCommonComp ref="oLeftComp" :ComparePropertyList='leftConditionPropList' :PropertyList='leftConditionPropList'
-       leftWidth='715px' :curEditData='curNumberSwapData'>
+       v-if="leftConditionPropList.length > 0"
+       leftWidth='45%' :curEditData='curNumberSwapData'>
         <!-- 右侧面板 -->
-        <RightSetupPanel :leftPropList='rightSelfPropList' :rightPropList='rightComparePropList' />
+        <RightSetupPanel ref="oRightPanel" :leftPropList='rightSelfPropList' :rightPropList='rightComparePropList' :curEditData='curNumberSwapData' />
       </ContionCommonComp>
     </main>
     <footer>
@@ -38,6 +39,7 @@ export default {
       PriceName: '',
       ProductID: '',
       ProductName: '',
+      PartID: '',
       loading: true,
       leftConditionPropList: [],
       rightSelfPropList: [],
@@ -54,6 +56,7 @@ export default {
       this.PriceName = Name;
       this.ProductID = this.$route.params.id;
       this.ProductName = this.$route.params.name;
+      this.PartID = this.$route.params.partID === 'null' ? '' : this.$route.params.partID;
       this.fetchPropertyLists();
     },
     onGoBackClick() {
@@ -68,22 +71,20 @@ export default {
     onSubmitClick() {
       const condition = this.$refs.oLeftComp.getConditonResult();
       if (!condition) return;
-      if (this.checkList.length === 0) {
-        this.messageBox.failSingleError('保存失败', '请选择方案');
-        return;
-      }
-      const temp = { ...condition, ...this.form, PriceID: this.PriceID };
+      const panelResult = this.$refs.oRightPanel.getPanelSetup();
+      if (!panelResult) return;
+      const temp = { ...condition, ...panelResult, PriceID: this.PriceID, PartID: this.PartID };
       this.submitSave(temp);
     },
     async submitSave(data) {
-      const resp = await this.api.getPriceResultSetup(data).catch(() => {});
+      const resp = await this.api.getNumberSwapSetup(data).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         // 保存成功
         const isEdit = !!data.ID;
         const msg = isEdit ? '编辑成功' : '添加成功';
         const callback = () => {
           // this.$emit('successSubmit', [isEdit, data, resp.data.Data]);
-          this.$store.commit('priceManage/setPriceResultItemChange', [data, resp.data.Data, this.ProductID, this.PriceID]);
+          this.$store.commit('priceManage/setNumberSwapItemChange', [data, resp.data.Data]);
           this.onGoBackClick();
         };
         this.messageBox.successSingle(msg, callback, callback);
@@ -91,15 +92,15 @@ export default {
     },
     async fetchPropertyLists() {
       const getTemp = (UseModule) => ({
-        ProductID: this.$route.params.id,
-        PartID: this.$route.params.partID === 'null' ? '' : this.$route.params.partID,
+        ProductID: this.ProductID,
+        PartID: this.PartID,
         UseModule,
       });
       const [leftConditionPropList, rightSelfPropList, rightComparePropList] = await Promise.all([
         PropertyClass.getPropertyList(getTemp(30)),
-        // PropertyClass.getPropertyList(getTemp(33)),
-        PropertyClass.getPropertyList(getTemp(21)), // 应使用33 暂用21代替开发
-        PropertyClass.getPropertyList(getTemp(21)),
+        PropertyClass.getPropertyList(getTemp(33)),
+        // PropertyClass.getPropertyList(getTemp(21)), // 应使用33 暂用21代替开发
+        PropertyClass.getPropertyList(getTemp(34)),
       ]);
       this.loading = false;
       this.leftConditionPropList = leftConditionPropList || [];

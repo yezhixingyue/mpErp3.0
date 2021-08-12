@@ -83,7 +83,7 @@ export default {
     CtrlMenus,
   },
   computed: {
-    ...mapState('priceManage', ['PriceItemPropertyList', 'curPriceItem']),
+    ...mapState('priceManage', ['QuotationResultPropertyList', 'curPriceItem']),
     localTableData() {
       if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
       return this.dataList.map(it => ({
@@ -93,7 +93,7 @@ export default {
         result: this.getShowResult(it),
       })).map(it => {
         if (!it.Constraint) return { ...it, _ConditionText: '无' };
-        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.PriceItemPropertyList);
+        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.QuotationResultPropertyList);
         return { ...it, Constraint, _ConditionText };
       });
     },

@@ -7,10 +7,11 @@
 
     <p class="title mp-common-title-wrap" v-if="localListData.Constraint.length > 0">子条件</p>
     <ElementTypeShowComp
+     class="sub-condition"
      :dataList='localListData.Constraint' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
      :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
 
-    <p class="title mp-common-title-wrap" v-if="localListData.Formula.length > 0">其它</p>
+    <p class="title mp-common-title-wrap" v-if="localListData.Element.length > 0">其它</p>
     <div class="element">
       <template v-if="!isMultiple">
         <TipsSpanButton

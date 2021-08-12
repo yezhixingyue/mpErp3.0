@@ -418,7 +418,6 @@ export default {
       this.generatePriceListData();
     },
     onExcelImportClick() { // 导入表格点击
-      console.log('onExcelImportClick');
     },
     getIsOrNotSameBy2Array(arr1, arr2) {
       if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
@@ -486,7 +485,7 @@ export default {
       const resp = await this.api.getFormulaRemove(e.ID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
-          this.$store.commit('priceManage/setResultFormulaItemRemove', e);
+          this.$store.commit('priceManage/setResultFormulaItemRemove', [e, false]);
         };
         this.messageBox.successSingle('删除成功', cb, cb);
       }

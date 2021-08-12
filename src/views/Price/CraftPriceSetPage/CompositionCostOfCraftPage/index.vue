@@ -272,8 +272,8 @@ export default {
       this.$store.commit('priceManage/setCurEditPriceItemData', data);
       this.$router.push({ name: pathName, params });
     },
-    onTableItemExport(data) {
-      console.log('onTableItemExport', data);
+    // eslint-disable-next-line no-unused-vars
+    onTableItemExport(data) { // 表格导出
     },
   },
   watch: {

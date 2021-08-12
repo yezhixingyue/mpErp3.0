@@ -1,5 +1,5 @@
 <template>
-  <ul class="mp-erp-common-comps-on-element-select-dialog-group-type-show-item-comp-wrap">
+  <ul class="mp-erp-common-comps-on-element-select-dialog-material-type-show-item-comp-wrap">
     <template v-if="useType === 'formula'">
       <li v-for="it in formulaMaterialList" :key="it.MaterialType.ID" class="formula-type">
         <label>{{it.MaterialType.Name}}：</label>
@@ -107,7 +107,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-common-comps-on-element-select-dialog-group-type-show-item-comp-wrap {
+.mp-erp-common-comps-on-element-select-dialog-material-type-show-item-comp-wrap {
   > li {
     display: flex;
     line-height: 30px;
@@ -129,8 +129,8 @@ export default {
     &.condtion-list {
       > label {
         flex: none;
-        min-width: 5em;
-        text-align: right;
+        // min-width: 5em;
+        // text-align: right;
       }
     }
     > ul {

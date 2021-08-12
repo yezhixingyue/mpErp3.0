@@ -101,11 +101,9 @@ export default {
       ]);
       this.loading = false;
       this.productData = productData;
-      console.log('productData', productData);
     },
     getPartItemSwapList(list, PartID) {
-      console.log('getPartItemSwapList', list, PartID);
-      return [];
+      return list.filter(it => it.PartID === PartID || (!it.PartID && !PartID));
     },
   },
   mounted() {
@@ -175,7 +173,7 @@ export default {
     text-align: center;
     padding: 25px;
     flex: none;
-    padding-bottom: 5px;
+    padding-top: 15px;
     // width: 1100px;
     > button {
       width: 120px;

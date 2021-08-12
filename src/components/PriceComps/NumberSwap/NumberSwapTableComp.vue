@@ -23,7 +23,7 @@
               </template>
               <p v-else>{{item._ConditionText}}</p>
               <p class="if-box" style="margin-right:5px">
-                <span class="is-origin">则使用下列报价方案</span>
+                <span class="is-origin">则</span>
               </p>
               <p v-for="(res, ri) in item.result.filter(_it => _it)" :key="res + ri">{{res}}</p>
             </div>
@@ -39,7 +39,7 @@
               </template>
               <p v-else>{{item._ConditionText}}</p>
               <p class="if-box" style="margin-left:10px;margin-right:5px">
-                <span class="is-origin">则使用下列报价方案</span>
+                <span class="is-origin">则</span>
               </p>
               <p>
                 <em v-for="(res,ri) in item.result.filter(_it => _it)" :key="res + ri" style="margin-right:4px">{{res}}
@@ -82,19 +82,24 @@ export default {
     CtrlMenus,
   },
   computed: {
-    ...mapState('priceManage', ['PriceItemPropertyList', 'curPriceItem']),
+    ...mapState('priceManage', ['AllPricePropertyList', 'curPriceItem']),
     localTableData() {
       if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
-      return this.dataList.map(it => ({
+      return this.dataList.map(it => {
+        if (!it.Constraint) return { ...it, _ConditionText: '无' };
+        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.AllPricePropertyList);
+        const List = it.List.map(_it => {
+          const MasterProperty = PropertyClass.getPerfectPropertyByImperfectProperty(_it.MasterProperty, this.AllPricePropertyList);
+          const SlaveProperty = PropertyClass.getPerfectPropertyByImperfectProperty(_it.SlaveProperty, this.AllPricePropertyList);
+          return { MasterProperty, SlaveProperty };
+        });
+        return { ...it, Constraint, _ConditionText, List };
+      }).map(it => ({
         ...it,
         // eslint-disable-next-line no-nested-ternary
         FilterTypeText: it.Constraint ? (it.Constraint.FilterType === 1 ? '满足所有' : '满足任一') : '',
         result: this.getShowResult(it),
-      })).map(it => {
-        if (!it.Constraint) return { ...it, _ConditionText: '无' };
-        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.PriceItemPropertyList);
-        return { ...it, Constraint, _ConditionText };
-      });
+      }));
     },
   },
   data() {
@@ -111,13 +116,13 @@ export default {
       });
     },
     getShowResult(item) {
-      const { List, UseMinPrice } = item;
-      const _SolutionList = this.curPriceItem?.SolutionList || [];
-      const list = List.map(it => _SolutionList.find(_it => _it.ID === it.ID)).filter(it => it).map(it => it.Name);
-      const first = list.join('、');
-      const second = UseMinPrice ? '（最低价）' : '（最高价）';
-      const all = first ? `${first}${second}` : '未知方案';
-      return [all];
+      const { List } = item;
+      const list = List.map(({ MasterProperty, SlaveProperty }) => {
+        const first = MasterProperty?.DisplayContent ? MasterProperty.DisplayContent : '未知';
+        const second = SlaveProperty?.DisplayContent ? SlaveProperty.DisplayContent : '未知';
+        return `${first}：${second}`;
+      });
+      return list;
     },
   },
 };

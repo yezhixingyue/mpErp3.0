@@ -6,8 +6,8 @@
       <span class="name">价格名称：{{PriceName}}</span>
     </header>
     <main>
-      <ContionCommonComp ref="oLeftComp" :ComparePropertyList='PriceItemPropertyList' :PropertyList='PriceItemPropertyList'
-       leftWidth='715px' :curEditData='curQuotationResultData' rightTitle="则使用下列报价方案">
+      <ContionCommonComp ref="oLeftComp" :ComparePropertyList='QuotationResultPropertyList' :PropertyList='QuotationResultPropertyList'
+       leftWidth='45%' :curEditData='curQuotationResultData' rightTitle="则使用下列报价方案">
         <!-- 右侧面板 -->
         <div class="right-solution-setup-panel">
           <el-checkbox-group v-model="checkList">
@@ -55,7 +55,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('priceManage', ['curPriceItem', 'curQuotationResultData', 'PriceItemPropertyList']),
+    ...mapState('priceManage', ['curPriceItem', 'curQuotationResultData', 'QuotationResultPropertyList']),
     checkList: {
       get() {
         return this.form.List.map(it => it.ID);

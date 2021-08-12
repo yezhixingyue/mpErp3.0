@@ -170,7 +170,7 @@ export default {
     display: flex;
     line-height: 30px;
     flex: none;
-    flex-wrap: wrap;
+    // flex-wrap: wrap;
     > span {
       white-space: nowrap;
     }

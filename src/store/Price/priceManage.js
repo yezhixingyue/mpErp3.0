@@ -26,6 +26,7 @@ export default {
     condition4PriceManageList: JSON.parse(JSON.stringify(initConditon)),
     PriceManageList: [], // 价格产品列表
     PriceManageListNumber: 0,
+    needScrollToExtend: false,
     isPriceDataLoading: false,
     ApplyRangeTemplateList: [], // 适用范围数据列表
     ApplyRangeTemplateListFetched: false,
@@ -92,6 +93,7 @@ export default {
     // QuotationResultSolutionList: [], // 报价结果方案列表
     curNumberSwapData: null, // 当前正在编辑的数值转换信息
     NumberSwapList: [], // 数值转换数据列表
+    QuotationResultPropertyList: [], // 报价结果条件列表
   },
   getters: {
   },
@@ -380,6 +382,18 @@ export default {
             }
           }
         }
+      } else if (!item.ID) {
+        const { ProductID, PriceID, CraftPriceID } = item;
+        const t = state.PriceManageList.find(it => it.ID === ProductID);
+        if (t) {
+          const targetPrice = t.PriceList.find(it => it.ID === PriceID);
+          if (targetPrice) {
+            const targetCraftPrice = targetPrice.CraftPriceList.find(it => it.ID === CraftPriceID);
+            if (targetCraftPrice) {
+              targetCraftPrice.FormulaList.push({ ...item, ID });
+            }
+          }
+        }
       }
 
       if (!item.ID) { // 新增
@@ -392,12 +406,25 @@ export default {
         }
       }
     },
-    setResultFormulaItemRemove(state, item) { // 删除结果公式 工艺费结果公式、工艺总费用、价格表等3个共用
+    setResultFormulaItemRemove(state, [item, isAllCostPage]) { // 删除结果公式 工艺费结果公式、工艺总费用、价格表等3个共用
       const t = state.PriceTableList.find(it => it.PriceID === item.PriceID && it.ID === item.TableID);
       if (t && Array.isArray(t.FormulaList)) { // 对列表中数据进行修改 以保证同步最新
         t.FormulaList = t.FormulaList.filter(it => it.ID !== item.ID);
       }
       state.ResultFormulaList = state.ResultFormulaList.filter(it => it.ID !== item.ID);
+      if (isAllCostPage) {
+        const { ProductID, PriceID, CraftPriceID } = item;
+        const targetProduct = state.PriceManageList.find(it => it.ID === ProductID);
+        if (targetProduct) {
+          const targetPrice = targetProduct.PriceList.find(it => it.ID === PriceID);
+          if (targetPrice) {
+            const targetCraftPrice = targetPrice.CraftPriceList.find(it => it.ID === CraftPriceID);
+            if (targetCraftPrice) {
+              targetCraftPrice.FormulaList = targetCraftPrice.FormulaList.filter(it => it.ID !== item.ID);
+            }
+          }
+        }
+      }
     },
     // setQuotationResultSolutionList(state, list) { // 设置报价结果中需要用到的方案列表
     //   state.QuotationResultSolutionList = list;
@@ -435,8 +462,22 @@ export default {
     setNumberSwapList(state, list) { // 设置数值转换列表
       state.NumberSwapList = list;
     },
-    setNumberSwapRemove(state, ID) {
+    setNumberSwapRemove(state, ID) { // 数值转换删除
       state.NumberSwapList = state.NumberSwapList.filter(it => it.ID !== ID);
+    },
+    setNumberSwapItemChange(state, [item, ID]) {
+      if (!item.ID) {
+        state.NumberSwapList.unshift({ ...item, ID });
+      } else {
+        const i = state.NumberSwapList.findIndex(it => it.ID === ID);
+        if (i > -1) state.NumberSwapList.splice(i, 1, { ...state.NumberSwapList[i], ...item });
+      }
+    },
+    setQuotationResultPropertyList(state, list) { // 设置报价结果条件列表
+      state.QuotationResultPropertyList = list;
+    },
+    setNeedScrollToExtend(state, bool) { // 拷贝价格后标记重新获取数据后需滚动至价格拷贝处
+      state.needScrollToExtend = bool;
     },
   },
   actions: {
@@ -461,13 +502,12 @@ export default {
         messageBox.successSingle('删除成功', cb, cb);
       }
     },
-    // eslint-disable-next-line no-unused-vars
-    async getPriceItemCopy({ commit }, data) { // 拷贝价格条目
+    async getPriceItemCopy({ commit }, [data, callback]) { // 拷贝价格条目
       const resp = await api.getProductPriceCopy(data).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
-          // commit('setPriceItemRemove', [ProductID, ID]);
-          console.log(resp);
+          commit('setNeedScrollToExtend', true);
+          if (callback) callback();
         };
         messageBox.successSingle('拷贝成功', cb, cb);
       }
@@ -497,7 +537,7 @@ export default {
     async getMakeupPropertyList({ commit }, ProductID) { // 获取拼版控制左侧弹窗属性列表数据
       commit('setMakeupPropertyList', []);
       const [MakeupCtrlBeginPropList, MakeupCtrlAfterPropList, ProductFormulaResp] = await Promise.all([
-        PropertyClass.getPropertyList({ UseModule: 12, ProductID }),
+        PropertyClass.getPropertyList({ UseModule: 21, ProductID }),
         PropertyClass.getPropertyList({ UseModule: 30, ProductID }),
         api.getProductFormulasList(ProductID).catch(() => {}), // 设置尺寸数量
       ]);
@@ -544,6 +584,14 @@ export default {
       const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID });
       if (list) {
         commit('setPriceItemPropertyList', list);
+      }
+    },
+    async getQuotationResultPropertyList({ state, commit }, ProductID) { // 获取工艺总费用表 条件属性列表
+      if (state.QuotationResultPropertyList.length > 0 && state.QuotationResultPropertyList[0].Product?.ID === ProductID) return;
+      commit('setQuotationResultPropertyList', []);
+      const list = await PropertyClass.getPropertyList({ UseModule: 21, ProductID });
+      if (list) {
+        commit('setQuotationResultPropertyList', list);
       }
     },
     async getPriceTableList({ commit }, SolutionID) {
