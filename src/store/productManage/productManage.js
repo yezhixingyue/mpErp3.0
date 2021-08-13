@@ -45,6 +45,13 @@ export default {
       { Name: 'CraftCondition', ID: 14 }, // 工艺条件
       { Name: 'CraftDisplayGroup', ID: 15 }, // 工艺显示分组
     ],
+    ProductDisplayPropertyTypeList: [
+      { Name: '元素', ID: 0 },
+      { Name: '元素组', ID: 1 },
+      { Name: '物料', ID: 3 },
+      { Name: '工艺', ID: 4 },
+      { Name: '工厂', ID: 5 },
+    ],
     RiskWarningTypeList: [ // 风险提示形式列表
       { Name: '弹出对话框', ID: 2 },
       { Name: '页面提示', ID: 3 },

@@ -5,7 +5,6 @@
     title="设置固定尺寸"
     cancelText='关闭'
     :visible.sync="visible"
-    :disabled='SizeList && SizeList.length === 0'
     @submit="onSubmit"
     @cancle="onCancle"
     @open='onOpen'

@@ -156,7 +156,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="自定义值：" prop="OptionAttribute.OptionValueDefine" class="option-define-box" key="OptionValueDefine">
-          <el-checkbox-group v-model="optionDefine" :disabled="ruleForm.OptionAttribute.ChooseType==='multiple'">
+          <el-checkbox-group v-model="optionDefine" :disabled="ruleForm.OptionAttribute.ChooseType==='multiple' || ruleForm.OptionAttribute.SelectMode === 0">
             <el-checkbox label="staff">允许自定义</el-checkbox>
             <el-checkbox v-show="optionDefine.includes('staff')" label="customer">客户允许自定义</el-checkbox>
           </el-checkbox-group>
@@ -173,7 +173,11 @@
         </el-form-item>
         <el-form-item label="表现形式：" prop="OptionSelectMode" v-if="ruleForm.OptionAttribute.ChooseType === 'single'" key="OptionSelectMode">
           <el-radio-group v-model="ruleForm.OptionAttribute.SelectMode">
-            <el-radio :label="it.ID" v-for="it in SelectModeEnum" :key="it.Name + '-' + it.ID">{{it.Name}}</el-radio>
+            <el-radio
+            :disabled="optionDefine.includes('staff') && it.ID === 0"
+            :label="it.ID" v-for="it in SelectModeEnum"
+            :key="it.Name + '-' + it.ID"
+            >{{it.Name}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="是否必填：" prop="OptionAttribute.OptionIsRequired" v-if="ruleForm.OptionAttribute.ChooseType === 'single'" key="OptionIsRequired">

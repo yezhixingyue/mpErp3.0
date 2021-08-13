@@ -155,7 +155,6 @@ export default {
     handleDataChange(data, e) { // 处理数据改变
       const { position, FalseWords, GroupID, CraftID, ElementID } = e;
       const _data = data;
-      console.log(e);
       if (position === 'self') { // 自身名称
         _data.FalseWords = FalseWords;
       }

@@ -518,7 +518,9 @@ td.is-gray .cell{
 // }
 
 .el-select-dropdown__item:hover {
-  color:$--color-primary !important;
+  &:not(.is-disabled) {
+    color:$--color-primary !important;
+  }
 }
 
 .el-tooltip__popper {

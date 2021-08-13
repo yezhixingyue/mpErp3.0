@@ -33,17 +33,20 @@ export default class Product {
 
   SizeList = [];
 
+  TypeList = [];
+
   MinNumber = null; // 库存最小数量
 
   Mobile = null; // 库存预警手机号码
 
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, Name, ShowName, ClassifyList, IsSpacial } = JSON.parse(JSON.stringify(initData));
+    const { ID, Name, ShowName, ClassifyList, IsSpacial, TypeList } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
     if (ShowName) this.ShowName = ShowName;
     if (ClassifyList && Array.isArray(ClassifyList)) this.ClassifyList = ClassifyList;
+    if (TypeList && Array.isArray(TypeList)) this.TypeList = TypeList;
     if (IsSpacial) this.IsSpacial = IsSpacial;
   }
 }

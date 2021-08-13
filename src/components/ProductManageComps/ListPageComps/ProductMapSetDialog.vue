@@ -19,7 +19,7 @@
           <el-option
             v-for="item in ElementData.List"
             :key="item.ID"
-            :disabled='selectedElementIDs.includes(item.ID)'
+            :disabled='selectedElementIDs.includes(item.ID) && it.Second !== item.ID'
             :label="item.Name"
             :value="item.ID">
           </el-option>
@@ -54,7 +54,7 @@ export default {
   computed: {
     ...mapState('productManage', ['ProductElementTypeList']),
     selectedElementIDs() {
-      return this.List.map(it => it.Number).filter(it => it);
+      return this.List.map(it => it.Second).filter(it => it);
     },
   },
   data() {

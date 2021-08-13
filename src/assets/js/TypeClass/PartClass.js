@@ -27,16 +27,19 @@ export default class Part {
 
   SizeList = [];
 
+  TypeList = [];
+
   MinNumber = null; // 库存最小数量
 
   Mobile = null; // 库存预警手机号码
 
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, ProductID, Name, UseTimes } = JSON.parse(JSON.stringify(initData));
+    const { ID, ProductID, Name, UseTimes, TypeList } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (ProductID) this.ProductID = ProductID;
     if (Name) this.Name = Name;
+    if (TypeList && Array.isArray(TypeList)) this.TypeList = TypeList;
     if (UseTimes && (UseTimes.MinValue || UseTimes.MinValue === 0) && (UseTimes.MaxValue || UseTimes.MaxValue === 0)) this.UseTimes = UseTimes;
   }
 }
