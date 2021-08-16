@@ -70,9 +70,29 @@ export default {
         HiddenToCustomer: false,
         List: [],
       };
-      this.ElementList.forEach(it => {
+      this.ElementList.forEach((it) => {
         const temp = { First: it.ID, Second: '' };
         this.template.List.push(temp);
+        this.SizeList.forEach(size => {
+          const sizeListIDs = size.List.map(_it => _it.First);
+          // 补充后面增加元素
+          if (!sizeListIDs.includes(it.ID)) size.List.push(temp);
+        });
+      });
+      // 删除后面取消元素
+      this.SizeList.forEach(size => {
+        const elementIDs = this.ElementList.map(_it => _it.ID);
+        // eslint-disable-next-line no-param-reassign
+        size.List = size.List.filter(_it => elementIDs.includes(_it.First));
+      });
+      // 排序
+      this.SizeList = this.SizeList.map(size => {
+        const list = [];
+        this.ElementList.forEach(it => {
+          const t = size.List.find(_it => _it.First === it.ID);
+          if (t) list.push(t);
+        });
+        return { ...size, List: list };
       });
       this.showComp = true;
     },
