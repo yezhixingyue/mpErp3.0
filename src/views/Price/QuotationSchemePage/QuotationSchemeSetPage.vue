@@ -8,6 +8,7 @@
     :moduleIndex='6'
     :NowEditFormulaData='curQuotationSchemeData'
     :pageTitle='ProductName'
+    :Condition4getProperty='Condition4getFormulaProperty'
     pageLabel='当前产品'
     FormulaLabel='报价方案名称'
     hiddenUnit
@@ -34,6 +35,13 @@ export default {
     ...mapState('priceManage', ['curPriceItem', 'curQuotationSchemeData']),
     curQuotationSchemeName() {
       return this.curQuotationSchemeData ? this.curQuotationSchemeData.Name : '新加方案';
+    },
+    Condition4getFormulaProperty() {
+      return {
+        ProductID: this.ProductID,
+        PriceID: this.PriceID,
+        UseModule: 6,
+      };
     },
   },
   data() {

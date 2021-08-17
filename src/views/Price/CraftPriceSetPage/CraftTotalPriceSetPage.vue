@@ -43,7 +43,7 @@ export default {
         PartID: this.curCraftPriceItemData?.PartID || '',
         PriceID: this.curPriceItem?.ID || '',
         CraftPriceID: this.curCraftPriceItemData?.Craft?.CraftPriceID || '',
-        UseModule: 6,
+        UseModule: 7,
       };
     },
   },

@@ -373,9 +373,13 @@ export default {
             display: flex;
             flex-wrap: wrap;
             > span {
-              margin: 0 10px;
+              // margin: 0 10px;
+              margin-right: 28px;
               padding-bottom: 10px;
               white-space: nowrap;
+              &:last-of-type {
+                margin-right: 0;
+              }
             }
           }
         }

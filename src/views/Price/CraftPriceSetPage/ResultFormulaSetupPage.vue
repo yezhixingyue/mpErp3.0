@@ -57,14 +57,14 @@ export default {
         return {
           ProductID: this.ProductID,
           PriceID: this.PriceID,
-          useModule: 6,
+          UseModule: 7,
         };
       }
       return {
         ProductID: this.ProductID,
         PriceID: this.PriceID,
         TableID: this.curPriceTableItemData?.ID || '',
-        useModule: 5,
+        UseModule: 5,
       };
     },
   },

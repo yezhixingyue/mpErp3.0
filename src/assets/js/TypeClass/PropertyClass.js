@@ -271,7 +271,7 @@ export default class PropertyClass {
   }
 
   static getProperyName(item) { // 传入一个属性 获取到其属性名称
-    const { FixedType, Element, Name, Type, Formula, Constraint } = item;
+    const { FixedType, Element, Name, Type, Formula, Constraint, TableData, Cost } = item;
     if (FixedType || FixedType === 0) {
       const t = PropertyFixedType.find(it => it.ID === FixedType);
       if (t) return t.Name;
@@ -282,6 +282,8 @@ export default class PropertyClass {
       if (Name) return Name;
       if (Formula && Formula.Name) return Formula.Name; // 公式 | 子公式
       if (Constraint && Constraint.Name) return Constraint.Name; // 子条件
+      if (TableData && TableData.Name) return TableData.Name; // 表数据
+      if (Cost && Cost.Name) return Cost.Name; // 费用
       const _t = ElementSelectTypeEnum.find(it => it.ID === Type);
       return _t ? _t.nickName : '';
     }

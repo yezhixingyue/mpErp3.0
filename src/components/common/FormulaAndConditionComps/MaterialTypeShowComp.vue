@@ -5,6 +5,11 @@
         <label>{{it.MaterialType.Name}}：</label>
         <span class="is-element" v-for="el in it.List" :class="{'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)}"
          :key="el.Element ? el.Element.ID : el.StoredContent" @click="onItemClick(el)">{{getName(el)}}</span>
+        <template v-if="it.FormulaList.length > 0">
+          <label class="formula-label">公式</label>
+          （<span class="is-element" v-for="el in it.FormulaList" :class="{'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)}"
+          :key="el.Element ? el.Element.ID : el.StoredContent" @click="onItemClick(el)">{{getName(el)}}</span>）
+        </template>
       </li>
     </template>
     <template v-else>
@@ -33,11 +38,31 @@
             <el-checkbox v-else :value='MultipleCheckedIDList.includes(el.StoredContent)' @change="onCheckedItemChange($event, el)"
               >{{getName(el)}}</el-checkbox>
             <div v-if="el.FixedTypeList">
-              （<span v-for="item in el.FixedTypeList" class="blue-span" :class="selectedElementIDs.includes(item.StoredContent)?'is-disabled':''"
-              @click="onItemClick(item)" :key="item.StoredContent">{{getName(item)}}</span>）
+              （ <span v-for="item in el.FixedTypeList" class="blue-span" :class="selectedElementIDs.includes(item.StoredContent)?'is-disabled':''"
+              @click="onItemClick(item)" :key="item.StoredContent">{{getName(item)}}</span> ）
             </div>
           </li>
         </ul>
+        <template v-if="it.FormulaList.length > 0">
+          <label class="formula-label">公式</label>
+          （ <ul>
+            <li  v-for="el in it.FormulaList" :key="el.Element ? el.Element.ID : el.StoredContent" >
+              <span
+                v-if="!isMultiple || !el.StoredContent"
+                :class="{
+                  'has-child': el.FixedTypeList, disabled: !el.StoredContent,
+                  'is-disabled': el.StoredContent&&selectedElementIDs.includes(el.StoredContent)
+                }"
+                class="is-element" @click="onItemClick(el)">{{getName(el)}}</span>
+              <el-checkbox v-else :value='MultipleCheckedIDList.includes(el.StoredContent)' @change="onCheckedItemChange($event, el)"
+                >{{getName(el)}}</el-checkbox>
+              <div v-if="el.FixedTypeList">
+                （<span v-for="item in el.FixedTypeList" class="blue-span" :class="selectedElementIDs.includes(item.StoredContent)?'is-disabled':''"
+                @click="onItemClick(item)" :key="item.StoredContent">{{getName(item)}}</span>）
+              </div>
+            </li>
+          </ul> ）
+        </template>
       </li>
     </template>
   </ul>
@@ -83,8 +108,14 @@ export default {
           };
         }
         const _item = list.find(_it => _it.MaterialType?.ID === MaterialType?.ID);
-        if (_item) _item.List.push(it);
-        else list.push({ MaterialType, List: [it] });
+        if (_item) {
+          if (!it.Formula) _item.List.push(it);
+          else _item.FormulaList.push(it);
+        } else {
+          const List = it.Formula ? [] : [it];
+          const FormulaList = it.Formula ? [it] : [];
+          list.push({ MaterialType, List, FormulaList });
+        }
       });
       return list;
     },
@@ -124,6 +155,9 @@ export default {
       .blue-span {
         font-size: 12px;
         margin: 0 12px;
+      }
+      &.formula-label {
+        margin-right: 0px;
       }
     }
     &.condtion-list {

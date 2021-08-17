@@ -253,12 +253,18 @@ export default {
       if (t) {
         const t2 = t.PriceList.find(it => it.ID === PriceID); // 目标价格条目
         if (t2) {
+          // console.log(t2);
           if (isQuotationPage) {
             t2.PriceTableList = t2.PriceTableList.filter(it => it.ID !== itemID);
+            state.curPriceItem.PriceTableList = state.curPriceItem.PriceTableList.filter(it => it.ID !== itemID);
           } else {
             const t3 = t2.CraftPriceList.find(it => it.ID === CraftPriceID);
             if (t3) {
               t3.PriceTableList = t3.PriceTableList.filter(it => it.ID !== itemID);
+            }
+            const curT3 = state.curPriceItem.CraftPriceList.find(it => it.ID === CraftPriceID);
+            if (curT3) {
+              curT3.PriceTableList = curT3.PriceTableList.filter(it => it.ID !== itemID);
             }
           }
         }
@@ -586,10 +592,10 @@ export default {
         commit('setPriceItemPropertyList', list);
       }
     },
-    async getQuotationResultPropertyList({ state, commit }, ProductID) { // 获取工艺总费用表 条件属性列表
-      if (state.QuotationResultPropertyList.length > 0 && state.QuotationResultPropertyList[0].Product?.ID === ProductID) return;
+    async getQuotationResultPropertyList({ commit }, [ProductID, PriceID]) { // 获取工艺总费用表 条件属性列表
+      // if (state.QuotationResultPropertyList.length > 0 && state.QuotationResultPropertyList[0].Product?.ID === ProductID) return;
       commit('setQuotationResultPropertyList', []);
-      const list = await PropertyClass.getPropertyList({ UseModule: 21, ProductID });
+      const list = await PropertyClass.getPropertyList({ UseModule: 21, ProductID, PriceID });
       if (list) {
         commit('setQuotationResultPropertyList', list);
       }

@@ -71,7 +71,7 @@ export default {
     this.PriceName = Name;
     this.ProductID = this.$route.params.id;
     this.ProductName = this.$route.params.name;
-    this.$store.dispatch('priceManage/getQuotationResultPropertyList', this.ProductID);
+    this.$store.dispatch('priceManage/getQuotationResultPropertyList', [this.ProductID, this.PriceID]);
     // this.$store.dispatch('priceManage/getQuotationResultSolutionList', [this.ProductID, this.PriceID]);
   },
 };
