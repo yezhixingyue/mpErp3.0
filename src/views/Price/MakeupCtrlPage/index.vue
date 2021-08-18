@@ -109,8 +109,7 @@ export default {
     TopRadioButtonComp,
   },
   computed: {
-    ...mapState('priceManage', ['MakeupControlTypeList', 'MakeupCtrlBeginPropList', 'MakeupCtrlAfterPropList',
-      'ProductFormulaPropertyList', 'PriceManageList']),
+    ...mapState('priceManage', ['MakeupControlTypeList', 'ProductFormulaPropertyList', 'PriceManageList']),
     curTypeSolutionList() {
       if (!this.solutionList || (!this.curControlType && this.curControlType !== 0) || this.solutionList.length === 0) return [];
       return this.solutionList.filter(it => it.Type === this.curControlType);
@@ -120,8 +119,7 @@ export default {
       return this.solutionList.find(it => it.ID === this.curSolutionID);
     },
     localSolutionDataList() {
-      const propList = [0, 1].includes(this.curControlType) ? this.MakeupCtrlBeginPropList : this.MakeupCtrlAfterPropList;
-      return this.getReductionList(this.MakeupRuleItemList, propList);
+      return this.getReductionList(this.MakeupRuleItemList, this.AllPropertyList);
     },
     curProduct() {
       if (Array.isArray(this.PriceManageList) && this.$route.params.id) {
@@ -146,7 +144,7 @@ export default {
           const t = this.MixtureMakeupList.find(_it => _it.PartID === it.ID);
           if (t) mixinData = t;
           if (t && Array.isArray(t.List)) {
-            mixinList = this.getReductionList(t.List, this.MakeupCtrlBeginPropList);
+            mixinList = this.getReductionList(t.List, this.AllPropertyList, t.PartID);
           }
         }
         const ExcludeNumberFormulaList = this.ProductFormulaPropertyList.filter(_it => _it.PartID && _it.PartID === it.ID);
@@ -187,6 +185,10 @@ export default {
       }
       return tip;
     },
+    curUseModule() {
+      const t = this.MakeupControlTypeList.find(it => it.ID === this.curControlType);
+      return t ? t.UseModule : null;
+    },
   },
   data() {
     return {
@@ -208,15 +210,24 @@ export default {
       setSameProperty: null, // 正在设置相同条件设置的部件项目数据
       ExcludeNumCtrlVisible: false, // 排除数量设置弹窗开关
       curExcludeNumCtrlData: null,
+      AllPropertyList: [],
     };
   },
   methods: {
-    getReductionList(list, leftPropertyList) {
+    getReductionList(list, AllPropertyList, PartID) {
       if (!Array.isArray(list) || list.length === 0) return [];
       const _list = JSON.parse(JSON.stringify(list)).map(it => {
+        let t = AllPropertyList.find(_it => (
+          _it.ProductID === it.ProductID && _it.UseModule === this.curUseModule && ((!_it.PartID && !it.PartID) || it.PartID === _it.PartID)
+        ));
+        if (!t && PartID) {
+          t = AllPropertyList.find(_it => _it.PartID === PartID && _it.UseModule === this.curUseModule);
+        }
+        if (!t) return it;
+        if (PartID) console.log(it, this.curUseModule, t);
         const { Constraint } = it;
         const [_Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
-          Constraint, leftPropertyList,
+          Constraint, t.PropertyList,
         );
         return { ...it, Constraint: _Constraint, _ConditionText };
       });
@@ -336,8 +347,9 @@ export default {
     onSetupPageJump(data, PartID, PartName, isMixin) { // 跳转条件配置页面
       if (!data) return;
       const [setType, editData] = data;
+      const ProductID = this.$route.params.id;
       const params = {
-        ProductID: this.$route.params.id,
+        ProductID,
         PartID: PartID || 'null',
         ProductName: this.$route.params.name,
         PartName: PartName || 'null',
@@ -347,7 +359,13 @@ export default {
         setType,
       };
       this.$store.commit('priceManage/setCurMakeupItemEditData', editData);
-      this.$router.push({ name: 'MakeupCtrlConditionSet', params });
+      // setMakeupCtrlConditionSetupPropertyList
+      // eslint-disable-next-line max-len
+      const t = this.AllPropertyList.find(it => it.UseModule === this.curUseModule && it.ProductID === ProductID && (it.PartID === PartID || (!PartID && !it.PartID)));
+      if (t) {
+        this.$store.commit('priceManage/setMakeupCtrlConditionSetupPropertyList', t.PropertyList);
+        this.$router.push({ name: 'MakeupCtrlConditionSet', params });
+      }
     },
     async getMakeupRuleItemList() { // 获取混拼方案列表数据
       if (!this.curSolutionID) return;
@@ -468,12 +486,32 @@ export default {
         this.messageBox.successSingle('保存成功', cb, cb);
       }
     },
+    async getAllPropertyList() {
+      if ((this.curUseModule || this.curUseModule === 0) && this.curProduct) {
+        this.isPropertyListLoading = true;
+        const ProductID = this.curProduct.ID;
+        const PartIDs = this.curProduct.PartList?.map(it => it.ID) || [];
+        const list = [{ ProductID, UseModule: this.curUseModule }];
+        const Parts = PartIDs.map(it => ({ ProductID, UseModule: this.curUseModule, PartID: it }));
+        list.push(...Parts);
+        const _AllPropertyList = await Promise.all(list.map(async (it) => {
+          const _t = this.AllPropertyList.find(_it => _it.ProductID === it.ProductID && _it.PartID === it.PartID && _it.UseModule === it.UseModule);
+          if (_t) return _t;
+          const PropertyList = await PropertyClass.getPropertyList(it);
+          return { ...it, PropertyList };
+        })).catch(() => {});
+        console.log(_AllPropertyList);
+        this.AllPropertyList.push(..._AllPropertyList);
+        this.isPropertyListLoading = false;
+      }
+    },
   },
   watch: {
     curControlType() {
       if (this.curTypeSolutionList.length > 0) this.curSolutionID = this.curTypeSolutionList[0].ID;
       else this.curSolutionID = '';
       this.MakeupRuleItemList = [];
+      this.getAllPropertyList();
     },
     curSolutionID() {
       this.getMakeupRuleItemList();
@@ -483,6 +521,7 @@ export default {
   async mounted() {
     this.getMakeupSolutionList();
     await this.$store.dispatch('priceManage/getMakeupPropertyList', this.$route.params.id);
+    this.getAllPropertyList();
     this.isPropertyListLoading = false;
   },
   beforeRouteEnter(to, from, next) {

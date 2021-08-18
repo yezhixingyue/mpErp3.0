@@ -75,7 +75,7 @@
       <FormulaPanelElementSelectDialog
        :visible.sync='AxisPropVisible'
        :selectedElementIDs='selectedElementIDs'
-       :list='PriceItemPropertyList'
+       :list='PriceItemAxisPropertyList'
        freeText='不限'
        showConstant
        @submit='onAxisPropSelect' />
@@ -156,7 +156,7 @@ export default {
   },
   computed: {
     // curEditPriceItemData 为null时为添加
-    ...mapState('priceManage', ['curSolutionItem', 'curEditPriceItemData', 'curPriceItem', 'curCraftPriceItemData', 'PriceItemPropertyList']),
+    ...mapState('priceManage', ['curSolutionItem', 'curEditPriceItemData', 'curPriceItem', 'curCraftPriceItemData', 'PriceItemAxisPropertyList']),
     ConstraintContent() { // 顶部条件信息
       if (!this.PriceTableData) return '';
       const { Constraint } = this.PriceTableData;

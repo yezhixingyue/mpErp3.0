@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     // eslint-disable-next-line max-len
-    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'PriceManageList', 'PriceTableList', 'PriceTableConditionPropertyList', 'PriceItemPropertyList']),
+    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'PriceManageList', 'PriceTableList', 'PriceItemPropertyList', 'PriceItemAxisPropertyList']),
     curProduct() {
       return this.PriceManageList.find(it => it.ID === this.ProductID);
     },
@@ -106,7 +106,7 @@ export default {
     },
     tableDataList() {
       if (!Array.isArray(this.PriceTableList) || this.PriceTableList.length === 0) return [];
-      const ConditionPropertyList = this.PriceTableConditionPropertyList;
+      const ConditionPropertyList = this.PriceItemPropertyList;
       const _list = JSON.parse(JSON.stringify(this.PriceTableList)).map(it => {
         const { Constraint, XAxis, YAxis } = it;
         const [_Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
@@ -115,11 +115,11 @@ export default {
         let _XAxis = null;
         let _YAxis = null;
         if (XAxis) {
-          const XProperty = PropertyClass.getPerfectPropertyByImperfectProperty(XAxis.Property, this.PriceItemPropertyList);
+          const XProperty = PropertyClass.getPerfectPropertyByImperfectProperty(XAxis.Property, this.PriceItemAxisPropertyList);
           _XAxis = { ...XAxis, Property: XProperty };
         }
         if (YAxis) {
-          const YProperty = PropertyClass.getPerfectPropertyByImperfectProperty(YAxis.Property, this.PriceItemPropertyList);
+          const YProperty = PropertyClass.getPerfectPropertyByImperfectProperty(YAxis.Property, this.PriceItemAxisPropertyList);
           _YAxis = { ...YAxis, Property: YProperty };
         }
         return { ...it, Constraint: _Constraint, _ConditionText, XAxis: _XAxis, YAxis: _YAxis };
@@ -313,6 +313,7 @@ export default {
     }
     this.getProductData();
     this.$store.dispatch('priceManage/getPriceTablePropertyLists', this.ProductID);
+    this.$store.dispatch('priceManage/getConditionPropertyList', this.ProductID);
   },
 };
 </script>

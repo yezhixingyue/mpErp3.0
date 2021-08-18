@@ -17,7 +17,7 @@
        :ComparePropertyList='ComparePropertyList' />
        <div v-if="(!propertyList || propertyList.length === 0) && !loading" class="empty">
          <img src="@/assets/images/null.png" alt="">
-         <p class="tips-box is-pink"><i class="el-icon-warning"></i> 暂无可用的属性列表, 该子公式尚不可设置数据筛选</p>
+         <p class="tips-box is-pink"><i class="el-icon-warning"></i> 暂无可用的属性列表。</p>
        </div>
     </main>
     <footer>

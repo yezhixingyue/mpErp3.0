@@ -334,7 +334,6 @@ export default class PropertyClass {
         return { ...t, DefaultValue };
       }
       if (t.Type === 9) {
-        console.log(t);
         const { CraftOptionList } = imperfectProp;
         const list = t.CraftOptionList.map(it => {
           const _t = CraftOptionList.find(_it => _it.ID === it.ID && JSON.stringify(_it.Part) === JSON.stringify(it.Part));

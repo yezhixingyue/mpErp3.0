@@ -31,16 +31,15 @@ export default {
     ApplyRangeTemplateList: [], // 适用范围数据列表
     ApplyRangeTemplateListFetched: false,
     MakeupControlTypeList: [
-      { Name: '尺寸数量', ID: 0 },
-      { Name: '拼版幅面', ID: 1 },
-      { Name: '拼版规则', ID: 2 },
-      { Name: '拼版算法', ID: 3 },
-      { Name: '印刷次数', ID: 4 },
-      { Name: '物料损耗', ID: 5 },
+      { Name: '尺寸数量', ID: 0, UseModule: 35 },
+      { Name: '拼版幅面', ID: 1, UseModule: 36 },
+      { Name: '拼版规则', ID: 2, UseModule: 36 },
+      { Name: '拼版算法', ID: 3, UseModule: 37 },
+      { Name: '印刷次数', ID: 4, UseModule: 35 },
+      { Name: '物料损耗', ID: 5, UseModule: 30 },
     ],
     /** 拼版控制相关
      ---------------------------------------- */
-    MakeupCtrlBeginPropList: [], // 拼版控制左侧弹窗条件属性
     ProductFormulaPropertyList: [],
     curMakeupItemEditData: null,
     CuttingRuleList: [
@@ -94,6 +93,8 @@ export default {
     curNumberSwapData: null, // 当前正在编辑的数值转换信息
     NumberSwapList: [], // 数值转换数据列表
     QuotationResultPropertyList: [], // 报价结果条件列表
+    PriceItemAxisPropertyList: [], // 轴数据列表公式
+    MakeupCtrlConditionSetupPropertyList: [], // 拼版控制设置页面属性列表
   },
   getters: {
   },
@@ -161,9 +162,7 @@ export default {
     },
     /** 拼版控制相关
     ----------------------------------------- */
-    setMakeupPropertyList(state, [MakeupCtrlBeginPropList, MakeupCtrlAfterPropList, ProductFormulaList]) {
-      state.MakeupCtrlBeginPropList = Array.isArray(MakeupCtrlBeginPropList) ? MakeupCtrlBeginPropList : [];
-      state.MakeupCtrlAfterPropList = Array.isArray(MakeupCtrlAfterPropList) ? MakeupCtrlAfterPropList : [];
+    setMakeupPropertyList(state, [ProductFormulaList]) {
       state.ProductFormulaPropertyList = Array.isArray(ProductFormulaList) ? ProductFormulaList : [];
     },
     setCurMakeupItemEditData(state, data) {
@@ -362,9 +361,8 @@ export default {
         t.Priority = Priority;
       }
     },
-    setPriceTableConditionPropertyList(state, [ConditionPropertyList, AxisPropertyList]) { // 价格表条件属性列表
-      state.PriceTableConditionPropertyList = Array.isArray(ConditionPropertyList) ? ConditionPropertyList : [];
-      state.PriceItemPropertyList = Array.isArray(AxisPropertyList) ? AxisPropertyList : [];
+    setPriceTableConditionPropertyList(state, AxisPropertyList) { // 价格表条件属性列表
+      state.PriceItemAxisPropertyList = Array.isArray(AxisPropertyList) ? AxisPropertyList : [];
     },
     setCurPriceTableItemResultFormulaInfo(state, [tableData, formulaData]) { // 设置结果公式所需的相关数据(价格表数据与公式编辑数据)
       state.curPriceTableItemData = tableData;
@@ -485,6 +483,9 @@ export default {
     setNeedScrollToExtend(state, bool) { // 拷贝价格后标记重新获取数据后需滚动至价格拷贝处
       state.needScrollToExtend = bool;
     },
+    setMakeupCtrlConditionSetupPropertyList(state, list) {
+      state.MakeupCtrlConditionSetupPropertyList = list;
+    },
   },
   actions: {
     async getPriceManageList({ state, commit }, page = 1) { // 获取产品列表数据
@@ -542,17 +543,17 @@ export default {
     },
     async getMakeupPropertyList({ commit }, ProductID) { // 获取拼版控制左侧弹窗属性列表数据
       commit('setMakeupPropertyList', []);
-      const [MakeupCtrlBeginPropList, MakeupCtrlAfterPropList, ProductFormulaResp] = await Promise.all([
-        PropertyClass.getPropertyList({ UseModule: 21, ProductID }),
-        PropertyClass.getPropertyList({ UseModule: 30, ProductID }),
+      const [ProductFormulaResp] = await Promise.all([
+        // PropertyClass.getPropertyList({ UseModule: 21, ProductID }),
+        // PropertyClass.getPropertyList({ UseModule: 30, ProductID }),
         api.getProductFormulasList(ProductID).catch(() => {}), // 设置尺寸数量
       ]);
       const ProductFormulaList = ProductFormulaResp && ProductFormulaResp.data.Status === 1000 ? ProductFormulaResp.data.Data : [];
-      if (MakeupCtrlBeginPropList && MakeupCtrlAfterPropList && ProductFormulaResp && ProductFormulaResp.data.Status === 1000) {
-        commit('setMakeupPropertyList', [MakeupCtrlBeginPropList, MakeupCtrlAfterPropList, ProductFormulaList]);
+      if (ProductFormulaResp && ProductFormulaResp.data.Status === 1000) {
+        commit('setMakeupPropertyList', [ProductFormulaList]);
         return true;
       }
-      commit('setMakeupPropertyList', [MakeupCtrlBeginPropList || [], MakeupCtrlAfterPropList || [], ProductFormulaList]);
+      commit('setMakeupPropertyList', [ProductFormulaList]);
       return false;
     },
     async getChildConditionPropertyList({ commit }, PartIDs) {
@@ -578,16 +579,13 @@ export default {
     },
     async getPriceTablePropertyLists({ commit }, ProductID) { // 获取价格表条件使用属性列表 及 价格表X Y轴选择属性列表数据
       commit('setPriceTableConditionPropertyList', []);
-      const [ConditionPropertyList, AxisPropertyList] = await Promise.all([
-        PropertyClass.getPropertyList({ UseModule: 30, ProductID }),
-        PropertyClass.getPropertyList({ UseModule: 31, ProductID }),
-      ]);
-      commit('setPriceTableConditionPropertyList', [ConditionPropertyList || [], AxisPropertyList || []]);
+      const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID });
+      commit('setPriceTableConditionPropertyList', list);
     },
     async getConditionPropertyList({ state, commit }, ProductID) { // 获取工艺总费用表 条件属性列表
       if (state.PriceItemPropertyList.length > 0 && state.PriceItemPropertyList[0].Product?.ID === ProductID) return;
       commit('setPriceItemPropertyList', []);
-      const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID });
+      const list = await PropertyClass.getPropertyList({ UseModule: 32, ProductID });
       if (list) {
         commit('setPriceItemPropertyList', list);
       }
@@ -595,7 +593,7 @@ export default {
     async getQuotationResultPropertyList({ commit }, [ProductID, PriceID]) { // 获取工艺总费用表 条件属性列表
       // if (state.QuotationResultPropertyList.length > 0 && state.QuotationResultPropertyList[0].Product?.ID === ProductID) return;
       commit('setQuotationResultPropertyList', []);
-      const list = await PropertyClass.getPropertyList({ UseModule: 21, ProductID, PriceID });
+      const list = await PropertyClass.getPropertyList({ UseModule: 35, ProductID, PriceID });
       if (list) {
         commit('setQuotationResultPropertyList', list);
       }

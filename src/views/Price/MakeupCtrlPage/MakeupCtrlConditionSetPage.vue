@@ -66,15 +66,14 @@ export default {
     MaterialWastagePanel,
   },
   computed: {
-    ...mapState('priceManage', ['MakeupCtrlBeginPropList', 'MakeupCtrlAfterPropList', 'ProductFormulaPropertyList', 'curMakeupItemEditData']),
+    ...mapState('priceManage', ['ProductFormulaPropertyList', 'curMakeupItemEditData', 'MakeupCtrlConditionSetupPropertyList']),
     rightTitle() {
       if (this.routeInfo.isMixin) return '则允许混拼';
       if (this.routeInfo.setType === '1') return '使用以下幅面';
       return '则';
     },
     PropList() {
-      if (['0', '1'].includes(this.routeInfo.setType)) return this.MakeupCtrlBeginPropList;
-      return this.MakeupCtrlAfterPropList;
+      return this.MakeupCtrlConditionSetupPropertyList;
     },
     routeInfo() {
       const { ProductID, PartID, ProductName, PartName, SolutionName, SolutionID, setType, isMixin } = this.$route.params;
