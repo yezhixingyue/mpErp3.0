@@ -72,7 +72,7 @@ export default {
   },
   data() {
     return {
-      title: '设置费用',
+      title: '设置表数据',
       Unit: '',
       DataList: [],
     };

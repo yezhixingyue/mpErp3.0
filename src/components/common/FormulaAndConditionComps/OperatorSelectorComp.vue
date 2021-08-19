@@ -128,7 +128,7 @@ export default {
      || !this.PropertyData.OperatorList || this.PropertyData.OperatorList.length === 0) return;
     if (this.localOperatorList.length === 0) return;
     const [{ ID, Name }] = this.localOperatorList;
-    this.$emit('change', ID);
+    if (!this.localValue && this.localValue !== 0) this.$emit('change', ID);
     if (this.PropertyData.OperatorList.length === 1 && this.localOperatorList.length === 1) {
       this.showOption = false;
       this.showText = Name;

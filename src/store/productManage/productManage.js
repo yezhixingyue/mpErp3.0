@@ -107,8 +107,9 @@ export default {
      * 产品元素映射
      */
     ProductElementTypeList: [
-      { Name: '数量', ID: 0 },
-      { Name: '款数', ID: 1 },
+      { Name: '数量', ID: 0, onlyProduct: false, needFormula: false },
+      { Name: '款数', ID: 1, onlyProduct: false, needFormula: false },
+      { Name: '重量', ID: 2, onlyProduct: true, needFormula: true },
     ],
   },
   getters: {

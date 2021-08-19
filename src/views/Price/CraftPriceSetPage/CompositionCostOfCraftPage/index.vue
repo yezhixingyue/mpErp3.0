@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     // eslint-disable-next-line max-len
-    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'PriceManageList', 'PriceTableList', 'PriceItemPropertyList', 'PriceItemAxisPropertyList']),
+    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'PriceManageList', 'PriceTableList', 'PriceItemAxisPropertyList']),
     curProduct() {
       return this.PriceManageList.find(it => it.ID === this.ProductID);
     },
@@ -106,7 +106,7 @@ export default {
     },
     tableDataList() {
       if (!Array.isArray(this.PriceTableList) || this.PriceTableList.length === 0) return [];
-      const ConditionPropertyList = this.PriceItemPropertyList;
+      const ConditionPropertyList = this.curConditionList;
       const _list = JSON.parse(JSON.stringify(this.PriceTableList)).map(it => {
         const { Constraint, XAxis, YAxis } = it;
         const [_Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
@@ -126,6 +126,14 @@ export default {
       });
       return _list;
     },
+    curSolutionPartID() {
+      if (this.curSolutionItem?.ApplyRange) return this.curSolutionItem.ApplyRange.PartID;
+      return 'unkown';
+    },
+    curConditionList() {
+      const t = this.ConditionPropertyObjList.find(it => it.PartID === this.curSolutionPartID);
+      return t ? t.PropertyList : [];
+    },
   },
   data() {
     return {
@@ -141,6 +149,7 @@ export default {
       isQuotationPage: false, // 是否为价格表页面
       canLoadContentTableData: true, // 是否可在方案切换时获取表体数据
       isTableLoading: false,
+      ConditionPropertyObjList: [], // 当前方案条件属性列表
     };
   },
   methods: {
@@ -240,12 +249,27 @@ export default {
       }
     },
     async getPriceTableList() { // 获取费用表数据 根据顶部方案切换获取
-      if (!this.SolutionID) return;
+      if (!this.SolutionID || !this.curSolutionItem) return;
+      const { PriceID, ApplyRange } = this.curSolutionItem;
+      if (!ApplyRange) return;
+      const { PartID } = ApplyRange;
       this.isTableLoading = true;
       await Promise.all([
         this.$store.dispatch('priceManage/getPriceTableList', this.SolutionID),
+        this.getConditionPropertyList(PriceID, PartID),
       ]);
       this.isTableLoading = false;
+    },
+    async getConditionPropertyList(PriceID, PartID) {
+      const t = this.ConditionPropertyObjList.find(it => it.PartID === PartID);
+      if (t) return;
+      const resp = await PropertyClass.getPropertyList({ UseModule: 32, ProductID: this.ProductID, PriceID, PartID });
+      const PropertyList = resp || [];
+      const obj = {
+        PartID,
+        PropertyList,
+      };
+      this.ConditionPropertyObjList.push(obj);
     },
     async onTableItemRemove(e) { // ok
       if (!e || !e.ID) return;
@@ -260,6 +284,7 @@ export default {
     onFormDataWritePageJump(data) { // 填写表数据
       const pathName = this.isQuotationPage ? 'QuotationPriceTableItemSet' : 'CraftPriceTableItemSet';
       const { params } = this.$route;
+      this.$store.commit('priceManage/setPriceItemPropertyList', this.curConditionList);
       this.$store.commit('priceManage/setCurSolutionItem', this.curSolutionItem);
       this.$store.commit('priceManage/setCurEditPriceItemData', data);
       this.$store.commit('priceManage/setResultFormulaList', []);
@@ -268,6 +293,7 @@ export default {
     onTableItemConditionSetupClick(data) { // 设置条件
       const pathName = this.isQuotationPage ? 'QuotationPriceConditionSet' : 'CraftPriceTableConditionSet';
       const { params } = this.$route;
+      this.$store.commit('priceManage/setPriceItemPropertyList', this.curConditionList);
       this.$store.commit('priceManage/setCurSolutionItem', this.curSolutionItem);
       this.$store.commit('priceManage/setCurEditPriceItemData', data);
       this.$router.push({ name: pathName, params });
@@ -313,7 +339,7 @@ export default {
     }
     this.getProductData();
     this.$store.dispatch('priceManage/getPriceTablePropertyLists', this.ProductID);
-    this.$store.dispatch('priceManage/getConditionPropertyList', this.ProductID);
+    // this.$store.dispatch('priceManage/getConditionPropertyList', this.ProductID);
   },
 };
 </script>

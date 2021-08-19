@@ -26,6 +26,7 @@
 <script>
 import { mapState } from 'vuex';
 import ResultFormulaTableCom from '@/components/PriceComps/PriceTableItem/ResultFormulaTableCom.vue';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 export default {
   name: 'CraftTotalPriceSetPage',
@@ -83,6 +84,13 @@ export default {
       this.$store.commit('priceManage/setCurPriceTableItemResultFormulaInfo', [null, data]);
       this.$router.push({ name: 'CraftAllCostFormulaSet', params: { ...params, isAllCost: true } });
     },
+    async getConditionPropertyList() {
+      this.$store.commit('priceManage/setPriceItemPropertyList', []);
+      const PartID = this.curCraftPriceItemData.PartID || '';
+      const PriceID = this.curPriceItem.ID;
+      const resp = PropertyClass.getPropertyList({ UseModule: 32, ProductID: this.ProductID, PartID, PriceID });
+      if (resp) this.$store.commit('priceManage/setPriceItemPropertyList', resp);
+    },
   },
   created() {
     if (!this.curPriceItem || !this.curCraftPriceItemData || !this.curCraftPriceItemData.Craft) {
@@ -95,7 +103,9 @@ export default {
     this.ProductID = this.$route.params.id;
     this.ProductName = this.$route.params.name;
     this.$store.commit('priceManage/setResultFormulaList', []);
-    this.$store.dispatch('priceManage/getConditionPropertyList', this.$route.params.id);
+    // this.$store.dispatch('priceManage/getConditionPropertyList', this.$route.params.id);
+    // console.log(this.curCraftPriceItemData, this.curPriceItem);
+    this.getConditionPropertyList();
   },
 };
 </script>

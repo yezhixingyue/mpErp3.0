@@ -147,7 +147,7 @@ export default {
         const { RuleList } = item;
         if (!Array.isArray(RuleList)) return [''];
         const str = RuleList.map(it => `${it.ColumnNumber}列 X ${it.RowNumber}行`).join('、');
-        return [`产品使用 ${str} 进行拼版`];
+        return [`产品使用 ${str || '按1张（默认）'} 进行拼版`];
       }
       if (t.Name === '拼版算法') {
         const { CuttingRule } = item;

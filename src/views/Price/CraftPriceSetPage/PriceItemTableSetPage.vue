@@ -25,6 +25,7 @@
                 </p>
               </template>
               <p v-else>{{PriceTableData._ConditionText}}</p>
+              <p>时使用此表</p>
             </div>
             <div class="common-property-condition-text-content-box condition">
               <template v-if="Array.isArray(PriceTableData._ConditionText)">
@@ -37,6 +38,7 @@
                 </p>
               </template>
               <p v-else>{{PriceTableData._ConditionText}}</p>
+              <p>时使用此表</p>
             </div>
           </el-tooltip>
         </div>
@@ -76,6 +78,7 @@
        :visible.sync='AxisPropVisible'
        :selectedElementIDs='selectedElementIDs'
        :list='PriceItemAxisPropertyList'
+       :title='AxisTitle'
        freeText='不限'
        showConstant
        @submit='onAxisPropSelect' />
@@ -157,6 +160,11 @@ export default {
   computed: {
     // curEditPriceItemData 为null时为添加
     ...mapState('priceManage', ['curSolutionItem', 'curEditPriceItemData', 'curPriceItem', 'curCraftPriceItemData', 'PriceItemAxisPropertyList']),
+    AxisTitle() {
+      if (this.curAxisPropSetType === 'X') return '设置横轴属性';
+      if (this.curAxisPropSetType === 'Y') return '设置竖轴属性';
+      return '设置轴属性';
+    },
     ConstraintContent() { // 顶部条件信息
       if (!this.PriceTableData) return '';
       const { Constraint } = this.PriceTableData;

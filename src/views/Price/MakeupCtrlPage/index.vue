@@ -224,7 +224,6 @@ export default {
           t = AllPropertyList.find(_it => _it.PartID === PartID && _it.UseModule === this.curUseModule);
         }
         if (!t) return it;
-        if (PartID) console.log(it, this.curUseModule, t);
         const { Constraint } = it;
         const [_Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
           Constraint, t.PropertyList,
@@ -500,7 +499,6 @@ export default {
           const PropertyList = await PropertyClass.getPropertyList(it);
           return { ...it, PropertyList };
         })).catch(() => {});
-        console.log(_AllPropertyList);
         this.AllPropertyList.push(..._AllPropertyList);
         this.isPropertyListLoading = false;
       }

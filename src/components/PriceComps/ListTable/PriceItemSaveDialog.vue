@@ -126,14 +126,15 @@ export default {
         this.messageBox.failSingleError('保存失败', '请输入价格名称');
         return false;
       }
-      if (this.ruleForm.Range.List.length === 0 && !this.ruleForm.Range.IsIncludeIncreased) {
-        this.messageBox.failSingleError('保存失败', '请选择适用区域');
+      if ((this.ruleForm.Range.List.length === 0 && !this.ruleForm.Range.IsIncludeIncreased)
+       && (!this.ruleForm.GradeList || this.ruleForm.GradeList.length === 0)) {
+        this.messageBox.failSingleError('保存失败', '适用区域与适用等级价格必须至少要选择一种');
         return false;
       }
-      if (!this.ruleForm.GradeList || this.ruleForm.GradeList.length === 0) {
-        this.messageBox.failSingleError('保存失败', '请选择适用等级价格');
-        return false;
-      }
+      // if (!this.ruleForm.GradeList || this.ruleForm.GradeList.length === 0) {
+      //   this.messageBox.failSingleError('保存失败', '请选择适用等级价格');
+      //   return false;
+      // }
       return true;
     },
     handleRabfeTempSelect(tempData) {

@@ -195,7 +195,7 @@ export default {
     //   const { ID, ProductID, IsOwnPrice, BasePriceID, ReferencePriceList } = data;
     // },
     setCurPriceItem(state, data) {
-      state.curPriceItem = data;
+      state.curPriceItem = JSON.parse(JSON.stringify(data));
     },
     setPriceItemMakeupSolutionChange(state, [ProductID, PriceID, Type, SolutionID]) { // 设置拼版方案选择
       const t = state.PriceManageList.find(it => it.ID === ProductID);
@@ -269,7 +269,7 @@ export default {
         }
       }
     },
-    setPriceItemSolutionItemChange(state, [ProductID, PriceID, itemData, itemID, isQuotationPage, CraftPriceID]) { // 工艺费 - 价格表 顶部价格方案编辑和添加
+    setPriceItemSolutionItemChange(state, [ProductID, PriceID, itemData, itemID, isQuotationPage, CraftPriceID]) { // 工艺费 - 价格
       const t = state.PriceManageList.find(it => it.ID === ProductID); // 目标产品
       if (t) {
         const t2 = t.PriceList.find(it => it.ID === PriceID); // 目标价格条目
@@ -285,11 +285,18 @@ export default {
           if (isQuotationPage) {
             if (Array.isArray(t2.PriceTableList)) setFunc(t2.PriceTableList);
             else t2.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
+            if (Array.isArray(state.curPriceItem.PriceTableList)) setFunc(state.curPriceItem.PriceTableList);
+            else state.curPriceItem.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
           } else {
             const t3 = t2.CraftPriceList.find(it => it.ID === CraftPriceID);
             if (t3) {
               if (Array.isArray(t3.PriceTableList)) setFunc(t3.PriceTableList);
               else t3.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
+            }
+            const curT3 = state.curPriceItem.CraftPriceList.find(it => it.ID === CraftPriceID);
+            if (curT3) {
+              if (Array.isArray(curT3.PriceTableList)) setFunc(curT3.PriceTableList);
+              else curT3.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
             }
           }
         }
@@ -441,9 +448,13 @@ export default {
           if (!item.ID) {
             if (!_price.ResultList) _price.ResultList = [];
             _price.ResultList.unshift({ ...item, ID });
+            if (!state.curPriceItem.ResultList) state.curPriceItem.ResultList = [];
+            state.curPriceItem.ResultList.unshift({ ...item, ID });
           } else { // 编辑
             const i = _price.ResultList.findIndex(it => it.ID === ID);
             if (i > -1) _price.ResultList.splice(i, 1, item);
+            const i2 = state.curPriceItem.ResultList.findIndex(it => it.ID === ID);
+            if (i2 > -1) state.curPriceItem.ResultList.splice(i, 1, item);
           }
         }
       }
@@ -454,6 +465,7 @@ export default {
         const _price = t.PriceList.find(it => it.ID === PriceID);
         if (_price) {
           _price.ResultList = _price.ResultList.filter(it => it.ID !== ID);
+          state.curPriceItem.ResultList = state.curPriceItem.ResultList.filter(it => it.ID !== ID);
         }
       }
     },
@@ -582,14 +594,14 @@ export default {
       const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID });
       commit('setPriceTableConditionPropertyList', list);
     },
-    async getConditionPropertyList({ state, commit }, ProductID) { // 获取工艺总费用表 条件属性列表
-      if (state.PriceItemPropertyList.length > 0 && state.PriceItemPropertyList[0].Product?.ID === ProductID) return;
-      commit('setPriceItemPropertyList', []);
-      const list = await PropertyClass.getPropertyList({ UseModule: 32, ProductID });
-      if (list) {
-        commit('setPriceItemPropertyList', list);
-      }
-    },
+    // async getConditionPropertyList({ state, commit }, ProductID) { // 获取工艺总费用表 条件属性列表
+    //   if (state.PriceItemPropertyList.length > 0 && state.PriceItemPropertyList[0].Product?.ID === ProductID) return;
+    //   commit('setPriceItemPropertyList', []);
+    //   const list = await PropertyClass.getPropertyList({ UseModule: 32, ProductID });
+    //   if (list) {
+    //     commit('setPriceItemPropertyList', list);
+    //   }
+    // },
     async getQuotationResultPropertyList({ commit }, [ProductID, PriceID]) { // 获取工艺总费用表 条件属性列表
       // if (state.QuotationResultPropertyList.length > 0 && state.QuotationResultPropertyList[0].Product?.ID === ProductID) return;
       commit('setQuotationResultPropertyList', []);

@@ -23,6 +23,7 @@
                   </p>
                 </template>
                 <p v-else>{{item._ConditionText}}</p>
+                <p>时使用此表</p>
                 <!-- <p class="if-box" style="margin-right:5px">
                   <span class="is-origin">{{type === '1' ? '使用' : '则'}}</span>
                 </p>
@@ -39,6 +40,7 @@
                   </p>
                 </template>
                 <p v-else>{{item._ConditionText}}</p>
+                <p style="margin-left:15px">时使用此表</p>
                 <!-- <p class="if-box" style="margin-left:10px;margin-right:5px">
                   <span class="is-origin">{{type === '1' ? '使用' : '则'}}</span>
                 </p>

@@ -19,7 +19,7 @@
           <el-option
             v-for="item in ElementData.List"
             :key="item.ID"
-            :disabled='selectedElementIDs.includes(item.ID) && it.Second !== item.ID'
+            :disabled='(selectedElementIDs.includes(item.ID) && it.Second !== item.ID) || (!it.needFormula && item.isFormula)'
             :label="item.Name"
             :value="item.ID">
           </el-option>
@@ -63,6 +63,7 @@ export default {
       ElementData: { // 下拉列表数据
         PositionID: '',
         List: [],
+
       },
       loading: false,
       List: [], // 要保存的数据列表
@@ -94,10 +95,10 @@ export default {
       const PostionID = this.PartID || this.itemData.ID;
       if (this.ElementData.PositionID !== PostionID) {
         this.ElementData.PositionID = PostionID;
-        this.getElementList();
+        this.getDataList();
       }
       // 设置元素对应列表数据
-      this.List = this.ProductElementTypeList.map(it => {
+      this.List = this.ProductElementTypeList.filter(it => !it.onlyProduct || !this.curData).map(it => {
         const TypeList = this.curData ? this.curData.TypeList : this.itemData.TypeList;
         let Second = '';
         const t = TypeList.find(_it => _it.First === it.ID);
@@ -106,16 +107,33 @@ export default {
           Second,
           First: it.ID,
           label: it.Name,
+          needFormula: it.needFormula,
         };
       });
     },
-    async getElementList() {
+    async getDataList() { // 获取元素及公式列表
       this.loading = true;
+      const [ElementList, FormulaList] = await Promise.all([this.getElementList(), this.getFormulaList()]);
+      this.loading = false;
+      const _ElementList = ElementList.filter(it => it.Type === 1 && !it.Group);
+      this.ElementData.List = [..._ElementList, ...FormulaList];
+    },
+    async getElementList() {
       const resp = await this.api.getElementList({ positionID: this.ElementData.PositionID }, true).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
-        this.ElementData.List = resp.data.Data.filter(it => it.Type === 1 && !it.Group);
+        return resp.data.Data;
       }
-      this.loading = false;
+      this.ElementData.PositionID = '';
+      return [];
+    },
+    async getFormulaList() {
+      if (this.curData) return []; // 此时设置的为部件，为部件时不设置重量，不需要数据，所以直接返回空数组
+      const resp = await this.api.getFormulaList({ ProductID: this.itemData.ID, UseModule: 1 }, true).catch(() => {});
+      if (resp && resp.status === 200 && resp.data.Status === 1000) {
+        return resp.data.Data.map(it => ({ ...it, Name: `公式：${it.Name}`, isFormula: true }));
+      }
+      this.ElementData.PositionID = '';
+      return [];
     },
   },
 };

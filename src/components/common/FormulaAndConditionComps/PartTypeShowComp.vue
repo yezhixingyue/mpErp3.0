@@ -26,7 +26,11 @@
           v-for="item in localListData.Element" :key="item.StoredContent"
           :value='MultipleCheckedIDList.includes(item.StoredContent)'
           @change="onCheckedItemChange($event, item)">{{getTextName(item) || item.DisplayContent || "未知名称"}}</el-checkbox>
-    </template>
+      </template>
+    </div>
+    <div class="is-font-size-12 is-gray" v-if="localListData.Element.length > 0">
+      <span>注：</span>
+      <div>原始物料数量、原始物料尺寸指没有进行二次加工前的物料数量、尺寸，比如纸张，指没有分切前的纸张数量、尺寸，可能是大度、正度，也可能是特规纸，数量指的是这些纸张使用了多少张，并且加上损耗。</div>
     </div>
   </div>
 </template>
@@ -113,6 +117,7 @@ export default {
   }
   > div.element {
     padding: 10px 0;
+    padding-bottom: 4px;
     display: flex;
     flex-wrap: wrap;
     .mp-common-title-wrap {
@@ -127,6 +132,10 @@ export default {
         margin-right: 0;
       }
     }
+  }
+  > .is-font-size-12 {
+    display: flex;
+    line-height: 18px;
   }
   > ul {
     margin-bottom: 12px;

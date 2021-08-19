@@ -187,15 +187,25 @@ export default {
     },
     initEditData() { // 数据初始化方法
       let prop;
-      if (this.type === 'X') prop = this.saveData.XAxis;
-      if (this.type === 'Y') prop = this.saveData.YAxis;
+      if (this.type === 'X') {
+        prop = this.saveData.XAxis;
+        this.title = '设置横轴数据';
+      }
+      if (this.type === 'Y') {
+        prop = this.saveData.YAxis;
+        this.title = '设置竖轴数据';
+      }
       if (prop) {
         this.Property = prop.Property;
         this.ruleForm.InputContent = prop.InputContent;
         this.ruleForm.Operator = { ...prop.Operator };
-        this.ruleForm.List = Array.isArray(prop.List) ? JSON.parse(JSON.stringify(prop.List.filter(it => !it.Values))) : [];
-        // eslint-disable-next-line max-len
-        this.SizeList = Array.isArray(prop.List) ? JSON.parse(JSON.stringify(prop.List.filter(it => it.Values).map(it => ({ List: it.Values, ID: it.ID })))) : [];
+        this.ruleForm.List = Array.isArray(prop.List) ? JSON.parse(JSON.stringify(prop.List.filter(it => it.Value))) : []; // 复选框选中的尺寸组选项ID
+        // 手动添加的尺寸条目信息
+        this.SizeList = Array.isArray(prop.List)
+          ? JSON.parse(JSON.stringify(
+            prop.List.filter(it => !it.Value && it.Values && it.Values.length > 0).map(it => ({ List: it.Values, ID: it.ID })),
+          ))
+          : [];
       } else {
         this.Property = null;
         this.ruleForm.InputContent = '';

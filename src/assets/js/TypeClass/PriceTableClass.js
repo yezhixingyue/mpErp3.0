@@ -83,7 +83,8 @@ export default class PriceTableClass {
 
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, PriceID, SolutionID, Unit, Constraint, Priority, XAxis, YAxis, DataList, PriceList, FormulaList, _ConditionText } = initData;
+    // eslint-disable-next-line max-len
+    const { ID, PriceID, SolutionID, Unit, Constraint, Priority, XAxis, YAxis, DataList, PriceList, FormulaList, _ConditionText } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (PriceID) this.PriceID = PriceID;
     if (SolutionID) this.SolutionID = SolutionID;
