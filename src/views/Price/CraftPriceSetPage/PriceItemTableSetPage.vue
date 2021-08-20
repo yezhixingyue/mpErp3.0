@@ -296,6 +296,9 @@ export default {
     handlePropSelectSuccess(e, targetProp) {
       const prop = targetProp;
       prop.Property = e;
+      if (prop.IsCumsum && (!e || e.ValueType !== 0)) {
+        prop.IsCumsum = false;
+      }
       prop.InputContent = '';
       prop.List = [];
       this.PriceTableData.PriceList = []; // 清除价格数据
