@@ -24,7 +24,7 @@
     <div class="form-item">
       <p>
         <span class="mp-common-title-wrap black">其他数据</span>
-        <span class="blue-span" @click="onAddClick" :class="{disabled: DataList.length>=2}">+ 添加-行</span>
+        <span class="blue-span" @click="onAddClick" :class="{disabled: DataList.length>=2}">+ 添加一行</span>
       </p>
       <ul>
         <li class="title">

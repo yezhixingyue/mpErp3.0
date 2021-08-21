@@ -39,6 +39,7 @@
           @remove='onTableItemRemove'
           @setup="onSetupPageJump($event, item.ID, item.Name)"
           :type='`${curControlType}`'
+          :title='item.Name'
           :titleObj='getTitleObj(item, curControlType)'
           :dataList='getTargetItemList(item.ID)'
           />
@@ -50,6 +51,7 @@
             @remove='onMixinTableItemRemove($event, item.ID)'
             @setup="onSetupPageJump($event, item.ID, item.Name, true)"
             :type='`${curControlType}`'
+            :title='item.Name'
             :titleObj="{title: `多个[ ${item.Name} ]混拼设置`, btnText: '+ 添加条件'}"
             :dataList='item.mixinList'
             class="mixin-table"

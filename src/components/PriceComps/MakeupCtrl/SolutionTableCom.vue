@@ -83,6 +83,10 @@ export default {
       type: Object,
       default: null,
     },
+    title: {
+      type: String,
+      default: '',
+    },
   },
   components: {
     CtrlMenus,
@@ -147,7 +151,7 @@ export default {
         const { RuleList } = item;
         if (!Array.isArray(RuleList)) return [''];
         const str = RuleList.map(it => `${it.ColumnNumber}列 X ${it.RowNumber}行`).join('、');
-        return [`产品使用 ${str || '按1张（默认）'} 进行拼版`];
+        return [`${this.title || '产品'}使用 ${str || '按1张（默认）'} 进行拼版`];
       }
       if (t.Name === '拼版算法') {
         const { CuttingRule } = item;
