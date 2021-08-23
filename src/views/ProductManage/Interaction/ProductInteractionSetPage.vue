@@ -20,7 +20,7 @@
          v-if="setType==='interaction' || setType==='subInteraction'"
          ref="oInteraction"
          :initData='curInteractionData'
-         :ComparePropertyList='InteractionRightPropertyList'
+         :ComparePropertyList='RightSetupPropertyList'
          :visibleDialog.sync='visible' />
         <!-- 对比设置面板 -->
         <ComparePanel
@@ -28,8 +28,8 @@
          ref="oComparePanel"
          :initData='curInteractionData'
          :drawerVisible.sync='drawer'
-         :leftPropertyList='CompareRightPropertyList'
-         :rightPropertyList='CompareRightPropertyList' />
+         :leftPropertyList='RightSetupPropertyList'
+         :rightPropertyList='RightSetupPropertyList' />
         <!-- 风险提示设置面板 -->
         <RiskPanel v-if="setType==='risk'" ref="oRisk" :initData='curInteractionData' />
       </ContionCommonComp>
@@ -61,7 +61,8 @@ export default {
       drawer: false,
       visible: false,
       loading: true,
-      subTypePropertyList: [], // 属性列表 仅子对比或子交互时使用
+      subTypeConditionPropertyList: [], // 属性列表 仅子对比或子交互时使用
+      subTypeRightPropertyList: [],
     };
   },
   components: {
@@ -84,9 +85,14 @@ export default {
       return null;
     },
     LeftPropertyList() {
-      if (this.setType === 'subCompare' || this.setType === 'subInteraction') return this.subTypePropertyList;
+      if (this.setType === 'subCompare' || this.setType === 'subInteraction') return this.subTypeConditionPropertyList;
       if (this.setType === 'interaction') return this.InteractionLeftPropertyList;
       return this.CompareLeftPropertyList;
+    },
+    RightSetupPropertyList() {
+      if (this.setType === 'subCompare' || this.setType === 'subInteraction') return this.subTypeRightPropertyList;
+      if (this.setType === 'interaction') return this.InteractionRightPropertyList;
+      return this.CompareRightPropertyList;
     },
   },
   methods: {
@@ -112,10 +118,14 @@ export default {
       if (this.setType === 'subInteraction') useModule = 25;
       if (this.setType === 'subCompare') useModule = 26;
       this.loading = true;
-      const resp = await PropertyClass.getPropertyList({ ...idsObj, useModule });
+      const [leftSubConditionList, rightSubList] = await Promise.all([
+        PropertyClass.getPropertyList({ ...idsObj, useModule }), PropertyClass.getPropertyList({ ...idsObj, useModule: 38 }),
+      ]);
       this.loading = false;
-      if (resp) this.subTypePropertyList = resp;
-      else this.$goback();
+      if (leftSubConditionList && rightSubList) {
+        this.subTypeConditionPropertyList = leftSubConditionList;
+        this.subTypeRightPropertyList = rightSubList;
+      } else this.$goback();
     },
     onSubmitClick() { // 点击保存
       const condition = this.$refs.oLeftComp.getConditonResult();

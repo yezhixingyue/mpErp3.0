@@ -233,7 +233,8 @@ export default class PropertyClass {
           OptionAttribute.OptionList.forEach((option, i) => {
             if (option.Value || option.Value === 0) {
               AvailableValueList.push(option.Value);
-              TipsContent += `${i + 1}、 ${option.Name}（值：${option.Value}）；`;
+              TipsContent += `选项${i + 1}：${option.Name}（值：${option.Value}）`;
+              if (i < OptionAttribute.OptionList.length - 1) TipsContent += '、';
             }
           });
         }

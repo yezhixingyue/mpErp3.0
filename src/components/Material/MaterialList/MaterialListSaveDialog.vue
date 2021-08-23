@@ -221,7 +221,7 @@ export default {
       else {
         // 判断值类型是否符合规范
         const { AllowDecimal, SectionList, InputContent } = NumbericAttribute;
-        const isConformNumberType = this.$utils.getValueIsOrNotNumber(+value, !AllowDecimal);
+        const isConformNumberType = this.$utils.getValueIsOrNotNumber(value, !AllowDecimal);
         if (!isConformNumberType) {
           callback(`输入值错误，请输入正确的数字类型（${AllowDecimal ? '允许小数' : '不允许小数'}）`);
         } else if (SectionList && Array.isArray(SectionList) && SectionList.length > 0) {

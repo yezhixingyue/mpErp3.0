@@ -11,7 +11,7 @@ export const elementValChecker = (value, element) => {
   const { Type, NumbericAttribute, OptionAttribute, HiddenToCustomer } = element; // 开关类型暂未判断 或可不需要
   if (Type === 1) { // 数值类型元素
     const { AllowDecimal, SectionList, InputContent, Allow, AllowCustomer } = NumbericAttribute;
-    const isConformNumberType = getValueIsOrNotNumber(+value, !AllowDecimal);
+    const isConformNumberType = getValueIsOrNotNumber(value, !AllowDecimal);
     if (!isConformNumberType) {
       const msg = `输入值错误，请输入正确的数字类型（${AllowDecimal ? '允许小数' : '不允许小数'}）`;
       return { msg, result: false };

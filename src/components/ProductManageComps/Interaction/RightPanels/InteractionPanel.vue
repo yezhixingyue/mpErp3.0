@@ -127,18 +127,42 @@ export default {
         checkList,
         PanelID,
         ControlID,
+        TipsContent: this.getTipsContent(prop),
       };
+    },
+    getTipsContent(prop) {
+      if (!prop) return '';
+      const { FixedType, Element } = prop;
+      if (FixedType === 10 && Element && Element.Type === 2) {
+        const { HiddenToCustomer, DefaultValue, OptionAttribute } = Element;
+        let tipsContent = '';
+        if (OptionAttribute && Array.isArray(OptionAttribute.OptionList)) {
+          const list = OptionAttribute.OptionList.map((it, i) => `选项${i + 1}：${it.Name}（值：${it.Value}）`);
+          tipsContent = list.join('、');
+        }
+        if (HiddenToCustomer && (DefaultValue || DefaultValue === 0)) {
+          const text = `隐藏默认值：${DefaultValue}`;
+          tipsContent = tipsContent ? `${tipsContent}；${text}` : text;
+        }
+        return tipsContent;
+      }
+      return prop.TipsContent ? prop.TipsContent : '';
     },
     onRemoveClick(i) {
       this.localList.splice(i, 1);
     },
     judgeIsElementOrNot(prop) { // 判断类型， 是否为元素
       if (!prop) return '';
-      const { ValueType, Element, Group } = prop;
+      const { ValueType, Element, Group, FixedType, Type, MaterialType } = prop;
+      if (!FixedType && FixedType !== 0 && Element && !Group) return 'element';
+      if (!FixedType && FixedType !== 0 && Element && Group) return 'group';
       if (ValueType === 1) return 'radio'; // 单选选项 ok 同下
       if (ValueType === 2 || ValueType === 3 || ValueType === 4) return 'multi-select'; // 多选选项 ok 缺弹窗选中显示 绑定值修改 目前checklist
       if (ValueType === 5) return 'craft'; // 工艺 ok 不显示
-      if (ValueType === 6) return 'material'; // 物料 no
+      if (ValueType === 6) {
+        if (Type === 5 && !MaterialType) return 'material'; // 物料 no
+        return 'multi-select';
+      }
       if (ValueType === 7) {
         if (Group && !Element) return 'group'; // 元素组 ok
         if (Element) return 'element'; // 元素 ok
@@ -310,6 +334,7 @@ export default {
             align-items: center;
             position: relative;
             top: 2px;
+            flex-wrap: wrap;
             > label {
               margin-right: 10px;
               width: 90px;

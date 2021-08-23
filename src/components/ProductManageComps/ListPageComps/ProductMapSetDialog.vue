@@ -93,10 +93,10 @@ export default {
 
       // 获取下拉列表数据
       const PostionID = this.PartID || this.itemData.ID;
-      if (this.ElementData.PositionID !== PostionID) {
-        this.ElementData.PositionID = PostionID;
-        this.getDataList();
-      }
+      // if (this.ElementData.PositionID !== PostionID) { // 是否缓存  暂不缓存
+      this.ElementData.PositionID = PostionID;
+      this.getDataList();
+      // }
       // 设置元素对应列表数据
       this.List = this.ProductElementTypeList.filter(it => !it.onlyProduct || !this.curData).map(it => {
         const TypeList = this.curData ? this.curData.TypeList : this.itemData.TypeList;
