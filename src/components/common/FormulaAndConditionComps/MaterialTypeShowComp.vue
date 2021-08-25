@@ -27,7 +27,7 @@
       <li v-for="it in formulaMaterialList" :key="it.MaterialType.ID" class="condtion-list">
         <label>{{it.MaterialType.Name}}：</label>
         <ul>
-          <li  v-for="el in it.List" :key="el.Element ? el.Element.ID : el.StoredContent" >
+          <li  v-for="el in it.List" :key="el.StoredContent" >
             <span
               v-if="!isMultiple || !el.StoredContent"
               :class="{
@@ -46,7 +46,7 @@
         <template v-if="it.FormulaList.length > 0">
           <label class="formula-label">公式</label>
           （ <ul>
-            <li  v-for="el in it.FormulaList" :key="el.Element ? el.Element.ID : el.StoredContent" >
+            <li  v-for="el in it.FormulaList" :key="el.StoredContent" >
               <span
                 v-if="!isMultiple || !el.StoredContent"
                 :class="{

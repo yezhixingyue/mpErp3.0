@@ -109,8 +109,8 @@ export default {
   methods: {
     onSubmit() {
       if (!this.ruleForm) return;
-      if (this.ruleForm.List.length < 2) {
-        this.messageBox.failSingleError('保存失败', '请选中且至少选中2个工艺');
+      if (this.ruleForm.List.length < 1) {
+        this.messageBox.failSingleError('保存失败', '没有选中的工艺');
         return;
       }
       if (this.ruleForm.IsRequired && this.ruleForm.DefaultCraft && !this.ruleForm.List.includes(this.ruleForm.DefaultCraft)) {

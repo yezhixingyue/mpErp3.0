@@ -168,7 +168,7 @@
         <el-form-item label="选择方式：" prop="optionChooseType" key="optionChooseType">
           <el-radio-group v-model="ruleForm.OptionAttribute.ChooseType">
             <el-radio label="single">单选</el-radio>
-            <el-radio label="multiple" :disabled="optionDefine.includes('staff')">多选</el-radio>
+            <el-radio label="multiple" :disabled="optionDefine.includes('staff') || optionMultipleDisabled">多选</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="表现形式：" prop="OptionSelectMode" v-if="ruleForm.OptionAttribute.ChooseType === 'single'" key="OptionSelectMode">
@@ -328,6 +328,7 @@ export default {
       TypeEnum,
       TempData: null,
       testCheck: true,
+      optionMultipleDisabled: false,
     };
   },
   computed: {
@@ -663,6 +664,12 @@ export default {
       this.ruleForm = new ElementClassType(data || this.curData, this.PositionID);
       if (this.curData) this.title = '编辑界面元素';
       else this.title = '添加界面元素';
+      console.log(this.$route);
+      if (this.$route.name === 'MaterialElementSet') {
+        this.optionMultipleDisabled = true;
+      } else {
+        this.optionMultipleDisabled = false;
+      }
     },
     onOpen() {
       this.TempData = null;

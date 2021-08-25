@@ -135,7 +135,7 @@ export default {
         flex: none;
         white-space: nowrap;
         margin: 0 12px;
-        font-size: 12px;
+        font-size: 12px !important;
       }
     }
     .el-checkbox {

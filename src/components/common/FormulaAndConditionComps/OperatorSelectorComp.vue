@@ -20,8 +20,8 @@
         <span class="blue-span" @click="onSelectDialogClick">选择</span>
         <div class="show-text" :title="localMaterialSelectedList">{{localMaterialSelectedList}}</div>
         <CheckboxDialogComp v-if="ValueType !== 6" :visible.sync='propVisibel' v-model="checkList" :list='localOptionList' width='800px'
-         title="选择选项" :defaultProps="{label: 'Second', value: 'First'}" />
-        <MaterialSelectDialog v-else :visible.sync='materialVisible' v-model="checkList" :optionList='localMaterialOptionList'  />
+         title="选择选项" :defaultProps="{label: 'Second', value: 'First'}" class="CheckboxDialogComp" />
+        <MaterialSelectDialog v-else :visible.sync='materialVisible' v-model="checkList" :optionList='localMaterialOptionList' />
       </div>
     </div>
   </div>
@@ -71,7 +71,7 @@ export default {
       },
     },
     isMultiple() {
-      return this.ValueType === 1 || this.ValueType === 6;
+      return this.ValueType === 1 || this.ValueType === 6 || (this.PropertyData && this.PropertyData.FixedType === 18);
     },
     localOptionList() {
       if (!this.PropertyData || !Array.isArray(this.PropertyData.OptionList) || this.PropertyData.OptionList.length === 0) return [];
@@ -217,15 +217,24 @@ export default {
       .mp-erp-common-check-box-dialog-comp-wrap {
         .el-dialog__header {
           height: 28px;
-          padding-top: 4px;
+          padding: 6px 20px;
+          line-height: 28px;
         }
-        .mp-common-comps-checkbox-group-comp-wrap {
-          .el-checkbox-group {
-            white-space: normal;
-            .el-checkbox__label {
-              width: 145px;
-              font-size: 12px;
-              text-overflow: ellipsis;
+        .el-dialog__body {
+          max-height: 520px;
+          overflow-y: auto;
+          padding-right: 10px;
+          .mp-common-comps-checkbox-group-comp-wrap {
+            .el-checkbox-group {
+              white-space: normal;
+              .el-checkbox {
+                margin-right: 15px;
+                .el-checkbox__label {
+                  width: 145px;
+                  font-size: 12px;
+                  text-overflow: ellipsis;
+                }
+              }
             }
           }
         }

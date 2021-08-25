@@ -1,17 +1,5 @@
 <template>
   <div v-if="localListData" class="mp-erp-common-comps-on-element-select-dialog-part-type-show-item-comp-wrap">
-    <p class="title mp-common-title-wrap" v-if="localListData.Formula.length > 0">公式</p>
-    <ElementTypeShowComp
-     :dataList='localListData.Formula' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
-     :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
-
-    <p class="title mp-common-title-wrap" v-if="localListData.Constraint.length > 0">子条件</p>
-    <ElementTypeShowComp
-     class="sub-condition"
-     :dataList='localListData.Constraint' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
-     :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
-
-    <p class="title mp-common-title-wrap" v-if="localListData.Element.length > 0">其它</p>
     <div class="element">
       <template v-if="!isMultiple">
         <TipsSpanButton
@@ -28,7 +16,35 @@
           @change="onCheckedItemChange($event, item)">{{getTextName(item) || item.DisplayContent || "未知名称"}}</el-checkbox>
       </template>
     </div>
-    <div class="is-font-size-12 is-gray" v-if="localListData.Element.length > 0">
+    <p class="title mp-common-title-wrap" v-if="localListData.Formula.length > 0">公式</p>
+    <ElementTypeShowComp
+     :dataList='localListData.Formula' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+     :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
+
+    <p class="title mp-common-title-wrap" v-if="localListData.Constraint.length > 0">子条件</p>
+    <ElementTypeShowComp
+     class="sub-condition"
+     :dataList='localListData.Constraint' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
+     :isMultiple='isMultiple' @checked='onCheckedItemChange' :checkedList='checkedList' />
+
+    <p class="title mp-common-title-wrap" v-if="localListData.OtherList.length > 0">其它</p>
+    <div class="element">
+      <template v-if="!isMultiple">
+        <TipsSpanButton
+          v-for="item in localListData.OtherList"
+          :key="item.StoredContent"
+          @click.native="onSubmit(item)"
+          :disabled='selectedElementIDs.includes(item.StoredContent)'
+          :text='getTextName(item) || item.DisplayContent || "未知名称"' />
+      </template>
+      <template v-else>
+        <el-checkbox
+          v-for="item in localListData.OtherList" :key="item.StoredContent"
+          :value='MultipleCheckedIDList.includes(item.StoredContent)'
+          @change="onCheckedItemChange($event, item)">{{getTextName(item) || item.DisplayContent || "未知名称"}}</el-checkbox>
+      </template>
+    </div>
+    <div class="is-font-size-12 is-gray" v-if="localListData.OtherList.length > 0">
       <span>注：</span>
       <div>原始物料数量、原始物料尺寸指没有进行二次加工前的物料数量、尺寸，比如纸张，指没有分切前的纸张数量、尺寸，可能是大度、正度，也可能是特规纸，数量指的是这些纸张使用了多少张，并且加上损耗。</div>
     </div>
@@ -74,15 +90,19 @@ export default {
         Element: [], // 元素
         Formula: [], // 公式子公式
         Constraint: [], // 子条件
+        OtherList: [],
       };
       this.dataList.forEach(prop => {
-        const { Formula, Constraint } = prop;
+        const { Formula, Constraint, FixedType } = prop;
         if (Formula && !Constraint) { // 公式
           obj.Formula.push(prop);
         } else if (!Formula && Constraint) { // 子条件
           obj.Constraint.push(prop);
-        } else { // 其它 --- 平铺
+        } else if ((FixedType || FixedType === 0) && FixedType <= 10) { // 其它 --- 平铺
+          console.log(prop);
           obj.Element.push(prop);
+        } else {
+          obj.OtherList.push(prop);
         }
       });
 

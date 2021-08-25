@@ -140,7 +140,7 @@ export default {
               _group.List.push(_item);
             }
           } else {
-            _temp.push({ ...Group, _FixedTypeList: [it], List: [] });
+            _temp.push({ ...Group, _FixedTypeList: [], List: [{ ...ElementItem, _FixedTypeList: [it] }] });
           }
         }
       });

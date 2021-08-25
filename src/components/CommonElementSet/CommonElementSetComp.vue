@@ -114,6 +114,7 @@ export default {
         if (!MaxValue && !MinValue && (MinValue !== 0 || MaxValue !== 0)) delete _saveData.OptionAttribute.UseTimes;
       }
       if (this.curUseElementModule || this.curUseElementModule === 0) _saveData.Module = this.curUseElementModule;
+      if (!_saveData.HiddenToCustomer) delete _saveData.DefaultValue;
       const resp = await this.api.getElementSave(_saveData).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const temp = {
