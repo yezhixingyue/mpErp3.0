@@ -99,7 +99,6 @@ export default {
         } else if (!Formula && Constraint) { // 子条件
           obj.Constraint.push(prop);
         } else if ((FixedType || FixedType === 0) && FixedType <= 10) { // 其它 --- 平铺
-          console.log(prop);
           obj.Element.push(prop);
         } else {
           obj.OtherList.push(prop);

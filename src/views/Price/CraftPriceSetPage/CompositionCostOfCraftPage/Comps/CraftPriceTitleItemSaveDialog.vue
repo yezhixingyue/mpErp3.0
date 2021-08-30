@@ -97,6 +97,7 @@ export default {
   methods: {
     async onSubmit() { // 提交
       const bool = await this.$refs.ruleForm.validate().catch(() => {});
+      if (!bool) return;
       if (this.ruleForm.GroupID) {
         const t = this.GroupList.find(it => it.ID === this.ruleForm.GroupID);
         this.ruleForm.CraftID = t ? t.CraftID : '';
@@ -113,7 +114,7 @@ export default {
       delete temp.CraftID;
       delete temp.GroupID;
       delete temp.PartID;
-      if (bool) this.$emit('submit', temp);
+      this.$emit('submit', temp);
     },
     onCancle() { // 取消  关闭弹窗
       this.$emit('update:visible', false);

@@ -63,7 +63,7 @@ export default {
       }
       let t = this.list.find(it => {
         if (!it.customChecked || !it.customValue) return false;
-        return !this.$utils.getValueIsOrNotNumber(it.customValue, it.Element.Type === 1 && it.Element.NumbericAttribute.AllowDecimal);
+        return !this.$utils.getValueIsOrNotNumber(it.customValue, it.Element.Type === 1 && !it.Element.NumbericAttribute.AllowDecimal);
       });
       if (t) {
         this.messageBox.failSingleError('保存失败！', `${t.Element.Name}自定义值无效，请检查是否为数字类型或是否限定为整数类型`);

@@ -293,6 +293,7 @@ export default {
       &.img-menu-box {
         display: flex;
         width: 223px;
+        margin-left: 20px;
         > span {
           height: 25px;
           display: flex;
@@ -328,15 +329,15 @@ export default {
         }
       }
       &.text-menu-box {
-        width: 650px;
+        width: 640px;
         text-align: center;
         > span:not(:last-of-type) {
-          margin-right: 22px;
+          margin-right: 20px;
         }
       }
       &.extend-box {
         font-size: 12px;
-        width: 100px;
+        width: 90px;
         cursor: pointer;
         display: flex;
         align-items: center;

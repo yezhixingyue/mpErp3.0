@@ -279,7 +279,7 @@ export default {
               list.push({ ...itemData, ID: itemID, TableNumber: 0 });
             } else { // 编辑
               const i = list.findIndex(it => it.ID === itemData.ID);
-              if (i > -1) list.splice(i, 1, itemData);
+              if (i > -1) list.splice(i, 1, { ...list[i], ...itemData });
             }
           };
           if (isQuotationPage) {

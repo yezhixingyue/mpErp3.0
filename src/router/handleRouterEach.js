@@ -75,7 +75,7 @@ function handlePermission(to, next, Permission, from) {
 
 const handleRouterEach = router => {
   router.beforeEach((to, from, next) => { // 使用全局路由导航守卫进行权限控制
-    const token = JSON.parse(sessionStorage.getItem('token')); // 2.1 获取到token信息，可能为undefined
+    const token = JSON.parse(sessionStorage.getItem('ErpToken')); // 2.1 获取到token信息，可能为undefined
     if (to.matched.some(record => record.meta.requiresAuth)) { // 2.2 判断要去往的页面中有无token要求，如果无则跳转否则则进入判断
       if (to.name === 'login') { // 2.3 登录页面不考虑，直接跳转
         NextHandler(from, to, next);

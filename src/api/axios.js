@@ -7,7 +7,7 @@ import messageBox from '../assets/js/utils/message';
 
 if (process.env.NODE_ENV === 'development') {
   // const str = 'DsEs';
-  // sessionStorage.setItem('token', JSON.stringify(str));
+  // sessionStorage.setItem('ErpToken', JSON.stringify(str));
 } else {
   // setToken2SessionStorage();
 }
@@ -17,12 +17,12 @@ let closeTip = false;
 axios.interceptors.request.use(
   (config) => {
     const curConfig = config;
-    let token = sessionStorage.getItem('token');
+    let token = sessionStorage.getItem('ErpToken');
     closeTip = curConfig.closeTip;
     const { closeLoading } = curConfig;
     if (!token) {
       // setToken2SessionStorage();
-      token = sessionStorage.getItem('token');
+      token = sessionStorage.getItem('ErpToken');
     }
     curConfig.headers.common.Authorization = `Bearer ${JSON.parse(token)}`;
     let key = true;

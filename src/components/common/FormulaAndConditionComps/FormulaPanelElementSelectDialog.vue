@@ -194,7 +194,6 @@ export default {
   methods: {
     onSubmit(data) {
       if (this.selectedElementIDs.includes(data.StoredContent)) return;
-      console.log(data);
       this.$emit('submit', data);
       this.onCancle();
     },

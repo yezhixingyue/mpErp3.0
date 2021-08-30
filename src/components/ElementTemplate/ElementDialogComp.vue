@@ -664,7 +664,6 @@ export default {
       this.ruleForm = new ElementClassType(data || this.curData, this.PositionID);
       if (this.curData) this.title = '编辑界面元素';
       else this.title = '添加界面元素';
-      console.log(this.$route);
       if (this.$route.name === 'MaterialElementSet') {
         this.optionMultipleDisabled = true;
       } else {

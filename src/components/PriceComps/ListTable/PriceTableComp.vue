@@ -37,6 +37,9 @@ export default {
   border: 1px solid #e6e6e6;
   border-top: none;
   margin-top: 10px;
+  @media screen and (min-width: 1919px) {
+    overflow-x: hidden;
+  }
   .empty-box {
     width: 1500px;
     height: 400px;

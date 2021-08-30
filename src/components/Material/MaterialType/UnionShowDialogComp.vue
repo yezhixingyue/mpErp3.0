@@ -23,7 +23,10 @@
           type="error">
         </el-alert>
       </div>
-      <p class="title">当前选择顺序</p>
+      <p class="title">
+        <label>当前选择顺序</label>
+        <span>{{checkedTitleList}}</span>
+      </p>
       <p class="btn">
         <span class="blue-span" @click="onUnionClick">生成组合</span>
         <span class="is-pink is-font-size-12">{{ErrMsg}}</span>
@@ -87,6 +90,10 @@ export default {
         });
       }
       return _list;
+    },
+    checkedTitleList() {
+      if (!this.checkList) return [];
+      return this.checkList.map(ID => this.curData.ElementList.find(it => it.ID === ID)).filter(it => it).map(it => it.Name).join('、');
     },
   },
   methods: {
@@ -164,6 +171,7 @@ export default {
         position: relative;
         font-weight: 600;
         padding: 30px 13px;
+        line-height: 18px;
         &::before {
           background-color: #26bcf9;
           height: 15px;
@@ -171,6 +179,20 @@ export default {
           content: '';
           position: absolute;
           left: 0;
+        }
+        > label {
+          margin-right: 20px;
+        }
+        > span {
+          white-space: nowrap;
+          overflow: hidden;
+          display: inline-block;
+          text-overflow: ellipsis;
+          max-width: 450px;
+          font-weight: 400;
+          font-size: 12px;
+          color: #888;
+          vertical-align: -4px;
         }
       }
       &.btn {

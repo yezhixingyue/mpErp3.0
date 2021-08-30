@@ -15,8 +15,8 @@
  */
 const setInfo = (token) => {
   if (!token) return;
-  if (sessionStorage.getItem('token')) sessionStorage.removeItem('token');
-  sessionStorage.setItem('token', JSON.stringify(token));
+  if (sessionStorage.getItem('ErpToken')) sessionStorage.removeItem('ErpToken');
+  sessionStorage.setItem('ErpToken', JSON.stringify(token));
   delete window.setInfo;
 };
 

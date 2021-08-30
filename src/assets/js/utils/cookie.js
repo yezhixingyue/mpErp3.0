@@ -29,11 +29,11 @@ const Cookie = {
 
 function setToken2SessionStorage() {
   const { getCookie } = Cookie;
-  const cookie = getCookie('token');
+  const cookie = getCookie('ErpToken');
 
   if (cookie) {
-    if (sessionStorage.getItem('token')) sessionStorage.removeItem('token');
-    sessionStorage.setItem('token', JSON.stringify(cookie));
+    if (sessionStorage.getItem('ErpToken')) sessionStorage.removeItem('ErpToken');
+    sessionStorage.setItem('ErpToken', JSON.stringify(cookie));
     return true;
   }
   messageBox.failSingleError(undefined, '[ 未获取到登录信息,请重新登录尝试 ]');

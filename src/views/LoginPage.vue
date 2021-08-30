@@ -39,8 +39,8 @@ export default {
       const res = await this.api.getLogin(this.ruleForm);
       // console.log(res);
       if (res.data.Status === 1000) {
-        sessionStorage.setItem('token', JSON.stringify(res.data.Data));
-        document.cookie = `token=${JSON.stringify(res.data.Data)};max-age=${1 * 24 * 60 * 60 * 1000}`;
+        sessionStorage.setItem('ErpToken', JSON.stringify(res.data.Data));
+        document.cookie = `ErpToken=${JSON.stringify(res.data.Data)};max-age=${1 * 24 * 60 * 60 * 1000}`;
         this.$router.push('/');
       }
     },

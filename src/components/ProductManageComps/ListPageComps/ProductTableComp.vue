@@ -78,10 +78,13 @@ export default {
       font-size: 14px;
       font-weight: 700;
       color: #444;
-      text-align: center;
+      text-align: left;
       border-bottom: 1px solid #e6e6e6;
       > span {
         display: inline-block;
+        text-align: center;
+        padding-right: 30px;
+        box-sizing: border-box;
         &.name {
           width: 140px;
           padding-right: 5px;
@@ -91,7 +94,7 @@ export default {
           padding-right: 15px;
         }
         &.classify {
-          width: 200px;
+          width: 220px;
         }
         &.order-ctrl {
           width: 245px;

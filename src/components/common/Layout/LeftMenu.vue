@@ -42,7 +42,7 @@ export default {
   methods: {
     handleClick() { // 退出
       this.messageBox.warnCancelNullMsg('确定退出登录吗?', () => {
-        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('ErpToken');
         this.$router.replace('/login');
       });
     },
