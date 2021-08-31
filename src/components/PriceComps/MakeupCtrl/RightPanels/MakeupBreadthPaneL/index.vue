@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-price-module-makeup-set-breadth-panel-container">
     <header>
-      <span class="blue-span" @click="onSelectClick" :class="{disabled: !loading && BreadthList.length === 0}">选择幅面</span>
+      <span class="blue-span" @click="onSelectClick" :class="{disabled: !loading && AllBreadthList.length === 0}">选择幅面</span>
       <span class="tips-box"><i class="el-icon-warning"></i> 注：多个幅面可用时，系统自动选择产品总价格最低的幅面！</span>
     </header>
     <main>
@@ -9,7 +9,7 @@
       <ul>
         <li v-for="it in localBreadthList" :key="it.ID" :title="it.Name">{{it.Name}}</li>
       </ul>
-      <div v-if="!loading && BreadthList.length === 0" class="is-empty">
+      <div v-if="!loading && AllBreadthList.length === 0" class="is-empty">
         <img src="@/assets/images/null.png" alt="">
         <p class="tips-box is-pink">未获取到印刷幅面信息，请到印刷幅面模块中进行相关设置！</p>
       </div>
@@ -33,12 +33,12 @@ export default {
     BreadthSelectDialog,
   },
   computed: {
-    ...mapState('basicSet', ['BreadthList']),
+    ...mapState('basicSet', ['AllBreadthList']),
     ...mapGetters('basicSet', ['BreadthTreeList']),
     localBreadthList() {
-      if (this.checkedBreadthList.length === 0 || this.BreadthList.length === 0) return [];
+      if (this.checkedBreadthList.length === 0 || this.AllBreadthList.length === 0) return [];
       return this.checkedBreadthList.map(it => {
-        const t = this.BreadthList.find(_it => _it.ID === it.First.ID);
+        const t = this.AllBreadthList.find(_it => _it.ID === it.First.ID);
         return t ? { ID: it.First.ID, Name: `${t.Name} （${this.getModeText(it.Second)}）` } : null;
       }).filter(it => it);
     },
@@ -57,7 +57,7 @@ export default {
       this.visible = true;
     },
     getBreadthInfo() {
-      const func1 = () => (this.BreadthList.length === 0 ? this.$store.dispatch('basicSet/getBreadthList') : null);
+      const func1 = () => (this.AllBreadthList.length === 0 ? this.$store.dispatch('basicSet/getAllBreadthList') : null);
       const func2 = () => this.$store.dispatch('basicSet/getBreadthClassList');
       return Promise.all([func1(), func2()]);
     },
@@ -82,7 +82,7 @@ export default {
     this.loading = false;
     // 此时进行数据还原 checkedBreadthList  筛选掉不包含在总列表中的旧选中条目数据
     if (!this.initData || !Array.isArray(this.initData.BreadthList)) return;
-    const ids = this.BreadthList.map(it => it.ID);
+    const ids = this.AllBreadthList.map(it => it.ID);
     const list = this.initData.BreadthList.filter(it => ids.includes(it.First.ID)).map(({ First, Second }) => ({ First: { ID: First.ID }, Second }));
     this.checkedBreadthList = list;
   },

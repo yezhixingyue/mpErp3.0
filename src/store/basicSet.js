@@ -16,6 +16,7 @@ export default {
     /* 印刷幅面列表数据
     -------------------------------*/
     BreadthList: [],
+    AllBreadthList: [],
     /* 物料尺寸列表数据
     -------------------------------*/
     MaterialSizeList: [],
@@ -40,11 +41,11 @@ export default {
   },
   getters: {
     BreadthTreeList(state) {
-      if (!state.BreadthList || state.BreadthList.length === 0 || !state.BreadthCLassList || state.BreadthCLassList.length === 0) return [];
+      if (!state.AllBreadthList || state.AllBreadthList.length === 0 || !state.BreadthCLassList || state.BreadthCLassList.length === 0) return [];
       const ClassList = JSON.parse(JSON.stringify(state.BreadthCLassList));
       ClassList.forEach(classItem => {
         const _item = classItem;
-        _item.list = state.BreadthList.filter(it => it.Class && it.Class.ID === classItem.ID);
+        _item.list = state.AllBreadthList.filter(it => it.Class && it.Class.ID === classItem.ID);
       });
       return ClassList.filter(it => it.list.length > 0);
     },
@@ -161,6 +162,9 @@ export default {
     },
     setBreadthList(state, list) { // 设置印刷幅面列表数据
       state.BreadthList = list;
+    },
+    setAllBreadthList(state, list) { // 设置总印刷幅面列表数据
+      state.AllBreadthList = list;
     },
     setBreadthSaveSuccess(state, { isEdit, data, ID, curClassID }) {
       const _classID = data.Class.ID;
@@ -357,6 +361,14 @@ export default {
       const resp = await api.getBreadthList(id).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         commit('setBreadthList', resp.data.Data);
+        return true;
+      }
+      return false;
+    },
+    async getAllBreadthList({ commit }) {
+      const resp = await api.getBreadthList().catch(() => {});
+      if (resp && resp.status === 200 && resp.data.Status === 1000) {
+        commit('setAllBreadthList', resp.data.Data);
         return true;
       }
       return false;

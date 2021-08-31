@@ -66,6 +66,8 @@ export default class ElementClassType {
 
   DefaultValue = '';
 
+  Group = null;
+
   NumbericAttribute = {
     AllowDecimal: false,
     InputContent: '',
@@ -104,7 +106,7 @@ export default class ElementClassType {
   constructor(initData, positionID) {
     if (positionID) this.PositionID = positionID;
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { Name, Type, DefaultValue, HiddenToCustomer, ID, IsNameHidden, NumbericAttribute, OptionAttribute, SwitchAttribute, PositionID } = JSON.parse(JSON.stringify(initData));
+    const { Name, Type, DefaultValue, HiddenToCustomer, ID, IsNameHidden, NumbericAttribute, OptionAttribute, SwitchAttribute, PositionID, Group } = JSON.parse(JSON.stringify(initData));
     if (Name) this.Name = Name; // 还原名称
     if (Type || Type === 0) { // 还原类型
       const TypeKey = getEnumKeyName(TypeEnum, Type);
@@ -113,6 +115,7 @@ export default class ElementClassType {
     if (DefaultValue || DefaultValue === 0) this.DefaultValue = `${DefaultValue}`;
     if (HiddenToCustomer) this.HiddenToCustomer = HiddenToCustomer;
     if (ID) this.ID = ID;
+    if (Group) this.Group = Group;
     if (IsNameHidden) this.IsNameHidden = IsNameHidden;
     if (PositionID && !positionID) this.PositionID = PositionID;
     if (Type === 1 && NumbericAttribute) { // 还原数字值

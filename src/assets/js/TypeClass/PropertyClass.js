@@ -70,10 +70,10 @@ export const PropertyFixedType = [
   { ID: 19, Name: '满足条数' },
   { ID: 20, Name: '不满足条数' },
   { ID: 21, Name: '工艺费' },
-  { ID: 22, Name: 'X轴上限' },
-  { ID: 23, Name: 'X轴下限' },
-  { ID: 24, Name: 'Y轴上限' },
-  { ID: 25, Name: 'Y轴下限' },
+  { ID: 22, Name: '横轴上限' },
+  { ID: 23, Name: '横轴下限' },
+  { ID: 24, Name: '竖轴上限' },
+  { ID: 25, Name: '竖轴下限' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表
