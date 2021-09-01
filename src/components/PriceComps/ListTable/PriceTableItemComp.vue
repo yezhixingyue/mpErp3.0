@@ -60,7 +60,10 @@
           <span :title="it.Name">{{it.Name}}</span>
         </div>
         <div class="date">
-          <span>{{ it.CreateTime | format2LangTypeDate }}</span>
+          <span>
+            <template v-if="it.CreateTime">{{ it.CreateTime | format2LangTypeDate }}</template>
+            <template v-else>新加</template>
+          </span>
         </div>
         <div class="ctrl">
           <CtrlMenus :showList="['edit','del','copy']"

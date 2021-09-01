@@ -327,9 +327,12 @@ export default {
             if (_t) _t.TableNumber += 1;
           };
           if (isQuotationPage) setFunc(target2.PriceTableList);
+          if (isQuotationPage) setFunc(state.curPriceItem.PriceTableList);
           else {
             const target3 = target2.CraftPriceList.find(it => it.ID === CraftPriceID);
+            const curPriceItemTarget3 = state.curPriceItem.find(it => it.ID === CraftPriceID);
             if (target3) setFunc(target3.PriceTableList);
+            if (curPriceItemTarget3) setFunc(curPriceItemTarget3.PriceTableList);
           }
         }
       } else { // 编辑
@@ -355,9 +358,12 @@ export default {
           if (_t) _t.TableNumber -= 1;
         };
         if (isQuotationPage) setFunc(target2.PriceTableList);
+        if (isQuotationPage) setFunc(state.curPriceItem.PriceTableList);
         else {
           const target3 = target2.CraftPriceList.find(it => it.ID === CraftPriceID);
+          const curPriceItemTarget3 = state.curPriceItem.find(it => it.ID === CraftPriceID);
           if (target3) setFunc(target3.PriceTableList);
+          if (curPriceItemTarget3) setFunc(curPriceItemTarget3.PriceTableList);
         }
       }
     },

@@ -433,7 +433,8 @@ export default {
         return;
       }
       if (this.formatNumberValueList.length > 0) {
-        if (!this.formatNumberValueList.includes(this.ruleForm.NumbericAttribute.CheckedValue)) {
+        if (!this.formatNumberValueList
+          .filter(it => this.$utils.getValueIsOrNotNumber(it)).map(it => +it).includes(+this.ruleForm.NumbericAttribute.CheckedValue)) {
           callback(new Error('默认选择数值应在常规数值范围内'));
           return;
         }

@@ -17,8 +17,8 @@
         <span class="label">{{it.label}}：</span>
         <el-select v-model="it.Second" placeholder="请选择" size="small">
           <el-option
-            v-for="item in ElementData.List"
-            :key="item.ID"
+            v-for="item in it.OptionList"
+            :key="item.ID || item.Name"
             :disabled='(selectedElementIDs.includes(item.ID) && it.Second !== item.ID) || (!it.needFormula && item.isFormula)'
             :label="item.Name"
             :value="item.ID">
@@ -56,6 +56,9 @@ export default {
     selectedElementIDs() {
       return this.List.map(it => it.Second).filter(it => it);
     },
+    OptionList() {
+      return this.ElementData.List;
+    },
   },
   data() {
     return {
@@ -88,14 +91,14 @@ export default {
       this.PartID = '';
       this.List = [];
     },
-    initEditData() { // 数据初始化方法
+    async initEditData() { // 数据初始化方法
       if (this.curData) this.PartID = this.curData.ID; // 部件ID，
 
       // 获取下拉列表数据
       const PostionID = this.PartID || this.itemData.ID;
       // if (this.ElementData.PositionID !== PostionID) { // 是否缓存  暂不缓存
       this.ElementData.PositionID = PostionID;
-      this.getDataList();
+      const [ElementList, FormulaList] = await this.getDataList();
       // }
       // 设置元素对应列表数据
       this.List = this.ProductElementTypeList.filter(it => !it.onlyProduct || !this.curData).map(it => {
@@ -103,11 +106,16 @@ export default {
         let Second = '';
         const t = TypeList.find(_it => _it.First === it.ID);
         if (t) Second = t.Second;
+        const OptionList = [{ ID: '', Name: '未设置' }];
+        if (it.needElement) OptionList.push(...ElementList);
+        if (it.needFormula) OptionList.push(...FormulaList);
         return {
           Second,
           First: it.ID,
           label: it.Name,
           needFormula: it.needFormula,
+          needElement: it.needElement,
+          OptionList,
         };
       });
     },
@@ -117,6 +125,7 @@ export default {
       this.loading = false;
       const _ElementList = ElementList.filter(it => it.Type === 1 && !it.Group);
       this.ElementData.List = [..._ElementList, ...FormulaList];
+      return [_ElementList, FormulaList];
     },
     async getElementList() {
       const resp = await this.api.getElementList({ positionID: this.ElementData.PositionID }, true).catch(() => {});
