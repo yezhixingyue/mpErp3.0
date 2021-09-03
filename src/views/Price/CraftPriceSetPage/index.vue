@@ -12,6 +12,10 @@
        @setup='onSetupCostClick'
        @allCost='onSetupAllCostClick'
        />
+      <div v-if="CraftPriceSetList.length === 0 && !loading" class="empty-box">
+        <img src="@/assets/images/null.png" alt="">
+        <p>暂无工艺可设置</p>
+      </div>
     </main>
     <footer>
       <el-button @click="onGoBackClick"><i class="el-icon-d-arrow-left"></i> 返回</el-button>
@@ -174,6 +178,7 @@ export default {
     flex: 1;
     padding-top: 15px;
     padding-left: 5px;
+    position: relative;
     .mp-common-title-wrap {
       color: #444;
       font-size: 15px;
@@ -183,6 +188,19 @@ export default {
     }
     &.loading {
       opacity: 0.2;
+    }
+    .empty-box {
+      font-size: 12px;
+      color: #989898;
+      text-align: center;
+      position: absolute;
+      left: 10px;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      > p {
+        padding-top: 15px;
+      }
     }
   }
   > footer {

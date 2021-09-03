@@ -20,7 +20,7 @@
       v-if="ruleForm"
     >
       <el-form-item label="名称：" prop="Name" key="FileName">
-        <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="请输入部件名称" maxlength="10" show-word-limit></el-input>
+        <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="请输入部件名称" maxlength="20" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="使用次数：" prop="UseTimes" class="use-times-box" key="GroupUseTimes">
         <el-input style='width:110px' :disabled='isEdit&&curData.UseTimes.MinValue===1&&curData.UseTimes.MaxValue===1' maxlength="9"

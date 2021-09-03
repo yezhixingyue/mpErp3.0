@@ -88,7 +88,8 @@ export default {
       this.$store.commit('priceManage/setPriceItemPropertyList', []);
       const PartID = this.curCraftPriceItemData.PartID || '';
       const PriceID = this.curPriceItem.ID;
-      const resp = PropertyClass.getPropertyList({ UseModule: 32, ProductID: this.ProductID, PartID, PriceID });
+      const CraftID = this.curCraft.ID || '';
+      const resp = await PropertyClass.getPropertyList({ UseModule: 39, ProductID: this.ProductID, PartID, PriceID, CraftID });
       if (resp) this.$store.commit('priceManage/setPriceItemPropertyList', resp);
     },
   },

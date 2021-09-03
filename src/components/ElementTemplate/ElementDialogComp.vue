@@ -22,7 +22,7 @@
       <el-form-item label="名称：" prop="Name">
         <div class="element-name-box">
           <div>
-            <el-input v-model.trim="ruleForm.Name" placeholder="请输入元素名称" maxlength="6" show-word-limit></el-input>
+            <el-input v-model.trim="ruleForm.Name" placeholder="请输入元素名称" maxlength="10" show-word-limit></el-input>
             <template v-if="!isCommon">
               <span class="blue-span" @click="onTemplateSelect">选择模板</span>
               <span class="is-gray" v-if="TempData && TempData.Name">已选：{{TempData.Name}}</span>

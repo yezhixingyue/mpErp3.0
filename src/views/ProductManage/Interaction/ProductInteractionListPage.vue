@@ -166,6 +166,7 @@ export default {
     },
     async onSetupPageJump(setType, data) {
       if (setType !== 'subCompare' && setType !== 'subInteraction') {
+        this.$store.commit('productManage/setSubTargetData', null);
         this.handleJumpToNewPage(setType, data);
       } else {
         const bool = await this.getPropertyList4SubInteractionAndSubCompare();

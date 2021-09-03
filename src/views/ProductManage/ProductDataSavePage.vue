@@ -8,12 +8,12 @@
         <ul class="left-content">
           <li>
             <p>内部名称：</p>
-            <el-input size="small" v-model.trim="productData.Name" maxlength="10" show-word-limit></el-input>
+            <el-input size="small" v-model.trim="productData.Name" maxlength="20" show-word-limit></el-input>
             <span class="tip">内部名称不能重复，仅内部可见</span>
           </li>
           <li>
             <p>显示名称：</p>
-            <el-input size="small" v-model.trim="productData.ShowName" maxlength="10" show-word-limit></el-input>
+            <el-input size="small" v-model.trim="productData.ShowName" maxlength="20" show-word-limit></el-input>
             <span class="tip">显示名称可重复，用于下单界面展示</span>
           </li>
           <li>

@@ -248,10 +248,16 @@ export default {
           &.name {
             width: 140px;
             padding-right: 5px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
           &.show-name {
             width: 140px;
             padding-right: 15px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
         }
       }

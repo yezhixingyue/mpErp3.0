@@ -45,6 +45,7 @@ export const PropertyFixedType = [
   { ID: 23, Name: '横轴下限' },
   { ID: 24, Name: '竖轴上限' },
   { ID: 25, Name: '竖轴下限' },
+  { ID: 26, Name: '报价方案' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表
@@ -311,11 +312,13 @@ export default class PropertyClass {
       }
       if (t.Type === 9) {
         const { CraftOptionList } = imperfectProp;
-        const list = t.CraftOptionList.map(it => {
-          const _t = CraftOptionList.find(_it => _it.ID === it.ID && JSON.stringify(_it.Part) === JSON.stringify(it.Part));
-          return _t || it;
-        });
-        return { ...t, CraftOptionList: list };
+        if (CraftOptionList && t.CraftOptionList) {
+          const list = t.CraftOptionList.map(it => {
+            const _t = CraftOptionList.find(_it => _it.ID === it.ID && JSON.stringify(_it.Part) === JSON.stringify(it.Part));
+            return _t || it;
+          });
+          return { ...t, CraftOptionList: list };
+        }
       }
       return t;
     }

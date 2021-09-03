@@ -7,7 +7,7 @@
       <div v-if="FormulaData">
         <div>
           <span>{{FormulaLabel}}：</span>
-          <el-input size='small' style="width: 250px" v-model.trim="FormulaData.Name" maxlength="6" show-word-limit></el-input>
+          <el-input size='small' style="width: 250px" v-model.trim="FormulaData.Name" maxlength="15" show-word-limit></el-input>
         </div>
         <div v-if="!hiddenUnit">
           <span>结果单位：</span>

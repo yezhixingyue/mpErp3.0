@@ -71,7 +71,7 @@ export default {
       },
     },
     isMultiple() {
-      return this.ValueType === 1 || this.ValueType === 6 || (this.PropertyData && this.PropertyData.FixedType === 18);
+      return this.ValueType === 1 || this.ValueType === 6 || (this.PropertyData && [18, 26].includes(this.PropertyData.FixedType));
     },
     localOptionList() {
       if (!this.PropertyData || !Array.isArray(this.PropertyData.OptionList) || this.PropertyData.OptionList.length === 0) return [];

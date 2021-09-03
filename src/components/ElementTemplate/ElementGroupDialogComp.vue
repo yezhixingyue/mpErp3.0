@@ -22,7 +22,7 @@
       <el-form-item label="名称：" prop="Name" key="GroupName">
         <div class="element-name-box">
           <div>
-            <el-input style="width:350px" v-model.trim="ruleGroupForm.Name" placeholder="请输入元素组名称" maxlength="6" show-word-limit></el-input>
+            <el-input style="width:350px" v-model.trim="ruleGroupForm.Name" placeholder="请输入元素组名称" maxlength="10" show-word-limit></el-input>
           </div>
           <div class="checked-box">
             <el-checkbox class="checked-item" v-model="ruleGroupForm.IsNameHidden">界面隐藏名称</el-checkbox>
