@@ -1,6 +1,6 @@
 <template>
   <section class="mp-erp-price-manage-table-item-comp-wrap" v-if="itemData" :class="extend ? 'extend': ''" ref="oWrap">
-    <header>
+    <header @click="onHeadrClick">
       <div class="classify-box">
         <span :title="ClassifyText">{{ClassifyText}}</span>
       </div>
@@ -150,6 +150,9 @@ export default {
         sessionStorage.removeItem('lastExtendProductID4Price');
       }
     },
+    onHeadrClick() {
+      this.$emit('setActive', this.itemData.ID);
+    },
     onPriceItemSaveClick(data, type = 'save') { // 编辑 | 保存产品价格条目
       this.$store.dispatch('common/getAreaList');
       this.$store.dispatch('common/getUserClassify');
@@ -266,6 +269,11 @@ export default {
   padding-bottom: 10px;
   min-width: 1718px;
   width: calc(100% - 2px);
+  &.active > header {
+    background-color: #f5f5f5;
+    border-color: #e6e6e6;
+    border-left-color: #f5f5f5;
+  }
   > header {
     display: flex;
     min-width: 1703px;

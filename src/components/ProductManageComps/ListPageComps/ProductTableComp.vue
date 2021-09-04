@@ -13,7 +13,7 @@
         <img src="@/assets/images/null.png" alt="">
         <p class="is-font-size-12 is-gray">暂无产品</p>
       </div>
-      <ProductTableItemComp v-for="item in listData" :key="item.ProductID" :itemData='item' />
+      <ProductTableItemComp v-for="item in listData" :key="item.ID" :itemData='item' @setActive='setActive' :class="{active:activeID===item.ID}" />
     </div>
   </article>
 </template>
@@ -34,6 +34,16 @@ export default {
   },
   computed: {
     ...mapState('productManage', ['isTableDataLoading']),
+  },
+  data() {
+    return {
+      activeID: '',
+    };
+  },
+  methods: {
+    setActive(id) {
+      this.activeID = id;
+    },
   },
 };
 </script>

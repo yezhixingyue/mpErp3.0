@@ -5,7 +5,7 @@
         <img src="@/assets/images/null.png" alt="">
         <p class="is-font-size-12 is-gray">暂无产品</p>
       </div>
-      <PriceTableItemComp v-for="item in listData" :key="item.ProductID" :itemData='item' />
+      <PriceTableItemComp v-for="item in listData" :key="item.ProductID" :itemData='item' @setActive='setActive' :class="{active:activeID===item.ID}" />
     </div>
   </article>
 </template>
@@ -26,6 +26,16 @@ export default {
   },
   computed: {
     ...mapState('priceManage', ['isPriceDataLoading']),
+  },
+  data() {
+    return {
+      activeID: '',
+    };
+  },
+  methods: {
+    setActive(id) {
+      this.activeID = id;
+    },
   },
 };
 </script>

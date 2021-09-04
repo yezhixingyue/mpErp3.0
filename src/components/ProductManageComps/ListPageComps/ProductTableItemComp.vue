@@ -1,6 +1,6 @@
 <template>
   <section class="mp-erp-product-manage-table-item-comp-wrap" v-if="itemData" :class="extend ? 'extend': ''">
-    <header>
+    <header @click="onHeadrClick">
       <div class="title-box">
         <span class="name" :title="itemData.Name">{{itemData.Name}}</span>
         <span class="show-name" :title="itemData.ShowName">{{itemData.ShowName}}</span>
@@ -128,6 +128,9 @@ export default {
         sessionStorage.removeItem('lastExtendProductID');
       }
     },
+    onHeadrClick() {
+      this.$emit('setActive', this.itemData.ID);
+    },
     onProductSaveClick() { // 产品编辑
       this.$store.commit('productManage/setCurEditData', this.itemData);
       this.$router.push(`/ProductDataSave/${Date.now()}`);
@@ -221,6 +224,11 @@ export default {
   padding-top: 10px;
   min-width: 1718px;
   width: calc(100% - 2px);
+  &.active > header {
+    background-color: #f5f5f5;
+    border-color: #e6e6e6;
+    border-left-color: #f5f5f5;
+  }
   > header {
     display: flex;
     min-width: 1703px;
@@ -385,6 +393,7 @@ export default {
     transition: border-color 0.02s ease-in-out;
     &:hover {
       border-color: #ccc;
+      // border-left: #ccc;
       // border-left-color: #f5f5f5;
       box-shadow: -2px 0 0  #ccc;
       // background-color: #e5e5e5;
