@@ -124,12 +124,12 @@ export default {
         if (MixtureID) return ['允许混拼'];
         const getValue = ({ Value, FormulaName, Type }, title) => {
           let str = title;
-          if (Value || Value === 0) str += Value;
-          else if (FormulaName) {
+          if (FormulaName) {
             str += FormulaName;
             const targetFixedTypeName = this.$utils.getNameFromListByIDs(Type, PropertyFixedType);
             if (targetFixedTypeName) str += targetFixedTypeName;
-          } else str += '未获取到';
+          } else if (Value || Value === 0) str += Value;
+          else str += '未获取到';
           return str;
         };
         const len = getValue(LengthFormula || {}, '长：');

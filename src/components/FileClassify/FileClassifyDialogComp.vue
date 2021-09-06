@@ -21,6 +21,11 @@
     >
       <el-form-item label="类目名称：" prop="Name" key="FileName">
         <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="请输入类目名称" maxlength="6" show-word-limit></el-input>
+        <!-- 复选框添加位置 -->
+        <div>
+          <el-checkbox v-model="ruleForm.IsPrintFile">印刷文件</el-checkbox>
+          <el-checkbox class="multiple-checkout" v-model="ruleForm.AllowMultiple">可上传多个文件</el-checkbox>
+        </div>
       </el-form-item>
       <el-form-item label="显示顺序：" prop="ShowIndex" key="ShowIndex">
         <el-input style="width:150px;margin-right:10px" v-model.trim.number="ruleForm.ShowIndex" maxlength="9"></el-input>
@@ -185,11 +190,17 @@ export default {
         color: #585858 !important;
       }
     }
+    &.multiple-checkout {
+      > .el-checkbox__label {
+        width: 100px;
+      }
+    }
   }
   .el-textarea {
     height: 70px;
     > textarea {
       height: 70px;
+      max-height: 120px;
       border-radius: 3px;
     }
   }

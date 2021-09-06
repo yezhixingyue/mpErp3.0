@@ -9,7 +9,7 @@
         <span>文件类目：</span>
         <ul class="file-list">
           <li v-for="it in FileDataList" :key="it.ID">
-            <el-checkbox :value='checkedFileIDs.includes(it.ID)' @change="selectChange(it)">{{it.Name}}</el-checkbox>
+            <el-checkbox :value='checkedFileIDs.includes(it.ID)' @change="selectChange(it)">{{it.Name}}{{it.IsPrintFile ? '（印刷文件）' : ''}}</el-checkbox>
             <el-checkbox v-if="checkedFileIDs.includes(it.ID)" :value='getIsRequiredByID(it.ID)' @change="requiredChange(it.ID)">必须上传</el-checkbox>
           </li>
         </ul>
@@ -75,7 +75,12 @@ export default {
     selectChange(it) { // 文件勾选或取消勾选
       const i = this.checkedFileList.findIndex(_it => _it.File.ID === it.ID);
       if (i > -1) this.checkedFileList.splice(i, 1);
-      else this.checkedFileList.push({ File: it, IsRequired: false });
+      else if (it.IsPrintFile) {
+        this.checkedFileList = this.checkedFileList.filter(_it => !_it.File.IsPrintFile);
+        this.checkedFileList.push({ File: it, IsRequired: false });
+      } else {
+        this.checkedFileList.push({ File: it, IsRequired: false });
+      }
     },
     getIsRequiredByID(id) {
       const t = this.checkedFileList.find(_it => _it.File.ID === id);
@@ -176,12 +181,12 @@ export default {
               font-size: 12px;
             }
             &:first-of-type {
-              width: 120px;
+              width: 180px;
               overflow: hidden;
               vertical-align: middle;
               margin-right: 0;
               > .el-checkbox__label {
-                max-width: 85px;
+                max-width: 185px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;

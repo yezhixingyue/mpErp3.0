@@ -46,6 +46,10 @@ export const PropertyFixedType = [
   { ID: 24, Name: '竖轴上限' },
   { ID: 25, Name: '竖轴下限' },
   { ID: 26, Name: '报价方案' },
+  { ID: 27, Name: '拼版长(含白边)' },
+  { ID: 28, Name: '拼版宽(含白边)' },
+  { ID: 29, Name: '印刷幅面物料损耗数量' },
+  { ID: 30, Name: '大版拼数' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表

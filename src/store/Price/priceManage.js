@@ -136,7 +136,8 @@ export default {
         if (i > -1) t.PriceList.splice(i, 1, data);
       }
       if (type === 'add') {
-        t.PriceList.unshift(data);
+        const MakeupList = state.MakeupControlTypeList.map(it => ({ Type: it.ID, Solution: null, PriceID: data.ID }));
+        t.PriceList.unshift({ ...data, MakeupList });
       }
     },
     setPriceItemRemove(state, [ProductID, ID]) {
@@ -292,11 +293,25 @@ export default {
             if (t3) {
               if (Array.isArray(t3.PriceTableList)) setFunc(t3.PriceTableList);
               else t3.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
+            } else {
+              t2.CraftPriceList.push({
+                ID: CraftPriceID,
+                PriceTableList: [{ ...itemData, ID: itemID, TableNumber: 0 }],
+                CraftID: state.curCraftPriceItemData.Craft.ID,
+                PartID: state.curCraftPriceItemData.PartID,
+              });
             }
             const curT3 = state.curPriceItem.CraftPriceList.find(it => it.ID === CraftPriceID);
             if (curT3) {
               if (Array.isArray(curT3.PriceTableList)) setFunc(curT3.PriceTableList);
               else curT3.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
+            } else {
+              state.curPriceItem.CraftPriceList.push({
+                ID: CraftPriceID,
+                PriceTableList: [{ ...itemData, ID: itemID, TableNumber: 0 }],
+                CraftID: state.curCraftPriceItemData.Craft.ID,
+                PartID: state.curCraftPriceItemData.PartID,
+              });
             }
           }
         }
@@ -330,7 +345,7 @@ export default {
           if (isQuotationPage) setFunc(state.curPriceItem.PriceTableList);
           else {
             const target3 = target2.CraftPriceList.find(it => it.ID === CraftPriceID);
-            const curPriceItemTarget3 = state.curPriceItem.find(it => it.ID === CraftPriceID);
+            const curPriceItemTarget3 = state.curPriceItem.CraftPriceList.find(it => it.ID === CraftPriceID);
             if (target3) setFunc(target3.PriceTableList);
             if (curPriceItemTarget3) setFunc(curPriceItemTarget3.PriceTableList);
           }

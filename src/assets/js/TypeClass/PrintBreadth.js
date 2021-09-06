@@ -1,5 +1,5 @@
 export const MakeupMode = [
-  { ID: 1, Name: '正翻版', key: 'zhengFan' },
+  { ID: 1, Name: '正反版', key: 'zhengFan' },
   { ID: 2, Name: '自翻版', key: 'ziFan' },
   { ID: 4, Name: '天地翻', key: 'tianDiFan' },
 ];

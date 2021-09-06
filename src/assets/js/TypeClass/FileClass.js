@@ -11,13 +11,19 @@ export default class FileClassType {
 
   Name = '';
 
+  AllowMultiple = false;
+
+  IsPrintFile = false;
+
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, Name, Remark, FailTips, TypeList, ShowIndex } = JSON.parse(JSON.stringify(initData));
+    const { ID, Name, Remark, FailTips, TypeList, ShowIndex, AllowMultiple, IsPrintFile } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
     if (Remark) this.Remark = Remark;
+    if (AllowMultiple) this.AllowMultiple = AllowMultiple;
     if (FailTips) this.FailTips = FailTips;
+    if (IsPrintFile) this.IsPrintFile = IsPrintFile;
     if (ShowIndex || ShowIndex === 0) this.ShowIndex = ShowIndex;
     if (TypeList) this.TypeList = TypeList.map(it => it.ID);
   }
