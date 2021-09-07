@@ -54,6 +54,7 @@ export default {
     return {
       drawer: false,
       visible: false,
+      routeInfo: {},
     };
   },
   components: {
@@ -74,19 +75,6 @@ export default {
     },
     PropList() {
       return this.MakeupCtrlConditionSetupPropertyList;
-    },
-    routeInfo() {
-      const { ProductID, PartID, ProductName, PartName, SolutionName, SolutionID, setType, isMixin } = this.$route.params;
-      return {
-        ProductID,
-        PartID: PartID === 'null' ? '' : PartID,
-        ProductName,
-        PartName: PartName === 'null' ? '' : PartName,
-        SolutionName,
-        SolutionID,
-        isMixin,
-        setType,
-      };
     },
   },
   methods: {
@@ -135,6 +123,19 @@ export default {
         this.messageBox.successSingle('保存成功', cb, cb);
       }
     },
+  },
+  created() {
+    const { ProductID, PartID, ProductName, PartName, SolutionName, SolutionID, setType, isMixin } = this.$route.params;
+    this.routeInfo = {
+      ProductID,
+      PartID: PartID === 'null' ? '' : PartID,
+      ProductName,
+      PartName: PartName === 'null' ? '' : PartName,
+      SolutionName,
+      SolutionID,
+      isMixin: isMixin && isMixin !== 'false',
+      setType,
+    };
   },
   mounted() {
   },
