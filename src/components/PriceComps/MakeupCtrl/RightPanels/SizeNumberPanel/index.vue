@@ -183,7 +183,6 @@ export default {
     },
   },
   mounted() {
-    console.log(123, 'mounted');
     this.getProductData();
     if (this.initData) { // 编辑时还原数据
       const { LengthFormula, WidthFormula, DifferentContentFormula, PrintNumberFormula } = this.initData;

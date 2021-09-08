@@ -30,18 +30,18 @@
             <el-checkbox v-for="it in it.OptionList" :key="it.First" :label="it.First" :title="it.Second">{{it.Second}}</el-checkbox>
           </el-checkbox-group>
           <div class="multiple" v-else>
-            <span class="blue-span" @click="onSelectDialogClick">选择</span>
+            <span class="blue-span" @click="onSelectDialogClick(i)">选择</span>
             <span :title="getText(it.checkList, it.OptionList)">{{getText(it.checkList, it.OptionList)}}</span>
-            <CheckboxDialogComp :visible.sync='propVisibel' v-model="it.checkList" :list='it.OptionList' width='800px'
+            <CheckboxDialogComp :visible.sync='it.propVisibel' v-model="it.checkList" :list='it.OptionList' width='800px'
             title="选择选项" :defaultProps="{label: 'Second', value: 'First'}" />
           </div>
         </div>
         <!-- 物料弹窗 -->
         <div v-if="it.ResultType === 'material'" class="material">
-          <span class="blue-span" @click="onSelectDialogClick('material')">设置</span>
+          <span class="blue-span" @click="onSelectDialogClick(i, 'material')">设置</span>
           <div class="show-text" :title="localMaterialSelectedList(it.checkList, it.OptionList)"
           >{{localMaterialSelectedList(it.checkList, it.OptionList)}}</div>
-          <MaterialSelectDialog :visible.sync='materialVisible' v-model="it.checkList" :optionList='localMaterialOptionList(it.OptionList)'  />
+          <MaterialSelectDialog :visible.sync='it.materialVisible' v-model="it.checkList" :optionList='localMaterialOptionList(it.OptionList)'  />
         </div>
         <!-- 工艺 不显示 -->
       </div>
@@ -128,6 +128,8 @@ export default {
         PanelID,
         ControlID,
         TipsContent: this.getTipsContent(prop),
+        propVisibel: false,
+        materialVisible: false,
       };
     },
     getTipsContent(prop) {
@@ -170,9 +172,16 @@ export default {
       if (ValueType === 0) return 'element';
       return '';
     },
-    onSelectDialogClick(type) {
-      if (type === 'material') this.materialVisible = true;
-      else this.propVisibel = true;
+    onSelectDialogClick(index, type) {
+      this.localList.forEach(it => {
+        const _it = it;
+        _it.materialVisible = false;
+        _it.propVisibel = false;
+      });
+      if (type === 'material') this.localList[index].materialVisible = true;
+      else {
+        this.localList[index].propVisibel = true;
+      }
     },
     localMaterialListObj(list) { // 仅为物料时且列表数量大于3时使用
       return getTempMaterialListObj(list);
