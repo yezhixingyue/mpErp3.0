@@ -24,7 +24,7 @@
               </template>
               <p v-else>{{item._ConditionText}}</p>
               <p class="if-box" style="margin-right:5px">
-                <span class="is-origin">{{type === '1' ? '使用' : '则'}}</span>
+                <span class="is-origin">{{separator}}</span>
               </p>
               <p v-for="(res, ri) in item.result.filter(_it => _it)" :key="res + ri">{{res}}</p>
             </div>
@@ -40,7 +40,7 @@
               </template>
               <p v-else>{{item._ConditionText}}</p>
               <p class="if-box" style="margin-left:10px;margin-right:5px">
-                <span class="is-origin">{{type === '1' ? '使用' : '则'}}</span>
+                <span class="is-origin">{{separator}}</span>
               </p>
               <p>
                 <em v-for="(res,ri) in item.result.filter(_it => _it)" :key="res + ri" style="margin-right:4px">{{res}}
@@ -101,6 +101,11 @@ export default {
         FilterTypeText: it.Constraint ? (it.Constraint.FilterType === 1 ? '满足所有' : '满足任一') : '未知满足关系',
         result: this.getShowResult(it),
       }));
+    },
+    separator() {
+      if (this.type === '1') return '使用';
+      if (this.type === '6') return '使用物料尺寸：';
+      return '则';
     },
   },
   data() {
@@ -173,6 +178,12 @@ export default {
         const UnitText = this.$utils.getNameFromListByIDs(Unit, this.WastageUnitList);
         const UnitTypeText = this.$utils.getNameFromListByIDs(UnitType, this.WastageUnitTypeList);
         return [`${RuleText}：${Value}${UnitText}（ ${UnitTypeText} ）`];
+      }
+      if (t.Name === '物料尺寸') {
+        const { MaterialSizeList } = item;
+        if (!Array.isArray(MaterialSizeList)) return [''];
+        const list = MaterialSizeList.map(it => `${it.First.Name}（${it.Second}元）`);
+        return [list.join('、')];
       }
       return ['其它类型，暂未生成对应结果'];
     },

@@ -63,7 +63,7 @@ export default {
       }
       this.$emit('elementSave', { isEdit, data: itemData });
     },
-    async onElementRemove(id) {
+    async onElementRemove([id, Module]) {
       const bool = this.canRemove ? this.canRemove(id) : true;
       if (!bool) return;
       if (this.ElementGroupDataList && this.ElementGroupDataList.length > 0) {
@@ -75,7 +75,7 @@ export default {
           return;
         }
       }
-      const resp = await this.api.getElementRemove(id).catch(() => {});
+      const resp = await this.api.getElementRemove(id, Module).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const callback = () => {
           this.ElementDataList = this.ElementDataList.filter(it => it.ID !== id);

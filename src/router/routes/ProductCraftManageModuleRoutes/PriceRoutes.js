@@ -48,7 +48,7 @@ const routes = [
     path: '/MakeupCtrlConditionSet/:ProductID/:PartID/:ProductName/:PartName/:SolutionName/:SolutionID/:setType/:isMixin',
     name: 'MakeupCtrlConditionSet',
     meta: {
-      title: '设置拼版尺寸数量',
+      title: '拼版设置',
       requiresAuth: true,
       pageName: 'MakeupCtrlConditionSet',
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],

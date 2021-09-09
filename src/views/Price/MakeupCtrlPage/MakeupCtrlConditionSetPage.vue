@@ -28,6 +28,7 @@
         <CuttingRulePanel ref="oCuttingRulePanel" v-if="routeInfo.setType==='3'" :initData='curMakeupItemEditData' :partName='routeInfo.PartName' />
         <PrintTimesPanel ref="oPrintTimesPanel" v-if="routeInfo.setType==='4'" :initData='curMakeupItemEditData' /> <!-- 印刷次数 -->
         <MaterialWastagePanel ref="oMaterialWastagePanel" v-if="routeInfo.setType==='5'" :initData='curMakeupItemEditData' /> <!-- 物料损耗 -->
+        <MaterialSizeSetPanel ref="oMaterialSizeSetPanel" v-if="routeInfo.setType==='6'" :initData='curMakeupItemEditData' /> <!-- 物料尺寸 -->
       </ContionCommonComp>
     </main>
     <footer>
@@ -47,6 +48,7 @@ import MakeupRulePanel from '@/components/PriceComps/MakeupCtrl/RightPanels/Make
 import CuttingRulePanel from '@/components/PriceComps/MakeupCtrl/RightPanels/CuttingRulePanel';
 import PrintTimesPanel from '@/components/PriceComps/MakeupCtrl/RightPanels/PrintTimesPanel';
 import MaterialWastagePanel from '@/components/PriceComps/MakeupCtrl/RightPanels/MaterialWastagePanel';
+import MaterialSizeSetPanel from '@/components/PriceComps/MakeupCtrl/RightPanels/MaterialSizeSetPanel';
 
 export default {
   name: 'MakeupCtrlConditionSet',
@@ -65,12 +67,14 @@ export default {
     CuttingRulePanel,
     PrintTimesPanel,
     MaterialWastagePanel,
+    MaterialSizeSetPanel,
   },
   computed: {
     ...mapState('priceManage', ['ProductFormulaPropertyList', 'curMakeupItemEditData', 'MakeupCtrlConditionSetupPropertyList']),
     rightTitle() {
       if (this.routeInfo.isMixin) return '则允许混拼';
       if (this.routeInfo.setType === '1') return '使用以下幅面';
+      if (this.routeInfo.setType === '6') return '使用如下物料尺寸';
       return '则';
     },
     PropList() {
@@ -104,6 +108,9 @@ export default {
       }
       if (this.routeInfo.setType === '5') {
         result = this.$refs.oMaterialWastagePanel.getSubmitInfo();
+      }
+      if (this.routeInfo.setType === '6') {
+        result = this.$refs.oMaterialSizeSetPanel.getSubmitInfo();
       }
       if (!result) return;
       const { SolutionID, ProductID, PartID } = this.routeInfo;

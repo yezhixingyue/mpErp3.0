@@ -37,6 +37,7 @@ export default {
       { Name: '拼版算法', ID: 3, UseModule: 37 },
       { Name: '印刷次数', ID: 4, UseModule: 35 },
       { Name: '物料损耗', ID: 5, UseModule: 30 },
+      { Name: '物料尺寸', ID: 6, UseModule: 30 },
     ],
     /** 拼版控制相关
      ---------------------------------------- */

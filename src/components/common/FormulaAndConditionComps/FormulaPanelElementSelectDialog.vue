@@ -60,6 +60,7 @@
           <div v-else>
             <template v-if="!isMultiple">
               <TipsSpanButton :disabled='selectedElementIDs.includes(item.StoredContent)'
+               :class="{'is-element': !item.FixedType && item.FixedType !== 0, 'is-font-size-12': true}"
                 v-for="item in it.list" :key="item.StoredContent" @click.native="onSubmit(item)" :text='getTextName(item) || item.DisplayContent || "未知名称"' />
             </template>
             <template v-else>

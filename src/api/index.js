@@ -604,8 +604,8 @@ const api = {
     }
     return instance.get(`/Api/Element/List${hash}`, { closeLoading });
   },
-  getElementRemove(id) { // DELETE /Api/Element/Remove 元素删除
-    return instance.delete(`/Api/Element/Remove?id=${id}`);
+  getElementRemove(id, module) { // DELETE /Api/Element/Remove 元素删除
+    return instance.delete('/Api/Element/Remove', { params: { id, module } });
   },
   getElementGroupSave(data) { // POST /Api/ElementGroup/Save 元素组保存
     return instance.post('/Api/ElementGroup/Save', data);

@@ -49,10 +49,6 @@ export default {
       type: Object,
       default: null,
     },
-    partName: {
-      type: String,
-      default: '',
-    },
   },
   computed: mapState('priceManage', ['WastageRuleList', 'WastageUnitTypeList', 'WastageUnitList']),
   data() {

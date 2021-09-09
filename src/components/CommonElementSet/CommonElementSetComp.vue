@@ -134,8 +134,10 @@ export default {
     },
     onElementRemove(itemData) {
       if (!itemData) return;
+      let Module;
+      if (this.curUseElementModule || this.curUseElementModule === 0) Module = this.curUseElementModule;
       this.messageBox.warnCancelBox('确定删除该元素吗', `元素名称：[ ${itemData.Name} ]`, () => {
-        this.$emit('removeElement', itemData.ID);
+        this.$emit('removeElement', [itemData.ID, Module]);
       });
     },
     // 下面为元素组处理方法 ↓

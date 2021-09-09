@@ -50,6 +50,7 @@ export const PropertyFixedType = [
   { ID: 28, Name: '拼版宽(含白边)' },
   { ID: 29, Name: '印刷幅面物料损耗数量' },
   { ID: 30, Name: '大版拼数' },
+  { ID: 31, Name: '物料费' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表
@@ -319,7 +320,7 @@ export default class PropertyClass {
         if (CraftOptionList && t.CraftOptionList) {
           const list = t.CraftOptionList.map(it => {
             const _t = CraftOptionList.find(_it => _it.ID === it.ID && JSON.stringify(_it.Part) === JSON.stringify(it.Part));
-            return _t || it;
+            return _t ? { ..._t, Name: it.Name } : it;
           });
           return { ...t, CraftOptionList: list };
         }

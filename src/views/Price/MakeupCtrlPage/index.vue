@@ -182,6 +182,9 @@ export default {
         case 5:
           tip = '损耗计算先匹配“物料损耗设为”数值的条目，仅匹配一条，如果没有，则损耗设为 0；然后匹配损耗增加条目，可匹配多条进行累加';
           break;
+        case 6:
+          tip = '未指定物料尺寸的产品/部件，不拼版';
+          break;
         default:
           break;
       }

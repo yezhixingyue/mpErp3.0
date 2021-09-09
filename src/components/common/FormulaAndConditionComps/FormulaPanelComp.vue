@@ -304,7 +304,6 @@ export default {
       if (this.FormulaData.PropertyList.length === 0) return;
       this.FormulaData.PropertyList = this.FormulaData.PropertyList.map(it => {
         const t = PropertyClass.getPerfectPropertyByImperfectProperty(it, this.PropertyList);
-        // console.log(t);
         return t ? { ...t, DefaultValue: it.DefaultValue } : null;
       }).filter(it => it);
     },

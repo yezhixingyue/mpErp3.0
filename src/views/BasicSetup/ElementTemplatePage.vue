@@ -42,7 +42,7 @@ export default {
     handleEditSubmitSuccess({ saveType, editData, ID }) { // 元素添加|编辑成功后的处理方法
       this.$store.commit('basicSet/setElementItemSave', { saveType, editData, ID });
     },
-    onElementRemove(ID) {
+    onElementRemove([ID]) {
       this.$store.dispatch('basicSet/getElementRemove', ID);
     },
     async getElementList() {

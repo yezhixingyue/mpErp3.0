@@ -35,7 +35,8 @@ export default {
   },
   methods: {
     onSubmit(data) {
-      this.$emit('submit', data);
+      const temp = { ...data, Group: null };
+      this.$emit('submit', temp);
       this.onCancle();
     },
     onCancle() {
