@@ -285,7 +285,6 @@ export default {
     // },
     setProductInteractionDataListChange(state, [item, ID]) { // 新增或编辑后对仓库上的列表数据进行修改
       if (!item) return;
-      console.log(item);
       if (item.ID) {
         const i = state.ProductInteractionDataList.findIndex(it => it.ID === item.ID);
         if (i > -1) state.ProductInteractionDataList.splice(i, 1, item);

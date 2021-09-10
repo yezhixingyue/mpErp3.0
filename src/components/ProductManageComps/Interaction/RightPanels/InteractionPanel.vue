@@ -261,7 +261,8 @@ export default {
       const list = this.initData.List.map(it => {
         const { Property, OptionList, Operator, ID, DefaultValue, ControlID } = it;
         if (Property) {
-          const item = { ...Property, checkList: OptionList, Operator, PanelID: ID, DefaultValue, ControlID };
+          const _Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, this.ComparePropertyList) || {};
+          const item = { ..._Property, checkList: OptionList, Operator, PanelID: ID, DefaultValue, ControlID };
           return this.transformOnePropItem(item);
         }
         return null;

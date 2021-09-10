@@ -91,20 +91,10 @@ export default {
           let { Property, CompareProperty } = _it;
           if (!Property) return _it;
           if (CompareProperty && Property) {
-            const PropertyOperatorList = Property.OperatorList;
-            const ComparePropertyOperatorList = CompareProperty.OperatorList;
             Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, _RightPropertyList);
             CompareProperty = PropertyClass.getPerfectPropertyByImperfectProperty(CompareProperty, _RightPropertyList);
-            if (['subInteraction', 'subCompare'].includes(type)) {
-              Property = { ...Property, OperatorList: PropertyOperatorList };
-              CompareProperty = { ...CompareProperty, OperatorList: ComparePropertyOperatorList };
-            }
           } else if (Property) {
-            const PropertyOperatorList = Property.OperatorList;
             Property = PropertyClass.getPerfectPropertyByImperfectProperty(Property, _RightPropertyList);
-            if (['subInteraction', 'subCompare'].includes(type)) {
-              Property = { ...Property, OperatorList: PropertyOperatorList };
-            }
           }
           return { ..._it, Property, CompareProperty };
         });

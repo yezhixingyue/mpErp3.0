@@ -54,10 +54,11 @@ export default {
   methods: {
     onSelectClick() {
       this.saveData = this.checkedBreadthList;
+      // this.getBreadthInfo();
       this.visible = true;
     },
     getBreadthInfo() {
-      const func1 = () => (this.AllBreadthList.length === 0 ? this.$store.dispatch('basicSet/getAllBreadthList') : null);
+      const func1 = () => this.$store.dispatch('basicSet/getAllBreadthList');
       const func2 = () => this.$store.dispatch('basicSet/getBreadthClassList');
       return Promise.all([func1(), func2()]);
     },

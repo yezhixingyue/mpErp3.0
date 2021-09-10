@@ -17,14 +17,14 @@
         </template>
         <!-- 交互设置面板 -->
         <InteractionPanel
-         v-if="setType==='interaction' || setType==='subInteraction'"
+         v-if="(setType==='interaction' || setType==='subInteraction') && !loading"
          ref="oInteraction"
          :initData='curInteractionData'
          :ComparePropertyList='RightSetupPropertyList'
          :visibleDialog.sync='visible' />
         <!-- 对比设置面板 -->
         <ComparePanel
-         v-if="setType==='compare' || setType==='subCompare'"
+         v-if="(setType==='compare' || setType==='subCompare') && !loading"
          ref="oComparePanel"
          :initData='curInteractionData'
          :drawerVisible.sync='drawer'
@@ -115,16 +115,23 @@ export default {
       }
       const idsObj = PropertyClass.getPropIDsObj(this.subTargetData);
       let useModule;
-      if (this.setType === 'subInteraction') useModule = 25;
-      if (this.setType === 'subCompare') useModule = 26;
+      let resultUseModule;
+      if (this.setType === 'subInteraction') {
+        useModule = 25;
+        resultUseModule = 38;
+      }
+      if (this.setType === 'subCompare') {
+        useModule = 26;
+        resultUseModule = 40;
+      }
       this.loading = true;
       const [leftSubConditionList, rightSubList] = await Promise.all([
-        PropertyClass.getPropertyList({ ...idsObj, useModule }), PropertyClass.getPropertyList({ ...idsObj, useModule: 38 }),
+        PropertyClass.getPropertyList({ ...idsObj, useModule }), PropertyClass.getPropertyList({ ...idsObj, useModule: resultUseModule }),
       ]);
-      this.loading = false;
       if (leftSubConditionList && rightSubList) {
         this.subTypeConditionPropertyList = leftSubConditionList;
         this.subTypeRightPropertyList = rightSubList;
+        this.loading = false;
       } else this.$goback();
     },
     onSubmitClick() { // 点击保存

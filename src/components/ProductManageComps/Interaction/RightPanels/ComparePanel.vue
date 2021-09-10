@@ -61,7 +61,7 @@
 
 <script>
 import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
-import { AllOperatorList } from '@/assets/js/TypeClass/PropertyClass';
+import PropertyClass, { AllOperatorList } from '@/assets/js/TypeClass/PropertyClass';
 
 export default {
   props: {
@@ -151,7 +151,6 @@ export default {
       if (operator || operator === 0) this.localList[this.leftIndex].Operator = operator;
     },
     onRightSelected(e) { // 右侧选中属性处理事件
-      console.log(e);
       if (!this.rightIndex && this.rightIndex !== 0) return;
       this.localList[this.rightIndex].CompareProperty = e;
     },
@@ -195,7 +194,12 @@ export default {
   },
   mounted() {
     if (this.initData && Array.isArray(this.initData.List)) { // 编辑时还原数据
-      this.localList = JSON.parse(JSON.stringify(this.initData.List));
+      const list = this.initData.List.map(it => {
+        const CompareProperty = PropertyClass.getPerfectPropertyByImperfectProperty(it.CompareProperty, this.rightPropertyList) || {};
+        const Property = PropertyClass.getPerfectPropertyByImperfectProperty(it.Property, this.leftPropertyList) || {};
+        return { ...it, Property, CompareProperty };
+      });
+      this.localList = list;
     }
   },
 };

@@ -151,12 +151,16 @@ export default {
       }
     },
     checkWidth(rule, value, callback) { // 校验长度
-      const { SingleWidthRadio, SingleWidth, MinWidth, MaxWidth, WidthIncrement } = this.ruleForm;
+      const { SingleWidthRadio, SingleLenRadio, SingleWidth, MinWidth, MaxWidth, WidthIncrement } = this.ruleForm;
       // 需要判断： 1 是否为空 2 是否为数字类型 3 必须大于0   4 单个尺寸和多个尺寸的最大值可为-1   5. 最大值必须大于最小值  6.增量必填 必须大于0
       const res = this.getCheckRes(SingleWidthRadio, SingleWidth, MinWidth, MaxWidth, WidthIncrement);
       if (typeof res === 'string') {
         callback(new Error(res));
       } else {
+        if (SingleLenRadio === SingleWidthRadio && !SingleWidthRadio) {
+          callback('宽度和长度不能同时选择多个尺寸');
+          return;
+        }
         callback();
       }
     },
