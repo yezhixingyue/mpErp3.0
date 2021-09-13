@@ -35,6 +35,8 @@ import FormulaPanelComp from '@/components/common/FormulaAndConditionComps/Formu
 
 export default {
   name: 'ResultFormulaSetupPage',
+  props: {
+  },
   components: {
     ContionCommonComp,
     FormulaPanelComp,
@@ -57,6 +59,8 @@ export default {
         return {
           ProductID: this.ProductID,
           PriceID: this.PriceID,
+          PartID: this.curCraftPriceItemData?.PartID || '',
+          CraftID: this.curCraftPriceItemData?.Craft?.ID || '',
           UseModule: 7,
         };
       }

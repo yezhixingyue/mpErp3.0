@@ -171,13 +171,17 @@ export default {
       const _temp = isEdit ? data : { ...data, ID };
       if (!isEdit && (_classID === curClassID || !curClassID)) {
         state.BreadthList.unshift(_temp);
+        state.AllBreadthList.unshift(_temp);
       } else if (isEdit) {
         const i = state.BreadthList.findIndex(it => it.ID === _temp.ID);
+        const i2 = state.AllBreadthList.findIndex(it => it.ID === _temp.ID);
         if (i >= 0) state.BreadthList.splice(i, 1, _temp);
+        if (i2 >= 0) state.AllBreadthList.splice(i, 1, _temp);
       }
     },
     setBreadthRemove(state, id) {
       state.BreadthList = state.BreadthList.filter(it => it.ID !== id);
+      state.AllBreadthList = state.AllBreadthList.filter(it => it.ID !== id);
     },
     /* 物料尺寸
     -------------------------------*/

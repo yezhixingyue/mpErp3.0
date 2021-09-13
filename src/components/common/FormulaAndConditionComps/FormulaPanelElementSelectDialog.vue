@@ -179,18 +179,6 @@ export default {
       if (!Array.isArray(this.MultipleList)) return [];
       return this.MultipleList.map(it => it.StoredContent);
     },
-    // tabList() {
-    //   if (!this.propertyData) return [];
-    //   const _temp = [];
-    //   if (this.propertyData.ProductProperty && this.propertyData.ProductProperty.length > 0) {
-    //     _temp.push({ Name: '产品', ID: 'ProductProperty' });
-    //   }
-    //   if (this.propertyData.PartProperty) {
-    //     const keys = Object.keys(this.propertyData.PartProperty);
-    //     if (keys && keys.length >)
-    //   }
-    //   return _temp;
-    // },
   },
   methods: {
     onSubmit(data) {
@@ -416,6 +404,9 @@ export default {
     }
     &:active {
       color: #0959cf;
+    }
+    &.disabled {
+      color: #cbcbcb;
     }
   }
 }

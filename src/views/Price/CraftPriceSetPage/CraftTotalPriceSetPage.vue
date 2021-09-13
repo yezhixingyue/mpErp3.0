@@ -38,10 +38,13 @@ export default {
     curCraft() {
       return this.curCraftPriceItemData.Craft || {};
     },
+    PartID() {
+      return this.curCraftPriceItemData?.PartID || '';
+    },
     fetchFormulaListData() {
       return {
         ProductID: this.ProductID,
-        PartID: this.curCraftPriceItemData?.PartID || '',
+        PartID: this.PartID,
         PriceID: this.curPriceItem?.ID || '',
         CraftPriceID: this.curCraftPriceItemData?.Craft?.CraftPriceID || '',
         UseModule: 7,

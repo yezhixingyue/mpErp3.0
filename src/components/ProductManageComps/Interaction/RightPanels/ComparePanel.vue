@@ -19,7 +19,7 @@
           <el-input
            size="small"
            class="selected-input"
-           v-if="it.CompareProperty && it.CompareProperty.FixedType === 255"
+           v-if="!it.CompareProperty || !it.CompareProperty.DisplayContent"
            maxlength="9"
            v-model.trim.number="it.DefaultValue">
            </el-input>
@@ -38,7 +38,8 @@
       </li>
     </ul>
     <FormulaPanelElementSelectDialog key="l" :visible.sync='leftVisible' :list='leftPropertyList' @submit='onLeftSelected' :selectedElementIDs='lSelectedIDs'/>
-    <FormulaPanelElementSelectDialog  :visible.sync='rightVisible' :list='rightPropertyList' @submit='onRightSelected' :selectedElementIDs='rSelectedIDs'/>
+    <FormulaPanelElementSelectDialog showConstant freeText='常数'
+     :visible.sync='rightVisible' :list='rightPropertyList' @submit='onRightSelected' :selectedElementIDs='rSelectedIDs'/>
     <!-- 右侧说明抽屉面板 -->
     <el-drawer :visible.sync="drawer" size='470px' :show-close='false'>
       <template slot='title'>
@@ -174,11 +175,11 @@ export default {
       }
       for (let i = 0; i < this.localList.length; i += 1) {
         const it = this.localList[i];
-        if (!it.FailTips || !it.Property || !it.CompareProperty) {
+        if (!it.FailTips || !it.Property) {
           this.messageBox.failSingleError('保存失败', `第${i + 1}行信息不完整，请检查数值、对比数值及错误提示`);
           return false;
         }
-        if (it.CompareProperty.FixedType === 255) {
+        if (!it.CompareProperty) {
           if (!it.DefaultValue && it.DefaultValue !== 0) {
             this.messageBox.failSingleError('保存失败', `第${i + 1}行未填写对比数值，请输入数字值`);
             return false;
