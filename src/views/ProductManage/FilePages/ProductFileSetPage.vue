@@ -12,6 +12,9 @@
             <el-checkbox :value='checkedFileIDs.includes(it.ID)' @change="selectChange(it)">{{it.Name}}{{it.IsPrintFile ? '（印刷文件）' : ''}}</el-checkbox>
             <el-checkbox v-if="checkedFileIDs.includes(it.ID)" :value='getIsRequiredByID(it.ID)' @change="requiredChange(it.ID)">必须上传</el-checkbox>
           </li>
+          <li v-if="!loadingFileList && FileDataList.length === 0">
+            <span class="is-gray is-font-size-12" style="line-height:16px">暂无文件类目列表，请到文件类目中添加</span>
+          </li>
         </ul>
       </ContionCommonComp>
     </main>
@@ -35,6 +38,7 @@ export default {
       ProductName: '',
       titleType: '', // 产品 | 部件
       checkedFileList: [], // 普通工厂列表
+      loadingFileList: true,
     };
   },
   components: {
@@ -120,10 +124,14 @@ export default {
         this.messageBox.successSingle(title, cb, cb);
       }
     },
+    async getFileInfoList() {
+      await this.$store.dispatch('common/getFileInfoList');
+      this.loadingFileList = false;
+    },
   },
   mounted() {
     this.getPositionID();
-    this.$store.dispatch('common/getFileInfoList');
+    this.getFileInfoList();
     if (!this.curEditFileData) return;
     const { FileList } = this.curEditFileData;
     if (!Array.isArray(FileList) || FileList.length === 0) return;

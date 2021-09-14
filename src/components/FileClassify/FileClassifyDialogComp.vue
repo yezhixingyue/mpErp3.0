@@ -37,7 +37,7 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="说明文字：" prop="Remark" key="Remark">
-        <el-input v-model.trim="ruleForm.Remark" maxlength="25" show-word-limit></el-input>
+        <el-input v-model.trim="ruleForm.Remark" maxlength="100" show-word-limit class="remark"></el-input>
       </el-form-item>
       <el-form-item label="未上传时提示文字：" prop="FailTips" key="FailTips">
         <el-input type="textarea" v-model="ruleForm.FailTips" maxlength="40" show-word-limit></el-input>
@@ -86,7 +86,7 @@ export default {
         ],
         Remark: [
           { required: true, message: '请输入说明文字', trigger: 'blur' },
-          { min: 1, max: 25, message: '长度在 1 到 25 个字符', trigger: 'blur' },
+          { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur' },
         ],
         FailTips: [
           { required: true, message: '请输入未上传提示文字', trigger: 'blur' },
@@ -206,6 +206,11 @@ export default {
   }
   input {
     border-radius: 3px;
+  }
+  .remark {
+    input {
+      padding-right: 60px;
+    }
   }
 }
 </style>

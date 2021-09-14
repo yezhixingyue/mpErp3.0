@@ -165,7 +165,7 @@ export default {
     },
     getSubmitInfo() {
       const bool = this.getCheckResult();
-      if (bool) return { List: this.localList };
+      if (bool) return { List: this.localList.map(it => ({ ...it, DefaultValue: it.CompareProperty ? null : it.DefaultValue })) };
       return null;
     },
     getCheckResult() {
@@ -196,8 +196,8 @@ export default {
   mounted() {
     if (this.initData && Array.isArray(this.initData.List)) { // 编辑时还原数据
       const list = this.initData.List.map(it => {
-        const CompareProperty = PropertyClass.getPerfectPropertyByImperfectProperty(it.CompareProperty, this.rightPropertyList) || {};
-        const Property = PropertyClass.getPerfectPropertyByImperfectProperty(it.Property, this.leftPropertyList) || {};
+        const CompareProperty = PropertyClass.getPerfectPropertyByImperfectProperty(it.CompareProperty, this.rightPropertyList) || null;
+        const Property = PropertyClass.getPerfectPropertyByImperfectProperty(it.Property, this.leftPropertyList) || null;
         return { ...it, Property, CompareProperty };
       });
       this.localList = list;
