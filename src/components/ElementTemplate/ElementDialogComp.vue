@@ -147,7 +147,7 @@
         <el-form-item label="显示宽度：" prop="OptionAttribute.OptionShowWidth" key="OptionShowWidth">
           <el-radio-group v-model="ruleForm.OptionAttribute.IsWidthAdaption">
             <el-radio :label="true">自动宽度</el-radio>
-            <el-radio :label="false">
+            <el-radio :label="false" :disabled="ruleForm.OptionAttribute.ChooseType==='multiple' || ruleForm.OptionAttribute.SelectMode === 0">
               <span>固定宽度</span>
               <el-input style='width:90px;margin-left:10px' maxlength="9"
                v-model.number.trim="ruleForm.OptionAttribute.DisplayWidth" :disabled='ruleForm.OptionAttribute.IsWidthAdaption === true'></el-input>
@@ -356,6 +356,9 @@ export default {
     formatNumberValueList() {
       if (!this.ruleForm.NumbericAttribute.InputContent || typeof this.ruleForm.NumbericAttribute.InputContent !== 'string') return [];
       return this.$utils.getNumberValueList(this.ruleForm.NumbericAttribute.InputContent);
+    },
+    ChooseType() {
+      return this.ruleForm?.OptionAttribute?.ChooseType;
     },
   },
   methods: {
@@ -750,6 +753,11 @@ export default {
     curFormType(newVal) {
       if (newVal) {
         if (this.$refs.ruleForm) this.$refs.ruleForm.clearValidate();
+      }
+    },
+    ChooseType(val) {
+      if (val === 'multiple' && this.ruleForm?.OptionAttribute?.IsWidthAdaption === false) {
+        this.ruleForm.OptionAttribute.IsWidthAdaption = true;
       }
     },
   },

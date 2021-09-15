@@ -77,7 +77,7 @@ export default {
       'InteractionLeftPropertyList', 'InteractionRightPropertyList', 'CompareLeftPropertyList', 'CompareRightPropertyList']),
     rightTitle() {
       if (this.setType === 'risk') return '则进行风险提示：';
-      if (this.setType === 'compare') return '则必须满足';
+      if (this.setType === 'compare' || this.setType === 'subCompare') return '则必须满足';
       return '则';
     },
     ComparePropertyList() {

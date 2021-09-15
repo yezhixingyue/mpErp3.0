@@ -51,6 +51,7 @@ export default {
       { Name: '物料', ID: 3 },
       { Name: '工艺', ID: 4 },
       { Name: '工厂', ID: 5 },
+      { Name: '尺寸组', ID: 6 },
     ],
     RiskWarningTypeList: [ // 风险提示形式列表
       { Name: '弹出对话框', ID: 2 },
