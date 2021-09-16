@@ -614,8 +614,8 @@ const api = {
     if (positionID) return instance.get(`/Api/ElementGroup/List?positionID=${positionID}`);
     return instance.get('/Api/ElementGroup/List');
   },
-  getElementGroupRemove(id) { // DELETE /Api/ElementGroup/Remove 元素组删除
-    return instance.delete(`/Api/ElementGroup/Remove?id=${id}`);
+  getElementGroupRemove(id, module) { // DELETE /Api/ElementGroup/Remove 元素组删除
+    return instance.delete('/Api/ElementGroup/Remove', { params: { id, module } });
   },
   getElementGroupElementSort(data) { // POST /Api/ElementGroup/ElementSort 元素组排序
     return instance.post('/Api/ElementGroup/ElementSort', data);

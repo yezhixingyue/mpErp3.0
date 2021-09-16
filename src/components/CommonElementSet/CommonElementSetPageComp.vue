@@ -124,8 +124,8 @@ export default {
         }
       }
     },
-    async onElementGroupRemove(id) {
-      const resp = await this.api.getElementGroupRemove(id).catch(() => {});
+    async onElementGroupRemove([id, Module]) {
+      const resp = await this.api.getElementGroupRemove(id, Module).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const callback = () => {
           const t = this.ElementGroupDataList.find(it => it.ID === id);

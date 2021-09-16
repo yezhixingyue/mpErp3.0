@@ -53,8 +53,8 @@ export default {
     handleGroupSaveSuccess({ saveType, editData, ID }) { // 元素组添加|编辑成功后的处理方法
       this.$store.commit('basicSet/setElementGroupItemSave', { saveType, editData, ID });
     },
-    onElementGroupRemove(ID) {
-      this.$store.dispatch('basicSet/getElementGroupRemove', ID);
+    async onElementGroupRemove([id, Module]) {
+      this.$store.dispatch('basicSet/getElementGroupRemove', [id, Module]);
     },
     async getElementGroupList() {
       this.isLoadingGroup = true;

@@ -39,14 +39,17 @@ export default class Product {
 
   Mobile = null; // 库存预警手机号码
 
+  MaterialDisplayName = '物料';
+
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, Name, ShowName, ClassifyList, IsSpacial, TypeList } = JSON.parse(JSON.stringify(initData));
+    const { ID, Name, ShowName, ClassifyList, IsSpacial, TypeList, MaterialDisplayName } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
     if (ShowName) this.ShowName = ShowName;
     if (ClassifyList && Array.isArray(ClassifyList)) this.ClassifyList = ClassifyList;
     if (TypeList && Array.isArray(TypeList)) this.TypeList = TypeList;
     if (IsSpacial) this.IsSpacial = IsSpacial;
+    if (MaterialDisplayName) this.MaterialDisplayName = MaterialDisplayName;
   }
 }

@@ -11,6 +11,12 @@
           <li v-for="it in FileDataList" :key="it.ID">
             <el-checkbox :value='checkedFileIDs.includes(it.ID)' @change="selectChange(it)">{{it.Name}}{{it.IsPrintFile ? '（印刷文件）' : ''}}</el-checkbox>
             <el-checkbox v-if="checkedFileIDs.includes(it.ID)" :value='getIsRequiredByID(it.ID)' @change="requiredChange(it.ID)">必须上传</el-checkbox>
+            <div class="max-size-box" v-if="checkedFileIDs.includes(it.ID)">
+              <span>最大总尺寸限制：</span>
+              <el-input placeholder="1 - 3000" size="mini" maxlength="4"
+               :value='getMaxSizeValByID(it.ID)' @input="onMaxSizeChange($event, it.ID)"></el-input>
+              <span>M</span>
+            </div>
           </li>
           <li v-if="!loadingFileList && FileDataList.length === 0">
             <span class="is-gray is-font-size-12" style="line-height:16px">暂无文件类目列表，请到文件类目中添加</span>
@@ -81,9 +87,9 @@ export default {
       if (i > -1) this.checkedFileList.splice(i, 1);
       else if (it.IsPrintFile) {
         this.checkedFileList = this.checkedFileList.filter(_it => !_it.File.IsPrintFile);
-        this.checkedFileList.push({ File: it, IsRequired: false });
+        this.checkedFileList.push({ File: it, IsRequired: false, MaxSize: '' });
       } else {
-        this.checkedFileList.push({ File: it, IsRequired: false });
+        this.checkedFileList.push({ File: it, IsRequired: false, MaxSize: '' });
       }
     },
     getIsRequiredByID(id) {
@@ -94,9 +100,15 @@ export default {
       const t = this.checkedFileList.find(_it => _it.File.ID === id);
       if (t) t.IsRequired = !t.IsRequired;
     },
+    getMaxSizeValByID(id) {
+      const t = this.checkedFileList.find(_it => _it.File.ID === id);
+      return t ? t.MaxSize : '';
+    },
+    onMaxSizeChange(e, id) {
+      const t = this.checkedFileList.find(_it => _it.File.ID === id);
+      if (t) t.MaxSize = e;
+    },
     onGoBackClick() {
-      // this.$router.replace(`/ProductFileList/${this.ProductID}/${this.PartID ? this.PartID : 'null'}/${this.ProductName}/${this.titleType}/${Date.now()}`);
-      // this.$router.go(-1);
       this.$goback();
     },
     onSubmitClick() { // 点击保存
@@ -106,9 +118,13 @@ export default {
         this.messageBox.failSingleError('保存失败', '请勾选想要设置的文件类目');
         return;
       }
+      const t = this.checkedFileList.find(it => !it.MaxSize || !this.$utils.getValueIsOrNotNumber(it.MaxSize, true) || it.MaxSize < 1 || it.MaxSize > 3000);
+      if (t) {
+        this.messageBox.failSingleError('保存失败', '最大总尺寸限制不正确，必填，且应为1 - 3000整数类型');
+        return;
+      }
       const { ID, Priority, Constraint } = condition;
       const FileList = this.checkedFileList;
-      if (!FileList) return;
       const temp = { ID, Priority, Constraint, FileList, ProductID: this.ProductID };
       this.ProductFileSubmitHandler(temp);
     },
@@ -174,19 +190,22 @@ export default {
         color: #888E99;
         font-size: 14px;
         margin-right: 10px;
-        padding-top: 10px;
+        padding-top: 15px;
+        white-space: nowrap;
       }
       .file-list {
         > li {
           padding: 9px 0;
           display: flex;
           align-items: center;
+          height: 28px;
           > .el-checkbox {
             display: flex;
             align-items: center;
             > .el-checkbox__label {
               color: #585858;
               font-size: 12px;
+              margin-top: -2px;
             }
             &:first-of-type {
               width: 180px;
@@ -199,6 +218,21 @@ export default {
                 text-overflow: ellipsis;
                 white-space: nowrap;
               }
+            }
+          }
+          > .max-size-box {
+            display: flex;
+            align-items: center;
+            margin-left: 30px;
+            > span {
+              white-space: nowrap;
+              font-size: 12px;
+              color: #585858;
+            }
+            > .el-input {
+              width: 86px;
+              margin-left: 2px;
+              margin-right: 6px;
             }
           }
         }

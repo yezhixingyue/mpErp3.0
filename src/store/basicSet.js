@@ -332,8 +332,8 @@ export default {
       }
       return false;
     },
-    async getElementGroupRemove({ commit }, id) { // 元素组删除
-      const resp = await api.getElementGroupRemove(id).catch(() => {});
+    async getElementGroupRemove({ commit }, [id, Module]) { // 元素组删除
+      const resp = await api.getElementGroupRemove(id, Module).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const callback = () => {
           commit('setElementGroupRemove', id);

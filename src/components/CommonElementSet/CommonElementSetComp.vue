@@ -172,8 +172,10 @@ export default {
     },
     onElementGroupRemove(itemData) {
       if (!itemData) return;
+      let Module;
+      if (this.curUseElementModule || this.curUseElementModule === 0) Module = this.curUseElementModule;
       this.messageBox.warnCancelBox('确定删除该元素组吗', `元素组名称：${itemData.Name}`, () => {
-        this.$emit('removeElementGroup', itemData.ID);
+        this.$emit('removeElementGroup', [itemData.ID, Module]);
       });
     },
     // 下面为元素组模板复制处理方法 ↓
