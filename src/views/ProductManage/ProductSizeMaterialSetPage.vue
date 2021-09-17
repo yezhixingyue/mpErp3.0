@@ -97,7 +97,7 @@ export default {
       const List = this.$utils.getIDFromListByNames(dataType, this.ProductModuleKeyIDList);
       const _temp = { ID, List };
       const resp = await _fetchFunc(_temp).catch(() => {});
-      if (resp && resp.data && resp.data.Status === 1000) {
+      if (resp && resp.data && resp.data.Status === 1000 && resp.data.Data) {
         // 获取数据成功
         const { MaterialList, SizeGroup } = resp.data.Data;
         if (dataType.includes('Material') && MaterialList) this.MaterialList = MaterialList;
@@ -159,7 +159,6 @@ export default {
       }
     },
     async onMaterialTypeRemoveClick(data) {
-      console.log('onMaterialTypeRemoveClick', data);
       if (!data) return;
       const { ID } = data;
       const { ProductID, PartID } = this;

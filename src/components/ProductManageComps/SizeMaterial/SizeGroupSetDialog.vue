@@ -14,7 +14,7 @@
    >
     <p v-if="ElementGroup.length === 0 && !loading" class="empty-element-group is-pink">
       <i class="el-icon-warning"></i>
-      <span>当前产品或部件尚未设置元素组，请先设置元素组才可添加!</span>
+      <span class="is-font-size-12">当前产品或部件尚未设置元素组，请先设置元素组才可添加!</span>
     </p>
     <p v-else-if="canUseGroupData.length === 0 && !loading" class="is-origin">
       <i class="el-icon-warning"></i>

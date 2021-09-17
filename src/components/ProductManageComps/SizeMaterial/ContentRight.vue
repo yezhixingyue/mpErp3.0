@@ -83,7 +83,7 @@ export default {
     getContentList(list, HiddenToCustomer) {
       let _list = list.map(it => {
         const { First, Second } = it;
-        const { ElementList } = this.SizeGroup.GroupInfo;
+        const { ElementList } = this.SizeGroup.GroupInfo || {};
         if (!ElementList) return Second;
         let name = '';
         const t = ElementList.find(_it => _it.ID === First);

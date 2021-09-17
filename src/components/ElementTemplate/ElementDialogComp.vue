@@ -36,7 +36,7 @@
       <el-form-item label="类型：" prop="Type">
         <!-- <el-radio-group v-model="ruleForm.Type" :disabled="this.title === '编辑界面元素'"> -->
         <el-radio-group v-model="ruleForm.Type">
-          <el-radio :label="it.Name" v-for="it in TypeEnum" :key="it.Name + it.label">{{it.label}}</el-radio>
+          <el-radio :label="it.Name" v-for="it in TypeEnum" :key="it.Name + it.label" :disabled='switchDisabled&&it.label==="开关"'>{{it.label}}</el-radio>
         </el-radio-group>
         <div class="checked-box hidden-content-box" v-show="ruleForm.Type">
           <el-checkbox class="checked-item" v-model="ruleForm.HiddenToCustomer">客户界面隐藏</el-checkbox>
@@ -329,6 +329,7 @@ export default {
       TempData: null,
       testCheck: true,
       optionMultipleDisabled: false,
+      switchDisabled: false,
     };
   },
   computed: {
@@ -670,8 +671,10 @@ export default {
       else this.title = '添加界面元素';
       if (this.$route.name === 'MaterialElementSet') {
         this.optionMultipleDisabled = true;
+        this.switchDisabled = true;
       } else {
         this.optionMultipleDisabled = false;
+        this.switchDisabled = false;
       }
     },
     onOpen() {
