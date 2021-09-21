@@ -50,6 +50,7 @@ export default {
     display: flex;
     align-items: center;
     padding: 10px 30px;
+    white-space: nowrap;
     > svg {
       margin-right: 10px;
     }

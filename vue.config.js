@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 09:37:02
- * @LastEditTime: 2021-09-14 16:16:02
+ * @LastEditTime: 2021-09-18 14:39:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue.config.js
@@ -16,9 +16,9 @@ module.exports = {
     proxy: {
       '/Api': {
         // target: 'http://192.168.1.92:8030',
-        target: 'http://192.168.1.92:8050',
+        // target: 'http://192.168.1.92:8050',
         // target: 'http://192.168.1.92:8055', // 测试
-        // target: 'http://192.168.3.68:8050', // 3.0
+        target: 'http://192.168.3.68:8050', // 3.0
         // target: 'http://192.168.1.92:8050', // 3.0 测试
         ws: true, // 开启websockets
         changeOrigin: true, // 开启代理

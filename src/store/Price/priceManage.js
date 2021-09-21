@@ -406,7 +406,7 @@ export default {
         if (t) { // 对列表中数据进行修改 以保证同步最新
           if (!t.FormulaList) t.FormulaList = [];
           if (!item.ID) { // 新增
-            t.FormulaList.unshift({ ...item, ID });
+            t.FormulaList.push({ ...item, ID });
           } else { // 编辑
             const i = t.FormulaList.findIndex(it => it.ID === ID);
             if (i > -1) {
@@ -430,7 +430,7 @@ export default {
       }
 
       if (!item.ID) { // 新增
-        state.ResultFormulaList.unshift({ ...item, ID });
+        state.ResultFormulaList.push({ ...item, ID });
       } else { // 编辑
         const i = state.ResultFormulaList.findIndex(it => it.ID === ID);
         if (i > -1) {

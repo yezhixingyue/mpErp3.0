@@ -6,7 +6,7 @@ export const getFirstOptionName = (UnionShowList, ElementList) => {
       lv1Title = ElementList[0].DisplayContent;
       ElementList.forEach((ele, i) => {
         if (i > 0) {
-          itemContent += ele.DisplayContent;
+          itemContent += `${ele.DisplayContent}${ele.Unit ? ele.Unit : ''}`;
         }
       });
     }
@@ -21,7 +21,7 @@ export const getFirstOptionName = (UnionShowList, ElementList) => {
           const t = ElementList.find(Ele => Ele.ID === union);
           if (t) {
             if (index === 0 && itemContent) itemContent += ' ';
-            itemContent += t.DisplayContent;
+            itemContent += `${t.DisplayContent}${t.Unit ? t.Unit : ''}`;
           }
         });
       }

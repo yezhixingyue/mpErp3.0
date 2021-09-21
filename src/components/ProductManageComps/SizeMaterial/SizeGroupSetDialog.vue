@@ -18,17 +18,17 @@
     </p>
     <p v-else-if="canUseGroupData.length === 0 && !loading" class="is-origin">
       <i class="el-icon-warning"></i>
-      <span style="font-size:13px;letter-spacing:1px">当前产品或部件尚没有合适的元素组可设置（1. 元素组使用次数须为1-1，2. 不能包含开关元素， 3. 不能包含选项数量为0的选择项元素）</span>
+      <span style="font-size:13px;letter-spacing:1px">当前产品或部件尚没有合适的元素组可设置（1. 元素组使用次数须为1-1，2. 不能包含开关元素或多选选择项元素， 3. 不能包含选项数量为0的选择项元素）</span>
     </p>
     <template v-else-if="ruleForm && !loading">
       <el-radio-group v-model="ruleForm.GroupInfo.ID">
         <el-radio :label="it.ID" v-for="it in canUseGroupData" :key="it.ID">{{it.Name}}</el-radio>
       </el-radio-group>
       <div class="footer">
-        <el-checkbox v-model="ruleForm.AllowCustomize">允许自定义尺寸</el-checkbox>
-        <el-checkbox v-show="ruleForm.AllowCustomize" v-model="ruleForm.AllowCustomerCustomize">允许客户自定义</el-checkbox>
-        <el-checkbox v-show="ruleForm.AllowCustomize" v-model="ruleForm.IsCheckedCustomize">默认选中自定义</el-checkbox>
-        <el-checkbox v-show="ruleForm.AllowCustomize && ruleForm.AllowCustomerCustomize" v-model="ruleForm.IsCheckedCustomerCustomize">客户默认选中自定义</el-checkbox>
+        <el-checkbox v-model="ruleForm.Allow">允许自定义尺寸</el-checkbox>
+        <el-checkbox v-show="ruleForm.Allow" v-model="ruleForm.AllowCustomer">允许客户自定义</el-checkbox>
+        <el-checkbox v-show="ruleForm.Allow" v-model="ruleForm.IsCheckedCustomize">默认选中自定义</el-checkbox>
+        <el-checkbox v-show="ruleForm.Allow && ruleForm.AllowCustomer" v-model="ruleForm.IsCheckedCustomerCustomize">客户默认选中自定义</el-checkbox>
       </div>
     </template>
   </CommonDialogComp>
@@ -93,8 +93,8 @@ export default {
       }
       if (this.value && this.value.GroupInfo
        && this.ruleForm.GroupInfo.ID === this.value.GroupInfo.ID
-       && this.ruleForm.AllowCustomize === this.value.AllowCustomize
-       && this.ruleForm.AllowCustomerCustomize === this.value.AllowCustomerCustomize
+       && this.ruleForm.Allow === this.value.Allow
+       && this.ruleForm.AllowCustomer === this.value.AllowCustomer
        && this.ruleForm.IsCheckedCustomize === this.value.IsCheckedCustomize
        && this.ruleForm.IsCheckedCustomerCustomize === this.value.IsCheckedCustomerCustomize) {
         this.messageBox.failSingle('未发生更改，可选择关闭');
@@ -129,8 +129,8 @@ export default {
     initEditData() { // 数据初始化方法
       if (!this.value || !this.value.GroupInfo) {
         this.ruleForm = {
-          AllowCustomize: false,
-          AllowCustomerCustomize: false,
+          Allow: false,
+          AllowCustomer: false,
           IsCheckedCustomize: false,
           IsCheckedCustomerCustomize: false,
           GroupInfo: {
@@ -139,10 +139,10 @@ export default {
           SizeList: [],
         };
       } else {
-        const { AllowCustomize, AllowCustomerCustomize, IsCheckedCustomize, IsCheckedCustomerCustomize, GroupInfo, SizeList } = this.value;
+        const { Allow, AllowCustomer, IsCheckedCustomize, IsCheckedCustomerCustomize, GroupInfo, SizeList } = this.value;
         this.ruleForm = {
-          AllowCustomize,
-          AllowCustomerCustomize,
+          Allow,
+          AllowCustomer,
           IsCheckedCustomize,
           IsCheckedCustomerCustomize,
           GroupInfo: {

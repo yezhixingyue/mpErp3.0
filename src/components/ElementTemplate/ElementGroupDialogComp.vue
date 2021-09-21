@@ -92,7 +92,7 @@ export default {
       rules: {
         Name: [
           { required: true, message: '请输入元素组名称', trigger: 'blur' },
-          { min: 1, max: 6, message: '长度在 1 到 6 个字符', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' },
         ],
         ElementList: [
           { validator: this.checkElementList, trigger: 'change' },

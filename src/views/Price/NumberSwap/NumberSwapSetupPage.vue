@@ -97,7 +97,7 @@ export default {
         UseModule,
       });
       const [leftConditionPropList, rightSelfPropList, rightComparePropList] = await Promise.all([
-        PropertyClass.getPropertyList(getTemp(30)),
+        PropertyClass.getPropertyList(getTemp(21)),
         PropertyClass.getPropertyList(getTemp(33)),
         // PropertyClass.getPropertyList(getTemp(21)), // 应使用33 暂用21代替开发
         PropertyClass.getPropertyList(getTemp(34)),
