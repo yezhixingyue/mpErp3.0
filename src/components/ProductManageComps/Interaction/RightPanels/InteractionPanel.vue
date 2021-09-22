@@ -41,7 +41,7 @@
           <span class="blue-span" @click="onSelectDialogClick(i, 'material')">设置</span>
           <div class="show-text" :title="localMaterialSelectedList(it.checkList, it.OptionList)"
           >{{localMaterialSelectedList(it.checkList, it.OptionList)}}</div>
-          <MaterialSelectDialog :visible.sync='it.materialVisible' v-model="it.checkList" :optionList='localMaterialOptionList(it.OptionList)'  />
+          <MaterialSelectDialog submitText='确定' :visible.sync='it.materialVisible' v-model="it.checkList" :optionList='localMaterialOptionList(it.OptionList)'/>
         </div>
         <!-- 工艺 不显示 -->
       </div>

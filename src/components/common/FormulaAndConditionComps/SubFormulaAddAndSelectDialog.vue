@@ -36,7 +36,7 @@
       <p class="tips-box is-pink" v-if="warnTitle"><i class="el-icon-warning"></i> 注：{{warnTitle}}目标设定后不允许更改</p>
       <p class="tips-box is-pink" v-else-if="isEdit"><i class="el-icon-warning"></i> 注：目标如果修改后，原已设置的条件中将会筛选清除掉不存在的属性条件</p>
     </template>
-    <p class="tips-box is-pink" v-if="!loading && selectDataList.length === 0"> <i class="el-icon-warning"></i> 当前产品上没有可设置的元素组或部件，无法设置！</p>
+    <p class="tips-box is-pink" v-if="!loading && selectDataList.length === 0"> <i class="el-icon-warning"></i> 当前产品上没有可设置的元素组或部件</p>
   </CommonDialogComp>
 </template>
 

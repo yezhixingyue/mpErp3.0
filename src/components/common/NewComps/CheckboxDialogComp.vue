@@ -9,7 +9,7 @@
   :before-close="handleClose">
   <CheckboxGroupComp :showTitle='false' :useLabel="false" :itemList='list' :defaultProps='defaultProps' v-model="checkList" />
   <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="onSubmitClick">保存</el-button>
+    <el-button type="primary" @click="onSubmitClick">{{submitText}}</el-button>
     <el-button @click="handleClose">取消</el-button>
   </span>
 </el-dialog>
@@ -57,6 +57,10 @@ export default {
     title: {
       type: String,
       default: '提示',
+    },
+    submitText: {
+      type: String,
+      default: '保存',
     },
   },
   components: {

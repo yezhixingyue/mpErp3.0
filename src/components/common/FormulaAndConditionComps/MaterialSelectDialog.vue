@@ -2,8 +2,9 @@
   <CommonDialogComp
     width="800px"
     top='12vh'
-    title="选择物料"
+    title="选择物料1"
     :visible.sync="visible"
+    :submitText='submitText'
     @submit="onSubmit"
     @cancle="onCancle"
     @open='onOpen'
@@ -49,6 +50,10 @@ export default {
     optionList: {
       type: Array,
       default: null,
+    },
+    submitText: {
+      type: String,
+      default: '保存',
     },
   },
   components: {

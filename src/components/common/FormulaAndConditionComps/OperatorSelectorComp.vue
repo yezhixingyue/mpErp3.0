@@ -20,8 +20,8 @@
         <span class="blue-span" @click="onSelectDialogClick">选择</span>
         <div class="show-text" :title="localMaterialSelectedList">{{localMaterialSelectedList}}</div>
         <CheckboxDialogComp v-if="ValueType !== 6" :visible.sync='propVisibel' v-model="checkList" :list='localOptionList' width='800px'
-         title="选择选项" :defaultProps="{label: 'Second', value: 'First'}" class="CheckboxDialogComp" />
-        <MaterialSelectDialog v-else :visible.sync='materialVisible' v-model="checkList" :optionList='localMaterialOptionList' />
+         title="选择选项" submitText='确定' :defaultProps="{label: 'Second', value: 'First'}" class="CheckboxDialogComp" />
+        <MaterialSelectDialog submitText='确定' v-else :visible.sync='materialVisible' v-model="checkList" :optionList='localMaterialOptionList' />
       </div>
     </div>
   </div>
@@ -86,8 +86,8 @@ export default {
         return this.isMultiple ? [] : '';
       },
       set(val) {
-        const _val = val.filter(it => it || it === 0);
-        const _list = this.isMultiple ? _val.map(Value => ({ Value: Value.First ? Value.First : Value })) : [{ Value: _val }];
+        const _val = val.filter(it => !!(typeof it === 'object' ? it.First : (it || it === 0)));
+        const _list = this.isMultiple ? _val.map(Value => ({ Value: (typeof Value === 'object') ? (Value.First || '') : Value })) : [{ Value: _val }];
         this.$emit('update:valueList', _list);
       },
     },
