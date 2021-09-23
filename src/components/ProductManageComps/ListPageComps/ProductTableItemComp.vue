@@ -8,9 +8,9 @@
       <div class="classify-box">
         <span :title="ClassifyText">{{ClassifyText}}</span>
       </div>
-      <div class="order-ctrl">
-        <el-checkbox v-model="helpOrderChecked">可代客下单</el-checkbox>
-        <el-checkbox v-model="customOrderChecked">可自助上传</el-checkbox>
+      <div class="order-ctrl" :title="!canOrder ? '先设置 [产品 - 设置元素] 后才可设置下单' : ''">
+        <el-checkbox :disabled='!canOrder && !helpOrderChecked' v-model="helpOrderChecked">可代客下单</el-checkbox>
+        <el-checkbox :disabled='!canOrder && !customOrderChecked' v-model="customOrderChecked">可自助上传</el-checkbox>
       </div>
       <div class="text-menu-box">
         <TipsSpanButton text='界面元素' @click.native="onElementSaveClick(null)" />
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import TipsSpanButton from '@/components/common/NewComps/TipsSpanButton.vue';
 import PartSaveDialog from './PartSaveDialog.vue';
 import ProductMapSetDialog from './ProductMapSetDialog.vue';
@@ -86,6 +86,7 @@ export default {
   },
   computed: {
     ...mapGetters('common', ['twoLevelsProductClassify']),
+    ...mapState('productManage', ['ProductElementTypeList']),
     helpOrderChecked: { // 代客下单
       get() {
         if (!this.itemData) return false;
@@ -109,6 +110,15 @@ export default {
       const list = this.itemData.ClassifyList;
       if (!list || !Array.isArray(list) || list.length === 0) return '';
       return list.map(it => `${it.FirstLevel.Name}-${it.SecondLevel.Name}`).join('，');
+    },
+    canOrder() {
+      if (!this.itemData || !Array.isArray(this.itemData.TypeList) || this.itemData.TypeList.length < this.ProductElementTypeList.length) return false;
+      const list = this.ProductElementTypeList.map(({ ID }) => {
+        const t = this.itemData.TypeList.find(_it => _it.First === ID);
+        return t ? t.Second : null;
+      }).filter(it => !it);
+      if (list.length > 0) return false;
+      return true;
     },
   },
   data() {
@@ -228,6 +238,16 @@ export default {
     background-color: #f5f5f5;
     border-color: #e6e6e6;
     border-left-color: #f5f5f5;
+    // position: relative;
+    // &::before {
+    //   content: '';
+    //   width: 2px;
+    //   height: 100%;
+    //   left: -1px;
+    //   top: 0;
+    //   background-color: #428dfa;
+    //   position: absolute;
+    // }
   }
   > header {
     display: flex;

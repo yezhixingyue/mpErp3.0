@@ -54,7 +54,8 @@ export default {
   computed: {
     ...mapState('productManage', ['ProductElementTypeList']),
     selectedElementIDs() {
-      return this.List.map(it => it.Second).filter(it => it);
+      // return this.List.map(it => it.Second).filter(it => it);
+      return [];
     },
     OptionList() {
       return this.ElementData.List;
@@ -74,6 +75,15 @@ export default {
   },
   methods: {
     onSubmit() {
+      const list = this.List.map(it => it.Second).filter(it => it);
+      if (list.length > 1) {
+        const len1 = list.length;
+        const len2 = [...new Set(list)].length;
+        if (len1 > len2) {
+          this.messageBox.failSingleError('保存失败', '元素设置值不能重复!');
+          return;
+        }
+      }
       const temp = {
         ProductID: this.itemData.ID,
         PartID: this.PartID,
@@ -106,7 +116,8 @@ export default {
         let Second = '';
         const t = TypeList.find(_it => _it.First === it.ID);
         if (t) Second = t.Second;
-        const OptionList = [{ ID: '', Name: '未设置' }];
+        // const OptionList = [{ ID: '', Name: '未设置' }];
+        const OptionList = [];
         if (it.needElement) OptionList.push(...ElementList);
         if (it.needFormula) OptionList.push(...FormulaList);
         return {

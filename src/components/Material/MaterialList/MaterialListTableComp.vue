@@ -66,6 +66,7 @@ export default {
       let { UnionShowList } = item.Type;
       const list = [];
       if (UnionShowList.length === 0) UnionShowList = ElementList.map(it => [it.ID]);
+      // UnionShowList = ElementList.map(it => [it.ID]);
       UnionShowList.forEach(lv1List => {
         lv1List.forEach(ElementID => {
           const t = ElementList.find(it => it.ID === ElementID);
