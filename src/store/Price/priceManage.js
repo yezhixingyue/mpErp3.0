@@ -278,7 +278,7 @@ export default {
         if (t2) {
           const setFunc = list => {
             if (!itemData.ID) { // 添加
-              list.push({ ...itemData, ID: itemID, TableNumber: 0 });
+              list.unshift({ ...itemData, ID: itemID, TableNumber: 0 });
             } else { // 编辑
               const i = list.findIndex(it => it.ID === itemData.ID);
               if (i > -1) list.splice(i, 1, { ...list[i], ...itemData });
@@ -295,7 +295,7 @@ export default {
               if (Array.isArray(t3.PriceTableList)) setFunc(t3.PriceTableList);
               else t3.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
             } else {
-              t2.CraftPriceList.push({
+              t2.CraftPriceList.unshift({
                 ID: CraftPriceID,
                 PriceTableList: [{ ...itemData, ID: itemID, TableNumber: 0 }],
                 CraftID: state.curCraftPriceItemData.Craft.ID,
@@ -307,7 +307,7 @@ export default {
               if (Array.isArray(curT3.PriceTableList)) setFunc(curT3.PriceTableList);
               else curT3.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
             } else {
-              state.curPriceItem.CraftPriceList.push({
+              state.curPriceItem.CraftPriceList.unshift({
                 ID: CraftPriceID,
                 PriceTableList: [{ ...itemData, ID: itemID, TableNumber: 0 }],
                 CraftID: state.curCraftPriceItemData.Craft.ID,
@@ -406,7 +406,7 @@ export default {
         if (t) { // 对列表中数据进行修改 以保证同步最新
           if (!t.FormulaList) t.FormulaList = [];
           if (!item.ID) { // 新增
-            t.FormulaList.push({ ...item, ID });
+            t.FormulaList.unshift({ ...item, ID });
           } else { // 编辑
             const i = t.FormulaList.findIndex(it => it.ID === ID);
             if (i > -1) {
@@ -423,14 +423,14 @@ export default {
           if (targetPrice) {
             const targetCraftPrice = targetPrice.CraftPriceList.find(it => it.ID === CraftPriceID);
             if (targetCraftPrice) {
-              targetCraftPrice.FormulaList.push({ ...item, ID });
+              targetCraftPrice.FormulaList.unshift({ ...item, ID });
             }
           }
         }
       }
 
       if (!item.ID) { // 新增
-        state.ResultFormulaList.push({ ...item, ID });
+        state.ResultFormulaList.unshift({ ...item, ID });
       } else { // 编辑
         const i = state.ResultFormulaList.findIndex(it => it.ID === ID);
         if (i > -1) {

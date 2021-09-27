@@ -7,6 +7,7 @@
   :modal='false'
   class="mp-img-style-header mp-erp-common-check-box-dialog-comp-wrap"
   :before-close="handleClose">
+  <el-checkbox v-model="checkedAll" v-if="checkAll" :indeterminate="isIndeterminate" class="check-all-box">全选</el-checkbox>
   <CheckboxGroupComp :showTitle='false' :useLabel="false" :itemList='list' :defaultProps='defaultProps' v-model="checkList" />
   <span slot="footer" class="dialog-footer">
     <el-button type="primary" @click="onSubmitClick">{{submitText}}</el-button>
@@ -62,6 +63,10 @@ export default {
       type: String,
       default: '保存',
     },
+    checkAll: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     CheckboxGroupComp,
@@ -74,6 +79,21 @@ export default {
       set(bool) {
         this.$emit('update:visible', bool);
       },
+    },
+    checkedAll: {
+      get() {
+        return this.checkList.length === this.list.length;
+      },
+      set(val) {
+        if (val) {
+          this.checkList = this.list.map(it => ({ [this.defaultProps.value]: it[this.defaultProps.value] }));
+        } else {
+          this.checkList = [];
+        }
+      },
+    },
+    isIndeterminate() {
+      return this.checkList.length > 0 && this.checkList.length < this.list.length;
     },
   },
   data() {
@@ -94,11 +114,12 @@ export default {
   watch: {
     visible(bool) {
       if (bool) {
+        const IDList = this.list.map(it => it[this.defaultProps.value]);
         this.checkList = this.value.map(it => {
           if (Object.prototype.toString.call(it) === '[object Object]') return it;
           if (typeof it === 'string') return { [this.defaultProps.value]: it };
           return it;
-        });
+        }).filter(it => IDList.includes(it[this.defaultProps.value]));
       }
     },
   },
@@ -128,6 +149,9 @@ export default {
           vertical-align: middle;
         }
       }
+    }
+    .check-all-box {
+      padding-bottom: 12px;
     }
   }
 

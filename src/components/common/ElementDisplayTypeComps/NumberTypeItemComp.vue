@@ -3,7 +3,7 @@
   <el-select
     v-else
     v-model="content"
-    filterable
+    :filterable='Allow'
     default-first-option
     :allow-create='Allow'
     :placeholder='placeholder'
@@ -28,10 +28,6 @@ export default {
     event: 'change',
   },
   props: {
-    placeholder: {
-      type: String,
-      default: '请选择或输入数字',
-    },
     InputContent: { // 选项列表
       type: String,
       default: '',
@@ -55,6 +51,18 @@ export default {
       set(val) {
         this.$emit('change', val);
       },
+    },
+    placeholder() {
+      if (this.options.length === 0 && this.Allow) {
+        return '请输入数字';
+      }
+      if (this.options.length > 0 && !this.Allow) {
+        return '请选择选项';
+      }
+      if (this.options.length > 0 && this.Allow) {
+        return '请选择或输入数字';
+      }
+      return '';
     },
   },
   methods: {

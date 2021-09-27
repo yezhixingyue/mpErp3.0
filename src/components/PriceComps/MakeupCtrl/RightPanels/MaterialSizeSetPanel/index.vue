@@ -28,7 +28,7 @@
       >
       </FormulaPanelComp>
       <CheckboxDialogComp :visible.sync='visible' v-model="checkList" :list='AllMaterialSizeList' width='800px'
-       title="选择物料尺寸" :defaultProps="{label: 'Name', value: 'ID'}" />
+       title="选择物料尺寸" :defaultProps="{label: 'Name', value: 'ID'}" checkAll />
     </main>
   </section>
 </template>
