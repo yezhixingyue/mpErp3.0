@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-04-09 14:23:16
- * @LastEditTime: 2021-05-07 16:17:26
+ * @LastEditTime: 2021-09-28 18:05:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/ServicePage.vue
@@ -17,10 +17,12 @@
 import { mapActions } from 'vuex';
 import ServiceHeader from '@/components/ServiceAfterSale/Header/ServiceHeader.vue';
 import ServiceMain from '@/components/ServiceAfterSale/Main/ServiceMain.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 
 export default {
   name: 'ServicePage',
+  mixins: [recordScrollPositionMixin('.mp-service-page-wrap .el-table__body-wrapper')],
   components: {
     ServiceHeader,
     ServiceMain,

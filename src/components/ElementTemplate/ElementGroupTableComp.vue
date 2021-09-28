@@ -28,7 +28,10 @@
 </template>
 
 <script>
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+
 export default {
+  mixins: [recordScrollPositionMixin('.mp-erp-element-template-page-element-group-table-comp-wrap .el-table__body-wrapper')],
   props: {
     dataList: {
       default: () => [],

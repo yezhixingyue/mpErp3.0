@@ -23,10 +23,12 @@ import Table from '@/components/Package/TableTransport.vue';
 import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
 import ServiceDialog from '@/components/order/DialogContent/ServiceDialog.vue';
 import Count from '@/components/common/Count.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
 
 export default {
   name: 'PackageListPage',
+  mixins: [recordScrollPositionMixin('.mp-erp-package-list-page-wrap .el-table__body-wrapper')],
   components: {
     PackageHeader,
     Table,

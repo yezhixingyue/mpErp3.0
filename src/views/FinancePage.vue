@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-05-12 10:48:37
- * @LastEditTime: 2021-05-07 17:19:59
+ * @LastEditTime: 2021-09-28 18:17:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/FinancePage.vue
@@ -17,9 +17,11 @@
 import { mapActions } from 'vuex';
 import Header from '@/components/Finance/Header/index.vue';
 import Main from '@/components/Finance/Main/index.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'FinancePage',
+  mixins: [recordScrollPositionMixin('.mp-finance-page-wrap .el-table__body-wrapper')],
   components: {
     Header,
     Main,

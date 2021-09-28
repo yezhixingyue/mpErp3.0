@@ -23,10 +23,12 @@
 import MaterialSizeSaveDialog from '@/components/Material/MaterialSize/MaterialSizeSaveDialog.vue';
 import MaterialSizeTableComp from '@/components/Material/MaterialSize/MaterialSizeTableComp.vue';
 import CountComp from '@/components/common/Count.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
 
 export default {
   name: 'MaterialSizePage',
+  mixins: [recordScrollPositionMixin('.mp-erp-material-size-manage-page-wrap .el-table__body-wrapper')],
   components: {
     MaterialSizeSaveDialog,
     MaterialSizeTableComp,

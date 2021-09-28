@@ -23,12 +23,14 @@
 <script>
 import CountComp from '@/components/common/Count.vue';
 import { mapState } from 'vuex';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import CouponHeader from '../../components/Coupon/Header/CouponHeaderIndex.vue';
 import CouponTableListComp from '../../components/Coupon/Main/CouponTableListComp.vue';
 import Dialog2GenerateCoupons from '../../components/Coupon/Main/Dialog2GenerateCoupons.vue';
 
 export default {
   name: 'CouponListPage',
+  mixins: [recordScrollPositionMixin('.mp-coupon-page-wrap .el-table__body-wrapper')],
   components: {
     CouponHeader,
     CouponTableListComp,

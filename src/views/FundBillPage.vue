@@ -19,10 +19,12 @@
 <script>
 import BalanceTypePageComp from '@/components/FundBill/BalanceTypePageComp.vue';
 import OrderTypePageComp from '@/components/FundBill/OrderTypePageComp.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
 
 export default {
   name: 'FundBillPage',
+  mixins: [recordScrollPositionMixin('.mp-fund-bill-page-wrap .el-table__body-wrapper')],
   components: {
     BalanceTypePageComp,
     OrderTypePageComp,

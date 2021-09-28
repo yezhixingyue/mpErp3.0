@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-25 17:41:47
- * @LastEditTime: 2021-05-07 16:20:10
+ * @LastEditTime: 2021-09-28 18:04:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/PaymentListPage.vue
@@ -18,9 +18,11 @@
 <script>
 import PaymentListContent from '@/components/PaymentList/content/PaymentListContent.vue';
 import PaymentListHeader from '@/components/PaymentList/header/PaymentListHeader.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'PaymentListPage',
+  mixins: [recordScrollPositionMixin('.mp-payment-list-content .el-table__body-wrapper')],
   components: {
     PaymentListContent,
     PaymentListHeader,

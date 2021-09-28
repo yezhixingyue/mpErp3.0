@@ -22,10 +22,12 @@
 import FactoryManageHeader from '@/components/FactoryManage/FactoryManageHeader.vue';
 import FactoryManageTable from '@/components/FactoryManage/FactoryManageTable.vue';
 import FactoryManageDialog from '@/components/FactoryManage/FactoryManageDialog.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState, mapGetters } from 'vuex';
 
 export default {
   name: 'FactoryManagePage',
+  mixins: [recordScrollPositionMixin('.mp-erp-factory-manage-page-wrap .el-table__body-wrapper')],
   components: {
     FactoryManageHeader,
     FactoryManageTable,

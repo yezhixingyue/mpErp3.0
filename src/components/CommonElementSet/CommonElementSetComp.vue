@@ -40,10 +40,12 @@ import ElementTableComp from '@/components/ElementTemplate/ElementTableComp.vue'
 import ElementGroupTableComp from '@/components/ElementTemplate/ElementGroupTableComp.vue';
 import ElementGroupDialogComp from '@/components/ElementTemplate/ElementGroupDialogComp.vue';
 import CommonSortDialogComp from '@/components/common/NewComps/CommonSortDialogComp.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
 import ElementGroupTempSelector from './ElementGroupTempSelector.vue';
 
 export default {
+  mixins: [recordScrollPositionMixin('main.page-wrap')],
   props: {
     ElementDataList: {
       type: Array,

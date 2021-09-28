@@ -34,9 +34,11 @@ import { mapState } from 'vuex';
 import CountComp from '@/components/common/Count.vue';
 import MaterialListTableComp from '@/components/Material/MaterialList/MaterialListTableComp.vue';
 import MaterialListSaveDialog from '@/components/Material/MaterialList/MaterialListSaveDialog.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'MaterialListPage',
+  mixins: [recordScrollPositionMixin('.mp-erp-material-list-page-wrap .el-table__body-wrapper')],
   components: {
     CountComp,
     MaterialListTableComp,

@@ -32,9 +32,12 @@ import ExplainDrawer from '@/components/Material/MaterialType/ExplainDrawer.vue'
 import MaterialTypeSaveDialog from '@/components/Material/MaterialType/MaterialTypeSaveDialog.vue';
 import MaterialTypeTableComp from '@/components/Material/MaterialType/MaterialTypeTableComp.vue';
 import UnionShowDialogComp from '@/components/Material/MaterialType/UnionShowDialogComp.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
 
 export default {
+  name: 'MaterialTypeListPage',
+  mixins: [recordScrollPositionMixin('.mp-erp-material-type-page-material-size-table-comp-wrap .el-table__body-wrapper')],
   components: {
     ExplainDrawer,
     MaterialTypeSaveDialog,

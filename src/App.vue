@@ -3,7 +3,7 @@
     <LeftMenu v-if="key" />
     <section>
       <HeaderTabs v-if="key" />
-      <main>
+      <main class="page-wrap">
         <router-view />
       </main>
     </section>

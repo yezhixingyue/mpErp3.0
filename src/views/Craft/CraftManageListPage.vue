@@ -23,10 +23,12 @@
 import CraftSaveDialog from '@/components/CraftComps/CraftSaveDialog.vue';
 import CraftListTableComp from '@/components/CraftComps/CraftListTableComp.vue';
 import CountComp from '@/components/common/Count.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'CraftManageList',
+  mixins: [recordScrollPositionMixin('.mp-erp-craft-list-page-craft-table-comp-wrap .el-table__body-wrapper')],
   components: {
     CraftSaveDialog,
     CraftListTableComp,

@@ -20,9 +20,11 @@ import { mapActions } from 'vuex';
 import Table4UnPayList from '@/components/UnPayList/content/Table4UnPayList.vue';
 import UnpayPageFooter from '@/components/UnPayList/footer/UnpayPageFooter.vue';
 import UnpayHeaderComp from '@/components/UnPayList/header/UnpayHeaderComp.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'QutstandingPage',
+  mixins: [recordScrollPositionMixin('.mp-qutstanding-page-wrap .mp-unpay-order-list-table > main')],
   components: {
     Table4UnPayList,
     UnpayOrderDetailDialog: () => import(/* webpackChunkName: "unpaylist" */ '@/components/UnPayList/dialog/UnpayOrderDetailDialog.vue'),

@@ -28,9 +28,11 @@
 import { mapState } from 'vuex';
 import BreadthSaveDialog from '@/components/PrintBreadth/BreadthSaveDialog.vue';
 import BreadthTableComp from '@/components/PrintBreadth/BreadthTableComp.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'PrintFormatListPage',
+  mixins: [recordScrollPositionMixin('.mp-erp-print-breadth-page-wrap .el-table__body-wrapper')],
   computed: {
     ...mapState('basicSet', ['BreadthCLassList', 'BreadthList']),
     listData() {

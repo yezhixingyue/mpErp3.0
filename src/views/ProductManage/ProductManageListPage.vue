@@ -41,6 +41,7 @@ import ProductTableComp from '@/components/ProductManageComps/ListPageComps/Prod
 import Count from '@/components/common/Count.vue';
 import NewProductClassifySelectComp from '@/components/common/SelectorComps/NewProductClassifySelectComp.vue';
 import { mapState } from 'vuex';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'ProductManageList',
@@ -50,6 +51,7 @@ export default {
     Count,
     NewProductClassifySelectComp,
   },
+  mixins: [recordScrollPositionMixin('.mp-erp-product-manage-table-comp-wrap')],
   computed: {
     ...mapState('productManage', ['condition4ProductManageList', 'ProductManageList', 'ProductManageListNumber', 'isTableDataLoading']),
     ...mapState('common', ['OperatorKeyValueList']),

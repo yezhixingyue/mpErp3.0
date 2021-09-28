@@ -192,6 +192,7 @@ import ListPageHeader from '@/components/Feedback/ListPageHeader.vue';
 import ClassType from '@/store/CommonClassType';
 import Count from '@/components/common/Count.vue';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'FeedbackPage',
@@ -202,7 +203,7 @@ export default {
     // ImgSwiperDialog,
     ListPageHeader,
   },
-  mixins: [mixin, tableMixin],
+  mixins: [mixin, tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   data() {
     return {
       dataList: [],

@@ -16,10 +16,12 @@
 <script>
 import FileClassifyDialogComp from '@/components/FileClassify/FileClassifyDialogComp.vue';
 import FileClassifyTableComp from '@/components/FileClassify/FileClassifyTableComp.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
 
 export default {
   name: 'FileSetupPage',
+  mixins: [recordScrollPositionMixin('.mp-erp-file-manage-page-wrap .el-table__body-wrapper')],
   components: {
     FileClassifyDialogComp,
     FileClassifyTableComp,

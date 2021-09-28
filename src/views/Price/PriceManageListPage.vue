@@ -41,6 +41,7 @@ import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import PriceTableComp from '@/components/PriceComps/ListTable/PriceTableComp.vue';
 import Count from '@/components/common/Count.vue';
 import NewProductClassifySelectComp from '@/components/common/SelectorComps/NewProductClassifySelectComp.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
 
 export default {
@@ -51,6 +52,7 @@ export default {
     Count,
     NewProductClassifySelectComp,
   },
+  mixins: [recordScrollPositionMixin('.mp-erp-price-manage-table-comp-wrap')],
   computed: {
     ...mapState('priceManage', ['condition4PriceManageList', 'PriceManageList', 'PriceManageListNumber', 'isPriceDataLoading']),
     ProductClass: {

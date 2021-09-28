@@ -31,6 +31,7 @@
 
 <script>
 import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import Table from '@/components/order/Main/Table2.vue';
 import Count from '@/components/common/Count.vue';
 import { mapState, mapGetters, mapActions } from 'vuex';
@@ -42,6 +43,7 @@ export default {
     OrderListDialog,
     ServiceDialog: () => import(/* webpackChunkName: "async" */ '@/components/order/DialogContent/ServiceDialog.vue'),
   },
+  mixins: [recordScrollPositionMixin('.order-list-page-wrap .el-table__body-wrapper')],
   computed: {
     ...mapState('orderModule', ['orderTotalCount', 'orderTotalAmount', 'isTableLoading', 'objForOrderList', 'orderListData']),
     ...mapGetters('timeSelectModule', ['TodayDate']),

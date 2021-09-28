@@ -8,9 +8,11 @@
 <script>
 import PromoteHeader from '@/components/Promote/Header/PromoteHeaderIndex.vue';
 import PromoteMain from '@/components/Promote/Main/PromoteListMainIndex.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'PromoteListPage',
+  mixins: [recordScrollPositionMixin('.mp-promote-list-page-wrap .el-table__body-wrapper')],
   components: {
     PromoteHeader,
     PromoteMain,
