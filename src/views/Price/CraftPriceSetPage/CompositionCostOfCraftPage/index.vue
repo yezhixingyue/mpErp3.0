@@ -244,9 +244,10 @@ export default {
       };
       if (resp && resp.data.Status === 1000) {
         this.messageBox.successSingle('删除成功', cb, cb);
-      } else if (resp && resp.data.Status === 1004) {
-        cb();
       }
+      // else if (resp && resp.data.Status === 1004) {
+      //   cb();
+      // }
     },
     async getPriceTableList() { // 获取费用表数据 根据顶部方案切换获取
       if (!this.SolutionID || !this.curSolutionItem) return;

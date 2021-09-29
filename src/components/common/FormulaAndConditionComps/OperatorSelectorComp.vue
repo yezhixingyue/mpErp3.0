@@ -11,7 +11,7 @@
     <div v-else  class="text-box">
       <span class="text">{{showText}}</span>
     </div>
-    <span v-if="isMultiple && !hidden">下面任一选项时：</span>
+    <span v-if="isMultiple && !hidden">{{operatContent}}</span>
     <div v-if="isMultiple && !hidden" class="multiple-select">
       <el-checkbox-group v-model="checkList" v-if="localOptionList.length < 4">
         <el-checkbox v-for="it in localOptionList" :key="it.First" :label="it.First" :title="it.Second">{{it.Second}}</el-checkbox>
@@ -71,7 +71,12 @@ export default {
       },
     },
     isMultiple() {
-      return this.ValueType === 1 || this.ValueType === 6 || (this.PropertyData && [18, 26].includes(this.PropertyData.FixedType));
+      // return this.ValueType === 1 || this.ValueType === 6 || (this.PropertyData && [18, 26].includes(this.PropertyData.FixedType));
+      return [1, 2, 3, 6].includes(this.ValueType) || (this.PropertyData && [18, 26].includes(this.PropertyData.FixedType));
+    },
+    operatContent() {
+      if ([2, 3].includes(this.ValueType)) return '下面所有选项时：';
+      return '下面任一选项时：';
     },
     localOptionList() {
       if (!this.PropertyData || !Array.isArray(this.PropertyData.OptionList) || this.PropertyData.OptionList.length === 0) return [];

@@ -41,6 +41,9 @@ export default {
   computed: {
     localOptionList() {
       if (!this.PropertyData || !Array.isArray(this.PropertyData.OptionList) || this.PropertyData.OptionList.length === 0) return [];
+      if (this.PropertyData?.ValueType === 4) {
+        return this.PropertyData.OptionList.map(it => ({ ...it, First: it.Second === '开' ? 'True' : 'False' }));
+      }
       return this.PropertyData.OptionList;
     },
     localValue: {
@@ -56,7 +59,7 @@ export default {
       },
     },
     isMultiple() {
-      return this.ValueType === 1 || this.ValueType === 6 || (this.PropertyData && [18, 26].includes(this.PropertyData.FixedType));
+      return [1, 2, 3, 6].includes(this.ValueType) || (this.PropertyData && [18, 26].includes(this.PropertyData.FixedType));
     },
     ValProperty() {
       if (Array.isArray(this.value) && this.value.length === 1) {

@@ -346,18 +346,24 @@ export default class PropertyClass {
       // if (!PerfectProperty) return '';
       const { DisplayContent, OptionList, ValueType } = Property;
       if (ValueType === 1 || ValueType === 6) _operator += '下面任一选项时：';
+      if (ValueType === 2 || ValueType === 3) _operator += '下面所有选项时：';
       if (ValueType === 5) _operator += '时';
       const _name = DisplayContent.replace(/\[|\]/g, '');
       let _val = '';
       if (ValueList) {
         if (ValueList.length === 1) {
-          if ((ValueList[0].Value || ValueList[0].Value === 0) && getValueIsOrNotNumber(ValueList[0].Value)) {
-            _val = ValueList[0].Value;
-            if (Property && Property.DisplayContent) {
-              if (Array.isArray(Property.OptionList)) {
-                const t = Property.OptionList.find(_it => _it.First === _val);
-                if (t) _val = it.Second;
+          if ((ValueList[0].Value || ValueList[0].Value === 0)) {
+            if (getValueIsOrNotNumber(ValueList[0].Value)) {
+              _val = ValueList[0].Value;
+              if (Property && Property.DisplayContent) {
+                if (Array.isArray(Property.OptionList)) {
+                  const t = Property.OptionList.find(_it => _it.First === _val);
+                  if (t) _val = it.Second;
+                }
               }
+            } else {
+              if (ValueList[0].Value === 'True') _val = '开';
+              if (ValueList[0].Value === 'False') _val = '关';
             }
           }
           if (!ValueList[0].Value && ValueList[0].Property && ValueList[0].Property.DisplayContent) {

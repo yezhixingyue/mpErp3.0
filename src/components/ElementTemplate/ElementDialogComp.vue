@@ -633,10 +633,10 @@ export default {
         callback(new Error('请输入数字类型'));
         return;
       }
-      if (value === this.ruleForm.SwitchAttribute.CloseValue) {
-        callback(new Error('开值和关值不能重复'));
-        return;
-      }
+      // if (value === this.ruleForm.SwitchAttribute.CloseValue) {
+      //   callback(new Error('开值和关值不能重复'));
+      //   return;
+      // }
       this.$refs.ruleForm.validateField('SwitchAttribute.CloseValue');
       callback();
     },
@@ -645,10 +645,10 @@ export default {
         callback(new Error('请输入数字类型'));
         return;
       }
-      if (value === this.ruleForm.SwitchAttribute.OpenValue) {
-        callback(new Error('开值和关值不能重复'));
-        return;
-      }
+      // if (value === this.ruleForm.SwitchAttribute.OpenValue) {
+      //   callback(new Error('开值和关值不能重复'));
+      //   return;
+      // }
       callback();
     },
     async onSubmit() {
