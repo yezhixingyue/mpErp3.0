@@ -260,7 +260,7 @@ export default {
       rules: { // 校验规则
         Name: [
           { required: true, message: '请输入元素名称', trigger: 'blur' },
-          { min: 1, max: 6, message: '长度在 1 到 6 个字符', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' },
         ],
         Type: [
           { validator: this.checkFormType, trigger: 'change' },
