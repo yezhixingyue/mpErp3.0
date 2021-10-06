@@ -23,16 +23,6 @@
             <span class="unit">{{ Unit || '' }}</span>
             <span v-for="it in DataList" :key="it.ID" class="unit" :title="it.Unit || ''">{{ it.Unit || '' }}</span>
           </li>
-          <!-- <li>
-            <span></span>
-            <el-input :value="getInputValue(col.ID, row.ID, '')" @input="onInputChange($event, col.ID, row.ID, '')" maxlength="9" size="small" />
-            <span class="unit" :title="Unit || ''">{{ Unit || '' }}</span>
-          </li>
-          <li v-for="it in DataList" :key="it.ID">
-            <span :title="it.Name">{{it.Name}}</span>
-            <el-input :value="getInputValue(col.ID, row.ID, it.ID)" @input="onInputChange($event, col.ID, row.ID, it.ID)" maxlength="9" size="small" />
-            <span class="unit" :title="it.Unit || ''">{{ it.Unit || '' }}</span>
-          </li> -->
         </ul>
       </div>
     </main>
