@@ -65,7 +65,7 @@ export default {
       PriceName: '',
       ProductID: '',
       ProductName: '',
-      loading: true,
+      loading: false,
       ProductData: null,
     };
   },
@@ -74,6 +74,7 @@ export default {
       this.$router.replace('/PriceManageList');
     },
     async fetchInitData() { // 初始获取含带工艺的产品信息 及 工艺费列表信息
+      this.loading = true;
       const [ProductData] = await Promise.all([
         this.$store.dispatch('priceManage/getProductCraftData', this.ProductID),
       ]);

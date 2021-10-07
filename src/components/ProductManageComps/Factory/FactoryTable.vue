@@ -12,7 +12,7 @@
    >
     <el-table-column prop="conditionText" label="条件" min-width="260">
       <template slot-scope="scope">
-        <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box'>
+        <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' v-if="typeof scope.row.conditionText === 'object'">
           <div slot="content">
             <p v-for="(it, i) in scope.row.conditionText" :key="it.name + 'tips' + i">
               <span v-if="i > 0" class="type">{{scope.row.Constraint.FilterType === 1 ? '且' : '或'}}</span>
@@ -32,6 +32,7 @@
             </p>
           </div>
         </el-tooltip>
+        <span v-if="typeof scope.row.conditionText === 'string'">{{scope.row.conditionText}}</span>
       </template>
     </el-table-column>
     <el-table-column prop="FilterTypeText" label="条件类型"  width="180" show-overflow-tooltip></el-table-column>

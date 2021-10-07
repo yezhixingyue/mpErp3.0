@@ -17,7 +17,8 @@
         <el-table-column prop="Name" label="名称" width="220"></el-table-column>
         <el-table-column prop="Content" label="数据筛选"  min-width="240">
           <template slot-scope="scope">
-            <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box'>
+            <span v-if="typeof scope.row.conditionText === 'string'">{{scope.row.conditionText}}</span>
+            <el-tooltip effect="light" v-else popper-class='common-property-condition-text-tips-box'>
               <div slot="content">
                 <p v-for="(it, i) in scope.row.conditionText" :key="it.name + 'tips' + i">
                   <span v-if="i > 0" class="type">{{scope.row.Constraint.FilterType === 1 ? '且' : '或'}}</span>

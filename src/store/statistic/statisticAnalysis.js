@@ -14,7 +14,7 @@ export default {
     condition4SaveForm: null,
     /*  统计表列表数据获取条件信息
     --------------------------------- */
-    considtion4DataList: {
+    condition4DataList: {
       Type: '',
       Page: 1,
       PageSize: 20,
@@ -67,9 +67,9 @@ export default {
     /* 设置统计表列表数据获取条件信息
     --------------------------------- */
     setConsidtion4DataList(state, [[key1, key2, key3], value]) {
-      if (!key2) state.considtion4DataList[key1] = value;
-      else if (!key3) state.considtion4DataList[key1][key2] = value;
-      else state.considtion4DataList[key1][key2][key3] = value;
+      if (!key2) state.condition4DataList[key1] = value;
+      else if (!key3) state.condition4DataList[key1][key2] = value;
+      else state.condition4DataList[key1][key2][key3] = value;
     },
     /*  统计表列表数据 及 数据条目数
     --------------------------------- */
@@ -132,6 +132,15 @@ export default {
       state.statisticSummaryDataList = state.statisticSummaryDataList.filter(it => it.ID !== id);
       state.statisticSummaryDataNumber -= 1;
     },
+    /*  统计表列表数据获取条件信息
+    --------------------------------- */
+    clearConsidtion4DataList(state) {
+      state.condition4DataList = {
+        Type: '',
+        Page: 1,
+        PageSize: 20,
+      };
+    },
   },
   actions: {
     /** --------------------------------------------------------------------- 统计表相关 ↓ */
@@ -156,7 +165,7 @@ export default {
       commit('setStatisticDateList', [[], '']);
       commit('setIsTableDataLoading', true);
       let key = true;
-      const res = await api.getStatisticFormDataList(state.considtion4DataList).catch(() => { key = false; });
+      const res = await api.getStatisticFormDataList(state.condition4DataList).catch(() => { key = false; });
       commit('setIsTableDataLoading', false);
       if (key && res && res.data.Status === 1000) {
         commit('setStatisticDateList', [res.data.Data, res.data.DataNumber]);

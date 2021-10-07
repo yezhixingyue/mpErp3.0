@@ -50,9 +50,9 @@
           <el-radio :label="true">横排</el-radio>
           <el-radio :label="false">竖排</el-radio>
         </el-radio-group>
-        <p>
+        <!-- <p>
           <el-checkbox v-model="ruleGroupForm.HiddenToCustomer">客户界面隐藏</el-checkbox>
-        </p>
+        </p> -->
       </el-form-item>
     </el-form>
     <p class="tips-box"><i class="el-icon-warning"></i> 注：“禁止重复”指元素组多次使用时，任意一组该元素的值不能和其他组相同</p>
@@ -173,13 +173,13 @@ export default {
       // 1. 元素组隐藏优先级大于其包含元素的隐藏设置，即元素组隐藏时，其中元素全部隐藏
       // 2. 元素组显示时，根据元素设置来决定显示还是隐藏
       // 3. 所有元素客户界面都不显示的话，则提示错误： 所选元素客户界面均不显示，请勾选“客户界面隐藏” --- 此项需要检查及报错限制
-      if (!this.ruleGroupForm.HiddenToCustomer) { // 当不隐藏的时候开始判断
-        const _list = this.ruleGroupForm.ElementList.filter(it => it.Checked && !it.Disabled && !it.HiddenToCustomer); // 已勾选且不对客户隐藏的元素数组
-        if (_list.length === 0) { // 所选元素客户界面均不显示
-          callback(new Error('所选元素客户界面均不显示，请勾选“客户界面隐藏”'));
-          return;
-        }
-      }
+      // if (!this.ruleGroupForm.HiddenToCustomer) { // 当不隐藏的时候开始判断
+      //   const _list = this.ruleGroupForm.ElementList.filter(it => it.Checked && !it.Disabled && !it.HiddenToCustomer); // 已勾选且不对客户隐藏的元素数组
+      //   if (_list.length === 0) { // 所选元素客户界面均不显示
+      //     callback(new Error('所选元素客户界面均不显示，请勾选“客户界面隐藏”'));
+      //     return;
+      //   }
+      // }
       callback();
     },
   },

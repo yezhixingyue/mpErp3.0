@@ -34,6 +34,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.commit('deposit/clearObjForListData');
     this.getDepositList();
   },
   activated() {

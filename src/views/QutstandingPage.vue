@@ -37,6 +37,7 @@ export default {
     ...mapActions('unpaylist', ['getTableData']),
   },
   mounted() {
+    this.$store.commit('unpaylist/clearSearchCondition4UnPayList');
     this.getTableData();
   },
 };

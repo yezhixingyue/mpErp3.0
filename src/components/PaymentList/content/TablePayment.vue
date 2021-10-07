@@ -112,7 +112,6 @@ export default {
     ...mapMutations('common', ['setPayOrderCreateTime', 'setValidTime', 'setIsLoading']),
     ...mapActions('paymentModule', ['getPaymentListTableData', 'cancelPaymentOrder', 'transferToPrepareOrder', 'getPaymentOrderDetail', 'getPaymentOrderDetailByPayCode']),
     setHeight() {
-      console.log('setHeight');
       const tempHeight = this.getHeight('.mp-payment-list-header', 60);
       this.h = tempHeight;
     },
@@ -216,6 +215,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.commit('paymentModule/clearConfigObj');
     this.getPaymentListTableData();
   },
 };

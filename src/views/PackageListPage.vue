@@ -45,6 +45,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.commit('packageModule/clearCondition4DataList');
     this.$store.dispatch('packageModule/getPackageDataList');
   },
 };

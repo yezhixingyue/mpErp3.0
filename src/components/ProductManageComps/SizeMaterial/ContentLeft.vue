@@ -29,7 +29,7 @@
           </div>
         </li>
       </ul>
-      <p class="sort"><span @click="MaterialSortVisible = true" class="blue-span" v-if="MaterialLocalList.length > 1">一级组合排序</span></p>
+      <p class="sort"><span @click="MaterialSortVisible = true" class="blue-span" v-if="MaterialSortListData.length > 1">一级组合排序</span></p>
       <MaterialSortDialog :visible.sync='MaterialSortVisible' v-model="MaterialSortListData" />
       <div class="material-hidden-list" v-if="MaterialList.length > 0">
         <p>
@@ -103,7 +103,8 @@ export default {
         return this.curEditMaterialData;
       },
       set([dataList, TypeID, isEdit]) {
-        this.$emit('MaterialSaveSubmit', [TypeID, dataList, isEdit]);
+        const list = dataList.map(it => ({ ...it, Index: 999 }));
+        this.$emit('MaterialSaveSubmit', [TypeID, list, isEdit]);
       },
     },
     MaterialLocalList() {
@@ -141,11 +142,16 @@ export default {
     MaterialSortListData: {
       get() {
         if (!this.MaterialLocalList || !Array.isArray(this.MaterialLocalList) || this.MaterialLocalList.length === 0) return [];
-        return this.MaterialLocalList.map(({ ID, Name }) => ({ ID, Name }));
+        return this.MaterialLocalList.map(it => it.ShowList).reduce((a, b) => [...a, ...b], []).map(it => {
+          const t = it.List.find(_it => _it.Index || _it.Index === 0);
+          const Index = t ? t.Index : 999;
+          return { ...it, Index };
+        }).sort((a, b) => a.Index - b.Index);
       },
       set(val) {
         if (!val || val.length === 0) return;
-        this.$emit('MaterialSortSubmit', val);
+        const list = val.map((it, Index) => [...it.List.map(({ ID }) => ({ MaterialID: ID, Index }))]).reduce((a, b) => [...a, ...b], []);
+        this.$emit('MaterialSortSubmit', list);
       },
     },
     MaterialHiddentListData: {

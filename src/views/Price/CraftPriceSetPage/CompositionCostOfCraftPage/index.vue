@@ -253,18 +253,27 @@ export default {
       if (!this.SolutionID || !this.curSolutionItem) return;
       const { PriceID, ApplyRange } = this.curSolutionItem;
       if (!ApplyRange) return;
-      const { PartID } = ApplyRange;
+      const { PartID, GroupID } = ApplyRange;
       this.isTableLoading = true;
+      const getListData = () => {
+        if (!this.canLoadContentTableData) {
+          this.canLoadContentTableData = true;
+        } else {
+          return this.$store.dispatch('priceManage/getPriceTableList', this.SolutionID);
+        }
+        return null;
+      };
       await Promise.all([
-        this.$store.dispatch('priceManage/getPriceTableList', this.SolutionID),
-        this.getConditionPropertyList(PriceID, PartID),
+        getListData(),
+        this.getConditionPropertyList(PriceID, PartID, GroupID),
+        this.$store.dispatch('priceManage/getPriceTablePropertyLists', [this.ProductID, PartID, GroupID, PriceID]),
       ]);
       this.isTableLoading = false;
     },
-    async getConditionPropertyList(PriceID, PartID) {
+    async getConditionPropertyList(PriceID, PartID, GroupID) {
       const t = this.ConditionPropertyObjList.find(it => it.PartID === PartID);
       if (t) return;
-      const resp = await PropertyClass.getPropertyList({ UseModule: 32, ProductID: this.ProductID, PriceID, PartID });
+      const resp = await PropertyClass.getPropertyList({ UseModule: 32, ProductID: this.ProductID, PriceID, PartID, GroupID });
       const PropertyList = resp || [];
       const obj = {
         PartID,
@@ -309,11 +318,7 @@ export default {
     },
     SolutionID(val) {
       if (!val) return;
-      if (this.canLoadContentTableData) {
-        this.getPriceTableList();
-      } else {
-        this.canLoadContentTableData = true;
-      }
+      this.getPriceTableList();
     },
   },
   created() {
@@ -339,8 +344,6 @@ export default {
       this.CraftPriceID = this.curCraftPriceItemData.Craft.CraftPriceID;
     }
     this.getProductData();
-    this.$store.dispatch('priceManage/getPriceTablePropertyLists', this.ProductID);
-    // this.$store.dispatch('priceManage/getConditionPropertyList', this.ProductID);
   },
 };
 </script>

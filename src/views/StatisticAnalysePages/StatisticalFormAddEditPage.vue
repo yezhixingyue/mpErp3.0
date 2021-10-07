@@ -28,7 +28,7 @@ export default {
     PageContentRight,
   },
   computed: {
-    ...mapState('statistic', ['condition4SaveForm', 'considtion4DataList']),
+    ...mapState('statistic', ['condition4SaveForm', 'condition4DataList']),
   },
   data() {
     return {
@@ -38,7 +38,7 @@ export default {
   methods: {
     onSubmitClick() {
       this.$store.dispatch('statistic/getStatisticFormSave', async () => {
-        await this.$store.dispatch('statistic/getStatisticFormDataList', this.considtion4DataList.Page);
+        await this.$store.dispatch('statistic/getStatisticFormDataList', this.condition4DataList.Page);
         this.onGoBackClick();
       });
     },

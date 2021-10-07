@@ -26,6 +26,10 @@ export default class PriceItemClass {
 
   ResultList = []; // 报价结果
 
+  PriceTableList = [];
+
+  CraftPriceList = [];
+
   IsIncludeIncreasedArea = false; // 是否包含新加大区
 
   AreaList = []; // 适用价格区域

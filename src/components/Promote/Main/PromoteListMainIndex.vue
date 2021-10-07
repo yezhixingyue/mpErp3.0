@@ -32,9 +32,10 @@ export default {
     },
   },
   mounted() {
-    if (this.count === 0) {
-      this.getPromoteList();
-    }
+    // if (this.count === 0) {
+    this.$store.commit('promoteStore/clearPromoteListRequestObj');
+    this.getPromoteList();
+    // }
     this.getAllProductNames();
   //  console.log(this.promoteListRequestObj.Page);
   },

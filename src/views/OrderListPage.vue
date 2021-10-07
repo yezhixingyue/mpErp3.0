@@ -75,6 +75,7 @@ export default {
     // }
     // console.log('mounted order page', this.curTabPagesNameList);
     this.$store.commit('orderModule/setSelectTime', ['TodayDate', 1]);
+    this.$store.commit('orderModule/clearConfigObj');
     this.getOrderTableData();
   },
 };

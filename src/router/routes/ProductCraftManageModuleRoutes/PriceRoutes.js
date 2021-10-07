@@ -132,7 +132,7 @@ const routes = [
       pageName: 'CraftPriceSetPage',
       // PermissionInfo: ['PermissionSetupDeposit', 'HavePomission'],
     },
-    component: () => import('../../../views/Price/CraftPriceSetPage'),
+    component: () => import('../../../views/Price/CraftPriceSetPage/index.vue'),
   },
   {
     path: '/CompositionCostOfCraft/:name/:id',

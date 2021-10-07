@@ -7,7 +7,7 @@
         :requestFunc='getDataList'
         :changePropsFunc='setCondition4DataList'
         :typeList="[['Type', '']]"
-        :value='considtion4DataList.Type'
+        :value='condition4DataList.Type'
         label="数据类型"
        />
     </header>
@@ -17,10 +17,10 @@
     <footer>
       <Count
        center
-       :watchPage='considtion4DataList.Page'
+       :watchPage='condition4DataList.Page'
        :handlePageChange='handlePageChange'
        :count='statisticFormDataNumber'
-       :pageSize='considtion4DataList.PageSize'
+       :pageSize='condition4DataList.PageSize'
        />
     </footer>
   </section>
@@ -40,7 +40,7 @@ export default {
     StatisticFormListTable,
   },
   computed: {
-    ...mapState('statistic', ['considtion4DataList', 'statisticFormDataNumber']),
+    ...mapState('statistic', ['condition4DataList', 'statisticFormDataNumber']),
     ...mapState('common', ['StatisticalFormTypeList']),
     filterTypeList() {
       if (!this.StatisticalFormTypeList || this.StatisticalFormTypeList.length === 0) return [];
@@ -86,7 +86,7 @@ export default {
   //   next(vm => {
   //     // eslint-disable-next-line max-len
   // eslint-disable-next-line max-len
-  //     if ((from.name !== 'StatisticFormView' && from.name !== 'StatisticalFormSetting') || vm.statisticFormDataNumber === 0) vm.getDataList(vm.considtion4DataList.Page);
+  //     if ((from.name !== 'StatisticFormView' && from.name !== 'StatisticalFormSetting') || vm.statisticFormDataNumber === 0) vm.getDataList(vm.condition4DataList.Page);
   //     if (to.meta.scroll && !(from.params.type && from.params.type === 'add')) {
   //       const t = vm;
   //       t.isScroll = true;
@@ -99,6 +99,7 @@ export default {
   //   });
   // },
   mounted() {
+    this.$store.commit('statistic/clearConsidtion4DataList');
     this.getDataList();
   },
 };

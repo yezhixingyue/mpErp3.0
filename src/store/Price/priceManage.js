@@ -578,8 +578,6 @@ export default {
     async getMakeupPropertyList({ commit }, ProductID) { // 获取拼版控制左侧弹窗属性列表数据
       commit('setMakeupPropertyList', []);
       const [ProductFormulaResp] = await Promise.all([
-        // PropertyClass.getPropertyList({ UseModule: 21, ProductID }),
-        // PropertyClass.getPropertyList({ UseModule: 30, ProductID }),
         api.getProductFormulasList(ProductID).catch(() => {}), // 设置尺寸数量
       ]);
       const ProductFormulaList = ProductFormulaResp && ProductFormulaResp.data.Status === 1000 ? ProductFormulaResp.data.Data : [];
@@ -597,10 +595,7 @@ export default {
         commit('setChildConditionPropertyList', respList);
       }
     },
-    async getProductCraftData({ state, commit, rootState }, ProductID) { // 获取产品及部件工艺信息
-      if (state.ProductCraftDataObj && state.ProductCraftDataObj[ProductID]) {
-        return state.ProductCraftDataObj[ProductID];
-      }
+    async getProductCraftData({ commit, rootState }, ProductID) { // 获取产品及部件工艺信息
       const dataType = ['Craft', 'Part'];
       const List = getIDFromListByNames(dataType, rootState.productManage.ProductModuleKeyIDList);
       const _temp = { ID: ProductID, List };
@@ -611,21 +606,12 @@ export default {
       }
       return null;
     },
-    async getPriceTablePropertyLists({ commit }, ProductID) { // 获取价格表条件使用属性列表 及 价格表X Y轴选择属性列表数据
+    async getPriceTablePropertyLists({ commit }, [ProductID, PartID, GroupID, PriceID]) { // 获取价格表条件使用属性列表 及 价格表X Y轴选择属性列表数据
       commit('setPriceTableConditionPropertyList', []);
-      const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID });
+      const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID, PartID, GroupID, PriceID });
       commit('setPriceTableConditionPropertyList', list);
     },
-    // async getConditionPropertyList({ state, commit }, ProductID) { // 获取工艺总费用表 条件属性列表
-    //   if (state.PriceItemPropertyList.length > 0 && state.PriceItemPropertyList[0].Product?.ID === ProductID) return;
-    //   commit('setPriceItemPropertyList', []);
-    //   const list = await PropertyClass.getPropertyList({ UseModule: 32, ProductID });
-    //   if (list) {
-    //     commit('setPriceItemPropertyList', list);
-    //   }
-    // },
     async getQuotationResultPropertyList({ commit }, [ProductID, PriceID]) { // 获取工艺总费用表 条件属性列表
-      // if (state.QuotationResultPropertyList.length > 0 && state.QuotationResultPropertyList[0].Product?.ID === ProductID) return;
       commit('setQuotationResultPropertyList', []);
       const list = await PropertyClass.getPropertyList({ UseModule: 35, ProductID, PriceID });
       if (list) {
@@ -646,13 +632,6 @@ export default {
         commit('setResultFormulaList', resp.data.Data);
       }
     },
-    // async getQuotationResultSolutionList({ commit }, [ProductID, PriceID]) { // 报价结果中获取方案列表
-    //   commit('setQuotationResultSolutionList', []);
-    //   const resp = await api.getFormulaList({ ProductID, UseModule: 6, PriceID }).catch(() => {});
-    //   if (resp && resp.data.Status === 1000) {
-    //     commit('setQuotationResultSolutionList', resp.data.Data);
-    //   }
-    // },
     async getAllPricePropertyList({ state, commit }, ProductID) { // 获取工艺总费用表 条件属性列表
       if (state.AllPricePropertyList.length > 0 && state.AllPricePropertyList[0].Product?.ID === ProductID) return;
       commit('setAllPricePropertyList', []);

@@ -125,22 +125,27 @@ export default {
     },
     async onMaterialSortSubmit(list) { // 一级组合排序
       const { ProductID, PartID } = this;
-      const TypeList = list.map(it => it.ID);
-      const temp = { ProductID, PartID, TypeList };
+      // const TypeList = list.map(it => it.ID);
+      const List = list;
+      const temp = { ProductID, PartID, List };
       const resp = await this.api.getProductMaterialOrder(temp).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
         const cb = () => {
-          const _newList = [];
-          const _oldList = JSON.parse(JSON.stringify(this.MaterialList));
-          TypeList.forEach(TypeID => {
-            _oldList.forEach((it, i) => {
-              if (it && it.Type.ID === TypeID) {
-                _newList.push(it);
-                _oldList.splice(i, 1, null);
-              }
-            });
+          // const _newList = [];
+          // const _oldList = JSON.parse(JSON.stringify(this.MaterialList));
+          // List.forEach(TypeID => {
+          //   _oldList.forEach((it, i) => {
+          //     if (it && it.Type.ID === TypeID) {
+          //       _newList.push(it);
+          //       _oldList.splice(i, 1, null);
+          //     }
+          //   });
+          // });
+          this.MaterialList = this.MaterialList.map(it => {
+            const t = List.find(_it => _it.MaterialID === it.ID);
+            const Index = t ? t.Index : 999;
+            return { ...it, Index };
           });
-          this.MaterialList = _newList;
           this.$refs.oLeft.MaterialSortVisible = false;
         };
         this.messageBox.successSingle('保存排序成功', cb, cb);

@@ -12,7 +12,7 @@
             <el-checkbox :value='checkedFileIDs.includes(it.ID)' @change="selectChange(it)">{{it.Name}}{{it.IsPrintFile ? '（印刷文件）' : ''}}</el-checkbox>
             <el-checkbox v-if="checkedFileIDs.includes(it.ID)" :value='getIsRequiredByID(it.ID)' @change="requiredChange(it.ID)">必须上传</el-checkbox>
             <div class="max-size-box" v-if="checkedFileIDs.includes(it.ID)">
-              <span>最大总尺寸限制：</span>
+              <span title="多文件时，指全部文件总大小限制">文件最大限制：</span>
               <el-input placeholder="1 - 3000" size="mini" maxlength="4"
                :value='getMaxSizeValByID(it.ID)' @input="onMaxSizeChange($event, it.ID)"></el-input>
               <span>M</span>
@@ -120,7 +120,7 @@ export default {
       }
       const t = this.checkedFileList.find(it => !it.MaxSize || !this.$utils.getValueIsOrNotNumber(it.MaxSize, true) || it.MaxSize < 1 || it.MaxSize > 3000);
       if (t) {
-        this.messageBox.failSingleError('保存失败', '最大总尺寸限制不正确，必填，且应为1 - 3000整数类型');
+        this.messageBox.failSingleError('保存失败', '最大限制不正确，必填，且应为1 - 3000整数类型');
         return;
       }
       const { ID, Priority, Constraint } = condition;

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-04-09 14:23:16
- * @LastEditTime: 2021-09-28 18:05:34
+ * @LastEditTime: 2021-10-07 15:18:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/ServicePage.vue
@@ -37,6 +37,7 @@ export default {
   //   sessionStorage.setItem('ErpToken', JSON.stringify(token));
   // },
   mounted() {
+    this.$store.commit('service/clearConfigObj');
     this.getServiceListData();
   },
 };

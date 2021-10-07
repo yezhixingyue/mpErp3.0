@@ -279,11 +279,10 @@ export default {
     },
   },
   async mounted() {
-    if (this.couponListData.length === 0) {
-      this.initLoading = true;
-      await this.getCouponList();
-      this.initLoading = false;
-    }
+    this.initLoading = true;
+    this.$store.commit('couponStore/clearCondition2ListData');
+    await this.getCouponList();
+    this.initLoading = false;
   },
 };
 </script>

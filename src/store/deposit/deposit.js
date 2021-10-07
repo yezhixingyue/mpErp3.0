@@ -46,6 +46,14 @@ export default {
     clearObjForDepositAdd(state) {
       state.objForDepositAdd = ObjForListDataClassType.clear();
     },
+    clearObjForListData(state) {
+      state.objForListData = {
+        Product: {
+          classID: '',
+          typeID: '',
+        },
+      };
+    },
     /* 设置定金列表数据
     ---------------------------------------- */
     setListData(state, data) {
