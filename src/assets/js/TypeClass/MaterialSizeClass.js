@@ -13,7 +13,7 @@ export const getFirstOptionName = (UnionShowList, ElementList) => {
   } else if (ElementList && ElementList.length > 0) { // 如果设置有元素组合 则按照元素组合取一项  （组合第一项可能为多个）
     UnionShowList[0].forEach(union => {
       const t = ElementList.find(Ele => Ele.ID === union);
-      if (t) lv1Title += t.DisplayContent;
+      if (t) lv1Title += `${t.DisplayContent}${t.Unit ? t.Unit : ''}`;
     });
     UnionShowList.forEach((it, i) => {
       if (i > 0) {

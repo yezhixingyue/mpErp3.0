@@ -389,6 +389,10 @@ export default {
         callback(new Error('开关类型隐藏时，隐藏运算值不可为空'));
         return;
       }
+      if (this.ruleForm.DefaultValue && !this.$utils.getValueIsOrNotNumber(this.ruleForm.DefaultValue)) {
+        callback(new Error('隐藏运算值必须为数字类型'));
+        return;
+      }
       callback();
     },
     comonWidthCheck(type, callback) {
@@ -655,6 +659,7 @@ export default {
       const validateBool = await this.$refs.ruleForm.validate().catch(() => {});
       if (validateBool) {
         const _data = ElementClassType.formatSubmitData(this.ruleForm);
+        console.log(_data, this.ruleForm);
         this.$emit('submit', _data);
       }
     },

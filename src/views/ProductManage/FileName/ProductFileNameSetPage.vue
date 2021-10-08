@@ -28,6 +28,11 @@
             <el-input size="small" @focus="onInpFocus('GroupSplitChars')" @blur="onInpBlur" v-model.trim="GroupSplitChars"></el-input>
             <div :class="showTipType === 'GroupSplitChars' ? 'active':''" class="tip">只可输入【】 {} []  《》 &lt; &gt; () （）等符号，必须成对出现，且不可与其它分隔符重复</div>
           </li>
+          <li>
+            <span>工艺开始结束符号：</span>
+            <el-input size="small" @focus="onInpFocus('CraftSplitChars')" @blur="onInpBlur" v-model.trim="CraftSplitChars"></el-input>
+            <div :class="showTipType === 'CraftSplitChars' ? 'active':''" class="tip">只可输入【】 {} []  《》 &lt; &gt; () （）等符号，必须成对出现，且不可与其它分隔符重复</div>
+          </li>
           <li class="explain" @click="onExplainClick">
             <i>?</i>
             <span>说明</span>
@@ -93,6 +98,14 @@ export default {
       },
       set(val) {
         this.productData.GroupSplitChars = val.replace(GroupAndPartSplitCharsReg, '');
+      },
+    },
+    CraftSplitChars: {
+      get() {
+        return this.productData ? this.productData.CraftSplitChars : '';
+      },
+      set(val) {
+        this.productData.CraftSplitChars = val.replace(GroupAndPartSplitCharsReg, '');
       },
     },
   },
@@ -207,8 +220,8 @@ export default {
     },
     async onSubmitClick() {
       if (!this.productData) return;
-      const { SplitChars, PartSplitChars, GroupSplitChars } = this.productData;
-      if (!GroupSplitChars || !SplitChars || !PartSplitChars) {
+      const { SplitChars, PartSplitChars, GroupSplitChars, CraftSplitChars } = this.productData;
+      if (!GroupSplitChars || !SplitChars || !PartSplitChars || !CraftSplitChars) {
         this.messageBox.failSingleError('保存失败', '分隔符与开始结束符号必填，请输入及补充分隔符');
         return;
       }
@@ -291,7 +304,7 @@ export default {
             margin-bottom: 10px;
             display: block;
           }
-          width: 280px;
+          width: 235px;
           margin-right: 18px;
           &.explain {
             margin-left: 15px;

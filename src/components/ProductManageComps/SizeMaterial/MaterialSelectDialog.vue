@@ -96,7 +96,7 @@ export default {
       const _temp = {};
       list.forEach(it => {
         const { UnionShowList, ElementList } = it.Type;
-        const { lv1Title, itemContent } = getFirstOptionName(UnionShowList, ElementList); // 获取右侧第一级分类标题
+        const { lv1Title, itemContent } = getFirstOptionName(UnionShowList, ElementList); // 获取右侧第一级分类标题.
         if (!_temp[lv1Title]) _temp[lv1Title] = [];
         _temp[lv1Title].push({ ...it, itemContent });
       });

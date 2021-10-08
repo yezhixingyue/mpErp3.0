@@ -178,7 +178,7 @@ export default class ElementClassType {
     if (!data) return null;
     const _temp = JSON.parse(JSON.stringify(data));
     const TypeValue = getEnumValue(TypeEnum, _temp.Type);
-    _temp.DefaultValue = +_temp.DefaultValue;
+    _temp.DefaultValue = _temp.DefaultValue ? +_temp.DefaultValue : _temp.DefaultValue;
     if (TypeValue.toString()) {
       _temp.Type = TypeValue;
       switch (_temp.Type) {

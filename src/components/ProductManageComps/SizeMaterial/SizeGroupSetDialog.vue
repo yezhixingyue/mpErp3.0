@@ -14,11 +14,11 @@
    >
     <p v-if="ElementGroup.length === 0 && !loading" class="empty-element-group is-pink">
       <i class="el-icon-warning"></i>
-      <span class="is-font-size-12">当前产品或部件尚未设置元素组，请先设置元素组才可添加!</span>
+      <span class="is-font-size-12">当前产品或部件尚未设置元素组，请先设置!</span>
     </p>
     <p v-else-if="canUseGroupData.length === 0 && !loading" class="is-origin">
       <i class="el-icon-warning"></i>
-      <span style="font-size:13px;letter-spacing:1px">当前产品或部件尚没有合适的元素组可设置（1. 元素组使用次数须为1-1，2. 不能包含开关元素或多选选择项元素， 3. 不能包含选项数量为0的选择项元素）</span>
+      <span style="font-size:13px;letter-spacing:1px">当前产品或部件没有合适的元素组可设置（1. 元素组使用次数须为1-1，2. 不能包含开关元素或多选选择项元素， 3. 不能包含选项数量为0的选择项元素）</span>
     </p>
     <template v-else-if="ruleForm && !loading">
       <el-radio-group v-model="ruleForm.GroupInfo.ID">
