@@ -19,8 +19,11 @@
       <div class="result">
         <!-- 元素 | 元素组 -->
         <div v-if="it.ResultType === 'element' || it.ResultType === 'group'" class="element">
-          <label v-if="it.ResultType === 'element'">以此值运算：</label> <!-- 元素 -->
-          <label v-else>所有元素以此值运算：</label> <!-- 元素组 -->
+          <!-- 元素 -->
+          <!-- <label v-if="it.ResultType === 'element'">以此值运算：</label> -->
+          <!-- 元素组 -->
+          <!-- <label v-else>所有元素以此值运算：</label> -->
+          <label>以此值运算：</label>
           <el-input size="mini" v-model.trim="it.DefaultValue" ></el-input>
           <span v-if="it.Unit">{{it.Unit}}</span>
         </div>

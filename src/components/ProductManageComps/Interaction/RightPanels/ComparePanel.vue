@@ -29,7 +29,7 @@
         </div>
         <div>
           <span class="label">错误提示：</span>
-          <el-input size="small" maxlength="30" v-model.trim="it.FailTips" show-word-limit></el-input>
+          <el-input size="small" maxlength="70" v-model.trim="it.FailTips" show-word-limit></el-input>
           <span class="del" @click="onItemRemoveClick(i)">
             <img src="@/assets/images/del.png" alt="">
             <i>删除</i>
