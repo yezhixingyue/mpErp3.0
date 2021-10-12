@@ -352,6 +352,7 @@ export default class PropertyClass {
       let _val = '';
       if (ValueList) {
         if (ValueList.length === 1) {
+          // console.log(1);
           if ((ValueList[0].Value || ValueList[0].Value === 0)) {
             if (getValueIsOrNotNumber(ValueList[0].Value)) {
               _val = ValueList[0].Value;
@@ -372,13 +373,13 @@ export default class PropertyClass {
         }
         if (!_val && OptionList) {
           _val = ValueList.map(_it => OptionList.find(option => option.First === _it.Value)).filter(_it => _it).map(_it => _it.Second).join(' ');
+          // console.log(2, ValueType, OptionList, _val, Property);
           if (ValueType === 6) { // 为物料类型 对物料类型数据进行组合
             const checkList = ValueList.map(_it => _it.Value);
             _val = this.getMaterialListShowText(checkList, OptionList);
           }
         }
       }
-
       return {
         name: _name,
         operator: _operator,

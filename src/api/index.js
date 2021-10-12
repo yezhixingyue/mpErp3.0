@@ -191,7 +191,7 @@ const api = {
     return instance.post('/Api/Promote/Save', data);
   },
   getAllProductLists() { // 获取列表头部产品第三级列表
-    return instance.post('/Api/Product/ProductList', { FieldType: 1 });
+    return instance.post('/Api/Product/List', { FieldType: 1 });
   },
   getConditionList(type, positionID) { // GET /Api/Common/GetConditionList 获取条件列表
     let query;

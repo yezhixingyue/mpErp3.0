@@ -454,12 +454,16 @@ export default {
       });
       // 添加第三级产品内容
       state.productNames.forEach(item => level1List.forEach(leve1 => {
-        if (item.ProductClass.First === leve1.ID) {
-          leve1.children.forEach(level2 => {
-            if (item.ProductClass.Second === level2.ID) {
-              level2.children.push({ ...item, ClassName: item.ProductName, ID: item.ProductID });
-            }
-          });
+        const t = item.ClassifyList.find(_it => _it.Type === 1);
+        if (t) {
+          const { FirstLevel, SecondLevel } = t;
+          if (FirstLevel.ID === leve1.ID) {
+            leve1.children.forEach(level2 => {
+              if (SecondLevel.ID === level2.ID) {
+                level2.children.push({ ...item, ClassName: item.ProductName, ID: item.ProductID });
+              }
+            });
+          }
         }
       }));
       // 筛选去除无下属产品的分类

@@ -18,7 +18,7 @@
       <!-- 结果 -->
       <div class="result">
         <!-- 元素 | 元素组 -->
-        <div v-if="it.ResultType === 'element' || it.ResultType === 'group'" class="element">
+        <div v-if="(it.ResultType === 'element' || it.ResultType === 'group') && [21, 22].includes(it.Operator)" class="element">
           <!-- 元素 -->
           <!-- <label v-if="it.ResultType === 'element'">以此值运算：</label> -->
           <!-- 元素组 -->
@@ -249,9 +249,15 @@ export default {
             }
           }
           if (prop === 'checkList') {
-            if ((!it.checkList || it.checkList.length === 0) && Array.isArray(it.OptionList) && it.OptionList.length > 0) {
-              this.messageBox.failSingleError('保存失败', `第${i + 1}行元素没有勾选列表选项`);
-              return false;
+            if ((!it.checkList || it.checkList.length === 0) && Array.isArray(it.OptionList)) {
+              if (it.OptionList.length > 0) {
+                this.messageBox.failSingleError('保存失败', `第${i + 1}行元素没有勾选列表选项`);
+                return false;
+              }
+              if (it.OptionList.length === 0) {
+                this.messageBox.failSingleError('保存失败', `第${i + 1}行元素未设置可选列表，请先设置`);
+                return false;
+              }
             }
           }
         }
