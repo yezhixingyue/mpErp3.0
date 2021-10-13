@@ -204,7 +204,6 @@ export default {
   },
   methods: {
     check(curItem, { checkedNodes, checkedKeys }) {
-    //  console.log('checkcheckcheckcheck');
       this.handleChangeFunc(checkedNodes, checkedKeys);
       this.setCheckAllListAndStatus(checkedKeys);
     },

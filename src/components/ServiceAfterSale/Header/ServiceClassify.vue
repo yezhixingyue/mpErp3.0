@@ -53,6 +53,10 @@ export default {
     font-weight: 600;
     width: 70px;
     display: inline-block;
+    margin-right: 12px;
+  }
+  .mp-single-radio-wrap {
+    margin-right: 10px;
   }
   .el-radio__label{
     font-size: 14px;

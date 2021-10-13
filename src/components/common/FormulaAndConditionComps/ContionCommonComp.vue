@@ -233,6 +233,7 @@ export default {
     NumberValueTypeItemChecker(ItemList) { // 数字值类型属性值校验
       for (let i = 0; i < ItemList.length; i += 1) {
         const { Property, ValueList } = ItemList[i];
+        // eslint-disable-next-line no-unused-vars
         const { ValueType, AvailableValueList, ValueRange } = Property;
         if (ValueType === 0 && !ValueList[0].Property) { // 为0 数值校验
           const val = ValueList[0].Value;
@@ -252,13 +253,13 @@ export default {
             }
           }
           // if (Operator === 1 && AvailableValueList) { // 相等类型 进入判断
-          if (AvailableValueList) { // 所有关系类型 进入判断
-            const checkres = PropertyClass.AvailableValueListChecker(val, AvailableValueList);
-            if (!checkres) {
-              this.alertError(`第${i + 1}行值不正确，请检查其可取值范围`);
-              return false;
-            }
-          }
+          // if (AvailableValueList) { // 所有关系类型 进入判断
+          //   const checkres = PropertyClass.AvailableValueListChecker(val, AvailableValueList);
+          //   if (!checkres) {
+          //     this.alertError(`第${i + 1}行值不正确，请检查其可取值范围`);
+          //     return false;
+          //   }
+          // }
         }
         if (ValueRange && ValueType !== 0) { // 有这种情况吗 --- 该校验未写
           // const { MinValue, MaxValue } = ValueRange;

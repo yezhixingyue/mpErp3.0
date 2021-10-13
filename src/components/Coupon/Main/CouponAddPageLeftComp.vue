@@ -112,12 +112,18 @@ export default {
     ...mapMutations('couponStore', ['setCondition2CouponSave']),
     ...mapActions('common', ['getProductList', 'getAllProductNames']),
     handleChangeFunc(checkedNodes) {
-      const _list = checkedNodes.filter(_it => _it.ProductID).map(_it => ({
-        FirstLevelID: _it.ProductClass.First,
-        SecondLevelID: _it.ProductClass.Second,
-        ProductID: _it.ProductID,
-        ProductName: _it.ProductName,
-      }));
+      const _list = checkedNodes.filter(_it => _it.ShowName).map(_it => {
+        const t = _it.ClassifyList.find(({ Type }) => Type === 1);
+        if (t) {
+          return {
+            FirstLevelID: t.FirstLevel.ID,
+            SecondLevelID: t.SecondLevel.ID,
+            ProductID: _it.ID,
+            ProductName: _it.Name,
+          };
+        }
+        return null;
+      }).filter(_it => _it);
       this.setCondition2CouponSave([['ProductList', ''], _list]);
     },
   },

@@ -2,7 +2,13 @@
   <header class="mp-finance-page-header">
     <div class="mp-finance-page-selector-wrap">
       <AreaSelector />
-      <ProductSelector style="margin-right: 15px" />
+      <ProductSelector style="margin-right: 15px"
+        :changePropsFunc="setFinanceRequestObj"
+        :requestFunc="getFinanceTableData"
+        :ClassID="searchCondition4Finance.ProductClass.First"
+        :TypeID="searchCondition4Finance.ProductClass.Second"
+        :ProductID="searchCondition4Finance.ProductID"
+        :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]" />
       <WriteComp />
       <ExpressSelector />
       <order-channel-selector
@@ -53,10 +59,11 @@
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import { mapState, mapMutations, mapActions } from 'vuex';
+import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 import AreaSelector from './AreaSelector.vue';
 // import UserSelector from './UserSelector.vue';
 // import OrderStatusSelector from './OrderStatusSelector.vue';
-import ProductSelector from './ProductSelector.vue';
+// import ProductSelector from './ProductSelector.vue';
 import ExpressSelector from './ExpressSelector.vue';
 import WriteComp from './WriteComp.vue';
 import TimeSearchSelector from './TimeSearchSelector.vue';

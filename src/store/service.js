@@ -3,6 +3,7 @@
 /* eslint-disable max-len */
 import api from '@/api/index';
 // import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
+import CommonClassType from '@/store/CommonClassType';
 import messageBox from '../assets/js/utils/message';
 import UploadFileByBreakPoint from '../assets/js/upload/UploadFileByBreakPoint';
 
@@ -54,8 +55,8 @@ export default {
     obj4RequestServiceList: {
       Type: '', // 售后类型
       Product: {
-        ClassID: 0,
-        TypeID: 0,
+        ClassID: '',
+        TypeID: '',
         ProductID: '',
       },
       CreateTime: { // 时间区间
@@ -76,7 +77,7 @@ export default {
     /* 产品类别相关
     -------------------------------*/
     // productList: [],
-    subProductList: [{ ProductID: 0, ProductName: '不限' }],
+    subProductList: [{ ProductID: '', ProductName: '不限' }],
     largeProTitle: '不限',
     midProTitle: '不限',
     smProTitle: '不限',
@@ -233,35 +234,6 @@ export default {
     setServiceDataLoading(state, boolean) {
       state.serviceDataLoading = boolean;
     },
-    /* 产品类别相关
-    -------------------------------*/
-    // setProductList(state, arr) {
-    //   state.productList = arr;
-    // },
-    setSubProductList(state, arr) {
-      state.subProductList = arr;
-    },
-    setProductClass1(state, [ID, name]) {
-      state.obj4RequestServiceList.Product.ClassID = ID;
-      state.obj4RequestServiceList.Product.TypeID = 0;
-      state.obj4RequestServiceList.Product.ProductID = '';
-      state.subProductList = [{ ProductID: 0, ProductName: '不限' }];
-      state.largeProTitle = name;
-      state.midProTitle = '不限';
-      state.smProTitle = '不限';
-    },
-    setProductClass2(state, [ID, name]) {
-      state.obj4RequestServiceList.Product.TypeID = ID;
-      state.obj4RequestServiceList.Product.ProductID = '';
-      state.subProductList = [{ ProductID: 0, ProductName: '不限' }];
-      state.midProTitle = name;
-      state.smProTitle = '不限';
-    },
-    setProductClass3(state, [ID, name]) {
-      // console.log(ID, name);
-      state.obj4RequestServiceList.Product.ProductID = ID;
-      state.smProTitle = name;
-    },
     /* 时间选择相关
     -------------------------------*/
     setSelectTime(state, [type, num, obj]) {
@@ -288,8 +260,8 @@ export default {
       state.obj4RequestServiceList = {
         Type: '',
         Product: {
-          ClassID: 0,
-          TypeID: 0,
+          ClassID: '',
+          TypeID: '',
           ProductID: '',
         },
         CreateTime: {
@@ -305,11 +277,7 @@ export default {
         },
       };
       if (type === 'onKeyWordSubmit') state.obj4RequestServiceList.KeyWords = _keywordsText;
-      state.largeProTitle = '不限';
-      state.midProTitle = '不限';
-      state.smProTitle = '不限';
       state.selectedTimeArr = [0, 1, 0, 0, 0, 0];
-      state.subProductList = [{ ProductID: 0, ProductName: '不限' }];
     },
     /* 售后提交单 -- 设置提交问题对象 submitQuestionList
     -------------------------------*/
@@ -520,29 +488,6 @@ export default {
     },
   },
   actions: {
-    /* 获取产品类型列表
-    -------------------------------*/
-    // getProductList({ commit }) {
-    //   api.getVersionValid({
-    //     Key: 6,
-    //     Value: -1,
-    //   }).then((res) => {
-    //     const tempObj = res;
-    //     commit('setProductList', tempObj.data.Data);
-    //   });
-    // },
-    getProductThird({ state, commit }) {
-      const obj = {};
-      const { ClassID, TypeID } = state.obj4RequestServiceList.Product;
-      obj.ProductClass = {};
-      obj.ProductClass.First = ClassID;
-      obj.ProductClass.Second = TypeID;
-      obj.FieldType = 1;
-      api.getProductLists(obj).then((res) => {
-        const arr = [{ ProductID: 0, ProductName: '不限' }, ...res.data.Data];
-        commit('setSubProductList', arr);
-      });
-    },
     /* 获取售后单数据列表
     -------------------------------*/
     async getServiceListData({ state, commit }, prop = { page: 1, type: 'get' }) {
@@ -559,7 +504,8 @@ export default {
       commit('setCanLoadingMore', false);
       commit('setServiceDataLoading', true);
       commit('setSearchWatchKey');
-      const res = await api.getServiceList(state.obj4RequestServiceList);
+      const temp = CommonClassType.filter(state.obj4RequestServiceList);
+      const res = await api.getServiceList(temp);
       commit('setServiceDataLoading', false);
       if (!res.data.Data && res.data.Status !== 1000) return;
       const tableData = res.data.Data;

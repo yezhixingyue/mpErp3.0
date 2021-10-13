@@ -119,12 +119,18 @@ export default {
       if (this.value) this.SelectedProductArray = this.value;
     },
     handleSelectChangeFunc(checkedNodes) {
-      const _list = checkedNodes.filter(it => it.ProductID).map(it => {
-        const FirstLevelID = it.ProductClass.First; // 1级分类ID
-        const SecondLevelID = it.ProductClass.Second; // 2级分类ID
-        const { ProductID, ProductName } = it;
-        return ({ FirstLevelID, SecondLevelID, ProductID, ProductName });
-      });
+      const _list = checkedNodes.filter(it => it.ShowName).map(it => {
+        const t = it.ClassifyList.find(({ Type }) => Type === 1);
+        if (t) {
+          return {
+            FirstLevelID: t.FirstLevel.ID,
+            SecondLevelID: t.SecondLevel.ID,
+            ProductID: it.ID,
+            ProductName: it.Name,
+          };
+        }
+        return null;
+      }).filter(it => it);
       this.SelectedProductArray = _list;
     },
     handleDialogSave() {

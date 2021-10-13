@@ -164,21 +164,6 @@ export default {
       },
     },
   },
-  // methods: {
-  //   onOrderStatusListChange(list) {
-  //     this.orderStatusList = list;
-  //   },
-  //   handleChangeFunc(checkedNodes) {
-  //     const _list = checkedNodes.filter(_it => _it.ProductID).map(_it => ({
-  //       FirstLevelID: _it.ProductClass.First,
-  //       SecondLevelID: _it.ProductClass.Second,
-  //       ProductID: _it.ProductID,
-  //       ProductName: _it.ProductName,
-  //     }));
-  //     this.ProductList = _list;
-  //     return true;
-  //   },
-  // },
   mounted() {
   },
 };

@@ -155,7 +155,7 @@ export default {
       if (isEdit) {
         const i = state.ProductManageList.findIndex(it => it.ID === data.ID);
         if (i > -1) {
-          const t = state.ProductManageList[0];
+          const t = state.ProductManageList[i];
           const _temp = { ...t, ...data };
           state.ProductManageList.splice(i, 1, _temp);
         }

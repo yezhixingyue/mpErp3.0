@@ -24,10 +24,6 @@ export default {
     /* 产品类别相关
     -------------------------------*/
     productList: [],
-    subProductList: [{ ProductID: 0, ProductName: '不限' }],
-    largeProTitle: '不限',
-    midProTitle: '不限',
-    smProTitle: '不限',
     /* 用户相关
     -------------------------------*/
     userTypeTitle: '不限',
@@ -61,23 +57,23 @@ export default {
     -------------------------------*/
     objForOrderList: {
       SellArea: {
-        RegionalID: 0,
-        CityID: 0,
-        CountyID: 0,
+        RegionalID: '',
+        CityID: '',
+        CountyID: '',
       },
       ProductClass: {
-        First: 0,
-        Second: 0,
+        First: '',
+        Second: '',
       },
       ProductID: '',
       CustomerType: {
-        First: 0,
-        Second: 0,
+        First: '',
+        Second: '',
       },
       Page: 1,
       PayListPage: 1,
       PageSize: 30,
-      Status: 0,
+      Status: '',
       ExpressType: '',
       KeyWords: '',
       OrderType: '',
@@ -271,46 +267,21 @@ export default {
     -------------------------------*/
     setSellAreaRegional(state, [ID, name]) {
       state.objForOrderList.SellArea.RegionalID = ID;
-      state.objForOrderList.SellArea.CityID = 0;
-      state.objForOrderList.SellArea.CountyID = 0;
+      state.objForOrderList.SellArea.CityID = '';
+      state.objForOrderList.SellArea.CountyID = '';
       state.largeTitle = name;
       state.midTitle = '不限';
       state.smTitle = '不限';
     },
     setSellAreaCity(state, [ID, name]) {
       state.objForOrderList.SellArea.CityID = ID;
-      state.objForOrderList.SellArea.CountyID = 0;
+      state.objForOrderList.SellArea.CountyID = '';
       state.midTitle = name;
       state.smTitle = '不限';
     },
     setSellAreaCounty(state, [ID, name]) {
       state.objForOrderList.SellArea.CountyID = ID;
       state.smTitle = name;
-    },
-    /* 产品类别相关
-    -------------------------------*/
-    setSubProductList(state, arr) {
-      state.subProductList = arr;
-    },
-    setProductClass1(state, [ID, name]) {
-      state.objForOrderList.ProductClass.First = ID;
-      state.objForOrderList.ProductClass.Second = 0;
-      state.objForOrderList.ProductID = '';
-      state.subProductList = [{ ProductID: 0, ProductName: '不限' }];
-      state.largeProTitle = name;
-      state.midProTitle = '不限';
-      state.smProTitle = '不限';
-    },
-    setProductClass2(state, [ID, name]) {
-      state.objForOrderList.ProductClass.Second = ID;
-      state.objForOrderList.ProductID = '';
-      state.subProductList = [{ ProductID: 0, ProductName: '不限' }];
-      state.midProTitle = name;
-      state.smProTitle = '不限';
-    },
-    setProductClass3(state, [ID, name]) {
-      state.objForOrderList.ProductID = ID;
-      state.smProTitle = name;
     },
     /* 用户相关
     -------------------------------*/
@@ -390,20 +361,20 @@ export default {
       const _keywordsText = state.objForOrderList.KeyWords;
       state.objForOrderList = {
         SellArea: {
-          RegionalID: 0,
-          CityID: 0,
-          CountyID: 0,
+          RegionalID: '',
+          CityID: '',
+          CountyID: '',
         },
         ProductClass: {
-          First: 0,
-          Second: 0,
+          First: '',
+          Second: '',
         },
         ProductID: '',
         CustomerType: {
-          First: 0,
-          Second: 0,
+          First: '',
+          Second: '',
         },
-        Status: 0,
+        Status: '',
         KeyWords: '',
         ExpressType: '',
         Page: 1,
@@ -566,16 +537,6 @@ export default {
     },
   },
   actions: {
-    getProductThird({ state, commit }) {
-      // 获取产品列表数据
-      const obj = {};
-      obj.ProductClass = state.objForOrderList.ProductClass;
-      obj.FieldType = 1;
-      api.getProductLists(obj).then((res) => {
-        const arr = [{ ProductID: 0, ProductName: '不限' }, ...res.data.Data];
-        commit('setSubProductList', arr);
-      });
-    },
     async getOrderTableData({ state, commit }, prop = { page: 1, type: 'get' }) { // 获取订单管理列表数据
       let method;
       if (prop.type === 'get') {

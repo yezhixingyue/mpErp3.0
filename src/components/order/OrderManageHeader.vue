@@ -4,7 +4,14 @@
       <li class="row-one">
         <!-- 该动态类名为判断当前页面是否为包裹列表页面，如果是则做针对样式处理，另设置值方式为在对应table组件中所设置 -->
         <AreaSelector />
-        <ProductSelector />
+        <!-- <ProductSelector /> -->
+        <ProductSelector
+          :changePropsFunc="setOrderManageRequestObj"
+          :requestFunc="getDataList"
+          :ClassID="objForOrderList.ProductClass.First"
+          :TypeID="objForOrderList.ProductClass.Second"
+          :ProductID="objForOrderList.ProductID"
+          :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]" />
         <UserSelector />
         <StaffSelector />
         <ExpressSelector />
@@ -40,7 +47,7 @@
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
 import AreaSelector from '@/components/order/orderListHeader/AreaSelector.vue';
-import ProductSelector from '@/components/order/orderListHeader/ProductSelector.vue';
+// import ProductSelector from '@/components/order/orderListHeader/ProductSelector.vue';
 import UserSelector from '@/components/order/orderListHeader/UserSelector.vue';
 import StaffSelector from '@/components/order/orderListHeader/StaffSelector.vue';
 import ExpressSelector from '@/components/order/orderListHeader/ExpressSelector.vue';
@@ -48,6 +55,7 @@ import OrderStatusSelector from '@/components/order/orderListHeader/OrderStatusS
 // import DeliverStatusSelector from '@/components/order/orderListHeader/DeliverStatusSelector.vue';
 import TimeSearchSelector from '@/components/order/orderListHeader/TimeSearchSelector.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
+import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 
 export default {
   components: {

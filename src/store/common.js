@@ -460,7 +460,7 @@ export default {
           if (FirstLevel.ID === leve1.ID) {
             leve1.children.forEach(level2 => {
               if (SecondLevel.ID === level2.ID) {
-                level2.children.push({ ...item, ClassName: item.ProductName, ID: item.ProductID });
+                level2.children.push({ ...item, ClassName: item.Name, ID: item.ID });
               }
             });
           }

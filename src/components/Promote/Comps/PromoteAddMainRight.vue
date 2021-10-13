@@ -80,18 +80,20 @@ export default {
     ...mapActions('common', ['getProductList', 'getAllProductNames']),
     // eslint-disable-next-line consistent-return
     handleSaveFunc(nodes, func) {
-      const _nodes = nodes.filter(node => node.ProductID);
+      const _nodes = nodes.filter(node => node.ShowName);
       if (_nodes.length === 0) {
         return '至少必须选择一种产品!';
       }
-      const LimitList = _nodes.map(item => (
-        {
-          FirstLevelID: item.ProductClass.First,
-          SecondLevelID: item.ProductClass.Second,
-          ProductID: item.ProductID,
-          ProductName: item.ProductName,
-        }
-      ));
+      const LimitList = _nodes.map(item => {
+        const t = item.ClassifyList.find(({ Type }) => Type === 1);
+        if (!t) return null;
+        return {
+          FirstLevelID: t.FirstLevel.ID,
+          SecondLevelID: t.SecondLevel.ID,
+          ProductID: item.ID,
+          ProductName: item.Name,
+        };
+      }).filter(it => it);
       const List = [];
       const _tempObj1 = [...this.promoteAddRequestObj.ProductList];
       let _tempObj2;

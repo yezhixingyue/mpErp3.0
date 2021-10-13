@@ -161,7 +161,7 @@ export default {
       const { ValueType, Element, Group, FixedType, Type, MaterialType } = prop;
       if (!FixedType && FixedType !== 0 && Element && !Group) return 'element';
       if (!FixedType && FixedType !== 0 && Element && Group) return 'group';
-      if (ValueType === 1) return 'radio'; // 单选选项 ok 同下
+      if (ValueType === 1 || ValueType === 8) return 'radio'; // 单选选项 ok 同下
       if (ValueType === 2 || ValueType === 3 || ValueType === 4) return 'multi-select'; // 多选选项 ok 缺弹窗选中显示 绑定值修改 目前checklist
       if (ValueType === 5) return 'craft'; // 工艺 ok 不显示
       if (ValueType === 6) {
@@ -240,13 +240,13 @@ export default {
               this.messageBox.failSingleError('保存失败', `第${i + 1}行输入值应为数字类型元素${isInteger ? '（且不允许小数）' : ''}`);
               return false;
             }
-            if (it.AvailableValueList) { // 所有关系类型 进入判断
-              const checkres = PropertyClass.AvailableValueListChecker(it.DefaultValue, it.AvailableValueList);
-              if (!checkres) {
-                this.messageBox.failSingleError('保存失败', `第${i + 1}行值不正确，请检查其可取值范围`);
-                return false;
-              }
-            }
+            // if (it.AvailableValueList) { // 所有关系类型 进入判断
+            //   const checkres = PropertyClass.AvailableValueListChecker(it.DefaultValue, it.AvailableValueList);
+            //   if (!checkres) {
+            //     this.messageBox.failSingleError('保存失败', `第${i + 1}行值不正确，请检查其可取值范围`);
+            //     return false;
+            //   }
+            // }
           }
           if (prop === 'checkList') {
             if ((!it.checkList || it.checkList.length === 0) && Array.isArray(it.OptionList)) {

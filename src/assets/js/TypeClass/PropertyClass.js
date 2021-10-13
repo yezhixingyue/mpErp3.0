@@ -51,6 +51,9 @@ export const PropertyFixedType = [
   { ID: 29, Name: '印刷幅面物料损耗数量' },
   { ID: 30, Name: '大版拼数' },
   { ID: 31, Name: '物料费' },
+  { ID: 32, Name: '数量' },
+  { ID: 33, Name: '款数' },
+  { ID: 34, Name: '总价' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表
@@ -337,16 +340,25 @@ export default class PropertyClass {
     return text;
   }
 
-  static getPropertyConditionText(list) { // getNameFromListByIDs
+  static getPropertyConditionText(list, target) { // getNameFromListByIDs
     if (!list || !Array.isArray(list) || list.length === 0) return '';
     const _list = list.map(it => {
       const { Property, Operator, ValueList } = it;
       let _operator = getNameFromListByIDs(Operator, AllOperatorList); // 获取到关系类型名称
       // const PerfectProperty = this.getPerfectPropertyByImperfectProperty(Property, PropertyList); // 获取到完整属性
       // if (!PerfectProperty) return '';
-      const { DisplayContent, OptionList, ValueType } = Property;
+      const { DisplayContent, OptionList, ValueType, Module, Element, Group, Part } = Property;
       if (ValueType === 1 || ValueType === 6) _operator += '下面任一选项时：';
-      if (ValueType === 2 || ValueType === 3) _operator += '下面所有选项时：';
+      if (ValueType === 2) _operator += '下面所有选项时：';
+      if (ValueType === 3) {
+        let str = '下面所有选项时：';
+        if (target && Module === 255 && Element && Element.Type === 2 && Element.OptionAttribute && Element.OptionAttribute.IsRadio) {
+          // eslint-disable-next-line no-nested-ternary
+          if (Group && Group.ID && target.Group && target.Group.ID && Group.ID === target.Group.ID) str = '下面任一选项时：';
+          if (Part && Part.ID && target.Part && target.Part.ID && Part.ID === target.Part.ID) str = '下面任一选项时：';
+        }
+        _operator += str;
+      }
       if (ValueType === 5) _operator += '时';
       const _name = DisplayContent.replace(/\[|\]/g, '');
       let _val = '';

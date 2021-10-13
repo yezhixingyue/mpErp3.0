@@ -1,9 +1,15 @@
 <template>
   <ul class="mp-service-page-header">
       <li class="mp-service-page-header-first">
-          <div>
+          <div class="f">
               <ServiceClassify />
-              <ProductSelector />
+                <ProductSelector
+                :changePropsFunc="setCondition4DataList"
+                :requestFunc="getDataList"
+                :ClassID="obj4RequestServiceList.Product.ClassID"
+                :TypeID="obj4RequestServiceList.Product.TypeID"
+                :ProductID="obj4RequestServiceList.Product.ProductID"
+                :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]" />
               <div class="user-selector">
                 <order-channel-selector
                   :options="userTypeList"
@@ -35,9 +41,9 @@
 <script>
 import { mapState } from 'vuex';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
+import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 import ServiceClassify from './ServiceClassify.vue';
 import TimeSearchSelector from './TimeSearchSelector.vue';
-import ProductSelector from './ProductSelector.vue';
 
 export default {
   components: {
@@ -78,6 +84,14 @@ export default {
         display: flex;
         padding-top: 20px;
         padding-bottom: 20px;
+      }
+      &.f {
+        align-items: center;
+        padding-top: 20px;
+        > div, > ul {
+          padding-top: 0px;
+          padding-bottom: 18px;
+        }
       }
     }
   }

@@ -92,7 +92,7 @@ export default {
       return this.watchValue;
     },
     defaultKeys() {
-      return this.checkedNodes.filter(it => it.ProductID);
+      return this.checkedNodes.filter(it => it.ShowName);
     },
   },
   data() {
@@ -133,11 +133,6 @@ export default {
       this.dialogVisible = true;
       this.dialogTitle = '添加活动商品';
     },
-    // onOpen() {
-    //   console.log('onOpen');
-    //   console.log(this.checkedNodes, this.defaultCheckedKeys);
-    //   // this.checkedNodes = this.defaultCheckedKeys;
-    // },
   },
   watch: {
     watchValue(newVal) {

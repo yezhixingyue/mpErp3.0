@@ -125,10 +125,6 @@ export default {
   },
   methods: {
     ...mapActions('common', ['getProductList', 'getProductThird', 'getAllProductNames']),
-    // onMidSelect(arr) {
-    //   this.setProductClass2(arr);
-    //   if (arr[0]) this.getProductThird();
-    // },
     handleSwitch1(e) {
       if (e === this.first) return;
       this.changePropsFunc([this.typeList[1], '']);
@@ -146,18 +142,6 @@ export default {
       if (e === this.third) return;
       this.third = e;
     },
-    // async getProductThird() {
-    //   // 获取产品列表数据
-    //   const _obj = {};
-    //   _obj.ProductClass = {
-    //     First: this.first,
-    //     Second: this.second,
-    //   };
-    //   _obj.FieldType = 1;
-    //   const res = await this.api.getProductLists(_obj);
-    //   if (res.data.Status === 1000)
-    //     this.products = [{ ProductID: '', ProductName: '不限' }, ...res.data.Data];
-    // },
   },
   mounted() {
     this.getProductList();

@@ -1,29 +1,23 @@
 import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 import api from '@/api/index';
 import { Message } from 'element-ui';
+import CommonClassType from '@/store/CommonClassType';
 import messageBox from '../assets/js/utils/message';
-
-function filter(obj) {
-  const tempObj = obj;
-  Object.keys(tempObj).forEach((key) => {
-    if (tempObj[key] === '' || tempObj[key] === 0) delete tempObj[key];
-  });
-}
 
 export default {
   namespaced: true,
   state: {
     searchCondition4Finance: {
       SellArea: {
-        RegionalID: -777,
-        CityID: -777,
-        CountyID: -777,
+        RegionalID: '',
+        CityID: '',
+        CountyID: '',
       },
       ProductClass: {
-        First: -777,
-        Second: -777,
+        First: '',
+        Second: '',
       },
-      ProductID: -777,
+      ProductID: '',
       ExpressType: '',
       OutstoreDate: { // 时间区间
         First: '',
@@ -41,10 +35,6 @@ export default {
     /* 产品类别相关
     -------------------------------*/
     productList: [],
-    subProductList: [{ ProductID: 0, ProductName: '不限' }],
-    largeProTitle: '不限',
-    midProTitle: '不限',
-    smProTitle: '不限',
     /* 配送方式相关
     -------------------------------*/
     expressTitle: '不限',
@@ -100,9 +90,9 @@ export default {
     requestObj(state) {
       const tempObj = { ...state.searchCondition4Finance };
       tempObj.Product = {
-        ClassID: -777,
-        TypeID: -777,
-        ProductID: -777,
+        ClassID: '',
+        TypeID: '',
+        ProductID: '',
       };
       tempObj.Product.ClassID = state.searchCondition4Finance.ProductClass.First;
       tempObj.Product.TypeID = state.searchCondition4Finance.ProductClass.Second;
@@ -113,9 +103,7 @@ export default {
       delete tempObj.ProductID;
       delete tempObj.ExpressType;
 
-      filter(tempObj);
-
-      return tempObj;
+      return CommonClassType.filter(tempObj);
     },
   },
   mutations: {
@@ -143,29 +131,6 @@ export default {
     -------------------------------*/
     setProductList(state, arr) {
       state.productList = arr;
-    },
-    setSubProductList(state, arr) {
-      state.subProductList = arr;
-    },
-    setProductClass1(state, [ID, name]) {
-      state.searchCondition4Finance.ProductClass.First = ID;
-      state.searchCondition4Finance.ProductClass.Second = -777;
-      state.searchCondition4Finance.ProductID = -777;
-      state.subProductList = [{ ProductID: -777, ProductName: '不限' }];
-      state.largeProTitle = name;
-      state.midProTitle = '不限';
-      state.smProTitle = '不限';
-    },
-    setProductClass2(state, [ID, name]) {
-      state.searchCondition4Finance.ProductClass.Second = ID;
-      state.searchCondition4Finance.ProductID = -777;
-      state.subProductList = [{ ProductID: -777, ProductName: '不限' }];
-      state.midProTitle = name;
-      state.smProTitle = '不限';
-    },
-    setProductClass3(state, [ID, name]) {
-      state.searchCondition4Finance.ProductID = ID;
-      state.smProTitle = name;
     },
     setExpressType(state, [ID, name]) {
       state.expressTitle = name;
@@ -205,15 +170,15 @@ export default {
       const _keywordsText = state.searchCondition4Finance.KeyWords;
       state.searchCondition4Finance = {
         SellArea: {
-          RegionalID: -777,
-          CityID: -777,
-          CountyID: -777,
+          RegionalID: '',
+          CityID: '',
+          CountyID: '',
         },
         ProductClass: {
-          First: -777,
-          Second: -777,
+          First: '',
+          Second: '',
         },
-        ProductID: -777,
+        ProductID: '',
         OutstoreDate: { // 时间区间
           First: '',
           Second: '',
@@ -232,9 +197,6 @@ export default {
       state.largeTitle = '不限';
       state.midTitle = '不限';
       state.smTitle = '不限';
-      state.largeProTitle = '不限';
-      state.midProTitle = '不限';
-      state.smProTitle = '不限';
       state.expressTitle = '不限';
       state.selectedTimeArr = [0, 1, 0, 0, 0, 0];
       state.searchCondition4Finance.HaveWriteOff = '';
@@ -308,26 +270,6 @@ export default {
     },
   },
   actions: {
-    getProductList({ commit }) {
-      // 获取产品列表数据
-      api.getVersionValid({
-        Key: 6,
-        Value: -1,
-      }).then((res) => {
-        const tempObj = res;
-        commit('setProductList', tempObj.data.Data);
-      });
-    },
-    getProductThird({ state, commit }) {
-      // 获取产品列表数据
-      const obj = {};
-      obj.ProductClass = state.searchCondition4Finance.ProductClass;
-      obj.FieldType = 1;
-      api.getProductLists(obj).then((res) => {
-        const arr = [{ ProductID: 0, ProductName: '不限' }, ...res.data.Data];
-        commit('setSubProductList', arr);
-      });
-    },
     async getFinanceTableData({ getters, commit }, page = 1) { // getFinanceListData 获取列表数据
       commit('setLoadPage', page);
       commit('setFinanceData', {
@@ -354,8 +296,8 @@ export default {
       delete tempObj.Page;
       delete tempObj.PageSize;
 
-      filter(tempObj);
-      const res = await api.getAccountReceivableExcel(tempObj);
+      const temp = CommonClassType.filter(tempObj);
+      const res = await api.getAccountReceivableExcel(temp);
       if (res.status !== 200) {
         messageBox.failSingleError('出错啦 ！', `[ 下载失败：${res.statusText} ]`);
         return;
@@ -365,10 +307,10 @@ export default {
       const blobData = new Blob([data], { type: 'application/vnd.ms-excel' });
 
       let fileName = '财务应收列表.xls';
-      if (!tempObj.OutstoreDate) {
+      if (!temp.OutstoreDate) {
         fileName = '财务应收列表(全部).xls';
       } else {
-        const { First, Second } = tempObj.OutstoreDate;
+        const { First, Second } = temp.OutstoreDate;
         if (First && Second) {
           const f = First.split('T')[0];
           let _second = '';

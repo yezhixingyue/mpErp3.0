@@ -18,7 +18,7 @@ const api = {
     return instance.post('/Api/Order/List', data); // /Api/Customer/OrderList
   },
   getProductLists(data) { // 获取列表头部产品第三级列表
-    return instance.post('/Api/Product/ProductList', data);
+    return instance.post('/Api/Product/List', data);
   },
   selectOrderProgress(data) { // 查询订单进度
     return instance.get(`/Api/Order/Progress?orderID=${data}`);

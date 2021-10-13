@@ -1,75 +1,123 @@
 <template>
   <div class="promote-add-edit-detail-left-wrap">
     <ul class="mp-scroll-wrap">
-      <li> <!-- 活动标题 -->
-        <field-input :isDisabled='isDisabled' v-model="promoteTitle" />
+      <li>
+        <!-- 活动标题 -->
+        <field-input :isDisabled="isDisabled" v-model="promoteTitle" />
       </li>
-      <li class="start-time-box"> <!-- 开始时间 -->
-        <disconnect-type-date-picker-comp
-         :isDisabled='isStartNow || isDisabled'
-         :DateValue='promoteAddRequestObj.ValidStartTime'
-         :handleFunc="newVal=>this.setPromoteAddRequestObj([['ValidStartTime', ''], newVal])"
-         />
-        <span>
-          <el-checkbox v-model="isStartNow" :disabled='isDisabled'>
-            <em>立即生效</em>
-          </el-checkbox>
-        </span>
+      <li class="date-range">
+        <span>时间范围：</span>
+        <el-date-picker
+          :isDisabled="isDisabled"
+          v-model="StartDate"
+          value-format="yyyy-MM-dd"
+          size="small"
+          placeholder="年 / 月 / 日"
+        ></el-date-picker>
+        <i>—</i>
+        <el-date-picker
+          :isDisabled="isDisabled"
+          v-model="EndDate"
+          value-format="yyyy-MM-dd"
+          size="small"
+          placeholder="年 / 月 / 日"
+        ></el-date-picker>
       </li>
-      <li> <!-- 结束时间 -->
-        <disconnect-type-date-picker-comp
-         :DateValue='promoteAddRequestObj.ValidEndTime'
-         :handleFunc="newVal=>this.setPromoteAddRequestObj([['ValidEndTime', ''], newVal])"
-         title="结束时间"
-         :isDisabled='isDisabled'
-         />
+      <li class="date-cycle">
+        <label>周期：</label>
+        <div class="content">
+          <el-radio-group v-model="PeriodType" :isDisabled="isDisabled">
+            <el-radio :label="0">按天</el-radio>
+            <el-radio :label="1">按周</el-radio>
+          </el-radio-group>
+          <ul>
+            <li v-for="it in localPeriodList" :key="it.Label">
+              <el-checkbox
+                :value='it.isChecked'
+                @change="onPeriodItemCheckedChange($event, it.Value)"
+                v-if="it.Value"
+                :isDisabled="isDisabled"
+                >{{ it.Label }}</el-checkbox
+              >
+              <label v-else>{{ it.Label }}</label>
+              <el-time-picker
+                :value='it.StartTime'
+                :editable='false'
+                @input="onPeriodItemTimeChange($event, it.Value, 'StartTime')"
+                value-format='HH:mm'
+                :picker-options="{ format: 'HH:mm' }"
+                :isDisabled="isDisabled"
+                placeholder="00:00"
+                size="mini"
+                v-show="!it.Value || it.isChecked"
+              />
+              <i v-show="!it.Value || it.isChecked">-</i>
+              <el-time-picker
+                :value='it.EndTime'
+                :editable='false'
+                @input="onPeriodItemTimeChange($event, it.Value, 'EndTime')"
+                :picker-options="{ format: 'HH:mm' }"
+                :isDisabled="isDisabled"
+                value-format='HH:mm'
+                placeholder="23:59"
+                size="mini"
+                v-show="!it.Value || it.isChecked"
+              />
+            </li>
+          </ul>
+        </div>
       </li>
-      <li> <!-- 申请人 -->
+      <li>
+        <!-- 申请人 -->
         <staff-selector
-          :changePropsFunc='setPromoteAddRequestObj'
+          :changePropsFunc="setPromoteAddRequestObj"
           :typeList="[['ApplyUser', 'StaffID']]"
           title="申请人"
-          :isDisabled='isDisabled'
-          :watchValue='promoteStaffList'
-          :value='promoteAddRequestObj.ApplyUser.StaffID'
-         />
+          :isDisabled="isDisabled"
+          :watchValue="promoteStaffList"
+          :value="promoteAddRequestObj.ApplyUser.StaffID"
+        />
       </li>
-      <li class="top-25"> <!-- 下单渠道 -->
+      <li class="top-25">
+        <!-- 下单渠道 -->
         <checkbox-group-comp
-          :itemList='orderTypeList'
-          :selectList='selectOrderTypeList'
+          :itemList="orderTypeList"
+          :selectList="selectOrderTypeList"
           @change="onOrderTypeListChange"
           :defaultProps="{ label: 'name', value: 'ID' }"
-          :isDisabled='isDisabled'
-         />
+          :isDisabled="isDisabled"
+        />
       </li>
-      <li> <!-- 客户类型 -->
+      <li>
+        <!-- 客户类型 -->
         <checkbox-group-comp
           title="客户类型"
-          :itemList='filterUserTypeList'
-          :selectList='selectUserTypeList'
+          :itemList="filterUserTypeList"
+          :selectList="selectUserTypeList"
           @change="onUserTypeListChange"
-          :isDisabled='isDisabled'
-         />
+          :isDisabled="isDisabled"
+        />
       </li>
-      <li> <!-- 客户等级 -->
+      <li>
+        <!-- 客户等级 -->
         <checkbox-group-comp
           title="客户等级"
-          :itemList='filterUserRankList'
-          :selectList='selectUserRankList'
+          :itemList="filterUserRankList"
+          :selectList="selectUserRankList"
           @change="onUserRankListChange"
-          :isDisabled='isDisabled'
-         />
+          :isDisabled="isDisabled"
+        />
       </li>
-      <li class="area-wrap"> <!-- 销售区域 -->
+      <li class="area-wrap">
+        <!-- 销售区域 -->
         <tree-comp
-         :treeList='allAreaTreeList'
-         :defaultCheckedKeys="defaultCheckedKeys"
-         :handleChangeFunc='handleChangeFunc'
-         :shouldDisabledList='shouldDisabledList'
-         :showDisabled='isDisabled'
-         :isDisabled='isDisabled'
-         />
+          :treeList="allAreaTreeList"
+          :defaultCheckedKeys="defaultCheckedKeys"
+          :handleChangeFunc="handleChangeFunc"
+          :shouldDisabledList="shouldDisabledList"
+          :showDisabled="isDisabled"
+          :isDisabled="isDisabled"
+        />
       </li>
     </ul>
   </div>
@@ -78,7 +126,7 @@
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import FieldInput from '@/components/common/FieldInput.vue';
-import DisconnectTypeDatePickerComp from '@/components/common/DisconnectTypeDatePickerComp.vue';
+// import DisconnectTypeDatePickerComp from '@/components/common/DisconnectTypeDatePickerComp.vue';
 import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import CheckboxGroupComp from '@/components/common/CheckboxGroupComp.vue';
 import TreeComp from '@/components/common/TreeComp.vue';
@@ -87,35 +135,43 @@ import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 export default {
   components: {
     FieldInput,
-    DisconnectTypeDatePickerComp,
+    // DisconnectTypeDatePickerComp,
     StaffSelector,
     CheckboxGroupComp,
     TreeComp,
   },
   computed: {
-    ...mapState('common', ['orderCreateTypeList', 'userTypeList', 'userRankList']),
+    ...mapState('common', [
+      'orderCreateTypeList',
+      'userTypeList',
+      'userRankList',
+    ]),
     ...mapState('promoteStore', ['promoteAddRequestObj', 'promoteStaffList']),
     ...mapGetters('common', ['allAreaTreeList']),
     orderTypeList() {
       if (!this.orderCreateTypeList) return [];
-      return this.orderCreateTypeList.filter(item => !!item.ID);
+      return this.orderCreateTypeList.filter((item) => !!item.ID);
     },
     filterUserTypeList() {
       if (!this.userTypeList) return [];
-      return this.userTypeList.filter(it => it.CategoryID);
+      return this.userTypeList.filter((it) => it.CategoryID);
     },
     filterUserRankList() {
       if (!this.userRankList) return [];
-      return this.userRankList.filter(item => !!item.CategoryID);
+      return this.userRankList.filter((item) => !!item.CategoryID);
     },
     selectOrderTypeList() {
       return this.promoteAddRequestObj.OrderTypeList;
     },
     selectUserTypeList() {
-      return this.promoteAddRequestObj.CustomerTypeList.map(it => ({ CategoryID: it.ID }));
+      return this.promoteAddRequestObj.CustomerTypeList.map((it) => ({
+        CategoryID: it.ID,
+      }));
     },
     selectUserRankList() {
-      return this.promoteAddRequestObj.CustomerGradeList.map(it => ({ CategoryID: it.ID }));
+      return this.promoteAddRequestObj.CustomerGradeList.map((it) => ({
+        CategoryID: it.ID,
+      }));
     },
     isStartNow: {
       get() {
@@ -129,7 +185,10 @@ export default {
           const m = `0${new Date().getMinutes()}`.slice(-2);
           const s = `0${new Date().getSeconds()}`.slice(-2);
           const ValidStartTime = `${stringDate}T${h}:${m}:${s}.000Z`;
-          this.setPromoteAddRequestObj([['ValidStartTime', ''], ValidStartTime]);
+          this.setPromoteAddRequestObj([
+            ['ValidStartTime', ''],
+            ValidStartTime,
+          ]);
         }
       },
     },
@@ -142,17 +201,47 @@ export default {
       },
     },
     defaultCheckedKeys() {
-      return this.promoteAddRequestObj.SellAreaArray.map(it => it.CountyID);
+      return this.promoteAddRequestObj.SellAreaArray.map((it) => it.CountyID);
     },
     shouldDisabledList() {
       if (!this.isDisabled) return [];
       let _list = [];
-      this.allAreaTreeList.forEach(l1 => {
-        l1.children.forEach(l2 => {
+      this.allAreaTreeList.forEach((l1) => {
+        l1.children.forEach((l2) => {
           _list = [..._list, ...l2.children];
         });
       });
-      return _list.map(it => it.ID);
+      return _list.map((it) => it.ID);
+    },
+    StartDate: {
+      get() {
+        return this.promoteAddRequestObj.ValidStartTime;
+      },
+      set(val) {
+        this.setPromoteAddRequestObj([['ValidStartTime', ''], val]);
+      },
+    },
+    EndDate: {
+      get() {
+        return this.promoteAddRequestObj.ValidEndTime;
+      },
+      set(val) {
+        this.setPromoteAddRequestObj([['ValidEndTime', ''], val]);
+      },
+    },
+    PeriodType: {
+      get() {
+        return this.promoteAddRequestObj.PeriodType;
+      },
+      set(val) {
+        this.setPromoteAddRequestObj([['PeriodType', ''], val]);
+      },
+    },
+    localPeriodList() {
+      if (this.PeriodType === 0) {
+        return this.promoteAddRequestObj.PeriodList.filter((it) => !it.Value);
+      }
+      return this.promoteAddRequestObj.PeriodList.filter((it) => it.Value);
     },
   },
   methods: {
@@ -162,16 +251,32 @@ export default {
       this.setPromoteAddRequestObj([['OrderTypeList', ''], list]);
     },
     onUserTypeListChange(list) {
-      const _list = list.map(it => ({ ID: it.CategoryID }));
+      const _list = list.map((it) => ({ ID: it.CategoryID }));
       this.setPromoteAddRequestObj([['CustomerTypeList', ''], _list]);
     },
     onUserRankListChange(list) {
-      const _list = list.map(it => ({ ID: it.CategoryID }));
+      const _list = list.map((it) => ({ ID: it.CategoryID }));
       this.setPromoteAddRequestObj([['CustomerGradeList', ''], _list]);
     },
     handleChangeFunc(checkedNodes) {
-      const _list = checkedNodes.filter(it => it.Level === 3).map(it => ({ CountyID: it.ID }));
+      const _list = checkedNodes
+        .filter((it) => it.Level === 3)
+        .map((it) => ({ CountyID: it.ID }));
       this.setPromoteAddRequestObj([['SellAreaArray', ''], _list]);
+    },
+    onPeriodItemCheckedChange(e, itemValue) {
+      const list = this.promoteAddRequestObj.PeriodList.map(it => {
+        if (it.Value !== itemValue) return it;
+        return { ...it, isChecked: e };
+      });
+      this.setPromoteAddRequestObj([['PeriodList', ''], list]);
+    },
+    onPeriodItemTimeChange(e, itemValue, type) {
+      const list = this.promoteAddRequestObj.PeriodList.map(it => {
+        if (it.Value !== itemValue) return it;
+        return { ...it, [type]: e };
+      });
+      this.setPromoteAddRequestObj([['PeriodList', ''], list]);
     },
   },
   mounted() {
@@ -190,7 +295,7 @@ export default {
 <style lang='scss'>
 @import "@/assets/css/common/var.scss";
 .promote-add-edit-detail-left-wrap {
-  width: 40%;
+  width: 45%;
   min-width: 520px;
   display: flex;
   justify-content: center;
@@ -210,7 +315,7 @@ export default {
         > .mp-common-comps-field-input-wrap {
           > input:disabled {
             background-color: rgb(245, 247, 250);
-            color: #C0C4CC;
+            color: #c0c4cc;
           }
         }
       }
@@ -260,7 +365,7 @@ export default {
         }
       }
       > .mp-common-comps-staff-selector-wrap {
-        > main input{
+        > main input {
           &::placeholder {
             color: #cbcbcb;
           }
@@ -276,6 +381,80 @@ export default {
               font-size: 12px;
               min-width: 5em;
               height: 20px;
+            }
+          }
+        }
+      }
+      &.date-range {
+        font-size: 14px;
+        > span {
+          font-weight: 700;
+          color: #444;
+          margin-right: 15px;
+        }
+        > div {
+          width: 140px;
+          input {
+            height: 30px;
+            line-height: 30px;
+            border-color: #cbcbcb;
+          }
+        }
+        > i {
+          margin: 0 7px;
+          color: #cbcbcb;
+          font-size: 13px;
+          position: relative;
+          top: 1px;
+        }
+      }
+      &.date-cycle {
+        display: flex;
+        font-size: 14px;
+        > label {
+          font-weight: 700;
+          color: #444;
+          width: 5em;
+          text-align: right;
+          margin-right: 15px;
+          flex: none;
+        }
+        > .content {
+          > ul {
+            display: flex;
+            flex-wrap: wrap;
+            padding-top: 15px;
+            > li {
+              > label {
+                font-size: 12px;
+                color: #585858;
+                margin-right: 10px;
+              }
+              > div.el-date-editor {
+                width: 70px;
+                .el-input__prefix {
+                  display: none;
+                }
+                input {
+                  padding-left: 10px;
+                  padding-right: 27px;
+                  height: 25px;
+                  line-height: 25px;
+                  overflow: hidden;
+                }
+                .el-input__suffix {
+                  right: 0;
+                }
+              }
+              > i {
+                margin: 0 8px;
+                color: #cbcbcb;
+              }
+              margin-right: 20px;
+              margin-bottom: 10px;
+              width: 225px;
+              height: 25px;
+              line-height: 25px;
             }
           }
         }

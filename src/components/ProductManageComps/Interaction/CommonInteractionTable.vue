@@ -89,7 +89,7 @@ export default {
       return this.dataList.map(it => ({
         ...it,
         FilterTypeText: it.Constraint.FilterType === 1 ? '满足所有' : '满足任一',
-        conditionText: this.getConditionText(it.Constraint.ItemList),
+        conditionText: this.getConditionText(it.Constraint.ItemList, it.target),
         result: this.getShowResult(it),
       }));
     },
@@ -116,8 +116,9 @@ export default {
     onRemoveClick(data) {
       this.$emit('remove', data);
     },
-    getConditionText(list) {
-      const str = PropertyClass.getPropertyConditionText(list);
+    getConditionText(list, target) {
+      console.log(list);
+      const str = PropertyClass.getPropertyConditionText(list, target);
       return str || '空';
     },
     getShowResult(it) {

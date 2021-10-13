@@ -43,7 +43,7 @@ export default class Product {
 
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, Name, ShowName, ClassifyList, IsSpacial, TypeList, MaterialDisplayName } = JSON.parse(JSON.stringify(initData));
+    const { ID, Name, ShowName, ClassifyList, IsSpacial, TypeList, MaterialDisplayName, PartList } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
     if (ShowName) this.ShowName = ShowName;
@@ -51,5 +51,6 @@ export default class Product {
     if (TypeList && Array.isArray(TypeList)) this.TypeList = TypeList;
     if (IsSpacial) this.IsSpacial = IsSpacial;
     if (MaterialDisplayName) this.MaterialDisplayName = MaterialDisplayName;
+    if (PartList) this.PartList = PartList;
   }
 }

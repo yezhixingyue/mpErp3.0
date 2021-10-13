@@ -13,76 +13,39 @@ export default class PromoteAddObj {
 
     StartNow = false // 是否立刻生效 true
 
-    ValidStartTime = 'T00:00:00.000Z' // 活动开始时间
+    PeriodType = 0 // 0 天 1 周
 
-    ValidEndTime = 'T23:59:59.997Z' // 活动结束时间
+    PeriodList = [
+      { Label: '时间段', Value: '', StartTime: '', EndTime: '' }, // 按天时间段
+      { Label: '周一', Value: 1, isChecked: false, StartTime: '', EndTime: '' }, // 周一
+      { Label: '周二', Value: 2, isChecked: false, StartTime: '', EndTime: '' },
+      { Label: '周三', Value: 3, isChecked: false, StartTime: '23:00', EndTime: '' },
+      { Label: '周四', Value: 4, isChecked: false, StartTime: '', EndTime: '' },
+      { Label: '周五', Value: 5, isChecked: false, StartTime: '', EndTime: '' },
+      { Label: '周六', Value: 6, isChecked: false, StartTime: '', EndTime: '' },
+      { Label: '周日', Value: 7, isChecked: false, StartTime: '', EndTime: '' }, // 周日
+    ]
+
+    // ValidStartTime = 'T00:00:00.000Z' // 活动开始时间
+    ValidStartTime = '' // 活动开始时间
+
+    // ValidEndTime = 'T23:59:59.997Z' // 活动结束时间
+    ValidEndTime = '' // 活动结束时间
 
     CustomerTypeList = [ // 客户类型列表
-    //   {
-    //     ID: '',
-    //   },
     ]
 
     CustomerGradeList = [ // 客户等级列表
-    //   {
-    //     ID: '',
-    //   },
     ]
 
     OrderTypeList = [ // 下单方式列表
-    //   {
-    //     ID: 1,
-    //   },
     ]
 
     SellAreaArray = [ // 销售区域列表
-      // {
-      //   CountyID: 1616,
-      // },
-      // {
-      //   CountyID: 1623,
-      // },
-      // {
-      //   CountyID: 41,
-      // },
-      // {
-      //   CountyID: 3196,
-      // },
     ]
 
 
     ProductList = [ // 产品信息
-      // {
-      // LimitList: [
-      // {
-      //   FirstLevelID: 0, // 产品一级分类ID
-      //   SecondLevelID: 0, // 产品二级分类ID
-      //   ProductID: '', // 产品ID
-      //   ProductName: 'string',
-      // },
-      // ],
-      // List: [
-      //   {
-      //     Constraint: {
-      //       FilterType: '', // 为1时表示需要满足所有条件 为2时满足任一条件
-      //       ItemList: [
-      //         {
-      //           ProductID: '',
-      //           PartID: '',
-      //           CraftID: '',
-      //           GroupID: '',
-      //           PropertyID: '', // 以上5个为回传项
-      //           PropertyType: '', // 条件前半部分
-      //           Operator: '', // 关系
-      //           Value: '', // 条件后半部分： 输入的值 | 选项的ID
-      //         },
-      //       ],
-      //     },
-      //     PriceUnit: '', // 所选择的分类项： 单价 | 总价 | 百分比
-      //     Price: '', // 输入的价格值
-      //   },
-      // ],
-      // },
     ]
 
     static check(obj) {
@@ -113,23 +76,7 @@ export default class PromoteAddObj {
     }
 
     static clear() {
-      const _obj = {
-        PromoteID: '',
-        Title: '',
-        ApplyUser: {
-          StaffID: '',
-        },
-        Status: '',
-        StartNow: false,
-        ValidStartTime: 'T00:00:00.000Z',
-        ValidEndTime: 'T23:59:59.997Z',
-        CustomerTypeList: [],
-        CustomerGradeList: [],
-        OrderTypeList: [],
-        SellAreaArray: [],
-        ProductList: [],
-      };
-      return _obj;
+      return new PromoteAddObj();
     }
 
     static back(obj) {
