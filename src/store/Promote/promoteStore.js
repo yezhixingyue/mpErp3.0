@@ -98,45 +98,10 @@ export default {
       if (!key2) state.promoteAddRequestObj[key1] = value;
       else state.promoteAddRequestObj[key1][key2] = value;
     },
-    /** 请求对象信息中新增条件
-     ---------------------------------------- */
-    addCondition4AddRequestObj(state, [ProductIndex, ConstraintIndex]) {
-      const _obj = {
-        ProductID: '',
-        PartID: '',
-        CraftID: '',
-        GroupID: '',
-        PropertyID: '', // 以上5个为回传项
-        PropertyType: '', // 条件前半部分
-        Operator: '', // 关系
-        Value: '', // 条件后半部分： 输入的值 | 选项的ID
-      };
-      // eslint-disable-next-line max-len
-      state.promoteAddRequestObj.ProductList[ProductIndex].List[ConstraintIndex].Constraint.ItemList.push(_obj);
-    },
     /** 请求对象信息中新增价格
      ---------------------------------------- */
-    addPrice4AddRequestObj(state, ProductIndex) {
-      const _obj = {
-        Constraint: {
-          FilterType: 1, // 为1时表示需要满足所有条件 为2时满足任一条件
-          ItemList: [
-            // {
-            //   ProductID: '',
-            //   PartID: '',
-            //   CraftID: '',
-            //   GroupID: '',
-            //   PropertyID: '', // 以上5个为回传项
-            //   PropertyType: '', // 条件前半部分
-            //   Operator: '', // 关系
-            //   Value: '', // 条件后半部分： 输入的值 | 选项的ID
-            // },
-          ],
-        },
-        PriceUnit: 0, // 所选择的分类项： 单价 | 总价 | 百分比
-        Price: '', // 输入的价格值
-      };
-      state.promoteAddRequestObj.ProductList[ProductIndex].List.push(_obj);
+    addPrice4AddRequestObj(state, [ProductIndex, obj]) {
+      state.promoteAddRequestObj.ProductList[ProductIndex].List.push(obj);
     },
     /** 请求对象信息中删除价格 (或替换)
      ---------------------------------------- */
@@ -146,36 +111,6 @@ export default {
         state.promoteAddRequestObj.ProductList[ProductIndex].List.splice(ConstraintIndex, 1);
       } else {
         state.promoteAddRequestObj.ProductList[ProductIndex].List.splice(ConstraintIndex, 1, data);
-      }
-    },
-    /** 请求对象信息中删除条件
-     ---------------------------------------- */
-    delCondition4AddRequestObj(state, [ProductIndex, ConstraintIndex, itemIndex]) {
-      // eslint-disable-next-line max-len
-      state.promoteAddRequestObj.ProductList[ProductIndex].List[ConstraintIndex].Constraint.ItemList.splice(itemIndex, 1);
-    },
-    /** 请求对象信息中修改条件
-     ---------------------------------------- */
-    editCondition4AddRequestObj(state, [ProductIndex, ConstraintIndex, itemIndex, data]) {
-      state.promoteAddRequestObj
-        .ProductList[ProductIndex].List[ConstraintIndex]
-        .Constraint.ItemList.splice(itemIndex, 1, data);
-    },
-    /** 请求对象信息中修改条件中的价格 价格类型 价格方式
-     ---------------------------------------- */
-    setPriceUnitAndFilterTypeAndPrice(state, [ProductIndex, ConstraintIndex, type, data]) {
-      if (type === 'FilterType') {
-        state.promoteAddRequestObj
-          .ProductList[ProductIndex].List[ConstraintIndex]
-          .Constraint.FilterType = data;
-      } else if (type === 'PriceUnit') {
-        state.promoteAddRequestObj
-          .ProductList[ProductIndex].List[ConstraintIndex]
-          .PriceUnit = data;
-      } else if (type === 'Price') {
-        state.promoteAddRequestObj
-          .ProductList[ProductIndex].List[ConstraintIndex]
-          .Price = data;
       }
     },
     /** 请求对象信息中删除产品项

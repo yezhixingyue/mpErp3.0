@@ -70,6 +70,17 @@ const routes = { // 价格策略
       },
       component: () => import('../../../views/PromotePage/PromoteAddPage.vue'),
     },
+    {
+      path: '/promoteConditionSet/:productIndex/:itemIndex/:productNames',
+      name: 'promoteConditionSet',
+      meta: {
+        title: '设置活动价格',
+        requiresAuth: true,
+        pageName: 'promoteConditionSet',
+        PermissionInfo: ['PermissionPromote', 'HavePomission'],
+      },
+      component: () => import('../../../views/PromotePage/PromoteConditionSet.vue'),
+    },
   ],
 };
 
@@ -91,7 +102,11 @@ const routeTree = {
     {
       name: 'promoteList',
       children: [
-        { name: 'promoteAdd', children: [] },
+        { name: 'promoteAdd',
+          children: [
+            { name: 'promoteConditionSet', children: [] },
+          ],
+        },
       ],
     },
   ],

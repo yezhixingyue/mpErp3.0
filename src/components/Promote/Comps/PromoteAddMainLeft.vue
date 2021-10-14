@@ -47,6 +47,7 @@
                 value-format='HH:mm'
                 :picker-options="{ format: 'HH:mm' }"
                 :isDisabled="isDisabled"
+                :default-value='defaultBeginTime'
                 placeholder="00:00"
                 size="mini"
                 v-show="!it.Value || it.isChecked"
@@ -60,6 +61,7 @@
                 :isDisabled="isDisabled"
                 value-format='HH:mm'
                 placeholder="23:59"
+                :default-value='defaultEndTime'
                 size="mini"
                 v-show="!it.Value || it.isChecked"
               />
@@ -215,18 +217,26 @@ export default {
     },
     StartDate: {
       get() {
-        return this.promoteAddRequestObj.ValidStartTime;
+        if (!this.promoteAddRequestObj.ValidStartTime) return '';
+        const timeString = this.promoteAddRequestObj.ValidStartTime.split('T')[0].substring(0, 10);
+        return timeString;
       },
       set(val) {
-        this.setPromoteAddRequestObj([['ValidStartTime', ''], val]);
+        let timer = '';
+        if (val) timer = `${val}T00:00:00.000Z`;
+        this.setPromoteAddRequestObj([['ValidStartTime', ''], timer]);
       },
     },
     EndDate: {
       get() {
-        return this.promoteAddRequestObj.ValidEndTime;
+        if (!this.promoteAddRequestObj.ValidEndTime) return '';
+        const timeString = this.promoteAddRequestObj.ValidEndTime.split('T')[0].substring(0, 10);
+        return timeString;
       },
       set(val) {
-        this.setPromoteAddRequestObj([['ValidEndTime', ''], val]);
+        let timer = '';
+        if (val) timer = `${val}T23:59:59.997Z`;
+        this.setPromoteAddRequestObj([['ValidEndTime', ''], timer]);
       },
     },
     PeriodType: {
@@ -242,6 +252,12 @@ export default {
         return this.promoteAddRequestObj.PeriodList.filter((it) => !it.Value);
       }
       return this.promoteAddRequestObj.PeriodList.filter((it) => it.Value);
+    },
+    defaultBeginTime() {
+      return new Date(new Date(new Date(new Date().setHours(0)).setMinutes(0)).setSeconds(0));
+    },
+    defaultEndTime() {
+      return new Date(new Date(new Date(new Date().setHours(23)).setMinutes(59)).setSeconds(59));
     },
   },
   methods: {
@@ -272,6 +288,7 @@ export default {
       this.setPromoteAddRequestObj([['PeriodList', ''], list]);
     },
     onPeriodItemTimeChange(e, itemValue, type) {
+      console.log(e);
       const list = this.promoteAddRequestObj.PeriodList.map(it => {
         if (it.Value !== itemValue) return it;
         return { ...it, [type]: e };

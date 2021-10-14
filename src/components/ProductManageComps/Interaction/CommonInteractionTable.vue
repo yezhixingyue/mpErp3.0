@@ -117,7 +117,6 @@ export default {
       this.$emit('remove', data);
     },
     getConditionText(list, target) {
-      console.log(list);
       const str = PropertyClass.getPropertyConditionText(list, target);
       return str || '空';
     },

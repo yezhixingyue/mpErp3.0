@@ -19,7 +19,7 @@ export default class PromoteAddObj {
       { Label: '时间段', Value: '', StartTime: '', EndTime: '' }, // 按天时间段
       { Label: '周一', Value: 1, isChecked: false, StartTime: '', EndTime: '' }, // 周一
       { Label: '周二', Value: 2, isChecked: false, StartTime: '', EndTime: '' },
-      { Label: '周三', Value: 3, isChecked: false, StartTime: '23:00', EndTime: '' },
+      { Label: '周三', Value: 3, isChecked: false, StartTime: '', EndTime: '' },
       { Label: '周四', Value: 4, isChecked: false, StartTime: '', EndTime: '' },
       { Label: '周五', Value: 5, isChecked: false, StartTime: '', EndTime: '' },
       { Label: '周六', Value: 6, isChecked: false, StartTime: '', EndTime: '' },
@@ -50,11 +50,17 @@ export default class PromoteAddObj {
 
     static check(obj) {
       if (!obj.Title || obj.Title.length >= 20) return '活动标题不能为空且不能超过20个字符!';
-      if (!obj.ValidStartTime.split('T')[0] || !obj.ValidStartTime.split('T')[1] || !obj.ValidStartTime.split('T')[1].split('.')[0]) return '请输入活动开始时间';
-      if (new Date(obj.ValidStartTime) - Date.now() <= 0 && !obj.StartNow) return '活动开始时间不能早于当前时间';
+      if (!obj.ValidStartTime) return '请输入活动开始时间';
+      if (new Date(obj.ValidStartTime) - Date.now() <= 0) return '活动开始时间不能早于当前时间';
       if (new Date(obj.ValidEndTime) <= new Date(obj.ValidStartTime)) return '活动结束时间不能早于活动开始时间';
-      if (!obj.ValidEndTime.split('T')[0] || !obj.ValidEndTime.split('T')[1] || !obj.ValidEndTime.split('T')[1].split('.')[0]) return '请输入活动结束时间';
+      if (!obj.ValidEndTime) return '请输入活动结束时间';
       if (new Date(obj.ValidEndTime) - Date.now() <= 0) return '活动结束时间不能早于当前时间';
+      const _PeriodList = obj.PeriodList.filter(it => (it.Value && obj.PeriodType === 1 && it.isChecked) || (!it.Value && obj.PeriodType === 0));
+      if (_PeriodList.length === 0) return '请设置周期';
+      let t = _PeriodList.find(it => !it.StartTime || !it.EndTime);
+      if (t) return '请补充周期开始时间或结束时间';
+      t = _PeriodList.find(it => it.StartTime.split(':').join('') >= it.EndTime.split(':').join(''));
+      if (t) return `周期中${t.Label}开始时间不能早于等于结束时间`;
       if (!obj.ApplyUser.StaffID) return '请输入申请人';
       if (obj.OrderTypeList.length === 0) return '请选择下单渠道';
       if (obj.CustomerTypeList.length === 0) return '请选择客户类型';

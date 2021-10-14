@@ -52,20 +52,33 @@
       </div>
     </div>
     <div class="content">
-        <el-table :data="data.List" style="width: 100%" border stripe>
+        <el-table :data="localList" style="width: 100%" border stripe>
             <el-table-column label="条件" show-overflow-tooltip>
               <template slot-scope="scope">
-                <div class="condition-box hidden">
-                    <div>
-                      <span
-                        v-for="(it, i) in ConditionTextList[scope.$index]._list"
-                        :key="it.Prefix + '-' + i"
-                      >
-                        <i v-if="i > 0" class="is-gray">{{ConditionTextList[scope.$index].type}}</i>
-                        {{it.Prefix}}<em class="is-origin">{{it.Operator}}</em>{{it.Value}}
-                      </span>
-                    </div>
+                <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start"
+                 v-if="typeof scope.row.conditionText === 'object'">
+                  <div slot="content">
+                    <p class="if-box"><span class="is-origin">如果</span> {{scope.row.FilterTypeText}}：</p>
+                    <p v-for="(it, i) in scope.row.conditionText" :key="it.name + 'tips' + i">
+                      <span v-if="i > 0" class="type">{{scope.row.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+                      <span class="name">{{it.name}}</span>
+                      <span class="is-origin">{{it.operator}}</span>
+                      <span class="val">{{it.val}}</span>
+                      <span v-if="i === scope.row.conditionText.length - 1" style="margin-left:2px"> 。</span>
+                      <span v-else style="margin-left:2px">；</span>
+                    </p>
                   </div>
+                  <div class="common-property-condition-text-content-box">
+                    <p class="if-box"><span class="is-origin">如果</span> {{scope.row.FilterTypeText}}：</p>
+                    <p v-for="(it, i) in scope.row.conditionText" :key="it.name + 'content' + i">
+                      <span v-if="i > 0" class="type">{{scope.row.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+                      <span>{{it.name}}</span>
+                      <span class="is-origin">{{it.operator}}</span>
+                      <span>{{it.val}}</span>
+                    </p>
+                  </div>
+                </el-tooltip>
+                <span v-if="typeof scope.row.conditionText === 'string'">{{scope.row.conditionText}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -100,61 +113,18 @@
               <span>尚未添加价格信息</span>
             </div>
         </el-table>
-        <el-dialog
-          :title="dialogPriceTitle"
-          :visible.sync="dialogVisible"
-          width="750px"
-          top='8vh'
-          :modal='false'
-          class="mp-img-style-header"
-          v-dialogDrag
-          :before-close="handleClose">
-          <div>
-            <conditions-comp
-             :conditionList='conditionList'
-             :ConstraintIndex='curConditionIndex'
-             :ProductIndex='index'
-             :conditionData='data.List[curConditionIndex]'
-             @handleAddCondition='handleAddCondition'
-             @editCondition4AddRequestObj='editCondition4AddRequestObj'
-             @delCondition4AddRequestObj='delCondition4AddRequestObj'
-             />
-            <result-comps
-             :PriceUnitList='PriceUnitList'
-             :ConstraintIndex='curConditionIndex'
-             :ProductIndex='index'
-             :priceData='data.List[curConditionIndex]'
-             @setPriceUnit='setPriceUnit'
-             @setFilterType='setFilterType'
-             @setPrice='setPrice'
-             />
-          </div>
-          <span slot="footer" class="dialog-footer">
-            <normal-btn-full @click.native="handleSave" title='保 存' />
-            <normal-btn @click.native="handleClose(() =>dialogVisible = false)" title="取 消" />
-          </span>
-        </el-dialog>
     </div>
   </li>
 </template>
 
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex';
-import normalBtnFull from '@/components/common/normalBtnFull.vue';
-import normalBtn from '@/components/common/normalBtn.vue';
-import ConditionsComp from './ConditionsComp.vue';
-import ResultComps from './ResultComps.vue';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 // eslint-disable-next-line import/extensions
 import { getProductArrayList, reg } from '../promoteUtils.js';
 
 
 export default {
-  components: {
-    normalBtnFull,
-    normalBtn,
-    ConditionsComp,
-    ResultComps,
-  },
   props: {
     data: {
       type: Object,
@@ -266,151 +236,50 @@ export default {
     productList() {
       return this.data.LimitList;
     },
-    maxConstraintIndex() {
-      return this.data.List.length - 1;
-    },
     ConditionTextList() {
-      return this.data.List.map(
-        it => this.getConditionText(it.Constraint.ItemList, it.Constraint.FilterType),
-      );
+      return [];
     },
-  },
-  data() {
-    return {
-      dialogVisible: false,
-      conditionList: [],
-      curConditionIndex: null,
-      diaType: '', // create | edit
-      prevCondition2Edit: null,
-      isHide: true,
-      dialogPriceTitle: '添加价格',
-    };
+    localList() {
+      return this.data.List.map(it => ({
+        ...it,
+        FilterTypeText: it.Constraint.FilterType === 1 ? '满足所有' : '满足任一',
+        conditionText: this.getConditionText(it.Constraint.ItemList),
+      }));
+    },
   },
   methods: {
     // eslint-disable-next-line max-len
-    ...mapMutations('promoteStore', ['addCondition4AddRequestObj', 'editCondition4AddRequestObj', 'delCondition4AddRequestObj', 'setPriceUnitAndFilterTypeAndPrice', 'addPrice4AddRequestObj', 'delPrice4AddRequestObj', 'delProductItem4AddRequestObj', 'setWatchValue2ProductDia', 'setOpenType2ProductDia']),
+    ...mapMutations('promoteStore', ['delPrice4AddRequestObj', 'delProductItem4AddRequestObj', 'setWatchValue2ProductDia', 'setOpenType2ProductDia']),
     handlePriceEdit(index) {
-      // this.curConditionIndex = arr[0];
-    //  console.log(index);
-      // this.addPrice4AddRequestObj(this.index); // 新增
-      this.curConditionIndex = index;
-      this.prevCondition2Edit = JSON.stringify(this.data.List[this.curConditionIndex]);
-      this.diaType = 'edit';
-      this.dialogVisible = true;
-      this.dialogPriceTitle = '修改价格';
+      this.$router.push({
+        name: 'promoteConditionSet',
+        params: {
+          productNames: this.productNameString,
+          productIndex: this.index,
+          itemIndex: index,
+        },
+      });
     },
     handleProductDelete(cur2DelIndex) {
-      // eslint-disable-next-line max-len
       this.messageBox.warnCancelNullMsg('确定删除该条价格信息吗 ?', () => this.delPrice4AddRequestObj([this.index, cur2DelIndex]), null);
     },
     handleDelProducts() {
-      // eslint-disable-next-line max-len
       this.messageBox.warnCancelBox('确定删除价格表中所有活动产品吗 ?', '[ 确认后此价格表将被移除! ]', () => this.delProductItem4AddRequestObj(this.index), null);
     },
     handleChangeProducts() {
       const _list = this.data.LimitList.map(it => it.ProductID);
-      // console.log('handleChangeProducts', _list);
       this.setWatchValue2ProductDia([..._list]);
       this.setOpenType2ProductDia(this.index);
     },
     addPrice() {
-      this.addPrice4AddRequestObj(this.index);
-      this.curConditionIndex = this.maxConstraintIndex;
-      this.diaType = 'create';
-      this.dialogVisible = true;
-      this.dialogPriceTitle = '添加价格';
-    },
-    handleAddCondition([ProductIndex, ConstraintIndex]) {
-      this.addCondition4AddRequestObj([ProductIndex, ConstraintIndex]);
-    },
-    handleClose(done) {
-      if (this.diaType === 'create') {
-        this.delPrice4AddRequestObj([this.index, this.curConditionIndex]);
-        if (this.curConditionIndex > 0) this.curConditionIndex -= 1;
-        else this.curConditionIndex = null;
-      } else if (this.diaType === 'edit') {
-        const _condition = JSON.parse(this.prevCondition2Edit);
-        this.delPrice4AddRequestObj([this.index, this.curConditionIndex, _condition]);
-      }
-      done();
-    },
-    setPriceUnit(ProductIndex, ConstraintIndex, data) {
-      this.setPriceUnitAndFilterTypeAndPrice([ProductIndex, ConstraintIndex, 'PriceUnit', data]);
-    },
-    setFilterType(ProductIndex, ConstraintIndex, data) {
-      this.setPriceUnitAndFilterTypeAndPrice([ProductIndex, ConstraintIndex, 'FilterType', data]);
-    },
-    setPrice(ProductIndex, ConstraintIndex, data) {
-      this.setPriceUnitAndFilterTypeAndPrice([ProductIndex, ConstraintIndex, 'Price', data]);
-    },
-    async requestConditionList(positionID) {
-      const res = await this.api.getConditionList(18, positionID, '');
-      if (res.data.Status === 1000) this.conditionList = res.data.Data;
-    },
-    handleSave() {
-      if (!this.dialogVisible) return '';
-      const { PriceUnit, Price, Constraint } = this.data.List[this.curConditionIndex];
-      if (!Price) return this.$message.error('请输入活动执行价格!');
-      // eslint-disable-next-line no-restricted-globals
-      if (isNaN(Price) || Price <= 0) return this.$message.error('请输入大于0的数字类型值!');
-      if (!PriceUnit && PriceUnit !== 0) return this.$message.error('请勾选活动价格设置类型!');
-      const { FilterType, ItemList } = Constraint;
-
-      for (let i = 0; i < ItemList.length; i += 1) {
-        const it = ItemList[i];
-        const condition = this.conditionList.find(item => item.PropertyType === it.PropertyType
-            && item.PropertyID === it.PropertyID && item.GroupID === it.GroupID
-            && item.CraftID === it.CraftID
-            && item.PartID === it.PartID && item.ProductID === it.ProductID);
-        if (!condition) return this.$message.error('未获取到对应条件信息!');
-        if (!it.Value && it.Value !== 0) return this.$message.error(`条件[ ${i + 1} ] 值未选择或输入!`);
-        // if (it.Value < 0) return this.$message.error(`条件[ ${i + 1} ] 值不能小于0!`);
-        if (condition.ValueType === 1) {
-          if (!!condition.MinValue || condition.MinValue === 0) {
-            const min = condition.MinValue;
-            const max = condition.MaxValue === -1 ? Infinity : condition.MaxValue;
-            // eslint-disable-next-line max-len
-            if (it.Value < min || it.Value > max) return this.$message.error(`条件${i + 1} [${condition.Prefix}]的值范围应在${min}-${max === Infinity ? '无穷大' : max}之间!`);
-          }
-        }
-      }
-      if (!FilterType) return this.$message.error('请选择满足条件类型');
-      this.dialogVisible = false;
-      return '';
-    },
-    getConditionText(data, type) {
-      // eslint-disable-next-line no-nested-ternary
-      const _str = type === 1 ? '并且' : type === 2 ? '或者' : '';
-      const _obj = {
-        type: _str,
-        _list: [],
-      };
-      // let _text = '';
-      data.forEach(it => {
-        const condition = this.conditionList.find(item => item.PropertyType === it.PropertyType
-            && item.PropertyID === it.PropertyID && item.GroupID === it.GroupID
-            && item.CraftID === it.CraftID
-            && item.PartID === it.PartID && item.ProductID === it.ProductID);
-        if (!condition) return;
-        const _item = {};
-        // if (_text.length > 0) _text = `${_text} ${_str} ${condition.Prefix}`;
-        // else _text = `${_text}${condition.Prefix}`;
-        _item.Prefix = condition.Prefix;
-        const Operator = this.OperatorKeyValueList.find(item => item.ID === it.Operator);
-        _item.Operator = Operator.name;
-        if (condition.ValueType === 1) {
-          // _text = `${_text}${Operator.name}${it.Value}${condition.Unit}`;
-          _item.Value = `${it.Value}${condition.Unit}`;
-        } else if (condition.ValueType === 2) {
-          const _tempObj = condition.OptionList.find(Option => Option.OptionID === it.Value);
-          const _value = _tempObj ? _tempObj.Value : '';
-          // _text = `${_text}${Operator.name}${_value}`;
-          _item.Value = _value;
-        }
-        _obj._list.push(_item);
+      this.$router.push({
+        name: 'promoteConditionSet',
+        params: {
+          productNames: this.productNameString,
+          productIndex: this.index,
+          itemIndex: 'new',
+        },
       });
-      // return _text;
-      return _obj;
     },
     preRequestConditionList() {
       let positionID;
@@ -421,7 +290,12 @@ export default {
       } else {
         return;
       }
-      this.requestConditionList(positionID);
+      console.log(this.data.LimitList, positionID);
+      // this.requestConditionList(positionID);
+    },
+    getConditionText(list) {
+      const str = PropertyClass.getPropertyConditionText(list, this.PropertyList);
+      return str || '无';
     },
   },
   watch: {

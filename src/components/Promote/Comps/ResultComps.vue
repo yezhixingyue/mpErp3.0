@@ -1,8 +1,5 @@
 <template>
   <section class="mp-promote-comps-result-list-comp-wrap">
-    <header>
-      <RadioButtonGroupComp v-model="radioValue" :radioList='conditionTypeList' />
-    </header>
     <SingleRadioGroupComp
       @handleRadioChange='handleRadioChange'
       :radio='radio'
@@ -20,27 +17,19 @@
 <script>
 import { mapState } from 'vuex';
 import SingleRadioGroupComp from '@/components/common/SingleRadioGroupComp.vue';
-import RadioButtonGroupComp from '@/components/common/RadioButtonGroupComp.vue';
 
 export default {
   components: {
     SingleRadioGroupComp,
-    RadioButtonGroupComp,
   },
   props: {
     PriceUnitList: {
       type: Array,
       default: () => [],
     },
-    priceData: {
+    value: {
       type: Object,
       default: () => ({}),
-    },
-    ConstraintIndex: {
-      type: Number,
-    },
-    ProductIndex: {
-      type: Number,
     },
   },
   computed: {
@@ -60,33 +49,22 @@ export default {
           return '';
       }
     },
-    radioValue: { // 设置满足条件
-      get() {
-        if (this.priceData && this.priceData.Constraint) {
-          return this.priceData.Constraint.FilterType;
-        }
-        return '';
-      },
-      set(newVal) {
-        this.$emit('setFilterType', this.ProductIndex, this.ConstraintIndex, newVal);
-      },
-    },
     radio: {
       get() {
-        if (this.priceData) return this.priceData.PriceUnit;
+        if (this.value) return this.value.PriceUnit;
         return '';
       },
       set(newVal) {
-        this.$emit('setPriceUnit', this.ProductIndex, this.ConstraintIndex, newVal);
+        this.$emit('input', { ...this.value, PriceUnit: newVal });
       },
     },
     price: {
       get() {
-        if (this.priceData) return this.priceData.Price;
+        if (this.value) return this.value.Price;
         return '';
       },
       set(newVal) {
-        this.$emit('setPrice', this.ProductIndex, this.ConstraintIndex, newVal);
+        this.$emit('input', { ...this.value, Price: newVal });
       },
     },
   },
@@ -105,17 +83,19 @@ export default {
   margin-top: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  // justify-content: center;
   > .mp-coms-common-single-radio-group-comp-wrap {
-    text-align: center;
+    // text-align: center;
   }
   > footer {
-    text-align: center;
+    // text-align: center;
     margin-top: 30px;
     font-size: 14px;
+    padding-left: 6px;
     > span {
       width: 100px;
       display: inline-block;
+      color: #888E99;
       &:last-of-type{
         text-align: left;
         padding-left: 10px;
