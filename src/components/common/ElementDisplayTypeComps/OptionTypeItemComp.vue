@@ -5,7 +5,7 @@
    default-first-option
    :allow-create='Allow'
    :filterable='Allow'
-   v-if="!canRadio || options.length > 3 || Allow"
+   v-if="!canRadio || options.length > 3 || Allow || SelectMode === 1"
    size="small"
    @blur.native='onBlur'
    @change.native='onBlur'
@@ -47,6 +47,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    SelectMode: {},
   },
   computed: {
     checkVal: {

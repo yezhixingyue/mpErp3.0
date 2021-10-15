@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     ...mapState('common', ['PriceUnitList']),
-    ...mapState('promoteStore', ['promoteAddRequestObj']),
+    ...mapState('promoteStore', ['promoteAddRequestObj']), // commonPropertyList
   },
   methods: {
     onSubmitClick() {
@@ -85,17 +85,34 @@ export default {
     onGoBackClick() {
       this.$goback();
     },
-    async getPropertyList(obj) {
-      const list = await PropertyClass.getPropertyList(obj);
-      if (list) this.PropertyList = list;
+    async getPropertyList(obj, PropertyList) {
+      if (!obj.ProductID) {
+        if (this.promoteAddRequestObj.commonPropertyList.length > 0) this.PropertyList = this.promoteAddRequestObj.commonPropertyList;
+        else {
+          const list = await PropertyClass.getPropertyList(obj);
+          if (list) {
+            this.PropertyList = list;
+            this.$store.commit('promoteStore/addCommonPropertyListToAddRequestObj', list);
+          }
+        }
+      } else if (PropertyList && PropertyList.length > 0) {
+        this.PropertyList = PropertyList;
+      } else {
+        const list = await PropertyClass.getPropertyList(obj);
+        if (list) {
+          this.PropertyList = list;
+          this.$store.commit('promoteStore/addSingleProductPropertyListToAddRequestObj', [list, this.$route.params.productIndex]);
+        }
+      }
+
       this.loading = false;
     },
     getInitData() { // 初始化数据（存在编辑或新增2种情况）
-      const { LimitList } = this.promoteAddRequestObj.ProductList[this.$route.params.productIndex];
+      const { LimitList, PropertyList } = this.promoteAddRequestObj.ProductList[this.$route.params.productIndex];
       if (!LimitList || LimitList.length === 0) return;
       const obj = { UseModule: 41 };
       if (LimitList.length === 1) obj.ProductID = LimitList[0].ProductID;
-      this.getPropertyList(obj);
+      this.getPropertyList(obj, PropertyList);
       if (this.$route.params.itemIndex !== 'new') {
         // 还原curEditData 与 priceData
         const { Constraint, PriceUnit, Price } = this.promoteAddRequestObj.ProductList[this.$route.params.productIndex].List[this.$route.params.itemIndex];

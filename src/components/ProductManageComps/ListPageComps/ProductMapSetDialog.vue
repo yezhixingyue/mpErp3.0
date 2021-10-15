@@ -26,6 +26,9 @@
         </el-select>
       </li>
     </ul>
+    <p class="tips-box">
+      <i class="el-icon-warning"></i>注：  数量、款数设置为“无”时默认为 1；重量设置为“无”时默认为 0 。
+    </p>
   </CommonDialogComp>
 </template>
 
@@ -75,6 +78,11 @@ export default {
   },
   methods: {
     onSubmit() {
+      const list2 = this.List.map(it => it.Second).filter(it => it !== null);
+      if (list2.length < this.ProductElementTypeList.length) {
+        this.messageBox.failSingleError('保存失败', '元素设置值不能为空!');
+        return;
+      }
       const list = this.List.map(it => it.Second).filter(it => it);
       if (list.length > 1) {
         const len1 = list.length;
@@ -113,11 +121,11 @@ export default {
       // 设置元素对应列表数据
       this.List = this.ProductElementTypeList.filter(it => !it.onlyProduct || !this.curData).map(it => {
         const TypeList = this.curData ? this.curData.TypeList : this.itemData.TypeList;
-        let Second = '';
+        let Second = null;
         const t = TypeList.find(_it => _it.First === it.ID);
-        if (t) Second = t.Second;
-        // const OptionList = [{ ID: '', Name: '未设置' }];
-        const OptionList = [];
+        if (t) Second = t.Second || '';
+        const OptionList = [{ ID: '', Name: '无' }];
+        // const OptionList = [];
         if (it.needElement) OptionList.push(...ElementList);
         if (it.needFormula) OptionList.push(...FormulaList);
         return {
@@ -184,6 +192,15 @@ export default {
         .el-select {
           width: 140px;
         }
+      }
+    }
+    > .tips-box {
+      margin-top: 10px;
+      margin-left: 54px;
+      width: 500px;
+      letter-spacing: 1px;
+      > i {
+        margin-right: 6px;
       }
     }
   }

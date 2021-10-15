@@ -1,11 +1,12 @@
 <template>
   <section class="mp-erp-common-comps-new-tree-comp-single-item-comp-wrap">
     <header>
-      <el-checkbox  :class="{isIncreased:data.isIncreased}" :indeterminate="isIndeterminate" v-model="checkAll">{{data.ClassName}}</el-checkbox>
+      <el-checkbox :disabled='disabled'
+       :class="{isIncreased:data.isIncreased}" :indeterminate="isIndeterminate" v-model="checkAll">{{data.ClassName}}</el-checkbox>
       <span v-if="!data.isIncreased" @click="spread = !spread" :class="{spread:spread}">{{ spread ? '收起' : '展开' }} <i class="el-icon-caret-bottom"></i> </span>
     </header>
     <main v-show="spread" v-if="data.children">
-      <ChildSingleItemComp :value='getItemValue(it)' :title='title' @change="onChildItemChange"
+      <ChildSingleItemComp :value='getItemValue(it)' :title='title' @change="onChildItemChange" :disabled='disabled'
        :leftWidt='leftWidth' :rightItemWidth='rightItemWidth' v-for="it in data.children" :key="it.ID" :itemData='it' />
     </main>
   </section>
@@ -37,6 +38,10 @@ export default {
       type: String,
       default: '地区',
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     ChildSingleItemComp,
@@ -45,7 +50,6 @@ export default {
     checkAll: {
       get() {
         if (this.data.isIncreased) {
-          console.log(this.data, this.value);
           return this.selectedMinimumItemIDSList.includes(this.data.ID);
         }
         if (this.selectedMinimumItemListCount > 0 && this.selectedMinimumItemListCount === this.allMinimumItemList.length) return true;

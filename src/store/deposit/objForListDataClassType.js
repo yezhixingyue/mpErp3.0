@@ -21,7 +21,7 @@ export default class objForListDataClassType {
     //   }
     ]
 
-    CustomerGradeList = [
+    GradeList = [
     //   {
     //     ID: '',
     //     Name: ''
@@ -87,7 +87,7 @@ export default class objForListDataClassType {
         return false;
       }
 
-      if (obj.CustomerGradeList.length === 0) {
+      if (obj.GradeList.length === 0) {
         showError('请选择客户等级!');
         return false;
       }
@@ -109,7 +109,7 @@ export default class objForListDataClassType {
     static clear() {
       return {
         CustomerTypeList: [],
-        CustomerGradeList: [],
+        GradeList: [],
         ID: '',
         IsChargeFreight: true,
         LogisticsList: [],
@@ -122,7 +122,7 @@ export default class objForListDataClassType {
     static backfill(data) {
       const _obj = {
         CustomerTypeList: data.CustomerTypeList,
-        CustomerGradeList: data.CustomerGradeList,
+        GradeList: data.GradeList,
         ID: data.ID,
         IsChargeFreight: data.IsChargeFreight,
         LogisticsList: data.LogisticsList,
@@ -130,7 +130,7 @@ export default class objForListDataClassType {
         Percent: data.Percent,
         ProductList: data.ProductList,
       };
-      if (!_obj.CustomerGradeList) _obj.CustomerGradeList = [];
+      if (!_obj.GradeList) _obj.GradeList = [];
       return _obj;
     }
 }

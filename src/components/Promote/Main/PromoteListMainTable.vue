@@ -15,15 +15,7 @@
 
     <el-table-column min-width="140px" label="区域" class-name="is-font-size-12">
       <template slot-scope="scope">
-        <el-tooltip placement="top-start" :enterable='true' transition='none'
-         v-if="SellAreaArrayList[scope.$index] && SellAreaArrayList[scope.$index].length > 0">
-          <div slot="content">
-            <p v-for="(item, i) in SellAreaArrayList[scope.$index]" :key="item + '-' + i">
-              {{ item }}
-            </p>
-          </div>
-          <span class="area-span">{{ SellAreaArrayList[scope.$index].join(' ') }}</span>
-        </el-tooltip>
+        <TableItemShowComp :list='getAreaContent(scope.row)' effect='dark' />
       </template>
     </el-table-column>
 
@@ -50,7 +42,7 @@
 
     <el-table-column min-width="90px" show-overflow-tooltip label="用户等级">
       <template slot-scope="scope">
-        {{scope.row.CustomerGradeList | formatPromoteCustomerGrade}}
+        {{scope.row.GradeList | formatPromoteCustomerGrade}}
       </template>
     </el-table-column>
 
@@ -135,7 +127,9 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
-import { getAreaList, getProductArrayList, reg } from '../promoteUtils';
+import { getSelectedContentBySelectedDataAndAllData } from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/utils';
+import TableItemShowComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp';
+import { getProductArrayList, reg } from '../promoteUtils';
 
 export default {
   mixins: [tableMixin],
@@ -143,41 +137,41 @@ export default {
     ...mapState('promoteStore', ['promoteTableDataLoading', 'PromoteListData']),
     ...mapState('common', ['Permission']),
     ...mapGetters('common', ['allAreaTreeList', 'allProductClassify']),
-    SellAreaArrayList() {
-      if (this.allAreaTreeList.length === 0) return [];
-      const _list = this.PromoteListData.map(data => data.SellAreaArray);
-      const _tempList = _list.map(item => getAreaList(item, this.allAreaTreeList));
-      if (!_tempList || _tempList.length === 0) return '';
-      const list = _tempList.map(temp => {
-        const _textArr = [];
-        if (temp === '全部区域') return ['全部区域'];
-        temp.forEach(l1 => {
-          if (reg.test(l1.children[0])) {
-            _textArr.push(`${l1.ClassName}全部区域`);
-          } else {
-            // _textArr.push(`${l1.ClassName}：`);
-            let _text = `${l1.ClassName}：[`;
-            l1.children.forEach((l2, i2) => {
-              if (i2 > 0) _text += '、';
-              if (reg.test(l2.children[0])) {
-                _text += `${l2.ClassName}全部区域 `;
-              } else {
-                _text += `${l2.ClassName}: `;
-                l2.children.forEach((l3, i) => {
-                  if (i === 0) _text += `${l3.ClassName}`;
-                  else _text += `、${l3.ClassName}`;
-                });
-              }
-            });
-            _text += ' ]';
-            _textArr.push(_text);
-          }
-          // _text += ';';
-        });
-        return _textArr;
-      });
-      return list;
-    },
+    // SellAreaArrayList() {
+    //   if (this.allAreaTreeList.length === 0) return [];
+    //   const _list = this.PromoteListData.map(data => data.SellAreaArray);
+    //   const _tempList = _list.map(item => getAreaList(item, this.allAreaTreeList));
+    //   if (!_tempList || _tempList.length === 0) return '';
+    //   const list = _tempList.map(temp => {
+    //     const _textArr = [];
+    //     if (temp === '全部区域') return ['全部区域'];
+    //     temp.forEach(l1 => {
+    //       if (reg.test(l1.children[0])) {
+    //         _textArr.push(`${l1.ClassName}全部区域`);
+    //       } else {
+    //         // _textArr.push(`${l1.ClassName}：`);
+    //         let _text = `${l1.ClassName}：[`;
+    //         l1.children.forEach((l2, i2) => {
+    //           if (i2 > 0) _text += '、';
+    //           if (reg.test(l2.children[0])) {
+    //             _text += `${l2.ClassName}全部区域 `;
+    //           } else {
+    //             _text += `${l2.ClassName}: `;
+    //             l2.children.forEach((l3, i) => {
+    //               if (i === 0) _text += `${l3.ClassName}`;
+    //               else _text += `、${l3.ClassName}`;
+    //             });
+    //           }
+    //         });
+    //         _text += ' ]';
+    //         _textArr.push(_text);
+    //       }
+    //       // _text += ';';
+    //     });
+    //     return _textArr;
+    //   });
+    //   return list;
+    // },
     ProductListArray() {
       if (this.allProductClassify.length === 0) return [];
       let _list = this.PromoteListData.map(
@@ -221,6 +215,9 @@ export default {
       });
       return list;
     },
+  },
+  components: {
+    TableItemShowComp,
   },
   methods: {
     ...mapMutations('promoteStore', ['writeBackPromoteAddRequestObj', 'setPromoteStaffList', 'setStatusInPromoteListData']),
@@ -268,6 +265,11 @@ export default {
         return;
       }
       this.messageBox.warnCancelNullMsg('确定中止该活动吗 ?', () => this.go2Pause(data, index), null);
+    },
+    getAreaContent(item) {
+      const temp = { List: item.AreaList, IsIncludeIncreased: item.IsIncludeIncreasedArea };
+      const content = getSelectedContentBySelectedDataAndAllData(temp, this.allAreaTreeList);
+      return content;
     },
   },
 };

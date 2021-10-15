@@ -207,6 +207,7 @@ export default {
         ProductProperty: [],
         PartProperty: {}, // [key]: [] 数据形式
         MaterialProperty: [],
+        CommonProps: [],
       }; // 数据类型汇总对象列表
       this.list.forEach(it => { // 遍历每个属性列表，为每个列表属性归类
         // 1 确定位置
@@ -220,7 +221,11 @@ export default {
           if (this.curTargetID === it.Part.ID) key += '（当前目标）';
           if (_data.PartProperty[key] && Array.isArray(_data.PartProperty[key])) _data.PartProperty[key].push(it);
           else _data.PartProperty[key] = [it];
-        } else if (it.Module === 0) _data.MaterialProperty.push(it);
+        } else if (it.Module === 0) {
+          _data.MaterialProperty.push(it);
+        } else {
+          _data.CommonProps.push(it);
+        }
         // {
         //   // const ModuleName = this.$utils.getModuleName(it.Module);
         //   if (it.Module === 0) _data.MaterialProperty.push(it);

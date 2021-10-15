@@ -18,25 +18,29 @@
       :selectList='selectUserRankList'
       @change="onUserRankListChange"
       />
-    <tree-comp
+    <!-- <tree-comp
       title="销售区域"
       :treeList='allAreaTreeList'
       :defaultCheckedKeys='defaultCheckedKeys'
       :handleChangeFunc='handleChangeFunc'
       checkAllTitle='所有地区'
-      />
+      /> -->
+    <p class="is-font-size-14 is-bold" style="color:#444;margin-bottom:10px">销售区域：</p>
+    <NewAreaTreeSpreadComp v-model="AreaRange" :list='allAreaTreeList' />
   </section>
 </template>
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import CheckboxGroupComp from '@/components/common/CheckboxGroupComp.vue';
-import TreeComp from '@/components/common/TreeComp.vue';
+// import TreeComp from '@/components/common/TreeComp.vue';
+import NewAreaTreeSpreadComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp';
 
 export default {
   components: {
     CheckboxGroupComp,
-    TreeComp,
+    // TreeComp,
+    NewAreaTreeSpreadComp,
   },
   computed: {
     ...mapState('couponStore', ['condition2CouponSave']),
@@ -61,10 +65,23 @@ export default {
       return this.condition2CouponSave.CustomerTypeList.map(it => ({ CategoryID: it.ID }));
     },
     selectUserRankList() {
-      return this.condition2CouponSave.CustomerGradeList.map(it => ({ CategoryID: it.ID }));
+      return this.condition2CouponSave.GradeList.map(it => ({ CategoryID: it.ID }));
     },
-    defaultCheckedKeys() {
-      return this.condition2CouponSave.SellAreaArray.map(it => it.CountyID);
+    // defaultCheckedKeys() {
+    //   return this.condition2CouponSave.SellAreaArray.map(it => it.CountyID);
+    // },
+    AreaRange: {
+      get() {
+        return {
+          IsIncludeIncreased: this.condition2CouponSave ? this.condition2CouponSave.IsIncludeIncreasedArea : false,
+          List: this.condition2CouponSave ? this.condition2CouponSave.AreaList : [],
+        };
+      },
+      set(val) {
+        const { IsIncludeIncreased, List } = val;
+        this.setCondition2CouponSave([['IsIncludeIncreasedArea', ''], IsIncludeIncreased || false]);
+        this.setCondition2CouponSave([['AreaList', ''], List || []]);
+      },
     },
   },
   methods: {
@@ -79,12 +96,12 @@ export default {
     },
     onUserRankListChange(list) {
       const _list = list.map(it => ({ ID: it.CategoryID }));
-      this.setCondition2CouponSave([['CustomerGradeList', ''], _list]);
+      this.setCondition2CouponSave([['GradeList', ''], _list]);
     },
-    handleChangeFunc(checkedNodes) {
-      const _list = checkedNodes.filter(it => it.Level === 3).map(it => ({ CountyID: it.ID }));
-      this.setCondition2CouponSave([['SellAreaArray', ''], _list]);
-    },
+    // handleChangeFunc(checkedNodes) {
+    //   const _list = checkedNodes.filter(it => it.Level === 3).map(it => ({ CountyID: it.ID }));
+    //   this.setCondition2CouponSave([['SellAreaArray', ''], _list]);
+    // },
   },
   mounted() {
     this.getUserClassify();

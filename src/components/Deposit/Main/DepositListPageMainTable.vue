@@ -41,7 +41,7 @@
       }}</template>
     </el-table-column>
     <el-table-column show-overflow-tooltip min-width="210px" label="客户等级">
-      <template slot-scope="scope">{{scope.row.CustomerGradeList | formatPromoteCustomerType
+      <template slot-scope="scope">{{scope.row.GradeList | formatPromoteCustomerType
       }}</template>
     </el-table-column>
     <el-table-column show-overflow-tooltip min-width="260px" label="物流">

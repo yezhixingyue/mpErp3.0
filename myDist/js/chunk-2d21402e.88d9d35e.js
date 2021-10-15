@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([["chunk-2d21402e"],{aeb6:function(e,n,t){"use strict";t.r(n);var s={name:"ExpressPriceSettingListPage"},c=t("2877"),a=Object(c.a)(s,(function(){var e=this,n=e.$createElement;return(e._self._c||n)("section",[e._v(" 物流管理价格设置页面 --- 针对单个物流项目 -- 路径上取ID ")])}),[],!1,null,null,null);n.default=a.exports}}]);

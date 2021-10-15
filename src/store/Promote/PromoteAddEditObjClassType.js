@@ -35,18 +35,23 @@ export default class PromoteAddObj {
     CustomerTypeList = [ // 客户类型列表
     ]
 
-    CustomerGradeList = [ // 客户等级列表
+    GradeList = [ // 客户等级列表
     ]
 
     OrderTypeList = [ // 下单方式列表
     ]
 
-    SellAreaArray = [ // 销售区域列表
-    ]
+    // SellAreaArray = [ // 销售区域列表
+    // ]
 
+    IsIncludeIncreasedArea = false // // 销售区域列表 是否包含新建区域
+
+    AreaList = [] // // 销售区域列表
 
     ProductList = [ // 产品信息
     ]
+
+    commonPropertyList = [] // 公共属性列表（条件弹窗使用）
 
     static check(obj) {
       if (!obj.Title || obj.Title.length >= 20) return '活动标题不能为空且不能超过20个字符!';
@@ -64,8 +69,8 @@ export default class PromoteAddObj {
       if (!obj.ApplyUser.StaffID) return '请输入申请人';
       if (obj.OrderTypeList.length === 0) return '请选择下单渠道';
       if (obj.CustomerTypeList.length === 0) return '请选择客户类型';
-      if (obj.CustomerGradeList.length === 0) return '请选择客户等级';
-      if (obj.SellAreaArray.length === 0) return '请选择销售区域';
+      if (obj.GradeList.length === 0) return '请选择客户等级';
+      if (obj.AreaList.length === 0) return '请选择销售区域';
       if (obj.ProductList.length === 0) return '请添加活动商品';
       for (let i = 0; i < obj.ProductList.length; i += 1) {
         if (obj.ProductList[i].List.length === 0) return `第[ ${i + 1} ]个价格表缺少活动价格设置`;
@@ -77,6 +82,7 @@ export default class PromoteAddObj {
       const _obj = { ...obj };
       if (!_obj.PromoteID) delete _obj.PromoteID;
       if (!_obj.Status) delete _obj.Status;
+      _obj.PeriodList = obj.PeriodList.filter(it => (it.Value && obj.PeriodType === 1 && it.isChecked) || (!it.Value && obj.PeriodType === 0));
       // if (_obj.StartNow) delete _obj.ValidStartTime;
       return _obj;
     }
@@ -86,37 +92,55 @@ export default class PromoteAddObj {
     }
 
     static back(obj) {
-    //  console.log(obj);
-      const _SellAreaArray = obj.SellAreaArray.map(item => ({ CountyID: item.CountyID }));
+      // const _SellAreaArray = obj.SellAreaArray.map(item => ({ CountyID: item.CountyID }));
       const _ProductList = [];
       obj.ProductList.forEach((level1, i1) => {
         _ProductList[i1] = {};
         _ProductList[i1].LimitList = [...level1.LimitList];
-        _ProductList[i1].List = [];
-        level1.List.forEach((level2, i2) => {
-          const { PriceUnit, Price, Constraint } = level2;
-          //  console.log(level2, 'level2');
-          _ProductList[i1].List[i2] = {};
-          _ProductList[i1].List[i2].Price = Price;
-          _ProductList[i1].List[i2].PriceUnit = PriceUnit;
-          _ProductList[i1].List[i2].Constraint = {};
-          _ProductList[i1].List[i2].Constraint.FilterType = Constraint.FilterType;
-          _ProductList[i1].List[i2].Constraint.ItemList = [];
-          Constraint.ItemList.forEach(item => {
-            const { Operator, Value, PropertyType, PropertyID, GroupID, PartID, CraftID, ProductID } = item;
-            const _obj = {
-              ProductID,
-              PartID,
-              CraftID,
-              GroupID,
-              PropertyID,
-              PropertyType,
-              Operator,
-              Value,
-            };
-            _ProductList[i1].List[i2].Constraint.ItemList.push(_obj);
-          });
-        });
+        _ProductList[i1].List = [...level1.List];
+        _ProductList[i1].PropertyList = [];
+        // level1.List.forEach((level2, i2) => {
+        //   const { PriceUnit, Price, Constraint } = level2;
+        //   //  console.log(level2, 'level2');
+        //   _ProductList[i1].List[i2] = {};
+        //   _ProductList[i1].List[i2].Price = Price;
+        //   _ProductList[i1].List[i2].PriceUnit = PriceUnit;
+        //   _ProductList[i1].List[i2].Constraint = {};
+        //   _ProductList[i1].List[i2].Constraint.FilterType = Constraint.FilterType;
+        //   _ProductList[i1].List[i2].Constraint.ItemList = [];
+        //   Constraint.ItemList.forEach(item => {
+        //     const { Operator, Value, PropertyType, PropertyID, GroupID, PartID, CraftID, ProductID } = item;
+        //     const _obj = {
+        //       ProductID,
+        //       PartID,
+        //       CraftID,
+        //       GroupID,
+        //       PropertyID,
+        //       PropertyType,
+        //       Operator,
+        //       Value,
+        //     };
+        //     _ProductList[i1].List[i2].Constraint.ItemList.push(_obj);
+        //   });
+        // });
+      });
+      const _PeriodList = [
+        { Label: '时间段', Value: '', StartTime: '', EndTime: '' }, // 按天时间段
+        { Label: '周一', Value: 1, isChecked: false, StartTime: '', EndTime: '' }, // 周一
+        { Label: '周二', Value: 2, isChecked: false, StartTime: '', EndTime: '' },
+        { Label: '周三', Value: 3, isChecked: false, StartTime: '', EndTime: '' },
+        { Label: '周四', Value: 4, isChecked: false, StartTime: '', EndTime: '' },
+        { Label: '周五', Value: 5, isChecked: false, StartTime: '', EndTime: '' },
+        { Label: '周六', Value: 6, isChecked: false, StartTime: '', EndTime: '' },
+        { Label: '周日', Value: 7, isChecked: false, StartTime: '', EndTime: '' }, // 周日
+      ];
+      obj.PeriodList.forEach(it => {
+        const t = _PeriodList.find(_it => _it.Value === it.Value || (!_it.Value && !it.Value));
+        if (t) {
+          t.isChecked = true;
+          t.StartTime = it.StartTime;
+          t.EndTime = it.EndTime;
+        }
       });
       const _obj = {
         PromoteID: obj.PromoteID,
@@ -125,14 +149,19 @@ export default class PromoteAddObj {
           StaffID: obj.ApplyUser.StaffID,
         },
         Status: obj.Status,
-        StartNow: false,
-        ValidStartTime: `${obj.ValidStartTime.split('.')[0]}.000Z`,
-        ValidEndTime: `${obj.ValidEndTime.split('.')[0]}.997Z`,
+        // StartNow: false,
+        ValidStartTime: obj.ValidStartTime,
+        ValidEndTime: obj.ValidEndTime,
         CustomerTypeList: obj.CustomerTypeList.map(it => ({ ID: it.ID })),
-        CustomerGradeList: obj.CustomerGradeList.map(it => ({ ID: it.ID })),
+        GradeList: obj.GradeList.map(it => ({ ID: it.ID })),
         OrderTypeList: obj.OrderTypeList.map(it => ({ ID: it.ID })),
-        SellAreaArray: _SellAreaArray,
+        // SellAreaArray: _SellAreaArray,
         ProductList: _ProductList,
+        commonPropertyList: [],
+        PeriodType: obj.PeriodType,
+        PeriodList: _PeriodList,
+        AreaList: obj.AreaList,
+        IsIncludeIncreasedArea: obj.IsIncludeIncreasedArea,
       };
       return _obj;
     }

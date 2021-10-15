@@ -79,7 +79,7 @@ export default {
       return this.objForDepositAdd.LogisticsList.map(it => ({ ID: it.ID }));
     },
     selectUserRankList() {
-      return this.objForDepositAdd.CustomerGradeList.map(it => ({ CategoryID: it.ID }));
+      return this.objForDepositAdd.GradeList.map(it => ({ CategoryID: it.ID }));
     },
     filterUserRankList() {
       if (!this.userRankList) return [];
@@ -99,7 +99,7 @@ export default {
     },
     onUserRankListChange(list) {
       const _list = list.map(it => ({ ID: it.CategoryID }));
-      this.$store.commit('deposit/setObjForDepositAdd', [['CustomerGradeList', ''], _list]);
+      this.$store.commit('deposit/setObjForDepositAdd', [['GradeList', ''], _list]);
     },
     onSubExpressListChange(list) {
       const _list = list.map(it => ({ ID: it.ID }));

@@ -106,12 +106,19 @@ export default {
     /** 请求对象信息中删除价格 (或替换)
      ---------------------------------------- */
     delPrice4AddRequestObj(state, [ProductIndex, ConstraintIndex, data]) {
-    //  console.log(data);
       if (!data) {
         state.promoteAddRequestObj.ProductList[ProductIndex].List.splice(ConstraintIndex, 1);
       } else {
         state.promoteAddRequestObj.ProductList[ProductIndex].List.splice(ConstraintIndex, 1, data);
       }
+    },
+    /** 请求对象信息中添加公共属性列表 和 单产品单个项目属性列表
+     ---------------------------------------- */
+    addCommonPropertyListToAddRequestObj(state, commonList) {
+      state.promoteAddRequestObj.commonPropertyList = commonList;
+    },
+    addSingleProductPropertyListToAddRequestObj(state, [list, index]) {
+      state.promoteAddRequestObj.ProductList[index].PropertyList = list;
     },
     /** 请求对象信息中删除产品项
      ---------------------------------------- */

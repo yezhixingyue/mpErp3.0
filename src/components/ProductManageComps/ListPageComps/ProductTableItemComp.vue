@@ -115,7 +115,7 @@ export default {
       if (!this.itemData || !Array.isArray(this.itemData.TypeList) || this.itemData.TypeList.length < this.ProductElementTypeList.length) return false;
       const list = this.ProductElementTypeList.map(({ ID }) => {
         const t = this.itemData.TypeList.find(_it => _it.First === ID);
-        return t ? t.Second : null;
+        return t || null;
       }).filter(it => !it);
       if (list.length > 0) return false;
       return true;

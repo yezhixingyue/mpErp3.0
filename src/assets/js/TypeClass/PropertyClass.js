@@ -14,6 +14,7 @@ export const ElementSelectTypeEnum = [
   { label: ' 表数据', ID: 8, nickName: '表数据' },
   { label: ' 费用', ID: 9, nickName: '费用' },
   { label: ' 部件', ID: 10, nickName: '部件' },
+  { label: ' 公共属性', ID: 11, nickName: '公共属性' },
   { label: ' 其他', ID: 254, nickName: '其他' },
   { label: ' 常量', ID: 255, nickName: '常量' },
 ];
@@ -360,7 +361,7 @@ export default class PropertyClass {
         _operator += str;
       }
       if (ValueType === 5) _operator += '时';
-      const _name = DisplayContent.replace(/\[|\]/g, '');
+      const _name = DisplayContent ? DisplayContent.replace(/\[|\]/g, '') : '';
       let _val = '';
       if (ValueList) {
         if (ValueList.length === 1) {

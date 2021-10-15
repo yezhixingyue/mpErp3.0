@@ -1,5 +1,5 @@
 <template>
-  <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
+  <el-tooltip :effect="effect" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
     <div slot="content">
       <div v-for="(res, ri) in tooltipList" :key="ri">
         <p v-if="typeof res === 'string'">{{res}}</p>
@@ -20,6 +20,10 @@
 export default {
   props: {
     list: {},
+    effect: {
+      type: String,
+      default: 'light',
+    },
   },
   computed: {
     showContent() {

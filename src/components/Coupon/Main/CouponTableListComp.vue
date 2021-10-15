@@ -33,15 +33,8 @@
       </template>
     </el-table-column>
     <el-table-column min-width="130px" label="使用区域">
-      <template slot-scope="scope" v-if="SellAreaArrayList && SellAreaArrayList[scope.$index]">
-        <el-tooltip placement="top-start" :enterable='false' transition='none'>
-          <div slot="content">
-            <p v-for="(item, i) in SellAreaArrayList[scope.$index]" :key="item + '-' + i">
-              {{ item }}
-            </p>
-          </div>
-          <span class="area-span">{{ SellAreaArrayList[scope.$index].join(' ') }}</span>
-        </el-tooltip>
+      <template slot-scope="scope">
+        <TableItemShowComp :list='getAreaContent(scope.row)' effect='dark' />
       </template>
     </el-table-column>
     <el-table-column show-overflow-tooltip min-width="78px" label="用户类型">
@@ -49,7 +42,7 @@
       }}</template>
     </el-table-column>
     <el-table-column show-overflow-tooltip min-width="78px" label="用户等级">
-      <template slot-scope="scope">{{scope.row.CustomerGradeList | formatPromoteCustomerGrade}}
+      <template slot-scope="scope">{{scope.row.GradeList | formatPromoteCustomerGrade}}
       </template>
     </el-table-column>
 
@@ -164,10 +157,15 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
+import TableItemShowComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp';
+import { getSelectedContentBySelectedDataAndAllData } from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/utils';
 import { getAreaList, getProductArrayList, reg } from '../../Promote/promoteUtils';
 
 export default {
   mixins: [tableMixin],
+  components: {
+    TableItemShowComp,
+  },
   computed: {
     ...mapState('couponStore', ['couponListData', 'tableDataLoading']),
     ...mapGetters('common', ['allProductClassify', 'allAreaTreeList']),
@@ -276,6 +274,11 @@ export default {
       this.$store.commit('couponStore/setCondition2CouponUseList', [['ID', ''], rowData.CouponID]);
       this.$store.commit('couponStore/setInfo2CouponUseListPage', [rowData, productInfo]);
       this.$router.push({ name: 'couponDetailList' });
+    },
+    getAreaContent(item) {
+      const temp = { List: item.AreaList, IsIncludeIncreased: item.IsIncludeIncreasedArea };
+      const content = getSelectedContentBySelectedDataAndAllData(temp, this.allAreaTreeList);
+      return content;
     },
   },
   async mounted() {

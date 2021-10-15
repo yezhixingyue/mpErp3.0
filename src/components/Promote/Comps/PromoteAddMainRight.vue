@@ -34,6 +34,7 @@
 import { mapGetters, mapActions, mapMutations, mapState } from 'vuex';
 import VTypeTitle from '@/components/ServiceAfterSale/EditDialog/VTypeTitle.vue';
 import ProductsCheckoutDiaComp from '@/components/common/ProductsCheckoutDiaComp.vue';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import PromoteProductPriceItem from './PromoteProductPriceItem.vue';
 
 export default {
@@ -97,7 +98,7 @@ export default {
       const List = [];
       const _tempObj1 = [...this.promoteAddRequestObj.ProductList];
       let _tempObj2;
-      const _obj = { LimitList, List };
+      const _obj = { LimitList, List, PropertyList: [] };
       if (!this.openTypeIndex2ProductDia && this.openTypeIndex2ProductDia !== 0) { // 完成新增
         _tempObj2 = [..._tempObj1, _obj];
         this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
@@ -111,40 +112,64 @@ export default {
           // 未发生变化
           return true;
         }
-        // eslint-disable-next-line max-len
-        if ((len2 === 1 && len1 > 1) || (len2 === 1 && len1 === 1 && target.LimitList[0].ProductID !== LimitList[0].ProductID)) {
-          this.messageBox.warnCancelBox('确定修改产品信息吗 ?', '[ 该操作会导致此价格表清空! ]', () => {
-            _tempObj2 = _tempObj1.map((it, i) => {
-              if (i !== this.openTypeIndex2ProductDia) {
-                return it;
-              }
-              return { ...it, ..._obj };
-            });
-            this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
-            func();
-          }, null);
-        } else {
+        if (len1 > 1 && len2 > 1) {
           _tempObj2 = _tempObj1.map((it, i) => {
             if (i !== this.openTypeIndex2ProductDia) {
               return it;
             }
             const _it = JSON.parse(JSON.stringify(it));
-            if (LimitList.length === 1) {
-              const { ProductID } = LimitList[0];
-              _it.List.forEach(sub => {
-                sub.Constraint.ItemList.forEach(item => {
-                  // eslint-disable-next-line no-param-reassign
-                  item.ProductID = ProductID;
-                });
-              });
-            }
-            return { ..._it, LimitList };
+            return { ..._it, LimitList, PropertyList: [] };
           });
           this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
           return true;
         }
+        this.messageBox.warnCancelBox('确定修改产品信息吗 ?', '[ 该操作会导致此价格表清空! ]', () => {
+          _tempObj2 = _tempObj1.map((it, i) => {
+            if (i !== this.openTypeIndex2ProductDia) {
+              return it;
+            }
+            return { ...it, ..._obj };
+          });
+          this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
+          func();
+        }, null);
+        // if ((len2 === 1 && len1 > 1) || (len2 === 1 && len1 === 1 && target.LimitList[0].ProductID !== LimitList[0].ProductID)) {
+        //   this.messageBox.warnCancelBox('确定修改产品信息吗 ?', '[ 该操作会导致此价格表清空! ]', () => {
+        //     _tempObj2 = _tempObj1.map((it, i) => {
+        //       if (i !== this.openTypeIndex2ProductDia) {
+        //         return it;
+        //       }
+        //       return { ...it, ..._obj };
+        //     });
+        //     this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
+        //     func();
+        //   }, null);
+        // } else {
+        //   _tempObj2 = _tempObj1.map((it, i) => {
+        //     if (i !== this.openTypeIndex2ProductDia) {
+        //       return it;
+        //     }
+        //     const _it = JSON.parse(JSON.stringify(it));
+        //     return { ..._it, LimitList, PropertyList: [] };
+        //   });
+        //   this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
+        //   return true;
+        // }
       }
     },
+  },
+  async created() {
+    if (this.promoteAddRequestObj.ProductList.length > 0) {
+      const t = this.promoteAddRequestObj.ProductList.find(it => it.LimitList.length > 0);
+      if (t) {
+        // 获取通用列表
+        const list = await PropertyClass.getPropertyList({ UseModule: 41 });
+        if (list) {
+          this.PropertyList = list;
+          this.$store.commit('promoteStore/addCommonPropertyListToAddRequestObj', list);
+        }
+      }
+    }
   },
   mounted() {
     this.getProductList();

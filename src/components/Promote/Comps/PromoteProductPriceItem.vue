@@ -53,7 +53,7 @@
     </div>
     <div class="content">
         <el-table :data="localList" style="width: 100%" border stripe>
-            <el-table-column label="条件" show-overflow-tooltip>
+            <el-table-column label="条件">
               <template slot-scope="scope">
                 <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start"
                  v-if="typeof scope.row.conditionText === 'object'">
@@ -68,7 +68,7 @@
                       <span v-else style="margin-left:2px">；</span>
                     </p>
                   </div>
-                  <div class="common-property-condition-text-content-box">
+                  <div class="common-property-condition-text-content-box" style="text-align:left">
                     <p class="if-box"><span class="is-origin">如果</span> {{scope.row.FilterTypeText}}：</p>
                     <p v-for="(it, i) in scope.row.conditionText" :key="it.name + 'content' + i">
                       <span v-if="i > 0" class="type">{{scope.row.Constraint.FilterType === 1 ? '且' : '或'}}</span>
@@ -162,18 +162,17 @@ export default {
   },
   computed: {
     ...mapState('common', ['PriceUnitList', 'OperatorKeyValueList']),
+    ...mapState('promoteStore', ['promoteAddRequestObj']),
     ...mapGetters('common', ['allProductClassify']),
     productNameList() {
       if (!this.data || this.data.length === 0) return '';
       if (this.allProductClassify.length === 0) return '';
       const _list = getProductArrayList(this.data.LimitList, this.allProductClassify);
-      //  console.log(_list);
       const _textArr = [];
       // const reg = /^全部/;
       if (_list === '全部产品') return ['全部产品'];
       _list.forEach(l1 => {
         if (reg.test(l1.children[0])) {
-        //  console.log(l1.ClassName);
           _textArr.push({ [l1.ClassName]: [{ [`全部${l1.ClassName}产品`]: [] }] });
         } else {
           // _textArr.push(`${l1.ClassName}：[`);
@@ -193,7 +192,6 @@ export default {
                 _tempobj[l2.ClassName].push(l3.ClassName);
               });
               _obj[l1.ClassName].push(_tempobj);
-            //  console.log(_obj);
             }
           });
           _textArr.push(_obj);
@@ -236,15 +234,31 @@ export default {
     productList() {
       return this.data.LimitList;
     },
-    ConditionTextList() {
+    localList() {
+      return this.tableDataList.map(it => ({
+        ...it,
+        FilterTypeText: it.Constraint && it.Constraint.FilterType === 1 ? '满足所有' : '满足任一',
+      }));
+    },
+    ComparePropertyList() {
+      if (Array.isArray(this.promoteAddRequestObj.ProductList[this.index].PropertyList)
+       && this.promoteAddRequestObj.ProductList[this.index].PropertyList.length > 0) {
+        return this.promoteAddRequestObj.ProductList[this.index].PropertyList;
+      }
+      if (Array.isArray(this.promoteAddRequestObj.commonPropertyList) && this.promoteAddRequestObj.commonPropertyList.length > 0) {
+        return this.promoteAddRequestObj.commonPropertyList;
+      }
       return [];
     },
-    localList() {
-      return this.data.List.map(it => ({
-        ...it,
-        FilterTypeText: it.Constraint.FilterType === 1 ? '满足所有' : '满足任一',
-        conditionText: this.getConditionText(it.Constraint.ItemList),
-      }));
+    tableDataList() {
+      if (!this.data.List || this.data.List.length === 0) return [];
+      if (!this.ComparePropertyList || this.ComparePropertyList.length === 0) return this.data.List;
+      const list = this.data.List.map(it => {
+        if (!it.Constraint) return { ...it, conditionText: '无' };
+        const [Constraint, conditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.ComparePropertyList);
+        return { ...it, Constraint, conditionText };
+      });
+      return list;
     },
   },
   methods: {
@@ -281,29 +295,20 @@ export default {
         },
       });
     },
-    preRequestConditionList() {
-      let positionID;
+    async preRequestConditionList() {
+      let ProductID;
       if (this.data.LimitList.length > 1) {
-        positionID = '';
+        ProductID = '';
       } else if (this.data.LimitList.length === 1) {
-        positionID = this.data.LimitList[0].ProductID;
+        ProductID = this.data.LimitList[0].ProductID;
       } else {
         return;
       }
-      console.log(this.data.LimitList, positionID);
-      // this.requestConditionList(positionID);
-    },
-    getConditionText(list) {
-      const str = PropertyClass.getPropertyConditionText(list, this.PropertyList);
-      return str || '无';
-    },
-  },
-  watch: {
-    productList(curProducts, preProducts) {
-      if (curProducts.length > 1 && preProducts.length === 1) this.preRequestConditionList();
-      if (curProducts.length === 1 && preProducts.length > 1) this.preRequestConditionList();
-      if (curProducts.length === 1 && preProducts.length === 1) {
-        if (curProducts[0].ProductID !== preProducts[0].ProductID) this.preRequestConditionList();
+      if (ProductID) {
+        const list = await PropertyClass.getPropertyList({ UseModule: 41, ProductID });
+        if (list) {
+          this.$store.commit('promoteStore/addSingleProductPropertyListToAddRequestObj', [list, this.index]);
+        }
       }
     },
   },

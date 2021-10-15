@@ -8,7 +8,7 @@
       <li class="date-range">
         <span>时间范围：</span>
         <el-date-picker
-          :isDisabled="isDisabled"
+          :disabled="isDisabled"
           v-model="StartDate"
           value-format="yyyy-MM-dd"
           size="small"
@@ -16,7 +16,7 @@
         ></el-date-picker>
         <i>—</i>
         <el-date-picker
-          :isDisabled="isDisabled"
+          :disabled="isDisabled"
           v-model="EndDate"
           value-format="yyyy-MM-dd"
           size="small"
@@ -26,7 +26,7 @@
       <li class="date-cycle">
         <label>周期：</label>
         <div class="content">
-          <el-radio-group v-model="PeriodType" :isDisabled="isDisabled">
+          <el-radio-group v-model="PeriodType" :disabled="isDisabled">
             <el-radio :label="0">按天</el-radio>
             <el-radio :label="1">按周</el-radio>
           </el-radio-group>
@@ -36,7 +36,7 @@
                 :value='it.isChecked'
                 @change="onPeriodItemCheckedChange($event, it.Value)"
                 v-if="it.Value"
-                :isDisabled="isDisabled"
+                :disabled="isDisabled"
                 >{{ it.Label }}</el-checkbox
               >
               <label v-else>{{ it.Label }}</label>
@@ -46,7 +46,7 @@
                 @input="onPeriodItemTimeChange($event, it.Value, 'StartTime')"
                 value-format='HH:mm'
                 :picker-options="{ format: 'HH:mm' }"
-                :isDisabled="isDisabled"
+                :disabled="isDisabled"
                 :default-value='defaultBeginTime'
                 placeholder="00:00"
                 size="mini"
@@ -58,7 +58,7 @@
                 :editable='false'
                 @input="onPeriodItemTimeChange($event, it.Value, 'EndTime')"
                 :picker-options="{ format: 'HH:mm' }"
-                :isDisabled="isDisabled"
+                :disabled="isDisabled"
                 value-format='HH:mm'
                 placeholder="23:59"
                 :default-value='defaultEndTime'
@@ -112,14 +112,16 @@
       </li>
       <li class="area-wrap">
         <!-- 销售区域 -->
-        <tree-comp
+        <!-- <tree-comp
           :treeList="allAreaTreeList"
           :defaultCheckedKeys="defaultCheckedKeys"
           :handleChangeFunc="handleChangeFunc"
           :shouldDisabledList="shouldDisabledList"
           :showDisabled="isDisabled"
           :isDisabled="isDisabled"
-        />
+        /> -->
+        <p class="is-font-size-14 is-bold" style="color:#444;margin-bottom:10px">销售区域：</p>
+        <NewAreaTreeSpreadComp v-model="AreaRange" :list='allAreaTreeList' :disabled="isDisabled" />
       </li>
     </ul>
   </div>
@@ -131,7 +133,8 @@ import FieldInput from '@/components/common/FieldInput.vue';
 // import DisconnectTypeDatePickerComp from '@/components/common/DisconnectTypeDatePickerComp.vue';
 import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import CheckboxGroupComp from '@/components/common/CheckboxGroupComp.vue';
-import TreeComp from '@/components/common/TreeComp.vue';
+// import TreeComp from '@/components/common/TreeComp.vue';
+import NewAreaTreeSpreadComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp';
 import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 
 export default {
@@ -140,7 +143,8 @@ export default {
     // DisconnectTypeDatePickerComp,
     StaffSelector,
     CheckboxGroupComp,
-    TreeComp,
+    // TreeComp,
+    NewAreaTreeSpreadComp,
   },
   computed: {
     ...mapState('common', [
@@ -171,7 +175,7 @@ export default {
       }));
     },
     selectUserRankList() {
-      return this.promoteAddRequestObj.CustomerGradeList.map((it) => ({
+      return this.promoteAddRequestObj.GradeList.map((it) => ({
         CategoryID: it.ID,
       }));
     },
@@ -259,6 +263,19 @@ export default {
     defaultEndTime() {
       return new Date(new Date(new Date(new Date().setHours(23)).setMinutes(59)).setSeconds(59));
     },
+    AreaRange: {
+      get() {
+        return {
+          IsIncludeIncreased: this.promoteAddRequestObj ? this.promoteAddRequestObj.IsIncludeIncreasedArea : false,
+          List: this.promoteAddRequestObj ? this.promoteAddRequestObj.AreaList : [],
+        };
+      },
+      set(val) {
+        const { IsIncludeIncreased, List } = val;
+        this.setPromoteAddRequestObj([['IsIncludeIncreasedArea', ''], IsIncludeIncreased || false]);
+        this.setPromoteAddRequestObj([['AreaList', ''], List || []]);
+      },
+    },
   },
   methods: {
     ...mapMutations('promoteStore', ['setPromoteAddRequestObj']),
@@ -272,7 +289,7 @@ export default {
     },
     onUserRankListChange(list) {
       const _list = list.map((it) => ({ ID: it.CategoryID }));
-      this.setPromoteAddRequestObj([['CustomerGradeList', ''], _list]);
+      this.setPromoteAddRequestObj([['GradeList', ''], _list]);
     },
     handleChangeFunc(checkedNodes) {
       const _list = checkedNodes
@@ -288,7 +305,6 @@ export default {
       this.setPromoteAddRequestObj([['PeriodList', ''], list]);
     },
     onPeriodItemTimeChange(e, itemValue, type) {
-      console.log(e);
       const list = this.promoteAddRequestObj.PeriodList.map(it => {
         if (it.Value !== itemValue) return it;
         return { ...it, [type]: e };

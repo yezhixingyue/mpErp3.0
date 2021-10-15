@@ -62,14 +62,18 @@ export default class Condition2CouponSaveClassType {
     CustomerTypeList = [ // 下单渠道
     ]
 
-    CustomerGradeList = [ // 客户等级
+    GradeList = [ // 客户等级
     ]
 
     OrderTypeList = [ // 下单类型
     ]
 
-    SellAreaArray = [ // 区域
-    ]
+    // SellAreaArray = [ // 区域
+    // ]
+
+    IsIncludeIncreasedArea = false // // 销售区域列表 是否包含新建区域
+
+    AreaList = [] // // 销售区域列表
 
 
     static check(obj) {
@@ -153,11 +157,11 @@ export default class Condition2CouponSaveClassType {
         showError('请选择客户类型');
         return false;
       }
-      if (obj.CustomerGradeList.length === 0) {
+      if (obj.GradeList.length === 0) {
         showError('请选择客户等级');
         return false;
       }
-      if (obj.SellAreaArray.length === 0) {
+      if (obj.AreaList.length === 0) {
         showError('请选择销售区域');
         return false;
       }
@@ -178,7 +182,7 @@ export default class Condition2CouponSaveClassType {
       _condition2CouponSave.ApplyUser = data.ApplyUser;
       _condition2CouponSave.CouponID = data.CouponID;
 
-      _condition2CouponSave.CustomerGradeList = data.CustomerGradeList.map(it => ({ ID: it.ID }));
+      _condition2CouponSave.GradeList = data.GradeList.map(it => ({ ID: it.ID }));
       _condition2CouponSave.CustomerTypeList = data.CustomerTypeList.map(it => ({ ID: it.ID }));
       _condition2CouponSave.OrderTypeList = data.OrderTypeList.map(it => ({ ID: it.ID }));
 
@@ -196,7 +200,11 @@ export default class Condition2CouponSaveClassType {
       _condition2CouponSave.ValidStartTime = ValidStartTime;
       _condition2CouponSave.ValidEndTime = ValidEndTime;
 
-      _condition2CouponSave.SellAreaArray = data.SellAreaArray;
+      // _condition2CouponSave.SellAreaArray = data.SellAreaArray;
+
+      _condition2CouponSave.AreaList = data.AreaList;
+
+      _condition2CouponSave.IsIncludeIncreasedArea = data.IsIncludeIncreasedArea;
 
       return _condition2CouponSave;
     }

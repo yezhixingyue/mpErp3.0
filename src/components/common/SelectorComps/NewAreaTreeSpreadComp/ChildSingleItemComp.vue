@@ -1,11 +1,11 @@
 <template>
   <section class="mp-erp-common-comps-new-tree-comp-child-single-item-comp-wrap">
     <header>
-      <el-checkbox :class="{isIncreased:itemData.isIncreased}"
+      <el-checkbox :class="{isIncreased:itemData.isIncreased}" :disabled='disabled'
        :style='`width:${leftWidth}`' :indeterminate="isIndeterminate" v-model="checkAll">{{itemData.ClassName}}</el-checkbox>
     </header>
     <main>
-      <el-checkbox-group v-model="checkList">
+      <el-checkbox-group v-model="checkList" :disabled='disabled'>
         <el-checkbox :class="{isIncreased:it.isIncreased}"
          :style='`width:${rightItemWidth}`' :label="it.ID" v-for="it in itemData.children" :key="it.ClassName">{{it.ClassName}}</el-checkbox>
       </el-checkbox-group>
@@ -37,6 +37,10 @@ export default {
     title: {
       type: String,
       default: '地区',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -81,11 +85,9 @@ export default {
         return this.selectedMinimumItemIDSList;
       },
       set(list) {
-        console.log('checkList', list, this.itemData);
         const temp = { ...this.itemData };
         temp.children = temp.children.filter(it => list.includes(it.ID));
         const tempData = getCheckAllListByCurDataList([temp])[0];
-        console.log(tempData);
         this.$emit('change', tempData);
       },
     },

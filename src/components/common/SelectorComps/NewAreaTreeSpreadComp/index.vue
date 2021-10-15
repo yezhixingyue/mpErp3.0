@@ -1,7 +1,7 @@
 <template>
   <article class="mp-erp-common-comps-new-tree-comp-wrap">
     <header>
-      <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll">所有{{title}}</el-checkbox>
+      <el-checkbox :indeterminate="isIndeterminate" :disabled='disabled' v-model="checkAll">所有{{title}}</el-checkbox>
     </header>
     <main>
       <SingleItemComp
@@ -12,6 +12,7 @@
         :value='getItemValue(it)'
         @change='onItemChange'
         :leftWidt='leftWidth'
+        :disabled='disabled'
         :rightItemWidth='rightItemWidth'
         />
     </main>
@@ -51,6 +52,10 @@ export default {
     withNew: {
       type: Boolean,
       default: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {
@@ -128,6 +133,18 @@ export default {
       }
     }
     margin-bottom: 12px;
+  }
+  .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner,
+  .el-checkbox__input.is-disabled.is-indeterminate .el-checkbox__inner {
+    background-color: #26bcf9;
+    border-color: #26bcf9;
+    &::after {
+      border-color: #fff;
+    }
+    &::before {
+      border-color: #fff;
+      background-color: #fff;
+    }
   }
 }
 </style>
