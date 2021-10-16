@@ -54,7 +54,7 @@ export default class PromoteAddObj {
     commonPropertyList = [] // 公共属性列表（条件弹窗使用）
 
     static check(obj) {
-      if (!obj.Title || obj.Title.length >= 20) return '活动标题不能为空且不能超过20个字符!';
+      if (!obj.Title || obj.Title.length > 20) return '活动标题不能为空且不能超过20个字符!';
       if (!obj.ValidStartTime) return '请输入活动开始时间';
       if (new Date(obj.ValidStartTime) - Date.now() <= 0) return '活动开始时间不能早于当前时间';
       if (new Date(obj.ValidEndTime) <= new Date(obj.ValidStartTime)) return '活动结束时间不能早于活动开始时间';

@@ -73,8 +73,8 @@
             :options='CouponGenerateTypeList'
             :requestFunc='getCouponUseList'
             :changePropsFunc='setCondition2CouponUseList'
-            :typeList="[['Channle', '']]"
-            :value='condition2CouponUseList.Channle'
+            :typeList="[['Channel', '']]"
+            :value='condition2CouponUseList.Channel'
             />
         </div>
         <search-input-comp

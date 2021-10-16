@@ -5,8 +5,10 @@ import SchemaItemClass from './SchemaItemClass';
 import CraftPeriodClass from './CraftPeriodClass';
 
 export default class TimeLimitClass {
+  SchemaPropertyList = []
+
   // eslint-disable-next-line max-len
-  constructor({ FirstLevelID, FirstLevelName, SecondLevelID, SecondLevelName, ID = '', ProductList = [], SchemaList = [], CraftPeriodList = [] }) {
+  constructor({ FirstLevelID, FirstLevelName, SecondLevelID, SecondLevelName, ID = '', ProductList = [], SchemaList = [], CraftPeriodList = [], SchemaPropertyList }) {
     this.ID = ID;
     this.ProductClass = {
       FirstLevelID,
@@ -17,6 +19,7 @@ export default class TimeLimitClass {
     this.ProductList = ProductList;
     this.SchemaList = SchemaList.map(it => new SchemaItemClass({ ...it }));
     this.CraftPeriodList = CraftPeriodList.map(it => new CraftPeriodClass({ ...it }));
+    if (Array.isArray(SchemaPropertyList) && SchemaPropertyList.length > 0) this.SchemaPropertyList = SchemaPropertyList;
   }
 
   // ProductList = [

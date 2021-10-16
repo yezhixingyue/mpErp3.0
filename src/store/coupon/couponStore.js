@@ -23,7 +23,7 @@ export default {
       KeyWords: '',
       PageSize: 30,
       Status: '',
-      Channle: '',
+      Channel: '',
       FieldType: 1,
       ID: '',
     },
@@ -100,7 +100,7 @@ export default {
         KeyWords: '',
         PageSize: 30,
         Status: '',
-        Channle: '',
+        Channel: '',
         FieldType: 1,
         ID: _id,
       };

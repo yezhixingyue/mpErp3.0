@@ -28,6 +28,9 @@ export default {
     /** 工期增加时 - [ 工艺工期弹窗数据 ]
     ---------------------------------------------------- */
     CraftPeriodItemData: null,
+    /** 工期 工艺 列表 数据
+    ---------------------------------------------------- */
+    CraftPeriodCraftListData: [],
     /** 工期 产品 条件 数据
     ---------------------------------------------------- */
     ConditionList4ProducePeriodProduct: [],
@@ -74,6 +77,13 @@ export default {
     ---------------------------------------------------- */
     setTimeLimitData(state, [key, value]) {
       state.TimeLimitData[key] = value;
+    },
+    /** 设置工期中工期列表中所有子项目的其它条件
+    ---------------------------------------------------- */
+    setTimeLimitAllSchemaItemConstraintClear(state) {
+      if (state.TimeLimitData?.SchemaList?.length > 0) {
+        state.TimeLimitData.SchemaList = state.TimeLimitData.SchemaList.map(it => ({ ...it, Constraint: { FilterType: 1, ItemList: [] } }));
+      }
     },
     /** 初始化设置工期增加时 - [ 添加工期弹窗 ] - 数据
     ---------------------------------------------------- */
@@ -127,6 +137,7 @@ export default {
     ---------------------------------------------------- */
     setCraftPeriodItemDataInit(state, data) {
       state.CraftPeriodItemData = new CraftPeriodClass(data);
+      console.log('setCraftPeriodItemDataInit', state.CraftPeriodItemData);
     },
     /** 设置 工期增加时 - [ 工艺工期弹窗数据 ]
     ---------------------------------------------------- */
@@ -200,6 +211,9 @@ export default {
     ---------------------------------------------------- */
     setTimeLimitActiveNames(state, data) {
       state.TimeLimitActiveNames = data;
+    },
+    setCraftPeriodCraftListData(state, list) {
+      state.CraftPeriodCraftListData = list;
     },
   },
   actions: {

@@ -35,6 +35,10 @@ export default {
       PageSize: 30,
       KeyWords: '',
       FieldType: 3,
+      Category: {
+        First: '',
+        Second: '',
+      },
     },
     craftFetchData: false,
     MakeupRuleList: [], // 拼版规则列表数据

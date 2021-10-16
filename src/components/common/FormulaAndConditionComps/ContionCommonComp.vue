@@ -1,6 +1,7 @@
 <template>
   <LRWidthDragAutoChangeComp :leftWidth="single ? '100%' : leftWidth" class="mp-erp-new-comps-condtion-set-common-comp-wrap" :single='single'>
     <template v-slot:left>
+      <slot name="leftHeader"></slot>
       <section class="left-content" v-if="ruleForm">
         <header v-if="showPriority">
           <span class="label">优先级：</span>
@@ -296,6 +297,10 @@ export default {
         return;
       }
       this.ruleForm.Constraint.ItemList[this.curSetupIndex].ValueList = [{ Property }];
+    },
+    clearAllItemContent() {
+      this.ruleForm.Constraint.FilterType = 1;
+      this.ruleForm.Constraint.ItemList = [];
     },
   },
   mounted() {

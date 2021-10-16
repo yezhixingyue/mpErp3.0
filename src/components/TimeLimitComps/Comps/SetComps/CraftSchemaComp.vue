@@ -3,7 +3,7 @@
     <header>工艺工期：</header>
     <div>
       <p>
-        <span @click="onSingleCraftClick" class="blue-span">+添加单个工艺工期</span>
+        <span @click="onSingleCraftClick(null)" class="blue-span">+添加单个工艺工期</span>
         <span @click="onMultipleCraftClick" class="blue-span">+添加多个工艺工期</span>
       </p>
       <el-table
@@ -72,43 +72,7 @@
       top='8vh'
       v-dialogDrag
       v-if="CraftPeriodItemData"
-      class="mp-img-style-header single-craft-wrap"
-      :before-close="handleSingleDialogClose">
-      <section>
-        <div>
-          <span class="title">工艺选择：</span>
-          <el-radio-group v-model="selectedCraftList">
-            <el-radio v-for="it in craftList" :key="it.ID" :label="it.ID">{{it.Name}}</el-radio>
-          </el-radio-group>
-        </div>
-        <div v-if="CraftPeriodItemData.Constraint">
-          <span class="title">其他条件：</span>
-          <div class="right-condition-content">
-            <p class="blue-span" @click="onConditonAddClick">+添加条件</p>
-            <CommonConditionComp
-             :conditionList='conditionList'
-             :conditionData='CraftPeriodItemData.Constraint'
-             @handleConditionItemDEdit='handleConditionItemDEdit'
-             @handleConditionItemDel='handleConditionItemDel'
-             />
-            <div>
-              <span
-               @click="() => onFilterTypeChange(1)"
-               :class="CraftPeriodItemData.Constraint.FilterType === 1 ? 'active' : ''">满足以上所有条件时</span>
-              <span
-               @click="() => onFilterTypeChange(2)"
-               :class="CraftPeriodItemData.Constraint.FilterType === 2 ? 'active' : ''">满足以上任一条件时</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">工期：</span>
-          <div class="right-content">
-            <el-input v-model="DurationDay"></el-input><span>天</span>
-            <el-input :max="24" v-model="DurationHour"></el-input><span>小时</span>
-          </div>
-        </div>
-      </section>
+      class="mp-img-style-header single-craft-wrap">
       <span slot="footer" class="dialog-footer">
         <normal-btn-full @click.native="handleDialogSave" title='确定' />
         <normalBtn @click.native="handleDialogClose" title="取消" />
@@ -152,29 +116,26 @@
 
 <script>
 import { mapState } from 'vuex';
-import CommonConditionComp from '@/components/common/NewComps/CommonConditionComp.vue';
 import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import normalBtn from '@/components/common/normalBtn.vue';
 import CraftPeriodClass from '@/store/timeLimit/CraftPeriodClass';
 
 export default {
   components: {
-    CommonConditionComp,
     normalBtnFull,
     normalBtn,
   },
   data() {
     return {
       dialogOpenType: 'add', // add | edit
-      showSingleDialog: false,
       showMultipleDialog: false,
-      craftList: [],
       conditionList: [],
       curEditIndex: 0,
+      showSingleDialog: false,
     };
   },
   computed: {
-    ...mapState('timelimit', ['TimeLimitData', 'CraftPeriodItemData']),
+    ...mapState('timelimit', ['TimeLimitData', 'CraftPeriodItemData', 'CraftPeriodCraftListData']),
     ...mapState('common', ['OperatorKeyValueList']),
     dialogTitle() {
       if (!this.showSingleDialog && !this.showMultipleDialog) return '';
@@ -182,26 +143,6 @@ export default {
       // eslint-disable-next-line no-nested-ternary
       const _diaType = this.showSingleDialog ? '单个' : (this.showMultipleDialog ? '多个' : '');
       return `${_openType}${_diaType}工艺工期`;
-    },
-    selectedCraftList: {
-      get() {
-        if (this.showSingleDialog) {
-          // eslint-disable-next-line max-len
-          if (this.CraftPeriodItemData.CraftList.length > 0) return this.CraftPeriodItemData.CraftList[0].ID;
-          return '';
-        }
-        if (this.showMultipleDialog) return this.CraftPeriodItemData.CraftList.map(it => it.ID);
-        return '';
-      },
-      set(val) {
-        if (this.showSingleDialog) {
-          this.$store.commit('timelimit/setCraftPeriodItemData', ['CraftList', [{ ID: val }]]);
-          this.getConditionList4SingleCraft([val]);
-        } else {
-          const _list = val.map(it => ({ ID: it }));
-          this.$store.commit('timelimit/setCraftPeriodItemData', ['CraftList', _list]);
-        }
-      },
     },
     DurationDay: {
       get() {
@@ -265,6 +206,25 @@ export default {
         }),
       );
     },
+    craftList: {
+      get() {
+        return this.CraftPeriodCraftListData;
+      },
+      set(val) {
+        this.$store.commit('timelimit/setCraftPeriodCraftListData', val);
+      },
+    },
+    selectedCraftList: {
+      get() {
+        if (this.showMultipleDialog) return this.CraftPeriodItemData.CraftList.map(it => it.ID);
+        return '';
+      },
+      set(val) {
+        const _list = val.map(it => ({ ID: it }));
+        this.$store.commit('timelimit/setCraftPeriodItemData', ['CraftList', _list]);
+      },
+    },
+
   },
   methods: {
     async getCraftList() { // 获取当前产品分类设定的工艺列表信息
@@ -276,31 +236,23 @@ export default {
           Second: SecondLevelID,
         },
       };
-      const res = await this.api.getCraftList(_temp);
-      if (res.data.Status !== 1000) return;
-      this.craftList = res.data.Data.map(it => ({ ID: it.CraftID, Name: it.CraftName }));
+      const res = await this.api.getCraftList(_temp).catch(() => {});
+      if (res && res.data.Status !== 1000) return;
+      this.craftList = res.data.Data;
     },
-    async getConditionList4SingleCraft(Limits) {
-      const positionID = this.TimeLimitData ? this.TimeLimitData.ProductClass.SecondLevelID : '';
-      this.conditionList = [];
-      const res = await this.api.getConditionList4ProducePeriod({ type: 20, Limits, positionID });
-      if (res.data.Status !== 1000) return;
-      this.conditionList = res.data.Data;
-      this.$store.commit('timelimit/setCraftPeriodItemData', ['Constraint', { FilterType: 1, ItemList: [] }]);
-    },
-    onSingleCraftClick() {
-      this.dialogOpenType = 'add';
-      this.showSingleDialog = true;
-      this.conditionList = [];
+    onSingleCraftClick(index) {
       this.$store.commit('timelimit/setCraftPeriodItemDataInit', { IsSignle: true });
+      this.$router.push({
+        name: 'SingleCraftPeriodItemSet',
+        params: {
+          EditIndex: index || index === 0 ? index : 'new',
+        },
+      });
     },
     onMultipleCraftClick() {
       this.dialogOpenType = 'add';
       this.showMultipleDialog = true;
       this.$store.commit('timelimit/setCraftPeriodItemDataInit', { IsSignle: false });
-    },
-    handleSingleDialogClose() {
-      this.showSingleDialog = false;
     },
     handleMultipleDialogClose() {
       this.showMultipleDialog = false;
@@ -316,38 +268,8 @@ export default {
       if (num === this.CraftPeriodItemData.Constraint.FilterType) return;
       this.$store.commit('timelimit/changeCraftPeriodItemData4FilterType', num);
     },
-    onConditonAddClick() {
-      if (this.conditionList.length === 0) {
-        this.$message({
-          showClose: true,
-          message: this.CraftPeriodItemData.CraftList.length > 0 ? '当前选中工艺无其它条件可设置' : '请选择工艺',
-          type: 'error',
-        });
-        return;
-      }
-      const _item = {
-        ProductID: '',
-        PartID: '',
-        CraftID: '',
-        GroupID: '',
-        PropertyID: '', // 以上5个为回传项
-        PropertyType: '', // 条件前半部分
-        Operator: '', // 关系
-        Value: '', // 条件后半部分： 输入的值 | 选项的ID
-        selfID: `${Date.now()}`,
-        ValueType: 1,
-        Prefix: '',
-        OptionList: [],
-        Unit: '',
-      };
-      this.$store.commit('timelimit/addCraftPeriodItemData4Constraint', _item);
-      const oWrap = document.querySelector('.single-craft-wrap .right-condition-content > ul');
-      this.$utils.animateScroll(oWrap.scrollTop, oWrap.scrollHeight, (num) => {
-        oWrap.scrollTop = num;
-      });
-    },
     handleDialogSave() {
-      if (!this.showSingleDialog && !this.showMultipleDialog) return;
+      if (!this.showMultipleDialog) return;
       const key = CraftPeriodClass.check(this.CraftPeriodItemData);
       if (key === true) {
         let _list = [];
@@ -358,14 +280,12 @@ export default {
           _list = [{ ...this.CraftPeriodItemData }, ...this.TimeLimitData.CraftPeriodList];
         }
         this.$store.commit('timelimit/setTimeLimitData', ['CraftPeriodList', _list]);
-        if (this.showSingleDialog) this.showSingleDialog = false;
         if (this.showMultipleDialog) this.showMultipleDialog = false;
       } else if (typeof key === 'string') {
         this.messageBox.failSingleError('保存失败', `[ ${key} ]`);
       }
     },
     handleDialogClose() {
-      if (this.showSingleDialog) this.showSingleDialog = false;
       if (this.showMultipleDialog) this.showMultipleDialog = false;
     },
     async handleSchemaEdit(index) {

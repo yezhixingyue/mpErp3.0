@@ -543,6 +543,9 @@ export default {
       }
     }
   }
+  .common-property-condition-text-content-box > p.if-box {
+    margin-right: 0px;
+  }
 }
 .mp-promote-comp-add-product-ltem-wrap-tip-popper {
   max-width: 520px !important;

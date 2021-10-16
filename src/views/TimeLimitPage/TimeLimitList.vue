@@ -10,13 +10,6 @@
         :defaultProps="{ label: 'ClassName', value: 'ID' }"
         label='产品分类'
         />
-      <!-- <span>添加工期：</span> -->
-      <!-- <el-cascader
-        size='small'
-        placeholder='请选择产品分类'
-        :options="twoLevelsProductClassify"
-        :props="{value: 'ID', label: 'ClassName'}"
-        @change="handleChange"></el-cascader> -->
     </header>
     <ListContentComp />
   </section>

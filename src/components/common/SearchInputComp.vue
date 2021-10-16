@@ -99,6 +99,8 @@ export default {
   padding-top: 2px;
   text-align: right;
   font-size: 14px;
+  display: flex;
+  align-items: center;
   // @media screen and (max-width: 1600px) {
   //   padding-right: 30px;
   // }

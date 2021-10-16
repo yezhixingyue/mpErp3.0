@@ -287,8 +287,15 @@ const api = {
   getConditionList4ProducePeriod({ Limits = [], positionID = '', type } = {}) { // GET /Api/Common/GetConditionList 获取条件列表 工期产品19 工期工艺20  Limits 产品ID | 工艺ID  positionID 二级类别ID
     return instance.post('/Api/Common/ConditionList', { UsePosition: type, Position: `${positionID}`, Limits });
   },
-  getCraftList(data) { // POST /Api/Craft/CraftList 获取产品分类工艺列表
-    return instance.post('/Api/Craft/CraftList', { FieldType: 1, ...data });
+  getCraftList(data) { // POST /Api/ProductCraft/List 获取产品分类工艺列表
+    let classID = '';
+    let typeID = '';
+    if (data && data.ProductClass) {
+      const { First, Second } = data.ProductClass;
+      if (First || First === 0) classID = First;
+      if (Second || Second === 0) typeID = Second;
+    }
+    return instance.get('/Api/ProductCraft/List', { params: { classID, typeID } });
   },
   getDistrictList(parentID) {
     if (!parentID && parentID !== 0) return instance.get('/Api/District/List');

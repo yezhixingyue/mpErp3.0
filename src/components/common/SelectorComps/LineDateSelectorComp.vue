@@ -196,6 +196,7 @@ export default {
 
 <style lang='scss'>
 @import "@/assets/css/common/var.scss";
+@import '@/assets/css/mixins/header/time-search-selector.scss';
 .mp-line-date-selector-wrap {
   margin-top: 24px;
   min-width: 712px;

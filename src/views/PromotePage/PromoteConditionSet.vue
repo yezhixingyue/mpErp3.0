@@ -166,10 +166,6 @@ export default {
       padding: 0;
       width: 120px;
       height: 35px;
-      // &:first-of-type {
-      //   background: linear-gradient(266deg, #36E0F9 0%, #26BCF9 100%);
-      //   border: none;
-      // }
       & + button.el-button {
         margin-left: 30px;
       }

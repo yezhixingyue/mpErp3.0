@@ -1,35 +1,5 @@
-// interface AreaItemType {
-//   RegionalID: number,
-//   RegionalName?: string,
-//   CityID: number,
-//   CityName?: string,
-//   CountyID: number,
-//   CountyName?: string,
-// }
-
-
-// interface ExpressItemType {
-//   ID: number,
-//   Name: string,
-// }
-
-// interface ConstraintType {
-
-// }
 
 export default class SchemaItemClass {
-  // PeriodID: string;
-
-  // ID: string;
-
-  // AreaList: AreaItemType[];
-
-  // ExpressList: ExpressItemType[];
-
-  // LatestPayTime: { First: number, Second: number };
-
-  // Constraint: _object;
-
   // eslint-disable-next-line max-len
   constructor({ PeriodID = '', ID = '', IncludeLimitArea = true, AreaList = [], ExpressList = [], LatestPayTime = { First: '', Second: '' }, Constraint = undefined,
     ProduceDuration = '', ProductIncrement = '', ProductIncrementDuration = '', CraftPeriodType = 0,
@@ -70,8 +40,8 @@ export default class SchemaItemClass {
     if (obj.ExpressList.length === 0) return '请选择配送方式';
     if (!obj.LatestPayTime.First && obj.LatestPayTime.First !== 0) return '请设置付款时间';
     if (!obj.LatestPayTime.Second && obj.LatestPayTime.Second !== 0) return '请设置付款时间';
-    const t = obj.Constraint.ItemList.find(it => !it.Value);
-    if (t) return '其它条件中有值未填写';
+    // const t = obj.Constraint.ItemList.find(it => !it.Value && it.Value !== 0);
+    // if (t) return '其它条件中有值未填写';
     if (!obj.ProduceDuration || obj.ProduceDuration <= 0) return '请设置生产工期时间';
     if (obj.ProductIncrement && +obj.ProductIncrement === 0) return '数量递增 - 产品数量应大于0';
     if (obj.ProductIncrementDuration && +obj.ProductIncrementDuration === 0) return '数量递增 - 工期时间应大于0';
