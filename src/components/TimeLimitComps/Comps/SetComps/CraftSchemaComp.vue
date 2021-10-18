@@ -9,7 +9,7 @@
       <el-table
         v-if="TimeLimitData"
         border
-        :data="TimeLimitData.CraftPeriodList"
+        :data="tableDataList"
         max-height="261"
         style="width: 1600px">
         <el-table-column
@@ -31,17 +31,33 @@
         <el-table-column
           prop="address"
           width="595"
-          show-overflow-tooltip
           label="其它条件">
           <!-- 其它条件 -->
           <template slot-scope="scope">
-            <span
-              v-for="(it, i) in ConditionTextList[scope.$index]._list"
-              :key="it.Prefix + '-' + i"
-            >
-              <i v-if="i > 0" class="is-gray">{{ConditionTextList[scope.$index].type}}</i>
-              {{it.Prefix}}<em >{{it.Operator}}</em>{{it.Value}}
-            </span>
+            <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start"
+              v-if="typeof scope.row.conditionText === 'object'">
+              <div slot="content">
+                <p class="if-box"><span class="is-origin">如果</span> {{scope.row.FilterTypeText}}：</p>
+                <p v-for="(it, i) in scope.row.conditionText" :key="it.name + 'tips' + i">
+                  <span v-if="i > 0" class="type">{{scope.row.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+                  <span class="name">{{it.name}}</span>
+                  <span class="is-origin">{{it.operator}}</span>
+                  <span class="val">{{it.val}}</span>
+                  <span v-if="i === scope.row.conditionText.length - 1" style="margin-left:2px"> 。</span>
+                  <span v-else style="margin-left:2px">；</span>
+                </p>
+              </div>
+              <div class="common-property-condition-text-content-box" style="text-align:left">
+                <p class="if-box"><span class="is-origin">如果</span> {{scope.row.FilterTypeText}}：</p>
+                <p v-for="(it, i) in scope.row.conditionText" :key="it.name + 'content' + i">
+                  <span v-if="i > 0" class="type">{{scope.row.Constraint.FilterType === 1 ? '且' : '或'}}</span>
+                  <span>{{it.name}}</span>
+                  <span class="is-origin">{{it.operator}}</span>
+                  <span>{{it.val}}</span>
+                </p>
+              </div>
+            </el-tooltip>
+            <span v-if="typeof scope.row.conditionText === 'string'">{{scope.row.conditionText}}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -119,6 +135,7 @@ import { mapState } from 'vuex';
 import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import normalBtn from '@/components/common/normalBtn.vue';
 import CraftPeriodClass from '@/store/timeLimit/CraftPeriodClass';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 export default {
   components: {
@@ -224,7 +241,16 @@ export default {
         this.$store.commit('timelimit/setCraftPeriodItemData', ['CraftList', _list]);
       },
     },
-
+    tableDataList() {
+      if (!this.TimeLimitData || !this.TimeLimitData.CraftPeriodList || this.TimeLimitData.CraftPeriodList.length === 0) return [];
+      const list = this.TimeLimitData.CraftPeriodList.map(it => {
+        if (!it.Constraint) return { ...it, conditionText: '无' };
+        const ComparePropertyList = it.CraftPeriodProppertyList || [];
+        const [Constraint, conditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, ComparePropertyList);
+        return { ...it, Constraint, conditionText, FilterTypeText: it.Constraint && it.Constraint.FilterType === 1 ? '满足所有' : '满足任一' };
+      });
+      return list;
+    },
   },
   methods: {
     async getCraftList() { // 获取当前产品分类设定的工艺列表信息
@@ -263,11 +289,6 @@ export default {
     handleConditionItemDel(itemIndex) {
       this.$store.commit('timelimit/editCraftPeriodItemData4Constraint', [itemIndex]);
     },
-    onFilterTypeChange(num) {
-      if (!this.CraftPeriodItemData) return;
-      if (num === this.CraftPeriodItemData.Constraint.FilterType) return;
-      this.$store.commit('timelimit/changeCraftPeriodItemData4FilterType', num);
-    },
     handleDialogSave() {
       if (!this.showMultipleDialog) return;
       const key = CraftPeriodClass.check(this.CraftPeriodItemData);
@@ -295,18 +316,12 @@ export default {
       const { IsSignle } = this.TimeLimitData.CraftPeriodList[index];
 
       if (IsSignle) {
-        this.showSingleDialog = true;
-        let Limits = [];
-        if (this.TimeLimitData) {
-          const { CraftList } = this.TimeLimitData.CraftPeriodList[index];
-          // eslint-disable-next-line prefer-destructuring
-          if (CraftList.length === 1) Limits = [CraftList[0].ID];
-        }
-        const positionID = this.TimeLimitData.ProductClass.SecondLevelID;
-        this.conditionList = [];
-        const res = await this.api.getConditionList4ProducePeriod({ type: 20, Limits, positionID });
-        if (res.data.Status !== 1000) return;
-        this.conditionList = res.data.Data;
+        this.$router.push({
+          name: 'SingleCraftPeriodItemSet',
+          params: {
+            EditIndex: index || index === 0 ? index : 'new',
+          },
+        });
       } else this.showMultipleDialog = true;
     },
     handleSchemaDel(index) {
@@ -339,9 +354,27 @@ export default {
       });
       return _obj;
     },
+    async getComparePropertyList() {
+      if (this.TimeLimitData?.CraftPeriodList?.length > 0) {
+        const list = await Promise.all(this.TimeLimitData.CraftPeriodList.map(async it => {
+          if (it.IsSignle && it.CraftList.length === 1) {
+            const temp = { UseModule: 42, CraftID: it.CraftList[0].ID };
+            const _list = await PropertyClass.getPropertyList(temp);
+            if (_list) return _list;
+          }
+          return [];
+        }));
+        const arr = this.TimeLimitData.CraftPeriodList.map((it, i) => ({
+          ...it,
+          CraftPeriodProppertyList: list[i],
+        }));
+        this.$store.commit('timelimit/setTimeLimitData', ['CraftPeriodList', arr]);
+      }
+    },
   },
   mounted() {
     this.getCraftList();
+    this.getComparePropertyList();
   },
 };
 </script>
@@ -602,6 +635,9 @@ export default {
         }
       }
     }
+  }
+  .common-property-condition-text-content-box > p.if-box {
+    margin-right: 0;
   }
 }
 </style>

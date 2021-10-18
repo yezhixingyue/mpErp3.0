@@ -268,6 +268,19 @@ export default {
     setCondition4CraftList(state, [[key1, key2], value]) {
       if (key1 && key2) state.Condition4CraftList[key1][key2] = value;
       else if (key1) state.Condition4CraftList[key1] = value;
+      if (key1 === 'Category' && key2 === 'First') state.Condition4CraftList[key1].Second = '';
+    },
+    clearCondition4CraftList(state) {
+      state.Condition4CraftList = {
+        Page: 1,
+        PageSize: 30,
+        KeyWords: '',
+        FieldType: 3,
+        Category: {
+          First: '',
+          Second: '',
+        },
+      };
     },
     setCraftDataListItemSave(state, [isEdit, itemData]) {
       if (isEdit) {

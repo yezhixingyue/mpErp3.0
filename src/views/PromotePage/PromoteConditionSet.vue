@@ -67,6 +67,7 @@ export default {
       if (t) {
         if (t.name === '百分比' && Price > 100) {
           this.messageBox.failSingleError('保存失败', '百分比折扣不能大于100%');
+          return;
         }
         // 开始提交
         const obj = {

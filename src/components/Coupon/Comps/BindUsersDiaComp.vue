@@ -39,9 +39,9 @@
               <i>{{dialogData2UsePage.QQ}}</i>
             </span>
           </li>
-          <li v-if="dialogData2UsePage.Address[0]">
+          <li v-if="dialogData2UsePage.AuthenInfo">
             <span class="is-gray">经营地址：</span>
-            <span class="is-font-size-12">{{getAddress(dialogData2UsePage.Address[0])}}</span>
+            <span class="is-font-size-12">{{getAddress(dialogData2UsePage.AuthenInfo)}}</span>
           </li>
         </ul>
       </section>
@@ -108,9 +108,9 @@ export default {
     },
     getAddress(addData) {
       if (!addData) return '';
-      const { AddressDetail, ExpressArea } = addData;
-      const { RegionalName, CountyName, CityName } = ExpressArea;
-      return `${RegionalName}${CityName}${CountyName}${AddressDetail}`;
+      const { DetailAddress, SellArea } = addData;
+      const { RegionalName, CountyName, CityName } = SellArea;
+      return `${RegionalName}${CityName}${CountyName}${DetailAddress}`;
     },
   },
 };

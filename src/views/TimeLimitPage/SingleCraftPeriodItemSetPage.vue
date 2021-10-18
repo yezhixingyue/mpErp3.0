@@ -17,7 +17,7 @@
             >
           </el-radio-group>
         </div>
-        <p class="tips-box is-pink"><i class="el-icon-warning"></i>注：工艺切换的时候会清空下方已设置的其它条件</p>
+        <p class="tips-box is-pink"><i class="el-icon-warning"></i>注：切换工艺会清空下方已设置的其它条件</p>
       </section>
     </header>
     <ContionCommonComp
@@ -69,7 +69,7 @@ export default {
       'CraftPeriodCraftListData',
     ]),
     curEditData() {
-      return null;
+      return this.CraftPeriodItemData;
     },
     curCraftID: {
       get() {
@@ -133,18 +133,17 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loading: true,
       PropertyList: [],
     };
   },
   methods: {
     async getCraftPeriodProppertyList(CraftID) {
       this.PropertyList = [];
-      const temp = { UseModule: 41, CraftID };
+      const temp = { UseModule: 42, CraftID };
       const list = await PropertyClass.getPropertyList(temp);
       if (list) {
         this.PropertyList = list;
-        // this.$store.commit('timelimit/setTimeLimitData', ['SchemaPropertyList', list]);
       }
     },
     onSubmitClick() {
@@ -170,15 +169,15 @@ export default {
       this.$goback();
     },
   },
-  mounted() {
-    console.log(this.CraftPeriodItemData);
+  async mounted() {
     if (this.curCraftID) {
       if (Array.isArray(this.CraftPeriodItemData?.CraftPeriodProppertyList) && this.CraftPeriodItemData.CraftPeriodProppertyList.length > 0) {
         this.PropertyList = this.CraftPeriodItemData.CraftPeriodProppertyList;
       } else {
-        this.getCraftPeriodProppertyList(this.curCraftID);
+        await this.getCraftPeriodProppertyList(this.curCraftID);
       }
     }
+    this.loading = false;
   },
 };
 </script>

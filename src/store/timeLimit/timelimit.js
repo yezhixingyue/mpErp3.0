@@ -137,7 +137,6 @@ export default {
     ---------------------------------------------------- */
     setCraftPeriodItemDataInit(state, data) {
       state.CraftPeriodItemData = new CraftPeriodClass(data);
-      console.log('setCraftPeriodItemDataInit', state.CraftPeriodItemData);
     },
     /** 设置 工期增加时 - [ 工艺工期弹窗数据 ]
     ---------------------------------------------------- */
@@ -224,17 +223,7 @@ export default {
       const res = await api.getProducePeriodList(classID);
       if (res.data.Status === 1000) commit('setDataList', res.data.Data);
     },
-    async fetchConditionList({ commit }, { Limits, type, positionID }) {
-      // 获取条件信息 type: 19 用于产品  20 用于工艺 、 positionID产品二级分类ID 、 Limits 产品 | 工艺 ID 列表
-      if (type === 19) commit('setConditionList4ProducePeriodProduct', []);
-      if (type === 20) commit('setConditionList4ProducePeriodCraft', []);
-      const res = await api.getConditionList4ProducePeriod({ Limits, type, positionID });
-      if (res.data.Status !== 1000) return;
-      if (type === 19) commit('setConditionList4ProducePeriodProduct', res.data.Data);
-      if (type === 20) commit('setConditionList4ProducePeriodCraft', res.data.Data);
-    },
     async fetchProducePeriodSave({ state }, subExpressIDList) {
-      // console.log(state.TimeLimitData, 'fetchProducePeriodSave');
       let _msg = '';
       if (state.TimeLimitData.ProductList.length === 0) _msg = '请选择指定产品';
       else if (state.TimeLimitData.SchemaList.length === 0) _msg = '请添加工期';
@@ -249,7 +238,13 @@ export default {
           ExpressList,
         };
       });
-      const obj = { ...state.TimeLimitData, SchemaList };
+      const CraftPeriodList = state.TimeLimitData.CraftPeriodList.map(_item => {
+        const temp = { ..._item };
+        delete temp.CraftPeriodProppertyList;
+        return temp;
+      });
+      const obj = { ...state.TimeLimitData, SchemaList, CraftPeriodList };
+      delete obj.SchemaPropertyList;
       const res = await api.getProducePeriodSave(obj);
       if (res.data.Status !== 1000) return false;
       return res.data.Data;

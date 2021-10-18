@@ -543,7 +543,6 @@ export default {
       return;
     }
     this.getSchemaPropertyList();
-    console.log(this.SchemaItemData);
   },
 };
 </script>

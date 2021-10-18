@@ -41,7 +41,8 @@ export default {
       if (res.data.Status === 1000) {
         sessionStorage.setItem('ErpToken', JSON.stringify(res.data.Data));
         document.cookie = `ErpToken=${JSON.stringify(res.data.Data)};max-age=${1 * 24 * 60 * 60 * 1000}`;
-        this.$router.push('/');
+        // this.$router.push('/');
+        window.location = '/';
       }
     },
     resetForm(formName) {

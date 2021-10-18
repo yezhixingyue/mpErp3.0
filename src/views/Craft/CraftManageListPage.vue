@@ -3,6 +3,27 @@
     <header>
       <el-button type="primary" @click="onCraftItemSave(null)">添加工艺</el-button>
       <span class="blue-span" @click="jumpToClassifyPageClick">管理工艺分类</span>
+      <order-channel-selector
+        :options='level1OptionList'
+        :requestFunc='getCraftListData'
+        :changePropsFunc='setCondition4CraftList'
+        :typeList="[['Category', 'First']]"
+        :value='Condition4CraftList.Category.First'
+        label='工艺分类筛选'
+        :defaultProps="{ label: 'ClassName', value: 'ID' }"
+        key='order-OrderType'
+        />
+      <order-channel-selector
+        class="terminal-select"
+        :options='level2OptionList'
+        :requestFunc='getCraftListData'
+        :changePropsFunc='setCondition4CraftList'
+        :typeList="[['Category', 'Second']]"
+        :value='Condition4CraftList.Category.Second'
+        :defaultProps="{ label: 'ClassName', value: 'ID' }"
+        key='order-Terminal'
+        label=''
+      />
     </header>
     <main>
       <CraftSaveDialog :curData='curData' :visible.sync='visible' :classifyData='twoLevelsCraftClassify' @submitSuccess='onCraftSaveSuccess' />
@@ -24,7 +45,8 @@ import CraftSaveDialog from '@/components/CraftComps/CraftSaveDialog.vue';
 import CraftListTableComp from '@/components/CraftComps/CraftListTableComp.vue';
 import CountComp from '@/components/common/Count.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
-import { mapGetters, mapState } from 'vuex';
+import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
+import { mapGetters, mapState, mapMutations } from 'vuex';
 
 export default {
   name: 'CraftManageList',
@@ -33,6 +55,7 @@ export default {
     CraftSaveDialog,
     CraftListTableComp,
     CountComp,
+    OrderChannelSelector,
   },
   data() {
     return {
@@ -43,9 +66,27 @@ export default {
   },
   computed: {
     ...mapState('basicSet', ['CraftDataList', 'CraftDataNumber', 'Condition4CraftList', 'craftFetchData']),
+    ...mapState('common', ['CraftClassifyData']),
     ...mapGetters('common', ['twoLevelsCraftClassify']),
+    level1OptionList() {
+      const defaultItem = { ClassName: '不限', ID: '' };
+      let list = [];
+      if (this.CraftClassifyData?.length > 0) {
+        list = this.CraftClassifyData.filter(it => it.ParentID === -1);
+      }
+      return [defaultItem, ...list];
+    },
+    level2OptionList() {
+      const defaultItem = { ClassName: '不限', ID: '' };
+      let list = [];
+      if (this.CraftClassifyData?.length > 0 && (this.Condition4CraftList?.Category?.First || this.Condition4CraftList?.Category?.First === 0)) {
+        list = this.CraftClassifyData.filter(it => it.ParentID === this.Condition4CraftList.Category.First);
+      }
+      return [defaultItem, ...list];
+    },
   },
   methods: {
+    ...mapMutations('basicSet', ['setCondition4CraftList']),
     onCraftItemSave(data) {
       this.curData = data;
       this.visible = true;
@@ -73,6 +114,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.commit('basicSet/clearCondition4CraftList');
     this.$store.dispatch('common/getCraftClassifyData');
     this.getCraftListData();
   },
@@ -96,6 +138,8 @@ export default {
     padding: 15px 20px;
     background-color: #fff;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
     > button {
       border-radius: 2px;
       width: 120px;
@@ -105,6 +149,16 @@ export default {
     }
     > span {
       font-size: 14px;
+      margin-right: 50px;
+    }
+    .mp-common-comps-order-channel-selector-wrap > header {
+      width: 7em;
+    }
+    .terminal-select {
+      padding-left: 20px;
+      > header {
+        display: none;
+      }
     }
   }
   > main {
