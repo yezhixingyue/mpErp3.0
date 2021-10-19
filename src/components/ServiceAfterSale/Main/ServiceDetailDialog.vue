@@ -13,7 +13,7 @@
     <template v-if="!isLoading">
       <OrderServiceDetailCord isSelectPage :orderData='curServiceOrdrData'
         :orderDetailData='orderDetailData'
-        :productData='curProductInfo' />
+        :curProductInfoStringify='curProductInfoStringify' />
       <!-- 顶部信息 -->
       <section class="question-photo">
         <!-- 问题照片 -->
@@ -82,7 +82,7 @@ export default {
   },
   computed: {
     ...mapState('orderModule', ['orderDetailData']),
-    ...mapGetters('orderModule', ['curProductInfo']),
+    ...mapGetters('orderModule', ['curProductInfoStringify']),
     ...mapState('service', ['isShowServiceDetail', 'backImgList', 'curServiceOrdrData']),
     ...mapState('common', ['isLoading']),
   },

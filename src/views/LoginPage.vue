@@ -34,15 +34,12 @@ export default {
   },
   methods: {
     async submitForm() {
-      // console.log(this.ruleForm);
       this.ruleForm.Password = Base64.encode(this.ruleForm.Password);
       const res = await this.api.getLogin(this.ruleForm);
-      // console.log(res);
       if (res.data.Status === 1000) {
         sessionStorage.setItem('ErpToken', JSON.stringify(res.data.Data));
         document.cookie = `ErpToken=${JSON.stringify(res.data.Data)};max-age=${1 * 24 * 60 * 60 * 1000}`;
-        // this.$router.push('/');
-        window.location = '/';
+        window.location = window.location.pathname;
       }
     },
     resetForm(formName) {

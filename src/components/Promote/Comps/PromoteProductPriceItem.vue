@@ -154,6 +154,9 @@ export default {
         case 3:
           _text = `百分比折扣${Price}%`;
           break;
+        case 4:
+          _text = `减款${Price}元`;
+          break;
         default:
           break;
       }

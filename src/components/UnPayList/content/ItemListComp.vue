@@ -2,13 +2,14 @@
   <div class="unpay-list-item-wrap">
     <div class="product-item-header">
       <div class="product-item-header-left">  <!-- 标题部分 -->
-        <span class="check-item">
-          <el-checkbox
+        <!-- <span class="check-item"> -->
+          <!-- 标题总复选框 -->
+          <!-- <el-checkbox
            :disabled="isDisabled"
            :indeterminate="isIndeterminate"
            v-model="checkAll"
-          ></el-checkbox> <!-- 标题总复选框 -->
-        </span>
+          ></el-checkbox> -->
+        <!-- </span> -->
         <span class="product-item-header-freight-box">{{data.CustomerName}}</span>
         <span class="customer-sn">客户编号：{{data.CustomerNo}}</span>
       </div>
@@ -24,12 +25,13 @@
         :key="item.OrderID"
       >
         <div :style="wStyles[0]" class="check-item">
-          <el-checkbox
+          <!-- 子项复选框 -->
+          <!-- <el-checkbox
            @change="onItemCheck(item, $event)"
            :value="getSingleCheckStatus(item.OrderID)"
            :disabled="isDisabled || item.Status !== 10"
           >
-          </el-checkbox> <!-- 子项复选框 -->
+          </el-checkbox> -->
           {{item.ProductName}}
         </div>
         <div
@@ -62,7 +64,7 @@
                 <img src="@/assets/images/detail.png" class="detail" alt />详情
               </span>
             </li>
-            <li class="handle-menu-item"
+            <!-- <li class="handle-menu-item"
              v-if="Permission.PermissionList.PermissionManageOrder.Obj.HelpSubmit">
               <span
                 v-if="item.Status !== 200 && item.Status !== 254"
@@ -82,7 +84,7 @@
               <span v-else class="is-cancel">
                 <img src="@/assets/images/cancelstop.png" alt />取消
               </span>
-            </li>
+            </li> -->
           </ul>
         </div> <!-- 操作 -->
       </li>
@@ -233,8 +235,9 @@ export default {
           color: $--color-text-primary;
           font-size: 14px;
           font-weight: 600;
-          min-width: 5em;
-          text-align: left;
+          min-width: 100px;
+          padding-left: 32px;
+          text-align: center;
         }
         &.customer-sn {
           //   width: 186px;
@@ -337,7 +340,7 @@ export default {
         }
       }
       &.check-item {
-        text-align: left;
+        text-align: center;
         .el-checkbox__input.is-checked .el-checkbox__inner {
           background-color: #fff;
           border-color: #26bcf9;
@@ -361,8 +364,11 @@ export default {
     }
   }
   .product-item-content > div.check-item .el-checkbox,
-  div.product-item-header-left .check-item .el-checkbox {
-    text-align: left;
+  div.product-item-header-left .check-item {
+    .el-checkbox {
+      text-align: left;
+      padding: 0 18px 0 20px;
+    }
     padding: 0 18px 0 20px;
   }
 }

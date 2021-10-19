@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-05-12 10:48:37
- * @LastEditTime: 2021-10-07 15:27:02
+ * @LastEditTime: 2021-10-19 15:43:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/FinancePage.vue
@@ -36,8 +36,8 @@ export default {
     ...mapActions('finance', ['getFinanceTableData']),
   },
   mounted() {
-    this.$store.commit('finance/clearConfigObj');
-    this.getFinanceTableData();
+    // this.$store.commit('finance/clearConfigObj');
+    // this.getFinanceTableData();
   },
 };
 </script>

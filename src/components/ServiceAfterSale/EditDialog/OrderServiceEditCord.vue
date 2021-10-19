@@ -22,12 +22,10 @@
             <span v-if="Customer.QQ">QQ：{{Customer.QQ}}</span>
           </div>
         </li>
-        <li> <!-- 产品信息部分，该部分使用数据productData渲染 ； 其它部分使用orderData渲染 -->
+        <li> <!-- 产品信息部分，该部分使用数据curProductInfoStringify渲染 ； 其它部分使用orderData渲染 -->
           <div class="title">产品信息：</div>
           <div class="text-content product-info">
-            <i>{{productData[0]}}</i>
-            <i>{{productData[1]}}</i>
-            <i>{{productData[2]}}</i>
+            <i>{{curProductInfoStringify}}</i>
           </div>
         </li>
       </ul>
@@ -111,7 +109,7 @@ export default {
     /**
      * 订单详情中的产品信息数据，用于页面产品部分渲染，必传
      */
-    productData: {
+    curProductInfoStringify: {
       type: Array,
       default: () => [],
     },
@@ -147,21 +145,6 @@ export default {
   },
   computed: {
     ...mapState('service', ['PayPackageData']),
-    productInfo() { // 产品信息
-      if (!this.productData) return '';
-      let str = '';
-      this.productData.forEach((item) => {
-        str += `${item.name}：`;
-        item.list.forEach((sub) => {
-          if (sub.CraftList && sub.CraftList.length > 0) str += `(${sub.CraftList.join(' | ')}，`;
-          else str += '(';
-          if (sub.sizeGroup && sub.sizeGroup.length > 0) str += `${sub.sizeGroup.join(' × ')}`;
-          if (str.length === item.name.length + 2) str = '';
-          else str += ')；';
-        });
-      });
-      return str;
-    },
     shippingAddress() { // 收货地址
       const { RegionalName, CityName, CountyName } = this.orderData.Address.Address.ExpressArea;
       const { AddressDetail } = this.orderData.Address.Address;

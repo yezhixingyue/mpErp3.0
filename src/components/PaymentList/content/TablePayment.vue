@@ -215,8 +215,8 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('paymentModule/clearConfigObj');
-    this.getPaymentListTableData();
+    // this.$store.commit('paymentModule/clearConfigObj');
+    // this.getPaymentListTableData();
   },
 };
 </script>

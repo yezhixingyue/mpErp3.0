@@ -84,12 +84,12 @@ export default {
       const tempHeight = this.getHeight('.order-manage-header', 60);
       this.h = tempHeight;
     },
-    open(index) {
-      this.messageBox.warnCancelBox('确定取消此订单吗 ?', this.orderDelContent, () => this.delTargetOrder(index), null);
+    open(index, OrderID) {
+      this.messageBox.warnCancelBox('确定取消此订单吗 ?', `订单号：[ ${OrderID} ]`, () => this.delTargetOrder(index), null);
     },
     onOrderDel(data, index) {
       this.setOrderID2Del(data.OrderID);
-      this.open(index);
+      this.open(index, data.OrderID);
     },
     setStateStyle(Status) {
       if ((Status === 254 || Status === 255)) return 'is-cancel';

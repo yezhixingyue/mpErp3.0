@@ -1,17 +1,19 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 09:37:02
- * @LastEditTime: 2021-10-16 08:51:08
+ * @LastEditTime: 2021-10-19 14:03:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue.config.js
  */
 const TerserPlugin = require('terser-webpack-plugin');
 
+const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web/';
+
 module.exports = {
   productionSourceMap: process.env.NODE_ENV === 'development', // 是否打包sourcemap
   outputDir: 'myDist',
-  publicPath: process.env.NODE_ENV === 'development' ? '' : '/Web/',
+  publicPath,
   devServer: {
     proxy: {
       '/Api': {

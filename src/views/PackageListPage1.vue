@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-21 10:19:17
- * @LastEditTime: 2021-05-07 16:17:02
+ * @LastEditTime: 2021-10-19 15:26:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/PackageListPage1.vue
@@ -50,7 +50,6 @@ export default {
     },
   },
   mounted() {
-    console.log('mounted packagelist page');
     // this.$store.commit('orderModule/clearConfigObj');
     this.$store.commit('orderModule/setSelectTime', ['TodayDate', 1]);
     this.getExpressTableData();

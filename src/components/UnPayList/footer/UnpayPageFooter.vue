@@ -5,22 +5,22 @@
      :count='count'
      :watchPage='searchCondition4UnPayList.Page'
      :handlePageChange='handlePageChange' />
-    <span class="is-blue" @click="handleClearClick">清空已付款已取消的订单</span>
+    <!-- <span class="is-blue" @click="handleClearClick">清空已付款已取消的订单</span>
     <span class="is-red" @click="handleCancleClick">取消选中订单</span>
     <span>
         <normalBtnFull @click.native="submitList2Payment" title="支付选中订单" />
-    </span>
+    </span> -->
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
-import normalBtnFull from '@/components/common/normalBtnFull.vue';
+// import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import CountComp from '@/components/common/Count.vue';
 
 export default {
   components: {
-    normalBtnFull,
+    // normalBtnFull,
     CountComp,
   },
   computed: {

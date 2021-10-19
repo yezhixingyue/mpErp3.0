@@ -160,7 +160,7 @@ export default {
       this.updateNewDate();
       this.clearConfigObj();
       this.setSelectTime(['TodayDate', 1]);
-      this.getTableData();
+      this.getPaymentListTableData();
       this.inpVal = '';
     },
     // onInput($event) {
@@ -191,8 +191,9 @@ export default {
     },
   },
   mounted() {
-    this.setSelectTime(['TodayDate', 1]); // 如果初始获取时间为今天，则使此项生效。
+    // this.setSelectTime(['TodayDate', 1]); // 如果初始获取时间为今天，则使此项生效。
     this.getTableData = throttle(this.getPaymentListTableData, 350);
+    this.onResetBtn();
   },
 };
 </script>

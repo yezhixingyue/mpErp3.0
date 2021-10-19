@@ -32,11 +32,11 @@
               <span :style="widthStyleObj[2]">
               {{item.ProductAmount}}{{item.Unit?item.Unit:'个'}}{{data.KindCount?data.KindCount:1}}款
               </span>
-              <span :style="widthStyleObj[3]">{{item.FinalPrice}}元</span>
-              <span :style="widthStyleObj[4]">{{item.PrePaidAmount}}元</span>
+              <span :style="widthStyleObj[3]">{{item.Funds.FinalPrice}}元</span>
+              <span :style="widthStyleObj[4]">{{item.Funds.Deposit}}元</span>
               <span class="product-item-ontent-text-box" :style="widthStyleObj[5]">
                 <el-tooltip class="item" effect="dark" :content="item.Content" placement="top-start">
-                  <i>{{item.Content}}</i>
+                  <i>{{item.Content || '无'}}</i>
                 </el-tooltip>
               </span>
           </li>

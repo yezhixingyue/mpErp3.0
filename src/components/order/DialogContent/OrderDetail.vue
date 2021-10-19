@@ -10,168 +10,10 @@
         </header>
         <article class="product-content">
           <section class="product-header">
-            <ul>
-              <li>
-                <span class="text-title">产品：</span>
-                <span class="title">
-                  {{showData.ProductParams.Attributes.Name}}
-                  <i>({{showData.ProductParams.Attributes.SecondLevelName}})</i>
-                </span>
-              </li>
-              <li>
-                <span class="text-title">数量：</span>
-                <span
-                  class="text"
-                >{{showData.ProductParams.ProductAmount}}
-                {{showData.ProductParams.Attributes.Unit}}</span>
-                <span class="text-title">款数：</span>
-                <span class="text">{{showData.ProductParams.KindCount}}款</span>
-                <span class="text-title">工厂：</span>
-                <span class="text">{{showData.ProductParams.Attributes.FactoryName}}</span>
-              </li>
-              <li
-                class="makeup-box"
-                v-if="showData.ProductParams.MakeupRowNumber
-                 * showData.ProductParams.MakeupColumnNumber > 1">
-                <span class="text-title">联拼：</span>
-                <span
-                  class="text"
-                >{{showData.ProductParams.MakeupRowNumber}}行
-                {{showData.ProductParams.MakeupColumnNumber}}列</span>
-                <span class="text makeup"
-                v-if="showData.ProductParams.MultyKindMakeup">多款联拼</span>
-              </li>
-              <li v-if="showData.ProductParams.CraftList.First.length > 0">  <!-- 主体工艺 -->
-                <dl>
-                  <dt class="text-title">工艺：</dt>
-                  <div v-if="showData.ProductParams.CraftList.First.length > 0">
-                    <dd v-for="item in showData.ProductParams.CraftList.First"
-                      :key="item.CraftID" class="text">
-                      {{item.Attributes.NickName}}
-                      <i v-for="(subList, i) in item.PropertyList" :key="subList + '' + i">
-                        (<span v-for="(minSub,minI) in subList" :key="minSub.PropertyID">
-                          {{minSub.PropertyName}}：{{minSub.ShowValue}}{{minSub.ShowUnit}}
-                          <em v-if="minI !== subList.length - 1">,</em>
-                        </span>)
-                      </i>
-                    </dd>
-                  </div>
-                </dl>
-              </li>
-              <li class="prop-list-wrap"
-               v-if="showData.ProductParams.PropertyList.length > 0"> <!-- 主体属性 -->
-                  <dl>
-                    <dt class="text-title">属性：</dt>
-                    <div>
-                      <dd v-for="property in showData.ProductParams.PropertyList"
-                        :key="property.PropertyID" class="text">
-                        <span class="text">
-                          {{property.PropertyName}}：{{property.ShowValue}}{{property.ShowUnit}}
-                        </span>
-                      </dd>
-                    </div>
-                  </dl>
-              </li>
-            </ul>
+            <DisplayItem :ShowData='ProductShowData' />
           </section>
           <section class="unit">  <!-- 部件信息 -->
-            <ul v-for="Part in showData.ProductParams.PartList" :key="Part.PartID">
-              <template v-if="Part.PartList && Part.PartList.length > 0">
-                <li class="unit-title" :class="Part.PartList.length > 1 ? 'margin-10': ''">
-                  <span class="text-title">部件：</span>
-                  <span class="text">{{Part.Attributes.Name}}</span>
-                </li>
-                <li>
-                  <ul class="sub-part-wrap" v-for="(subPart,i) in Part.PartList"
-                    :key="Part.PartID + i">
-                    <li v-if="Part.PartList.length > 1" class="part-sort-name">
-                      <el-divider content-position="left">{{Part.Attributes.Name}}-{{i + 1}}</el-divider>
-                    </li>
-                    <li> <!-- 数量及物料 -->
-                      <span class="text-title">数量：</span>
-                      <span class="text">{{subPart.PartAmount.First}}{{Part.Attributes.Unit}}</span>
-                      <span v-if="subPart.Attributes.Material" class="text-title">物料：</span>
-                      <span v-if="subPart.Attributes.Material">
-                        <el-tooltip class="text" effect="dark"
-                          :disabled="subPart.Attributes.Material.Name.length < 12"
-                          :content="subPart.Attributes.Material.Name" placement="top-end">
-                          <span class="text">
-                            {{subPart.Attributes.Material.Name}}
-                          </span>
-                        </el-tooltip>
-                      </span>
-                    </li>
-                    <li v-if="subPart.Attributes.MaterialBrand">  <!-- 物料品牌 -->
-                      <span class="text-title">品牌：</span>
-                      <span class="text size">{{subPart.Attributes.MaterialBrand
-                        ? subPart.Attributes.MaterialBrand.BrandName : ''}}
-                      </span>
-                    </li>
-                    <li v-if="subPart.Attributes.SizeName"> <!-- 如果设置有尺寸组 -->
-                      <span class="text-title">尺寸：</span>
-                      <span class="text size">{{subPart.Attributes.SizeName}}</span>
-                    </li>
-
-                    <!-- 自定义尺寸 -->
-                    <li v-if="!subPart.Attributes.SizeName && subPart.SizePropertyList.length > 0">
-                      <span class="text-title">尺寸：</span>
-                      <span class="text size"
-                        v-for="(subSize, subIndex) in subPart.SizePropertyList"
-                        :key='subSize.PropertyID'>{{subSize.ShowValue}}{{subSize.ShowUnit}}
-                        <em v-if="subIndex!==subPart.SizePropertyList.length-1"> × </em>
-                      </span>
-                    </li>
-
-                    <li class="prop-list-wrap"> <!-- 工艺 -->
-                      <dl>
-                        <dt v-if="subPart.CraftList.First.length > 0" class="text-title">工艺：</dt>
-                        <div>
-                          <dd v-for="item in subPart.CraftList.First"
-                            :key="item.CraftID" class="text">
-                            <span class="text">{{item.Attributes.NickName}}</span>
-                            <i v-for="(subList, i) in item.PropertyList" :key="subList + '' + i">
-                              (<span v-for="(minSub, minI) in subList" :key="minSub.PropertyID">
-                                {{minSub.PropertyName}} : {{minSub.ShowValue}}{{minSub.ShowUnit}}
-                                <em v-if="minI !== subList.length - 1">,</em>
-                              </span>)
-                            </i>
-                          </dd>
-                        </div>
-                      </dl>
-                    </li>
-                    <li class="prop-list-wrap"
-                    v-if="filterGroupList(subPart.PropertyGroupList).length > 0"> <!-- 属性组 -->
-                      <dl v-for="PropertyGroup in filterGroupList(subPart.PropertyGroupList)"
-                      :key="PropertyGroup.ID">
-                        <dt  class="text-title">{{PropertyGroup.Name}}：</dt>
-                        <div>
-                          <dd v-for="(item, i) in PropertyGroup.Value"
-                            :key="item + '-' + i" class="text">
-                            <span class="text" v-for="(sub, subi) in item" :key="sub + subi">
-                              {{sub}}
-                              <em v-if="subi < PropertyGroup.Value.length - 1">，</em>
-                            </span>
-                          </dd>
-                        </div>
-                      </dl>
-                    </li>
-                    <li  class="prop-list-wrap" v-if="subPart.PropertyList.length > 0"> <!-- 属性 -->
-                        <dl>
-                          <dt class="text-title">属性：</dt>
-                          <div>
-                            <dd v-for="property in subPart.PropertyList"
-                              :key="property.PropertyID" class="text">
-                              <span class="text">
-                                {{property.PropertyName}}：{{property.ShowValue}}{{property.ShowUnit}}
-                              </span>
-                            </dd>
-                          </div>
-                        </dl>
-                    </li>
-                  </ul>
-                </li>
-              </template>
-            </ul>
+            <DisplayItem v-for="(it, i) in PartShowDataList" :ShowData='it' :key="it.Name" :class="{border: i > 0}" :showBorder='i > 0' />
           </section>
         </article>
         <footer>
@@ -354,7 +196,7 @@
                 </li>
                 <li class="right-flex-wrap file-content-wrap">
                   <span class="text-title">文件内容：</span>
-                  <span class="text">{{showData.Content}}</span>
+                  <span class="text">{{showData.Content || '无'}}</span>
                 </li>
                 <li>
                   <span class="text-title special-title">下单方式：</span>
@@ -407,6 +249,8 @@
 import { mapState } from 'vuex';
 import normalBtn from '@/components/common/normalBtn.vue';
 import UploadComp4BreakPoint from '@/components/common/UploadComp/UploadComp4BreakPoint.vue';
+import ShowProductDetail from '@/assets/js/TypeClass/ShowProductDetail';
+import DisplayItem from './OrderDetailComps/DisplayItem.vue';
 
 export default {
   computed: {
@@ -415,10 +259,48 @@ export default {
       if (this.detailData) return this.detailData;
       return this.orderDetailData;
     },
+    ProductShowData() {
+      if (this.showData?.ProductParams?.Attributes?.DisplayOrderList && this.showData.ProductParams.Attributes.DisplayOrderList.length > 0) {
+        return {
+          Name: this.showData.ProductParams.Attributes.DisplayName,
+          ContentList: this.getPartShowList(this.showData.ProductParams.Attributes.DisplayOrderList, this.showData.ProductParams),
+          Type: 'product',
+        };
+      }
+      return {
+        Name: this.showData?.ProductParams?.Attributes?.DisplayName || '产品名称',
+        ContentList: [],
+        Type: 'product',
+      };
+    },
+    PartList() {
+      if (!this.showData) return [];
+      if (!this.showData.ProductParams) return [];
+      return this.showData.ProductParams.PartList;
+    },
+    PartShowDataList() {
+      const arr = [];
+      this.PartList.forEach(it => {
+        if (Array.isArray(it.List)) {
+          it.List.forEach((part, index) => {
+            const ContentList = this.getPartShowList(it.Attributes.DisplayOrderList, part);
+            const Name = it.List.length > 1 && index > 0 ? `${it.Attributes.Name}${index + 1}` : it.Attributes.Name;
+            const temp = {
+              Name,
+              Type: 'Part',
+              ContentList: ContentList || [],
+            };
+            arr.push(temp);
+          });
+        }
+      });
+      return arr;
+    },
   },
   components: {
     normalBtn,
     UploadComp4BreakPoint,
+    DisplayItem,
   },
   props: {
     detailData: {
@@ -470,6 +352,9 @@ export default {
     },
     successFunc(fileName) {
       this.$store.dispatch('orderModule/setOrderReCheckFile', fileName);
+    },
+    getPartShowList(DisplayOrderList, ProductParams) {
+      return ShowProductDetail.getDisplayContentFromPartDataByDetailData(DisplayOrderList, ProductParams);
     },
   },
 };
@@ -691,7 +576,7 @@ export default {
       white-space: nowrap;
     }
     li {
-      margin-bottom: 15px;
+      // margin-bottom: 8px;
       .text-title {
         color: $--color-text-table-time;
         &.special-title {
@@ -856,25 +741,8 @@ export default {
       margin-bottom: 12px;
       position: relative;
       padding-bottom: 1px;
-      > .part-sort-name {
-        font-size: 12px;
-        font-weight: 700;
-        height: 20px;
-        margin-bottom: 8px;
-        margin-top: -5px;
-        > div {
-          margin: 10px 0;
-          background-image: linear-gradient(to right, #e6e6e6 0%, #e6e6e6 84%, transparent 16%);
-          background-repeat: repeat-x;
-          background-size: 7px 1px;
-          border: none;
-          background-color: unset;
-          > div {
-            font-size: 12px;
-            color: #989898;
-            font-weight: 700;
-          }
-        }
+      .text.is-bold {
+        font-size: 15px;
       }
     }
     &.unit > ul > li {

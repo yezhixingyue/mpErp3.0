@@ -4,6 +4,7 @@ import api from '@/api/index';
 // import { getStatusString } from '@/assets/js/util';
 import filterOrderRequest from '@/assets/js/utils/filterOrderRequest';
 import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
+import ShowProductDetail from '@/assets/js/TypeClass/ShowProductDetail';
 import messageBox from '../assets/js/utils/message';
 
 
@@ -152,114 +153,11 @@ export default {
     orderDelContent(state) {
       return `订单编号： ${state.orderID2Del}`;
     },
-    /* 从当前订单详情提取出来的产品信息  用于系统获取到的订单详情数据转换提取为更易页面渲染的数据，用于售后单提交页面、订单详情页面
-    -------------------------------*/
-    curOrderComputedDetail(state) {
-      const data = state.orderDetailData;
-      if (!data) return '';
-      const arr = [];
-      arr[0] = {};
-      arr[0].name = '主产品';
-      arr[0].list = [];
-      const mainObj = {}; // -------------------------------提取主产品信息
-      mainObj.Amount = `${data.ProductParams.ProductAmount}${data.ProductParams.Attributes.Unit}`;
-      mainObj.KindCount = `${data.ProductParams.KindCount}款`;
-      mainObj.Name = data.ProductParams.Attributes.Name;
-      mainObj.Factory = data.ProductParams.Attributes.FactoryName;
-      mainObj.CraftList = [];
-      data.ProductParams.CraftList.First.forEach((item) => {
-        if (item.Attributes.NickName) mainObj.CraftList.push(item.Attributes.NickName);
-      });
-      arr[0].list.push(mainObj);
-      mainObj.PropertyList = [];
-      data.ProductParams.PropertyList.forEach((item) => {
-        const tempObj = {};
-        tempObj.name = item.PropertyName;
-        tempObj.value = item.ShowValue;
-        if (tempObj.value) mainObj.PropertyList.push(tempObj);
-      });
-      data.ProductParams.PartList.forEach((item) => { // ----------------------提取部件信息
-        arr[arr.length] = {};
-        arr[arr.length - 1].name = item.Attributes.Name;
-        arr[arr.length - 1].list = [];
-        item.PartList.forEach((sub) => { // item：部件列表   sub:单个部件
-          const obj = {}; // 生成一个对象，用于提取整合单个部件信息，最后添加进arr中
-          obj.sizeGroup = [];
-          obj.CraftList = [];
-          obj.Brand = sub.Attributes.MaterialBrand ? sub.Attributes.MaterialBrand.BrandName : '';
-          obj.Amount = sub.PartAmount.First;
-          obj.Material = sub.Attributes.Material ? sub.Attributes.Material.Name : '';
-          obj.PropertyGroupList = [];
-          obj.PropertyList = [];
-          sub.CraftList.First.forEach((craft) => { // 工艺
-            if (craft.Attributes.NickName) obj.CraftList.push(craft.Attributes.NickName);
-          });
-          obj.SizeName = sub.Attributes.SizeName;
-          if (!obj.SizeName) {
-            sub.SizePropertyList.forEach((size) => { // 尺寸
-              obj.sizeGroup.push(`${size.ShowValue}${size.ShowUnit}`);
-            });
-          }
-          sub.PropertyGroupList.forEach((PropertyGroup) => { // 属性组
-            const proObj = {};
-            proObj.name = PropertyGroup.GroupName;
-            proObj.list = [];
-            PropertyGroup.PropertyList.forEach((Property) => {
-              Property.Second.forEach((child) => {
-                if (child.ShowValue) proObj.list.push(`${child.PropertyName}:${child.ShowValue}${child.ShowUnit}`);
-              });
-            });
-            if (proObj.list.length > 0) obj.PropertyGroupList.push(proObj);
-          });
-          sub.PropertyList.forEach((Property) => { // 属性
-            const tempObj = {};
-            tempObj.name = Property.PropertyName;
-            tempObj.value = Property.ShowValue;
-            if (tempObj.value) obj.PropertyList.push(tempObj);
-          });
-          arr[arr.length - 1].list.push(obj);
-        });
-      });
-      return arr;
-    },
     /* 当前订单产品工艺、属性、尺寸等信息提取出来的字符串，用于售后单提交和详情页面的产品卡片展示
     -------------------------------*/
-    curProductInfo(state, getters) {
-      const productData = getters.curOrderComputedDetail;
-      if (!productData) return '';
-      let detail = ''; // 产品工艺、属性等信息组成的字符串
-      if (productData) { // detail赋值
-        let str = '';
-        let strSymbol = '';
-        productData.forEach((item) => {
-          const temp = str;
-          str += `${item.name}：`;
-          item.list.forEach((sub) => {
-            const len = str.length;
-            if (sub.CraftList && sub.CraftList.length > 0) {
-              str += `( 工艺：[ ${sub.CraftList.join(' | ')} ]`;
-            }
-            strSymbol = str.length > len ? '；' : '( ';
-            if (sub.SizeName) str += `${strSymbol}尺寸组：${sub.SizeName}`;
-            else if (sub.sizeGroup && sub.sizeGroup.length > 0) str += `${strSymbol}尺寸：${sub.sizeGroup.join(' × ')}`;
-            strSymbol = str.length > len ? '；' : '( ';
-            if (sub.PropertyList && sub.PropertyList.length > 0) {
-              const tempList = [];
-              sub.PropertyList.forEach((Property) => {
-                tempList.push(`${Property.name}:${Property.value}`);
-              });
-              str += `${strSymbol}属性：[ ${tempList.join(' | ')} ]`;
-            }
-            if (str.length === len) str = temp;
-            else str += ' )；';
-          });
-        });
-        detail = str;
-      }
-      const productName = productData[0].list[0].Name; // 产品名称
-      // console.log(productData[0].list[0].KindCount);
-      const productAmount = `${productData[0].list[0].KindCount}${productData[0].list[0].KindCount === '1款' ? '' : '各'}${productData[0].list[0].Amount}`; // 产品款式数量
-      return [productName, productAmount, detail];
+    curProductInfoStringify(state) {
+      if (!state.orderDetailData) return '';
+      return ShowProductDetail.getDisplayStringFromPartDataByDetailData(state.orderDetailData);
     },
   },
   mutations: {

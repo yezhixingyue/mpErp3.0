@@ -171,7 +171,7 @@ export default {
       this.updateNewDate();
       this.clearConfigObj();
       this.setSelectTime(['financeTodayDate', 1]);
-      this.getTableData();
+      this.getFinanceTableData();
       this.inpVal = '';
     },
     // onInput($event) {
@@ -203,7 +203,7 @@ export default {
   },
   mounted() {
     this.getTableData = throttle(this.getFinanceTableData, 350);
-    this.setSelectTime(['financeTodayDate', 1]);
+    this.onResetBtn();
   },
 };
 </script>

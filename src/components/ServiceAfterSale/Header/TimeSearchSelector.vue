@@ -158,7 +158,8 @@ export default {
       this.updateNewDate();
       this.clearConfigObj();
       this.setSelectTime(['TodayDate', 1]);
-      this.getTableData();
+      // this.getTableData();
+      this.getServiceListData();
       this.inpVal = '';
     },
     // onInput($event) {
@@ -189,8 +190,9 @@ export default {
     },
   },
   mounted() {
-    this.setSelectTime(['TodayDate', 1]);
+    // this.setSelectTime(['TodayDate', 1]);
     this.getTableData = throttle(this.getServiceListData, 350);
+    this.onResetBtn();
   },
 };
 </script>

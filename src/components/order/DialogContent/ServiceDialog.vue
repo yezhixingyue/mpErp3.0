@@ -14,7 +14,7 @@
     <template v-if="!isLoading">
       <OrderServiceEditCord :orderData='orderDetailData' :Customer='curCustomerInfo2Service'
         :ServiceHistory='curServiceOrderHistory'
-        :productData='curProductInfo' />
+        :curProductInfoStringify='curProductInfoStringify' />
       <!-- 顶部信息 -->
       <div class="download-btn" v-if="orderDetailData && orderDetailData.FilePath">
         <normalBtn @click.native="handleDownLoad(orderDetailData)" title="下载文件" />
@@ -121,7 +121,7 @@ export default {
   computed: {
     // eslint-disable-next-line max-len
     ...mapState('orderModule', ['isShowServiceDia', 'orderDetailData', 'curOrderID', 'curCustomerInfo2Service', 'curServiceOrderHistory']),
-    ...mapGetters('orderModule', ['curProductInfo']),
+    ...mapGetters('orderModule', ['curProductInfoStringify']),
     ...mapGetters('common', ['expressList']),
     // eslint-disable-next-line max-len
     ...mapState('service', ['serviceImgList', 'serviceImgList2Upload', 'serviceErrInfo', 'SolutionType', 'replenish', 'refund', 'refundFreight', 'PayPackageData',

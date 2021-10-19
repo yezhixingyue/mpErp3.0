@@ -56,9 +56,11 @@ export default {
     },
   },
   mounted() {
-    if (this.balanceTypeDataList.length === 0) {
-      this.$store.dispatch('fundBill/getCustomerBill');
-    }
+    this.$store.commit('fundBill/clearConditionDate4Balance');
+    this.$store.commit('fundBill/clearConditionDate4Order');
+    this.$store.commit('fundBill/setBalanceTypeDataList', [[], 0]);
+    this.$store.commit('fundBill/setOrderTypeDataList', [[], 0]);
+    this.$store.dispatch('fundBill/getCustomerBill');
   },
 };
 </script>
