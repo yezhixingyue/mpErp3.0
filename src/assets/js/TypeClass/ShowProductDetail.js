@@ -58,7 +58,7 @@ const getDisplayContentByGroupFromDetailData = (GroupList, item, isStringify) =>
         let str = '';
         _list.forEach(_it => {
           const { Label, Content } = _it;
-          str += `，${Label}：${Content}`;
+          str += `，${Label}：（ ${Content} ）`;
         });
         return str;
       }
@@ -68,12 +68,18 @@ const getDisplayContentByGroupFromDetailData = (GroupList, item, isStringify) =>
 };
 
 const getCraftItemContentNameFromDetailData = (Craft, isStringify) => {
-  if (!Craft) return { Name: '工艺' };
+  if (!Craft) {
+    if (isStringify) return '';
+    return { Name: '工艺' };
+  }
   const { ElementList, GroupList } = Craft;
   if (
     (!Array.isArray(ElementList) || ElementList.length === 0)
       && (!Array.isArray(GroupList) || GroupList.length === 0)
-  ) return { Name: Craft.Attributes.DisplayName };
+  ) {
+    if (isStringify) return Craft.Attributes.DisplayName;
+    return { Name: Craft.Attributes.DisplayName };
+  }
   const ElContent = [];
   const GroupContent = [];
   const hasElementList = Array.isArray(ElementList) && ElementList.length > 0;
@@ -94,8 +100,8 @@ const getCraftItemContentNameFromDetailData = (Craft, isStringify) => {
     GroupList.forEach((it) => {
       if (it.List.length === 0) return;
       if (it.List.length > 1) {
-        const _data = getDisplayContentByGroupFromDetailData(GroupList, { Property: { ID: it.GroupID } }, isStringify);
-        if (_data && _data.length > 0) {
+        const _data = getDisplayContentByGroupFromDetailData(GroupList, { Property: { ID: it.GroupID } });
+        if (Array.isArray(_data) && _data.length > 0) {
           _data.forEach((_it) => {
             const { Label, Content } = _it;
             if (Label && Content) {
@@ -123,7 +129,7 @@ const getCraftItemContentNameFromDetailData = (Craft, isStringify) => {
       Content: `${ElContent.join('，')}${ElContent.length > 0 ? '；' : ''}${GroupContent.join('，')}`,
     };
     if (!isStringify) return temp;
-    return `，${temp.Name}：${temp.Content}`;
+    return `，${temp.Name}：[ ${temp.Content} ]`;
   }
   if (!isStringify) return { Name: Craft.Attributes.DisplayName };
   return `，${Craft.Attributes.DisplayName}`;
@@ -187,12 +193,15 @@ export default class ProductDetailTypeShowClass {
           case '尺寸组':
             if (ProductParams.Size?.DisplayContent) {
               const Label = ProductParams.Size.GroupName || '尺寸';
-              arr.push({ type: 'Size', Label, Content: ProductParams.Size.DisplayContent });
+              if (!isStringify) arr.push({ type: 'Size', Label, Content: ProductParams.Size.DisplayContent });
+              else str += `，${Label}：${ProductParams.Size.DisplayContent}`;
             }
             break;
           case '物料':
             if (ProductParams.Attributes?.MaterialName) {
-              arr.push({ type: 'MaterialID', Label: ProductParams.Attributes.MaterialTipsName || '物料', Content: ProductParams.Attributes.MaterialName });
+              if (!isStringify) {
+                arr.push({ type: 'MaterialID', Label: ProductParams.Attributes.MaterialTipsName || '物料', Content: ProductParams.Attributes.MaterialName });
+              } else str += `，${ProductParams.Attributes.MaterialTipsName || '物料'}：${ProductParams.Attributes.MaterialName}`;
             }
             break;
           case '工艺':
@@ -214,29 +223,45 @@ export default class ProductDetailTypeShowClass {
   }
 
   static getDisplayStringFromPartDataByDetailData(orderDetailData) {
-    console.log(orderDetailData);
     if (!orderDetailData) return '';
     let str = '';
     if (orderDetailData.ProductParams?.Attributes?.DisplayOrderList && orderDetailData.ProductParams.Attributes.DisplayOrderList.length > 0) {
+      str += '产品名称：';
+      if (orderDetailData.ProductParams.Attributes.ClassList?.length > 0) {
+        const t = orderDetailData.ProductParams.Attributes.ClassList.find(it => it.Type === 1);
+        if (t) {
+          const { FirstLevel } = t;
+          if (FirstLevel && FirstLevel.Name) str += `${FirstLevel.Name}-`;
+        }
+      }
       str += orderDetailData.ProductParams.Attributes.DisplayName;
-      str += '，';
-      str += this.getDisplayContentFromPartDataByDetailData(orderDetailData.ProductParams.Attributes.DisplayOrderList, orderDetailData.ProductParams, true);
+      str += '；';
+      if (orderDetailData.ProductParams.Attributes.FactoryName) {
+        str += `生产工厂：${orderDetailData.ProductParams.Attributes.FactoryName}；`;
+      }
+      str += '产品参数：';
+      // eslint-disable-next-line max-len
+      let _productContent = this.getDisplayContentFromPartDataByDetailData(orderDetailData.ProductParams.Attributes.DisplayOrderList, orderDetailData.ProductParams, true);
+      _productContent = _productContent && _productContent.length > 0 ? _productContent.slice(1) : _productContent;
+      str += _productContent;
       if (orderDetailData.ProductParams.PartList && orderDetailData.ProductParams.PartList.length > 0) {
         orderDetailData.ProductParams.PartList.forEach(it => {
           if (Array.isArray(it.List)) {
             it.List.forEach((part, index) => {
-              const ContentList = this.getDisplayContentFromPartDataByDetailData(it.Attributes.DisplayOrderList, part, true);
+              let ContentList = this.getDisplayContentFromPartDataByDetailData(it.Attributes.DisplayOrderList, part, true);
               const Name = it.List.length > 1 && index > 0 ? `${it.Attributes.Name}${index + 1}` : it.Attributes.Name;
               str += '；';
               str += Name;
-              str += '，';
+              str += '：';
+              ContentList = ContentList && ContentList.length > 0 ? ContentList.slice(1) : ContentList;
+              if (ContentList) str += '【 ';
               str += ContentList;
+              if (ContentList) str += ' 】';
             });
           }
         });
       }
     }
-    console.log(str);
     return str;
   }
 }

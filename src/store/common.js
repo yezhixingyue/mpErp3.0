@@ -368,6 +368,7 @@ export default {
     AfterSalesTypeList: [
       { name: '补印', ID: 7 },
       { name: '减款', ID: 2 },
+      { name: '赠送优惠券', ID: 8 },
     ],
     /* 物流状态筛选
     -------------------------------*/

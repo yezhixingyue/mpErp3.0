@@ -70,7 +70,7 @@
             <li v-if="radioState === 0" class="mp-service-count-wrap" >
               <div>
                 <span>订单减款：</span>
-                <input :class="refund.err ? 'is-warn' : ''"
+                <input :class="refund.err ? 'is-warn' : ''" style="width:60px"
                   v-model="refundNum" @input="onRefundInput" type="text">
                 <span>元</span>
               </div>
@@ -80,19 +80,85 @@
                   v-model="refundFreightAmount" @input="onRefundFreightAmountInput" type="text">
                 <span>元</span>
               </div>
-              <!-- <div class="remark is-gray">注：只有异常取消或已签收状态才可选择补印方案</div> -->
+            </li>
+            <li v-if="radioState === 2" class="mp-service-count-wrap" style="line-height:22px">
+              <div>
+                <span class="is-font-12 blue-span" @click="onCouponSelectClick">选择优惠券</span>
+                <span v-if="selectedCouponList.length === 0" style="margin-left:30px" class="is-gray is-font-12">尚未选中优惠券</span>
+              </div>
             </li>
           </ul>
+        </section>
+        <section class="coupon-list-box" v-show="radioState === 2">
+          <div v-if="selectedCouponList.length > 0">
+            <span>已选：</span>
+            <ul>
+              <li v-for="it in selectedCouponList" :key="it.CouponID">
+                  <span class="is-pink">{{it.Data.Amount}}元</span>
+                  <span class="MinPayAmount">满{{it.Data.MinPayAmount}}元使用</span>
+                  <span>（ <i class="is-origin">{{it.CouponNumber}}</i>张 ）</span>
+                  <i> - </i>
+                  <el-tooltip placement="top-start" :enterable='false' >
+                    <div slot="content">
+                        <p v-for="(item, i) in it.ProductListTextArray" :key="item + '---' + i">
+                          {{ item }}
+                        </p>
+                    </div>
+                    <span class="area-span">限产品：{{ it.ProductListTextArray.join(' ') }}</span>
+                  </el-tooltip>
+              </li>
+            </ul>
+          </div>
+          <el-dialog
+            center
+            :visible.sync="dialogVisible"
+            :modal-append-to-body='false'
+            :modal='false'
+            :close-on-press-escape='false'
+            :close-on-click-modal='false'
+            @open='handleCouponDialogOpen'
+            custom-class='mp-erp-server-after-sale-solution-coupon-select-dialog'
+            top="16vh"
+            width="750px">
+            <div class="coupon-dialog-content">
+              <p v-if="couponList.length === 0 && isCouponListLoaded" style="margin:20px 30px; letter-spacing:1px" class="is-pink is-font-size-12 tips-box">
+                <i class="el-icon-warning"></i> 暂无可用优惠券！</p>
+              <ul v-else>
+                <li v-for="it in couponList" :key="it.CouponID">
+                  <el-checkbox v-model="it.checked" class="mp-mini-checkbox">
+                    <span class="is-pink">{{it.Data.Amount}}元</span>
+                    <span>满{{it.Data.MinPayAmount}}元使用</span>
+                    <i> - </i>
+                    <el-tooltip placement="top-start" :enterable='false' >
+                      <div slot="content">
+                          <p v-for="(item, i) in it.ProductListTextArray" :key="item + '---' + i">
+                            {{ item }}
+                          </p>
+                      </div>
+                      <span class="area-span">限产品：{{ it.ProductListTextArray.join(' ') }}</span>
+                    </el-tooltip>
+                  </el-checkbox>
+                  <el-input v-show="it.checked" v-model="it.CouponNumber" placeholder="" maxlength="5" size="mini"></el-input>
+                  <span v-show="it.checked">张</span>
+                </li>
+              </ul>
+            </div>
+            <span slot="footer" class="dialog-footer">
+              <el-button type="primary" :disabled='couponList.length === 0' @click="onSelectClick">确 定</el-button>
+              <el-button @click="dialogVisible = false">取 消</el-button>
+            </span>
+          </el-dialog>
         </section>
     </main>
 </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 import DropDown from '@/components/common/DropDown.vue';
 import ServiceBlueBtn from '@/components/ServiceAfterSale/EditDialog/ServiceBlueBtn.vue'; // serviceSingleRadio
 import SingleRadio from '@/components/common/SingleRadio.vue';
+import { getProductArrayList, reg } from '@/components/Promote/promoteUtils';
 // import { Base64 } from 'js-base64';
 import MpTextInput from './MpTextInput.vue';
 
@@ -122,13 +188,19 @@ export default {
       refundNum: null,
       refundFreightAmount: 0,
       title: '请选择',
+      dialogVisible: false,
+      couponList: [],
+      selectedCouponList: [],
+      couponListLoading: false,
+      isCouponListLoaded: false,
     };
   },
   computed: {
     // eslint-disable-next-line max-len
     ...mapState('service', ['submitQuestionList', 'fileName', 'replenishFile', 'QuestionTypeList', 'SolutionType', 'replenish', 'refund', 'refundFreight']),
     ...mapState('orderModule', ['isShowServiceDia', 'orderDetailData']),
-    ...mapState('common', ['DepartmentList']),
+    ...mapState('common', ['DepartmentList', 'AfterSalesTypeList']),
+    ...mapGetters('common', ['allProductClassify']),
     questionList() {
       if (this.QuestionTypeList.length < 1) return [];
       const list = this.QuestionTypeList.map((it) => ({
@@ -138,11 +210,7 @@ export default {
       return list;
     },
     selectList() {
-    //   if (this.status === 200) { // 只有已签收交易完成才能选择补印，还有一种情况：异常取消也可以，暂时尚未设置
-    //     return [{ value: '减款', type: true }, { value: '补印', type: true }];
-    //   }
-    //   return [{ value: '减款', type: true }, { value: '补印', type: false }];
-      return [{ value: '减款', type: true }, { value: '补印', type: true }]; // 判断信息不明确 ，暂时先全部都可选择
+      return [{ value: '减款', type: true }, { value: '补印', type: true }, { value: '赠送优惠券', type: true }]; // 判断信息不明确 ，暂时先全部都可选择
     },
     departmentSelectList() {
       if (this.DepartmentList.length === 0) return [];
@@ -201,7 +269,6 @@ export default {
       reader.readAsDataURL(inputFile);
       reader.onloadend = () => {
         const strBase64 = reader.result.substring(0);
-        // this.setServiceImgList([strBase64, inputFile]); // 添加到数据仓库图片列表中
         return strBase64;
       };
     },
@@ -239,8 +306,6 @@ export default {
     },
     onRefundFreightAmountInput(v) {
       const num = this.$utils.filterNumber(v.target.value);
-      // console.log(num);
-      // if (/.$/)
       this.refundFreightAmount = num;
       this.setRefundFreight(this.refundFreightAmount);
     },
@@ -249,6 +314,7 @@ export default {
       let str = '';
       if (value === 0) str = 'refund';
       else if (value === 1) str = 'replenish';
+      else if (value === 2) str = 'giveCoupons';
       this.setSolutionType(str);
     },
     onSelect([ID, , index]) {
@@ -257,12 +323,91 @@ export default {
     onDepartmentSelect([ID, , index]) {
       this.setSubmitQuestionList(['Department', ID, index]);
     },
+    onCouponSelectClick() {
+      this.dialogVisible = true;
+    },
+    async handleCouponDialogOpen() {
+      if (this.isCouponListLoaded) {
+        this.couponList.forEach(it => {
+          const _it = it;
+          const t = this.selectedCouponList.find(_item => _item.CouponID === it.CouponID);
+          if (t) {
+            _it.checked = true;
+            _it.CouponNumber = t.CouponNumber;
+          } else {
+            _it.checked = false;
+            _it.CouponNumber = '';
+          }
+        });
+        return;
+      }
+      this.couponListLoading = true;
+      const resp = await this.api.getCouponList({ ProvideStatus: 1, FieldType: 1, ReceiveNumber: 1 }).catch(() => {});
+      this.couponListLoading = false;
+      if (resp && resp.data.Status === 1000) {
+        this.isCouponListLoaded = true;
+        this.couponList = resp.data.Data.map(it => {
+          const temp = getProductArrayList(it.ProductList, this.allProductClassify);
+          const _textArr = [];
+          if (temp === '全部产品') _textArr.push('全部产品');
+          else {
+            temp.forEach(l1 => {
+              if (reg.test(l1.children[0])) {
+                _textArr.push(`${l1.ClassName}全部产品`);
+              } else {
+                let _text = `${l1.ClassName}：[`;
+                l1.children.forEach((l2, i2) => {
+                  if (i2 > 0) _text += '、';
+                  if (reg.test(l2.children[0])) {
+                    _text += `全部${l2.ClassName}产品 `;
+                  } else {
+                    _text += `${l2.ClassName}: `;
+                    l2.children.forEach((l3, i) => {
+                      if (i === 0) _text += `${l3.ClassName}`;
+                      else _text += `、${l3.ClassName}`;
+                    });
+                  }
+                });
+                _text += ' ]';
+                _textArr.push(_text);
+              }
+            });
+          }
+          return {
+            ...it,
+            checked: false,
+            CouponNumber: '',
+            ProductListTextArray: _textArr,
+          };
+        });
+      }
+    },
+    onSelectClick() {
+      const list = this.couponList.filter(it => it.checked); // CouponNumber
+      if (list.length === 0) {
+        this.messageBox.failSingleError('操作失败', '未选中优惠券');
+        return;
+      }
+      let t = list.find(it => !it.CouponNumber || !this.$utils.getValueIsOrNotNumber(it.CouponNumber, true) || it.CouponNumber <= 0);
+      if (t) {
+        this.messageBox.failSingleError('操作失败', '优惠券数量未输入或输入不正确');
+        return;
+      }
+      t = list.find(it => it.CouponNumber > it.Data.TotalNumber - it.Data.GenerateNumber);
+      if (t) {
+        const max = t.Data.TotalNumber - t.Data.GenerateNumber;
+        this.messageBox.failSingleError('操作失败', `满${t.Data.MinPayAmount}减${t.Data.Amount}优惠券数量已超最大可用数量：${max}`);
+        return;
+      }
+      this.selectedCouponList = list.map(it => ({ ...it }));
+      const _list = this.selectedCouponList.map(it => ({ CouponInfo: { CouponID: it.CouponID }, Number: +it.CouponNumber }));
+      this.$store.commit('service/setCouponList', _list);
+      this.dialogVisible = false;
+    },
   },
-  // beforeDestroy() {
-  // //  console.log('beforeDestroy');
-  // },
   mounted() {
     this.$store.dispatch('common/getAfterSalesDepartmentList');
+    console.log('mounted', this.orderDetailData);
   },
 };
 </script>
@@ -371,7 +516,7 @@ export default {
                overflow: hidden;
                text-overflow: ellipsis;
                white-space: nowrap;
-               max-width: 168px;
+               max-width: 94px;
                height: 100%;
                line-height: 20px;
                display: inline-block;
@@ -383,7 +528,7 @@ export default {
            }
            > li:first-of-type{
               line-height: 26px;
-              margin-right: 45px;
+              margin-right: 35px;
               > span{
                 color: $--color-text-table;
               }
@@ -394,7 +539,7 @@ export default {
              > div{
                 > input {
                   height: 24px;
-                  width: 60px;
+                  width: 56px;
                   box-sizing: border-box;
                   margin-right: 6px;
                   border:1px solid $--border-color-dark;
@@ -410,7 +555,7 @@ export default {
              > div + div {
                 margin-left: 22px;
                 > input{
-                    width: 80px;
+                    width: 70px;
                 }
              }
              > div.remark{
@@ -418,6 +563,11 @@ export default {
                line-height: 24px;
              }
             //  margin-bottom: 12px;
+           }
+           .mp-single-radio-wrap {
+             > label:not(:last-of-type) {
+               margin-right: 20px;
+             }
            }
         }
       }
@@ -428,6 +578,123 @@ export default {
         display: inline-block;
         color: $--color-text-table;
         font-weight: 600;
+      }
+      &.coupon-list-box {
+        padding-top: 8px;
+        width: 800px;
+        > div {
+          display: flex;
+          > span {
+            width: 106px;
+            flex: none;
+            text-align: right;
+            line-height: 18px;
+            color: #999;
+          }
+          > ul {
+            width: 690px;
+            > li {
+              padding-bottom: 4px;
+              width: 100%;
+              white-space: nowrap;
+              overflow: hidden;
+              line-height: 18px;
+              display: flex;
+              align-items: center;
+              color: #999;
+              .area-span {
+                flex: 1;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              }
+              > i {
+                padding: 0 5px;
+              }
+              .is-pink {
+                min-width: 2.5em;
+                margin-right: 0.5em;
+                flex: none;
+              }
+              .MinPayAmount {
+                min-width: 72px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.mp-erp-server-after-sale-solution-coupon-select-dialog {
+  border-radius: 5px;
+  height: 590px;
+  .el-dialog__header {
+    display: none;
+  }
+  .el-dialog__body {
+    height: 520px !important;
+    overflow-y: overlay;
+    padding-right: 20px;
+    .coupon-dialog-content {
+      > ul {
+        padding-top: 25px;
+        > li {
+          padding: 2px 40px;
+          padding-right: 20px;
+          display: flex;
+          align-items: center;
+          height: 28px;
+          > label {
+            width: 540px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            .el-checkbox__label {
+              font-size: 12px;
+              display: flex;
+              align-items: center;
+              overflow: hidden;
+              width: 520px;
+              color: #585858;
+              .area-span {
+                flex: 1;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              }
+              .is-pink {
+                min-width: 2.5em;
+                margin-right: 0.5em;
+                flex: none;
+              }
+              > i {
+                padding: 0 5px;
+              }
+            }
+          }
+          .el-input {
+            width: 80px;
+            margin-right: 9px;
+            margin-left: 20px;
+          }
+          > span {
+            font-size: 12px;
+            color: #999;
+          }
+        }
+      }
+    }
+  }
+  .el-dialog__footer {
+    padding-bottom: 25px !important;
+    .dialog-footer {
+      justify-content: center !important;
+      > button {
+        width: 120px;
+        height: 30px;
+        padding: 0;
+        border-radius: 2px;
       }
     }
   }

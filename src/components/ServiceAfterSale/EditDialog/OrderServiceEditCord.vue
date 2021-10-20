@@ -25,7 +25,7 @@
         <li> <!-- 产品信息部分，该部分使用数据curProductInfoStringify渲染 ； 其它部分使用orderData渲染 -->
           <div class="title">产品信息：</div>
           <div class="text-content product-info">
-            <i>{{curProductInfoStringify}}</i>
+            <i :title="curProductInfoStringify">{{curProductInfoStringify}}</i>
           </div>
         </li>
       </ul>
@@ -70,16 +70,31 @@
         <el-table
          :data="ServiceHistory" max-height=487
          style="width: 100%">
-          <el-table-column prop="ID" label="售后单" width="140"></el-table-column>
-          <el-table-column prop="method" label="解决方案" width="240">
+          <el-table-column prop="ID" label="售后单" width="100"></el-table-column>
+          <el-table-column prop="ID" label="问题" width="95" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{getQuestion(scope.row)}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="ID" label="备注" width="115" show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{getRemark(scope.row)}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="method" label="解决方案" width="140" show-overflow-tooltip>
             <template slot-scope="scope">
               {{getSolution(scope.row.Solution)}}
             </template>
           </el-table-column>
-          <el-table-column prop="date" label="处理时间" class-name='is-gray' width="180">
+          <el-table-column prop="date" label="处理时间" width="130">
             <template slot-scope="scope">
               <!-- {{$utils.getDateFormat(scope.row.CreateTime)}} -->
-              {{ scope.row.CreateTime | formatDate }}
+              <span class='is-gray'>{{ scope.row.CreateTime | formatDate }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="LossAmount" label="损失金额" width="80">
+            <template slot-scope="scope">
+              <span :class="{'is-pink': scope.row.LossAmount > 0}">{{getLossAmount(scope.row.LossAmount)}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="Operator.Name" label="处理人"></el-table-column>
@@ -110,8 +125,8 @@ export default {
      * 订单详情中的产品信息数据，用于页面产品部分渲染，必传
      */
     curProductInfoStringify: {
-      type: Array,
-      default: () => [],
+      type: String,
+      default: '',
     },
     /**
      * 物流信息对照表， 用于转换物流方式（序号转文字）,必传
@@ -176,8 +191,53 @@ export default {
         arr.push('补印');
         arr.push(`${solution.KindCount}款`);
         arr.push(`${solution.Number}${this.orderData.ProductParams.Attributes.Unit}`);
+      } else if (solution.Type === 8) {
+        arr.push('赠送优惠券');
+        const { CouponList } = solution;
+        if (CouponList && CouponList.length > 0) {
+          CouponList.forEach(it => {
+            const { Number, CouponInfo } = it;
+            if (Number && CouponInfo.Data) {
+              const { MinPayAmount, Amount } = CouponInfo.Data;
+              if (Amount && MinPayAmount) {
+                const text = `满${MinPayAmount}减${Amount}券${Number}张`;
+                arr.push(text);
+              }
+            }
+          });
+        }
+        // arr.push(`${solution.KindCount}款`);
+        // arr.push(`${solution.Number}${this.orderData.ProductParams.Attributes.Unit}`);
       }
       return arr.join('--');
+    },
+    getQuestion(data) {
+      const { QuestionList } = data;
+      if (QuestionList && QuestionList.length > 0) {
+        const list = QuestionList.map(it => it.Title);
+        if (list.length > 0) {
+          return list.join('、');
+        }
+      }
+      return '';
+    },
+    getRemark(data) {
+      const { QuestionList } = data;
+      if (QuestionList && QuestionList.length > 0) {
+        const list = QuestionList.map(it => it.Remark);
+        if (list.length > 0) {
+          return list.join('、');
+        }
+      }
+      return '';
+    },
+    getLossAmount(LossAmount) {
+      if (LossAmount > 0) {
+        return `-${LossAmount}元`;
+      }
+      if (LossAmount === 0) return `${LossAmount}元`;
+      if (LossAmount < 0) return `${-LossAmount}元`;
+      return '';
     },
   },
 };

@@ -79,7 +79,7 @@ export default {
   methods: {
     onSubmit() {
       const list2 = this.List.map(it => it.Second).filter(it => it !== null);
-      if (list2.length < this.ProductElementTypeList.length) {
+      if (list2.length < this.ProductElementTypeList.filter(it => !it.onlyProduct || !this.curData).length) {
         this.messageBox.failSingleError('保存失败', '元素设置值不能为空!');
         return;
       }

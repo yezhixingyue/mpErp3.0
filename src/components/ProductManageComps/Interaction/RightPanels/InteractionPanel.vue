@@ -35,7 +35,7 @@
           <div class="multiple" v-else>
             <span class="blue-span" @click="onSelectDialogClick(i)">选择</span>
             <span :title="getText(it.checkList, it.OptionList)">{{getText(it.checkList, it.OptionList)}}</span>
-            <CheckboxDialogComp :visible.sync='it.propVisibel' v-model="it.checkList" :list='it.OptionList' width='800px'
+            <CheckboxDialogComp :visible.sync='it.propVisibel' v-model="it.checkList" :list='it.OptionList' width='800px' submitText='确定'
             title="选择选项" :defaultProps="{label: 'Second', value: 'First'}" />
           </div>
         </div>
@@ -176,6 +176,7 @@ export default {
       return '';
     },
     onSelectDialogClick(index, type) {
+      console.log(this.localList[index]);
       this.localList.forEach(it => {
         const _it = it;
         _it.materialVisible = false;

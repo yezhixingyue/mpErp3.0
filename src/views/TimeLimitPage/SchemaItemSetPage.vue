@@ -75,6 +75,7 @@
               <el-time-picker
                 v-model="LatestPayTime"
                 :editable='false'
+                :clearable='false'
                 value-format='HH:mm'
                 :picker-options="{ format: 'HH:mm' }"
                 :default-value='defaultBeginTime'

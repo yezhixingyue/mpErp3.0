@@ -22,20 +22,25 @@
         {{scope.row.Order.Funds.FinalPrice}}元
       </template>
     </el-table-column>
-    <el-table-column minWidth="62" label="售后类型">
+    <el-table-column minWidth="70" label="售后类型">
       <template slot-scope="scope">
         {{getServiceTypeText(scope)}}
       </template>
     </el-table-column>
     <el-table-column prop="RePrintOrderID" minWidth="88" label="补印单号"></el-table-column>
-    <el-table-column minWidth="80" label="订单减款">
+    <el-table-column minWidth="76" label="订单减款">
       <template slot-scope="scope"  v-if="scope.row.Solution.RefundAmount > 0">
         {{scope.row.Solution.RefundAmount}}元
       </template>
     </el-table-column>
-    <el-table-column minWidth="70" label="运费减款">
+    <el-table-column minWidth="66" label="运费减款">
       <template slot-scope="scope"  v-if="scope.row.Solution.RefundFreightAmount > 0">
         {{scope.row.Solution.RefundFreightAmount}}元
+      </template>
+    </el-table-column>
+    <el-table-column minWidth="66" label="优惠券">
+      <template slot-scope="scope"  v-if="scope.row.Solution.CouponList">
+        {{scope.row.Solution.CouponList}}
       </template>
     </el-table-column>
     <el-table-column class-name='lossfund' prop="LossAmount" minWidth="80" label="损失金额">

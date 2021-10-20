@@ -23,7 +23,7 @@
         <li> <!-- 产品信息部分，该部分使用数据curProductInfoStringify渲染 ； 其它部分使用orderData渲染 -->
           <div class="title">产品信息：</div>
           <div class="text-content product-info">
-              <i>{{curProductInfoStringify}}</i>
+              <i :title="curProductInfoStringify">{{curProductInfoStringify}}</i>
           </div>
         </li>
       </ul>

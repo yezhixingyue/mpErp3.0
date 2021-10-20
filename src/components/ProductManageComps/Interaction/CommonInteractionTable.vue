@@ -152,7 +152,7 @@ export default {
                   optionText = ` [ ${list.join('/')} ] `;
                 }
               } else {
-                optionText = PropertyClass.getMaterialListShowText(OptionList, Property.OptionList);
+                optionText = PropertyClass.getMaterialListShowText(OptionList, Property.OptionList, Property.Type);
                 optionText = optionText ? `: ${optionText}` : optionText;
               }
             }

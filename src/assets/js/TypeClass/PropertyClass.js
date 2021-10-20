@@ -334,10 +334,11 @@ export default class PropertyClass {
     return null;
   }
 
-  static getMaterialListShowText(checkList, OptionList) {
+  static getMaterialListShowText(checkList, OptionList, Type) {
     const tempMaterialObj = getTempMaterialListObj(OptionList);
     const tempMaterialOptionList = getTempMaterialOptionList(tempMaterialObj);
-    const text = getTempMaterialSelectedListShowText(checkList, tempMaterialOptionList);
+    let text = getTempMaterialSelectedListShowText(checkList, tempMaterialOptionList);
+    if (Type && Type !== 5) text = text.replace('（全部）', '');
     return text;
   }
 
@@ -348,7 +349,7 @@ export default class PropertyClass {
       let _operator = getNameFromListByIDs(Operator, AllOperatorList); // 获取到关系类型名称
       // const PerfectProperty = this.getPerfectPropertyByImperfectProperty(Property, PropertyList); // 获取到完整属性
       // if (!PerfectProperty) return '';
-      const { DisplayContent, OptionList, ValueType, Module, Element, Group, Part } = Property;
+      const { DisplayContent, OptionList, ValueType, Module, Element, Group, Part, Type } = Property;
       if (ValueType === 1 || ValueType === 6) _operator += '下面任一选项时：';
       if (ValueType === 2) _operator += '下面所有选项时：';
       if (ValueType === 3) {
@@ -389,7 +390,7 @@ export default class PropertyClass {
           // console.log(2, ValueType, OptionList, _val, Property);
           if (ValueType === 6) { // 为物料类型 对物料类型数据进行组合
             const checkList = ValueList.map(_it => _it.Value);
-            _val = this.getMaterialListShowText(checkList, OptionList);
+            _val = this.getMaterialListShowText(checkList, OptionList, Type);
           }
         }
       }

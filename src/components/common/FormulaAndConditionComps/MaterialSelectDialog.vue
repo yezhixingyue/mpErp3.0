@@ -2,7 +2,7 @@
   <CommonDialogComp
     width="800px"
     top='12vh'
-    title="选择物料1"
+    title="选择物料"
     :visible.sync="visible"
     :submitText='submitText'
     @submit="onSubmit"

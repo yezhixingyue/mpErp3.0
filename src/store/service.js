@@ -42,7 +42,7 @@ export default {
     refundFreight: { refundFreight: '', err: '' }, // 运费减款
     /* 售后单提交界面 记录当前所选择的解决方案类型 值类型：[refund replenish]
     -------------------------------*/
-    serviceTypeList: [{ ID: 2, Name: '减款' }, { ID: 7, Name: '补印' }],
+    serviceTypeList: [{ ID: 2, Name: '减款' }, { ID: 7, Name: '补印' }, { ID: 8, Name: '赠送优惠券' }],
     SolutionType: 'refund', // 减款
     /* 售后单提交界面 损失金额
     -------------------------------*/
@@ -92,6 +92,7 @@ export default {
     submitQuestionList: [{
       ID: '', Remark: '', IDErr: '', RemarkErr: '', Department: '', DepartmentErr: '',
     }],
+    CouponList: [],
     /* 售后提交单 -- 文件上传进度条百分比
     -------------------------------*/
     percentage: null,
@@ -184,6 +185,9 @@ export default {
     setPayPackageData(state, data) {
       state.PayPackageData = data;
     },
+    setCouponList(state, list) {
+      state.CouponList = list;
+    },
     /* 关闭售后单页面时，清除页面中的信息
     -------------------------------*/
     clearServiceFormInfo(state) {
@@ -204,6 +208,7 @@ export default {
       state.submitPackageList = [];
       state.serviceErrInfo = '';
       state.replenishFile = null;
+      state.CouponList = [];
     },
     /* 设置请求售后列表数据对象
     -------------------------------*/
@@ -461,6 +466,10 @@ export default {
         _obj.Solution.Type = 2; // 减款为2  补印为7
         _obj.Solution.RefundAmount = +state.refund.refund || '';
         _obj.Solution.RefundFreightAmount = +state.refundFreight.refundFreight || '';
+      }
+      if (state.SolutionType === 'giveCoupons') { // 赠送优惠券
+        _obj.Solution.Type = 8; // 减款为2  补印为7
+        _obj.Solution.CouponList = state.CouponList;
       }
       let arr = [...state.submitQuestionList];
       arr = arr.filter((it) => it.ID && it.Remark).map((item) => {

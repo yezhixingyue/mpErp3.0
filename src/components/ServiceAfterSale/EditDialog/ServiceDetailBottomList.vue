@@ -47,6 +47,10 @@
         <i class="is-bold">补印单号：</i>
         {{curServiceOrdrData.RePrintOrderID}}
       </span>
+      <span
+        class="is-gray"
+        v-if="curServiceOrdrData.Solution.Type === 8"
+      >赠送优惠券</span>
     </p>
   </div>
 </template>

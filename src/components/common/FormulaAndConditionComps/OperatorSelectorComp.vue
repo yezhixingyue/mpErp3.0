@@ -19,7 +19,8 @@
       <div class="multiple" v-else>
         <span class="blue-span" @click="onSelectDialogClick">选择</span>
         <div class="show-text" :title="localMaterialSelectedList">{{localMaterialSelectedList}}</div>
-        <CheckboxDialogComp v-if="ValueType !== 6" :visible.sync='propVisibel' v-model="checkList" :list='localOptionList' width='800px'
+        <CheckboxDialogComp v-if="!(ValueType === 6 && PropertyData.Type === 5)"
+         :visible.sync='propVisibel' v-model="checkList" :list='localOptionList' width='800px'
          title="选择选项" submitText='确定' :defaultProps="{label: 'Second', value: 'First'}" class="CheckboxDialogComp" />
         <MaterialSelectDialog submitText='确定' v-else :visible.sync='materialVisible' v-model="checkList" :optionList='localMaterialOptionList' />
       </div>
@@ -124,7 +125,7 @@ export default {
   },
   methods: {
     onSelectDialogClick() {
-      if (this.ValueType === 6) this.materialVisible = true;
+      if (this.ValueType === 6 && this.PropertyData.Type === 5) this.materialVisible = true;
       else this.propVisibel = true;
     },
   },

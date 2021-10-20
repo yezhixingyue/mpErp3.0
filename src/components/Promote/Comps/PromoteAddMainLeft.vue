@@ -43,6 +43,7 @@
               <el-time-picker
                 :value='it.StartTime'
                 :editable='false'
+                :clearable='false'
                 @input="onPeriodItemTimeChange($event, it.Value, 'StartTime')"
                 value-format='HH:mm'
                 :picker-options="{ format: 'HH:mm' }"

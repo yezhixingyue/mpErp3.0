@@ -125,7 +125,7 @@ export default {
     ...mapGetters('common', ['expressList']),
     // eslint-disable-next-line max-len
     ...mapState('service', ['serviceImgList', 'serviceImgList2Upload', 'serviceErrInfo', 'SolutionType', 'replenish', 'refund', 'refundFreight', 'PayPackageData',
-      'replenishFile', 'percentage', 'OrderPackageListTableData', 'submitQuestionList', 'lossesFund']),
+      'replenishFile', 'percentage', 'OrderPackageListTableData', 'submitQuestionList', 'lossesFund', 'CouponList']),
     ...mapState('common', ['isLoading']),
   },
   methods: {
@@ -247,9 +247,16 @@ export default {
           this.handleSubmitError();
           return false;
         }
-        if (+this.refund.refund === 0 && +this.refundFreight.refundFreight === 0) {
-          this.writeErrInfo(['refund'], '订单减款和运费减款不能同时等于0!');
-          this.writeErrInfo(['refundFreight'], '订单减款和运费减款不能同时等于0!');
+        // if (+this.refund.refund === 0 && +this.refundFreight.refundFreight === 0) {
+        //   this.writeErrInfo(['refund'], '订单减款和运费减款不能同时等于0!');
+        //   this.writeErrInfo(['refundFreight'], '订单减款和运费减款不能同时等于0!');
+        //   this.handleSubmitError();
+        //   return false;
+        // }
+      }
+      if (this.SolutionType === 'giveCoupons') {
+        if (this.CouponList.length === 0) {
+          this.writeErrInfo(['CouponList'], '请选择优惠券!');
           this.handleSubmitError();
           return false;
         }
