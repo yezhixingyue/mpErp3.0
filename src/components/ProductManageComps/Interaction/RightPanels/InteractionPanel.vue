@@ -176,7 +176,6 @@ export default {
       return '';
     },
     onSelectDialogClick(index, type) {
-      console.log(this.localList[index]);
       this.localList.forEach(it => {
         const _it = it;
         _it.materialVisible = false;

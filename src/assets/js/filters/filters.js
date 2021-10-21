@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-26 09:16:49
- * @LastEditTime: 2021-04-16 17:36:01
+ * @LastEditTime: 2021-10-21 09:45:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit 过滤器
  * @FilePath: /src/assets/js/filters/filters.js
@@ -291,5 +291,24 @@ const { StatisticalFormTypeList } = store.state.common;
 Vue.filter('formatStatisticFormType', ID => {
   const t = StatisticalFormTypeList.find(it => it.ID === ID);
   if (t) return t.name;
+  return '';
+});
+
+/**
+ * 列举优惠券详情信息
+ */
+Vue.filter('getCouponList', ({ CouponList }) => {
+  if (Array.isArray(CouponList) && CouponList.length > 0) {
+    const list = CouponList.map(({ CouponInfo, Number }) => {
+      if (CouponInfo && CouponInfo.Data) {
+        const { Amount, MinPayAmount } = CouponInfo.Data;
+        if (MinPayAmount && Amount && Number) {
+          return `满${MinPayAmount}减${Amount}券${Number}张`;
+        }
+      }
+      return '';
+    }).filter(it => it);
+    return `${list.join('、')}`;
+  }
   return '';
 });

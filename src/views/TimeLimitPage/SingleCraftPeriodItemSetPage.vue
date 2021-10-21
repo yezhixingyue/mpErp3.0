@@ -155,9 +155,9 @@ export default {
         let _list = [];
         if (this.$route.params.EditIndex !== 'new') {
           _list = [...this.TimeLimitData.CraftPeriodList];
-          _list.splice(this.$route.params.EditIndex, 1, { ...this.CraftPeriodItemData });
+          _list.splice(this.$route.params.EditIndex, 1, { ...this.CraftPeriodItemData, CraftPeriodProppertyList: this.PropertyList });
         } else {
-          _list = [{ ...this.CraftPeriodItemData }, ...this.TimeLimitData.CraftPeriodList];
+          _list = [{ ...this.CraftPeriodItemData, CraftPeriodProppertyList: this.PropertyList }, ...this.TimeLimitData.CraftPeriodList];
         }
         this.$store.commit('timelimit/setTimeLimitData', ['CraftPeriodList', _list]);
         this.onGoBackClick();

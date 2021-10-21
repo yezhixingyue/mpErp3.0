@@ -23,7 +23,7 @@
         <main>
           <div v-if="backImgList.length <= 0" class="placeholder-box">
               <img src="@/assets/images/nullImg.png" alt="">
-              <span class="explain">暂未上传问题照片</span>
+              <span class="explain">未上传问题照片</span>
           </div>
           <DisplayPictrue v-else :isEditMode='false' :imgList='backImgList' />
         </main>
@@ -243,6 +243,7 @@ export default {
             padding-bottom: 10px;
             padding-top: 15px;
             border: 1px solid #eeeeee;
+            width: 835px;
             > div.question-list{
               display: flex;
               // max-height: 70px;
@@ -254,6 +255,7 @@ export default {
               > ul{
                 overflow: auto;
                 width: 771px;
+                max-height: 160px;
                 > li{
                   line-height: 14px;
                   margin-bottom: 6px;
@@ -262,6 +264,7 @@ export default {
                   border-bottom: 1px dashed #eee;
                   display: flex;
                   margin-right: 20px;
+                  overflow: hidden;
                   > .question-type{
                     min-width: 80px;
                     display: inline-block;
@@ -285,23 +288,45 @@ export default {
                   > div {
                     padding-top: 1px;
                     display: flex;
-                    flex-wrap: wrap;
+                    overflow: hidden;
+                    width: 663px;
+                    > div {
+                      overflow: hidden;
+                      white-space: nowrap;
+                      text-overflow: ellipsis;
+                      flex: 1;
+                      display: flex;
+                      &:first-of-type {
+                        min-width: 500px;
+                      }
+                    }
+                    // flex-wrap: wrap;
                   }
                 }
               }
             }
-            > p.solution{
+            > div.solution{
               padding-top: 6px;
               text-align: left;
-              > span + span {
+              padding-left: 10px;
+              // margin-right: 18px;
+              display: flex;
+              line-height: 16px;
+              > span {
+                margin-left: -10px;
+                flex: none;
+              }
+              > div {
                 font-size: 12px;
-                line-height: 14px;
-                &.is-gray{
+                padding-right: 10px;
+                .is-gray{
                   margin-left: 10px;
                 }
-                &.re-print-box {
+                .re-print-box {
                   margin-left: 20px;
                 }
+                max-height: 80px;
+                overflow: overlay;
               }
             }
           }

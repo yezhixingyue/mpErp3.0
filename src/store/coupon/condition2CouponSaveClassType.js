@@ -75,6 +75,9 @@ export default class Condition2CouponSaveClassType {
 
     AreaList = [] // // 销售区域列表
 
+    IsIncludeIncreasedProduct = false;
+
+    ProductClassList = [];
 
     static check(obj) {
       // 券的面值 满减金额 及 数量 校验
@@ -145,10 +148,10 @@ export default class Condition2CouponSaveClassType {
         return false;
       }
 
-      if (obj.ProductList.length === 0) {
-        showError('请添加活动商品');
-        return false;
-      }
+      // if (obj.ProductList.length === 0) {
+      //   showError('请添加活动商品');
+      //   return false;
+      // }
       if (obj.OrderTypeList.length === 0) {
         showError('请选择下单渠道');
         return false;
@@ -162,6 +165,11 @@ export default class Condition2CouponSaveClassType {
         return false;
       }
       if (obj.AreaList.length === 0) {
+        showError('请选择销售区域');
+        return false;
+      }
+
+      if (obj.ProductClassList.length === 0) {
         showError('请选择销售区域');
         return false;
       }
@@ -205,6 +213,10 @@ export default class Condition2CouponSaveClassType {
       _condition2CouponSave.AreaList = data.AreaList;
 
       _condition2CouponSave.IsIncludeIncreasedArea = data.IsIncludeIncreasedArea;
+
+      _condition2CouponSave.IsIncludeIncreasedProduct = data.IsIncludeIncreasedProduct;
+
+      _condition2CouponSave.ProductClassList = data.ProductClassList;
 
       return _condition2CouponSave;
     }

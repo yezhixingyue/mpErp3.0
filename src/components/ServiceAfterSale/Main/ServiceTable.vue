@@ -8,15 +8,19 @@
     border
     style="width: 100%"
   >
-    <el-table-column prop="ID" minWidth="80" label="售后单号"></el-table-column>
-    <el-table-column prop="Order.OrderID" minWidth="88" label="订单号"></el-table-column>
+    <el-table-column prop="ID" minWidth="72" label="售后单号"></el-table-column>
+    <el-table-column prop="Order.OrderID" minWidth="80" label="订单号"></el-table-column>
     <el-table-column prop="Order.CustomerNo" minWidth="90" label="客户编号"></el-table-column>
     <el-table-column show-overflow-tooltip prop="Order.CustomerName" minWidth="122" label="客户">
     </el-table-column>
     <el-table-column show-overflow-tooltip
-      prop="Order.Content" class-name='is-gray' minWidth="149" label="内容备注"></el-table-column>
+      prop="Order.Content" class-name='is-gray' minWidth="129" label="文件内容">
+      <template slot-scope="scope">
+        {{scope.row.Order.Content || '无'}}
+      </template>
+    </el-table-column>
     <el-table-column show-overflow-tooltip prop="Order.ProductName"
-      minWidth="125" label="产品名称"></el-table-column>
+      minWidth="108" label="产品名称"></el-table-column>
     <el-table-column minWidth="85" label="金额">
       <template slot-scope="scope">
         {{scope.row.Order.Funds.FinalPrice}}元
@@ -27,45 +31,47 @@
         {{getServiceTypeText(scope)}}
       </template>
     </el-table-column>
-    <el-table-column prop="RePrintOrderID" minWidth="88" label="补印单号"></el-table-column>
-    <el-table-column minWidth="76" label="订单减款">
+    <el-table-column prop="RePrintOrderID" minWidth="80" label="补印单号"></el-table-column>
+    <el-table-column minWidth="72" label="订单减款">
       <template slot-scope="scope"  v-if="scope.row.Solution.RefundAmount > 0">
         {{scope.row.Solution.RefundAmount}}元
       </template>
     </el-table-column>
-    <el-table-column minWidth="66" label="运费减款">
+    <el-table-column minWidth="70" label="运费减款">
       <template slot-scope="scope"  v-if="scope.row.Solution.RefundFreightAmount > 0">
         {{scope.row.Solution.RefundFreightAmount}}元
       </template>
     </el-table-column>
-    <el-table-column minWidth="66" label="优惠券">
+    <el-table-column minWidth="100" label="优惠券" show-overflow-tooltip>
       <template slot-scope="scope"  v-if="scope.row.Solution.CouponList">
-        {{scope.row.Solution.CouponList}}
+        {{scope.row.Solution | getCouponList}}
       </template>
     </el-table-column>
-    <el-table-column class-name='lossfund' prop="LossAmount" minWidth="80" label="损失金额">
+    <el-table-column class-name='lossfund' prop="LossAmount" minWidth="72" label="损失金额" show-overflow-tooltip>
       <template slot-scope="scope">
         {{scope.row.LossAmount}}元
       </template>
     </el-table-column>
-    <el-table-column class-name='sm-font' show-overflow-tooltip minWidth="136" label="销售区域">
+    <el-table-column class-name='sm-font' show-overflow-tooltip minWidth="132" label="销售区域">
       <template slot-scope="scope">
         {{scope.row.Order.SellArea}}
       </template>
     </el-table-column>
     <el-table-column
       class-name='sm-font' prop="Order.Taker" minWidth="75" label="下单人"></el-table-column>
-    <el-table-column class-name='sm-font is-gray' minWidth="120" label="处理时间">
+    <el-table-column class-name='sm-font is-gray' minWidth="115" label="处理时间">
       <template slot-scope="scope">
         <!-- {{$utils.getDateFormat(scope.row.CreateTime)}} -->
         {{scope.row.CreateTime | formatDate}}
       </template>
     </el-table-column>
     <el-table-column prop="Operator.Name" minWidth="75" label="处理人"></el-table-column>
-    <el-table-column label-class-name='menu-header' prop="handle" width="190" label="操作">
+    <el-table-column label-class-name='menu-header' prop="handle" width="180" label="操作">
       <div class="handle-menus-wrap"  slot-scope="scope">
           <span @click="jump2ServiceDetail(scope)">
             <img src="@/assets/images/detail.png" alt />查看详情</span>
+          <span @click="onChangeQuestionClick(scope.row)">
+            <img src="@/assets/images/Compile.png" alt />问题修改</span>
       </div>
     </el-table-column>
     <div slot="empty">
@@ -123,6 +129,9 @@ export default {
         );
       });
       if (key) this.setIsLoading(false);
+    },
+    onChangeQuestionClick(data) {
+      this.$emit('changeQuestion', data);
     },
   },
 };
@@ -187,11 +196,6 @@ export default {
           content: '';
           display: block;
         }
-      &:hover{
-        > span {
-          color: $--color-text-primary;
-        }
-      }
       > span {
         color: $--color-text-table-time;
         font-size: 12px;
@@ -202,6 +206,9 @@ export default {
           height: 14px;
           margin-right: 4px;
           margin-top: -1px;
+        }
+        &:hover {
+          color: $--color-text-primary;
         }
       }
     }

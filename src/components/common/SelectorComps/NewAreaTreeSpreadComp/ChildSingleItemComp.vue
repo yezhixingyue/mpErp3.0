@@ -1,12 +1,12 @@
 <template>
   <section class="mp-erp-common-comps-new-tree-comp-child-single-item-comp-wrap">
     <header>
-      <el-checkbox :class="{isIncreased:itemData.isIncreased}" :disabled='disabled'
+      <el-checkbox :class="{isIncreased:itemData.isIncreased}" :disabled='disabled' :title="itemData.ClassName"
        :style='`width:${leftWidth}`' :indeterminate="isIndeterminate" v-model="checkAll">{{itemData.ClassName}}</el-checkbox>
     </header>
     <main>
       <el-checkbox-group v-model="checkList" :disabled='disabled'>
-        <el-checkbox :class="{isIncreased:it.isIncreased}"
+        <el-checkbox :class="{isIncreased:it.isIncreased}" :title="it.ClassName"
          :style='`width:${rightItemWidth}`' :label="it.ID" v-for="it in itemData.children" :key="it.ClassName">{{it.ClassName}}</el-checkbox>
       </el-checkbox-group>
     </main>

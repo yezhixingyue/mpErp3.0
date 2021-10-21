@@ -43,6 +43,7 @@ export default {
     /* 售后单提交界面 记录当前所选择的解决方案类型 值类型：[refund replenish]
     -------------------------------*/
     serviceTypeList: [{ ID: 2, Name: '减款' }, { ID: 7, Name: '补印' }, { ID: 8, Name: '赠送优惠券' }],
+    FileCaseList: [{ ID: 0, Name: '无文件' }, { ID: 1, Name: '非必传' }, { ID: 2, Name: '必传' }],
     SolutionType: 'refund', // 减款
     /* 售后单提交界面 损失金额
     -------------------------------*/

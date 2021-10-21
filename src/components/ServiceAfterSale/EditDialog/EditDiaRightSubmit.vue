@@ -59,12 +59,17 @@
                 <span>{{orderDetailData.ProductParams.Attributes.Unit}}</span>
               </div>
               <div class="upload-file-box">
-                <ServiceBlueBtn class="uploadFileBox" accept='*'
+                <ServiceBlueBtn class="uploadFileBox" accept='*'  v-if="orderDetailData.FileCase"
                  :func="readFileUniqueName" title="上传文件" />
-                <el-tooltip
+                <el-tooltip v-if="orderDetailData.FileCase"
                   class="file-name-box" effect="dark" :content="fileName" placement="top-end">
                   <span class="file-name-box">{{fileName}}</span>
                 </el-tooltip>
+                <span class="is-font-size-12 is-gray" v-if="orderDetailData.FileCase === 1 && !fileName">文件非必传</span>
+                <span class="is-font-size-12 is-gray" v-if="orderDetailData.FileCase === 2 && !fileName">文件必传</span>
+              </div>
+              <div v-if="!orderDetailData.FileCase">
+                <span class="is-font-size-12 is-gray" style="line-height:20px">注：该订单不用上传文件</span>
               </div>
             </li>
             <li v-if="radioState === 0" class="mp-service-count-wrap" >
@@ -127,7 +132,7 @@
                 <li v-for="it in couponList" :key="it.CouponID">
                   <el-checkbox v-model="it.checked" class="mp-mini-checkbox">
                     <span class="is-pink">{{it.Data.Amount}}元</span>
-                    <span>满{{it.Data.MinPayAmount}}元使用</span>
+                    <span class="MinPayAmount">满{{it.Data.MinPayAmount}}元使用</span>
                     <i> - </i>
                     <el-tooltip placement="top-start" :enterable='false' >
                       <div slot="content">
@@ -158,7 +163,6 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 import DropDown from '@/components/common/DropDown.vue';
 import ServiceBlueBtn from '@/components/ServiceAfterSale/EditDialog/ServiceBlueBtn.vue'; // serviceSingleRadio
 import SingleRadio from '@/components/common/SingleRadio.vue';
-import { getProductArrayList, reg } from '@/components/Promote/promoteUtils';
 // import { Base64 } from 'js-base64';
 import MpTextInput from './MpTextInput.vue';
 
@@ -197,7 +201,7 @@ export default {
   },
   computed: {
     // eslint-disable-next-line max-len
-    ...mapState('service', ['submitQuestionList', 'fileName', 'replenishFile', 'QuestionTypeList', 'SolutionType', 'replenish', 'refund', 'refundFreight']),
+    ...mapState('service', ['submitQuestionList', 'fileName', 'replenishFile', 'QuestionTypeList', 'SolutionType', 'replenish', 'refund', 'refundFreight', 'FileCaseList']),
     ...mapState('orderModule', ['isShowServiceDia', 'orderDetailData']),
     ...mapState('common', ['DepartmentList', 'AfterSalesTypeList']),
     ...mapGetters('common', ['allProductClassify']),
@@ -347,37 +351,38 @@ export default {
       if (resp && resp.data.Status === 1000) {
         this.isCouponListLoaded = true;
         this.couponList = resp.data.Data.map(it => {
-          const temp = getProductArrayList(it.ProductList, this.allProductClassify);
-          const _textArr = [];
-          if (temp === '全部产品') _textArr.push('全部产品');
-          else {
-            temp.forEach(l1 => {
-              if (reg.test(l1.children[0])) {
-                _textArr.push(`${l1.ClassName}全部产品`);
-              } else {
-                let _text = `${l1.ClassName}：[`;
-                l1.children.forEach((l2, i2) => {
-                  if (i2 > 0) _text += '、';
-                  if (reg.test(l2.children[0])) {
-                    _text += `全部${l2.ClassName}产品 `;
-                  } else {
-                    _text += `${l2.ClassName}: `;
-                    l2.children.forEach((l3, i) => {
-                      if (i === 0) _text += `${l3.ClassName}`;
-                      else _text += `、${l3.ClassName}`;
-                    });
-                  }
-                });
-                _text += ' ]';
-                _textArr.push(_text);
-              }
-            });
-          }
+          // const temp = getProductArrayList(it.ProductList, this.allProductClassify);
+          // const _textArr = [];
+          // if (temp === '全部产品') _textArr.push('全部产品');
+          // else {
+          //   temp.forEach(l1 => {
+          //     if (reg.test(l1.children[0])) {
+          //       _textArr.push(`${l1.ClassName}全部产品`);
+          //     } else {
+          //       let _text = `${l1.ClassName}：[`;
+          //       l1.children.forEach((l2, i2) => {
+          //         if (i2 > 0) _text += '、';
+          //         if (reg.test(l2.children[0])) {
+          //           _text += `全部${l2.ClassName}产品 `;
+          //         } else {
+          //           _text += `${l2.ClassName}: `;
+          //           l2.children.forEach((l3, i) => {
+          //             if (i === 0) _text += `${l3.ClassName}`;
+          //             else _text += `、${l3.ClassName}`;
+          //           });
+          //         }
+          //       });
+          //       _text += ' ]';
+          //       _textArr.push(_text);
+          //     }
+          //   });
+          // }
+          const ProductListTextArray = it.ProductString ? it.ProductString.split('\n') : [];
           return {
             ...it,
             checked: false,
             CouponNumber: '',
-            ProductListTextArray: _textArr,
+            ProductListTextArray,
           };
         });
       }
@@ -407,7 +412,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch('common/getAfterSalesDepartmentList');
-    console.log('mounted', this.orderDetailData);
   },
 };
 </script>
@@ -516,7 +520,7 @@ export default {
                overflow: hidden;
                text-overflow: ellipsis;
                white-space: nowrap;
-               max-width: 94px;
+               max-width: 78px;
                height: 100%;
                line-height: 20px;
                display: inline-block;
@@ -664,12 +668,15 @@ export default {
                 text-overflow: ellipsis;
               }
               .is-pink {
-                min-width: 2.5em;
+                min-width: 3em;
                 margin-right: 0.5em;
                 flex: none;
               }
               > i {
                 padding: 0 5px;
+              }
+              .MinPayAmount {
+                min-width: 76px;
               }
             }
           }

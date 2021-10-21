@@ -78,6 +78,9 @@ const api = {
   getServiceDetail(aferSalesID) { // 获取售后单详情   GET /Api/AfterSales/Detail
     return instance.get(`/Api/AfterSales/Detail?aferSalesID=${aferSalesID}`);
   },
+  getServiceQuestionChange(data) { // 修改售后单问题、备注及责任部门  POST /Api/AfterSales/ChangeQuestion
+    return instance.post('/Api/AfterSales/ChangeQuestion', data);
+  },
   getServiceOrderHistory(orderID) { // 获取售后单已售后记录   GET /Api/Order/AfterSales/List
     return instance.get(`/Api/Order/AfterSales/List?orderID=${orderID}`);
   },

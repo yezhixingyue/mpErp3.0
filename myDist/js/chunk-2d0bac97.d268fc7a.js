@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([["chunk-2d0bac97"],{3961:function(e,n,t){"use strict";t.r(n);var c={name:"ExpressPriceAddEditPage"},s=t("2877"),a=Object(s.a)(c,(function(){var e=this,n=e.$createElement;return(e._self._c||n)("section",[e._v(" 单个物流价格添加编辑页面 ")])}),[],!1,null,null,null);n.default=a.exports}}]);

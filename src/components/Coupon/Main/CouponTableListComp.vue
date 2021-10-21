@@ -21,7 +21,8 @@
       </template>
     </el-table-column>
     <el-table-column min-width="130px" label="限产品">
-      <template slot-scope="scope" v-if="ProductListArray && ProductListArray[scope.$index]">
+      <template slot-scope="scope">
+      <!-- <template slot-scope="scope" v-if="ProductListArray && ProductListArray[scope.$index]">
         <el-tooltip placement="top-start" :enterable='false' >
           <div slot="content">
               <p v-for="(item, i) in ProductListArray[scope.$index]" :key="item + '---' + i">
@@ -29,6 +30,12 @@
               </p>
           </div>
           <span class="area-span">{{ ProductListArray[scope.$index].join(' ') }}</span>
+        </el-tooltip> -->
+        <el-tooltip popper-class="table-item" :enterable='true' placement="top-start">
+          <ul slot="content">
+            <li v-for="(it, i) in scope.row.ProductString.split('\n')" :key="i">{{it}}</li>
+          </ul>
+          <span>{{scope.row.ProductString}}</span>
         </el-tooltip>
       </template>
     </el-table-column>
@@ -107,14 +114,14 @@
       <ul class="handle-menus" slot-scope="scope">
         <li class="stop-box" v-if="Permission.PermissionList.PermissionCoupon.Obj.Generate">
           <span class="is-list-btn"
-           @click="onGenerateCoupons(scope.row, scope.$index, ProductListArray[scope.$index])">
+           @click="onGenerateCoupons(scope.row, scope.$index, scope.row.ProductString ? scope.row.ProductString.split('\n') : [])">
             <img src="@/assets/images/edit-icon.png" alt />手动生成
           </span>
         </li>
         <li v-if="Permission.PermissionList.PermissionCoupon.Obj.Query">
           <span
            v-if="scope.row.Data.GenerateNumber > 0"
-           @click="handle2Detail(scope.row, ProductListArray[scope.$index])"
+           @click="handle2Detail(scope.row, scope.row.ProductString ? scope.row.ProductString.split('\n') : [])"
            class="is-list-btn"><img src="@/assets/images/detail.png" alt />查看使用列表</span>
 
           <span v-else class="is-disabled">
@@ -159,7 +166,7 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import TableItemShowComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp';
 import { getSelectedContentBySelectedDataAndAllData } from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/utils';
-import { getAreaList, getProductArrayList, reg } from '../../Promote/promoteUtils';
+import { getAreaList, reg } from '../../Promote/promoteUtils';
 
 export default {
   mixins: [tableMixin],
@@ -207,41 +214,40 @@ export default {
       return list;
     },
     ProductListArray() {
-      if (this.allProductClassify.length === 0) return [];
-      let _list = this.couponListData.map(
-        data => data.ProductList,
-      );
-      _list = _list.map(item => getProductArrayList(item, this.allProductClassify));
-      if (!_list || _list.length === 0) return '';
-      //  console.log(_list);
-      const list = _list.map(temp => {
-        const _textArr = [];
-        if (temp === '全部产品') return ['全部产品'];
-        temp.forEach(l1 => {
-          if (reg.test(l1.children[0])) {
-            _textArr.push(`${l1.ClassName}全部产品`);
-          } else {
-            // _textArr.push(`${l1.ClassName}：`);
-            let _text = `${l1.ClassName}：[`;
-            l1.children.forEach((l2, i2) => {
-              if (i2 > 0) _text += '、';
-              if (reg.test(l2.children[0])) {
-                _text += `全部${l2.ClassName}产品 `;
-              } else {
-                _text += `${l2.ClassName}: `;
-                l2.children.forEach((l3, i) => {
-                  if (i === 0) _text += `${l3.ClassName}`;
-                  else _text += `、${l3.ClassName}`;
-                });
-              }
-            });
-            _text += ' ]';
-            _textArr.push(_text);
-          }
-        });
-        return _textArr;
-      });
-      return list;
+      return [];
+      // if (this.allProductClassify.length === 0) return [];
+      // let _list = this.couponListData.map(
+      //   data => data.ProductList,
+      // );
+      // _list = _list.map(item => getProductArrayList(item, this.allProductClassify));
+      // if (!_list || _list.length === 0) return '';
+      // const list = _list.map(temp => {
+      //   const _textArr = [];
+      //   if (temp === '全部产品') return ['全部产品'];
+      //   temp.forEach(l1 => {
+      //     if (reg.test(l1.children[0])) {
+      //       _textArr.push(`${l1.ClassName}全部产品`);
+      //     } else {
+      //       let _text = `${l1.ClassName}：[`;
+      //       l1.children.forEach((l2, i2) => {
+      //         if (i2 > 0) _text += '、';
+      //         if (reg.test(l2.children[0])) {
+      //           _text += `全部${l2.ClassName}产品 `;
+      //         } else {
+      //           _text += `${l2.ClassName}: `;
+      //           l2.children.forEach((l3, i) => {
+      //             if (i === 0) _text += `${l3.ClassName}`;
+      //             else _text += `、${l3.ClassName}`;
+      //           });
+      //         }
+      //       });
+      //       _text += ' ]';
+      //       _textArr.push(_text);
+      //     }
+      //   });
+      //   return _textArr;
+      // });
+      // return list;
     },
   },
   methods: {

@@ -1,6 +1,6 @@
 <template>
   <div class="mp-service-page-main-wrap">
-      <ServiceTable />
+      <ServiceTable @changeQuestion='handleChangeQuestion' />
       <Count :watchPage='obj4RequestServiceList.Page'
        :handlePageChange='handlePageChange' :count='totalCount' :showLoading='isShowLoadingMore'>
         <!-- <span class="is-blue" @click="handleDownloadClick">
@@ -10,6 +10,7 @@
         <DownLoadExcelComp :configObj="configObj" />
       </Count>
       <ServiceDetailDialog />
+      <ChangeQuestionDialog :visible.sync="changeQuestionVisible" :curData="curData" />
   </div>
 </template>
 
@@ -19,6 +20,7 @@ import Count from '@/components/common/Count.vue';
 import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
 import ServiceTable from './ServiceTable.vue';
 import ServiceDetailDialog from './ServiceDetailDialog.vue';
+import ChangeQuestionDialog from './ChangeQuestionDialog.vue';
 
 export default {
   components: {
@@ -26,6 +28,7 @@ export default {
     Count,
     ServiceDetailDialog,
     DownLoadExcelComp,
+    ChangeQuestionDialog,
   },
   computed: {
     ...mapState('service', ['isShowLoadingMore', 'totalCount', 'obj4RequestServiceList', 'tableData']),
@@ -38,6 +41,12 @@ export default {
         downFunc: data => this.api.getServiceListData2Excel(data),
       };
     },
+  },
+  data() {
+    return {
+      changeQuestionVisible: false,
+      curData: null,
+    };
   },
   methods: {
     ...mapActions('service', ['getServiceListData', 'getServiceListData2Excel']),
@@ -74,6 +83,10 @@ export default {
       // }
       // this.messageBox.warnCancelNullMsg('确定导出表格数据吗?', () => this.getServiceListData2Excel());
       this.getServiceListData2Excel();
+    },
+    handleChangeQuestion(item) {
+      this.changeQuestionVisible = true;
+      this.curData = item;
     },
   },
 };

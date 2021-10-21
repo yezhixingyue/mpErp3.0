@@ -11,7 +11,7 @@
         :title='title'
         :value='getItemValue(it)'
         @change='onItemChange'
-        :leftWidt='leftWidth'
+        :leftWidth='leftWidth'
         :disabled='disabled'
         :rightItemWidth='rightItemWidth'
         />

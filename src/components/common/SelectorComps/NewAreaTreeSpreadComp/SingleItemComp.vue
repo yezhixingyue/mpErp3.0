@@ -7,7 +7,7 @@
     </header>
     <main v-show="spread" v-if="data.children">
       <ChildSingleItemComp :value='getItemValue(it)' :title='title' @change="onChildItemChange" :disabled='disabled'
-       :leftWidt='leftWidth' :rightItemWidth='rightItemWidth' v-for="it in data.children" :key="it.ID" :itemData='it' />
+       :leftWidth='leftWidth' :rightItemWidth='rightItemWidth' v-for="it in data.children" :key="it.ID" :itemData='it' />
     </main>
   </section>
 </template>

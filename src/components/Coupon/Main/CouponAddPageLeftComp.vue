@@ -45,23 +45,26 @@
          />
     </div>
     <footer>
-        <tree-comp
+        <!-- <tree-comp
          title="选择产品"
          isProduct
          :treeList='allProductClassify'
          :defaultCheckedKeys='defaultCheckedKeys'
          :handleChangeFunc='handleChangeFunc'
          checkAllTitle='所有产品'
-         />
+         /> -->
+         <label>选择产品：</label>
+        <NewAreaTreeSpreadComp v-model="ProductRange" :list='allProductClassify' title="产品" leftWidth='7em' rightItemWidth='10em' />
     </footer>
   </section>
 </template>
 
 <script>
-import TreeComp from '@/components/common/TreeComp.vue';
+// import TreeComp from '@/components/common/TreeComp.vue';
 import SingleBottomLineInputComp from '@/components/common/SingleBottomLineInputComp.vue';
 import DisconnectTypeDatePickerComp from '@/components/common/DisconnectTypeDatePickerComp.vue';
 import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
+import NewAreaTreeSpreadComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp';
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
@@ -69,7 +72,8 @@ export default {
     SingleBottomLineInputComp,
     DisconnectTypeDatePickerComp,
     StaffSelector,
-    TreeComp,
+    // TreeComp,
+    NewAreaTreeSpreadComp,
   },
   computed: {
     ...mapGetters('common', ['allProductClassify']),
@@ -105,6 +109,19 @@ export default {
       },
       set(newVal) {
         this.setCondition2CouponSave([['Data', 'TotalNumber'], newVal]);
+      },
+    },
+    ProductRange: {
+      get() {
+        return {
+          IsIncludeIncreased: this.condition2CouponSave ? this.condition2CouponSave.IsIncludeIncreasedProduct : false,
+          List: this.condition2CouponSave ? this.condition2CouponSave.ProductClassList : [],
+        };
+      },
+      set(val) {
+        const { IsIncludeIncreased, List } = val;
+        this.setCondition2CouponSave([['IsIncludeIncreasedProduct', ''], IsIncludeIncreased || false]);
+        this.setCondition2CouponSave([['ProductClassList', ''], List || []]);
       },
     },
   },
@@ -173,6 +190,20 @@ export default {
       > div {
         padding-left: 56px;
       }
+    }
+    > label {
+        width: 7em;
+        text-align: right;
+        font-weight: 700;
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: #444;
+        display: block;
+        margin-bottom: 15px;
+        padding-top: 15px;
+      }
+    > article {
+      padding-left: 56px;
     }
   }
 }

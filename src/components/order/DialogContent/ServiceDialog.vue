@@ -209,7 +209,7 @@ export default {
           this.handleSubmitError();
           return false;
         }
-        if (!data) {
+        if (!data && this.orderDetailData.FileCase && this.orderDetailData.FileCase === 2) {
           this.setServiceErrInfo('请上传补印文件!');
           this.handleSubmitError();
           return false;
