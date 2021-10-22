@@ -159,7 +159,11 @@ export default {
         this.messageBox.failSingleError('保存失败', '名称仅支持中文、英文(全角/半角)、+-_(全角/半角)、数字(全角/半角)');
         return;
       }
-      this.$store.dispatch('productManage/getProductBaseInfoSave', [this.productData, this.goback]);
+      const cb = (data) => {
+        this.$store.commit('common/setProductSave', data);
+        this.goback();
+      };
+      this.$store.dispatch('productManage/getProductBaseInfoSave', [this.productData, cb]);
     },
     goback() {
       this.$router.replace('/ProductManageList');

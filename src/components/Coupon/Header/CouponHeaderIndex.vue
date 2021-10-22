@@ -14,7 +14,8 @@
           :CountyID="condition2ListData.SellArea.CountyID"
           :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
         />
-        <product-selector
+        <ProductSelector
+          useCustomer
           :changePropsFunc="setCondition2ListData"
           :requestFunc="getCouponList"
           :ClassID="condition2ListData.Product.ClassID"

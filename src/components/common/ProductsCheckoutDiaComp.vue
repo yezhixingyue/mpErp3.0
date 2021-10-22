@@ -16,7 +16,7 @@
       v-dialogDrag
       class="mp-img-style-header"
       :before-close="handleClose">
-        <tree-comp
+        <!-- <tree-comp
          title=""
          :treeList='allProductClassify'
          :defaultCheckedKeys='defaultKeys'
@@ -25,7 +25,9 @@
          :shouldDisabledList='shouldDisabledList'
          :showDisabled='true'
          checkAllTitle='所有产品'
-         />
+         /> -->
+         <NewAreaTreeSpreadComp
+          v-model="ProductRange" :DisabledList='shouldDisabledList' :list='allProductClassify4Customer' title="产品" leftWidth='7em' rightItemWidth='10em' />
         <span slot="footer" class="dialog-footer">
             <normal-btn-full @click.native="handleSave" title='确 定' />
             <normalBtn @click.native="handleClose" title="取 消" />
@@ -37,15 +39,17 @@
 <script>
 import { mapGetters } from 'vuex';
 import normalBtnFull from '@/components/common/normalBtnFull.vue';
-import TreeComp from '@/components/common/TreeComp.vue';
+// import TreeComp from '@/components/common/TreeComp.vue';
 import normalBtn from '@/components/common/normalBtn.vue';
+import NewAreaTreeSpreadComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp';
 
 
 export default {
   components: {
     normalBtnFull,
-    TreeComp,
+    // TreeComp,
     normalBtn,
+    NewAreaTreeSpreadComp,
   },
   props: {
     title: { // 按钮文字标题
@@ -87,7 +91,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('common', ['allProductClassify']),
+    ...mapGetters('common', ['allProductClassify', 'allProductClassify4Customer']),
     watchValue4Tree() {
       return this.watchValue;
     },
@@ -98,8 +102,12 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      checkedNodes: [],
+      // checkedNodes: [],
       dialogTitle: '添加活动商品',
+      ProductRange: {
+        IsIncludeIncreased: false,
+        List: [],
+      },
     };
   },
   methods: {
@@ -110,12 +118,16 @@ export default {
       } else if (Array.isArray(this.watchValue)) {
         this.setWatchValue2ProductDia(1);
       }
-      this.checkedNodes = [];
+      // this.checkedNodes = [];
+      this.ProductRange = {
+        IsIncludeIncreased: false,
+        List: [],
+      };
       this.dialogVisible = false;
     },
     handleSave() {
       if (!this.dialogVisible) return;
-      const res = this.handleSaveFunc(this.checkedNodes, this.handleClose);
+      const res = this.handleSaveFunc(this.ProductRange, this.handleClose);
       if (res === true) this.handleClose();
       else if (typeof res === 'string') {
         this.$message({

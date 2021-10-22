@@ -69,8 +69,16 @@ export default {
     shouldDisabledList() {
       const _list = [];
       this.promoteAddRequestObj.ProductList.forEach(level1 => {
-        level1.LimitList.forEach(level2 => {
-          _list.push(level2.ProductID);
+        console.log(level1);
+        if (level1.IsIncludeIncreasedProduct) _list.push('rootIncreased');
+        level1.ProductClassList.forEach(level2 => {
+          if (level2.IsIncludeIncreased) _list.push(`${level2.ID}Increased`);
+          level2.List.forEach(lv3 => {
+            if (lv3.IsIncludeIncreased) _list.push(`${lv3.ID}Increased`);
+            lv3.List.forEach(it => {
+              _list.push(it.ID);
+            });
+          });
         });
       });
       return _list;
@@ -78,73 +86,47 @@ export default {
   },
   methods: {
     ...mapMutations('promoteStore', ['setPromoteAddRequestObj', 'setWatchValue2ProductDia', 'setOpenType2ProductDia']),
-    ...mapActions('common', ['getProductList', 'getAllProductNames']),
+    ...mapActions('common', ['getAllProductNames']),
     // eslint-disable-next-line consistent-return
-    handleSaveFunc(nodes, func) {
-      const _nodes = nodes.filter(node => node.ShowName);
-      if (_nodes.length === 0) {
-        return '至少必须选择一种产品!';
-      }
-      const LimitList = _nodes.map(item => {
-        const t = item.ClassifyList.find(({ Type }) => Type === 1);
-        if (!t) return null;
-        return {
-          FirstLevelID: t.FirstLevel.ID,
-          SecondLevelID: t.SecondLevel.ID,
-          ProductID: item.ID,
-          ProductName: item.Name,
-        };
-      }).filter(it => it);
-      const List = [];
+    handleSaveFunc(ProductRange, func) {
+      const { IsIncludeIncreased, List } = ProductRange;
+      if (List.length === 0 && !IsIncludeIncreased) return '至少必须选择一种产品!';
+      const IsIncludeIncreasedProduct = IsIncludeIncreased;
+      const ProductClassList = List;
+      console.log(IsIncludeIncreased, List);
+      // const nodes = [];
+      // const _nodes = nodes.filter(node => node.ShowName);
+      // if (_nodes.length === 0) {
+      //   return '至少必须选择一种产品!';
+      // }
+      // const LimitList = _nodes.map(item => {
+      //   const t = item.ClassifyList.find(({ Type }) => Type === 1);
+      //   if (!t) return null;
+      //   return {
+      //     FirstLevelID: t.FirstLevel.ID,
+      //     SecondLevelID: t.SecondLevel.ID,
+      //     ProductID: item.ID,
+      //     ProductName: item.Name,
+      //   };
+      // }).filter(it => it);
       const _tempObj1 = [...this.promoteAddRequestObj.ProductList];
       let _tempObj2;
-      const _obj = { LimitList, List, PropertyList: [] };
+      const _obj = { ProductClassList, IsIncludeIncreasedProduct, ItemList: [], PropertyList: [] };
       if (!this.openTypeIndex2ProductDia && this.openTypeIndex2ProductDia !== 0) { // 完成新增
         _tempObj2 = [..._tempObj1, _obj];
         this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
         return true;
       }
       if (typeof this.openTypeIndex2ProductDia === 'number') { // 修改
-        const len1 = LimitList.length; // 要改变后的产品数量
+        // const len1 = LimitList.length; // 要改变后的产品数量
         const target = _tempObj1.find((it, i) => i === this.openTypeIndex2ProductDia);
-        const len2 = target.LimitList.length; // 改变前的产品数量
-        if (len2 === 1 && len1 === 1 && target.LimitList[0].ProductID === LimitList[0].ProductID) {
-          // 未发生变化
-          return true;
-        }
-        if (len1 > 1 && len2 > 1) {
-          _tempObj2 = _tempObj1.map((it, i) => {
-            if (i !== this.openTypeIndex2ProductDia) {
-              return it;
-            }
-            const _it = JSON.parse(JSON.stringify(it));
-            return { ..._it, LimitList, PropertyList: [] };
-          });
-          this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
-          return true;
-        }
-        this.messageBox.warnCancelBox('确定修改产品信息吗 ?', '[ 该操作会导致此价格表清空! ]', () => {
-          _tempObj2 = _tempObj1.map((it, i) => {
-            if (i !== this.openTypeIndex2ProductDia) {
-              return it;
-            }
-            return { ...it, ..._obj };
-          });
-          this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
-          func();
-        }, null);
-        // if ((len2 === 1 && len1 > 1) || (len2 === 1 && len1 === 1 && target.LimitList[0].ProductID !== LimitList[0].ProductID)) {
-        //   this.messageBox.warnCancelBox('确定修改产品信息吗 ?', '[ 该操作会导致此价格表清空! ]', () => {
-        //     _tempObj2 = _tempObj1.map((it, i) => {
-        //       if (i !== this.openTypeIndex2ProductDia) {
-        //         return it;
-        //       }
-        //       return { ...it, ..._obj };
-        //     });
-        //     this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
-        //     func();
-        //   }, null);
-        // } else {
+        // const len2 = target.LimitList.length; // 改变前的产品数量
+        console.log(target, _obj, func);
+        // if (len2 === 1 && len1 === 1 && target.LimitList[0].ProductID === LimitList[0].ProductID) {
+        //   // 未发生变化
+        //   return true;
+        // }
+        // if (len1 > 1 && len2 > 1) {
         //   _tempObj2 = _tempObj1.map((it, i) => {
         //     if (i !== this.openTypeIndex2ProductDia) {
         //       return it;
@@ -155,6 +137,16 @@ export default {
         //   this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
         //   return true;
         // }
+        // this.messageBox.warnCancelBox('确定修改产品信息吗 ?', '[ 该操作会导致此价格表清空! ]', () => {
+        //   _tempObj2 = _tempObj1.map((it, i) => {
+        //     if (i !== this.openTypeIndex2ProductDia) {
+        //       return it;
+        //     }
+        //     return { ...it, ..._obj };
+        //   });
+        //   this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
+        //   func();
+        // }, null);
       }
     },
   },
@@ -172,7 +164,7 @@ export default {
     }
   },
   mounted() {
-    this.getProductList();
+    this.$store.dispatch('common/getProductClassifyData', { key: 6 });
     this.getAllProductNames();
     const { type } = this.$route.params;
     if (type === 'add') this.pageTitle = '添加活动';

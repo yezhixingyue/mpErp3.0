@@ -1,7 +1,7 @@
 <template>
   <article class="mp-erp-common-comps-new-tree-comp-wrap">
     <header>
-      <el-checkbox :indeterminate="isIndeterminate" :disabled='disabled' v-model="checkAll">所有{{title}}</el-checkbox>
+      <el-checkbox :indeterminate="isIndeterminate" :disabled='checkAllDisabled' v-model="checkAll">所有{{title}}</el-checkbox>
     </header>
     <main>
       <SingleItemComp
@@ -13,6 +13,7 @@
         @change='onItemChange'
         :leftWidth='leftWidth'
         :disabled='disabled'
+        :DisabledList='DisabledList'
         :rightItemWidth='rightItemWidth'
         />
     </main>
@@ -57,6 +58,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    DisabledList: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     SingleItemComp,
@@ -80,8 +85,8 @@ export default {
         return this.selectedMinimumItemListLengt === this.allMinimumItemListLength && this.selectedMinimumItemListLengt > 0;
       },
       set(bool) {
-        const temp = bool ? this.getCheckAllList(this.showList) : { IsIncludeIncreased: false, List: [] };
-        this.$emit('change', temp);
+        const rootTemp = bool ? this.getCheckAllList(this.showList) : { IsIncludeIncreased: false, List: [] };
+        this.$emit('change', rootTemp);
       },
     },
     allMinimumItemList() {
@@ -103,6 +108,14 @@ export default {
       if (this.selectedMinimumItemListLengt === 0 || this.selectedMinimumItemListLengt === this.allMinimumItemListLength) return false;
       return true;
     },
+    checkAllDisabled() {
+      if (this.disabled) return true;
+      if (this.allMinimumItemIDList.length === this.DisabledList.length) {
+        const t = this.allMinimumItemIDList.find(it => !this.DisabledList.includes(it));
+        if (!t) return true;
+      }
+      return false;
+    },
   },
   methods: {
     getItemValue(item) {
@@ -118,8 +131,11 @@ export default {
       this.$emit('change', temp);
     },
     getCheckAllList(list) {
-      return getCheckAllListByCurDataList(list, true);
+      return getCheckAllListByCurDataList(list, true, this.DisabledList);
     },
+  },
+  mounted() {
+    console.log(this.showList);
   },
 };
 </script>

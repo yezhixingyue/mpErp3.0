@@ -32,9 +32,6 @@ export default {
       WriteOffOperator: '',
       HaveUnPaid: '',
     },
-    /* 产品类别相关
-    -------------------------------*/
-    productList: [],
     /* 配送方式相关
     -------------------------------*/
     expressTitle: '不限',
@@ -66,25 +63,6 @@ export default {
     searchWatchKey: 0,
   },
   getters: {
-    /* 产品类别相关
-    -------------------------------*/
-    largeProduct(state) {
-      const arr = [{ ID: 0, ClassName: '不限' }];
-      if (state.productList.length > 0) {
-        const tempArr = state.productList.filter((item) => item.Level === 1);
-        return [...arr, ...tempArr];
-      }
-      return arr;
-    },
-    midProduct(state) {
-      const arr = [{ ID: 0, ClassName: '不限' }];
-      const id = state.searchCondition4Finance.ProductClass.First;
-      if (id) {
-        const tempArr = state.productList.filter((item) => item.ParentID === id);
-        return [...arr, ...tempArr];
-      }
-      return arr;
-    },
     /* 筛选后的列表数据请求对象
     -------------------------------*/
     requestObj(state) {
@@ -126,11 +104,6 @@ export default {
     setSellAreaCounty(state, [ID, name]) {
       state.searchCondition4Finance.SellArea.CountyID = ID;
       state.smTitle = name;
-    },
-    /* 产品类别相关
-    -------------------------------*/
-    setProductList(state, arr) {
-      state.productList = arr;
     },
     setExpressType(state, [ID, name]) {
       state.expressTitle = name;

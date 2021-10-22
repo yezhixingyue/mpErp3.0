@@ -77,7 +77,6 @@ export default {
     requestObj: {},
     /* 产品类别相关
     -------------------------------*/
-    // productList: [],
     subProductList: [{ ProductID: '', ProductName: '不限' }],
     largeProTitle: '不限',
     midProTitle: '不限',

@@ -18,6 +18,7 @@
           :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
          />
         <product-selector
+          useCustomer
           :changePropsFunc='setPromoteListRequestObj'
           :requestFunc='getPromoteList'
           :ClassID='promoteListRequestObj.Product.ClassID'

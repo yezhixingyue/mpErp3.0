@@ -63,13 +63,22 @@ export default {
       type: Function,
       default: () => {},
     },
+    useCustomer: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
-    ...mapState('common', ['productList', 'productNames']),
+    ...mapState('common', ['productNames', 'ProductMultipleClassifyList']),
+    productClassList() {
+      const type = this.useCustomer ? 2 : 6;
+      const target = this.ProductMultipleClassifyList.find(it => it.ID === type);
+      return target && Array.isArray(target.List) ? target.List : [];
+    },
     largeProduct() {
       const arr = [{ ID: '', ClassName: '不限' }];
-      if (this.productList.length > 0) {
-        const tempArr = this.productList.filter((item) => item.Level === 1);
+      if (this.productClassList.length > 0) {
+        const tempArr = this.productClassList.filter((item) => item.Level === 1);
         return [...arr, ...tempArr];
       }
       return arr;
@@ -78,7 +87,7 @@ export default {
       const arr = [{ ID: '', ClassName: '不限' }];
       const id = this.first;
       if (id) {
-        const tempArr = this.productList.filter((item) => item.ParentID === id);
+        const tempArr = this.productClassList.filter((item) => item.ParentID === id);
         return [...arr, ...tempArr];
       }
       return arr;
@@ -115,7 +124,8 @@ export default {
     },
     productThirdList() {
       const _arr = this.productNames.filter(it => {
-        const t = it.ClassifyList.find(_it => _it.Type === 1);
+        const Type = this.useCustomer ? 2 : 1;
+        const t = it.ClassifyList.find(_it => _it.Type === Type);
         if (!t) return false;
         const { FirstLevel, SecondLevel } = t;
         return FirstLevel.ID === this.first && SecondLevel.ID === this.second;
@@ -124,7 +134,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('common', ['getProductList', 'getProductThird', 'getAllProductNames']),
+    ...mapActions('common', ['getProductClassifyData', 'getAllProductNames']),
     handleSwitch1(e) {
       if (e === this.first) return;
       this.changePropsFunc([this.typeList[1], '']);
@@ -136,7 +146,6 @@ export default {
       if (e === this.second) return;
       this.changePropsFunc([this.typeList[2], '']);
       this.second = e;
-      // this.getProductThird();
     },
     handleSwitch3(e) {
       if (e === this.third) return;
@@ -144,7 +153,7 @@ export default {
     },
   },
   mounted() {
-    this.getProductList();
+    this.getProductClassifyData({ key: this.useCustomer ? 2 : 6 });
     this.getAllProductNames();
   },
 };

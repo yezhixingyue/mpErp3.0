@@ -22,9 +22,6 @@ export default {
     largeTitle: '不限',
     midTitle: '不限',
     smTitle: '不限',
-    /* 产品类别相关
-    -------------------------------*/
-    productList: [],
     /* 用户相关
     -------------------------------*/
     userTypeTitle: '不限',

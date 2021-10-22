@@ -5,6 +5,7 @@
  */
 // import { getTimeStamp } from '@/assets/js/util';
 import api from '@/api/index';
+import Product from '@/assets/js/TypeClass/ProductClass';
 import messageBox from '../assets/js/utils/message';
 
 const getTwoLevelsClassifyDataFromList = (list, bool) => { // 通过平级的列表数据区分出上下两层的列表数据（用于产品|工艺分类2级列表数据形成树形数据结构）
@@ -22,6 +23,44 @@ const getTwoLevelsClassifyDataFromList = (list, bool) => { // 通过平级的列
   // 筛选去除无下属产品的分类 bool --- 确定是否保留无下属产品分类 （当设置排序时不应删除） 为true时不删除
   if (!bool) level1List = level1List.filter(leve1 => leve1.children.length > 0);
 
+  return level1List;
+};
+
+const getAllProductClassifyFunc = (productClassList, productNames, type) => {
+  if (productClassList.length === 0 || productNames.length === 0) return [];
+
+  // eslint-disable-next-line prefer-const
+  let level1List = productClassList // 挑选第一级分类
+    .filter(item => item.Level === 1)
+    .map(item => ({ ...item, children: [] }));
+  // 设置第二级分类
+  level1List.forEach(level1 => {
+    const _list = productClassList
+      .filter(item => item.ParentID === level1.ID)
+      .map(item => ({ ...item, children: [] }));
+    level1.children = _list;
+  });
+  // 添加第三级产品内容
+  productNames.forEach(item => level1List.forEach(leve1 => {
+    const t = item.ClassifyList.find(_it => _it.Type === type);
+    if (t) {
+      const { FirstLevel, SecondLevel } = t;
+      if (FirstLevel.ID === leve1.ID) {
+        leve1.children.forEach(level2 => {
+          if (SecondLevel.ID === level2.ID) {
+            level2.children.push({ ...item, ClassName: item.Name, ID: item.ID });
+          }
+        });
+      }
+    }
+  }));
+  // 筛选去除无下属产品的分类
+  level1List = level1List.filter(leve1 => leve1.children.length > 0);
+  level1List.forEach(
+    level1 => (level1.children = level1.children.filter(
+      level2 => level2.children.length > 0,
+    )),
+  );
   return level1List;
 };
 
@@ -73,7 +112,6 @@ export default {
     areaList: [],
     /* 产品类别
     -------------------------------*/
-    productList: [],
     /* 产品全部第三级
     -------------------------------*/
     productNames: [],
@@ -434,47 +472,16 @@ export default {
     /* 全部产品分类结构树，用于报价目录等地方展示
     -------------------------------*/
     allProductClassify(state) {
-      // console.log('allProductClassifyallProductClassifyallProductClassify');
-      if (
-        state.productList.length === 0
-        || state.productNames.length === 0
-      ) {
-        return [];
-      }
-      // console.log('allProductC22222222222222lassifyallProductClassifyallProductClassify');
-
-      let level1List = state.productList // 挑选第一级分类
-        .filter(item => item.Level === 1)
-        .map(item => ({ ...item, children: [] }));
-      // 设置第二级分类
-      level1List.forEach(level1 => {
-        const _list = state.productList
-          .filter(item => item.ParentID === level1.ID)
-          .map(item => ({ ...item, children: [] }));
-        level1.children = _list;
-      });
-      // 添加第三级产品内容
-      state.productNames.forEach(item => level1List.forEach(leve1 => {
-        const t = item.ClassifyList.find(_it => _it.Type === 1);
-        if (t) {
-          const { FirstLevel, SecondLevel } = t;
-          if (FirstLevel.ID === leve1.ID) {
-            leve1.children.forEach(level2 => {
-              if (SecondLevel.ID === level2.ID) {
-                level2.children.push({ ...item, ClassName: item.Name, ID: item.ID });
-              }
-            });
-          }
-        }
-      }));
-      // 筛选去除无下属产品的分类
-      level1List = level1List.filter(leve1 => leve1.children.length > 0);
-      level1List.forEach(
-        level1 => (level1.children = level1.children.filter(
-          level2 => level2.children.length > 0,
-        )),
-      );
-      return level1List;
+      const target = state.ProductMultipleClassifyList.find(it => it.ID === 6);
+      if (!target) return [];
+      const classList = target.List;
+      return getAllProductClassifyFunc(classList, state.productNames, 1);
+    },
+    allProductClassify4Customer(state) {
+      const target = state.ProductMultipleClassifyList.find(it => it.ID === 2);
+      if (!target) return [];
+      const classList = target.List;
+      return getAllProductClassifyFunc(classList, state.productNames, 2);
     },
     /* 全部销售区域分级树形结构
     -------------------------------*/
@@ -513,10 +520,18 @@ export default {
     /* 2级分类 产品 树结构
     -------------------------------*/
     twoLevelsProductClassify(state) { // 去除子列表为空的类别
-      return getTwoLevelsClassifyDataFromList(state.productList);
+      const type = 6;
+      const target = state.ProductMultipleClassifyList.find(it => it.ID === type);
+      if (!target) return [];
+      const classList = target.List;
+      return getTwoLevelsClassifyDataFromList(classList);
     },
     twoLevelsProductClassify4Sort(state) { // 不去除 用于类别管理
-      return getTwoLevelsClassifyDataFromList(state.productList, true);
+      const type = 6;
+      const target = state.ProductMultipleClassifyList.find(it => it.ID === type);
+      if (!target) return [];
+      const classList = target.List;
+      return getTwoLevelsClassifyDataFromList(classList, true);
     },
     twoLevelsMultipleProductClassifyList(state) { // 去除子列表为空的类别
       return state.ProductMultipleClassifyList.map(it => ({ ...it, List: getTwoLevelsClassifyDataFromList(it.List) })).sort((a, b) => a.Type - b.Type);
@@ -598,9 +613,6 @@ export default {
     },
     /* 设置产品类别数据
     -------------------------------*/
-    setProductList(state, arr) {
-      state.productList = arr;
-    },
     /* 设置产品类别数据
     -------------------------------*/
     setProductNames(state, list) {
@@ -719,6 +731,19 @@ export default {
     setLastPagePathsFilterAfterGoback(state, name) { // 回转页面信息后删除掉回转前的路由信息,
       state.lastPagePaths = state.lastPagePaths.filter(it => it.name !== name);
     },
+    setProductSave(state, [isEdit, data]) { // 产品编辑添加
+      if (isEdit) {
+        const i = state.productNames.findIndex(it => it.ID === data.ID);
+        if (i > -1) {
+          const t = state.productNames[i];
+          const _temp = { ...t, ...data };
+          state.productNames.splice(i, 1, _temp);
+        }
+      } else {
+        const _temp = new Product(data);
+        state.productNames.unshift(_temp);
+      }
+    },
   },
   actions: {
     async getAreaList({ state, commit }) { // 获取地区列表数据
@@ -731,21 +756,12 @@ export default {
       }
       return false;
     },
-    async getProductList({ state, commit }, { bool = false, key = 6 } = {}) { // 获取产品二级分类数据 2.0版本  3.0弃用
-      if (state.productList.length > 0 && !bool) return true;
-      const Key = (key || key === 0) ? key : state.ProductClassifyIDList[0].ID;
-      const resp = await api.getVersionValid({ Key, Value: -1 }).catch(() => {});
-      if (resp && resp.data.Status === 1000) {
-        commit('setProductList', resp.data.Data);
-        return true;
-      }
-      return false;
-    },
     async getProductClassifyData({ state, commit }, { bool = false, key = 6 } = {}) { // 获取产品二级分类数据1  -      ---- !
       const t = state.ProductMultipleClassifyList.find(it => it.ID === key);
       if (t && t.List.length > 0 && !bool) return true;
       // { type: key, List: resp.data.Data }
       const Key = (key || key === 0) ? key : state.ProductClassifyIDList[0].ID;
+
       const resp = await api.getVersionValid({ Key, Value: -1 }).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         if (Key === 0) {
@@ -773,8 +789,8 @@ export default {
       }
       return false;
     },
-    async getAllProductNames({ state, commit }) { // 获取全部产品第三级分类数据
-      if (state.productNames.length > 0) return;
+    async getAllProductNames({ state, commit }, bool) { // 获取全部产品第三级分类数据
+      if (state.productNames.length > 0 && !bool) return;
 
       const resp = await api.getAllProductLists();
       if (resp.data.Status === 1000) commit('setProductNames', resp.data.Data);

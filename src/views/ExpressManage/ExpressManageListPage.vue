@@ -115,7 +115,7 @@ export default {
       if (!this.showDialog) return;
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          console.log('验证通过,可以保存', this.ruleForm);
+          // console.log('验证通过,可以保存', this.ruleForm);
         }
       });
     },
@@ -124,7 +124,7 @@ export default {
       this.sorting = true;
     },
     onSubmitSortClick() {
-      console.log('onSubmitSortClick', this.$refs.SortTable.handleSortSubmit());
+      // console.log('onSubmitSortClick', this.$refs.SortTable.handleSortSubmit());
     },
     setSortingClose() {
       // 此处执行原始表格数据还原 已不需要 只执行关闭

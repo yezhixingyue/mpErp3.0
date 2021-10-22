@@ -11,7 +11,7 @@
       </div>
     </div>
     <div style="text-overflow: ellipsis;overflow: hidden;">
-      适用区域<template v-if="showContent">：</template>{{showContent}}
+      {{title}}<template v-if="showContent">：</template>{{showContent}}
     </div>
   </el-tooltip>
 </template>
@@ -24,6 +24,14 @@ export default {
       type: String,
       default: 'light',
     },
+    title: {
+      type: String,
+      default: '适用区域',
+    },
+    subTitle: {
+      type: String,
+      default: '区域',
+    },
   },
   computed: {
     showContent() {
@@ -32,7 +40,7 @@ export default {
         if (typeof it === 'string') return it;
         if (typeof it === 'object') {
           if (it.list && it.list.length > 0) return `${it.name}：${it.list.join('；')}`;
-          return `${it.name}：不包含已有区域`;
+          return `${it.name}：不包含已有${this.subTitle}`;
         }
         return '';
       });

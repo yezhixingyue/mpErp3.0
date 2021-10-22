@@ -56,13 +56,22 @@ export default {
       type: String,
       default: '产品',
     },
+    useCustomer: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
-    ...mapState('common', ['productList']),
+    ...mapState('common', ['ProductMultipleClassifyList']),
+    productClassList() {
+      const type = this.useCustomer ? 2 : 6;
+      const target = this.ProductMultipleClassifyList.find(it => it.ID === type);
+      return target && Array.isArray(target.List) ? target.List : [];
+    },
     largeProduct() {
       const arr = [{ ID: '', ClassName: '不限' }];
-      if (this.productList.length > 0) {
-        const tempArr = this.productList.filter((item) => item.Level === 1);
+      if (this.productClassList.length > 0) {
+        const tempArr = this.productClassList.filter((item) => item.Level === 1);
         return [...arr, ...tempArr];
       }
       return arr;
@@ -71,7 +80,7 @@ export default {
       const arr = [{ ID: '', ClassName: '不限' }];
       const id = this.first;
       if (id) {
-        const tempArr = this.productList.filter((item) => item.ParentID === id);
+        const tempArr = this.productClassList.filter((item) => item.ParentID === id);
         return [...arr, ...tempArr];
       }
       return arr;
@@ -98,7 +107,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('common', ['getProductList']),
+    ...mapActions('common', ['getProductClassifyData']),
     handleSwitch1(e) {
       if (e === this.first) return;
       this.changePropsFunc([this.typeList[1], '']);
@@ -111,7 +120,8 @@ export default {
     },
   },
   mounted() {
-    this.getProductList();
+    const key = this.useCustomer ? 2 : 6;
+    this.getProductClassifyData({ key });
   },
 };
 </script>

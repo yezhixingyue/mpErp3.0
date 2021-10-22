@@ -1,13 +1,13 @@
 <template>
   <section class="mp-erp-common-comps-new-tree-comp-child-single-item-comp-wrap">
     <header>
-      <el-checkbox :class="{isIncreased:itemData.isIncreased}" :disabled='disabled' :title="itemData.ClassName"
+      <el-checkbox :class="{isIncreased:itemData.isIncreased}" :disabled='checkAllDisabled' :title="itemData.ClassName"
        :style='`width:${leftWidth}`' :indeterminate="isIndeterminate" v-model="checkAll">{{itemData.ClassName}}</el-checkbox>
     </header>
     <main>
       <el-checkbox-group v-model="checkList" :disabled='disabled'>
-        <el-checkbox :class="{isIncreased:it.isIncreased}" :title="it.ClassName"
-         :style='`width:${rightItemWidth}`' :label="it.ID" v-for="it in itemData.children" :key="it.ClassName">{{it.ClassName}}</el-checkbox>
+        <el-checkbox :class="{isIncreased:it.isIncreased}" :title="it.ClassName" :disabled='DisabledList.includes(it.ID)'
+         :style='`width:${rightItemWidth}`' :label="it.ID" v-for="(it, i) in itemData.children" :key="it.ClassName + i">{{it.ClassName}}</el-checkbox>
       </el-checkbox-group>
     </main>
   </section>
@@ -42,6 +42,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    DisabledList: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     checkAll: {
@@ -53,16 +57,25 @@ export default {
         return false;
       },
       set(bool) {
-        if ((this.itemData.isIncreased)) {
-          this.$emit('change', this.itemData);
+        if (this.itemData.isIncreased) {
+          if (!this.DisabledList.includes(this.itemData.ID)) this.$emit('change', this.itemData);
         } else if (!bool && this.value) { // 清空当前项目
           const temp = { ...this.value, IsIncludeIncreased: false, List: [] };
           this.$emit('change', temp);
         } else if (bool) { // 全选当前项目
-          const temp = getCheckAllListByCurDataList([this.itemData])[0];
+          const temp = getCheckAllListByCurDataList([this.itemData], false, this.DisabledList)[0];
           this.$emit('change', temp);
         }
       },
+    },
+    checkAllDisabled() {
+      if (this.disabled) return true;
+      if (this.itemData.isIncreased && this.DisabledList.includes(this.itemData.ID)) return true;
+      if (this.itemData && Array.isArray(this.itemData.children)) {
+        const t = this.itemData.children.find(it => !this.DisabledList.includes(it.ID));
+        if (!t) return true;
+      }
+      return false;
     },
     isIndeterminate() {
       if (this.selectedMinimumItemListCount === 0 || this.selectedMinimumItemListCount === this.allMinimumItemList.length) return false;
@@ -86,7 +99,7 @@ export default {
       },
       set(list) {
         const temp = { ...this.itemData };
-        temp.children = temp.children.filter(it => list.includes(it.ID));
+        temp.children = temp.children.filter(it => list.includes(it.ID) && !this.DisabledList.includes(it.ID));
         const tempData = getCheckAllListByCurDataList([temp])[0];
         this.$emit('change', tempData);
       },

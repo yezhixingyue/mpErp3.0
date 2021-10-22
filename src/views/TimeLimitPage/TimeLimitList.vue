@@ -28,7 +28,6 @@ export default {
   },
   computed: {
     ...mapState('timelimit', ['searchCondition']),
-    // ...mapState('common', ['productList']),
     ...mapGetters('common', ['twoLevelsProductClassify', 'allProductClassify']),
     ProductLevel1List() {
       if (!this.allProductClassify || this.allProductClassify.length === 0) return [];
@@ -42,23 +41,9 @@ export default {
       this.$store.dispatch('timelimit/fetchTimeLimitList');
       this.$store.commit('timelimit/setTimeLimitActiveNames', []);
     },
-    // handleChange([FirstLevelID, SecondLevelID]) {
-    //   const _FirstLevel = this.twoLevelsProductClassify.find(it => it.ID === FirstLevelID);
-    //   let FirstLevelName = '';
-    //   let SecondLevelName = '';
-    //   if (_FirstLevel) {
-    //     FirstLevelName = _FirstLevel.ClassName;
-    //     const _SecondLevel = _FirstLevel.children.find(it2 => it2.ID === SecondLevelID);
-    //     if (_SecondLevel) SecondLevelName = _SecondLevel.ClassName;
-    //   }
-    //   this.$store.commit('timelimit/setAddTimeLimitDataInit', {
-    //     FirstLevelID, FirstLevelName, SecondLevelID, SecondLevelName,
-    //   });
-    //   this.$router.push('/timeLimitSet');
-    // },
   },
   mounted() {
-    this.$store.dispatch('common/getProductList');
+    this.$store.dispatch('common/getProductClassifyData', { key: 6 });
     this.$store.dispatch('common/getAllProductNames');
     if (!this.$route.query.notNeedFetch) this.$store.dispatch('timelimit/fetchTimeLimitList');
     else this.$router.replace('/timeLimitList');

@@ -32,7 +32,6 @@ export default {
     curUseElementModule() {
       const type = this.titleType === '部件' ? 'Part' : 'Product';
       const t = this.$utils.getIDFromListByNames(type, this.useElementModuleList);
-      console.log(type, t, this.useElementModuleList);
       return (t || t === 0) ? t : '';
     },
   },

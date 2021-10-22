@@ -1,12 +1,12 @@
 <template>
   <section class="mp-erp-common-comps-new-tree-comp-single-item-comp-wrap">
     <header>
-      <el-checkbox :disabled='disabled'
+      <el-checkbox :disabled='checkAllDisabled'
        :class="{isIncreased:data.isIncreased}" :indeterminate="isIndeterminate" v-model="checkAll">{{data.ClassName}}</el-checkbox>
       <span v-if="!data.isIncreased" @click="spread = !spread" :class="{spread:spread}">{{ spread ? '收起' : '展开' }} <i class="el-icon-caret-bottom"></i> </span>
     </header>
     <main v-show="spread" v-if="data.children">
-      <ChildSingleItemComp :value='getItemValue(it)' :title='title' @change="onChildItemChange" :disabled='disabled'
+      <ChildSingleItemComp :value='getItemValue(it)' :title='title' @change="onChildItemChange" :disabled='disabled' :DisabledList='DisabledList'
        :leftWidth='leftWidth' :rightItemWidth='rightItemWidth' v-for="it in data.children" :key="it.ID" :itemData='it' />
     </main>
   </section>
@@ -42,6 +42,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    DisabledList: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     ChildSingleItemComp,
@@ -57,15 +61,31 @@ export default {
       },
       set(bool) {
         if ((this.data.isIncreased)) {
-          this.$emit('change', this.data);
+          if (!this.DisabledList.includes(this.data.ID)) this.$emit('change', this.data);
         } else if (!bool && this.value) { // 清空当前项目
           const temp = { ...this.value, IsIncludeIncreased: false, List: [] };
           this.$emit('change', temp);
         } else if (bool) { // 全选当前项目
-          const temp = getCheckAllListByCurDataList([this.data])[0];
+          const temp = getCheckAllListByCurDataList([this.data], false, this.DisabledList)[0];
           this.$emit('change', temp);
         }
       },
+    },
+    checkAllDisabled() {
+      if (this.disabled) return true;
+      if (this.data.isIncreased && this.DisabledList.includes(this.data.ID)) return true;
+      if (this.data && Array.isArray(this.data.children)) {
+        const target = this.data.children.find(item => {
+          if (item.isIncreased) {
+            return !this.DisabledList.includes(item.ID);
+          }
+          const t = item.children.find(it => !this.DisabledList.includes(it.ID));
+          if (t) return true;
+          return false;
+        });
+        if (!target) return true;
+      }
+      return false;
     },
     isIndeterminate() {
       if (this.selectedMinimumItemListCount === 0 || this.selectedMinimumItemListCount === this.allMinimumItemList.length) return false;
@@ -100,6 +120,7 @@ export default {
       return t || null;
     },
     onChildItemChange(item) {
+      console.log(item);
       const temp = getFormalData4SubmitAfterChange(item, this.value, this.data);
       this.$emit('change', temp);
     },

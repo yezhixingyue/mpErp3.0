@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import TreeCompTwoLevels from '@/components/common/TreeCompTwoLevels.vue';
 
 export default {
@@ -26,7 +26,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions('common', ['getProductList']),
     handleChangeFunc(checkedNodes) {
       const _list = checkedNodes.filter(_it => _it.Level === 2).map(_it => ({
         FirstLevelID: _it.ParentID,
@@ -37,7 +36,7 @@ export default {
     },
   },
   mounted() {
-    this.getProductList();
+    this.$store.dispatch('common/getProductClassifyData', { key: 6 });
   },
 };
 </script>

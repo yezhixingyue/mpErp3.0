@@ -74,10 +74,6 @@ export default {
     defaultCheckedKeys() {
       return this.SelectedProductArray.map(it => it.ProductID);
     },
-    // Level2AreaList() {
-    //   if (this.areaList.length === 0) return [];
-    //   return this.areaList.filter(it => it.Level === 2);
-    // },
     textList() {
       if (this.allProductClassify.length === 0 || !this.value) return [];
       const temp = getProductArrayList(this.value, this.allProductClassify);
@@ -148,7 +144,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('common/getProductList');
+    this.$store.dispatch('common/getProductClassifyData', { key: 6 });
     this.$store.dispatch('common/getAllProductNames');
   },
 };

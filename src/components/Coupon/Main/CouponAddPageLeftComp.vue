@@ -48,13 +48,13 @@
         <!-- <tree-comp
          title="选择产品"
          isProduct
-         :treeList='allProductClassify'
+         :treeList='allProductClassify4Customer'
          :defaultCheckedKeys='defaultCheckedKeys'
          :handleChangeFunc='handleChangeFunc'
          checkAllTitle='所有产品'
          /> -->
          <label>选择产品：</label>
-        <NewAreaTreeSpreadComp v-model="ProductRange" :list='allProductClassify' title="产品" leftWidth='7em' rightItemWidth='10em' />
+        <NewAreaTreeSpreadComp v-model="ProductRange" :list='allProductClassify4Customer' title="产品" leftWidth='7em' rightItemWidth='10em' />
     </footer>
   </section>
 </template>
@@ -76,7 +76,7 @@ export default {
     NewAreaTreeSpreadComp,
   },
   computed: {
-    ...mapGetters('common', ['allProductClassify']),
+    ...mapGetters('common', ['allProductClassify4Customer']),
     ...mapState('couponStore', ['condition2CouponSave', 'addPageCurStaff']),
     watchValue4Tree() {
       return this.watchValue;
@@ -127,7 +127,7 @@ export default {
   },
   methods: {
     ...mapMutations('couponStore', ['setCondition2CouponSave']),
-    ...mapActions('common', ['getProductList', 'getAllProductNames']),
+    ...mapActions('common', ['getProductClassifyData', 'getAllProductNames']),
     handleChangeFunc(checkedNodes) {
       const _list = checkedNodes.filter(_it => _it.ShowName).map(_it => {
         const t = _it.ClassifyList.find(({ Type }) => Type === 1);
@@ -145,7 +145,7 @@ export default {
     },
   },
   mounted() {
-    this.getProductList();
+    this.getProductClassifyData({ key: 2 });
     this.getAllProductNames();
   },
 };

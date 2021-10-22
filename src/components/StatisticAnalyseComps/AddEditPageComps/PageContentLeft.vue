@@ -87,8 +87,6 @@ export default {
   mounted() {
     this.$store.dispatch('common/getUserClassify');
     this.$store.dispatch('common/getExpressList');
-    // this.$store.dispatch('common/getProductList');
-    // this.$store.dispatch('common/getAllProductNames');
   },
 };
 </script>

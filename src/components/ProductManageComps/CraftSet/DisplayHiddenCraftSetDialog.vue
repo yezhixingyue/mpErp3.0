@@ -60,7 +60,6 @@ export default {
       this.checkList = [];
     },
     initEditData() { // 数据初始化方法
-      console.log(this.value);
       this.checkList = JSON.parse(JSON.stringify(this.value));
     },
   },

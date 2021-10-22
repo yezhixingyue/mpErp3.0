@@ -14,13 +14,6 @@
     <el-button @click="handleClose">取消</el-button>
   </span>
 </el-dialog>
-<!-- <CheckboxDialogComp // ----- 使用示例
-  :visible.sync='addNewProductVisible'
-  v-model="productList"
-  :list='OperatorKeyValueList'
-  title="复选弹窗组件"
-  :defaultProps="{label: 'name', value: 'ID'}"
-  /> -->
 </template>
 
 <script>

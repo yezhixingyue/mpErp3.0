@@ -109,10 +109,12 @@ export default {
       this.loading = false;
     },
     getInitData() { // 初始化数据（存在编辑或新增2种情况）
-      const { LimitList, PropertyList } = this.promoteAddRequestObj.ProductList[this.$route.params.productIndex];
-      if (!LimitList || LimitList.length === 0) return;
+      const { ProductClassList, PropertyList } = this.promoteAddRequestObj.ProductList[this.$route.params.productIndex];
+      if (!ProductClassList || ProductClassList.length === 0) return;
       const obj = { UseModule: 41 };
-      if (LimitList.length === 1) obj.ProductID = LimitList[0].ProductID;
+      if (ProductClassList.length === 1 && ProductClassList[0].List.length === 1 && ProductClassList[0].List[0].List.length === 1) {
+        obj.ProductID = ProductClassList[0].List[0].List[0].ID || '';
+      }
       this.getPropertyList(obj, PropertyList);
       if (this.$route.params.itemIndex !== 'new') {
         // 还原curEditData 与 priceData

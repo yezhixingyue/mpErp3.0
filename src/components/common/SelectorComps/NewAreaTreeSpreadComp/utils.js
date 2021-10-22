@@ -46,8 +46,9 @@ export const getSelectedItemsList = (obj, title) => {
   return _list;
 };
 
-export const getCheckAllListByCurDataList = (list, isRoot = false) => {
-  const getInfo = (_list) => {
+export const getCheckAllListByCurDataList = (list, isRoot = false, DisabledList = []) => {
+  const getInfo = (arr) => {
+    const _list = arr.filter(it => !DisabledList.includes(it.ID));
     const transformItem = (it) => {
       const { ID, ClassName, children, isIncreased } = it;
       if (isIncreased) return null;
@@ -55,17 +56,21 @@ export const getCheckAllListByCurDataList = (list, isRoot = false) => {
       const _temp = { ID, Name };
       if (Array.isArray(children)) {
         _temp.IsIncludeIncreased = false;
-        const t = children.find(_it => _it.isIncreased);
+        const t = children.find(_it => _it.isIncreased && !DisabledList.includes(_it.ID));
         if (t) _temp.IsIncludeIncreased = true;
         _temp.List = getInfo(children);
       }
+      if (_temp.List && !_temp.IsIncludeIncreased && _temp.List.length === 0) return null;
       return _temp;
     };
     const _tempList = _list.map(it => transformItem(it)).filter(it => it);
     return _tempList;
   };
   const List = getInfo(list);
-  if (isRoot) return { IsIncludeIncreased: true, List };
+  if (isRoot) {
+    const IsIncludeIncreased = !DisabledList.includes('rootIncreased');
+    return { IsIncludeIncreased, List };
+  }
   return List;
 };
 
@@ -74,7 +79,7 @@ export const getFormalData4SubmitAfterChange = (item, value, data) => {
     ? JSON.parse(JSON.stringify(value))
     : { IsIncludeIncreased: false, List: [], ID: data ? data.ID : '', Name: data ? data.ClassName : '' };
 
-  if (item.isIncreased) {
+  if (item && item.isIncreased) {
     return { ...valueify, IsIncludeIncreased: !valueify.IsIncludeIncreased };
   }
   const isDelete = !item || (!item.IsIncludeIncreased && (!item.List || item.List.length === 0));
@@ -118,7 +123,8 @@ export const getSelectedContentBySelectedDataAndAllData = (item, treeData, title
           temp2.children = lv2.children.filter(it => selectedLv3Ids.includes(it.ID));
           temp2.isCheckAll = false;
           temp2.IsIncludeIncreased = t2.IsIncludeIncreased;
-          const aside = `(${temp2.IsIncludeIncreased ? `包含新加${title}` : `不含新加${title}`})`;
+          // const aside = `(${temp2.IsIncludeIncreased ? `包含新加${title}` : `不含新加${title}`})`;
+          const aside = `${temp2.IsIncludeIncreased ? `(包含新加${title})` : ''}`;
           temp2.content = `${temp2.ClassName}${aside}`;
           if (len2 === temp2.children.length) { // 包含全部
             temp2.isCheckAll = true;
@@ -130,7 +136,8 @@ export const getSelectedContentBySelectedDataAndAllData = (item, treeData, title
           }
         }
       });
-      const aside = `(${temp.IsIncludeIncreased ? `包含新加${title}` : `不含新加${title}`})`;
+      // const aside = `(${temp.IsIncludeIncreased ? `包含新加${title}` : `不含新加${title}`})`;
+      const aside = `${temp.IsIncludeIncreased ? `(包含新加${title})` : ''}`;
       temp.content = `${temp.ClassName}${aside}`;
       const partial = temp.children.find(it => !it.isCheckAll || !it.IsIncludeIncreased);
       if (!partial && temp.children.length === len1) {
@@ -149,15 +156,16 @@ export const getSelectedContentBySelectedDataAndAllData = (item, treeData, title
     isCheckAll: false,
     content: '',
   };
-  const aside = `${IsIncludeIncreased ? `包含新加${title}` : `不含新加${title}`}`;
+  // const aside = `${IsIncludeIncreased ? `包含新加${title}` : `不含新加${title}`}`;
+  const aside = `${IsIncludeIncreased ? `（包含新加${title}）` : ''}`;
   _temp.content = treeList.map(it => it.content);
   const partial = treeList.find(it => !it.isCheckAll || !it.IsIncludeIncreased);
   if (!partial && treeList.length === originLen) {
     _temp.isCheckAll = true;
-    _temp.content = `全部${title}（${aside}）`;
+    _temp.content = `全部${title}${aside}`;
   } else {
-    _temp.content = treeList.map(it => it.content);
-    _temp.content.unshift(aside);
+    _temp.content = treeList.map(it => it.content).filter(it => it);
+    if (aside) _temp.content.unshift(aside);
   }
   return _temp.content;
 };

@@ -52,7 +52,6 @@ export default {
           if (t) return t;
           return '';
         }).filter(it => !!it);
-        console.log(list);
         this.$emit('update:selectList', list);
       },
     },

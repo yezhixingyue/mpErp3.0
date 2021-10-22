@@ -58,8 +58,11 @@ export default {
     onGobackClick() {
       this.$emit('goback');
     },
+    // eslint-disable-next-line no-unused-vars
     onLeftSubmit(list) {
       this.$emit('sort', list);
+      // this.fetchData(true);
+      this.$store.dispatch('common/getAllProductNames', true);
     },
     async onRightSubmit(data) {
       const List = data.map(it => ({ Name: it.ClassName, ID: it.ID }));

@@ -4,7 +4,7 @@
     :max-height="h"
     :height="h"
     fit
-    :data="PromoteListData"
+    :data="localPromoteListData"
     stripe
     border
     style="width: 100%"
@@ -20,15 +20,15 @@
     </el-table-column>
 
     <el-table-column min-width="150px" label="产品" class-name="is-font-size-12">
-      <template slot-scope="scope" v-if="ProductListArray[scope.$index]">
+      <template slot-scope="scope">
         <el-tooltip placement="top-start" :enterable='true'
-          v-if="ProductListArray[scope.$index] && ProductListArray[scope.$index].length > 0" >
+          v-if="scope.row.ProductListArray && scope.row.ProductListArray.length > 0" >
           <div slot="content">
-              <p v-for="(item, i) in ProductListArray[scope.$index]" :key="item + '---' + i">
+              <p v-for="(item, i) in scope.row.ProductListArray" :key="item + '---' + i">
                 {{ item }}
               </p>
           </div>
-          <span class="area-span">{{ ProductListArray[scope.$index].join(' ') }}</span>
+          <span class="area-span">{{ scope.row.ProductListArray.join('、') }}</span>
         </el-tooltip>
       </template>
     </el-table-column>
@@ -129,7 +129,7 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import { getSelectedContentBySelectedDataAndAllData } from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/utils';
 import TableItemShowComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp';
-import { getProductArrayList, reg } from '../promoteUtils';
+// import { getProductArrayList, reg } from '../promoteUtils';
 
 export default {
   mixins: [tableMixin],
@@ -137,6 +137,13 @@ export default {
     ...mapState('promoteStore', ['promoteTableDataLoading', 'PromoteListData']),
     ...mapState('common', ['Permission']),
     ...mapGetters('common', ['allAreaTreeList', 'allProductClassify']),
+    localPromoteListData() {
+      if (!Array.isArray(this.PromoteListData)) return [];
+      return this.PromoteListData.map(it => ({
+        ...it,
+        ProductListArray: it.ProductList ? it.ProductList.map(_it => _it.ProductString).filter(_it => _it) : [],
+      }));
+    },
     // SellAreaArrayList() {
     //   if (this.allAreaTreeList.length === 0) return [];
     //   const _list = this.PromoteListData.map(data => data.SellAreaArray);
@@ -172,49 +179,49 @@ export default {
     //   });
     //   return list;
     // },
-    ProductListArray() {
-      if (this.allProductClassify.length === 0) return [];
-      let _list = this.PromoteListData.map(
-        data => data.ProductList,
-      ).map(item => {
-        const _arr = [];
-        item.forEach(it => {
-          _arr.push(...it.LimitList);
-        });
-        return _arr;
-      });
-      _list = _list.map(item => getProductArrayList(item, this.allProductClassify));
-      if (!_list || _list.length === 0) return '';
-      //  console.log(_list);
-      const list = _list.map(temp => {
-        const _textArr = [];
-        if (temp === '全部产品') return ['全部产品'];
-        temp.forEach(l1 => {
-          if (reg.test(l1.children[0])) {
-            _textArr.push(`${l1.ClassName}全部产品`);
-          } else {
-            // _textArr.push(`${l1.ClassName}：`);
-            let _text = `${l1.ClassName}：[`;
-            l1.children.forEach((l2, i2) => {
-              if (i2 > 0) _text += '、';
-              if (reg.test(l2.children[0])) {
-                _text += `全部${l2.ClassName}产品 `;
-              } else {
-                _text += `${l2.ClassName}: `;
-                l2.children.forEach((l3, i) => {
-                  if (i === 0) _text += `${l3.ClassName}`;
-                  else _text += `、${l3.ClassName}`;
-                });
-              }
-            });
-            _text += ' ]';
-            _textArr.push(_text);
-          }
-        });
-        return _textArr;
-      });
-      return list;
-    },
+    // ProductListArray() {
+    //   if (this.allProductClassify.length === 0) return [];
+    //   let _list = this.PromoteListData.map(
+    //     data => data.ProductList,
+    //   ).map(item => {
+    //     const _arr = [];
+    //     item.forEach(it => {
+    //       _arr.push(...it.LimitList);
+    //     });
+    //     return _arr;
+    //   });
+    //   _list = _list.map(item => getProductArrayList(item, this.allProductClassify));
+    //   if (!_list || _list.length === 0) return '';
+    //   //  console.log(_list);
+    //   const list = _list.map(temp => {
+    //     const _textArr = [];
+    //     if (temp === '全部产品') return ['全部产品'];
+    //     temp.forEach(l1 => {
+    //       if (reg.test(l1.children[0])) {
+    //         _textArr.push(`${l1.ClassName}全部产品`);
+    //       } else {
+    //         // _textArr.push(`${l1.ClassName}：`);
+    //         let _text = `${l1.ClassName}：[`;
+    //         l1.children.forEach((l2, i2) => {
+    //           if (i2 > 0) _text += '、';
+    //           if (reg.test(l2.children[0])) {
+    //             _text += `全部${l2.ClassName}产品 `;
+    //           } else {
+    //             _text += `${l2.ClassName}: `;
+    //             l2.children.forEach((l3, i) => {
+    //               if (i === 0) _text += `${l3.ClassName}`;
+    //               else _text += `、${l3.ClassName}`;
+    //             });
+    //           }
+    //         });
+    //         _text += ' ]';
+    //         _textArr.push(_text);
+    //       }
+    //     });
+    //     return _textArr;
+    //   });
+    //   return list;
+    // },
   },
   components: {
     TableItemShowComp,

@@ -3,46 +3,7 @@
     <div class="header">
       <div class="left">
         <div class="product-title-list">
-          <span>活动产品：</span>
-          <el-tooltip
-            placement="top-start"
-            :hasTransition='false'
-            popper-class='mp-promote-comp-add-product-ltem-wrap-tip-popper'
-            effect="light">
-              <ul slot="content" class="product-list-wrap">
-                <li v-if="productNameList[0]&&productNameList[0]==='全部产品'">
-                  {{productNameList[0]}}
-                </li>
-                <template v-else>
-                  <li v-for="(item, i) in productNameList" :key="item+'-'+i">
-                  <div v-for="(value, key, i) in item" :key="value+i">
-                    <i v-if="i > 0">、</i>
-                    <!-- <span class="title">{{key}}:</span> -->
-                    [<ul>
-                      <li v-for="(it, i) in value" :key='it+i'>
-                        <div v-for="(lastV, lastVKey, lastVI) in it" :key="lastV+lastVI">
-                          <span class="title2">{{lastVKey}}</span>
-                          <template v-if="lastV.length > 0">
-                            (<span
-                              v-for="(sub, i) in lastV"
-                              :key='sub+i'
-                              class="is-gray product-child">
-                              {{sub}}
-                              <i v-if="i < lastV.length - 1">、</i>
-                            </span>)
-                          </template>
-                        </div>
-                        <i v-if="i < value.length - 1">、</i>
-                      </li>
-                    </ul>]
-                  </div>
-                </li>
-                </template>
-              </ul>
-            <span class="product-list-wrap">
-              {{productNameString}}
-            </span>
-          </el-tooltip>
+          <TableItemShowComp title="活动产品" subTitle='产品' :list='productDisplayList' />
         </div>
       </div>
       <div v-if="!isDisabled" class="right">
@@ -120,8 +81,10 @@
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import TableItemShowComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp';
+import { getSelectedContentBySelectedDataAndAllData } from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/utils';
 // eslint-disable-next-line import/extensions
-import { getProductArrayList, reg } from '../promoteUtils.js';
+// import { getProductArrayList, reg } from '../promoteUtils.js';
 
 
 export default {
@@ -163,79 +126,24 @@ export default {
       return _text;
     },
   },
+  components: {
+    TableItemShowComp,
+  },
   computed: {
     ...mapState('common', ['PriceUnitList', 'OperatorKeyValueList']),
     ...mapState('promoteStore', ['promoteAddRequestObj']),
-    ...mapGetters('common', ['allProductClassify']),
-    productNameList() {
-      if (!this.data || this.data.length === 0) return '';
-      if (this.allProductClassify.length === 0) return '';
-      const _list = getProductArrayList(this.data.LimitList, this.allProductClassify);
-      const _textArr = [];
-      // const reg = /^全部/;
-      if (_list === '全部产品') return ['全部产品'];
-      _list.forEach(l1 => {
-        if (reg.test(l1.children[0])) {
-          _textArr.push({ [l1.ClassName]: [{ [`全部${l1.ClassName}产品`]: [] }] });
-        } else {
-          // _textArr.push(`${l1.ClassName}：[`);
-          const _obj = { [l1.ClassName]: [] };
-          l1.children.forEach(l2 => {
-            const _tempobj = { [l2.ClassName]: [] };
-            // let _text = `${l2.ClassName}`;
-            if (reg.test(l2.children[0])) {
-              // _textArr.push(`${_text}(全部产品)`);
-              _tempobj[l2.ClassName] = [l2.children[0]];
-              _obj[l1.ClassName].push(_tempobj);
-            } else {
-              // _text += ':';
-              l2.children.forEach((l3) => {
-                // if (i === 0) _text += `${l3.ClassName}`;
-                // else _text += `、${l3.ClassName}`;
-                _tempobj[l2.ClassName].push(l3.ClassName);
-              });
-              _obj[l1.ClassName].push(_tempobj);
-            }
-          });
-          _textArr.push(_obj);
-        }
-      });
-      return _textArr;
-    },
+    ...mapGetters('common', ['allProductClassify4Customer']),
     productNameString() {
-      if (this.productNameList[0] && this.productNameList[0] === '全部产品') return '全部产品';
-      let _text = '';
-      const _arr = this.productNameList.map(item => Object.values(item)[0]);
-      _arr.forEach((it, i1) => {
-        const _s1 = _arr.length - 1 === i1 ? '' : '、';
-        if (reg.test(Object.keys(it[0])[0])) {
-          _text += Object.keys(it[0])[0];
-        } else {
-          it.forEach((lt2, i2) => {
-            const _s2 = it.length - 1 === i2 ? '' : '、';
-            if (reg.test(Object.keys(lt2)[0])) {
-              _text += Object.keys(lt2)[0];
-            } else if (reg.test(Object.values(lt2)[0][0])) {
-              _text += Object.values(lt2)[0][0];
-            } else {
-              _text += Object.keys(lt2)[0];
-              _text += '(';
-              Object.values(lt2)[0].forEach((it3, i3) => {
-                const _s3 = Object.values(lt2)[0].length - 1 === i3 ? '' : '、';
-                _text += it3;
-                _text += _s3;
-              });
-              _text += ')';
-            }
-            _text += _s2;
-          });
+      if (typeof this.productDisplayList === 'string') return this.productDisplayList;
+      const _list = this.productDisplayList.map(it => {
+        if (typeof it === 'string') return it;
+        if (typeof it === 'object') {
+          if (it.list && it.list.length > 0) return `${it.name}：${it.list.join('；')}`;
+          return `${it.name}`.replaceAll('：', ':');
         }
-        _text += _s1;
+        return '';
       });
-      return _text;
-    },
-    productList() {
-      return this.data.LimitList;
+      return _list.join('、').replaceAll('：', ':');
     },
     localList() {
       return this.tableDataList.map(it => ({
@@ -263,6 +171,9 @@ export default {
       });
       return list;
     },
+    productDisplayList() {
+      return this.getDisplayListContent(this.data).filter(it => it !== '不含新加产品');
+    },
   },
   methods: {
     // eslint-disable-next-line max-len
@@ -284,11 +195,13 @@ export default {
       this.messageBox.warnCancelBox('确定删除价格表中所有活动产品吗 ?', '[ 确认后此价格表将被移除! ]', () => this.delProductItem4AddRequestObj(this.index), null);
     },
     handleChangeProducts() {
-      const _list = this.data.LimitList.map(it => it.ProductID);
-      this.setWatchValue2ProductDia([..._list]);
-      this.setOpenType2ProductDia(this.index);
+      console.log(this.data);
+      // const _list = this.data.LimitList.map(it => it.ProductID);
+      // this.setWatchValue2ProductDia([..._list]);
+      // this.setOpenType2ProductDia(this.index);
     },
     addPrice() {
+      console.log(this.productNameString);
       this.$router.push({
         name: 'promoteConditionSet',
         params: {
@@ -298,14 +211,27 @@ export default {
         },
       });
     },
+    getDisplayListContent(item) {
+      const temp = { List: item.ProductClassList, IsIncludeIncreased: item.IsIncludeIncreasedProduct };
+      const content = getSelectedContentBySelectedDataAndAllData(temp, this.allProductClassify4Customer, '产品');
+      console.log(temp, content);
+      return content;
+    },
     async preRequestConditionList() {
       let ProductID;
-      if (this.data.LimitList.length > 1) {
+      const ids = [];
+      this.data.ProductClassList.forEach(level2 => {
+        level2.List.forEach(lv3 => {
+          lv3.List.forEach(it => {
+            ids.push(it.ID);
+          });
+        });
+      });
+      if (ids.length !== 1) {
         ProductID = '';
-      } else if (this.data.LimitList.length === 1) {
-        ProductID = this.data.LimitList[0].ProductID;
       } else {
-        return;
+        const [ID] = ids;
+        ProductID = ID;
       }
       if (ProductID) {
         const list = await PropertyClass.getPropertyList({ UseModule: 41, ProductID });
