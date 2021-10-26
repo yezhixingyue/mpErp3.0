@@ -171,22 +171,24 @@ export default {
         this.$store.commit('productManage/setSubTargetData', null);
         this.handleJumpToNewPage(setType, data);
       } else {
-        // console.log(setType, data);
-        this.$store.commit('productManage/setSubTargetData', data.target);
-        this.handleJumpToNewPage(setType, data);
-        // const bool = await this.getPropertyList4SubInteractionAndSubCompare();
-        // if (bool) {
-        //   this.setType4SubInteractionAndSubCompare = setType;
-        //   this.itemData4SubInteractionAndSubCompare = data;
-        //   if (data && data.target) {
-        //     const str = JSON.stringify(data.target);
-        //     if (str !== '{}') this.initDialogDataStr = str;
-        //     else this.initDialogDataStr = '';
-        //   } else {
-        //     this.initDialogDataStr = '';
-        //   }
-        //   this.visible = true;
-        // }
+        if (data && data.target) {
+          this.$store.commit('productManage/setSubTargetData', data.target);
+          this.handleJumpToNewPage(setType, data);
+          return;
+        }
+        const bool = await this.getPropertyList4SubInteractionAndSubCompare();
+        if (bool) {
+          this.setType4SubInteractionAndSubCompare = setType;
+          this.itemData4SubInteractionAndSubCompare = data;
+          if (data && data.target) {
+            const str = JSON.stringify(data.target);
+            if (str !== '{}') this.initDialogDataStr = str;
+            else this.initDialogDataStr = '';
+          } else {
+            this.initDialogDataStr = '';
+          }
+          this.visible = true;
+        }
       }
     },
     getTargetDataList(targetType) {

@@ -78,13 +78,13 @@ export default {
   },
   mounted() {
     if (!this.PropertyData) return;
-    const { ValueType, OptionList, Unit, Type } = this.PropertyData;
+    const { ValueType, OptionList, Unit, Element } = this.PropertyData;
     this.ValueType = ValueType;
     this.OptionList = OptionList;
     this.Unit = Unit;
     if (OptionList && OptionList.length > 0 && ValueType !== 5 && !this.isMultiple && ValueType !== 0 && !this.ValProperty) {
       if (!this.localValue || (Array.isArray(this.localValue) && this.localValue.length === 0)) {
-        if (Type !== 3) this.localValue = OptionList[0].First;
+        if (Element.Type !== 3) this.localValue = OptionList[0].First;
         else this.localValue = 'True';
       }
     }

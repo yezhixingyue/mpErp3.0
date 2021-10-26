@@ -155,7 +155,7 @@ export default {
           // 为 value 赋值 分开关和其它类型
           const t = this.curData.Type.ElementList.find(_it => _it.ID === it.ID);
           if (t) {
-            if (t.Type === 1) _value = +t.CustomerInputValue;
+            if (t.Type === 1 && t.CustomerInputValue !== '') _value = +t.CustomerInputValue;
             if (t.Type === 2) _value = t.CustomerInputValue;
             if (t.Type === 3) {
               const { OpenValue } = t.SwitchAttribute;
@@ -172,10 +172,13 @@ export default {
           validator: (rule, value, callback) => this.checkValidator(rule, value, callback, it), trigger: it.Type === 1 ? 'blur' : 'change',
         }];
         if (it.Type !== 3) {
+          let required = false;
+          if (it.Type === 1 && it.NumbericAttribute?.IsRequired) required = true;
+          if (it.Type === 2 && it.OptionAttribute?.IsRequired) required = true;
           const message = it.Type === 1 ? `请输入${it.Name}` : `请选择${it.Name}`;
           const trigger = it.Type === 1 && !it.NumbericAttribute.InputContent ? 'blur' : 'change';
           _tempRules[it.ID].unshift(
-            { required: true, message, trigger },
+            { required, message, trigger },
           );
         }
       });
@@ -191,7 +194,7 @@ export default {
     },
     checkValidator(rule, value, callback, target) {
       const { Type, NumbericAttribute } = target;
-      if (Type !== 1) callback();
+      if (Type !== 1 || value === '') callback();
       else {
         // 判断值类型是否符合规范
         const { AllowDecimal, SectionList, InputContent } = NumbericAttribute;

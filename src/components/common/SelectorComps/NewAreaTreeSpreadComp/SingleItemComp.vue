@@ -120,7 +120,6 @@ export default {
       return t || null;
     },
     onChildItemChange(item) {
-      console.log(item);
       const temp = getFormalData4SubmitAfterChange(item, this.value, this.data);
       this.$emit('change', temp);
     },

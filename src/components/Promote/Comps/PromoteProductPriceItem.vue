@@ -195,13 +195,13 @@ export default {
       this.messageBox.warnCancelBox('确定删除价格表中所有活动产品吗 ?', '[ 确认后此价格表将被移除! ]', () => this.delProductItem4AddRequestObj(this.index), null);
     },
     handleChangeProducts() {
-      console.log(this.data);
+      // console.log(this.data);
       // const _list = this.data.LimitList.map(it => it.ProductID);
       // this.setWatchValue2ProductDia([..._list]);
       // this.setOpenType2ProductDia(this.index);
     },
     addPrice() {
-      console.log(this.productNameString);
+      // console.log(this.productNameString);
       this.$router.push({
         name: 'promoteConditionSet',
         params: {
@@ -214,7 +214,7 @@ export default {
     getDisplayListContent(item) {
       const temp = { List: item.ProductClassList, IsIncludeIncreased: item.IsIncludeIncreasedProduct };
       const content = getSelectedContentBySelectedDataAndAllData(temp, this.allProductClassify4Customer, '产品');
-      console.log(temp, content);
+      // console.log(temp, content);
       return content;
     },
     async preRequestConditionList() {

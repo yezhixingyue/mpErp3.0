@@ -16,7 +16,7 @@ export default {
   },
   data() {
     return {
-      radioList: [{ value: '不限', type: true }, { value: '减款', type: true }, { value: '补印', type: true }],
+      radioList: [{ value: '不限', type: true }, { value: '减款', type: true }, { value: '补印', type: true }, { value: '赠送优惠券', type: true }],
     };
   },
   computed: {
@@ -57,6 +57,9 @@ export default {
   }
   .mp-single-radio-wrap {
     margin-right: 10px;
+  }
+  .el-radio {
+    margin-right: 18px;
   }
   .el-radio__label{
     font-size: 14px;

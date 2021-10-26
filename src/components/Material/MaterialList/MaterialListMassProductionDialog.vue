@@ -55,7 +55,12 @@ export default {
     checkValueChecker() {
       const list = [];
       this.list.forEach(it => {
-        if (it.checkList.length === 0 && (!it.customChecked || !it.customValue)) list.push(it.Element.Name);
+        if (it.checkList.length === 0 && (!it.customChecked || !it.customValue)) {
+          let required = false;
+          if (it.Element.Type === 1 && it.Element.NumbericAttribute?.IsRequired) required = true;
+          if (it.Element.Type === 2 && it.Element.OptionAttribute?.IsRequired) required = true;
+          if (required) list.push(it.Element.Name);
+        }
       });
       if (list.length > 0) {
         this.messageBox.failSingleError('保存失败！', `${list.join('、')}未选中有效内容`);
@@ -142,7 +147,7 @@ export default {
     },
     setSubmit(type) { // type: append | refresh
       if (this.checkValueChecker()) { // 弹窗校验通过
-        const _array = this.list.map(it => this.getArrayFromCheckObj(it));
+        const _array = this.list.map(it => this.getArrayFromCheckObj(it)).filter(it => it.length > 0);
         let set = [];
         if (_array.length === 1) {
           _array[0].forEach(it => { set.push([it]); });

@@ -69,7 +69,7 @@ export default {
     shouldDisabledList() {
       const _list = [];
       this.promoteAddRequestObj.ProductList.forEach(level1 => {
-        console.log(level1);
+        // console.log(level1);
         if (level1.IsIncludeIncreasedProduct) _list.push('rootIncreased');
         level1.ProductClassList.forEach(level2 => {
           if (level2.IsIncludeIncreased) _list.push(`${level2.ID}Increased`);
@@ -88,12 +88,12 @@ export default {
     ...mapMutations('promoteStore', ['setPromoteAddRequestObj', 'setWatchValue2ProductDia', 'setOpenType2ProductDia']),
     ...mapActions('common', ['getAllProductNames']),
     // eslint-disable-next-line consistent-return
-    handleSaveFunc(ProductRange, func) {
+    handleSaveFunc(ProductRange) {
       const { IsIncludeIncreased, List } = ProductRange;
       if (List.length === 0 && !IsIncludeIncreased) return '至少必须选择一种产品!';
       const IsIncludeIncreasedProduct = IsIncludeIncreased;
       const ProductClassList = List;
-      console.log(IsIncludeIncreased, List);
+      // console.log(IsIncludeIncreased, List);
       // const nodes = [];
       // const _nodes = nodes.filter(node => node.ShowName);
       // if (_nodes.length === 0) {
@@ -119,9 +119,10 @@ export default {
       }
       if (typeof this.openTypeIndex2ProductDia === 'number') { // 修改
         // const len1 = LimitList.length; // 要改变后的产品数量
+        // eslint-disable-next-line no-unused-vars
         const target = _tempObj1.find((it, i) => i === this.openTypeIndex2ProductDia);
         // const len2 = target.LimitList.length; // 改变前的产品数量
-        console.log(target, _obj, func);
+        // console.log(target, _obj, func);
         // if (len2 === 1 && len1 === 1 && target.LimitList[0].ProductID === LimitList[0].ProductID) {
         //   // 未发生变化
         //   return true;

@@ -35,9 +35,10 @@
               <span :style="widthStyleObj[3]">{{item.Funds.FinalPrice}}元</span>
               <span :style="widthStyleObj[4]">{{item.Funds.Deposit}}元</span>
               <span class="product-item-ontent-text-box" :style="widthStyleObj[5]">
-                <el-tooltip class="item" effect="dark" :content="item.Content" placement="top-start">
-                  <i>{{item.Content || '无'}}</i>
+                <el-tooltip v-if="item.Content" class="item" effect="dark" :content="item.Content" placement="top-start">
+                  <i>{{item.Content}}</i>
                 </el-tooltip>
+                <i v-else>无</i>
               </span>
           </li>
       </TransitionGroupCollapse>
