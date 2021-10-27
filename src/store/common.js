@@ -744,6 +744,9 @@ export default {
         state.productNames.unshift(_temp);
       }
     },
+    setProductRemove(state, id) { // 处理产品删除
+      state.productNames = state.productNames.filter(it => it.ID !== id);
+    },
   },
   actions: {
     async getAreaList({ state, commit }) { // 获取地区列表数据

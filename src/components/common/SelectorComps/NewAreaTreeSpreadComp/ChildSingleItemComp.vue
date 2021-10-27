@@ -101,7 +101,8 @@ export default {
         const temp = { ...this.itemData };
         temp.children = temp.children.filter(it => list.includes(it.ID) && !this.DisabledList.includes(it.ID));
         const tempData = getCheckAllListByCurDataList([temp])[0];
-        this.$emit('change', tempData);
+        if (!tempData) this.checkAll = false;
+        else this.$emit('change', tempData);
       },
     },
   },

@@ -24,6 +24,7 @@ import { mapState } from 'vuex';
 import ContionCommonComp from '@/components/common/FormulaAndConditionComps/ContionCommonComp';
 import ResultComps from '@/components/Promote/Comps/ResultComps';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import PromoteAddEditObjClassType from '@/store/Promote/PromoteAddEditObjClassType';
 
 export default {
   name: 'promoteConditionSet',
@@ -109,17 +110,19 @@ export default {
       this.loading = false;
     },
     getInitData() { // 初始化数据（存在编辑或新增2种情况）
-      const { ProductClassList, PropertyList } = this.promoteAddRequestObj.ProductList[this.$route.params.productIndex];
-      if (!ProductClassList || ProductClassList.length === 0) return;
-      const obj = { UseModule: 41 };
-      if (ProductClassList.length === 1 && ProductClassList[0].List.length === 1 && ProductClassList[0].List[0].List.length === 1) {
-        obj.ProductID = ProductClassList[0].List[0].List[0].ID || '';
+      const _data = this.promoteAddRequestObj.ProductList[this.$route.params.productIndex];
+      const { ProductClassList, PropertyList, IsIncludeIncreasedProduct } = _data;
+      if ((!ProductClassList || ProductClassList.length === 0) && !IsIncludeIncreasedProduct) {
+        this.loading = false;
+        return;
       }
-      this.getPropertyList(obj, PropertyList);
+      const obj = { UseModule: 41 };
+      const ProductID = PromoteAddEditObjClassType.getUniqueProductID(_data);
+      if (ProductID) obj.ProductID = ProductID;
       if (this.$route.params.itemIndex !== 'new') {
         // 还原curEditData 与 priceData
-        const { Constraint, PriceUnit, Price } = this.promoteAddRequestObj.ProductList[this.$route.params.productIndex].List[this.$route.params.itemIndex];
-        this.curEditData = { ID: '', Priority: '', Constraint };
+        const { Constraint, PriceUnit, Price } = _data.ItemList[this.$route.params.itemIndex];
+        this.curEditData = { Constraint };
         this.priceData = { PriceUnit, Price };
       } else {
         this.curEditData = null;
@@ -128,6 +131,7 @@ export default {
           Price: '',
         };
       }
+      this.getPropertyList(obj, PropertyList);
     },
   },
   mounted() {

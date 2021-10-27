@@ -6,7 +6,6 @@
     <main>
       <span class="add-header">
         <ProductsCheckoutDiaComp
-          :defaultCheckedKeys='defaultCheckedKeys'
           :handleSaveFunc='handleSaveFunc'
           :watchValue='watchValue2ProductDia'
           :setWatchValue2ProductDia='setWatchValue2ProductDia'
@@ -35,6 +34,7 @@ import { mapGetters, mapActions, mapMutations, mapState } from 'vuex';
 import VTypeTitle from '@/components/ServiceAfterSale/EditDialog/VTypeTitle.vue';
 import ProductsCheckoutDiaComp from '@/components/common/ProductsCheckoutDiaComp.vue';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import PromoteAddEditObjClassType from '@/store/Promote/PromoteAddEditObjClassType';
 import PromoteProductPriceItem from './PromoteProductPriceItem.vue';
 
 export default {
@@ -58,28 +58,21 @@ export default {
     ...mapState('promoteStore', ['promoteAddRequestObj', 'watchValue2ProductDia', 'openTypeIndex2ProductDia']),
     ...mapState('common', ['Permission']),
     ...mapGetters('common', ['allProductClassify']),
-    defaultCheckedKeys() {
-      if (!(!this.openTypeIndex2ProductDia && this.openTypeIndex2ProductDia !== 0)
-        && this.promoteAddRequestObj.ProductList[this.openTypeIndex2ProductDia]) {
-        return this.promoteAddRequestObj.ProductList[this.openTypeIndex2ProductDia]
-          .LimitList.map(it => it.ProductID);
-      }
-      return [];
-    },
     shouldDisabledList() {
       const _list = [];
-      this.promoteAddRequestObj.ProductList.forEach(level1 => {
-        // console.log(level1);
-        if (level1.IsIncludeIncreasedProduct) _list.push('rootIncreased');
-        level1.ProductClassList.forEach(level2 => {
-          if (level2.IsIncludeIncreased) _list.push(`${level2.ID}Increased`);
-          level2.List.forEach(lv3 => {
-            if (lv3.IsIncludeIncreased) _list.push(`${lv3.ID}Increased`);
-            lv3.List.forEach(it => {
-              _list.push(it.ID);
+      this.promoteAddRequestObj.ProductList.forEach((level1, index) => {
+        if (index !== this.openTypeIndex2ProductDia) {
+          if (level1.IsIncludeIncreasedProduct) _list.push('rootIncreased');
+          level1.ProductClassList.forEach(level2 => {
+            if (level2.IsIncludeIncreased) _list.push(`${level2.ID}Increased`);
+            level2.List.forEach(lv3 => {
+              if (lv3.IsIncludeIncreased) _list.push(`${lv3.ID}Increased`);
+              lv3.List.forEach(it => {
+                _list.push(it.ID);
+              });
             });
           });
-        });
+        }
       });
       return _list;
     },
@@ -88,27 +81,11 @@ export default {
     ...mapMutations('promoteStore', ['setPromoteAddRequestObj', 'setWatchValue2ProductDia', 'setOpenType2ProductDia']),
     ...mapActions('common', ['getAllProductNames']),
     // eslint-disable-next-line consistent-return
-    handleSaveFunc(ProductRange) {
+    handleSaveFunc(ProductRange, func) {
       const { IsIncludeIncreased, List } = ProductRange;
       if (List.length === 0 && !IsIncludeIncreased) return '至少必须选择一种产品!';
       const IsIncludeIncreasedProduct = IsIncludeIncreased;
       const ProductClassList = List;
-      // console.log(IsIncludeIncreased, List);
-      // const nodes = [];
-      // const _nodes = nodes.filter(node => node.ShowName);
-      // if (_nodes.length === 0) {
-      //   return '至少必须选择一种产品!';
-      // }
-      // const LimitList = _nodes.map(item => {
-      //   const t = item.ClassifyList.find(({ Type }) => Type === 1);
-      //   if (!t) return null;
-      //   return {
-      //     FirstLevelID: t.FirstLevel.ID,
-      //     SecondLevelID: t.SecondLevel.ID,
-      //     ProductID: item.ID,
-      //     ProductName: item.Name,
-      //   };
-      // }).filter(it => it);
       const _tempObj1 = [...this.promoteAddRequestObj.ProductList];
       let _tempObj2;
       const _obj = { ProductClassList, IsIncludeIncreasedProduct, ItemList: [], PropertyList: [] };
@@ -118,42 +95,40 @@ export default {
         return true;
       }
       if (typeof this.openTypeIndex2ProductDia === 'number') { // 修改
-        // const len1 = LimitList.length; // 要改变后的产品数量
-        // eslint-disable-next-line no-unused-vars
         const target = _tempObj1.find((it, i) => i === this.openTypeIndex2ProductDia);
-        // const len2 = target.LimitList.length; // 改变前的产品数量
-        // console.log(target, _obj, func);
-        // if (len2 === 1 && len1 === 1 && target.LimitList[0].ProductID === LimitList[0].ProductID) {
-        //   // 未发生变化
-        //   return true;
-        // }
-        // if (len1 > 1 && len2 > 1) {
-        //   _tempObj2 = _tempObj1.map((it, i) => {
-        //     if (i !== this.openTypeIndex2ProductDia) {
-        //       return it;
-        //     }
-        //     const _it = JSON.parse(JSON.stringify(it));
-        //     return { ..._it, LimitList, PropertyList: [] };
-        //   });
-        //   this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
-        //   return true;
-        // }
-        // this.messageBox.warnCancelBox('确定修改产品信息吗 ?', '[ 该操作会导致此价格表清空! ]', () => {
-        //   _tempObj2 = _tempObj1.map((it, i) => {
-        //     if (i !== this.openTypeIndex2ProductDia) {
-        //       return it;
-        //     }
-        //     return { ...it, ..._obj };
-        //   });
-        //   this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
-        //   func();
-        // }, null);
+        const prevProductID = PromoteAddEditObjClassType.getUniqueProductID(target);
+        const curProductID = PromoteAddEditObjClassType.getUniqueProductID(ProductRange, { IncreasedLabel: 'IsIncludeIncreased', listLabel: 'List' });
+        if (prevProductID && curProductID && curProductID === prevProductID) { // 单产品且产品未发生变化
+          return true;
+        }
+        if (!prevProductID && !curProductID) { // 多产品修改为多产品 可以直接修改
+          _tempObj2 = _tempObj1.map((it, i) => {
+            if (i !== this.openTypeIndex2ProductDia) {
+              return it;
+            }
+            const _it = JSON.parse(JSON.stringify(it));
+            return { ..._it, ProductClassList, IsIncludeIncreasedProduct };
+          });
+          this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
+          return true;
+        }
+        // 单到多 或 多到单  需要清除价格表
+        this.messageBox.warnCancelBox('确定修改产品信息吗 ?', '[ 该操作会导致此价格表清空! ]', () => {
+          _tempObj2 = _tempObj1.map((it, i) => {
+            if (i !== this.openTypeIndex2ProductDia) {
+              return it;
+            }
+            return { ...it, ..._obj };
+          });
+          this.setPromoteAddRequestObj([['ProductList', ''], _tempObj2]);
+          func();
+        }, null);
       }
     },
   },
   async created() {
     if (this.promoteAddRequestObj.ProductList.length > 0) {
-      const t = this.promoteAddRequestObj.ProductList.find(it => it.LimitList.length > 0);
+      const t = this.promoteAddRequestObj.ProductList.find(it => it.ProductClassList.length > 0);
       if (t) {
         // 获取通用列表
         const list = await PropertyClass.getPropertyList({ UseModule: 41 });

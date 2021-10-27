@@ -458,7 +458,7 @@ export default {
       if (state.SolutionType === 'replenish') { // 补印
         const { KindCount, Amount } = state.replenish;
         _obj.Solution.Type = 7; // 减款为2  补印为7
-        _obj.Solution.FileName = state.fileName ? state.fileName : '';
+        _obj.Solution.FileName = state.replenishFileUniqueName ? state.replenishFileUniqueName : '';
         _obj.Solution.KindCount = +KindCount || '';
         _obj.Solution.Number = +Amount || '';
       }
@@ -531,8 +531,12 @@ export default {
       const onUploadProgressFunc = (complete) => commit('setPercentage', complete);
       if (data && uniqueName && state.SolutionType === 'replenish') { // 上传补印文件
         const key = await UploadFileByBreakPoint(data, uniqueName, onUploadProgressFunc);
-        if (key) commit('setFileName', uniqueName);
-        else {
+        // if (key) commit('setFileName', uniqueName);
+        // else {
+        //   commit('setPercentage', null);
+        //   return;
+        // }
+        if (!key) {
           commit('setPercentage', null);
           return;
         }

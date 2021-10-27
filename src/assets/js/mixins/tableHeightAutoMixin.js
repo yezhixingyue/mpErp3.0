@@ -136,7 +136,7 @@ export default {
       this.initHeightAuto();
       this.commonTableSortMixin();
       if (this.tableName) {
-        let _list = JSON.parse(localStorage.getItem(this.tableName));
+        let _list = JSON.parse(localStorage.getItem(this.tableName)) || [];
         if (_list.length > 0) {
           _list = _list.filter(it => this.colLabels.includes(it));
         }

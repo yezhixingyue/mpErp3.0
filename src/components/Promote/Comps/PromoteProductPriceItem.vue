@@ -83,6 +83,7 @@ import { mapState, mapMutations, mapGetters } from 'vuex';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import TableItemShowComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp';
 import { getSelectedContentBySelectedDataAndAllData } from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/utils';
+import PromoteAddEditObjClassType from '@/store/Promote/PromoteAddEditObjClassType';
 // eslint-disable-next-line import/extensions
 // import { getProductArrayList, reg } from '../promoteUtils.js';
 
@@ -162,9 +163,9 @@ export default {
       return [];
     },
     tableDataList() {
-      if (!this.data.List || this.data.List.length === 0) return [];
-      if (!this.ComparePropertyList || this.ComparePropertyList.length === 0) return this.data.List;
-      const list = this.data.List.map(it => {
+      if (!this.data.ItemList || this.data.ItemList.length === 0) return [];
+      if (!this.ComparePropertyList || this.ComparePropertyList.length === 0) return this.data.ItemList;
+      const list = this.data.ItemList.map(it => {
         if (!it.Constraint) return { ...it, conditionText: '无' };
         const [Constraint, conditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.ComparePropertyList);
         return { ...it, Constraint, conditionText };
@@ -172,7 +173,8 @@ export default {
       return list;
     },
     productDisplayList() {
-      return this.getDisplayListContent(this.data).filter(it => it !== '不含新加产品');
+      const content = this.getDisplayListContent(this.data);
+      return Array.isArray(content) ? content.filter(it => it !== '不含新加产品') : content;
     },
   },
   methods: {
@@ -195,13 +197,14 @@ export default {
       this.messageBox.warnCancelBox('确定删除价格表中所有活动产品吗 ?', '[ 确认后此价格表将被移除! ]', () => this.delProductItem4AddRequestObj(this.index), null);
     },
     handleChangeProducts() {
-      // console.log(this.data);
       // const _list = this.data.LimitList.map(it => it.ProductID);
-      // this.setWatchValue2ProductDia([..._list]);
-      // this.setOpenType2ProductDia(this.index);
+      if (!this.data) return;
+      const { IsIncludeIncreasedProduct, ProductClassList } = this.data;
+      const temp = { IsIncludeIncreased: IsIncludeIncreasedProduct, List: ProductClassList };
+      this.setWatchValue2ProductDia(temp);
+      this.setOpenType2ProductDia(this.index);
     },
     addPrice() {
-      // console.log(this.productNameString);
       this.$router.push({
         name: 'promoteConditionSet',
         params: {
@@ -214,27 +217,16 @@ export default {
     getDisplayListContent(item) {
       const temp = { List: item.ProductClassList, IsIncludeIncreased: item.IsIncludeIncreasedProduct };
       const content = getSelectedContentBySelectedDataAndAllData(temp, this.allProductClassify4Customer, '产品');
-      // console.log(temp, content);
-      return content;
+      return content || [];
     },
     async preRequestConditionList() {
-      let ProductID;
-      const ids = [];
-      this.data.ProductClassList.forEach(level2 => {
-        level2.List.forEach(lv3 => {
-          lv3.List.forEach(it => {
-            ids.push(it.ID);
-          });
-        });
-      });
-      if (ids.length !== 1) {
-        ProductID = '';
-      } else {
-        const [ID] = ids;
-        ProductID = ID;
-      }
+      const { ProductClassList, IsIncludeIncreasedProduct } = this.data;
+      if ((!ProductClassList || ProductClassList.length === 0) && !IsIncludeIncreasedProduct) return;
+      const obj = { UseModule: 41 };
+      const ProductID = PromoteAddEditObjClassType.getUniqueProductID(this.data);
       if (ProductID) {
-        const list = await PropertyClass.getPropertyList({ UseModule: 41, ProductID });
+        obj.ProductID = ProductID;
+        const list = await PropertyClass.getPropertyList(obj);
         if (list) {
           this.$store.commit('promoteStore/addSingleProductPropertyListToAddRequestObj', [list, this.index]);
         }
@@ -281,7 +273,7 @@ export default {
           user-select: none;
           margin-left: 5px;
         }
-        > .product-list-wrap {
+        > .el-tooltip {
             height: 20px;
             flex: 1;
             overflow: hidden;

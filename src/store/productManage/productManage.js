@@ -401,12 +401,13 @@ export default {
         messageBox.successSingle(msg, callback, callback);
       }
     },
-    async getProductRemove({ commit }, id) { // 产品删除
+    async getProductRemove({ commit }, [id, cb]) { // 产品删除
       if (!id) return;
       const resp = await api.getProductRemove(id).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
         const callback = () => {
           commit('setProductRemove', id);
+          if (cb) cb();
         };
         messageBox.successSingle('删除成功', callback, callback);
       }

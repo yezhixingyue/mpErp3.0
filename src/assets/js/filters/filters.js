@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-26 09:16:49
- * @LastEditTime: 2021-10-21 09:45:53
+ * @LastEditTime: 2021-10-27 16:35:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit 过滤器
  * @FilePath: /src/assets/js/filters/filters.js
@@ -50,20 +50,6 @@ Vue.filter('formatPromoteStatus', status => {
   const arr = PromoteStatusList.find((item) => item.ID === status);
   if (arr) return arr.name.trim();
   return '';
-});
-
-/**
- * 促销活动 - 活动商品名称转换
- */
-Vue.filter('formatPromoteProductList', ProductList => {
-//  console.log(ProductList);
-  if (!ProductList || ProductList.length === 0) return '';
-  const _textArr = [];
-  ProductList.forEach(product => {
-    product.LimitList.forEach(limit => _textArr.push(limit.ProductName));
-  });
-  const _text = _textArr.join('、');
-  return _text;
 });
 
 /**

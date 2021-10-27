@@ -101,15 +101,15 @@ export default {
     /** 请求对象信息中新增价格
      ---------------------------------------- */
     addPrice4AddRequestObj(state, [ProductIndex, obj]) {
-      state.promoteAddRequestObj.ProductList[ProductIndex].List.push(obj);
+      state.promoteAddRequestObj.ProductList[ProductIndex].ItemList.push(obj);
     },
     /** 请求对象信息中删除价格 (或替换)
      ---------------------------------------- */
     delPrice4AddRequestObj(state, [ProductIndex, ConstraintIndex, data]) {
       if (!data) {
-        state.promoteAddRequestObj.ProductList[ProductIndex].List.splice(ConstraintIndex, 1);
+        state.promoteAddRequestObj.ProductList[ProductIndex].ItemList.splice(ConstraintIndex, 1);
       } else {
-        state.promoteAddRequestObj.ProductList[ProductIndex].List.splice(ConstraintIndex, 1, data);
+        state.promoteAddRequestObj.ProductList[ProductIndex].ItemList.splice(ConstraintIndex, 1, data);
       }
     },
     /** 请求对象信息中添加公共属性列表 和 单产品单个项目属性列表

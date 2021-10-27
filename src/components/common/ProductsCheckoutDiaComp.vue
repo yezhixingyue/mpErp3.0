@@ -64,10 +64,6 @@ export default {
       type: String,
       default: '',
     },
-    defaultCheckedKeys: {
-      type: Array,
-      default: () => [],
-    },
     handleSaveFunc: {
       type: Function,
       default: () => {},
@@ -91,13 +87,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('common', ['allProductClassify', 'allProductClassify4Customer']),
-    watchValue4Tree() {
-      return this.watchValue;
-    },
-    defaultKeys() {
-      return this.checkedNodes.filter(it => it.ShowName);
-    },
+    ...mapGetters('common', ['allProductClassify4Customer']),
   },
   data() {
     return {
@@ -148,9 +138,10 @@ export default {
   },
   watch: {
     watchValue(newVal) {
-      if (newVal && Array.isArray(newVal) && !this.dialogVisible) {
+      if (newVal && typeof newVal === 'object' && !this.dialogVisible) {
         this.dialogVisible = true;
         this.dialogTitle = '修改活动商品';
+        this.ProductRange = JSON.parse(JSON.stringify(newVal));
       }
     },
   },

@@ -73,7 +73,7 @@ export default class PromoteAddObj {
       if (obj.AreaList.length === 0) return '请选择销售区域';
       if (obj.ProductList.length === 0) return '请添加活动商品';
       for (let i = 0; i < obj.ProductList.length; i += 1) {
-        if (obj.ProductList[i].List.length === 0) return `第[ ${i + 1} ]个价格表缺少活动价格设置`;
+        if (obj.ProductList[i].ItemList.length === 0) return `第[ ${i + 1} ]个价格表缺少活动价格设置`;
       }
       return true;
     }
@@ -82,8 +82,14 @@ export default class PromoteAddObj {
       const _obj = { ...obj };
       if (!_obj.PromoteID) delete _obj.PromoteID;
       if (!_obj.Status) delete _obj.Status;
+      if (_obj.commonPropertyList) delete _obj.commonPropertyList;
       _obj.PeriodList = obj.PeriodList.filter(it => (it.Value && obj.PeriodType === 1 && it.isChecked) || (!it.Value && obj.PeriodType === 0));
       // if (_obj.StartNow) delete _obj.ValidStartTime;
+      _obj.ProductList = obj.ProductList.map(it => {
+        const _it = { ...it };
+        delete _it.PropertyList;
+        return _it;
+      });
       return _obj;
     }
 
@@ -96,33 +102,10 @@ export default class PromoteAddObj {
       const _ProductList = [];
       obj.ProductList.forEach((level1, i1) => {
         _ProductList[i1] = {};
-        _ProductList[i1].LimitList = [...level1.LimitList];
-        _ProductList[i1].List = [...level1.List];
+        _ProductList[i1].ProductClassList = Array.isArray(level1.ProductClassList) ? [...level1.ProductClassList] : [];
+        _ProductList[i1].ItemList = Array.isArray(level1.ItemList) ? [...level1.ItemList] : [];
         _ProductList[i1].PropertyList = [];
-        // level1.List.forEach((level2, i2) => {
-        //   const { PriceUnit, Price, Constraint } = level2;
-        //   //  console.log(level2, 'level2');
-        //   _ProductList[i1].List[i2] = {};
-        //   _ProductList[i1].List[i2].Price = Price;
-        //   _ProductList[i1].List[i2].PriceUnit = PriceUnit;
-        //   _ProductList[i1].List[i2].Constraint = {};
-        //   _ProductList[i1].List[i2].Constraint.FilterType = Constraint.FilterType;
-        //   _ProductList[i1].List[i2].Constraint.ItemList = [];
-        //   Constraint.ItemList.forEach(item => {
-        //     const { Operator, Value, PropertyType, PropertyID, GroupID, PartID, CraftID, ProductID } = item;
-        //     const _obj = {
-        //       ProductID,
-        //       PartID,
-        //       CraftID,
-        //       GroupID,
-        //       PropertyID,
-        //       PropertyType,
-        //       Operator,
-        //       Value,
-        //     };
-        //     _ProductList[i1].List[i2].Constraint.ItemList.push(_obj);
-        //   });
-        // });
+        _ProductList[i1].IsIncludeIncreasedProduct = level1.IsIncludeIncreasedProduct || false;
       });
       const _PeriodList = [
         { Label: '时间段', Value: '', StartTime: '', EndTime: '' }, // 按天时间段
@@ -164,5 +147,24 @@ export default class PromoteAddObj {
         IsIncludeIncreasedArea: obj.IsIncludeIncreasedArea,
       };
       return _obj;
+    }
+
+    /**
+     * @description: 如果仅有一个产品则返回其ID，如果有多个产品或者允许有新加产品的话则返回''；可以根据返回值来判断是否为多产品
+     * @param {*} data
+     * @return {*}
+     */
+    static getUniqueProductID(data, mapObj = { IncreasedLabel: 'IsIncludeIncreasedProduct', listLabel: 'ProductClassList' }) {
+      const ProductClassList = data[mapObj.listLabel];
+      const IsIncludeIncreasedProduct = data[mapObj.IncreasedLabel];
+      if ((!ProductClassList || ProductClassList.length === 0) && !IsIncludeIncreasedProduct) return null;
+      if (!IsIncludeIncreasedProduct
+        && ProductClassList.length === 1
+        && ProductClassList[0].List.length === 1 && !ProductClassList[0].IsIncludeIncreased
+        && ProductClassList[0].List[0].List.length === 1 && !ProductClassList[0].List[0].IsIncludeIncreased) {
+        const ProductID = ProductClassList[0].List[0].List[0].ID || '';
+        return ProductID;
+      }
+      return '';
     }
 }

@@ -147,7 +147,10 @@ export default {
     },
     onRemoveClick() { // 删除产品
       this.messageBox.warnCancelBox('确定删除该产品吗', `产品名称：${this.itemData.Name}`, () => {
-        this.$store.dispatch('productManage/getProductRemove', this.itemData.ID);
+        const cb = () => {
+          this.$store.commit('common/setProductRemove', this.itemData.ID);
+        };
+        this.$store.dispatch('productManage/getProductRemove', [this.itemData.ID, cb]);
       });
     },
     setCommonPathJump(path, data) { // 产品与部件共同属性设置页面跳转方法

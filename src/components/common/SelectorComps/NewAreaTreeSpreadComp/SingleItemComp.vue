@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import ChildSingleItemComp from './ChildSingleItemComp';
+import ChildSingleItemComp from './ChildSingleItemComp.vue';
 import { getAllSubItemList, getSelectedItemsList, getCheckAllListByCurDataList, getFormalData4SubmitAfterChange } from './utils';
 
 export default {
