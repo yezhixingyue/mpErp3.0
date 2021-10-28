@@ -61,8 +61,9 @@ export default {
     onGoBackClick() {
       this.$router.replace('/CraftManageList');
     },
+    // eslint-disable-next-line no-unused-vars
     onElementSave({ isEdit, data }) {
-      this.$store.commit('basicSet/setCraftElementChange', [isEdit, data, this.PositionID]);
+      // this.$store.commit('basicSet/setCraftElementChange', [isEdit, data, this.PositionID]);
     },
     onElementRemove(id) {
       this.$store.commit('basicSet/setCraftElementRemove', [id, this.PositionID]);

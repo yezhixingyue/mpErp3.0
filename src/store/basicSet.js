@@ -232,10 +232,11 @@ export default {
       state.MaterialTypeList = state.MaterialTypeList.filter(it => it.ID !== id);
     },
     setMaterialTypeElementChange(state, [isEdit, data, ID]) {
+      // console.log(data);
       const targetMaterialType = state.MaterialTypeList.find(it => it.ID === ID);
       if (targetMaterialType) {
         if (!isEdit) {
-          targetMaterialType.ElementList.unshift(data);
+          targetMaterialType.ElementList.push(data);
         } else {
           const i = targetMaterialType.ElementList.findIndex(it => it.ID === data.ID);
           if (i > -1) targetMaterialType.ElementList.splice(i, 1, data);
