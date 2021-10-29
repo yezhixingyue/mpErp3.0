@@ -46,13 +46,13 @@
                 :watchValue='isShowServiceDia' :list='selectList'  :defaultRadio=0 />
             </li>
             <li v-if="radioState === 1" class="mp-service-count-wrap">
-              <div>
+              <div v-if="showKindCount">
                 <span>款数：</span>
                 <input :class="replenish.KindCountErr ? 'is-warn' : ''"
                   v-model="kingNum" @input="onKingCountInput" type="text">
                 <span>款</span>
               </div>
-              <div>
+              <div v-if="showNumber">
                 <span>补印数量：</span>
                 <input :class="replenish.AmountErr ? 'is-warn' : ''"
                   v-model="amountNum" @input="onAmountInput" type="text">
@@ -223,6 +223,14 @@ export default {
         name: it.Title,
       }));
       return list;
+    },
+    showNumber() {
+      if (this.orderDetailData?.ProductParams?.Attributes?.HaveNumber) return true;
+      return false;
+    },
+    showKindCount() {
+      if (this.orderDetailData?.ProductParams?.Attributes?.HaveKind) return true;
+      return false;
     },
   },
   watch: {
@@ -412,6 +420,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('common/getAfterSalesDepartmentList');
+    this.setReplenishFileUniqueName('');
   },
 };
 </script>

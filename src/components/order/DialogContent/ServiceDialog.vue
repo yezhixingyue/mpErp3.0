@@ -127,6 +127,14 @@ export default {
     ...mapState('service', ['serviceImgList', 'serviceImgList2Upload', 'serviceErrInfo', 'SolutionType', 'replenish', 'refund', 'refundFreight', 'PayPackageData',
       'replenishFile', 'percentage', 'OrderPackageListTableData', 'submitQuestionList', 'lossesFund', 'CouponList']),
     ...mapState('common', ['isLoading']),
+    showNumber() {
+      if (this.orderDetailData?.ProductParams?.Attributes?.HaveNumber) return true;
+      return false;
+    },
+    showKindCount() {
+      if (this.orderDetailData?.ProductParams?.Attributes?.HaveKind) return true;
+      return false;
+    },
   },
   methods: {
     ...mapMutations('orderModule', ['setIsShowServiceDiaFail']),
@@ -193,12 +201,12 @@ export default {
       if (this.SolutionType === 'replenish') { // 补印
         const { KindCount, Amount } = this.replenish;
         const data = this.replenishFile;
-        if (!KindCount) {
+        if (!KindCount && this.showKindCount) {
           this.writeErrInfo(['KindCountErr'], '请输入补印款数!');
           this.handleSubmitError();
           return false;
         }
-        if (!Amount) {
+        if (!Amount && this.showNumber) {
           this.writeErrInfo(['AmountErr'], '请输入补印数量!');
           this.handleSubmitError();
           return false;
