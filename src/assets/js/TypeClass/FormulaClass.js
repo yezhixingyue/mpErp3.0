@@ -150,7 +150,7 @@ export default class FormulaClass {
       }
       t = PropertyList.find(it => Content.includes(it.DisplayContent) && !getValueIsOrNotNumber(it.CalculateValue));
       if (t) {
-        messageBox.failSingleError('计算失败', `${t.Element ? t.Element.Name : t.DisplayContent}计算值不合法(检查是否为数字或是否允许小数)`);
+        messageBox.failSingleError('计算失败', `${t.Element ? t.Element.Name : t.DisplayContent}计算值不正确(检查是否为数字或是否允许小数)`);
         return false;
       }
     }

@@ -287,7 +287,14 @@ export default class PropertyClass {
           const valueList = getNumberValueList(InputContent);
           if (valueList.includes(`${val}`)) return true;
           if (val > MinValue && (val <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
-            if (!IsGeneralValue && (val - MinValue) % Increment === 0) return true;
+            let T = Increment.toString().indexOf('.');
+            T = T === -1 ? 0 : Increment.toString().length - T - 1;
+            const arr = new Array(T);
+            arr.fill('0');
+            T = `1${arr.join('')}`;
+            if ((+val * T - MinValue * T) % (Increment * T) === 0) {
+              return true;
+            }
           }
         }
       }

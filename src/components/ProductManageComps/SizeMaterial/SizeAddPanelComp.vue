@@ -109,7 +109,7 @@ export default {
         if (i > -1) return this.setErrorAndReturn(`第${i + 1}行未设置名称`);
 
         i = this.SizeList.findIndex(it => !normalNameReg.test(it.Name));
-        if (i > -1) return this.setErrorAndReturn(`第${i + 1}行名称不合法，名称仅支持中文、英文(全角/半角)、+-_(全角/半角)、数字(全角/半角)`);
+        if (i > -1) return this.setErrorAndReturn(`第${i + 1}行名称不正确，名称仅支持中文、英文(全角/半角)、+-_(全角/半角)、数字(全角/半角)`);
 
         const names = this.SizeList.map(it => it.Name);
         if (names.length > [...new Set(names)].length) return this.setErrorAndReturn('存在重复名称，请检查');

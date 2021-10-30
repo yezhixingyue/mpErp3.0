@@ -512,3 +512,10 @@ button.border-blue-btn {
     }
   }
 }
+
+.el-form-item__error {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}

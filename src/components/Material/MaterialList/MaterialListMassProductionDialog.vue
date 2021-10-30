@@ -21,6 +21,7 @@
 
 <script>
 import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import { checkNumberSectionList } from '@/assets/js/checker/index';
 import SingleElementComp from './SingleElementComp.vue';
 // import MaterialSizeClass from '@/assets/js/TypeClass/MaterialSizeClass';
 
@@ -94,34 +95,14 @@ export default {
             if (valueList.includes(`${it.customValue}`)) {
               return false;
             }
-            let isInSection = false;
-            for (let i = 0; i < SectionList.length; i += 1) {
-              const section = SectionList[i];
-              const { MinValue, MaxValue, IsGeneralValue, Increment } = section;
-              if (+it.customValue > MinValue && (+it.customValue <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
-                isInSection = true;
-                if (!IsGeneralValue) {
-                  let T = Increment.toString().indexOf('.');
-                  T = T === -1 ? 0 : Increment.toString().length - T - 1;
-                  const arr = new Array(T);
-                  arr.fill('0');
-                  T = `1${arr.join('')}`;
-                  if ((+it.customValue * T - MinValue * T) % (Increment * T) !== 0) {
-                    return true;
-                  }
-                }
-                if (IsGeneralValue) {
-                  return true;
-                }
-              }
-            }
-            if (!isInSection) return true;
+            const msg = checkNumberSectionList(it.customValue, SectionList, valueList);
+            return !!msg;
           }
         }
         return false;
       });
       if (t) {
-        this.messageBox.failSingleError('保存失败！', `${t.Element.Name}自定义值不合法，请检查其分段控制`);
+        this.messageBox.failSingleError('保存失败！', `${t.Element.Name}自定义值不正确，请检查其分段控制`);
         return false;
       }
       return true;

@@ -224,6 +224,7 @@
 <script>
 import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
 import ElementClassType, { SelectModeEnum, TypeEnum } from '@/assets/js/TypeClass/ElementClass';
+import { checkNumberSectionList } from '@/assets/js/checker/index';
 import ElementTempSelector from './ElementTempSelector.vue';
 
 export default {
@@ -416,7 +417,7 @@ export default {
         const _list = this.formatNumberValueList;
         const t = _list.find((val) => !this.$utils.getValueIsOrNotNumber(val, !this.ruleForm.NumbericAttribute.AllowDecimal)); // 获取到结果中不合法的子项目存在
         if (t) {
-          callback(new Error('常规数值中存在不合法的项目，请检查（应为数字类型，不允许小数时必须为整数类型）'));
+          callback(new Error('常规数值中存在不正确的项目，请检查（应为数字类型，不允许小数时必须为整数类型）'));
           return;
         }
         const len1 = _list.length;
@@ -424,6 +425,18 @@ export default {
         if (len1 > len2) {
           callback(new Error('存在重复项，请检查'));
           return;
+        }
+        const { SectionList, DefineList } = this.ruleForm.NumbericAttribute;
+        if (DefineList.length > 0) {
+          if (SectionList && Array.isArray(SectionList) && SectionList.length > 0) {
+            for (let i = 0; i < _list.length; i += 1) {
+              const msg = checkNumberSectionList(_list[i], SectionList);
+              if (msg) {
+                callback(new Error(msg));
+                return;
+              }
+            }
+          }
         }
       }
       this.$refs.ruleForm.validateField('NumbericAttribute.NumberValueLimit');

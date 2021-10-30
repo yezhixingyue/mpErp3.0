@@ -34,6 +34,7 @@
 import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
 import NumberTypeItemComp from '@/components/common/ElementDisplayTypeComps/NumberTypeItemComp.vue';
 import OptionTypeItemComp from '@/components/common/ElementDisplayTypeComps/OptionTypeItemComp.vue';
+import { checkNumberSectionList } from '@/assets/js/checker/index';
 // import MaterialSizeClass from '@/assets/js/TypeClass/MaterialSizeClass';
 
 export default {
@@ -207,26 +208,10 @@ export default {
             callback();
             return;
           }
-          for (let i = 0; i < SectionList.length; i += 1) {
-            const section = SectionList[i];
-            const { MinValue, MaxValue, IsGeneralValue, Increment } = section;
-            if (+value > MinValue && (+value <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
-              if (!IsGeneralValue) {
-                let T = Increment.toString().indexOf('.');
-                T = T === -1 ? 0 : Increment.toString().length - T - 1;
-                const arr = new Array(T);
-                arr.fill('0');
-                T = `1${arr.join('')}`;
-                if ((+value * T - MinValue * T) % (Increment * T) !== 0) {
-                  callback(new Error(`输入值不合法，（${MinValue}, ${MaxValue}]区间内应符合增量为${Increment}`));
-                  return;
-                }
-              }
-              if (IsGeneralValue) {
-                callback(new Error(`输入值不合法，（${MinValue}, ${MaxValue}]区间内应从${InputContent}对应区间中取值`));
-                return;
-              }
-            }
+          const msg = checkNumberSectionList(value, SectionList, valueList);
+          if (msg) {
+            callback(new Error(msg));
+            return;
           }
         }
         callback();

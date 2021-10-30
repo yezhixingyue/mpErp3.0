@@ -1,5 +1,41 @@
 import { getValueIsOrNotNumber, getNumberValueList } from '../utils/util';
 
+export const checkNumberSectionList = (value, SectionList, valueList) => {
+  let isInSection = false;
+  const msgArr = [];
+  for (let i = 0; i < SectionList.length; i += 1) {
+    const section = SectionList[i];
+    const { MinValue, MaxValue, IsGeneralValue, Increment } = section;
+    if (+value > MinValue && (+value <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
+      isInSection = true;
+      let msg = '';
+      if (!IsGeneralValue) {
+        let T = Increment.toString().indexOf('.');
+        T = T === -1 ? 0 : Increment.toString().length - T - 1;
+        const arr = new Array(T);
+        arr.fill('0');
+        T = `1${arr.join('')}`;
+        if ((+value * T - MinValue * T) % (Increment * T) !== 0) {
+          msg = `（${MinValue}, ${MaxValue}]区间内应符合增量为${Increment}`;
+        }
+      }
+      if (IsGeneralValue && valueList) {
+        msg = `（${MinValue}, ${MaxValue}]区间内应从${valueList}对应区间中取值`;
+      }
+      msgArr.push(msg);
+    }
+  }
+  if (!isInSection) {
+    const msg = '输入值不正确，不在分段控制范围内';
+    return msg;
+  }
+  const t = msgArr.find(it => it === '');
+  if (t === undefined) {
+    return `输入值不正确，${msgArr.join(' 或')}`;
+  }
+  return '';
+};
+
 /**
  * @description: 检查元素值是否符合规范
  * @param {*} value 值
@@ -25,39 +61,10 @@ export const elementValChecker = (value, element) => {
         return { msg: `值不正确，不允许自定义，请从${valueList}中取值`, result: false };
       }
       if (!AllowCustomer && !HiddenToCustomer && !valueList.includes(`${value}`)) {
-        return { msg: `值不正确，不允许客户自定义，请从${valueList}中取值`, result: false };
+        return { msg: `值不正确，不允许自定义，请从${valueList}中取值`, result: false };
       }
-      let isInSection = false;
-      for (let i = 0; i < SectionList.length; i += 1) {
-        const section = SectionList[i];
-        const { MinValue, MaxValue, IsGeneralValue, Increment } = section;
-        if (+value > MinValue && (+value <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
-          isInSection = true;
-          // if (!IsGeneralValue && (+value - MinValue) % Increment !== 0) {
-          //   const msg = `输入值不合法，（${MinValue}, ${MaxValue}]区间内应符合增量为${Increment}`;
-          //   return { msg, result: false };
-          // }
-          if (!IsGeneralValue) {
-            let T = Increment.toString().indexOf('.');
-            T = T === -1 ? 0 : Increment.toString().length - T - 1;
-            const arr = new Array(T);
-            arr.fill('0');
-            T = `1${arr.join('')}`;
-            if ((+value * T - MinValue * T) % (Increment * T) !== 0) {
-              const msg = `输入值不合法，（${MinValue}, ${MaxValue}]区间内应符合增量为${Increment}`;
-              return { msg, result: false };
-            }
-          }
-          if (IsGeneralValue) {
-            const msg = `输入值不合法，（${MinValue}, ${MaxValue}]区间内应从${valueList}对应区间中取值`;
-            return { msg, result: false };
-          }
-        }
-      }
-      if (!isInSection) {
-        const msg = '输入值不合法，不在分段控制范围内';
-        return { msg, result: false };
-      }
+      const msg = checkNumberSectionList(value, SectionList, valueList);
+      if (msg) return { msg, result: false };
     }
     return { msg: '', result: true };
   }

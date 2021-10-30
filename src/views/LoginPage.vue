@@ -28,7 +28,7 @@ export default {
       ruleForm: {
         Password: '',
         Mobile: '',
-        Terminal: 0,
+        Terminal: 1,
       },
     };
   },
