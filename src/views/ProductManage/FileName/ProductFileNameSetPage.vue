@@ -16,7 +16,7 @@
           <li>
             <span>分隔符：</span>
             <el-input size="small" @focus="onInpFocus('SplitChars')" @blur="onInpBlur" v-model="SplitChars"></el-input>
-            <div :class="showTipType === 'SplitChars' ? 'active':''" class="tip">只可输入 , ' | / 和空格等5种符号</div>
+            <div :class="showTipType === 'SplitChars' ? 'active':''" class="tip">只可输入 , ' | 和空格等符号</div>
           </li>
           <li>
             <span>部件开始结束符号：</span>

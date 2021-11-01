@@ -7,7 +7,7 @@ export const normalNameReg = /^[\u0030-\u0039\uFF41-\uFF5A\uFF21-\uFF3A\u4e00-\u
 
 export const FileNameReg = /^[\u0030-\u0039\uFF41-\uFF5A\uFF21-\uFF3A\u4e00-\u9fa5\uff0b\uff0d\uff3f\da-zA-Z.+-_\s]*$/;
 
-export const SplitCharsReg = /[^,'|/\s]/g; // 分隔符不可选内容 使用replace替换为''
+export const SplitCharsReg = /[^,'|\s]/g; // 分隔符不可选内容 使用replace替换为''
 
 export const GroupAndPartSplitCharsReg = /[^【】{}[\]《》<>()（）]/g; // 部件 或 元素组分隔符不可选内容 使用replace替换为''
 
