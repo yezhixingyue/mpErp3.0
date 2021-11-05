@@ -62,7 +62,7 @@
         <div class="date">
           <span>
             <template v-if="it.CreateTime">{{ it.CreateTime | format2LangTypeDate }}</template>
-            <template v-else>刚刚添加</template>
+            <template v-else>新加</template>
           </span>
         </div>
         <div class="ctrl">

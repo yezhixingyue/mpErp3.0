@@ -17,7 +17,7 @@
       </p>
       <div class="unit">
         <span class="label">数据单位：</span>
-        <el-input v-model.trim="Unit" size="small" maxlength="6" show-word-limit></el-input>
+        <el-input v-model.trim="Unit" size="small" maxlength="12" show-word-limit></el-input>
         <span class="tips-box"> <i class="el-icon-warning"></i> 注：可为空，仅作备注使用，无实际效用！</span>
       </div>
     </div>
@@ -198,6 +198,11 @@ export default {
             .ctrl {
               margin-left: 85px;
             }
+          }
+        }
+        .unit {
+          .el-input {
+            width: 220px;
           }
         }
       }
