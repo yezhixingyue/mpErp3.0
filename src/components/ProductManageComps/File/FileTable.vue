@@ -97,8 +97,8 @@ export default {
     getFileInfoText(list) {
       if (!Array.isArray(list) || list.length === 0) return '';
       return list.map(it => {
-        const { File, IsRequired } = it;
-        return `${File.Name}${IsRequired ? '（必须上传）' : ''}`;
+        const { Name, IsRequired } = it;
+        return `${Name}${IsRequired ? '（必须上传）' : ''}`;
       }).join('、');
     },
     getConditionText(list) {

@@ -63,7 +63,7 @@ export default {
     },
     checkedFileIDs() {
       if (!Array.isArray(this.checkedFileList) || this.checkedFileList.length === 0) return [];
-      return this.checkedFileList.map(it => it.File.ID);
+      return this.checkedFileList.map(it => it.ID);
     },
   },
   methods: {
@@ -83,29 +83,29 @@ export default {
       this.titleType = type;
     },
     selectChange(it) { // 文件勾选或取消勾选
-      const i = this.checkedFileList.findIndex(_it => _it.File.ID === it.ID);
+      const i = this.checkedFileList.findIndex(_it => _it.ID === it.ID);
       if (i > -1) this.checkedFileList.splice(i, 1);
       else if (it.IsPrintFile) {
-        this.checkedFileList = this.checkedFileList.filter(_it => !_it.File.IsPrintFile);
-        this.checkedFileList.push({ File: it, IsRequired: false, MaxSize: '' });
+        this.checkedFileList = this.checkedFileList.filter(_it => !_it.IsPrintFile);
+        this.checkedFileList.push({ ...it, IsRequired: false, MaxSize: '' });
       } else {
-        this.checkedFileList.push({ File: it, IsRequired: false, MaxSize: '' });
+        this.checkedFileList.push({ ...it, IsRequired: false, MaxSize: '' });
       }
     },
     getIsRequiredByID(id) {
-      const t = this.checkedFileList.find(_it => _it.File.ID === id);
+      const t = this.checkedFileList.find(_it => _it.ID === id);
       return t ? t.IsRequired : false;
     },
     requiredChange(id) {
-      const t = this.checkedFileList.find(_it => _it.File.ID === id);
+      const t = this.checkedFileList.find(_it => _it.ID === id);
       if (t) t.IsRequired = !t.IsRequired;
     },
     getMaxSizeValByID(id) {
-      const t = this.checkedFileList.find(_it => _it.File.ID === id);
+      const t = this.checkedFileList.find(_it => _it.ID === id);
       return t ? t.MaxSize : '';
     },
     onMaxSizeChange(e, id) {
-      const t = this.checkedFileList.find(_it => _it.File.ID === id);
+      const t = this.checkedFileList.find(_it => _it.ID === id);
       if (t) t.MaxSize = e;
     },
     onGoBackClick() {

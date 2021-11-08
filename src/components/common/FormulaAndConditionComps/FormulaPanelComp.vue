@@ -68,7 +68,7 @@
                   </div>
                   <p class="intro">
                     <span>公式说明：</span>
-                    <el-input size="small" v-model.trim="FormulaData.Remark" maxlength="50" show-word-limit></el-input>
+                    <el-input size="small" v-model.trim="FormulaData.Remark" maxlength="150" show-word-limit></el-input>
                   </p>
                   <p class="module-title">试算</p>
                   <div class="test-box">
@@ -104,7 +104,7 @@
               </div>
               <p class="intro">
                 <span>公式说明：</span>
-                <el-input size="small" v-model.trim="FormulaData.Remark" maxlength="50" show-word-limit></el-input>
+                <el-input size="small" v-model.trim="FormulaData.Remark" maxlength="150" show-word-limit></el-input>
               </p>
               <p class="module-title">试算</p>
               <div class="test-box">

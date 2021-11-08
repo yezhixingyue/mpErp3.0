@@ -565,10 +565,17 @@ export default {
       callback();
     },
     checkOptionIsRequired(rule, value, callback) {
-      if (!this.ruleForm.OptionAttribute.IsRequired && this.ruleForm.OptionAttribute.defaultSingleOption
-       && this.ruleForm.OptionAttribute.DefineList.length === 0 && this.ruleForm.OptionAttribute.ChooseType === 'single') {
-        callback(new Error('单选不允许自定义的选择项在有默认选项时，无法选择空值，请去掉默认选项，或者选中必填项，或者允许自定义'));
-        return;
+      // if (!this.ruleForm.OptionAttribute.IsRequired && this.ruleForm.OptionAttribute.defaultSingleOption
+      //  && this.ruleForm.OptionAttribute.DefineList.length === 0 && this.ruleForm.OptionAttribute.ChooseType === 'single') {
+      //   callback(new Error('单选不允许自定义的选择项在有默认选项时，无法选择空值，请去掉默认选项，或者选中必填项，或者允许自定义'));
+      //   return;
+      // }
+      if (!this.ruleForm.OptionAttribute.IsRequired && this.ruleForm.OptionAttribute.ChooseType === 'single') {
+        const t = SelectModeEnum.find(it => it.ID === this.ruleForm.OptionAttribute.SelectMode);
+        if (t && t.Name === '单选按钮') {
+          callback(new Error('表现形式为单选按钮时，必须设置为必填'));
+          return;
+        }
       }
       callback();
     },
