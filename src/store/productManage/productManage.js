@@ -101,8 +101,9 @@ export default {
     /**
      * 库存
      */
-    StockLeftPropertyList: [], // 条件弹窗属性列表数据
-    StockRightPropertyList: [], // 条件弹窗属性列表数据
+    // StockLeftPropertyList: [], // 条件弹窗属性列表数据
+    // StockRightPropertyList: [], // 条件弹窗属性列表数据
+    StockPropertyLists: [], // 条件弹窗属性列表数据合集
     ProductStockDataList: null, // 库存列表数据
     /**
      * 产品元素映射
@@ -299,9 +300,10 @@ export default {
     /**
      * 库存
      */
-    setProductStockPropertyList(state, [leftList, rightList]) {
-      state.StockLeftPropertyList = Array.isArray(leftList) ? leftList : [];
-      state.StockRightPropertyList = Array.isArray(rightList) ? rightList : [];
+    setProductStockPropertyList(state, list) {
+      // state.StockLeftPropertyList = Array.isArray(leftList) ? leftList : [];
+      // state.StockRightPropertyList = Array.isArray(rightList) ? rightList : [];
+      state.StockPropertyLists = list;
     },
     setProductStockDataList(state, list) {
       state.ProductStockDataList = list;
@@ -524,17 +526,23 @@ export default {
       }
       return false;
     },
-    async getProductStockPropertyList({ commit }, ProductID) { // 获取产品库存规则添加属性列表数据
+    // eslint-disable-next-line no-unused-vars
+    async getProductStockPropertyList({ commit }, curProduct) { // 获取产品库存规则添加属性列表数据
+      if (!curProduct) return;
       commit('setProductStockPropertyList', []);
-      const list = await Promise.all([
-        PropertyClass.getPropertyList({ UseModule: 11, ProductID }),
-        PropertyClass.getPropertyList({ UseModule: 21, ProductID }),
-      ]);
-      if (list) {
-        commit('setProductStockPropertyList', list);
-        return true;
+      const ProductID = curProduct.ID;
+      const _list = [{ ProductID, PartID: '' }];
+      if (Array.isArray(curProduct.PartList) && curProduct.PartList.length > 0) {
+        curProduct.PartList.forEach(({ ID }) => {
+          _list.push({ ProductID, PartID: ID });
+        });
       }
-      return false;
+      const list = await Promise.all(_list.map(async it => ({
+        ...it,
+        leftPropertyList: await PropertyClass.getPropertyList({ UseModule: 11, ...it }) || [],
+        rightPropertyList: await PropertyClass.getPropertyList({ UseModule: 21, ...it }) || [],
+      })));
+      commit('setProductStockPropertyList', list);
     },
     async getProductStockSave({ commit }, [data, callback]) { // 保存库存规格
       const resp = await api.getProductStockSave(data).catch(() => {});

@@ -21,7 +21,7 @@
            class="selected-input"
            v-if="!it.CompareProperty || !it.CompareProperty.DisplayContent"
            maxlength="9"
-           v-model.trim.number="it.DefaultValue">
+           v-model.trim="it.DefaultValue">
            </el-input>
           <span v-else class="selected-title" :title="it.CompareProperty ? it.CompareProperty.DisplayContent.replace(/\[|\]/g, '') : ''">
             {{ it.CompareProperty ? it.CompareProperty.DisplayContent.replace(/\[|\]/g, '') : '' }}
@@ -165,7 +165,7 @@ export default {
     },
     getSubmitInfo() {
       const bool = this.getCheckResult();
-      if (bool) return { List: this.localList.map(it => ({ ...it, DefaultValue: it.CompareProperty ? null : it.DefaultValue })) };
+      if (bool) return { List: this.localList.map(it => ({ ...it, DefaultValue: it.CompareProperty ? null : +it.DefaultValue })) };
       return null;
     },
     getCheckResult() {

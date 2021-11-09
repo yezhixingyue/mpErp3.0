@@ -6,6 +6,8 @@
 
 import api from '@/api/index';
 
+import config from '@/assets/js/setup';
+
 const chunkSize = 1024 * 1024 * 10;
 
 /**
@@ -40,7 +42,7 @@ function _onUploadProgressFunc(e, { initPercentage, lastedPercentage, onUploadPr
  * @param {*} { data, uniqueName, onUploadProgressFunc }  主函数参数
  * @returns
  */
-async function uploadFile(chunkCount, curChunkNum, { data, uniqueName, onUploadProgressFunc, finalPercentage }) {
+async function uploadFile(chunkCount, curChunkNum, { data, uniqueName, onUploadProgressFunc, finalPercentage, baseURL }) {
   if (chunkCount <= 0) return;
   const beginNode = curChunkNum;
   const initPercentage = _getPercentage(beginNode, data.size); // 当次初始百分比
@@ -48,14 +50,14 @@ async function uploadFile(chunkCount, curChunkNum, { data, uniqueName, onUploadP
   if (chunkCount === 1) {
     const file = data.slice(beginNode, data.size);
     const lastedPercentage = finalPercentage; // 当次最终百分比
-    await api.UploadFileBreakpointResume(file, uniqueName, beginNode, data.size, data.size, (e) => _onUploadProgressFunc(e, { initPercentage, lastedPercentage, onUploadProgressFunc }));
+    await api.UploadFileBreakpointResume(file, uniqueName, beginNode, data.size, data.size, (e) => _onUploadProgressFunc(e, { initPercentage, lastedPercentage, onUploadProgressFunc }), baseURL);
     return;
   }
   const file = data.slice(beginNode, beginNode + chunkSize); // 切片
   let lastedPercentage = _getPercentage(beginNode + chunkSize, data.size); // 当次最终百分比
   lastedPercentage = lastedPercentage > finalPercentage ? +finalPercentage : lastedPercentage;
-  const res = await api.UploadFileBreakpointResume(file, uniqueName, beginNode, beginNode + chunkSize, data.size, (e) => _onUploadProgressFunc(e, { initPercentage, lastedPercentage, onUploadProgressFunc })); // 上传(传入header Content-Range中所需要的信息)
-  if (res.data.Status === 1000) await uploadFile(chunkCount - 1, beginNode + chunkSize, { data, uniqueName, onUploadProgressFunc }); // 递归调用
+  const res = await api.UploadFileBreakpointResume(file, uniqueName, beginNode, beginNode + chunkSize, data.size, (e) => _onUploadProgressFunc(e, { initPercentage, lastedPercentage, onUploadProgressFunc }), baseURL); // 上传(传入header Content-Range中所需要的信息)
+  if (res.data.Status === 1000) await uploadFile(chunkCount - 1, beginNode + chunkSize, { data, uniqueName, onUploadProgressFunc, baseURL }); // 递归调用
   else throw new Error(res.data.Message);
 }
 
@@ -66,9 +68,9 @@ async function uploadFile(chunkCount, curChunkNum, { data, uniqueName, onUploadP
  * @param {*} uniqueName 文件唯一标识
  * @returns 返回布尔值
  */
-async function checkIsTrue(data, uniqueName) {
+async function checkIsTrue(data, uniqueName, baseURL) {
   let key = true;
-  const hasUploadedInfo = await api.getUploadedProgress(uniqueName).catch(() => {
+  const hasUploadedInfo = await api.getUploadedProgress(uniqueName, baseURL).catch(() => {
     key = false;
   });
   if (hasUploadedInfo.data.Status !== 1000) return false;
@@ -76,6 +78,7 @@ async function checkIsTrue(data, uniqueName) {
   if (!key) return false;
   return true;
 }
+
 /**
  * 断点续传主函数，接收三个参数
  *
@@ -86,7 +89,15 @@ async function checkIsTrue(data, uniqueName) {
  */
 async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPercentage = 98) {
   let key = true;
-  const hasUploadedInfo = await api.getUploadedProgress(uniqueName).catch(() => {
+  const domainResp = await api.getFileServer(config.IsFileInLan).catch(() => {
+    key = false;
+  });
+  if (!key) return false;
+  if (!domainResp || domainResp.data.Status !== 1000) return false;
+  const baseURL = domainResp.data.Data;
+  console.log(domainResp, baseURL);
+  if (!baseURL) return false;
+  const hasUploadedInfo = await api.getUploadedProgress(uniqueName, baseURL).catch(() => {
     key = false;
   });
   if (!key) return false;
@@ -99,12 +110,12 @@ async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPer
     const curChunkNum = +hasUploadedInfo.data.Data; // 获取到当前已上传的节点位置
     let key2 = true;
     await uploadFile(chunkCount, curChunkNum, {
-      data, uniqueName, onUploadProgressFunc, finalPercentage,
+      data, uniqueName, onUploadProgressFunc, finalPercentage, baseURL,
     }).catch(() => {
       key2 = false;
     }); // 上传
     if (!key2) return false;
-    if (checkIsTrue(data, uniqueName)) return true;
+    if (checkIsTrue(data, uniqueName, baseURL)) return true;
     return false;
   }
   onUploadProgressFunc(+finalPercentage);

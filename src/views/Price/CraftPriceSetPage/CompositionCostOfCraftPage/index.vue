@@ -86,7 +86,7 @@ export default {
           const _temp = {
             PartID: ID,
             Name,
-            CraftGroupList: this.getCraftGroupList(CraftList),
+            CraftGroupList: this.getCraftGroupList(CraftList, Name),
           };
           list.push(_temp);
         });
@@ -95,10 +95,10 @@ export default {
     },
     SolutionList() { // 费用条目列表
       if (!this.curPriceItem) return [];
-      if (this.isQuotationPage) return insertShowName4SolutionList(this.curPriceItem.PriceTableList, this.ProductData) || [];
+      if (this.isQuotationPage) return insertShowName4SolutionList(this.curPriceItem.PriceTableList, this.ProductData, this.rangeList) || [];
       if (!this.CraftPriceID || !Array.isArray(this.curPriceItem.CraftPriceList)) return [];
       const t = this.curPriceItem.CraftPriceList.find(it => it.ID === this.CraftPriceID);
-      return t ? insertShowName4SolutionList(t.PriceTableList, this.ProductData) : [];
+      return t ? insertShowName4SolutionList(t.PriceTableList, this.ProductData, this.rangeList) : [];
     },
     curSolutionItem() {
       if (!this.SolutionID) return null;
@@ -217,14 +217,18 @@ export default {
       const data = await this.$store.dispatch('priceManage/getProductCraftData', this.ProductID);
       this.ProductData = data;
     },
-    getCraftGroupList(CraftList) { // 获取一个工艺列表中全部工艺中的可多次使用的元素组的数组列表  -- 用于rangeList提取
+    getCraftGroupList(CraftList, PartName) { // 获取一个工艺列表中全部工艺中的可多次使用的元素组的数组列表  -- 用于rangeList提取
       if (!Array.isArray(CraftList)) return [];
       const list = [];
       CraftList.forEach(Craft => {
         if (Array.isArray(Craft.GroupList)) {
           Craft.GroupList.forEach(Group => {
             const { UseTimes } = Group;
-            if (UseTimes && UseTimes.MaxValue > 1) list.push({ ...Group, CraftID: Craft.ID });
+            if (UseTimes && UseTimes.MaxValue > 1) {
+              let Name = `${Craft.Name}-${Group.Name}`;
+              if (PartName) Name = `${PartName}-${Name}`;
+              list.push({ ...Group, CraftID: Craft.ID, Name });
+            }
           });
         }
       });
@@ -253,7 +257,7 @@ export default {
       if (!this.SolutionID || !this.curSolutionItem) return;
       const { PriceID, ApplyRange } = this.curSolutionItem;
       if (!ApplyRange) return;
-      const { PartID, GroupID } = ApplyRange;
+      const { PartID, GroupID, CraftID } = ApplyRange;
       this.isTableLoading = true;
       const getListData = () => {
         if (!this.canLoadContentTableData) {
@@ -265,15 +269,15 @@ export default {
       };
       await Promise.all([
         getListData(),
-        this.getConditionPropertyList(PriceID, PartID, GroupID),
-        this.$store.dispatch('priceManage/getPriceTablePropertyLists', [this.ProductID, PartID, GroupID, PriceID]),
+        this.getConditionPropertyList(PriceID, PartID, GroupID, CraftID),
+        this.$store.dispatch('priceManage/getPriceTablePropertyLists', [this.ProductID, PartID, GroupID, PriceID, CraftID]),
       ]);
       this.isTableLoading = false;
     },
-    async getConditionPropertyList(PriceID, PartID, GroupID) {
+    async getConditionPropertyList(PriceID, PartID, GroupID, CraftID) {
       const t = this.ConditionPropertyObjList.find(it => it.PartID === PartID);
       if (t) return;
-      const resp = await PropertyClass.getPropertyList({ UseModule: 32, ProductID: this.ProductID, PriceID, PartID, GroupID });
+      const resp = await PropertyClass.getPropertyList({ UseModule: 32, ProductID: this.ProductID, PriceID, PartID, GroupID, CraftID });
       const PropertyList = resp || [];
       const obj = {
         PartID,

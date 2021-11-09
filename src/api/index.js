@@ -104,6 +104,9 @@ const api = {
 
   /* 图片与文件上传api
    ----------------------------------------------------------------------------------- */
+  getFileServer(isLan) {
+    return instance.get(`/Api/FileServer?isLan=${isLan}`);
+  },
   uploadImage(data, type = 1) { // 图片上传  POST /Api/Upload/Image
     const formData = new FormData();
     formData.append('file', data);
@@ -125,10 +128,10 @@ const api = {
     };
     return instance.post(`/Api/Upload/WholeFile?uniqueName=${uniqueName}`, formData, config);
   },
-  getUploadedProgress(uniqueName) { // 获取断点续传文件已上传的位置  GET /Api/FileNode
-    return instance.get(`/Api/FileNode?uniqueName=${uniqueName}`);
+  getUploadedProgress(uniqueName, baseURL) { // 获取断点续传文件已上传的位置  GET /Api/FileNode
+    return instance.get(`/Api/FileNode?uniqueName=${uniqueName}`, { baseURL });
   },
-  UploadFileBreakpointResume(data, uniqueName, first, last, length, onUploadProgressFunc) { // 断点续传上传文件 /Api/Upload/File
+  UploadFileBreakpointResume(data, uniqueName, first, last, length, onUploadProgressFunc, baseURL) { // 断点续传上传文件 /Api/Upload/File
     const formData = new FormData();
     formData.append('file', data);
     const config = {
@@ -136,6 +139,7 @@ const api = {
         'Content-Range': `bytes ${first}-${last}/${length}`,
       },
       onUploadProgress: onUploadProgressFunc && onUploadProgressFunc,
+      baseURL,
     };
     return instance.post(`/Api/Upload/File?uniqueName=${uniqueName}`, formData, config);
   },

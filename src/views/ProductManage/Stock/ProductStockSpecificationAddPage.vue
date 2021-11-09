@@ -26,7 +26,8 @@
           </li>
         </ul>
       </ContionCommonComp>
-      <FormulaPanelElementSelectDialog :DialogTitle="fixedPartName" :fixedPartName='fixedPartName'
+      <!--  :fixedPartName='fixedPartName' -->
+      <FormulaPanelElementSelectDialog :DialogTitle="fixedPartName"
        :visible.sync='selectVisible' :list='StockRightPropertyList' @submit='onElementSelect' :selectedElementIDs='[]' />
     </main>
     <footer>
@@ -66,7 +67,13 @@ export default {
     FormulaPanelElementSelectDialog,
   },
   computed: {
-    ...mapState('productManage', ['StockLeftPropertyList', 'StockRightPropertyList']),
+    ...mapState('productManage', ['StockPropertyLists']),
+    StockLeftPropertyList() {
+      return this.getPropertyList('left', this.PartID);
+    },
+    StockRightPropertyList() {
+      return this.getPropertyList('right', this.PartID);
+    },
   },
   methods: {
     getPositionID() {
@@ -110,6 +117,15 @@ export default {
     },
     onElementSelect(e) {
       this.rightData.Property = e;
+    },
+    getPropertyList(type, PartID) {
+      if (!Array.isArray(this.StockPropertyLists) || this.StockPropertyLists.length === 0) return [];
+      const t = this.StockPropertyLists.find(it => it.PartID === PartID);
+      if (t) {
+        if (type === 'left') return t.leftPropertyList;
+        if (type === 'right') return t.rightPropertyList;
+      }
+      return [];
     },
   },
   mounted() {

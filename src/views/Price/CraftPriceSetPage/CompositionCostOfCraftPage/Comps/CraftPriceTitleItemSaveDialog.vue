@@ -31,7 +31,7 @@
           <!-- <span>应用至所选范围内可多次使用的指定元素组（可不指定）：</span> -->
         </p>
         <el-radio-group v-model="ruleForm.GroupID" v-show="GroupList.length > 0" :disabled='!!(saveData && saveData.ID)'>
-          <el-radio :title="it.Name" :label="it.ID" v-for="it in GroupList" :key="it.ID">{{it.Name}}</el-radio>
+          <el-radio :title="it.Name" :label="it.ID" v-for="it in localGroupList" :key="it.ID">{{it.Name}}</el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>
@@ -78,6 +78,9 @@ export default {
     },
     curPartID() {
       return this.ruleForm.PartID;
+    },
+    localGroupList() {
+      return [{ Name: '不限', ID: '' }, ...this.GroupList];
     },
   },
   data() {

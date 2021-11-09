@@ -606,9 +606,9 @@ export default {
       }
       return null;
     },
-    async getPriceTablePropertyLists({ commit }, [ProductID, PartID, GroupID, PriceID]) { // 获取价格表条件使用属性列表 及 价格表X Y轴选择属性列表数据
+    async getPriceTablePropertyLists({ commit }, [ProductID, PartID, GroupID, PriceID, CraftID]) { // 获取价格表条件使用属性列表 及 价格表X Y轴选择属性列表数据
       commit('setPriceTableConditionPropertyList', []);
-      const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID, PartID, GroupID, PriceID });
+      const list = await PropertyClass.getPropertyList({ UseModule: 31, ProductID, PartID, GroupID, PriceID, CraftID });
       commit('setPriceTableConditionPropertyList', list);
     },
     async getQuotationResultPropertyList({ commit }, [ProductID, PriceID]) { // 获取工艺总费用表 条件属性列表

@@ -5,14 +5,14 @@
       <span>{{ProductName}}</span>
     </header>
     <main>
-      <template v-if="ProductStockDataList">
+      <template v-if="ProductStockDataList && !loadingPropList">
         <StockTable
          @add="onSpecificationAddClick('null', '产品')"
          :ProductID='ProductID'
          PartID=''
          :itemData='ProductStockDataList'
-         :leftPropertyList='StockLeftPropertyList'
-         :rightPropertyList='StockRightPropertyList' />
+         :leftPropertyList='getPropertyList("left", "")'
+         :rightPropertyList='getPropertyList("right", "")' />
         <StockTable
          @add="onSpecificationAddClick(it.ID, it.Name)"
          :title="it.Name"
@@ -21,8 +21,8 @@
          v-for="it in ProductStockDataList.PartList"
          :key="it.ID"
          :itemData='it'
-         :leftPropertyList='StockLeftPropertyList'
-         :rightPropertyList='StockRightPropertyList' />
+         :leftPropertyList='getPropertyList("left", it.ID)'
+         :rightPropertyList='getPropertyList("right", it.ID)' />
       </template>
     </main>
     <footer>
@@ -43,6 +43,7 @@ export default {
       PartID: '',
       ProductName: '',
       titleType: '', // 产品 | 部件
+      loadingPropList: true,
       // StockList: [],
     };
   },
@@ -50,7 +51,7 @@ export default {
     StockTable,
   },
   computed: {
-    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'StockLeftPropertyList', 'ProductStockDataList', 'StockRightPropertyList']),
+    ...mapState('productManage', ['ProductManageList', 'ProductModuleKeyIDList', 'ProductStockDataList', 'StockPropertyLists']),
     curProduct() {
       if (!this.ProductID) return null;
       return this.ProductManageList.find(it => it.ID === this.ProductID);
@@ -61,7 +62,7 @@ export default {
     },
   },
   methods: {
-    getPositionID() {
+    async getPositionID() {
       if (!this.$route.params) {
         this.onGoBackClick();
         return;
@@ -76,7 +77,9 @@ export default {
       this.ProductName = name;
       this.titleType = type;
       this.getProductOrderData();
-      this.$store.dispatch('productManage/getProductStockPropertyList', this.ProductID);
+      this.loadingPropList = true;
+      await this.$store.dispatch('productManage/getProductStockPropertyList', this.curProduct);
+      this.loadingPropList = false;
     },
     async getProductOrderData(dataType = ['Part', 'Stock']) { // 获取初始部件及库存信息
       const ID = this.PartID ? this.PartID : this.ProductID;
@@ -96,6 +99,15 @@ export default {
       const { ProductID, ProductName, titleType } = this;
       const path = `/ProductStockSpecificationAdd/${ProductID}/${PartID}/${ProductName}/${titleType}/${fixedPartName}/${Date.now()}`;
       this.$router.push(path);
+    },
+    getPropertyList(type, PartID) {
+      if (!Array.isArray(this.StockPropertyLists) || this.StockPropertyLists.length === 0) return [];
+      const t = this.StockPropertyLists.find(it => it.PartID === PartID);
+      if (t) {
+        if (type === 'left') return t.leftPropertyList;
+        if (type === 'right') return t.rightPropertyList;
+      }
+      return [];
     },
   },
   mounted() {
