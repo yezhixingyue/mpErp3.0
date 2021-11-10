@@ -591,6 +591,9 @@ const api = {
   getProductPriceCopy(data) { // POST /Api/ProductPrice/Copy  复制价格
     return instance.post('/Api/ProductPrice/Copy', data);
   },
+  getPriceTableExport({ productID, tableID }) { // GET /Api/PriceTable/Export  价格表导出
+    return instance.get('/Api/PriceTable/Export', { responseType: 'arraybuffer', params: { productID, tableID } });
+  },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
   getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表

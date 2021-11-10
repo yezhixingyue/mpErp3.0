@@ -43,6 +43,7 @@
 import { mapState } from 'vuex';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import TopRadioButtonComp from '@/components/common/NewComps/TopRadioButtonComp';
+import handleExcelDownload from '@/assets/js/upload/downloadExcel';
 import CraftPriceTitleItemSaveDialog from './Comps/CraftPriceTitleItemSaveDialog.vue';
 import PriceTableComp from './Comps/PriceTableComp.vue';
 import { insertShowName4SolutionList } from '../utils';
@@ -314,6 +315,10 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     onTableItemExport(data) { // 表格导出
+      if (!data || !data.ID) return;
+      // console.log('onTableItemExport tableID', data.ID, 'ProductID:', this.ProductID, data, this.curSolutionItem, this.PriceName);
+      const params = { tableID: data.ID, productID: this.ProductID };
+      handleExcelDownload(params, this.api.getPriceTableExport, `费用表导出（${this.PriceName}-${this.curSolutionItem.ShowName}）`);
     },
   },
   watch: {

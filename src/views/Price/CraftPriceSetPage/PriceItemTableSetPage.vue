@@ -429,6 +429,7 @@ export default {
       this.generatePriceListData();
     },
     onExcelImportClick() { // 导入表格点击
+      // console.log('onExcelImportClick');
     },
     getIsOrNotSameBy2Array(arr1, arr2) {
       if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;

@@ -132,7 +132,6 @@ export default {
       immediate: false,
       handler(bool) {
         if (bool) {
-          console.log('sortingState', bool);
           this.tableData = this.dataList;
           this.setTableDataIndex();
           this.$nextTick(() => {

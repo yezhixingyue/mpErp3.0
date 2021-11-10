@@ -98,7 +98,7 @@ export default {
       this.$router.replace('/ProductManageList');
     },
     onRemove(it, i) {
-      const fileListStr = it.FileList.map(_it => _it.File.Name).join('、');
+      const fileListStr = it.FileList.map(_it => _it.Name).join('、');
       const msg = it.FileList.length > 2 ? `其中文件类目数量共 [ ${it.FileList.length} ]条` : `文件类目：[ ${fileListStr} ]`;
       this.messageBox.warnCancelBox('确定删除该条文件类目设置吗', msg, () => {
         this.$store.dispatch('productManage/getProductFilePropertyRemove', [it.ID, i]);

@@ -35,12 +35,13 @@ const handleExcelDownload = async (params, downApiFunc, fileName) => {
   if (temp.PageSize) delete temp.PageSize;
   const config = filterObj(temp);
 
-  const res = await downApiFunc(config);
-  if (res.status !== 200) {
-    messageBox.failSingleError('出错啦 ！', `[ 下载失败：${res.statusText} ]`);
+  const res = await downApiFunc(config).catch(() => {});
+  if (!res) return;
+  if (res.status !== 200 || (res.data && res.data.Status && res.data.Status !== 1000)) {
+    const msg = res.data && res.data.Message ? res.data.Message : res.statusText;
+    messageBox.failSingleError('出错啦 ！', `[ 下载失败：${msg} ]`);
     return;
   }
-
   const { data } = res;
   const blobData = new Blob([data], { type: 'application/vnd.ms-excel' });
 

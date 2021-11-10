@@ -95,7 +95,7 @@ async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPer
   if (!key) return false;
   if (!domainResp || domainResp.data.Status !== 1000) return false;
   const baseURL = domainResp.data.Data;
-  console.log(domainResp, baseURL);
+  // console.log(domainResp, baseURL);
   if (!baseURL) return false;
   const hasUploadedInfo = await api.getUploadedProgress(uniqueName, baseURL).catch(() => {
     key = false;
