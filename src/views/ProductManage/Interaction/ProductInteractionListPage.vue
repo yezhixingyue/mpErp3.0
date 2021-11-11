@@ -32,9 +32,11 @@ import { mapState } from 'vuex';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 import CommonInteractionTable from '@/components/ProductManageComps/Interaction/CommonInteractionTable.vue';
 import SubFormulaAddAndSelectDialog from '@/components/common/FormulaAndConditionComps/SubFormulaAddAndSelectDialog.vue';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'ProductInteractionList',
+  mixins: [recordScrollPositionMixin('main.page-wrap')],
   data() {
     return {
       ProductID: '',
@@ -244,6 +246,7 @@ export default {
     },
   },
   mounted() {
+    console.log('ProductInteractionList mounted');
     this.getPositionID();
   },
 };
@@ -252,7 +255,7 @@ export default {
 .mp-erp-product-list-page-product-interaction-list-page-wrap {
   padding-left: 20px;
   padding-right: 6px;
-  height: 100%;
+  min-height: 100%;
   padding-bottom: 45px;
   box-sizing: border-box;
   display: flex;

@@ -498,5 +498,8 @@ export default {
       border-width: 4px !important;
     }
   }
+  .el-table__fixed::before, .el-table__fixed-right::before {
+    display: none;
+  }
 }
 </style>

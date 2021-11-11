@@ -17,8 +17,6 @@ let closeTip = false;
 axios.interceptors.request.use(
   (config) => {
     const curConfig = config;
-    // curConfig.baseURL = 'http://192.168.3.85:8057//';
-    // console.log(config, config.baseURL);
     let token = sessionStorage.getItem('ErpToken');
     closeTip = curConfig.closeTip;
     const { closeLoading } = curConfig;

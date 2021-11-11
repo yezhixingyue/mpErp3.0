@@ -1,9 +1,9 @@
-/* eslint-disable no-tabs */
 <template>
   <!-- <div> -->
     <span class="upload-btn">
     <input
       type="file"
+      ref="oInp"
       :multiple='multiple'
       :accept="accept"
       @change="onChange"
@@ -62,6 +62,11 @@ export default { // 上传图片按钮
       // 如果开启多张上传，返回整个数组
         this.func(data.target.files);
       }
+    },
+    handleRemove() {
+      this.$nextTick(() => {
+        this.$refs.oInp.value = '';
+      });
     },
   },
 

@@ -11,31 +11,31 @@
     :before-close="handleClose" :close-on-click-modal='false'
     v-dialogDrag
   >
-    <template v-if="!isLoading">
-      <OrderServiceEditCord :orderData='orderDetailData' :Customer='curCustomerInfo2Service'
+    <template v-if="isShowServiceDia">
+      <OrderServiceEditCord v-show="!isLoading" :orderData='orderDetailData' :Customer='curCustomerInfo2Service'
         :ServiceHistory='curServiceOrderHistory'
         :curProductInfoStringify='curProductInfoStringify' />
       <!-- 顶部信息 -->
-      <div class="download-btn" v-if="orderDetailData && orderDetailData.FilePath">
+      <div class="download-btn" v-show="!isLoading" v-if="orderDetailData && orderDetailData.FilePath">
         <normalBtn @click.native="handleDownLoad(orderDetailData)" title="下载文件" />
         <!-- <a :href="'http://192.168.3.68:8055'
          + '/File/20200613/75dce5d550e227b764e9fed669976be19bea7936.cdr'" download="w3logo">下载文件 aaaaa</a> -->
       </div>
-      <section class="question-photo">
+      <section v-show="!isLoading" class="question-photo">
         <!-- 问题照片 -->
         <header class="right-line">
           <VTypeTitle :imgSrc="require('@/assets/images/photo.png')" title="问题照片" />
         </header>
         <main>
           <div class="submit-img-box">
-            <ServiceBlueBtn multiple @click.native="onuploadclick" :func="uploadImg" />
+            <ServiceBlueBtn multiple @click.native="onuploadclick" :func="uploadImg" ref="oUpImgEl" />
             <span class="explain">最多上传4张照片，支持.jpg .png .bmp</span>
           </div>
-          <DisplayPictrue :delFunc='delServiceImgByIndex' :imgList='serviceImgList' />
+          <DisplayPictrue :delFunc='handleDel' :imgList='serviceImgList' />
         </main>
       </section>
 
-      <section class="service-after-sale">
+      <section class="service-after-sale" v-show="!isLoading">
         <!-- 售后处理 -->
         <header class="right-line">
           <VTypeTitle :imgSrc="require('@/assets/images/service2.png')" title="售后处理" />
@@ -49,7 +49,7 @@
           </div>
         </main>
       </section>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer" v-show="!isLoading">
         <div class="loss-box">
           <span class="title">损失金额：</span>
           <input :class="lossesFund.err ? 'is-warn' : ''"
@@ -67,7 +67,7 @@
           :show-text='true' text-inside :percentage="+percentage" :stroke-width=3></el-progress>
       </span>
     </template>
-    <div v-else>
+    <div v-if="isLoading">
       <LoadingComp class="loading-box" />
     </div>
   </el-dialog>
@@ -311,6 +311,10 @@ export default {
         this.submitServiceForm([this.curOrderID, AppyCode, callback]);
         this.closeGLoading();
       });
+    },
+    handleDel(e) {
+      this.delServiceImgByIndex(e);
+      if (this.$refs.oUpImgEl) this.$refs.oUpImgEl.handleRemove();
     },
   },
   watch: {

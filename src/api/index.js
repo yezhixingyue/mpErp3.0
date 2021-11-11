@@ -72,8 +72,8 @@ const api = {
   saveServiceOrder(data) { // 售后单提交   POST /Api/AfterSales/Save
     return instance.post('/Api/AfterSales/Save', data);
   },
-  getServiceList(data) { // 获取售后单列表   GET /Api/AfterSales/List
-    return instance.post('/Api/AfterSales/List', data);
+  getServiceList(data, config = {}) { // 获取售后单列表   GET /Api/AfterSales/List
+    return instance.post('/Api/AfterSales/List', data, config);
   },
   getServiceDetail(aferSalesID) { // 获取售后单详情   GET /Api/AfterSales/Detail
     return instance.get(`/Api/AfterSales/Detail?aferSalesID=${aferSalesID}`);

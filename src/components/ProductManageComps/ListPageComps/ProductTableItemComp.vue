@@ -224,6 +224,12 @@ export default {
       };
       this.$store.dispatch('productManage/getProductBindElementType', [data, callback]);
     },
+    // onMouseLeave() {
+    //   console.log('onMouseLeave');
+    // },
+    // onMouseEnter() {
+    //   console.log('onMouseEnter');
+    // },
   },
   mounted() {
     const extendID = sessionStorage.getItem('lastExtendProductID');

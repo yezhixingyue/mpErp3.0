@@ -106,7 +106,7 @@ export default {
       this.tableData = this.tableData.map((it, i) => ({ ...it, index: i + 1 }));
     },
     tableSort() {
-      console.log('tableSort');
+      // console.log('tableSort');
       const tbody = document.querySelector('.el-table__body-wrapper tbody');
       const ops = {
         onEnd: (evt) => {

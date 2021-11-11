@@ -7,14 +7,24 @@
           <span class="text-content">{{orderData.OrderID}}</span>
           <span class="have-service">
             ( 已售后 <i class=count>{{ServiceHistory.length}}</i> 次
-              <i v-if="ServiceHistory.length > 0" @click="onDetailClick" class="detail">详情</i> )
+              <i v-if="ServiceHistory.length > 0" @click="onDetailClick('order')" class="detail">详情</i> )
           </span>
           <span class="title setPadding">客户编号：</span>
           <span class="text-content">{{orderData.Customer.CustomerSN}}</span>
           <span class="title customer">客户：</span>
-          <span class="text-content CustomerName">{{orderData.Customer.CustomerName}}</span>
+          <span class="text-content CustomerName" :title="orderData.Customer.CustomerName">{{orderData.Customer.CustomerName}}</span>
+          <span class="have-service is-customer">
+            (
+              <template v-if="!loading && !loadingError">
+                已售后 <i class=count>{{CustomerServerCount}}</i> 次
+              <i v-if="CustomerServerCount > 0" @click="onDetailClick('customer')" class="detail">详情</i>
+              </template>
+              <template v-else-if="!loadingError">加载中...</template>
+              <template v-else><i class="error" title="点击重新加载" @click="getCustomerRecordList">加载错误</i></template>
+             )
+          </span>
         </li>
-        <li>
+        <li v-if="Customer">
           <div class="title">联系信息：</div>
           <div class="text-content">
             <span class="address">{{Customer | getAdd}}</span>
@@ -64,14 +74,14 @@
         <span>配送方式 :（ {{orderData.Address.ExpressText}} ）</span>
       </div>
     </footer>
-    <el-dialog title="已售后详情" :visible.sync="dialogVisible" width="800px" append-to-body top="10vh" :modal='false'
+    <el-dialog :title="curDialogTitle" :visible.sync="dialogVisible" width="800px" append-to-body top="10vh" :modal='false'
       custom-class="mp-service-detail-cord-dia mp-img-style-header" :before-close="handleClose">
       <main>
         <el-table
-         :data="ServiceHistory" max-height=487
+         :data="dialogTableData" max-height=487
          style="width: 100%">
-          <el-table-column prop="ID" label="售后单" width="100"></el-table-column>
-          <el-table-column prop="ID" label="问题" width="95" show-overflow-tooltip>
+          <el-table-column prop="ID" label="售后单" width="85"></el-table-column>
+          <el-table-column prop="ID" label="问题" width="90" show-overflow-tooltip>
             <template slot-scope="scope">
               {{getQuestion(scope.row)}}
             </template>
@@ -81,7 +91,7 @@
               {{getRemark(scope.row)}}
             </template>
           </el-table-column>
-          <el-table-column prop="method" label="解决方案" width="140" show-overflow-tooltip>
+          <el-table-column prop="method" label="解决方案" width="160" show-overflow-tooltip>
             <template slot-scope="scope">
               {{getSolution(scope.row.Solution)}}
             </template>
@@ -99,7 +109,10 @@
           </el-table-column>
           <el-table-column prop="Operator.Name" label="处理人"></el-table-column>
         </el-table>
-        <p>此单已售后<span class="is-origin">{{ServiceHistory.length}}</span>次</p>
+        <p>{{curDialogType !== 'customer' ? "此单" : ''}}已售后<span class="is-origin">{{count}}</span>次
+          <template v-if="curDialogType === 'customer' && count > 10"><i class="is-gray">( 只显示出最近10条记录）</i></template>
+          <template v-if="amount > 0">，共损失<i class="is-pink is-font-size-14"> - {{amount}}元</i></template>
+        </p>
       </main>
       <span slot="footer" class="dialog-footer">
         <normalBtn @click.native="handleClose" title="关闭" />
@@ -153,6 +166,12 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      loading: false,
+      CustomerServerList: [],
+      CustomerServerCount: 0,
+      CustomerServerAmount: 0,
+      curDialogType: '',
+      loadingError: false,
     };
   },
   components: {
@@ -165,6 +184,25 @@ export default {
       const { AddressDetail } = this.orderData.Address.Address;
       return RegionalName + CityName + CountyName + AddressDetail;
     },
+    CustomerID() {
+      return this.Customer ? this.Customer.CustomerID : '';
+    },
+    dialogTableData() {
+      if (this.curDialogType === 'customer') return this.CustomerServerList;
+      return this.ServiceHistory;
+    },
+    count() {
+      if (this.curDialogType === 'customer') return this.CustomerServerCount;
+      return this.ServiceHistory.length;
+    },
+    amount() {
+      if (this.curDialogType === 'customer') return this.CustomerServerAmount;
+      return 0;
+    },
+    curDialogTitle() {
+      if (this.curDialogType === 'customer') return '客户已售后详情';
+      return '订单已售后详情';
+    },
   },
   filters: {
     getAdd(Customer) {
@@ -176,7 +214,8 @@ export default {
     },
   },
   methods: {
-    onDetailClick() {
+    onDetailClick(type) {
+      this.curDialogType = type;
       this.dialogVisible = true;
     },
     handleClose() {
@@ -238,6 +277,28 @@ export default {
       if (LossAmount === 0) return `${LossAmount}元`;
       if (LossAmount < 0) return `${-LossAmount}元`;
       return '';
+    },
+    async getCustomerRecordList(Customer = this.CustomerID) { // 获取客户售后记录信息
+      this.loading = true;
+      this.loadingError = false;
+      const resp = await this.api.getServiceList({ Customer, Page: 1, PageSize: 10 }, { closeLoading: true }).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        this.CustomerServerList = resp.data.Data;
+        this.CustomerServerCount = resp.data.DataNumber;
+        if (this.$utils.getValueIsOrNotNumber(resp.data.Message)) this.CustomerServerAmount = resp.data.Message;
+      } else {
+        this.loadingError = true;
+      }
+      this.loading = false;
+    },
+  },
+  watch: {
+    CustomerID: {
+      handler(newVal, oldVal) {
+        if (!newVal || newVal === oldVal) return;
+        this.getCustomerRecordList(newVal);
+      },
+      immediate: true,
     },
   },
 };
@@ -303,24 +364,38 @@ export default {
     position: relative;
     .left {
       width: 732px;
-      padding-top: 4px;
+      padding-top: 2px !important;
       position: relative;
       flex: none;
       > li {
         margin-bottom: 18px;
         &:first-of-type {
           color: $--color-text-regular;
-          .setPadding{
-              padding-left: 30px;
-          }
-          .customer{
+          // display: flex;
+          // align-items: center;
+          overflow: hidden;
+          height: 18px;
+          line-height: 18px;
+          width: 100%;
+          margin-bottom: 15px;
+          > span {
+            flex: none;
+            &.CustomerName {
+              flex: 0 1 auto;
+            }
+            &.setPadding{
+              padding-left: 24px;
+            }
+            &.customer{
               padding-left: 6px;
+              width: 52px;
+            }
           }
         }
         .have-service{
-          margin-left: 22px;
+          margin-left: 15px !important;
           margin-right: 20px;
-          margin-top: -2px;
+          margin-top: -1px !important;
           color:  $--color-text-table-time;
           user-select: none;
           > i {
@@ -335,7 +410,7 @@ export default {
             }
           }
           position: relative;
-          &::after{
+          &:after{
             content: '';
             position: absolute;
             right: -23px;
@@ -343,6 +418,17 @@ export default {
             height: 22px;
             width: 1px;
             background-color: $--border-color-light;
+          }
+          &.is-customer{
+            margin-right: 10px;
+            margin-left: 12px !important;
+            &::after {
+              display: none;
+            }
+            .error:hover {
+              cursor: pointer;
+              text-decoration: underline;
+            }
           }
         }
       }
