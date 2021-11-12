@@ -358,8 +358,8 @@ export default class PropertyClass {
       // if (!PerfectProperty) return '';
       const { DisplayContent, OptionList, ValueType, Module, Element, Group, Part, Type } = Property;
       if (ValueType === 1 || ValueType === 6) _operator += '下面任一选项时：';
-      if (ValueType === 2) _operator += '下面所有选项时：';
-      if (ValueType === 3) {
+      // if (ValueType === 2) _operator += '下面所有选项时：';
+      if (ValueType === 3 || ValueType === 2) {
         let str = '下面所有选项时：';
         if (target && Module === 255 && Element && Element.Type === 2 && Element.OptionAttribute && Element.OptionAttribute.IsRadio) {
           // eslint-disable-next-line no-nested-ternary

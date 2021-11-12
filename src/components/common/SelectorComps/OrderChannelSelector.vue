@@ -7,11 +7,15 @@
     <header v-if="showLabel">{{label}}：</header>
     <main>
       <select-comp
+        v-if="!isRadio"
         :options='options'
         :defaultProps='defaultProps'
         :title='title'
         @handleChange='handleChange'
        />
+      <el-radio-group v-model="radio" v-else>
+        <el-radio :label="it[defaultProps.value]" :key="it[defaultProps.value]" v-for="it in options">{{it[defaultProps.label]}}</el-radio>
+      </el-radio-group>
     </main>
   </section>
 </template>
@@ -59,10 +63,23 @@ export default {
       type: Boolean,
       default: true,
     },
+    isRadio: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     title() {
       return this.value;
+    },
+    radio: {
+      get() {
+        return this.value;
+      },
+      set(newVal) {
+        this.changePropsFunc([this.typeList[0], newVal]);
+        this.requestFunc();
+      },
     },
   },
   methods: {
@@ -90,8 +107,11 @@ export default {
     width: 5em;
     text-align: right;
   }
-//   > main {
-
-//   }
+  > main {
+    > .el-radio-group {
+      position: relative;
+      top: 5px;
+    }
+  }
 }
 </style>

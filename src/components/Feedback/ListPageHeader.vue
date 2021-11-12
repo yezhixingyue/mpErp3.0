@@ -2,7 +2,7 @@
   <header class="mp-feedback-page-main-wrap-header-wrap">
     <ul>
       <li>
-        <order-channel-selector
+        <OrderChannelSelector
         :options='questionList'
         :requestFunc='getDataList'
         :changePropsFunc='setCondition4DataList'
@@ -10,7 +10,7 @@
         :value='condition.QuestionID'
         label="售后原因"
        />
-        <order-channel-selector
+        <OrderChannelSelector
         style="margin-left: 90px"
         :options='progressList'
         :requestFunc='getDataList'
@@ -20,7 +20,7 @@
         label="售后进度"
        />
        <div class="user-selector">
-          <order-channel-selector
+          <OrderChannelSelector
             :options="userTypeList"
             :requestFunc="getDataList"
             :changePropsFunc="setCondition4DataList"
@@ -29,7 +29,7 @@
             :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
             label="用户"
           />
-          <order-channel-selector
+          <OrderChannelSelector
             :showLabel="false"
             :options="userRankList"
             :requestFunc="getDataList"

@@ -24,6 +24,18 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../components/order/Order.vue'),
     },
+    {
+      path: '/GetPriceRecord',
+      name: 'GetPriceRecord',
+      meta: {
+        title: '报价记录',
+        icon: 'el-icon-edit-outline',
+        pageName: 'GetPriceRecordListPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
+      },
+      component: () => import('../../../views/GetPriceRecord/index.vue'),
+    },
     /*  运单管理
     ------------------------------------------ */
     {
@@ -107,6 +119,7 @@ const routeTree = {
     /*  订单管理
     ------------------------------------------ */
     { name: 'orderManage', children: [] },
+    { name: 'GetPriceRecord', children: [] },
     /*  运单管理
     ------------------------------------------ */
     { name: 'transport', children: [] },

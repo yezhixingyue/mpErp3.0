@@ -4,7 +4,7 @@ export default class ClassType {
   static setDate(obj, key = 'Date') {
     const _obj = obj;
     // console.log(obj[key], store);
-    const dateTypeList = ['all', 'today', 'yesterday', 'beforeyesterday', 'curMonth', 'lastMonth'];
+    const dateTypeList = ['all', 'today', 'yesterday', 'beforeyesterday', 'curWeek', 'lastWeek', 'curMonth', 'lastMonth'];
     if (dateTypeList.includes(obj.DateType)) {
       switch (obj.DateType) {
         case 'all':
@@ -22,6 +22,14 @@ export default class ClassType {
         case 'beforeyesterday':
           _obj[key].First = store.getters['timeSelectModule/BeforeYesterdayTimeDate'].First;
           _obj[key].Second = store.getters['timeSelectModule/BeforeYesterdayTimeDate'].Second;
+          break;
+        case 'curWeek':
+          _obj[key].First = store.getters['timeSelectModule/curWeekDate'].First;
+          _obj[key].Second = store.getters['timeSelectModule/curWeekDate'].Second;
+          break;
+        case 'lastWeek':
+          _obj[key].First = store.getters['timeSelectModule/lastWeekDate'].First;
+          _obj[key].Second = store.getters['timeSelectModule/lastWeekDate'].Second;
           break;
         case 'curMonth':
           _obj[key].First = store.getters['timeSelectModule/curMonthDate'].First;

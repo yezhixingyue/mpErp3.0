@@ -445,6 +445,11 @@ export default {
       { Name: 'Product', ID: 2 },
       { Name: 'Part', ID: 3 },
     ],
+    TerminalTypeList: [
+      { name: '客户端', ID: 0 },
+      { name: '网页', ID: 1 },
+      { name: '移动端', ID: 2 },
+    ],
   },
   getters: {
     /* 配送方式相关

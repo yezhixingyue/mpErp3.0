@@ -246,7 +246,6 @@ export default {
     },
   },
   mounted() {
-    console.log('ProductInteractionList mounted');
     this.getPositionID();
   },
 };
