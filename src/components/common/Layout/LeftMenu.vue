@@ -39,6 +39,35 @@ export default {
   components: {
     TipsSpanButton,
   },
+  computed: {
+    ...mapState('layout', ['editableTabs', 'leftMenuDefaultActive', 'isLeftCollapse', 'editableTabsValue']),
+    ...mapState('common', ['Permission']),
+    curRoute() {
+      return this.$route;
+    },
+    defaultActive: {
+      get() {
+        return this.leftMenuDefaultActive;
+      },
+      set(val) {
+        this.$store.commit('layout/setLeftMenuDefaultActive', val);
+      },
+    },
+  },
+  data() {
+    return {
+      menuList: [],
+      defaultOpeneds: [], // 默认打开的一级分类目录
+      homeRouteInfo: { // 用于logo点击使用
+        meta: {
+          title: '首页',
+        },
+        path: '/',
+      },
+      isCollapse: false,
+      showLoginout: true,
+    };
+  },
   methods: {
     handleClick() { // 退出
       this.messageBox.warnCancelNullMsg('确定退出登录吗?', () => {
@@ -47,16 +76,32 @@ export default {
       });
     },
     getShowMenuList() { // 初始化获取左侧按钮列表
-      if (!routes || routes.length === 0) return;
+      if (!routes || routes.length === 0 || !this.Permission) return;
       const list = routes.filter(it => (!it.meta || !it.meta.hideMenu) && (it.meta && it.meta.icon)).map(_it => {
         if (!Array.isArray(_it.children)) return _it;
         return {
           ..._it,
-          children: _it.children.filter(child => child.meta && child.meta.icon),
+          children: _it.children.filter(child => child.meta && child.meta.icon && this.getIsMatchPermission(child)), // 此处筛选权限
         };
       });
       this.menuList = list;
       this.defaultOpeneds = list.map((it, i) => `${i + 1}`);
+    },
+    getIsMatchPermission(route) { // 判断是否符合权限
+      if (!route.meta.requiresAuth || !route.meta.PermissionInfo || route.meta.PermissionInfo.length === 0) return true;
+      let key = this.Permission.PermissionList;
+      try {
+        route.meta.PermissionInfo.forEach(item => { // 2.5 获取到当前页面所需要的权限信息，看是否满足权限要求
+          key = key[item];
+        });
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development' && route.meta.PermissionInfo[0] === 'Developing') {
+          key = true;
+        } else {
+          key = false;
+        }
+      }
+      return key === true;
     },
     onMenuItemClick(route, index) { // 点击左侧导航栏按钮事件：1 跳转路由 2 动态改变头部按钮列表
       if (index) this.defaultActive = index;
@@ -113,34 +158,6 @@ export default {
       }
     },
   },
-  computed: {
-    ...mapState('layout', ['editableTabs', 'leftMenuDefaultActive', 'isLeftCollapse', 'editableTabsValue']),
-    curRoute() {
-      return this.$route;
-    },
-    defaultActive: {
-      get() {
-        return this.leftMenuDefaultActive;
-      },
-      set(val) {
-        this.$store.commit('layout/setLeftMenuDefaultActive', val);
-      },
-    },
-  },
-  data() {
-    return {
-      menuList: [],
-      defaultOpeneds: [], // 默认打开的一级分类目录
-      homeRouteInfo: { // 用于logo点击使用
-        meta: {
-          title: '首页',
-        },
-        path: '/',
-      },
-      isCollapse: false,
-      showLoginout: true,
-    };
-  },
   watch: {
     curRoute(newRoute, oldRoute) { // 动态改变活动菜单索引 ----- 只刷新初始化时执行一次
       const bool = getJudgmentWhetherIsSamePage(newRoute, oldRoute);
@@ -179,6 +196,9 @@ export default {
         }
       },
       immediate: true,
+    },
+    Permission(val) {
+      if (val) this.getShowMenuList();
     },
   },
   mounted() {

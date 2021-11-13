@@ -1,4 +1,5 @@
 import CommonClassType from '@/store/CommonClassType';
+import api from '../../api';
 import RecordListConditonClass from './ConditionClassType';
 
 export default {
@@ -7,6 +8,7 @@ export default {
     condition4RecordList: new RecordListConditonClass(),
     RecordDataList: [],
     RecordDataNumber: 0,
+    loading: false,
   },
   getters: {
   },
@@ -25,11 +27,26 @@ export default {
     transformCondition4RecordListDate(state) {
       CommonClassType.setDate(state.condition4RecordList, 'CalculateDate');
     },
+    setRecordDataList(state, { Data, DataNumber }) {
+      state.RecordDataList = Data;
+      if (DataNumber || DataNumber === 0) state.RecordDataNumber = DataNumber;
+    },
+    setLoading(state, bool) {
+      state.loading = bool;
+    },
   },
   actions: {
-    getRecordList({ state, commit }) {
+    async getRecordList({ state, commit }, page = 1) {
+      commit('setCondition4RecordList', [['Page', ''], page]);
       commit('transformCondition4RecordListDate');
-      console.log('getRecordList action', state.condition4RecordList);
+      const temp = CommonClassType.filter(state.condition4RecordList, true);
+      commit('setRecordDataList', { Data: [], DataNumber: undefined });
+      commit('setLoading', true);
+      const resp = await api.getCalculatePriceRecordList(temp).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        commit('setRecordDataList', resp.data);
+      }
+      commit('setLoading', false);
     },
   },
 };

@@ -16,7 +16,7 @@
             <DisplayItem v-for="(it, i) in PartShowDataList" :ShowData='it' :key="it.Name" :class="{border: i > 0}" :showBorder='i > 0' />
           </section>
         </article>
-        <footer>
+        <footer v-if="!isCalculate">
           <ul>
             <li>
               <span>原价：</span>
@@ -97,37 +97,54 @@
                 </li>
                 <li>
                   <span class="text-title">客户名称：</span>
-                  <!-- <span class="text md-font">
-                    {{showData.Customer.CustomerName}}
-                  </span> -->
                   <el-tooltip effect="dark"
                         :disabled="showData.Customer.CustomerName.length < 12"
                         :content="showData.Customer.CustomerName" placement="top-end">
                         <span class="text md-font">{{showData.Customer.CustomerName}}</span>
                       </el-tooltip>
                 </li>
-                <li>
-                  <span class="text-title">销售区域：</span>
-                  <span class="text">{{showData.Customer.SellArea.RegionalName}}</span>
-                </li>
+                <template v-if="!isCalculate">
+                  <li v-if="showData.Customer.SellArea">
+                    <span class="text-title">销售区域：</span>
+                    <span class="text">{{showData.Customer.SellArea.RegionalName}}</span>
+                  </li>
+                </template>
+                <template v-else>
+                  <li>
+                    <span class="text-title">分类等级：</span>
+                    <span class="text">{{GradeContent}}</span>
+                  </li>
+                </template>
               </ul>
             </section>
             <section>
               <ul>
-                <li>
-                  <span class="text-title">配送方式：</span>
-                  <span class="text">{{showData.Address.ExpressText}}
-                  </span>
-                </li>
-                <li>
-                  <span class="text-title special-title">收件人：</span>
-                  <span class="text">{{showData.Address.Address.Consignee}}</span>
-                  <span class="text">{{showData.Address.Address.Mobile}}</span>
-                </li>
-                <li class="right-flex-wrap">
-                  <span class="text-title">收件地址：</span>
-                  <span class="text">{{getAddress(showData.Address.Address)}}</span>
-                </li>
+                <template v-if="showData.Address && !isCalculate">
+                  <li v-if="showData.Address && showData.Address.ExpressText">
+                    <span class="text-title">配送方式：</span>
+                    <span class="text">{{showData.Address.ExpressText}}
+                    </span>
+                  </li>
+                  <li>
+                    <span class="text-title special-title">收件人：</span>
+                    <span class="text">{{showData.Address.Address.Consignee}}</span>
+                    <span class="text">{{showData.Address.Address.Mobile}}</span>
+                  </li>
+                  <li class="right-flex-wrap">
+                    <span class="text-title">收件地址：</span>
+                    <span class="text">{{getAddress(showData.Address.Address)}}</span>
+                  </li>
+                </template>
+                <template v-if="isCalculate">
+                  <li>
+                    <span class="text-title">联系电话：</span>
+                    <span class="text">{{showData.Customer.Mobile}}</span>
+                  </li>
+                  <li>
+                    <span class="text-title" style="width:5em;display:inline-block">联系QQ：</span>
+                    <span class="text">{{showData.Customer.QQ || '无'}}</span>
+                  </li>
+                </template>
               </ul>
             </section>
           </article>
@@ -142,95 +159,116 @@
           <div class="order-content mp-scroll-wrap">
             <section>
               <ul>
-                <li>
-                  <span class="text-title">订单编号：</span>
-                  <span class="text">{{showData.OrderID}}</span>
-                </li>
-                <li v-if="showData.OutPlate.Second">
-                  <span class="text-title">电商单号：</span>
-                  <span class="text">{{showData.OutPlate.Second}}</span>
-                </li>
-                <li>
-                  <!-- 待付款 is-red   已完成 is-completed   其它 is-origin -->
-                  <span class="text-title">订单状态：</span>
-                  <span
-                    class="text"
-                    :class="{
-                    'is-red':showData.Status===10,
-                    'is-completed':showData.Status===200,
-                    'is-origin':showData.Status!==10&&showData.Status!==200,
-                  }"
-                  >{{showData.Status | formatStatus}} </span>
-                  <el-tooltip
-                   class="item"
-                   effect="dark"
-                   :content="showData.FileErrorMessage"
-                   placement="top-end"
-                   >
-                    <span
-                      class="is-gray is-font-size-12"
-                      v-if="$route.name === 'orderManage'
-                        && showData.FileErrorMessage
-                        && showData.Status===35"
-                      > ({{showData.FileErrorMessage}})</span>
-                  </el-tooltip>
-                </li>
-                <li v-if="showData.Weight">
-                  <span class="text-title">货品重量：</span>
-                  <span class="text">{{showData.Weight}} 千克</span>
-                </li>
-                <li class="right-flex-wrap" v-if="showData.Remark">
-                  <span class="text-title">订单备注：</span>
-                  <span class="text">{{showData.Remark}}</span>
-                </li>
-                <li
-                 class="right-flex-wrap download-box"
-                 v-if="$route.name === 'orderManage'
-                  && showData.FilePath && !showData.ProductParams.Attributes.IsSpotGoods">
-                  <span class="text-title">文件下载：</span>
-                  <normalBtn @click.native="handleDownLoad(showData)" title="下载订单文件" />
-                </li>
-                <li class="btn-box" v-if="showData.Status===35 && $route.name === 'orderManage'" :class="{hiddenFileUpload: !showData.FileCase}">
-                  <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc" v-if="showData.FileCase" />
-                  <el-button type="primary" @click="handleReview">{{showData.FileCase ? '文件没问题' : '该订单无文件'}},重新审稿</el-button>
-                </li>
-                <li class="right-flex-wrap file-content-wrap">
-                  <span class="text-title">文件内容：</span>
-                  <span class="text">{{showData.Content || '无'}}</span>
-                </li>
-                <li>
-                  <span class="text-title special-title">下单方式：</span>
-                  <span class="text">
-                    <i>{{showData.OrderType | formatOrderTypeToText}}</i>
-                    <i class="is-gray">（ {{showData.OrderTaker.Value}} ）</i>
-                  </span>
-                </li>
-                <li>
-                  <span class="text-title">下单时间：</span>
-                  <span class="text is-gray">{{getDayDate(showData.CreateTime)}}</span>
-                  <span class="text is-gray">{{getMiDate(showData.CreateTime)}}</span>
-                </li>
-                <li v-if='showData.PayTime'>
-                  <span class="text-title">付款时间：</span>
-                  <span class="text is-gray">{{getDayDate(showData.PayTime)}}</span>
-                  <span class="text is-gray">{{getMiDate(showData.PayTime)}}</span>
-                </li>
-                <li v-if='showData.ProducePeriod && showData.ProducePeriod.LatestPayTime && showData.Status === 10'>
-                  <span class="text-title">最晚付款：</span>
-                  <span class="text is-pink">{{getDayDate(showData.ProducePeriod.LatestPayTime)}}</span>
-                  <span class="text is-pink">{{getMiDate(showData.ProducePeriod.LatestPayTime)}}</span>
-                </li>
-                <template v-if="[254, 255].indexOf(showData.Status) === -1">
-                  <li v-if="showData.ProducePeriod && showData.ProducePeriod.ProduceTime">
-                    <span class="text-title">预计完工：</span>
-                    <span class="text is-gray">{{getDayDate(showData.ProducePeriod.ProduceTime)}}</span>
-                    <span class="text is-gray">{{getMiDate(showData.ProducePeriod.ProduceTime)}}</span>
+                <template v-if="!isCalculate">
+                  <li>
+                    <span class="text-title">订单编号：</span>
+                    <span class="text">{{showData.OrderID}}</span>
                   </li>
-                  <li v-if="showData.ProducePeriod && showData.ProducePeriod.TotalTime
-                    && showData.ProducePeriod.IncludeDiliveryTime">
-                    <span class="text-title">{{showData.ProducePeriod.IncludeDiliveryTime ? '预计送达：' : '预计出货：'}}</span>
-                    <span class="text is-gray">{{getDayDate(showData.ProducePeriod.TotalTime)}}</span>
-                    <span class="text is-gray">{{getMiDate(showData.ProducePeriod.TotalTime)}}</span>
+                  <li v-if="showData.OutPlate && showData.OutPlate.Second">
+                    <span class="text-title">电商单号：</span>
+                    <span class="text">{{showData.OutPlate.Second}}</span>
+                  </li>
+                  <li>
+                    <!-- 待付款 is-red   已完成 is-completed   其它 is-origin -->
+                    <span class="text-title">订单状态：</span>
+                    <span
+                      class="text"
+                      :class="{
+                      'is-red':showData.Status===10,
+                      'is-completed':showData.Status===200,
+                      'is-origin':showData.Status!==10&&showData.Status!==200,
+                    }"
+                    >{{showData.Status | formatStatus}} </span>
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="showData.FileErrorMessage"
+                    placement="top-end"
+                    >
+                      <span
+                        class="is-gray is-font-size-12"
+                        v-if="$route.name === 'orderManage'
+                          && showData.FileErrorMessage
+                          && showData.Status===35"
+                        > ({{showData.FileErrorMessage}})</span>
+                    </el-tooltip>
+                  </li>
+                  <li v-if="showData.Weight">
+                    <span class="text-title">货品重量：</span>
+                    <span class="text">{{showData.Weight}} 千克</span>
+                  </li>
+                  <li class="right-flex-wrap" v-if="showData.Remark">
+                    <span class="text-title">订单备注：</span>
+                    <span class="text">{{showData.Remark}}</span>
+                  </li>
+                  <li
+                  class="right-flex-wrap download-box"
+                  v-if="$route.name === 'orderManage'
+                    && showData.FilePath && !showData.ProductParams.Attributes.IsSpotGoods">
+                    <span class="text-title">文件下载：</span>
+                    <normalBtn @click.native="handleDownLoad(showData)" title="下载订单文件" />
+                  </li>
+                  <li class="btn-box" v-if="showData.Status===35 && $route.name === 'orderManage'" :class="{hiddenFileUpload: !showData.FileCase}">
+                    <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc" v-if="showData.FileCase" />
+                    <el-button type="primary" @click="handleReview">{{showData.FileCase ? '文件没问题' : '该订单无文件'}},重新审稿</el-button>
+                  </li>
+                  <li class="right-flex-wrap file-content-wrap">
+                    <span class="text-title">文件内容：</span>
+                    <span class="text">{{showData.Content || '无'}}</span>
+                  </li>
+                  <li>
+                    <span class="text-title special-title">下单方式：</span>
+                    <span class="text">
+                      <i>{{showData.OrderType | formatOrderTypeToText}}</i>
+                      <i class="is-gray" v-if="showData.OrderTaker">（ {{showData.OrderTaker.Value}} ）</i>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="text-title">下单时间：</span>
+                    <span class="text is-gray">{{getDayDate(showData.CreateTime)}}</span>
+                    <span class="text is-gray">{{getMiDate(showData.CreateTime)}}</span>
+                  </li>
+                  <li v-if='showData.PayTime'>
+                    <span class="text-title">付款时间：</span>
+                    <span class="text is-gray">{{getDayDate(showData.PayTime)}}</span>
+                    <span class="text is-gray">{{getMiDate(showData.PayTime)}}</span>
+                  </li>
+                  <li v-if='showData.ProducePeriod && showData.ProducePeriod.LatestPayTime && showData.Status === 10'>
+                    <span class="text-title">最晚付款：</span>
+                    <span class="text is-pink">{{getDayDate(showData.ProducePeriod.LatestPayTime)}}</span>
+                    <span class="text is-pink">{{getMiDate(showData.ProducePeriod.LatestPayTime)}}</span>
+                  </li>
+                  <template v-if="[254, 255].indexOf(showData.Status) === -1">
+                    <li v-if="showData.ProducePeriod && showData.ProducePeriod.ProduceTime">
+                      <span class="text-title">预计完工：</span>
+                      <span class="text is-gray">{{getDayDate(showData.ProducePeriod.ProduceTime)}}</span>
+                      <span class="text is-gray">{{getMiDate(showData.ProducePeriod.ProduceTime)}}</span>
+                    </li>
+                    <li v-if="showData.ProducePeriod && showData.ProducePeriod.TotalTime
+                      && showData.ProducePeriod.IncludeDiliveryTime">
+                      <span class="text-title">{{showData.ProducePeriod.IncludeDiliveryTime ? '预计送达：' : '预计出货：'}}</span>
+                      <span class="text is-gray">{{getDayDate(showData.ProducePeriod.TotalTime)}}</span>
+                      <span class="text is-gray">{{getMiDate(showData.ProducePeriod.TotalTime)}}</span>
+                    </li>
+                  </template>
+                </template>
+                <template v-else>
+                  <li>
+                    <span class="text-title">原价：</span>
+                    <span class="text is-font-size-13">{{showData.Funds.OriginalPrice}}元</span>
+                  </li>
+                  <li>
+                    <span class="text-title">成交价：</span>
+                    <span class="text is-origin is-font-size-13">{{showData.Funds.FinalPrice}}元</span>
+                  </li>
+                  <li>
+                    <span class="text-title">报价方式：</span>
+                    <span class="text is-font-size-13">{{priceTypeContent}}</span>
+                  </li>
+                  <li>
+                    <span class="text-title">报价时间：</span>
+                    <span class="text is-gray">{{getDayDate(showData.CreateTime)}}</span>
+                    <span class="text is-gray">{{getMiDate(showData.CreateTime)}}</span>
                   </li>
                 </template>
               </ul>
@@ -253,8 +291,19 @@ import ShowProductDetail from '@/assets/js/TypeClass/ShowProductDetail';
 import DisplayItem from './OrderDetailComps/DisplayItem.vue';
 
 export default {
+  props: {
+    detailData: {
+      default: null,
+      type: Object,
+    },
+    isCalculate: {
+      default: false,
+      type: Boolean,
+    },
+  },
   computed: {
     ...mapState('orderModule', ['orderDetailData']),
+    ...mapState('common', ['userTypeList', 'userRankList', 'TerminalTypeList']),
     showData() {
       if (this.detailData) return this.detailData;
       return this.orderDetailData;
@@ -296,17 +345,31 @@ export default {
       });
       return arr;
     },
+    GradeContent() {
+      if (this.isCalculate && this.showData.Customer) {
+        const { Grade, Type } = this.showData.Customer;
+        const t1 = this.userRankList.find(it => it.CategoryID === Grade.First);
+        const t2 = this.userTypeList.find(it => it.CategoryID === Type.First);
+        if (t1 || t2) {
+          const c1 = t1 ? `${t1.CategoryName}` : '';
+          const c2 = t2 ? `${t2.CategoryName}` : '';
+          return [c1, c2].filter(it => it).join('-');
+        }
+      }
+      return '';
+    },
+    priceTypeContent() {
+      if (this.isCalculate && (this.showData.Terminal || this.showData.Terminal === 0)) {
+        const t = this.TerminalTypeList.find(it => it.ID === this.showData.Terminal);
+        return t ? t.name : '';
+      }
+      return '';
+    },
   },
   components: {
     normalBtn,
     UploadComp4BreakPoint,
     DisplayItem,
-  },
-  props: {
-    detailData: {
-      default: null,
-      type: Object,
-    },
   },
   methods: {
     getAddress(Address) {

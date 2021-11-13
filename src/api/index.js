@@ -38,6 +38,9 @@ const api = {
   setOrderReCheckFile({ OrderID, FilePath = '' }) { // POST /Api/Order/ReCheckFile
     return instance.post('/Api/Order/ReCheckFile', { OrderID, FilePath });
   },
+  getCalculatePriceRecordList(data) { // POST /Api/CalculatePrice/RecordList  获取报价记录
+    return instance.post('/Api/CalculatePrice/RecordList', data);
+  },
 
   /* 付款列表部分api
    ----------------------------------------------------------------------------------- */

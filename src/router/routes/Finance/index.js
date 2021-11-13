@@ -34,6 +34,7 @@ const routes = { // 财务管理
         icon: 'iconfont icon-kehuliushui',
         pageName: 'FundBillPage',
         requiresAuth: true,
+        PermissionInfo: ['PermissionFinance', 'Obj', 'QueryOrderList'],
       },
       component: () => import('../../../views/FundBillPage.vue'),
     },

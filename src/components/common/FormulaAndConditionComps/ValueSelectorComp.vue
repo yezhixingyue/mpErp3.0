@@ -42,7 +42,7 @@ export default {
     localOptionList() {
       if (!this.PropertyData || !Array.isArray(this.PropertyData.OptionList) || this.PropertyData.OptionList.length === 0) return [];
       if (this.PropertyData?.ValueType === 4) {
-        return this.PropertyData.OptionList.map(it => ({ ...it, First: it.Second === '开' ? 'True' : 'False' }));
+        return this.PropertyData.OptionList.map(it => ({ ...it, First: (it.Second === '开' || it.Second === '是') ? 'True' : 'False' }));
       }
       return this.PropertyData.OptionList;
     },
@@ -84,7 +84,7 @@ export default {
     this.Unit = Unit;
     if (OptionList && OptionList.length > 0 && ValueType !== 5 && !this.isMultiple && ValueType !== 0 && !this.ValProperty) {
       if (!this.localValue || (Array.isArray(this.localValue) && this.localValue.length === 0)) {
-        if (Element.Type !== 3) this.localValue = OptionList[0].First;
+        if (Element && Element.Type !== 3) this.localValue = OptionList[0].First;
         else this.localValue = 'True';
       }
     }

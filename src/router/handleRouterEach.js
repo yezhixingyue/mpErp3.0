@@ -54,7 +54,11 @@ function handlePermission(to, next, Permission, from) {
         key = key[item];
       });
     } catch (error) {
-      messageBox.failSingleError(undefined, '[ 权限信息读取失败 ]');
+      if (process.env.NODE_ENV === 'development' && to.meta.PermissionInfo && to.meta.PermissionInfo[0] && to.meta.PermissionInfo[0] === 'Developing') {
+        key = true;
+      } else {
+        messageBox.failSingleError(undefined, '[ 权限信息读取失败 ]');
+      }
     }
   }
   if (key) {

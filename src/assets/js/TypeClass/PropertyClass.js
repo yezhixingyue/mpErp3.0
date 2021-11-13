@@ -55,6 +55,7 @@ export const PropertyFixedType = [
   { ID: 32, Name: '数量' },
   { ID: 33, Name: '款数' },
   { ID: 34, Name: '总价' },
+  { ID: 35, Name: '自定义' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表
@@ -384,8 +385,8 @@ export default class PropertyClass {
                 }
               }
             } else {
-              if (ValueList[0].Value === 'True') _val = '开';
-              if (ValueList[0].Value === 'False') _val = '关';
+              if (ValueList[0].Value === 'True') _val = Property.FixedType === 35 ? '是' : '开';
+              if (ValueList[0].Value === 'False') _val = Property.FixedType === 35 ? '否' : '关';
             }
           }
           if (!ValueList[0].Value && ValueList[0].Property && ValueList[0].Property.DisplayContent) {

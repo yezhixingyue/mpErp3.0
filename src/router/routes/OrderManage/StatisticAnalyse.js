@@ -7,6 +7,7 @@ const routes = [
       icon: 'iconfont icon-tongjifenxi',
       pageName: 'StatisticAnalyseListPage',
       requiresAuth: true,
+      PermissionInfo: ['PermissionStatisticsAnalysis', 'HavePomission'],
       scroll: 0,
     },
     component: () => import('../../../views/StatisticAnalysePages/StatisticalListPage.vue'),
@@ -17,6 +18,7 @@ const routes = [
     meta: {
       title: '汇总面板',
       requiresAuth: true,
+      PermissionInfo: ['PermissionStatisticsAnalysis', 'HavePomission'],
       needFetch: true,
       pageName: 'StatisticalSummaryPage',
     },
@@ -28,6 +30,7 @@ const routes = [
     meta: {
       title: '配置统计表',
       requiresAuth: true,
+      PermissionInfo: ['PermissionStatisticsAnalysis', 'HavePomission'],
       pageName: 'StatisticalFormAddEditPage',
     },
     component: () => import('../../../views/StatisticAnalysePages/StatisticalFormAddEditPage.vue'),
@@ -38,6 +41,7 @@ const routes = [
     meta: {
       title: '配置汇总面板',
       requiresAuth: true,
+      PermissionInfo: ['PermissionStatisticsAnalysis', 'HavePomission'],
       pageName: 'StatisticalSummaryAddEditPage',
     },
     component: () => import('../../../views/StatisticAnalysePages/StatisticalSummaryAddEditPage.vue'),
@@ -48,6 +52,7 @@ const routes = [
     meta: {
       title: '查看统计表',
       requiresAuth: true,
+      PermissionInfo: ['PermissionStatisticsAnalysis', 'HavePomission'],
       pageName: 'StatisticFormViewPage',
     },
     component: () => import('../../../views/StatisticAnalysePages/StatisticFormViewPage.vue'),
@@ -58,6 +63,7 @@ const routes = [
     meta: {
       title: '查看汇总面板',
       requiresAuth: true,
+      PermissionInfo: ['PermissionStatisticsAnalysis', 'HavePomission'],
       pageName: 'StatisticSummaryViewPage',
     },
     component: () => import('../../../views/StatisticAnalysePages/StatisticSummaryViewPage.vue'),

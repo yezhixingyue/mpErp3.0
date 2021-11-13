@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header class="mp-erp-get-price-record-page-header-comp-wrap">
     <div>
       <OrderChannelSelector
         :options='progressList'
@@ -28,6 +28,8 @@
         :changePropsFunc='setRequestObj'
         :word='condition4RecordList.KeyWords'
         @reset='clearRequestObj'
+        title="关键词"
+        placeholder="请输入搜索关键词"
         :searchWatchKey="RecordDataList" />
     </div>
   </header>
@@ -72,7 +74,32 @@ export default {
       this.$store.commit('PriceRecord/clearCondition4RecordList');
     },
   },
+  mounted() {
+    this.clearRequestObj();
+    this.getRecordList();
+  },
 };
 </script>
 <style lang='scss'>
+.mp-erp-get-price-record-page-header-comp-wrap {
+  padding: 20px 0;
+  background-color: #fff;
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding-left: 20px;
+    padding-right: 65px;
+    // height: 30px;
+    &:first-of-type {
+      height: 30px;
+    }
+    .mp-line-date-selector-wrap, .mp-common-comps-search-box {
+      margin-top: 0px;
+      padding-top: 10px;
+      height: 30px;
+    }
+  }
+}
 </style>

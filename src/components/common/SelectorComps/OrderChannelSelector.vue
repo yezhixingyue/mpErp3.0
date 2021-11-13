@@ -98,6 +98,7 @@ export default {
 .mp-common-comps-order-channel-selector-wrap {
   display: flex;
   height: 25px;
+  overflow: hidden;
   > header {
     font-size: 14px;
     line-height: 25px;
@@ -106,11 +107,13 @@ export default {
     color: $--color-text-primary;
     width: 5em;
     text-align: right;
+    flex: none;
   }
   > main {
     > .el-radio-group {
       position: relative;
       top: 5px;
+      white-space: nowrap;
     }
   }
 }

@@ -24,18 +24,6 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../components/order/Order.vue'),
     },
-    {
-      path: '/GetPriceRecord',
-      name: 'GetPriceRecord',
-      meta: {
-        title: '报价记录',
-        icon: 'el-icon-edit-outline',
-        pageName: 'GetPriceRecordListPage',
-        requiresAuth: true,
-        PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
-      },
-      component: () => import('../../../views/GetPriceRecord/index.vue'),
-    },
     /*  运单管理
     ------------------------------------------ */
     {
@@ -49,6 +37,18 @@ const routes = { // 客户订单管理
         PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
       },
       component: () => import('../../../views/PackageListPage.vue'),
+    },
+    {
+      path: '/GetPriceRecord',
+      name: 'GetPriceRecord',
+      meta: {
+        title: '报价记录',
+        icon: 'el-icon-edit-outline',
+        pageName: 'GetPriceRecordListPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
+      },
+      component: () => import('../../../views/GetPriceRecord/index.vue'),
     },
     /*  付款单列表
     ------------------------------------------ */
@@ -64,20 +64,6 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../views/PaymentListPage.vue'),
     },
-    /*  售后管理
-    ------------------------------------------ */
-    {
-      path: '/service',
-      name: 'service',
-      meta: {
-        title: '售后管理',
-        icon: 'iconfont icon-shouhouguanli',
-        pageName: 'ServicePage',
-        requiresAuth: true,
-        PermissionInfo: ['PermissionManageOrder', 'Obj', 'ApplyAfterSales'],
-      },
-      component: () => import('../../../views/ServicePage.vue'),
-    },
     /*  未付款订单
     ------------------------------------------ */
     {
@@ -92,6 +78,20 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../views/QutstandingPage.vue'),
     },
+    /*  售后管理
+    ------------------------------------------ */
+    {
+      path: '/service',
+      name: 'service',
+      meta: {
+        title: '售后管理',
+        icon: 'iconfont icon-shouhouguanli',
+        pageName: 'ServicePage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionManageOrder', 'Obj', 'ApplyAfterSales'],
+      },
+      component: () => import('../../../views/ServicePage.vue'),
+    },
     /*  售后申请列表
     ------------------------------------------ */
     {
@@ -102,7 +102,7 @@ const routes = { // 客户订单管理
         icon: 'iconfont icon-shouhoushenqingliebiao',
         pageName: 'FeedbackPage',
         requiresAuth: true,
-        PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
+        PermissionInfo: ['PermissionManageOrder', 'Obj', 'ApplyAfterSales'],
       },
       component: () => import('../../../views/FeedbackPage.vue'),
     },

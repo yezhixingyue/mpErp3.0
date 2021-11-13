@@ -6,7 +6,7 @@ export const checkNumberSectionList = (value, SectionList, valueList) => {
   for (let i = 0; i < SectionList.length; i += 1) {
     const section = SectionList[i];
     const { MinValue, MaxValue, IsGeneralValue, Increment } = section;
-    if (+value > MinValue && (+value <= MaxValue || MaxValue === -1)) { // 符合范围区间 进入判断
+    if (+value > MinValue && (+value <= MaxValue || +MaxValue === -1)) { // 符合范围区间 进入判断
       isInSection = true;
       let msg = '';
       if (!IsGeneralValue) {
