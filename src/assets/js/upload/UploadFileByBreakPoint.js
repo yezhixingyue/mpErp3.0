@@ -89,7 +89,7 @@ async function checkIsTrue(data, uniqueName, baseURL) {
  */
 async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPercentage = 98) {
   let key = true;
-  const domainResp = await api.getFileServer(config.IsFileInLan).catch(() => {
+  const domainResp = await api.getFileServer(config.Position).catch(() => {
     key = false;
   });
   if (!key) return false;

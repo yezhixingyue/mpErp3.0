@@ -10,17 +10,20 @@
       <div class="price-count">
         <span>{{itemData.PriceList ? itemData.PriceList.length : 0}}种报价</span>
       </div>
-      <div class="img-menu-box">
+      <div class="img-menu-box" v-if="Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll">
         <span @click="onPriceItemSaveClick(null)">
           <i></i>添加价格
         </span>
       </div>
-      <div class="text-menu-box">
+      <div class="text-menu-box" v-if="Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll">
         <TipsSpanButton @click.native="jumpToPage('MakeupCtrl')" text='拼版控制' />
         <TipsSpanButton @click.native="jumpToPage('subConditionList')" :disabled='canSetPartList.length === 0' text='子条件'/>
         <TipsSpanButton @click.native="jumpToPage('PriceFormulaList', { timer: Date.now() })" text='计算公式'  />
       </div>
-      <div class="extend-box" @click="onExtendClick" :class="itemData.PriceList&&itemData.PriceList.length>0 ? '' : 'disabled'">
+      <div class="extend-box" @click="onExtendClick" :class="{
+        disabled: !(itemData.PriceList&&itemData.PriceList.length>0),
+        nonePermission: !(Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll)
+      }">
         <span v-if="!extend">展开</span>
         <span v-else>隐藏</span>
         <i v-if="!extend" class="el-icon-caret-bottom"></i>
@@ -35,9 +38,10 @@
             <i v-else :title="it.ProportionName">{{it.ProportionName}}
             </i>
           </span>
-          <TipsSpanButton @click.native="onIsOwnPriceSetClick(it)" text='设置报价方式'/>
+          <TipsSpanButton @click.native="onIsOwnPriceSetClick(it)"
+            v-if="it.IsOwnPrice && Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll" text='设置报价方式'/>
         </div>
-        <div class="menus" v-if="it.IsOwnPrice">
+        <div class="menus" v-if="it.IsOwnPrice && Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll" >
           <TipsSpanButton text='数值转换' @click.native="onPriceItemSetMenuClick(it, 'NumberSwapList')" />
           <TipsSpanButton text='拼版方案选择' @click.native="onPriceItemSetMenuClick(it, 'MakeupSolutionSet')">
             <span>拼版方案选择（<i :class="it.MakeupList.filter(_it => _it.Solution).length < 7 ? 'is-pink' : ''"
@@ -65,7 +69,7 @@
             <template v-else>新加</template>
           </span>
         </div>
-        <div class="ctrl">
+        <div class="ctrl" v-if="it.IsOwnPrice && Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll">
           <CtrlMenus :showList="['edit','del','copy']"
            @copy='onPriceItemSaveClick(it, "copy")'
            @edit='onPriceItemSaveClick(it)'
@@ -109,6 +113,7 @@ export default {
   },
   computed: {
     ...mapGetters('common', ['twoLevelsProductClassify']),
+    ...mapState('common', ['Permission']),
     ...mapState('priceManage', ['condition4PriceManageList', 'needScrollToExtend']),
     ClassifyText() { // 列表分类显示文字
       if (!this.itemData) return '';
@@ -282,6 +287,7 @@ export default {
     box-sizing: border-box;
     background-color: #f8f8f8;
     align-items: center;
+    position: relative;
     > div {
       flex: none;
       &.title-box {
@@ -407,6 +413,11 @@ export default {
             filter: grayscale(1);
             color: #ddd;
           }
+        }
+        &.nonePermission {
+          position: absolute;
+          right: 50px;
+          top: 5px;
         }
       }
     }

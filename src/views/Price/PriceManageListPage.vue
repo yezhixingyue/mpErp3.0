@@ -3,8 +3,10 @@
     <header>
       <!-- 顶部按钮及筛选区域 -->
       <div class="left">
-        <el-button type="primary" class="mp-common-btn-styles" @click="jumpAreaTempPage">适用范围模板</el-button>
-        <el-button type="primary" class="mp-common-btn-styles" @click="jumpMakeupRulePage">拼版规则设置</el-button>
+        <template v-if="Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll">
+          <el-button type="primary" class="mp-common-btn-styles" @click="jumpAreaTempPage">适用范围模板</el-button>
+          <el-button type="primary" class="mp-common-btn-styles" @click="jumpMakeupRulePage">拼版规则设置</el-button>
+        </template>
         <NewProductClassifySelectComp v-model="ProductClass" />
         <el-checkbox v-model="noPriceChecked">仅显示无报价产品</el-checkbox>
       </div>
@@ -55,6 +57,7 @@ export default {
   mixins: [recordScrollPositionMixin('.mp-erp-price-manage-table-comp-wrap')],
   computed: {
     ...mapState('priceManage', ['condition4PriceManageList', 'PriceManageList', 'PriceManageListNumber', 'isPriceDataLoading']),
+    ...mapState('common', ['Permission']),
     ProductClass: {
       get() {
         return this.condition4PriceManageList.ProductClass;

@@ -71,7 +71,8 @@
     <el-table-column width="90px" class-name="is-font-size-14" label="操作">
       <template slot-scope="scope">
         <div class="menu-box" style="padding-right: 8px">
-            <span @click="onSingleWriteClick(scope.row)" v-if="!scope.row.HaveWriteOff" class="normal">
+            <span @click="onSingleWriteClick(scope.row)"
+             v-if="!scope.row.HaveWriteOff && Permission && Permission.PermissionList.PermissionFinance.Obj.WriteOff" class="normal">
               <img src="@/assets/images/write.png" alt="">
               <i>销账</i>
             </span>
@@ -96,6 +97,7 @@ export default {
   mixins: [tableMixin],
   computed: {
     ...mapState('finance', ['financeDataLoading', 'PackageList']),
+    ...mapState('common', ['Permission']),
   },
   methods: {
     ...mapMutations('finance', ['setWill2WriteCheckedList']),

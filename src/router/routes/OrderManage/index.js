@@ -24,6 +24,18 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../components/order/Order.vue'),
     },
+    {
+      path: '/GetPriceRecord',
+      name: 'GetPriceRecord',
+      meta: {
+        title: '报价记录',
+        icon: 'el-icon-edit-outline',
+        pageName: 'GetPriceRecordListPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
+      },
+      component: () => import('../../../views/GetPriceRecord/index.vue'),
+    },
     /*  运单管理
     ------------------------------------------ */
     {
@@ -37,18 +49,6 @@ const routes = { // 客户订单管理
         PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
       },
       component: () => import('../../../views/PackageListPage.vue'),
-    },
-    {
-      path: '/GetPriceRecord',
-      name: 'GetPriceRecord',
-      meta: {
-        title: '报价记录',
-        icon: 'el-icon-edit-outline',
-        pageName: 'GetPriceRecordListPage',
-        requiresAuth: true,
-        PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
-      },
-      component: () => import('../../../views/GetPriceRecord/index.vue'),
     },
     /*  付款单列表
     ------------------------------------------ */

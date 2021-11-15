@@ -36,7 +36,7 @@ const api = {
     return instance.post('/Api/PackageList/Excel', data, { responseType: 'arraybuffer' }); // 普通方式
   },
   setOrderReCheckFile({ OrderID, FilePath = '' }) { // POST /Api/Order/ReCheckFile
-    return instance.post('/Api/Order/ReCheckFile', { OrderID, FilePath });
+    return instance.post('/Api/Order/ReCheckFile', { OrderID, UniqueName: FilePath });
   },
   getCalculatePriceRecordList(data) { // POST /Api/CalculatePrice/RecordList  获取报价记录
     return instance.post('/Api/CalculatePrice/RecordList', data);
@@ -107,8 +107,8 @@ const api = {
 
   /* 图片与文件上传api
    ----------------------------------------------------------------------------------- */
-  getFileServer(isLan) {
-    return instance.get(`/Api/FileServer?isLan=${isLan}`);
+  getFileServer(Position) {
+    return instance.get(`/Api/FileServer?Position=${Position}`);
   },
   uploadImage(data, type = 1) { // 图片上传  POST /Api/Upload/Image
     const formData = new FormData();

@@ -8,35 +8,42 @@
       <div class="classify-box">
         <span :title="ClassifyText">{{ClassifyText}}</span>
       </div>
-      <div class="order-ctrl" :title="!canOrder ? '先设置 [产品 - 设置元素] 后才可设置下单' : ''">
-        <el-checkbox :disabled='!canOrder && !helpOrderChecked' v-model="helpOrderChecked">可代客下单</el-checkbox>
-        <el-checkbox :disabled='!canOrder && !customOrderChecked' v-model="customOrderChecked">可自助上传</el-checkbox>
-      </div>
-      <div class="text-menu-box">
-        <TipsSpanButton text='界面元素' @click.native="onElementSaveClick(null)" />
-        <TipsSpanButton text='尺寸物料' @click.native="onProductSizeMaterialSetClick(null)" />
-        <TipsSpanButton text='工艺' @click.native="onProductCraftSetClick(null)" />
-        <TipsSpanButton text='设置元素' @click.native="onElementMapSetClick(null)" />
-        <TipsSpanButton style="margin-right:40px" text='显示顺序' @click.native="onProductDisplaySortSetClick(null)" />
-        <TipsSpanButton text='工厂' @click.native="onProductFactorySetClick" />
-        <TipsSpanButton text='文件' @click.native="setCommonPathJump('ProductFileList')" />
-        <TipsSpanButton text='公式' @click.native="setCommonPathJump('ProductFormulaList')" />
-        <TipsSpanButton text='交互' @click.native="setCommonPathJump('ProductInteractionList')" />
-        <TipsSpanButton text='文件名设置' @click.native="setCommonPathJump('ProductFileNameSet')" />
-        <TipsSpanButton text='库存' @click.native="setCommonPathJump('ProductStockList')" />
-      </div>
-      <div class="img-menu-box">
-        <span @click="onPartSaveClick(null)">
-          <i></i>添加部件
-        </span>
-        <span @click="onProductSaveClick">
-          <i></i>编辑
-        </span>
-        <span @click="onRemoveClick">
-          <i></i>删除
-        </span>
-      </div>
-      <div class="extend-box" @click="onExtendClick" :class="itemData.PartList&&itemData.PartList.length>0 ? '' : 'disabled'">
+      <template v-if="Permission && Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">
+        <div class="order-ctrl" :title="!canOrder ? '先设置 [产品 - 设置元素] 后才可设置下单' : ''">
+          <el-checkbox :disabled='!canOrder && !helpOrderChecked' v-model="helpOrderChecked">可代客下单</el-checkbox>
+          <el-checkbox :disabled='!canOrder && !customOrderChecked' v-model="customOrderChecked">可自助上传</el-checkbox>
+        </div>
+        <div class="text-menu-box">
+          <TipsSpanButton text='界面元素' @click.native="onElementSaveClick(null)" />
+          <TipsSpanButton text='尺寸物料' @click.native="onProductSizeMaterialSetClick(null)" />
+          <TipsSpanButton text='工艺' @click.native="onProductCraftSetClick(null)" />
+          <TipsSpanButton text='设置元素' @click.native="onElementMapSetClick(null)" />
+          <TipsSpanButton style="margin-right:40px" text='显示顺序' @click.native="onProductDisplaySortSetClick(null)" />
+          <TipsSpanButton text='工厂' @click.native="onProductFactorySetClick" />
+          <TipsSpanButton text='文件' @click.native="setCommonPathJump('ProductFileList')" />
+          <TipsSpanButton text='公式' @click.native="setCommonPathJump('ProductFormulaList')" />
+          <TipsSpanButton text='交互' @click.native="setCommonPathJump('ProductInteractionList')" />
+          <TipsSpanButton text='文件名设置' @click.native="setCommonPathJump('ProductFileNameSet')" />
+          <TipsSpanButton text='库存' @click.native="setCommonPathJump('ProductStockList')" />
+        </div>
+        <div class="img-menu-box">
+          <span @click="onPartSaveClick(null)">
+            <i></i>添加部件
+          </span>
+          <span @click="onProductSaveClick">
+            <i></i>编辑
+          </span>
+          <span @click="onRemoveClick">
+            <i></i>删除
+          </span>
+        </div>
+      </template>
+      <div class="extend-box" @click="onExtendClick"
+        :class="{
+          nonePermission: !(Permission && Permission.PermissionList.PermissionProductBase.Obj.SetupProduct),
+          disabled: !(itemData.PartList&&itemData.PartList.length>0)
+        }"
+        >
         <span v-if="!extend">展开</span>
         <span v-else>隐藏</span>
         <i v-if="!extend" class="el-icon-caret-bottom"></i>
@@ -48,14 +55,14 @@
         <div>
           <span :title="it.Name">{{it.Name}}</span>
         </div>
-        <div>
+        <div v-if="Permission && Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">
           <TipsSpanButton text='界面元素' @click.native="onElementSaveClick(it)" />
           <TipsSpanButton text='尺寸物料' @click.native="onProductSizeMaterialSetClick(it)" />
           <TipsSpanButton text='工艺' @click.native="onProductCraftSetClick(it)" />
           <TipsSpanButton text='设置元素' @click.native="onElementMapSetClick(it)" />
           <TipsSpanButton text='显示顺序' @click.native="onProductDisplaySortSetClick(it)" />
         </div>
-        <div>
+        <div v-if="Permission && Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">
           <TipsSpanButton text='编辑' @click.native="onPartSaveClick(it)" />
           <TipsSpanButton text='删除' @click.native="onPartRemoveClick(it)" isRed />
         </div>
@@ -87,6 +94,7 @@ export default {
   computed: {
     ...mapGetters('common', ['twoLevelsProductClassify']),
     ...mapState('productManage', ['ProductElementTypeList']),
+    ...mapState('common', ['Permission']),
     helpOrderChecked: { // 代客下单
       get() {
         if (!this.itemData) return false;
@@ -266,6 +274,7 @@ export default {
     box-sizing: border-box;
     background-color: #f8f8f8;
     align-items: center;
+    position: relative;
     > div {
       flex: none;
       &.title-box {
@@ -416,6 +425,11 @@ export default {
             filter: grayscale(1);
             color: #ddd;
           }
+        }
+        &.nonePermission {
+          position: absolute;
+          right: 30px;
+          top: 5px;
         }
       }
     }

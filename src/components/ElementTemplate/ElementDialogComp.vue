@@ -331,6 +331,7 @@ export default {
       testCheck: true,
       optionMultipleDisabled: false,
       switchDisabled: false,
+      isOtherTrigger: false,
     };
   },
   computed: {
@@ -439,7 +440,11 @@ export default {
           }
         }
       }
-      this.$refs.ruleForm.validateField('NumbericAttribute.NumberValueLimit');
+      if (!this.isOtherTrigger) {
+        this.$refs.ruleForm.validateField('NumbericAttribute.NumberValueLimit');
+      } else {
+        this.isOtherTrigger = false;
+      }
       this.$refs.ruleForm.validateField('NumbericAttribute.NumberDefaultValue');
       callback();
     },
@@ -534,6 +539,8 @@ export default {
           return;
         }
       }
+      this.isOtherTrigger = true;
+      this.$refs.ruleForm.validateField('NumbericAttribute.InputContent');
       callback();
     },
     // 下面为选项类型校验

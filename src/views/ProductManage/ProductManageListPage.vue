@@ -3,8 +3,10 @@
     <header>
       <!-- 顶部按钮及筛选区域 -->
       <div class="left">
-        <el-button type="primary" class="mp-common-btn-styles" @click="onProductSaveClick(null)">添加产品</el-button>
-        <el-button type="primary" class="mp-common-btn-styles" @click="goToClassifyPage">管理产品分类</el-button>
+        <el-button type="primary" class="mp-common-btn-styles" @click="onProductSaveClick(null)"
+         v-if="Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">添加产品</el-button>
+        <el-button type="primary" class="mp-common-btn-styles" @click="goToClassifyPage"
+         v-if="Permission.PermissionList.PermissionProductBase.Obj.ManageProductClass">管理产品分类</el-button>
         <NewProductClassifySelectComp v-model="ProductClass" />
       </div>
       <search-input-comp
@@ -54,7 +56,7 @@ export default {
   mixins: [recordScrollPositionMixin('.mp-erp-product-manage-table-comp-wrap')],
   computed: {
     ...mapState('productManage', ['condition4ProductManageList', 'ProductManageList', 'ProductManageListNumber', 'isTableDataLoading']),
-    ...mapState('common', ['OperatorKeyValueList']),
+    ...mapState('common', ['OperatorKeyValueList', 'Permission']),
     ProductClass: {
       get() {
         return this.condition4ProductManageList.ProductClass;
@@ -115,9 +117,11 @@ export default {
     > .left {
       display: flex;
       align-items: center;
-      > button + button {
-        margin-left: 20px !important;
-        margin-right: 50px;
+      > button {
+        margin-right: 20px;
+        & + button {
+          margin-right: 50px;
+        }
       }
     }
     > section {

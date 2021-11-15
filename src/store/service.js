@@ -458,7 +458,7 @@ export default {
       if (state.SolutionType === 'replenish') { // 补印
         const { KindCount, Amount } = state.replenish;
         _obj.Solution.Type = 7; // 减款为2  补印为7
-        _obj.Solution.FileName = state.replenishFileUniqueName ? state.replenishFileUniqueName : '';
+        _obj.Solution.UniqueName = state.replenishFileUniqueName ? state.replenishFileUniqueName : '';
         _obj.Solution.KindCount = +KindCount || '';
         _obj.Solution.Number = +Amount || '';
       }

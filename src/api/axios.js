@@ -99,7 +99,7 @@ axios.interceptors.response.use(
             };
             // }
             messageBox.failSingleError(undefined, '[ 错误 401：请重新登录! ]', _func);
-            localStorage.removeItem('staffDetailData');
+            sessionStorage.removeItem('staffDetailData');
             key = true;
             break;
           case 404:

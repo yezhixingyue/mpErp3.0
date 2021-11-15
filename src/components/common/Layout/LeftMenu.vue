@@ -292,6 +292,7 @@ export default {
         > i {
           margin-right: 6px;
           margin-top: -2px;
+          // text-align: left;
           &.iconfont {
             font-size: 15px;
             margin-left: 4px;
@@ -387,5 +388,11 @@ export default {
         opacity: 1;
       }
     }
+  }
+  .el-menu .el-menu-item > i.el-icon-edit-outline {
+    margin-right: 0;
+  }
+  .el-menu--vertical > .el-menu .el-menu-item > i.el-icon-edit-outline {
+    text-align: left;
   }
 </style>

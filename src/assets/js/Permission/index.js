@@ -6,19 +6,19 @@
 import api from '@/api/index';
 
 export default async function getPermission(token) {
-  const _detailData = localStorage.getItem('staffDetailData');
+  const _detailData = sessionStorage.getItem('staffDetailData');
   if (!_detailData) {
     let key = true;
     const res = await api.getStaffDetail().catch(() => { key = false; });
     if (key && res && res.status === 200 && res.data.Status === 1000) {
-      localStorage.setItem('staffDetailData', JSON.stringify(res.data.Data));
+      sessionStorage.setItem('staffDetailData', JSON.stringify(res.data.Data));
       return res.data.Data;
     }
     return res && res.data ? res.data.Message : '获取账号信息失败，请刷新重试';
   }
   const data = JSON.parse(_detailData);
   if (data.Token === token) return data;
-  localStorage.removeItem('staffDetailData');
+  sessionStorage.removeItem('staffDetailData');
   return getPermission(token);
 }
 

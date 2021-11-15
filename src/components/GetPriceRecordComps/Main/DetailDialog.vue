@@ -1,7 +1,7 @@
 <template>
   <CommonDialogComp
     width="800px"
-    top='6vh'
+    top='10vh'
     title="报价详情"
     :visible.sync="visible"
     :showSubmit='false'
@@ -45,7 +45,6 @@ export default {
   },
   methods: {
     onOpen() {
-      console.log(this.detailData);
       this.$store.dispatch('common/getUserClassify');
     },
   },
