@@ -17,7 +17,7 @@
     <el-table-column prop="LinkMan" label="联系人" min-width="130"> </el-table-column>
     <el-table-column prop="Mobile" label="联系电话" min-width="130"> </el-table-column>
     <el-table-column label="操作" width="320">
-      <div class="menu-list" slot-scope="scope">
+      <div class="menu-list" slot-scope="scope" v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.Setup">
         <span @click="onEditClick(scope.row)"><i></i>编辑</span>
         <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
       </div>
@@ -31,6 +31,7 @@
 
 <script>
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
+import { mapState } from 'vuex';
 
 export default {
   props: {
@@ -49,6 +50,9 @@ export default {
     return {
       search: '',
     };
+  },
+  computed: {
+    ...mapState('common', ['Permission']),
   },
   methods: {
     setHeight() {

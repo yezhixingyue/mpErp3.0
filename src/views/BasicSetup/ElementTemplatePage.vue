@@ -10,6 +10,7 @@
       :isLoadingElement='isLoadingElement'
       :isLoadingGroup='isLoadingGroup'
       :isCommon='true'
+      :nonePermission='!(Permission && Permission.PermissionList.PermissionProductBase.Obj.SetupProduct)'
       @saveElement='handleEditSubmitSuccess'
       @removeElement='onElementRemove'
       @saveElementGroup='handleGroupSaveSuccess'
@@ -37,6 +38,7 @@ export default {
   },
   computed: {
     ...mapState('basicSet', ['ElementDataList', 'ElementGroupDataList']),
+    ...mapState('common', ['Permission']),
   },
   methods: {
     handleEditSubmitSuccess({ saveType, editData, ID }) { // 元素添加|编辑成功后的处理方法

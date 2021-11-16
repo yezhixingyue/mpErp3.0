@@ -1,8 +1,10 @@
 <template>
   <section class="mp-erp-craft-manage-craft-list-page-wrap">
     <header>
-      <el-button type="primary" @click="onCraftItemSave(null)">添加工艺</el-button>
-      <span class="blue-span" @click="jumpToClassifyPageClick">管理工艺分类</span>
+      <template v-if="Permission && Permission.PermissionList.PermissionCraftBase.Obj.Setup">
+        <el-button type="primary" @click="onCraftItemSave(null)">添加工艺</el-button>
+        <span class="blue-span" @click="jumpToClassifyPageClick">管理工艺分类</span>
+      </template>
       <order-channel-selector
         :options='level1OptionList'
         :requestFunc='getCraftListData'
@@ -66,7 +68,7 @@ export default {
   },
   computed: {
     ...mapState('basicSet', ['CraftDataList', 'CraftDataNumber', 'Condition4CraftList', 'craftFetchData']),
-    ...mapState('common', ['CraftClassifyData']),
+    ...mapState('common', ['CraftClassifyData', 'Permission']),
     ...mapGetters('common', ['twoLevelsCraftClassify']),
     level1OptionList() {
       const defaultItem = { ClassName: '不限', ID: '' };

@@ -1,6 +1,7 @@
 <template>
   <header>
-    <el-button type="primary" @click="onClick" class="blue-full-color-btn-styles is-blue-button">添加生产工厂</el-button>
+    <el-button type="primary" v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.Setup"
+     @click="onClick" class="blue-full-color-btn-styles is-blue-button">添加生产工厂</el-button>
     <div class="input-box">
       <el-input placeholder="请输入搜索关键字" v-model.trim="keyWord" @keyup.enter.native="onFilterClick"></el-input>
       <el-button type="primary" @click="onFilterClick">筛选</el-button>
@@ -10,6 +11,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   props: {
     filterWords: {},
@@ -18,6 +21,9 @@ export default {
     return {
       keyWord: '',
     };
+  },
+  computed: {
+    ...mapState('common', ['Permission']),
   },
   methods: {
     onClick() {

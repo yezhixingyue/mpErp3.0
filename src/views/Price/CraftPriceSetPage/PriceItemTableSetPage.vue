@@ -9,8 +9,7 @@
       <div class="import">
         <span class="mp-common-title-wrap black f-15">{{curSolutionItem.ShowName}}</span>
         <div>
-          <span class="blue-span" @click="onExcelImportClick">导入表</span>
-          <!-- <span class="condition">{{ConstraintContent}}</span> -->
+          <SpanUpload @afterUpload='handleExcelImport' :paramsArray='paramsArray' accept='.xls' />
           <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
             <div slot="content">
               <template v-if="Array.isArray(PriceTableData._ConditionText)">
@@ -128,6 +127,7 @@ import AxisPropDataSetDialog from '@/components/PriceComps/PriceTableItem/AxisPr
 import FormItemOptionDataSetDialog from '@/components/PriceComps/PriceTableItem/FormItemOptionDataSetDialog.vue';
 import TableContentComp from '@/components/PriceComps/PriceTableItem/TableContentComp.vue';
 import ResultFormulaTableCom from '@/components/PriceComps/PriceTableItem/ResultFormulaTableCom.vue';
+import SpanUpload from '@/components/common/NewComps/SpanUpload.vue';
 
 export default {
   name: 'CraftPriceTableItemSet',
@@ -137,6 +137,7 @@ export default {
     FormItemOptionDataSetDialog,
     TableContentComp,
     ResultFormulaTableCom,
+    SpanUpload,
   },
   data() {
     return {
@@ -213,6 +214,10 @@ export default {
         CraftPriceID: this.CraftPriceID,
         UseModule: 5,
       };
+    },
+    paramsArray() {
+      const solutionID = this.curSolutionItem?.ID || '';
+      return [solutionID];
     },
   },
   methods: {
@@ -428,8 +433,14 @@ export default {
       this.FormItemOptionSetVisible = false;
       this.generatePriceListData();
     },
-    onExcelImportClick() { // 导入表格点击
-      // console.log('onExcelImportClick');
+    handleExcelImport(e) { // 导入表格点击
+      if (!e || typeof e !== 'object') return;
+      const ID = this.curEditPriceItemData ? this.curEditPriceItemData.ID : '';
+      const temp = { ...e, ID };
+      this.PriceTableData = new PriceTableClass(temp); // 初始化价格类对象（添加|编辑）
+      this.generatePriceListData(); // 初始化价格表数据PriceList
+      this.getInitDataFromRoutePath();
+      if (!this.fetchFormulaListData) this.initFetchResultFormula = false;
     },
     getIsOrNotSameBy2Array(arr1, arr2) {
       if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;

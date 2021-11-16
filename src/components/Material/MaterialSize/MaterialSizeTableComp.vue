@@ -15,8 +15,8 @@
     <el-table-column prop="WidthText" label="宽度"  min-width="240" show-overflow-tooltip></el-table-column>
     <el-table-column label="操作" min-width="380" class-name='menu-column'>
       <div class="menu-list" slot-scope="scope">
-        <span @click="onEditClick(scope.row)"><i></i>编辑</span>
-        <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
+        <span @click="onEditClick(scope.row)" v-if="Permission && Permission.PermissionList.PermissionMateriel.Obj.Edit"><i></i>编辑</span>
+        <span @click="onRemoveClick(scope.row)" v-if="Permission && Permission.PermissionList.PermissionMateriel.Obj.Delete"><i></i>删除</span>
       </div>
     </el-table-column>
     <div slot="empty">
@@ -27,6 +27,7 @@
 
 <script>
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
+import { mapState } from 'vuex';
 
 export default {
   props: {
@@ -40,6 +41,7 @@ export default {
     },
   },
   computed: {
+    ...mapState('common', ['Permission']),
     localTableData() {
       if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
       return this.dataList.map(it => ({

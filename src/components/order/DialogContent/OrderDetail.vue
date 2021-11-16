@@ -263,7 +263,7 @@
                   </li>
                   <li>
                     <span class="text-title">报价方式：</span>
-                    <span class="text is-font-size-13">{{priceTypeContent}}</span>
+                    <span class="text is-font-size-13">{{this.showData.Terminal | formatTerminalType}}</span>
                   </li>
                   <li>
                     <span class="text-title">报价时间：</span>
@@ -303,7 +303,7 @@ export default {
   },
   computed: {
     ...mapState('orderModule', ['orderDetailData']),
-    ...mapState('common', ['userTypeList', 'userRankList', 'TerminalTypeList']),
+    ...mapState('common', ['userTypeList', 'userRankList']),
     showData() {
       if (this.detailData) return this.detailData;
       return this.orderDetailData;
@@ -355,13 +355,6 @@ export default {
           const c2 = t2 ? `${t2.CategoryName}` : '';
           return [c1, c2].filter(it => it).join('-');
         }
-      }
-      return '';
-    },
-    priceTypeContent() {
-      if (this.isCalculate && (this.showData.Terminal || this.showData.Terminal === 0)) {
-        const t = this.TerminalTypeList.find(it => it.ID === this.showData.Terminal);
-        return t ? t.name : '';
       }
       return '';
     },

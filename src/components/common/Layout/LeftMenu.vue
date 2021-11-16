@@ -6,7 +6,7 @@
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu :default-active="defaultActive" :default-openeds='defaultOpeneds' background-color="#222B3A" :collapse="isCollapse"
         :collapse-transition='true' text-color="#fff" class="el-menu-vertical-demo" active-text-color="#26bcf9">
-        <el-submenu v-for="(routeWrap, index) in menuList" :key="routeWrap.path" :index='`${index + 1}`'>
+        <el-submenu v-for="(routeWrap, index) in menuList" :key="routeWrap.path" :index='`${index + 1}`' v-show="routeWrap.children.length > 0">
           <template slot="title">
             <i :class="routeWrap.meta.icon" class="title-icon" v-show="isCollapse"></i>
             <span slot="title">{{routeWrap.meta.title}}</span>

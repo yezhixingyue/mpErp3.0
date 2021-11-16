@@ -594,6 +594,17 @@ const api = {
   getProductPriceCopy(data) { // POST /Api/ProductPrice/Copy  复制价格
     return instance.post('/Api/ProductPrice/Copy', data);
   },
+  getPriceTableImport(file, solutionID, onUploadProgressFunc) { // POST /Api/PriceTable/Import  价格表导入
+    const formData = new FormData();
+    formData.append('file', file);
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: onUploadProgressFunc && onUploadProgressFunc,
+    };
+    return instance.post(`/Api/PriceTable/Import?solutionID=${solutionID}`, formData, config);
+  },
   getPriceTableExport({ productID, tableID }) { // GET /Api/PriceTable/Export  价格表导出
     return instance.get('/Api/PriceTable/Export', { responseType: 'arraybuffer', params: { productID, tableID } });
   },

@@ -74,7 +74,7 @@
       width="85"
       show-overflow-tooltip
     >
-      <template slot-scope="scope">{{ getTerminalText(scope.row.Terminal)}}</template>
+      <template slot-scope="scope">{{ scope.row.Terminal | formatTerminalType }}</template>
     </el-table-column>
     <el-table-column label="报价时间" show-overflow-tooltip width="135">
       <span class="is-gray" slot-scope="scope">{{
@@ -102,7 +102,6 @@ import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMi
 export default {
   computed: {
     ...mapState('PriceRecord', ['RecordDataList', 'RecordDataNumber', 'loading']),
-    ...mapState('common', ['TerminalTypeList']),
   },
   mixins: [tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   filters: {
@@ -133,10 +132,6 @@ export default {
       // const tempHeight = this.getHeight('.mp-erp-get-price-record-page-main-comp-wrap', 0);
       const oDom = document.querySelector('.mp-erp-get-price-record-page-main-comp-wrap'); // 未使用通用方式获取高度
       this.h = oDom.offsetHeight;
-    },
-    getTerminalText(Terminal) {
-      const t = this.TerminalTypeList.find(it => it.ID === Terminal);
-      return t ? t.name : '';
     },
     onDetaClick(data) {
       this.$emit('detail', data);

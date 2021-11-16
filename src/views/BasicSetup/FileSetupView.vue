@@ -1,6 +1,6 @@
 <template>
   <section class="mp-erp-file-manage-page-wrap">
-    <header>
+    <header v-if="Permission && Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">
       <el-button type="primary" class="blue-full-color-btn-styles is-blue-button" @click="onFileSetClick(null)">添加文件类目</el-button>
     </header>
     <main>
@@ -34,7 +34,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('common', ['FileDataList', 'FileTypeList']),
+    ...mapState('common', ['FileDataList', 'FileTypeList', 'Permission']),
   },
   methods: {
     onFileSetClick(data) { // 添加 或 编辑

@@ -15,7 +15,7 @@
     <el-table-column prop="CustomerHiddenStringify" label="客户界面" width="110"></el-table-column>
     <el-table-column prop="describeStringify" label="描述" show-overflow-tooltip></el-table-column>
     <el-table-column label="操作" width="220">
-      <div class="menu-list" slot-scope="scope">
+      <div class="menu-list" slot-scope="scope" v-if="!nonePermission">
         <span @click="onEditClick(scope.row)"><i></i>编辑</span>
         <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
       </div>
@@ -39,6 +39,10 @@ export default {
       type: Array,
     },
     loading: {
+      type: Boolean,
+      default: false,
+    },
+    nonePermission: { // 是否没有权限 默认false为有
       type: Boolean,
       default: false,
     },

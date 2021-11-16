@@ -1,10 +1,14 @@
 <template>
   <main class="mp-erp-common-comps-basic-setup-element-set-common-comp-wrap">
     <div class="item-box">
-      <p>
+      <p v-if="!nonePermission">
         <el-button type="primary" @click="onElementTemplateSetClick(null)">+添加界面元素</el-button>
       </p>
-      <ElementTableComp :dataList='ElementDataList' @edit='onElementTemplateSetClick' @remove='onElementRemove' :loading='isLoadingElement' />
+      <p v-else style="height:30px;font-size:14px;padding:0;color:#585858;font-weight:700">
+        <span>界面元素：</span>
+      </p>
+      <ElementTableComp :nonePermission='nonePermission' :dataList='ElementDataList'
+       @edit='onElementTemplateSetClick' @remove='onElementRemove' :loading='isLoadingElement' />
     </div>
     <ElementDialogComp
      :visible.sync='elementVisible'
@@ -15,11 +19,14 @@
      :commonList='commonElementList' />
     <template v-if="showGroup">
       <div class="item-box">
-        <p>
+        <p v-if="!nonePermission">
           <el-button type="primary" @click="onElementGroupSetClick(null)">+添加界面元素组</el-button>
           <span v-if="!isCommon" class="blue-span" @click="onElementGroupCopyClick">根据元素组模板添加</span>
         </p>
-        <ElementGroupTableComp :dataList='ElementGroupDataList' @edit='onElementGroupSetClick'
+        <p v-else style="height:30px;font-size:14px;padding:0;color:#585858;font-weight:700;padding-top:25px">
+          <span>界面元素组：</span>
+        </p>
+        <ElementGroupTableComp :dataList='ElementGroupDataList' @edit='onElementGroupSetClick' :nonePermission='nonePermission'
           @remove='onElementGroupRemove' @sort='onElementGroupSort' :loading='isLoadingGroup'/>
       </div>
       <ElementGroupDialogComp
@@ -64,6 +71,10 @@ export default {
       default: false,
     },
     isCommon: {
+      type: Boolean,
+      default: false,
+    },
+    nonePermission: { // 是否没有权限 默认false为有
       type: Boolean,
       default: false,
     },

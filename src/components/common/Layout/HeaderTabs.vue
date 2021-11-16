@@ -35,7 +35,7 @@
       <span>你好，</span>
       <span>欢迎使用名片之家后台管理系统</span>
       <span v-if="dateString">，今天是{{ dateString }}，{{ weekString }}</span>
-      <span>，祝你工作愉快，大展宏图</span>
+      <span>，祝你工作愉快</span>
       <i>!</i>
     </div>
     <!-- <el-scrollbar wrap-class="header-scrollbar-wrapper"> -->

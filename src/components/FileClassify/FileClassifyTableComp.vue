@@ -16,7 +16,7 @@
     <el-table-column prop="FailTips" label="未上传提示文字" show-overflow-tooltip></el-table-column>
     <el-table-column prop="ShowIndex" label="显示顺序" sortable="" width="160"></el-table-column>
     <el-table-column label="操作" width="180">
-      <div class="menu-list" slot-scope="scope">
+      <div class="menu-list" slot-scope="scope" v-if="Permission && Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">
         <span @click="onEditClick(scope.row)"><i></i>编辑</span>
         <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
       </div>
@@ -29,6 +29,7 @@
 
 <script>
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
+import { mapState } from 'vuex';
 
 export default {
   props: {
@@ -46,6 +47,7 @@ export default {
     },
   },
   computed: {
+    ...mapState('common', ['Permission']),
     localTableData() {
       if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
       return this.dataList.map(it => ({

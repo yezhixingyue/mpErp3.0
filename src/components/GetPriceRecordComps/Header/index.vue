@@ -2,7 +2,7 @@
   <header class="mp-erp-get-price-record-page-header-comp-wrap">
     <div>
       <OrderChannelSelector
-        :options='progressList'
+        :options='selfHelpOrderTypeList'
         :requestFunc='getRecordList'
         :changePropsFunc='setRequestObj'
         :typeList="[['Terminal', '']]"
@@ -49,13 +49,9 @@ export default {
   },
   computed: {
     ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataList']),
-    ...mapState('common', ['TerminalTypeList']),
+    ...mapState('common', ['selfHelpOrderTypeList']),
     UserDefinedTimeIsActive() {
       return this.condition4RecordList.DateType === '' && !!this.condition4RecordList.CalculateDate.First && !!this.condition4RecordList.CalculateDate.Second;
-    },
-    progressList() {
-      if (!this.TerminalTypeList || this.TerminalTypeList.length === 0) return [];
-      return [{ name: '不限', ID: '' }, ...this.TerminalTypeList];
     },
   },
   data() {

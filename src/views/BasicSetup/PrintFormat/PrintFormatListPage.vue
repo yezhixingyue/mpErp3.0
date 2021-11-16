@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-print-breadth-page-wrap">
     <header>
-      <div class="menu">
+      <div class="menu" v-if="Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll">
         <el-button type="primary" @click="onBreadthSaveClick(null)">添加印刷幅面</el-button>
         <span class="blue-span" @click="onClassManageClick">管理分类</span>
       </div>
@@ -35,6 +35,7 @@ export default {
   mixins: [recordScrollPositionMixin('.mp-erp-print-breadth-page-wrap .el-table__body-wrapper')],
   computed: {
     ...mapState('basicSet', ['BreadthCLassList', 'BreadthList']),
+    ...mapState('common', ['Permission']),
     listData() {
       if ((!this.classID && this.classID !== 0 && this.classID !== '') || this.BreadthList.length === 0) return [];
       if (this.classID === '') return this.BreadthList;

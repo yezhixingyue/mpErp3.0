@@ -15,7 +15,7 @@
     <el-table-column prop="MinSize" label="最小幅面" width="280"></el-table-column>
     <el-table-column prop="MaxSize" label="最大幅面" width="280"></el-table-column>
     <el-table-column label="操作" width="280">
-      <div class="menu-list" slot-scope="scope">
+      <div class="menu-list" slot-scope="scope" v-if="Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll">
         <span @click="onEditClick(scope.row)"><i></i>编辑</span>
         <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
       </div>
@@ -29,6 +29,7 @@
 <script>
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import { MakeupMode } from '@/assets/js/TypeClass/PrintBreadth';
+import { mapState } from 'vuex';
 
 export default {
   props: {
@@ -42,6 +43,7 @@ export default {
     },
   },
   computed: {
+    ...mapState('common', ['Permission']),
     localTableData() {
       if (!this.dataList || !Array.isArray(this.dataList) || this.dataList.length === 0) return [];
       return this.dataList.map(it => ({

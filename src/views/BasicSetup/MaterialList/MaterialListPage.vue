@@ -1,8 +1,10 @@
 <template>
   <section class="mp-erp-material-list-page-wrap">
     <header>
-      <el-button type="primary" @click="onAddClick">添加</el-button>
-      <el-button type="primary" @click="onMassClick">批量生成</el-button>
+      <template v-if="Permission && Permission.PermissionList.PermissionMateriel.Obj.Add">
+        <el-button type="primary" @click="onAddClick">添加</el-button>
+        <el-button type="primary" @click="onMassClick">批量生成</el-button>
+      </template>
       <span class="title">物料类型：</span>
       <el-select v-model="type" filterable placeholder="请选择" size="small">
         <el-option
@@ -46,6 +48,7 @@ export default {
   },
   computed: {
     ...mapState('basicSet', ['MaterialTypeList']),
+    ...mapState('common', ['Permission']),
     options() {
       const item = { ID: '', Name: '不限' };
       if (!this.MaterialTypeList) return [item];

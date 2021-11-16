@@ -45,7 +45,6 @@ const routes = [
     component: () => import('../../../views/ProductManage/ProductElementSetPage.vue'),
   },
   {
-    // path: '/ProductSizeMaterialSet/:id/:name/:type/:times',
     path: '/ProductSizeMaterialSet/:ProductID/:PartID/:name/:type/:times',
     name: 'ProductSizeMaterialSet',
     meta: {

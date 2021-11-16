@@ -134,6 +134,7 @@ export default {
       { name: '不限', ID: '' },
       { name: '客户端', ID: 0 },
       { name: '网页版', ID: 1 },
+      { name: '移动端', ID: 2 },
     ],
     /* 订单状态相关 --- 只用于包裹列表等运单部分状态显示
     -------------------------------*/
@@ -444,11 +445,6 @@ export default {
       { Name: 'Craft', ID: 1 },
       { Name: 'Product', ID: 2 },
       { Name: 'Part', ID: 3 },
-    ],
-    TerminalTypeList: [
-      { name: '客户端', ID: 0 },
-      { name: '网页', ID: 1 },
-      { name: '移动端', ID: 2 },
     ],
   },
   getters: {

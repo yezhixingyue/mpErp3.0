@@ -303,7 +303,7 @@ export default {
           minWidth: '76px',
           scope: (scope) => (<span>
             {scope.row.OrderType === 1
-              ? this.$options.filters.formatOrderTypeToText(scope.row.OrderType) : this.$options.filters.formatTerminalType(scope.row.TerminalType)}
+              ? this.$options.filters.formatOrderTypeToText(scope.row.OrderType) : this.$options.filters.formatTerminalType(scope.row.Terminal)}
           </span>),
           show: true,
         },

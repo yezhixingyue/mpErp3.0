@@ -5,7 +5,7 @@
       <el-collapse-item v-for="(it, i) in dataList" :key="i" :name="i">
         <template slot="title">
           <span class="t">{{it.ProductClass.FirstLevelName}} - {{it.ProductClass.SecondLevelName}}</span>
-          <span @click.stop="onAddClick(it)" class="is-gray"><i></i>添加工期</span>
+          <span @click.stop="onAddClick(it)" v-if="Permission && Permission.PermissionList.PermissionProducePeriod.Obj.Setup" class="is-gray"><i></i>添加工期</span>
           <span style="font-size: 12px; font-weight: 400; color: #989898; margin-left: 80px">
             共 <em style="color: #585858; font-weight: 700; font-size: 13px">{{it.count}}</em> 条数据</span>
         </template>
@@ -19,7 +19,7 @@
               </el-tooltip>
               <div v-else>{{item.ProductString}}</div>
               <div>{{item.RecordCount}}条记录</div>
-              <div>
+              <div v-if="Permission && Permission.PermissionList.PermissionProducePeriod.Obj.Setup">
                 <span class="blue-span" @click="handleEditClick(item)">编辑</span>
                 <span class="red-span" @click="handleDelClick(item, i)">删除</span>
               </div>
@@ -37,6 +37,7 @@ import { mapState } from 'vuex';
 export default {
   computed: {
     ...mapState('timelimit', ['searchCondition', 'dataList', 'TimeLimitActiveNames']),
+    ...mapState('common', ['Permission']),
     activeNames: {
       get() {
         return this.TimeLimitActiveNames;

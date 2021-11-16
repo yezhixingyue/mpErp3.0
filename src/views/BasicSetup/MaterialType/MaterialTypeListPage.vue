@@ -1,7 +1,8 @@
 <template>
   <section class="mp-erp-material-type-page-wrap">
     <header>
-      <el-button type="primary" @click="onMaterialTypeSaveClick(null)">添加物料类型</el-button>
+      <el-button type="primary" @click="onMaterialTypeSaveClick(null)"
+       v-if="Permission && Permission.PermissionList.PermissionMateriel.Obj.Add">添加物料类型</el-button>
       <span class="info" @click="drawer = true" title="点击查看">
         <i>?</i>
         <em>元素组合说明</em>
@@ -55,6 +56,7 @@ export default {
   },
   computed: {
     ...mapState('basicSet', ['MaterialTypeList']),
+    ...mapState('common', ['Permission']),
   },
   methods: {
     onMaterialTypeSaveClick(data) {
