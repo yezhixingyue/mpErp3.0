@@ -21,6 +21,11 @@
             <el-checkbox v-model="productData.IsSpacial">非标准化产品</el-checkbox>
             <span class="tip">（ 非标准化产品允许修改价格，允许编写订单备注 ）</span>
           </li>
+          <li class="remark">
+            <p>产品备注：</p>
+            <el-input size="small" v-model="productData.Remark" maxlength="50" show-word-limit></el-input>
+            <span class="tip">设置产品负责部门或经理联系方式，用于下单界面展示,可为空</span>
+          </li>
         </ul>
       </template>
       <template v-slot:right>
@@ -83,12 +88,12 @@ export default {
     getInitData() {
       if (this.curEditData) {
         this.title = '编辑产品';
-        const { ID, Name, ShowName, IsSpacial, ClassifyList } = this.curEditData;
-        this.productData = { ID, Name, ShowName, IsSpacial, ClassifyList: JSON.parse(JSON.stringify(ClassifyList)) };
+        const { ID, Name, ShowName, Remark, IsSpacial, ClassifyList } = this.curEditData;
+        this.productData = { ID, Name, ShowName, Remark, IsSpacial, ClassifyList: JSON.parse(JSON.stringify(ClassifyList)) };
         this.hideClassTypes = [];
       } else if (!this.curEditData) {
         this.title = '添加产品';
-        this.productData = { ID: '', Name: '', ShowName: '', IsSpacial: false, ClassifyList: [] };
+        this.productData = { ID: '', Name: '', ShowName: '', Remark: '', IsSpacial: false, ClassifyList: [] };
         this.hideClassTypes = [];
       } else {
         this.goback();
@@ -219,6 +224,14 @@ export default {
         > span {
           font-size: 12px;
           color: #a2a2a2;
+        }
+        &.remark {
+          > .el-input {
+            width: 400px;
+            input {
+              padding-right: 50px;
+            }
+          }
         }
       }
     }

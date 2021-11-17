@@ -9,7 +9,7 @@ export const FileNameReg = /^[\u0030-\u0039\uFF41-\uFF5A\uFF21-\uFF3A\u4e00-\u9f
 
 export const SplitCharsReg = /[^,'|\s]/g; // 分隔符不可选内容 使用replace替换为''
 
-export const GroupAndPartSplitCharsReg = /[^【】{}[\]《》<>()（）]/g; // 部件 或 元素组分隔符不可选内容 使用replace替换为''
+export const GroupAndPartSplitCharsReg = /[^【】{}[\]《》<>()（）\s]/g; // 部件 或 元素组分隔符不可选内容 使用replace替换为''
 
 // eslint-disable-next-line no-control-regex
 export const NotChineseWideCharReg = /[^\u4e00-\u9fa5\x00-\xff]/gm; // 非中文全角字符 使用reg.match方法验证

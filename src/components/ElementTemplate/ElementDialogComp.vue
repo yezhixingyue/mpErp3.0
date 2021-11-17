@@ -128,7 +128,7 @@
                  @click.native.stop='onDefaultOptionClick(i)'>
                 </el-radio>
                 <el-checkbox v-model="it.IsChecked" v-if="ruleForm.OptionAttribute.ChooseType === 'multiple'" class="multiple-box"></el-checkbox>
-                <el-input style='width:187px' v-model.trim="it.Name" maxlength="17"></el-input>
+                <el-input style='width:187px' v-model.trim="it.Name" maxlength="20"></el-input>
                 <el-input style='width:110px' v-model.trim="it.Value" maxlength="9"></el-input>
                 <el-checkbox v-model="it.HiddenToCustomer"></el-checkbox>
                 <div class="ctrl">

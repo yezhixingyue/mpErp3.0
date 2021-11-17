@@ -9,7 +9,7 @@
       <div class="import">
         <span class="mp-common-title-wrap black f-15">{{curSolutionItem.ShowName}}</span>
         <div>
-          <SpanUpload @afterUpload='handleExcelImport' :paramsArray='paramsArray' accept='.xls' />
+          <SpanUpload @afterUpload='handleExcelImport' canRepeat :paramsArray='paramsArray' accept='.xls' />
           <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
             <div slot="content">
               <template v-if="Array.isArray(PriceTableData._ConditionText)">
@@ -436,7 +436,9 @@ export default {
     handleExcelImport(e) { // 导入表格点击
       if (!e || typeof e !== 'object') return;
       const ID = this.curEditPriceItemData ? this.curEditPriceItemData.ID : '';
-      const temp = { ...e, ID };
+      const Constraint = this.curEditPriceItemData ? this.curEditPriceItemData.Constraint : null;
+      const _ConditionText = this.curEditPriceItemData ? this.curEditPriceItemData._ConditionText : undefined;
+      const temp = { ...e, ID, Constraint, _ConditionText };
       this.PriceTableData = new PriceTableClass(temp); // 初始化价格类对象（添加|编辑）
       this.generatePriceListData(); // 初始化价格表数据PriceList
       this.getInitDataFromRoutePath();

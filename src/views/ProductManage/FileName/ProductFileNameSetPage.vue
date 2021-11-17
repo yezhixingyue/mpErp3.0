@@ -20,17 +20,17 @@
           </li>
           <li>
             <span>部件开始结束符号：</span>
-            <el-input size="small" @focus="onInpFocus('PartSplitChars')" @blur="onInpBlur" v-model.trim="PartSplitChars"></el-input>
+            <el-input size="small" @focus="onInpFocus('PartSplitChars')" @blur="onInpBlur" v-model="PartSplitChars"></el-input>
             <div :class="showTipType === 'PartSplitChars' ? 'active':''" class="tip">只可输入【】 {} []  《》 &lt; &gt; () （）等符号，必须成对出现</div>
           </li>
           <li>
             <span>元素组开始结束符号：</span>
-            <el-input size="small" @focus="onInpFocus('GroupSplitChars')" @blur="onInpBlur" v-model.trim="GroupSplitChars"></el-input>
+            <el-input size="small" @focus="onInpFocus('GroupSplitChars')" @blur="onInpBlur" v-model="GroupSplitChars"></el-input>
             <div :class="showTipType === 'GroupSplitChars' ? 'active':''" class="tip">只可输入【】 {} []  《》 &lt; &gt; () （）等符号，必须成对出现，且不可与其它分隔符重复</div>
           </li>
           <li>
             <span>工艺开始结束符号：</span>
-            <el-input size="small" @focus="onInpFocus('CraftSplitChars')" @blur="onInpBlur" v-model.trim="CraftSplitChars"></el-input>
+            <el-input size="small" @focus="onInpFocus('CraftSplitChars')" @blur="onInpBlur" v-model="CraftSplitChars"></el-input>
             <div :class="showTipType === 'CraftSplitChars' ? 'active':''" class="tip">只可输入【】 {} []  《》 &lt; &gt; () （）等符号，必须成对出现，且不可与其它分隔符重复</div>
           </li>
           <li class="explain" @click="onExplainClick">
