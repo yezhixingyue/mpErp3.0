@@ -15,6 +15,7 @@
         :disabled='disabled'
         :DisabledList='DisabledList'
         :rightItemWidth='rightItemWidth'
+        :isLevel2='isLevel2'
         />
     </main>
   </article>
@@ -62,13 +63,27 @@ export default {
       type: Array,
       default: () => [],
     },
+    isLevel2: { // 只使用到2级分类
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     SingleItemComp,
   },
   computed: {
+    localList() {
+      if (this.isLevel2) {
+        const _list = this.list.map(level1 => {
+          const children = level1.children ? level1.children.map(it => ({ ...it, children: [] })) : [];
+          return { ...level1, children };
+        });
+        return _list;
+      }
+      return this.list;
+    },
     showList() {
-      if (!this.withNew) return this.list;
+      if (!this.withNew) return this.localList;
       const rootNewIncreasedItem = createOneNewIncreasedItem('root', this.title);
       const appendIncreased = (item) => { // 向列表中加入新加子项目
         const { children, ID } = item;
@@ -77,7 +92,7 @@ export default {
         const newIncreasedItem = createOneNewIncreasedItem(ID, this.title);
         return { ...item, children: [..._children, newIncreasedItem] };
       };
-      const _list = this.list.map(lv1 => appendIncreased(lv1));
+      const _list = this.localList.map(lv1 => appendIncreased(lv1));
       return [..._list, rootNewIncreasedItem];
     },
     checkAll: {
@@ -90,7 +105,7 @@ export default {
       },
     },
     allMinimumItemList() {
-      const list = this.withNew ? this.showList : this.list;
+      const list = this.withNew ? this.showList : this.localList;
       return getAllSubItemList(list);
     },
     allMinimumItemIDList() {

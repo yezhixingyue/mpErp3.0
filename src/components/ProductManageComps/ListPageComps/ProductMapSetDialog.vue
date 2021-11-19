@@ -142,17 +142,27 @@ export default {
       this.loading = true;
       const [ElementList, FormulaList] = await Promise.all([this.getElementList(), this.getFormulaList()]);
       this.loading = false;
-      const _ElementList = ElementList.filter(it => it.Type === 1 && !it.Group);
+      const _ElementList = ElementList.filter(it => it.Type === 1);
       this.ElementData.List = [..._ElementList, ...FormulaList];
       return [_ElementList, FormulaList];
     },
-    async getElementList() {
-      const resp = await this.api.getElementList({ positionID: this.ElementData.PositionID }, true).catch(() => {});
+    async getElementList() { // getElementGroupList
+      const [resp, groupResp] = await Promise.all([this.api.getElementList({ positionID: this.ElementData.PositionID }, true).catch(() => {}),
+        this.api.getElementGroupList(this.ElementData.PositionID, true).catch(() => {})]);
+      const list = [];
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
-        return resp.data.Data;
+        list.push(...resp.data.Data);
+      }
+      if (groupResp && groupResp.status === 200 && groupResp.data.Status === 1000 && groupResp.data.Data && groupResp.data.Data.length > 0) {
+        const _list = groupResp.data.Data.filter(it => it.UseTimes && it.UseTimes.MinValue === 1 && it.UseTimes.MaxValue === 1);
+        _list.forEach(it => {
+          if (it.ElementList?.length > 0) {
+            list.push(...it.ElementList.map(_it => ({ ..._it, Name: `${it.Name}:${_it.Name}` })));
+          }
+        });
       }
       this.ElementData.PositionID = '';
-      return [];
+      return list;
     },
     async getFormulaList() {
       if (this.curData) return []; // 此时设置的为部件，为部件时不设置重量，不需要数据，所以直接返回空数组

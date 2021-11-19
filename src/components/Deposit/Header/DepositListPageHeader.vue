@@ -38,7 +38,7 @@ export default {
     this.getDepositList();
   },
   activated() {
-    if (this.listData.length === 0) this.getDepositList();
+    // if (this.listData.length === 0) this.getDepositList();
   },
 };
 </script>

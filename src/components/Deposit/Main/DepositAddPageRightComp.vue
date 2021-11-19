@@ -25,6 +25,11 @@
       <span class="mp-head-page-title">是否扣物流费用：</span>
       <SingleRadioNew :list='radioList' v-model="IsChargeFreight" />
     </div>
+    <div class="area-box">
+      <span class="mp-head-page-title">销售区域：</span>
+      <!-- <NewAreaTreeSpreadComp v-model="ProductRange" :list='allProductClassify4Customer' title="产品" leftWidth='7em' rightItemWidth='10em' /> -->
+      <NewAreaTreeSpreadComp v-model="AreaRange" :list='allAreaTreeList' />
+    </div>
   </div>
 </template>
 
@@ -33,16 +38,18 @@ import { mapState, mapGetters } from 'vuex';
 import SingleBottomLineInputComp from '@/components/common/SingleBottomLineInputComp.vue';
 import CheckboxGroupComp from '@/components/common/CheckboxGroupComp.vue';
 import SingleRadioNew from '@/components/common/SingleRadioNew.vue';
+import NewAreaTreeSpreadComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp';
 
 export default {
   components: {
     SingleBottomLineInputComp,
     CheckboxGroupComp,
     SingleRadioNew,
+    NewAreaTreeSpreadComp,
   },
   computed: {
     ...mapState('common', ['userTypeList', 'userRankList']),
-    ...mapGetters('common', ['subExpressList']),
+    ...mapGetters('common', ['subExpressList', 'allAreaTreeList']),
     ...mapState('deposit', ['objForDepositAdd']),
     MinAmount: {
       get() {
@@ -66,6 +73,19 @@ export default {
       },
       set(newVal) {
         this.$store.commit('deposit/setObjForDepositAdd', [['IsChargeFreight', ''], newVal]);
+      },
+    },
+    AreaRange: {
+      get() {
+        return {
+          IsIncludeIncreased: this.objForDepositAdd ? this.objForDepositAdd.IsIncludeIncreasedArea : false,
+          List: this.objForDepositAdd ? this.objForDepositAdd.AreaList : [],
+        };
+      },
+      set(val) {
+        const { IsIncludeIncreased, List } = val;
+        this.$store.commit('deposit/setObjForDepositAdd', [['IsIncludeIncreasedArea', ''], IsIncludeIncreased || false]);
+        this.$store.commit('deposit/setObjForDepositAdd', [['AreaList', ''], List || []]);
       },
     },
     filterUserTypeList() {
@@ -109,6 +129,7 @@ export default {
   mounted() {
     this.$store.dispatch('common/getUserClassify');
     this.$store.dispatch('common/getExpressList');
+    this.$store.dispatch('common/getAreaList');
   },
 };
 </script>
@@ -151,6 +172,16 @@ export default {
     }
     > span.mp-single-radio-wrap {
       margin-left: 16px;
+    }
+    &.area-box {
+      display: flex;
+      > span {
+        flex: none;
+      }
+      > article {
+        margin-top: -2px;
+        margin-left: 16px;
+      }
     }
   }
 }

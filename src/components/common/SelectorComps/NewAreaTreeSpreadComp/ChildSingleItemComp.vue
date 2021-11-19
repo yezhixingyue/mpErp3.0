@@ -4,7 +4,7 @@
       <el-checkbox :class="{isIncreased:itemData.isIncreased}" :disabled='checkAllDisabled' :title="itemData.ClassName"
        :style='`width:${leftWidth}`' :indeterminate="isIndeterminate" v-model="checkAll">{{itemData.ClassName}}</el-checkbox>
     </header>
-    <main>
+    <main v-if="!isLevel2">
       <el-checkbox-group v-model="checkList" :disabled='disabled'>
         <el-checkbox :class="{isIncreased:it.isIncreased}" :title="it.ClassName" :disabled='DisabledList.includes(it.ID)'
          :style='`width:${rightItemWidth}`' :label="it.ID" v-for="(it, i) in itemData.children" :key="it.ClassName + i">{{it.ClassName}}</el-checkbox>
@@ -45,6 +45,10 @@ export default {
     DisabledList: {
       type: Array,
       default: () => [],
+    },
+    isLevel2: { // 只使用到2级分类
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

@@ -2,12 +2,14 @@
   <div class="mp-deposit-add-page-comp-wrap">
     <header class="mp-common-title-wrap">{{title}}</header>
     <div class="content">
-      <div class="left">
-        <deposit-add-page-left-comp />
-      </div>
-      <div class="right">
-        <deposit-add-page-right-comp />
-      </div>
+      <LRWidthDragAutoChangeComp leftWidth='45%'>
+        <template v-slot:left>
+          <DepositAddPageRightComp />
+        </template>
+        <template v-slot:right>
+          <DepositAddPageLeftComp />
+        </template>
+      </LRWidthDragAutoChangeComp>
     </div>
     <footer>
         <normal-btn-full @click.native="onSubmitClick" title="保存" />
@@ -21,6 +23,7 @@ import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import normalBtn from '@/components/common/normalBtn.vue';
 import DepositAddPageLeftComp from '@/components/Deposit/Main/DepositAddPageLeftComp.vue';
 import DepositAddPageRightComp from '@/components/Deposit/Main/DepositAddPageRightComp.vue';
+import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
 
 export default {
   name: 'DepositSettingsPage',
@@ -29,6 +32,7 @@ export default {
     normalBtnFull,
     DepositAddPageLeftComp,
     DepositAddPageRightComp,
+    LRWidthDragAutoChangeComp,
   },
   data() {
     return {
@@ -44,7 +48,7 @@ export default {
       // eslint-disable-next-line no-nested-ternary
       const _text = type === 'add' ? '添加成功' : type === 'edit' ? '修改成功' : '';
       this.messageBox.successSingle(_text, () => {
-        this.$store.commit('deposit/setListData', []);
+        this.$store.dispatch('deposit/getDepositList');
         this.onReturnClick();
       });
     },

@@ -528,6 +528,20 @@ export default {
           return;
         }
         index = this.ruleForm.NumbericAttribute.SectionList.findIndex(it => {
+          if (!it.IsGeneralValue) {
+            const numStr = `${+it.Increment}`;
+            if (numStr.includes('.')) {
+              const arr = numStr.split('.');
+              if (arr.length === 2 && arr[1].length > 3) return true;
+            }
+          }
+          return false;
+        });
+        if (index >= 0) {
+          callback(new Error('增量小数位数最多3位'));
+          return;
+        }
+        index = this.ruleForm.NumbericAttribute.SectionList.findIndex(it => {
           if (!it.IsGeneralValue) return false;
           if (this.formatNumberValueList.length === 0) return true;
           const _target = this.formatNumberValueList.find(val => +val > +it.MinValue && (it.MaxValue === '-1' || +val <= +it.MaxValue));

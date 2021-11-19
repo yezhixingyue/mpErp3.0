@@ -641,8 +641,8 @@ const api = {
   getElementGroupSave(data) { // POST /Api/ElementGroup/Save 元素组保存
     return instance.post('/Api/ElementGroup/Save', data);
   },
-  getElementGroupList(positionID) { // GET /Api/ElementGroup/List 元素组列表
-    if (positionID) return instance.get(`/Api/ElementGroup/List?positionID=${positionID}`);
+  getElementGroupList(positionID, closeLoading = false) { // GET /Api/ElementGroup/List 元素组列表
+    if (positionID) return instance.get(`/Api/ElementGroup/List?positionID=${positionID}`, { closeLoading });
     return instance.get('/Api/ElementGroup/List');
   },
   getElementGroupRemove(id, module) { // DELETE /Api/ElementGroup/Remove 元素组删除

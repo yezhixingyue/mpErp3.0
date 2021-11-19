@@ -35,16 +35,22 @@ export default class objForListDataClassType {
     //   }
     ]
 
-    ProductList = [
-    //   {
-    //     FirstLevelID: '',
-    //     SecondLevelID: ''
-    //   }
-    ]
+    IsIncludeIncreasedArea = false;
+
+    AreaList = []
+
+    IsIncludeIncreasedProduct = false;
+
+    ProductClassList = []
 
     static check(obj) {
-      if (obj.ProductList.length === 0) {
+      if (obj.ProductClassList.length === 0 && !obj.IsIncludeIncreasedProduct) {
         showError('请选择产品!');
+        return false;
+      }
+
+      if (obj.AreaList.length === 0 && !obj.IsIncludeIncreasedArea) {
+        showError('请选择销售区域!');
         return false;
       }
 
@@ -115,7 +121,10 @@ export default class objForListDataClassType {
         LogisticsList: [],
         MinAmount: '',
         Percent: '',
-        ProductList: [],
+        IsIncludeIncreasedArea: false,
+        AreaList: [],
+        IsIncludeIncreasedProduct: false,
+        ProductClassList: [],
       };
     }
 
@@ -128,7 +137,10 @@ export default class objForListDataClassType {
         LogisticsList: data.LogisticsList,
         MinAmount: data.MinAmount,
         Percent: data.Percent,
-        ProductList: data.ProductList,
+        IsIncludeIncreasedArea: data.IsIncludeIncreasedArea,
+        AreaList: data.AreaList,
+        IsIncludeIncreasedProduct: data.IsIncludeIncreasedProduct,
+        ProductClassList: data.ProductClassList,
       };
       if (!_obj.GradeList) _obj.GradeList = [];
       return _obj;

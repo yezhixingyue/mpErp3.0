@@ -1,42 +1,37 @@
 <template>
   <div class="mp-deposit-add-page-content-left-comp-wrap mp-scroll-wrap">
-    <tree-comp-two-levels
-        title="选择产品"
-        isProduct
-        :treeList='twoLevelsProductClassify'
-        :defaultCheckedKeys='defaultCheckedKeys'
-        :handleChangeFunc='handleChangeFunc'
-        checkAllTitle='所有产品' />
+    <NewAreaTreeSpreadComp isLevel2 v-model="ProductRange" :list='allProductClassify4Customer' title="产品" leftWidth='7em' rightItemWidth='10em' />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import TreeCompTwoLevels from '@/components/common/TreeCompTwoLevels.vue';
+import NewAreaTreeSpreadComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp';
 
 export default {
   components: {
-    TreeCompTwoLevels,
+    NewAreaTreeSpreadComp,
   },
   computed: {
-    ...mapGetters('common', ['twoLevelsProductClassify']),
+    ...mapGetters('common', ['allProductClassify4Customer']),
     ...mapState('deposit', ['objForDepositAdd']),
-    defaultCheckedKeys() {
-      return this.objForDepositAdd.ProductList.map(it => it.SecondLevelID);
-    },
-  },
-  methods: {
-    handleChangeFunc(checkedNodes) {
-      const _list = checkedNodes.filter(_it => _it.Level === 2).map(_it => ({
-        FirstLevelID: _it.ParentID,
-        SecondLevelID: _it.ID,
-        ClassName: _it.ClassName,
-      }));
-      this.$store.commit('deposit/setObjForDepositAdd', [['ProductList', ''], _list]);
+    ProductRange: {
+      get() {
+        return {
+          IsIncludeIncreased: this.objForDepositAdd ? this.objForDepositAdd.IsIncludeIncreasedProduct : false,
+          List: this.objForDepositAdd ? this.objForDepositAdd.ProductClassList : [],
+        };
+      },
+      set(val) {
+        const { IsIncludeIncreased, List } = val;
+        this.$store.commit('deposit/setObjForDepositAdd', [['IsIncludeIncreasedProduct', ''], IsIncludeIncreased || false]);
+        this.$store.commit('deposit/setObjForDepositAdd', [['ProductClassList', ''], List || []]);
+      },
     },
   },
   mounted() {
-    this.$store.dispatch('common/getProductClassifyData', { key: 6 });
+    this.$store.dispatch('common/getProductClassifyData', { key: 2 });
+    this.$store.dispatch('common/getAllProductNames');
   },
 };
 </script>
@@ -45,6 +40,8 @@ export default {
 .mp-deposit-add-page-content-left-comp-wrap {
   width: 100%;
   height: 100%;
+  padding-left: 25px;
+  box-sizing: border-box;
   overflow-y: auto;
 }
 </style>

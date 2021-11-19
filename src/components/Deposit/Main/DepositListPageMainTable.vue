@@ -9,20 +9,13 @@
     border
     style="width: 100%"
   >
-    <el-table-column min-width="380px" label="产品">
+    <el-table-column min-width="130px" label="限产品">
       <template slot-scope="scope">
-        <el-tooltip
-         placement="top-start" popper-class='mp-common-table-tooltip' :enterable='false' >
-          <div slot="content">
-              <p v-for="(item, i) in getProduct4TwoLevel(scope.row.ProductList)"
-               :key="item + '---' + i">
-                <span v-for="(it2, i2) of item" :key="it2 + '---' + i2">
-                  {{it2}}
-                  <i v-if="i2 < item.length - 1">、</i>
-                </span>
-              </p>
-          </div>
-          <span>{{getProduct4TwoLevel(scope.row.ProductList).join('、')}}</span>
+        <el-tooltip popper-class="table-item" :enterable='true' placement="top-start">
+          <ul slot="content">
+            <li v-for="(it, i) in scope.row.ProductString.split('\n')" :key="i">{{it}}</li>
+          </ul>
+          <span>{{scope.row.ProductString}}</span>
         </el-tooltip>
       </template>
     </el-table-column>
@@ -110,35 +103,6 @@ export default {
       this.messageBox.warnCancelNullMsg('确定删除该条定金设置信息吗?', () => {
         this.$store.dispatch('deposit/removeDepositSetting', [ID, index]);
       });
-    },
-    getProduct4TwoLevel(data) {
-      const _list = data.map(it => it.SecondLevelID); // 由选中二级分类ID组件的数组
-      const _arr = [];
-      this.twoLevelsProductClassify.forEach(level1 => {
-        let _tempArr = [];
-        level1.children.forEach(level2 => {
-          if (_list.includes(level2.ID)) {
-            _tempArr.push(`[ ${level1.ClassName} - ${level2.ClassName} ]`);
-          }
-        });
-        if (_tempArr.length === level1.children.length) _tempArr = [`[ 全部${level1.ClassName}产品 ]`];
-        if (_tempArr.length > 0) _arr.push(_tempArr);
-      });
-      const _arr2 = [];
-      _arr.forEach(it => {
-        _arr2.push(...it);
-      });
-      if (_arr2.length === this.twoLevelsProductClassify.length && _arr2.length > 0) {
-        const reg = /^\[ 全部/;
-        let _key = true;
-        // eslint-disable-next-line no-plusplus
-        for (let index = 0; index < _arr2.length; index++) {
-          const item = _arr2[index];
-          if (!reg.test(item)) _key = false;
-        }
-        if (_key) return [['全部产品']];
-      }
-      return _arr;
     },
   },
 };

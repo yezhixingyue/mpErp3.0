@@ -5,17 +5,17 @@
     </header>
     <div class="content">
       <div class="left">
-        <coupon-add-page-left-comp class="mp-scroll-wrap" />
+        <CouponAddPageLeftComp class="mp-scroll-wrap" />
       </div>
       <div class="right">
-        <coupon-add-page-right-comp class="mp-scroll-wrap" />
+        <CouponAddPageRightComp class="mp-scroll-wrap" />
       </div>
     </div>
     <footer>
-        <normal-btn-full
+        <normalBtnFull
          v-if="Permission.PermissionList.PermissionCoupon.Obj.Setup"
          @click.native="onSubmitClick" title="保存" />
-        <normal-btn @click.native="onReturnClick" title="返回" />
+        <normalBtn @click.native="onReturnClick" title="返回" />
     </footer>
   </div>
 </template>

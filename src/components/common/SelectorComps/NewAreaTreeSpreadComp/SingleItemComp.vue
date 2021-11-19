@@ -5,9 +5,9 @@
        :class="{isIncreased:data.isIncreased}" :indeterminate="isIndeterminate" v-model="checkAll">{{data.ClassName}}</el-checkbox>
       <span v-if="!data.isIncreased" @click="spread = !spread" :class="{spread:spread}">{{ spread ? '收起' : '展开' }} <i class="el-icon-caret-bottom"></i> </span>
     </header>
-    <main v-show="spread" v-if="data.children">
+    <main v-show="spread" v-if="data.children" :class="{isLevel2: isLevel2}">
       <ChildSingleItemComp :value='getItemValue(it)' :title='title' @change="onChildItemChange" :disabled='disabled' :DisabledList='DisabledList'
-       :leftWidth='leftWidth' :rightItemWidth='rightItemWidth' v-for="it in data.children" :key="it.ID" :itemData='it' />
+       :leftWidth='leftWidth' :isLevel2='isLevel2' :rightItemWidth='rightItemWidth' v-for="it in data.children" :key="it.ID" :itemData='it' />
     </main>
   </section>
 </template>
@@ -45,6 +45,10 @@ export default {
     DisabledList: {
       type: Array,
       default: () => [],
+    },
+    isLevel2: { // 只使用到2级分类
+      type: Boolean,
+      default: false,
     },
   },
   components: {
@@ -158,6 +162,10 @@ export default {
   }
   > main {
     padding-left: 14px;
+    &.isLevel2 {
+      display: flex;
+      flex-wrap: wrap;
+    }
   }
   .el-checkbox.isIncreased {
     .el-checkbox__label {

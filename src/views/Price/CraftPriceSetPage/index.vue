@@ -38,6 +38,7 @@ export default {
     CraftPriceSetList() {
       if (!this.ProductData) return [];
       const list = [];
+      const list2 = this.curPriceItem.CraftPriceList;
       const getItem = (CraftList, ID, ProductID, PartID, Name) => {
         if (Array.isArray(CraftList) && CraftList.length > 0) {
           const temp = {
@@ -45,7 +46,7 @@ export default {
             ID, // 即CraftPriceID
             ProductID,
             PartID,
-            CraftList: CraftList.map(craft => ({ ...craft, ...this.getCraftPriceInfo(craft, PartID, this.ProductData) })),
+            CraftList: CraftList.map(craft => ({ ...craft, ...this.getCraftPriceInfo(craft, PartID, this.ProductData, list2) })),
           };
           list.push(temp);
         }
@@ -101,11 +102,11 @@ export default {
         },
       });
     },
-    getCraftPriceInfo(craft, PartID, ProductData) {
+    getCraftPriceInfo(craft, PartID, ProductData, CraftPriceList) {
       let CraftPriceID = '';
       let _PriceSolutionShowCentent = '未设置';
       let _AllCostCount = 0;
-      const t = this.curPriceItem.CraftPriceList.find(it => {
+      const t = CraftPriceList.find(it => {
         if (it.CraftID !== craft.ID) return false;
         if (it.PartID && it.PartID === PartID) return true;
         if (!it.PartID && !PartID) return true;

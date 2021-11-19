@@ -401,6 +401,7 @@ export default {
       state.ResultFormulaList = list;
     },
     setResultFormulaItemChange(state, [item, ID, isAllCostPage]) { // 编辑或添加结果公式
+      if (!item) return;
       if (!isAllCostPage) {
         const t = state.PriceTableList.find(it => it.PriceID === item.PriceID && it.ID === item.TableID);
         if (t) { // 对列表中数据进行修改 以保证同步最新
@@ -415,15 +416,32 @@ export default {
             }
           }
         }
-      } else if (!item.ID) {
+      } else {
         const { ProductID, PriceID, CraftPriceID } = item;
         const t = state.PriceManageList.find(it => it.ID === ProductID);
         if (t) {
           const targetPrice = t.PriceList.find(it => it.ID === PriceID);
           if (targetPrice) {
-            const targetCraftPrice = targetPrice.CraftPriceList.find(it => it.ID === CraftPriceID);
-            if (targetCraftPrice) {
-              targetCraftPrice.FormulaList.unshift({ ...item, ID });
+            const targetCraftPrice1 = targetPrice.CraftPriceList.find(it => it.ID === CraftPriceID);
+            const targetCraftPrice2 = state.curPriceItem.CraftPriceList.find(it => it.ID === CraftPriceID);
+            if (targetCraftPrice1 && targetCraftPrice2) {
+              if (!item.ID) {
+                if (!targetCraftPrice1.FormulaList) targetCraftPrice1.FormulaList = [];
+                if (!targetCraftPrice2.FormulaList) targetCraftPrice2.FormulaList = [];
+                targetCraftPrice1.FormulaList.unshift({ ...item, ID });
+                targetCraftPrice2.FormulaList.unshift({ ...item, ID });
+              } else {
+                const i1 = targetCraftPrice1.FormulaList.findIndex(it => it.ID === item.ID);
+                if (i1 > -1) {
+                  const _item = { ...targetCraftPrice1.FormulaList[i1], ...item };
+                  targetCraftPrice1.FormulaList.splice(i1, 1, _item);
+                }
+                const i2 = targetCraftPrice2.FormulaList.findIndex(it => it.ID === item.ID);
+                if (i2 > -1) {
+                  const _item = { ...targetCraftPrice2.FormulaList[i2], ...item };
+                  targetCraftPrice2.FormulaList.splice(i2, 1, _item);
+                }
+              }
             }
           }
         }
@@ -452,6 +470,12 @@ export default {
           const targetPrice = targetProduct.PriceList.find(it => it.ID === PriceID);
           if (targetPrice) {
             const targetCraftPrice = targetPrice.CraftPriceList.find(it => it.ID === CraftPriceID);
+            if (targetCraftPrice) {
+              targetCraftPrice.FormulaList = targetCraftPrice.FormulaList.filter(it => it.ID !== item.ID);
+            }
+          }
+          if (state.curPriceItem?.CraftPriceList) {
+            const targetCraftPrice = state.curPriceItem.CraftPriceList.find(it => it.ID === CraftPriceID);
             if (targetCraftPrice) {
               targetCraftPrice.FormulaList = targetCraftPrice.FormulaList.filter(it => it.ID !== item.ID);
             }
