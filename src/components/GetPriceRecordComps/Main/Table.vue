@@ -123,7 +123,7 @@ export default {
     },
     getCraftTextList(craftList) {
       if (craftList.length === 0) return '';
-      const _list = craftList.map(it => it.Name);
+      const _list = craftList.map(it => it.Attributes.DisplayName);
       return _list.join(' ');
     },
   },

@@ -2,7 +2,17 @@
   <header class="mp-feedback-page-main-wrap-header-wrap">
     <ul>
       <li>
+        <AreaSelector
+          style="margin-right: 40px"
+          :changePropsFunc="setCondition4DataList"
+          :requestFunc="getDataList"
+          :RegionalID="condition.SellArea.RegionalID"
+          :CityID="condition.SellArea.CityID"
+          :CountyID="condition.SellArea.CountyID"
+          :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+        />
         <OrderChannelSelector
+        style="margin-right: 50px"
         :options='questionList'
         :requestFunc='getDataList'
         :changePropsFunc='setCondition4DataList'
@@ -11,7 +21,7 @@
         label="售后原因"
        />
         <OrderChannelSelector
-        style="margin-left: 90px"
+        style="margin-right: 30px"
         :options='progressList'
         :requestFunc='getDataList'
         :changePropsFunc='setCondition4DataList'
@@ -73,6 +83,7 @@
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
+import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import { mapState } from 'vuex';
 
 export default {
@@ -91,6 +102,7 @@ export default {
     OrderChannelSelector,
     LineDateSelectorComp,
     SearchInputComp,
+    AreaSelector,
   },
   computed: {
     ...mapState('common', ['FeedbackProgress', 'FeedbackQuestionList', 'userTypeList', 'userRankList']),
@@ -142,6 +154,7 @@ export default {
       display: flex;
       // height: 48px;
       align-items: center;
+      flex-wrap: wrap;
       > div {
         margin-top: 9px !important;
         margin: 9px 0;
@@ -159,7 +172,7 @@ export default {
       }
       > .user-selector {
         display: flex;
-        margin-left: 60px;
+        // margin-left: 60px;
       }
     }
   }

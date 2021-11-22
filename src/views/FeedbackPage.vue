@@ -237,6 +237,11 @@ export default {
           First: '',
           Second: '',
         },
+        SellArea: { // 销售区域
+          RegionalID: '',
+          CityID: '',
+          CountyID: '',
+        },
       },
     };
   },
@@ -267,6 +272,11 @@ export default {
         CustomerType: {
           First: '',
           Second: '',
+        },
+        SellArea: { // 销售区域
+          RegionalID: '',
+          CityID: '',
+          CountyID: '',
         },
       };
     },

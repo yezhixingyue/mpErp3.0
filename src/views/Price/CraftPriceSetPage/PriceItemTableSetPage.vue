@@ -186,17 +186,17 @@ export default {
     },
     XAxisList() {
       if (Array.isArray(this.PriceTableData.XAxis.List) && this.PriceTableData.XAxis.List.length > 0) return this.PriceTableData.XAxis.List;
-      if (!this.PriceTableData.XAxis.Property
-       && Array.isArray(this.PriceTableData.YAxis.List)
-       && this.PriceTableData.YAxis.List.length > 0) return [{ ID: '', Value: '' }];
-      return [];
+      // if (!this.PriceTableData.XAxis.Property
+      //  && Array.isArray(this.PriceTableData.YAxis.List)
+      //  && this.PriceTableData.YAxis.List.length > 0) return [{ ID: '', Value: '' }];
+      return [{ ID: '', Value: '' }];
     },
     YAxisList() {
       if (Array.isArray(this.PriceTableData.YAxis.List) && this.PriceTableData.YAxis.List.length > 0) return this.PriceTableData.YAxis.List;
-      if (!this.PriceTableData.YAxis.Property
-       && Array.isArray(this.PriceTableData.XAxis.List)
-       && this.PriceTableData.XAxis.List.length > 0) return [{ ID: '', Value: '' }];
-      return [];
+      // if (!this.PriceTableData.YAxis.Property
+      //  && Array.isArray(this.PriceTableData.XAxis.List)
+      //  && this.PriceTableData.XAxis.List.length > 0) return [{ ID: '', Value: '' }];
+      return [{ ID: '', Value: '' }];
     },
     disabled() {
       return this.XAxisList.length === 0 || this.YAxisList.length === 0;

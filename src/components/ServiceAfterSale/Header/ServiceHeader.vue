@@ -3,13 +3,13 @@
       <li class="mp-service-page-header-first">
           <div class="f">
               <ServiceClassify />
-                <ProductSelector
-                :changePropsFunc="setCondition4DataList"
-                :requestFunc="getDataList"
-                :ClassID="obj4RequestServiceList.Product.ClassID"
-                :TypeID="obj4RequestServiceList.Product.TypeID"
-                :ProductID="obj4RequestServiceList.Product.ProductID"
-                :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]" />
+              <ProductSelector
+              :changePropsFunc="setCondition4DataList"
+              :requestFunc="getDataList"
+              :ClassID="obj4RequestServiceList.Product.ClassID"
+              :TypeID="obj4RequestServiceList.Product.TypeID"
+              :ProductID="obj4RequestServiceList.Product.ProductID"
+              :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]" />
               <div class="user-selector">
                 <order-channel-selector
                   :options="userTypeList"
@@ -31,6 +31,15 @@
                   label=""
                 />
               </div>
+              <StaffSelector
+                title="操作人"
+                needlimit
+                class="second-section"
+                :changePropsFunc="setCondition4DataList"
+                :requestFunc="getDataList"
+                :typeList="[['Operator', '']]"
+                :value="obj4RequestServiceList.Operator"
+              />
           </div>
           <TimeSearchSelector />
       </li>
@@ -42,6 +51,7 @@
 import { mapState } from 'vuex';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
+import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import ServiceClassify from './ServiceClassify.vue';
 import TimeSearchSelector from './TimeSearchSelector.vue';
 
@@ -51,6 +61,7 @@ export default {
     ProductSelector,
     TimeSearchSelector,
     OrderChannelSelector,
+    StaffSelector,
   },
   computed: {
     ...mapState('common', ['userTypeList', 'userRankList']),
@@ -84,13 +95,17 @@ export default {
         display: flex;
         padding-top: 20px;
         padding-bottom: 20px;
+        margin-right: 45px;
       }
       &.f {
         align-items: center;
         padding-top: 20px;
-        > div, > ul {
+        > div, > ul, .second-section {
           padding-top: 0px;
           padding-bottom: 18px;
+          > section > header {
+            min-width: 5em;
+          }
         }
       }
     }

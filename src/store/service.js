@@ -71,6 +71,7 @@ export default {
         First: '',
         Second: '',
       },
+      Operator: '',
     },
     /* 售后单列表数据请求提交对象-最终上传版
     -------------------------------*/
@@ -280,6 +281,7 @@ export default {
           First: '',
           Second: '',
         },
+        Operator: '',
       };
       if (type === 'onKeyWordSubmit') state.obj4RequestServiceList.KeyWords = _keywordsText;
       state.selectedTimeArr = [0, 1, 0, 0, 0, 0];

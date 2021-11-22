@@ -6,7 +6,7 @@
       </li>
       <li class="selector-wrap-2">
         <!-- <radio-button-group-comp :radioList='couponTypeList' v-model='radio1' /> -->
-        <area-selector
+        <AreaSelector
           :changePropsFunc="setCondition2ListData"
           :requestFunc="getCouponList"
           :RegionalID="condition2ListData.SellArea.RegionalID"
@@ -50,7 +50,7 @@
           title="使用状态"
         />
         <div>
-          <staff-selector
+          <StaffSelector
             class="first-section"
             needlimit
             :changePropsFunc="setCondition2ListData"
@@ -59,7 +59,7 @@
             title="申请人"
             :value="condition2ListData.ApplyUserID"
           />
-          <staff-selector
+          <StaffSelector
             title="操作人"
             needlimit
             class="second-section"

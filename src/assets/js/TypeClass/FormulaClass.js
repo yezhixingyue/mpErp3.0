@@ -76,7 +76,7 @@ export default class FormulaClass {
             return !getValueIsOrNotNumber(it.DefaultValue) && !(it.Type === 8 && !it.DefaultValue) && !(it.Type === 9 && !it.DefaultValue);
           }
           const { Type, NumbericAttribute } = it.Element;
-          const isInteger = !(Type === 1 && NumbericAttribute && NumbericAttribute.AllowDecimal);
+          const isInteger = Type === 1 ? !(NumbericAttribute && NumbericAttribute.AllowDecimal) : false;
           return !getValueIsOrNotNumber(it.DefaultValue, isInteger);
         });
         if (t) {
