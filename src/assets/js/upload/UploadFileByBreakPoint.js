@@ -17,21 +17,11 @@ const sha1 = require('js-sha1');
    * @param {*} file
    * @return {*}
    */
-export const getUniqueFileName = (file, TypeID) => new Promise((resolve, reject) => {
-  const reader = new FileReader();
-  reader.readAsArrayBuffer(file);
-  reader.onerror = () => {
-    reject(new Error('文件解析失败'));
-  };
-  reader.onloadend = async () => {
-    if (!(reader.result)) return;
-    const ext = extname(file.name);
-    let _name = `${sha1(reader.result)}.${ext}`; // 文件名称, 文件唯一标识
-    if (TypeID || TypeID === 0) _name = `${TypeID}_${_name}`;
-    resolve(_name);
-  };
-});
-
+export const getUniqueFileName = ({ file, Terminal, TypeID, CustomerID }) => {
+  const ext = extname(file.name);
+  const combineName = `${CustomerID}${Terminal}${TypeID || ''}${file.name}${file.lastModified}${file.size}`; // 按照规则进行组合
+  return `${sha1(combineName)}.${ext}`;
+};
 
 const chunkSize = 1024 * 1024 * 10;
 

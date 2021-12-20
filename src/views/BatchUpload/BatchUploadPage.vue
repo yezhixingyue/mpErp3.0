@@ -246,7 +246,7 @@ export default {
     handleUploadSelected() { // 上传选中文件
       if (this.successedList.length === 0 || this.multipleSelection.length === 0) return;
       // 需要筛选掉已上传成功的文件（已失败文件待定）
-      BatchUploadClass.BatchUploadFils(this.multipleSelection, this.basicObj, this.handleSubmitSuccess);
+      this.handleBatchUploadFils(this.multipleSelection);
     },
     handleClearSuccess() { // 清除已上传订单
       const list = this.successedList.filter(it => it.orderStatus === 'success').map(it => it.key);
@@ -279,7 +279,10 @@ export default {
       }, null);
     },
     handleItemUpload(item) { // 单个文件上传 this.basicObj
-      BatchUploadClass.BatchUploadFils([item], this.basicObj, this.handleSubmitSuccess);
+      this.handleBatchUploadFils([item]);
+    },
+    handleBatchUploadFils(list) {
+      BatchUploadClass.BatchUploadFils(list, this.basicObj, this.handleSubmitSuccess);
     },
     cbToClearSuccessItem(list) { // 上传成功后从已选列表中删除上传成功选项
       if (this.$refs.oTableWrap && this.$refs.oTableWrap.$refs.multipleTable && this.multipleSelection.length > 0) {

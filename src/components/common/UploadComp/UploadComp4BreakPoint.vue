@@ -31,9 +31,7 @@
 
 <script>
 
-import UploadFileByBreakPoint from '@/assets/js/upload/UploadFileByBreakPoint';
-
-const sha1 = require('js-sha1');
+import UploadFileByBreakPoint, { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 
 export default { // 上传图片按钮
   props: {
@@ -75,6 +73,10 @@ export default { // 上传图片按钮
       // default: '.png,.jpeg,.gif,.jpg,.bmp',
       // default: '',
     },
+    CustomerID: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -101,51 +103,36 @@ export default { // 上传图片按钮
         // 暂未编写该功能
       }
     },
-    upLoadSingleFile(file) {
+    async upLoadSingleFile(file) {
       if (!file) return;
       this.upLoadTitle = '读取中...';
-      const reader = new FileReader();
-      reader.readAsArrayBuffer(file);
-      reader.onerror = () => {
-        this.messageBox.failSingleError('文件解析错误！', '请检查文件并重新上传');
-        this.upLoadTitle = '读取失败请重新上传';
+      const _name = getUniqueFileName({ CustomerID: this.CustomerID, Terminal: 1, file });
+      this.upLoadTitle = '解析完成,开始上传';
+      if (file.size > 50 * 1024 * 1024) { // 文件大于50M显示进度条
+        this.showProgress = true;
+      } else {
+        this.showLoading = true;
+      }
+      const onUploadProgressFunc = progress => {
+        // eslint-disable-next-line no-restricted-globals
+        if (!isNaN(progress)) this.percentage = progress;
+      };
+      if (file && _name) {
+        const key = await UploadFileByBreakPoint(file, _name, onUploadProgressFunc, 100);
+        if (key) {
+          // 上传成功
+          this.successFunc(_name);
+        } else {
+          // 上传失败
+          this.massageBox.failSingleError('文件上传失败', '抱歉，文件上传失败，请重试!', this.failFunc);
+        }
+        if (this.showProgress) this.showProgress = false;
+        if (this.showLoading) this.showLoading = false;
+        this.upLoadTitle = '';
         const oInput = document.querySelector('.mp-phone-upload-comp-break-point-type-wrap > input');
         oInput.value = '';
-      };
-      reader.onloadend = async () => {
-        if (!(reader.result)) return;
-        const ext = this.$utils.extname(file.name);
-        const _name = `${sha1(reader.result)}.${ext}`; // 文件名称, 文件唯一标识
-        this.upLoadTitle = '解析完成,开始上传';
-        // console.log(_name, file);
-        if (file.size > 50 * 1024 * 1024) { // 文件大于50M显示进度条
-          this.showProgress = true;
-        } else {
-          this.showLoading = true;
-        }
-        // this.setReplenishFileUniqueName(`${sha1(reader.result)}.${ext}`);
-        // this.setReplenishFile(file);
-        const onUploadProgressFunc = progress => {
-          // eslint-disable-next-line no-restricted-globals
-          if (!isNaN(progress)) this.percentage = progress;
-        };
-        if (file && _name) {
-          const key = await UploadFileByBreakPoint(file, _name, onUploadProgressFunc, 100);
-          if (key) {
-            // 上传成功
-            this.successFunc(_name);
-          } else {
-            // 上传失败
-            this.massageBox.failSingleError('文件上传失败', '抱歉，文件上传失败，请重试!', this.failFunc);
-          }
-          if (this.showProgress) this.showProgress = false;
-          if (this.showLoading) this.showLoading = false;
-          this.upLoadTitle = '';
-          const oInput = document.querySelector('.mp-phone-upload-comp-break-point-type-wrap > input');
-          oInput.value = '';
-          this.percentage = 0;
-        }
-      };
+        this.percentage = 0;
+      }
     },
   },
 };

@@ -164,9 +164,8 @@ import DropDown from '@/components/common/DropDown.vue';
 import ServiceBlueBtn from '@/components/ServiceAfterSale/EditDialog/ServiceBlueBtn.vue'; // serviceSingleRadio
 import SingleRadio from '@/components/common/SingleRadio.vue';
 // import { Base64 } from 'js-base64';
+import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 import MpTextInput from './MpTextInput.vue';
-
-const sha1 = require('js-sha1');
 
 export default {
   components: {
@@ -285,24 +284,13 @@ export default {
       };
     },
     readFileUniqueName(file) {
-      // 上传成功后，设置文件名称, 文件唯一标识
+      // 上传成功后，设置文件名称, 文件唯一标识 getUniqueFileName
       if (!file) return;
-      this.setFileName('文件读取中...');
-      const reader = new FileReader();
-      reader.readAsArrayBuffer(file);
-      reader.onerror = () => {
-        this.messageBox.failSingleError('文件解析错误！', '请检查文件并重新上传');
-        this.setFileName('文件读取失败，请重新上传');
-        const oInput = document.querySelector('.uploadFileBox > input');
-        oInput.value = '';
-      };
-      reader.onloadend = () => {
-        if (!(reader.result)) return;
-        const ext = this.$utils.extname(file.name);
-        this.setReplenishFileUniqueName(`${sha1(reader.result)}.${ext}`);
-        this.setReplenishFile(file);
-        this.setFileName(file.name);
-      };
+      const CustomerID = this.orderDetailData?.Customer?.CustomerID || '';
+      const uniqueName = getUniqueFileName({ file, Terminal: 1, CustomerID });
+      this.setReplenishFileUniqueName(uniqueName);
+      this.setReplenishFile(file);
+      this.setFileName(file.name);
     },
     onKingCountInput(v) {
       this.kingNum = this.$utils.filterNumber(v.target.value);

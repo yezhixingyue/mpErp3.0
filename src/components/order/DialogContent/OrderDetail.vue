@@ -209,7 +209,7 @@
                     <normalBtn @click.native="handleDownLoad(showData)" title="下载订单文件" />
                   </li>
                   <li class="btn-box" v-if="showData.Status===35 && $route.name === 'orderManage'" :class="{hiddenFileUpload: !showData.FileCase}">
-                    <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc" v-if="showData.FileCase" />
+                    <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc" v-if="showData.FileCase" :CustomerID='showData.Customer.CustomerID' />
                     <el-button type="primary" @click="handleReview">{{showData.FileCase ? '文件没问题' : '该订单无文件'}},重新审稿</el-button>
                   </li>
                   <li class="right-flex-wrap file-content-wrap">
