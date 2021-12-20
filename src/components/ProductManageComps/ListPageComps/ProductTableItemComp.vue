@@ -59,7 +59,7 @@
           <TipsSpanButton text='界面元素' @click.native="onElementSaveClick(it)" />
           <TipsSpanButton text='尺寸物料' @click.native="onProductSizeMaterialSetClick(it)" />
           <TipsSpanButton text='工艺' @click.native="onProductCraftSetClick(it)" />
-          <!-- <TipsSpanButton text='设置元素' @click.native="onElementMapSetClick(it)" /> -->
+          <TipsSpanButton text='设置元素' @click.native="onElementMapSetClick(it)" />
           <TipsSpanButton text='显示顺序' @click.native="onProductDisplaySortSetClick(it)" />
         </div>
         <div v-if="Permission && Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">

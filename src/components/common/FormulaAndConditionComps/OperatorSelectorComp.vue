@@ -136,8 +136,10 @@ export default {
     const [{ ID, Name }] = this.localOperatorList;
     if (!this.localValue && this.localValue !== 0) this.$emit('change', ID);
     if (this.PropertyData.OperatorList.length === 1 && this.localOperatorList.length === 1) {
-      this.showOption = false;
-      this.showText = Name;
+      if (!(this.value || this.value === 0) || ID === this.value) {
+        this.showOption = false;
+        this.showText = Name;
+      }
     }
     this.ValueType = this.PropertyData.ValueType;
   },

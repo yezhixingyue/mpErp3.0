@@ -2,9 +2,9 @@
   <div class="mp-erp-product-module-filename-item-content-show-single-element-item-comp-wrap">
     <div class="name">
       <span :title="title">{{title}}：</span>
-      <el-checkbox v-model="AllowNameHidden" v-if="title === '名称通假字'">允许隐藏名称</el-checkbox>
+      <el-checkbox v-model="AllowNameHidden" v-if="title === '名称通假字' && showHidden">允许隐藏名称</el-checkbox>
     </div>
-    <el-input v-if="type !== 'SizeUnitPosition'" size="mini" v-model="InpVal" maxlength="50"></el-input>
+    <el-input v-if="type !== 'SizeUnitPosition'" size="mini" v-model="InpVal" maxlength="50" :disabled="hidden"></el-input>
     <el-select v-else  v-model="InpVal" placeholder="请选择" size="mini">
       <el-option
         v-for="item in FileNameEnumList"
@@ -38,6 +38,14 @@ export default {
       type: String,
       default: '',
     },
+    showHidden: {
+      type: Boolean,
+      default: true,
+    },
+    hidden: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapState('productManage', ['FileNameEnumList']),
@@ -68,6 +76,7 @@ export default {
     },
     InpVal: {
       get() {
+        if (this.hidden) return '';
         return this.value ? this.value[this.type] : '';
       },
       set(val) {

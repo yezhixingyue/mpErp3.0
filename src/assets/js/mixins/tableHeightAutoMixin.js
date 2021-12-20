@@ -60,7 +60,11 @@ export default {
     },
   },
   methods: {
-    getHeight(elementSelector, distance) {
+    getHeight(elementSelector, distance, wrapSelectorContent) {
+      if (wrapSelectorContent) {
+        const oWrapSelectorContent = document.querySelector(wrapSelectorContent);
+        if (oWrapSelectorContent) return oWrapSelectorContent.offsetHeight - distance;
+      }
       const oWrap = document.querySelector('#app > section > main');
       if (!oWrap) return 600;
       const oHeader = elementSelector ? document.querySelector(elementSelector) : null;

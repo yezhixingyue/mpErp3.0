@@ -12,6 +12,20 @@ if (process.env.NODE_ENV === 'development') {
   // setToken2SessionStorage();
 }
 
+const getShowLoading = (config) => {
+  let showLoading = true;
+  const arr = ['/Api/PaymentOrder/PayResult', '/Api/Upload/File', '/Api/PaymentOrder/Create', '/Api/Staff/List',
+    '/Api/FileNode', '/Api/FileServer']; // 不需要展示loading的api地址
+  if (config && config.url) {
+    for (let i = 0; i < arr.length; i += 1) {
+      if (config.url.split('?')[0].includes(arr[i]) || store.state.common.isLoading || config.closeLoading) {
+        showLoading = false;
+      }
+    }
+  }
+  return showLoading;
+};
+
 let loadingInstance;
 let closeTip = false;
 axios.interceptors.request.use(
@@ -19,21 +33,12 @@ axios.interceptors.request.use(
     const curConfig = config;
     let token = sessionStorage.getItem('ErpToken');
     closeTip = curConfig.closeTip;
-    const { closeLoading } = curConfig;
     if (!token) {
       // setToken2SessionStorage();
       token = sessionStorage.getItem('ErpToken');
     }
     curConfig.headers.common.Authorization = `Bearer ${JSON.parse(token)}`;
-    let key = true;
-    // eslint-disable-next-line max-len
-    const arr = ['/Api/PaymentOrder/PayResult', '/Api/Upload/File', '/Api/PaymentOrder/Create', '/Api/Staff/List']; // 不需要展示loading的api地址
-    for (let i = 0; i < arr.length; i += 1) {
-      if (curConfig.url.split('?')[0].includes(arr[i]) || store.state.common.isLoading || closeLoading) {
-        key = false;
-      }
-    }
-    if (key) {
+    if (getShowLoading(curConfig)) {
       loadingInstance = Loading.service({
         lock: true,
         text: 'Loading',
@@ -45,7 +50,7 @@ axios.interceptors.request.use(
     return curConfig;
   },
   (error) => {
-    if (loadingInstance) loadingInstance.close();
+    if (getShowLoading(error.config) && loadingInstance) loadingInstance.close();
     messageBox.failSingleError(error);
     return Promise.reject(error);
   },
@@ -53,17 +58,18 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   (response) => {
-    if (loadingInstance) loadingInstance.close();
+    if (getShowLoading(response.config) && loadingInstance) loadingInstance.close();
     // eslint-disable-next-line max-len
     const _list2NotNeed2Toast = ['/Api/AccountReceivable/Excel', '/Api/PaymentOrder/Excel', '/Api/OrderList/Excel', '/Api/Coupon/DownLoad', '/Api/AfterSales/Excel', '/Api/PackageList/Excel', '/Api/CustomerBill/Excel', '/Api/OrderBill/Excel', '/Api/PriceTable/Export'];
     const _statusList2NotNeed2Toast = [1000, 9062, 8044];
     // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
 
     // eslint-disable-next-line max-len
-    if (!_statusList2NotNeed2Toast.includes(response.data.Status) && !_list2NotNeed2Toast.includes(response.config.url.split('?')[0]) && !closeTip) {
+    if (!_statusList2NotNeed2Toast.includes(response.data.Status) && !_list2NotNeed2Toast.includes(response.config.url.split('?')[0])) {
       if ([7025, 8037].includes(response.data.Status)) {
-        messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`, () => router.replace('/login'));
-      } else {
+        if (!closeTip) messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`, () => router.replace('/login'));
+        else router.replace('/login');
+      } else if (!closeTip) {
         messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`);
       }
     }
@@ -71,18 +77,7 @@ axios.interceptors.response.use(
   },
   async (error) => {
     if (!store.state.common.isLoading) {
-      // // clearTimeout(timer, loadingInstance);
-      // console.log(error, error.response,
-      //   error.response.statusText.toString(),
-      //   // String.fromCharCode.apply(null, new Uint8Array(error.response.statusText)),
-      // // eslint-disable-next-line function-paren-newline
-      // );
-      // const bytes = new Uint8Array(error.response.data);
-      // let binary = '';
-      // bytes.forEach(it => { binary += String.fromCharCode(it); });
-      // console.log(window.btoa(binary), error.response.data);
-
-      if (loadingInstance) loadingInstance.close();
+      if (getShowLoading(error.config) && loadingInstance) loadingInstance.close();
       if (error.response) {
         let key = false;
         let b;
@@ -94,11 +89,14 @@ axios.interceptors.response.use(
           case 401:
             // if (process.env.NODE_ENV === 'development') {
             _func = () => {
-              // console.log('loginloginlogin_func');
               router.replace('/login');
             };
             // }
-            messageBox.failSingleError(undefined, '[ 错误 401：请重新登录! ]', _func);
+            if (!closeTip) {
+              messageBox.failSingleError(undefined, '[ 错误 401：请重新登录! ]', _func);
+            } else {
+              router.replace('/login');
+            }
             sessionStorage.removeItem('staffDetailData');
             key = true;
             break;

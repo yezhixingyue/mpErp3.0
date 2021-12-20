@@ -8,6 +8,31 @@ import api from '@/api/index';
 
 import config from '@/assets/js/setup';
 
+import { extname } from '@/assets/js/utils/util';
+
+const sha1 = require('js-sha1');
+
+/**
+   * @description: 解析文件，获取文件唯一标识名称
+   * @param {*} file
+   * @return {*}
+   */
+export const getUniqueFileName = (file, TypeID) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsArrayBuffer(file);
+  reader.onerror = () => {
+    reject(new Error('文件解析失败'));
+  };
+  reader.onloadend = async () => {
+    if (!(reader.result)) return;
+    const ext = extname(file.name);
+    let _name = `${sha1(reader.result)}.${ext}`; // 文件名称, 文件唯一标识
+    if (TypeID || TypeID === 0) _name = `${TypeID}_${_name}`;
+    resolve(_name);
+  };
+});
+
+
 const chunkSize = 1024 * 1024 * 10;
 
 /**
@@ -87,7 +112,7 @@ async function checkIsTrue(data, uniqueName, baseURL) {
  * @param {*} onUploadProgressFunc 回调函数，用于设置进度条的百分比
  * @returns 返回true或false，用于告知该函数上传结果: 成功 还是 失败
  */
-async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPercentage = 98) {
+async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPercentage = 100) {
   let key = true;
   const domainResp = await api.getFileServer(config.Position).catch(() => {
     key = false;
@@ -104,7 +129,7 @@ async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPer
   if (hasUploadedInfo.data.Status !== 1000) return false; // 获取已上传信息
 
   if (+hasUploadedInfo.data.Data < +data.size) {
-    onUploadProgressFunc(_getPercentage(hasUploadedInfo.data.Data, data.size, finalPercentage)); // 根据已上传信息设置初始已上传百分比
+    // onUploadProgressFunc(_getPercentage(hasUploadedInfo.data.Data, data.size, finalPercentage)); // 根据已上传信息设置初始已上传百分比
 
     const chunkCount = Math.ceil((data.size - hasUploadedInfo.data.Data) / (chunkSize)); // 计算出总共需要上传的次数
     const curChunkNum = +hasUploadedInfo.data.Data; // 获取到当前已上传的节点位置
@@ -115,7 +140,7 @@ async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPer
       key2 = false;
     }); // 上传
     if (!key2) return false;
-    if (checkIsTrue(data, uniqueName, baseURL)) return true;
+    if (await checkIsTrue(data, uniqueName, baseURL)) return true;
     return false;
   }
   onUploadProgressFunc(+finalPercentage);

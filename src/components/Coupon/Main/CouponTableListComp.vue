@@ -154,9 +154,9 @@
     </el-table-column>
     <div slot="empty">
       <span v-show="!tableDataLoading">暂无数据</span>
-      <span v-show="tableDataLoading && initLoading" style="margin-top: -80px">
+      <!-- <span v-show="tableDataLoading && initLoading" style="margin-top: -80px">
         <i style="font-size: 20px;color:#428dfa" class="el-icon-loading"></i> 正在加载数据...，请稍候
-      </span>
+      </span> -->
     </div>
   </el-table>
 </template>

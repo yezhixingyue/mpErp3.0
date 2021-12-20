@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-26 09:16:49
- * @LastEditTime: 2021-10-28 16:26:14
+ * @LastEditTime: 2021-12-09 18:14:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit 过滤器
  * @FilePath: /src/assets/js/filters/filters.js
@@ -206,6 +206,7 @@ Vue.filter('formatFundBillOrderCurrency', Currency => {
 Vue.filter('formatProducePeriod', ProducePeriod => {
   if (!ProducePeriod) return '';
   const { IncludeDiliveryTime, TotalTime } = ProducePeriod;
+  if (!TotalTime) return '';
   const str = IncludeDiliveryTime ? '送达' : '出货';
 
   const fullDay = TotalTime.split('T')[0];
@@ -299,3 +300,32 @@ Vue.filter('getCouponList', ({ CouponList }) => {
   }
   return '';
 });
+
+
+/**
+ * 根据列表数据获取需要展示的产品分类+产品名称
+ */
+export const getFullName = data => {
+  if (!data) return '';
+  const { DisplayName, ProductName, ClassList } = data;
+  const Name = DisplayName || ProductName;
+  if (!Name) return '';
+  if (!ClassList || ClassList.length === 0) return Name;
+  const t = ClassList.find(it => it.Type === 2);
+  return t && t.FirstLevel && t.FirstLevel.Name ? `${t.FirstLevel.Name} - ${Name}` : Name;
+};
+Vue.filter('getFullName', getFullName);
+
+export const formatListItemSize = SizeList => {
+  if (!Array.isArray(SizeList) || SizeList.length === 0) return '';
+  return SizeList.join('、');
+};
+export const formatListItemCraft = CraftList => formatListItemSize(CraftList);
+
+Vue.filter('formatListItemSize', formatListItemSize);
+Vue.filter('formatListItemCraft', formatListItemCraft); // 暂同上共用同一个方法 后续如有需要再分开
+
+export default {
+  formatListItemSize,
+  formatListItemCraft,
+};

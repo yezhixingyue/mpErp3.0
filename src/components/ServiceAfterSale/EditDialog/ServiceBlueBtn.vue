@@ -1,6 +1,6 @@
 <template>
   <!-- <div> -->
-    <span class="upload-btn">
+  <span class="upload-btn" :class="{disabled: disabled}" :title="selectTitle">
     <input
       type="file"
       ref="oInp"
@@ -47,6 +47,14 @@ export default { // 上传图片按钮
       // default: '.png,.jpeg,.gif,.jpg,.bmp',
       // default: '',
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    selectTitle: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -55,12 +63,12 @@ export default { // 上传图片按钮
     };
   },
   methods: {
-    onChange(data) {
-      if (this.func && !this.multiple) this.func(data.target.files[0]);
+    onChange(e) {
+      if (this.func && !this.multiple) this.func(e.target.files[0], e);
       // 如果没有开启一次上传多张选项，只传递第一张图片返回(也是唯一一张)；
       if (this.func && this.multiple) {
       // 如果开启多张上传，返回整个数组
-        this.func(data.target.files);
+        this.func(e.target.files, e);
       }
     },
     handleRemove() {
@@ -105,6 +113,13 @@ export default { // 上传图片按钮
   }
   &:active {
     background-color: #35dff9;
+  }
+  &.disabled {
+    background-color: #cbcbcb;
+    cursor: not-allowed;
+    > input {
+      width: 0;
+    }
   }
 }
 </style>

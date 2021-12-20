@@ -45,7 +45,7 @@ export default {
 </script>
 <style lang='scss'>
 .mp-erp-home-page-wrap {
-  width: calc(100vw - 180px);
+  // width: calc(100vw - 180px);
   > header {
     display: flex;
     align-items: center;

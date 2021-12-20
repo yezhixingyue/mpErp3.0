@@ -4,7 +4,6 @@
     top='12vh'
     :title="title"
     :visible.sync="visible"
-    :disabled='curCanSelectUsableCraftList.length < 2'
     @submit="onSubmit"
     @cancle="onCancle"
     @open='onOpen'
@@ -16,7 +15,7 @@
        :key="it.ID" :title="it.Name" :disabled='CraftConditionIDs.includes(it.ID)'>{{it.Name}}</el-checkbox>
     </el-checkbox-group>
     <div class="select-type" v-if="ruleForm">
-      <el-checkbox :disabled='curCanSelectUsableCraftList.length < 2' v-model="ruleForm.IsRequired">必选</el-checkbox>
+      <el-checkbox v-model="ruleForm.IsRequired">必选</el-checkbox>
       <div>
         <template v-if="ruleForm && ruleForm.IsRequired">
           <span>初始选中：</span>
@@ -31,7 +30,6 @@
         </template>
       </div>
     </div>
-    <p class="tips-box" v-if="curCanSelectUsableCraftList.length < 2"> <i class="el-icon-warning"></i> 当前可选工艺数量少于2，不支持单选工艺设置</p>
   </CommonDialogComp>
 </template>
 
@@ -78,7 +76,7 @@ export default {
     optionList() {
       const item = { ID: '', Name: '不选中' };
       if (!this.selectList || this.selectList.length === 0) return [item];
-      const _list = this.selectList.filter(it => it && (!it.ElementList || it.ElementList.length === 0));
+      const _list = this.selectList.filter(it => it && ((!it.ElementList || it.ElementList.length === 0) && (!it.GroupList || it.GroupList.length === 0)));
       return [item, ..._list];
     },
     CraftConditionIDs() {
@@ -88,11 +86,6 @@ export default {
         if (!(this.ruleForm && this.ruleForm.ID === it.ID)) _list.push(...it.List);
       });
       return _list;
-    },
-    curCanSelectUsableCraftList() {
-      if (!this.usableCraftList || this.usableCraftList.length === 0) return [];
-      if (this.CraftConditionIDs.length === 0) return this.usableCraftList;
-      return this.usableCraftList.filter(it => !this.CraftConditionIDs.includes(it.ID));
     },
     DefaultCraft: {
       get() {

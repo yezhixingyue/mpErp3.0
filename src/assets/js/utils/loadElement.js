@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import {
   Dialog, Table, CarouselItem, Image, Dropdown, DropdownMenu, DropdownItem, Select, Option, Drawer, Alert,
-  TableColumn, DatePicker, Popover, Radio, Icon, Carousel, Progress, Tabs, TabPane, Message, Scrollbar, Col,
+  TableColumn, DatePicker, Popover, Radio, Icon, Carousel, Progress, Tabs, TabPane, Message, Scrollbar, Col, Autocomplete,
   Tooltip, Pagination, Upload, Checkbox, RadioGroup, RadioButton, TimeSelect, CheckboxGroup, Tree, Menu, Submenu, MenuItem,
   TimePicker, Form, FormItem, Input, Button, Cascader, Collapse, CollapseItem, Switch, Divider, Loading, InputNumber, Notification,
 } from 'element-ui';
@@ -53,6 +53,7 @@ Vue.use(CollapseItem);
 Vue.use(Switch);
 Vue.use(Divider);
 Vue.use(InputNumber);
+Vue.use(Autocomplete);
 Vue.use(Scrollbar);
 
 Vue.use(Loading.directive);

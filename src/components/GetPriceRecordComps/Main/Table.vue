@@ -131,7 +131,7 @@ export default {
     setHeight() {
       // const tempHeight = this.getHeight('.mp-erp-get-price-record-page-main-comp-wrap', 0);
       const oDom = document.querySelector('.mp-erp-get-price-record-page-main-comp-wrap'); // 未使用通用方式获取高度
-      this.h = oDom.offsetHeight;
+      if (oDom) this.h = oDom.offsetHeight;
     },
     onDetaClick(data) {
       this.$emit('detail', data);

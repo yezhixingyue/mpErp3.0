@@ -13,7 +13,7 @@
     class="mp-erp-comps-pruduct-module-product-element-map-set-dialog-comp-wrap"
   >
     <ul v-if="!loading" class="list">
-      <li v-for="it in List" :key="it.First" class="item">
+      <li v-for="(it, i) in List" :key="it.First + '-' + i" class="item">
         <span class="label">{{it.label}}：</span>
         <el-select v-model="it.Second" placeholder="请选择" size="small">
           <el-option
@@ -122,8 +122,10 @@ export default {
       this.List = this.ProductElementTypeList.filter(it => !it.onlyProduct || !this.curData).map(it => {
         const TypeList = this.curData ? this.curData.TypeList : this.itemData.TypeList;
         let Second = null;
-        const t = TypeList.find(_it => _it.First === it.ID);
-        if (t) Second = t.Second || '';
+        if (TypeList) {
+          const t = TypeList.find(_it => _it.First === it.ID);
+          if (t) Second = t.Second || '';
+        }
         const OptionList = [{ ID: '', Name: '无' }];
         // const OptionList = [];
         if (it.needElement) OptionList.push(...ElementList);
@@ -142,7 +144,7 @@ export default {
       this.loading = true;
       const [ElementList, FormulaList] = await Promise.all([this.getElementList(), this.getFormulaList()]);
       this.loading = false;
-      const _ElementList = ElementList.filter(it => it.Type === 1);
+      const _ElementList = ElementList.filter(it => it.Type === 1 && it.NumbericAttribute && it.NumbericAttribute.AllowDecimal === false);
       this.ElementData.List = [..._ElementList, ...FormulaList];
       return [_ElementList, FormulaList];
     },
@@ -151,12 +153,13 @@ export default {
         this.api.getElementGroupList(this.ElementData.PositionID, true).catch(() => {})]);
       const list = [];
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
-        list.push(...resp.data.Data);
+        list.push(...resp.data.Data.filter(it => !it.Group));
       }
       if (groupResp && groupResp.status === 200 && groupResp.data.Status === 1000 && groupResp.data.Data && groupResp.data.Data.length > 0) {
         const _list = groupResp.data.Data.filter(it => it.UseTimes && it.UseTimes.MinValue === 1 && it.UseTimes.MaxValue === 1);
         _list.forEach(it => {
           if (it.ElementList?.length > 0) {
+            // const alreayIDs = list.map(_it => _it.ID || _it.Name);
             list.push(...it.ElementList.map(_it => ({ ..._it, Name: `${it.Name}:${_it.Name}` })));
           }
         });

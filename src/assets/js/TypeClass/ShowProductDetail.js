@@ -2,7 +2,7 @@ import store from '@/store';
 
 
 // ------------------------------------------- ↓ 下面为通过详情数据获取到产品详细信息
-const getElementValueContentFromDetail = (target, giveUpUnit) => {
+const getElementValueContentFromDetail = (target, isCraftUse) => {
   let Content = '';
   if (Array.isArray(target.CustomerInputValues) && target.CustomerInputValues.length > 0) {
     if (target.CustomerInputValues.length > 1) {
@@ -11,19 +11,19 @@ const getElementValueContentFromDetail = (target, giveUpUnit) => {
       Content = '';
     } else {
       Content = target.CustomerInputValues[0].Name;
-      if (target.Attributes.Unit && !giveUpUnit) Content += target.Attributes.Unit;
+      // if (target.Attributes.Unit) Content += target.Attributes.Unit;
     }
   }
-  const Label = target.Attributes.Name;
+  const Label = (target.Attributes.IsNameHidden || (isCraftUse && !(!target.Attributes.Unit && target.Attributes.Type === 1))) ? '' : target.Attributes.Name;
   return { Label, Content };
 };
 
-const getDisplayContentByElementFromDetailData = (ElementList, item, giveUpUnit) => {
+const getDisplayContentByElementFromDetailData = (ElementList, item, isCraftUse) => {
   if (item && item.Property && Array.isArray(ElementList) && ElementList.length > 0) {
     const target = ElementList.find(it => it.ElementID === item.Property.ID);
     if (target) {
-      const { Label, Content } = getElementValueContentFromDetail(target, giveUpUnit);
-      if (Label && Content) {
+      const { Label, Content } = getElementValueContentFromDetail(target, isCraftUse);
+      if (Content) {
         return { Label, Content };
       }
     }
@@ -31,7 +31,7 @@ const getDisplayContentByElementFromDetailData = (ElementList, item, giveUpUnit)
   return null;
 };
 
-const getDisplayContentByGroupFromDetailData = (GroupList, item, isStringify) => {
+const getDisplayContentByGroupFromDetailData = (GroupList, item, isStringify, isCraftUse = false) => {
   if (Array.isArray(GroupList) && GroupList.length > 0 && item) {
     const target = GroupList.find(it => it.GroupID === item.Property.ID);
     if (target && target.List.length > 0) {
@@ -39,18 +39,22 @@ const getDisplayContentByGroupFromDetailData = (GroupList, item, isStringify) =>
       target.List.forEach(valList => {
         const groupItemContent = valList.List
           .map(_it => {
-            const t = getDisplayContentByElementFromDetailData(valList.List, { Property: { ID: _it.ElementID } });
+            const t = getDisplayContentByElementFromDetailData(valList.List, { Property: { ID: _it.ElementID } }, isCraftUse);
             return t;
           })
-          .filter(_it => _it && _it.Label && _it.Content)
-          .map(({ Label, Content }) => `${Label}：${Content}`);
+          .filter(_it => _it && _it.Content)
+          .map(({ Label, Content }) => `${Label}${Label ? '：' : ''}${Content}`);
         if (groupItemContent) {
           _list.push(groupItemContent);
         }
       });
       if (_list.length > 0) {
         _list = _list.map((Content, i) => {
-          const Label = _list.length > 1 ? `${target.Attributes.Name}-${i + 1}` : target.Attributes.Name;
+          // eslint-disable-next-line no-nested-ternary
+          let Label = _list.length > 1 && i > 0
+            ? (isCraftUse ? `${target.Attributes.Name}${i + 1}` : `${target.Attributes.Name}-notFirst`)
+            : _list.length > 1 && isCraftUse ? `${target.Attributes.Name}${i + 1}` : target.Attributes.Name;
+          if (target.Attributes.IsNameHidden) Label = '';
           return { Label, Content };
         });
         if (!isStringify) return _list;
@@ -58,7 +62,7 @@ const getDisplayContentByGroupFromDetailData = (GroupList, item, isStringify) =>
         let str = '';
         _list.forEach(_it => {
           const { Label, Content } = _it;
-          str += `，${Label}：（ ${Content} ）`;
+          str += `，${Label.replaceAll('-notFirst', '')}${Label ? '：（' : ''} ${Content} ${Label ? '）' : ''}`;
         });
         return str;
       }
@@ -87,11 +91,12 @@ const getCraftItemContentNameFromDetailData = (Craft, isStringify) => {
   const hiddenGroupName = !hasElementList && hasGroupList && GroupList.length === 1;
   if (hasElementList) {
     ElementList.forEach((it) => {
-      const _data = getElementValueContentFromDetail(it);
+      const _data = getElementValueContentFromDetail(it, true);
       if (_data) {
         const { Label, Content } = _data;
-        if (Label && Content) {
-          ElContent.push(`${Label}：${Content}`);
+        if (Content) {
+          // ElContent.push(`${Label}${Label ? ' ' : ''}${Content}`);
+          if (Content) ElContent.push({ type: 'ElementList', Label, Content });
         }
       }
     });
@@ -99,34 +104,27 @@ const getCraftItemContentNameFromDetailData = (Craft, isStringify) => {
   if (hasGroupList) {
     GroupList.forEach((it) => {
       if (it.List.length === 0) return;
-      if (it.List.length > 1) {
-        const _data = getDisplayContentByGroupFromDetailData(GroupList, { Property: { ID: it.GroupID } });
-        if (Array.isArray(_data) && _data.length > 0) {
-          _data.forEach((_it) => {
-            const { Label, Content } = _it;
-            if (Label && Content) {
-              if (hiddenGroupName) GroupContent.push(`${Content.join('，')}`);
+      const _data = getDisplayContentByGroupFromDetailData(GroupList, { Property: { ID: it.GroupID } }, false, true);
+      if (Array.isArray(_data) && _data.length > 0) {
+        _data.forEach((_it) => {
+          const { Label, Content } = _it;
+          if (Content) {
+            if (isStringify) {
+              if (hiddenGroupName || !Label) GroupContent.push(`${Content.join('，')}`);
               else GroupContent.push(`${Label}：[ ${Content.join('，')} ]`);
-            }
-          });
-        }
-        // GroupContent.push(`${hiddenGroupName ? '' : it.Attributes.Name}${it.List.length}处`);
-        return;
-      }
-      const _data = getDisplayContentByGroupFromDetailData(GroupList, { Property: { ID: it.GroupID } });
-      if (_data.length > 0) {
-        const [{ Label, Content }] = _data;
-        if (Label && Content) {
-          if (hiddenGroupName) GroupContent.push(`${Content.join('，')}`);
-          else GroupContent.push(`${Label}：[ ${Content.join('，')} ]`);
-        }
+            } else if (hiddenGroupName || !Label) GroupContent.push({ type: 'GroupList', Label: '', Content: `${Content.join('，')}` });
+            else GroupContent.push({ type: 'GroupList', Label, Content: `${Content.join('，')}` });
+          }
+        });
       }
     });
   }
   if (ElContent.length > 0 || GroupContent.length > 0) {
     const temp = {
       Name: Craft.Attributes.DisplayName,
-      Content: `${ElContent.join('，')}${ElContent.length > 0 ? '；' : ''}${GroupContent.join('，')}`,
+      Content: isStringify ? `${ElContent.join('，')}${ElContent.length > 0 && GroupContent.length > 0
+        ? '；' : ''}${GroupContent.join('，')}`
+        : [...ElContent, ...GroupContent],
     };
     if (!isStringify) return temp;
     return `，${temp.Name}：[ ${temp.Content} ]`;
@@ -135,19 +133,22 @@ const getCraftItemContentNameFromDetailData = (Craft, isStringify) => {
   return `，${Craft.Attributes.DisplayName}`;
 };
 
-const getDisplayContentByCraftFromDetailData = (CraftList, item, isStringify) => {
-  if (item && Array.isArray(CraftList) && item.Property && item.Property.ID) {
-    const list = CraftList.filter(it => it.Attributes?.DisplayGroup?.ID === item.Property.ID);
-    if (list.length > 0) {
-      const CraftGroupLabel = list[0].Attributes.DisplayGroup.Name || '工艺';
-      const temp = { Label: CraftGroupLabel, Content: [] };
-      temp.Content = list.map(it => getCraftItemContentNameFromDetailData(it, isStringify)).filter(it => it);
-      if (!isStringify) return temp;
-      let str = `，${CraftGroupLabel}：`;
-      temp.Content.forEach(_it => {
-        str += _it;
-      });
-      return str;
+const getDisplayContentByCraftFromDetailData = ({ CraftList, CraftGroupList }, item, isStringify) => {
+  if (item && Array.isArray(CraftList) && Array.isArray(CraftGroupList) && item.Property && item.Property.ID) {
+    const t = CraftGroupList.find(it => it.ID === item.Property.ID);
+    if (t) {
+      const list = CraftList.filter(it => t.List.includes(it.CraftID));
+      if (list.length > 0) {
+        const CraftGroupLabel = t.Name || '工艺';
+        const temp = { Label: CraftGroupLabel, Content: [] };
+        temp.Content = list.map(it => getCraftItemContentNameFromDetailData(it, isStringify)).filter(it => it);
+        if (!isStringify) return temp;
+        let str = `，${CraftGroupLabel}：`;
+        temp.Content.forEach(_it => {
+          str += _it;
+        });
+        return str;
+      }
     }
   }
   return null;
@@ -178,17 +179,27 @@ export default class ProductDetailTypeShowClass {
         switch (t.Name) {
           case '元素':
             target = getDisplayContentByElementFromDetailData(ProductParams.ElementList, itemData);
-            if (target && target.Label && target.Content) {
+            if (target && target.Content) {
               if (!isStringify) arr.push({ type: 'ElementList', Label: target.Label, Content: target.Content });
-              else str += `，${target.Label}：${target.Content}`;
+              else str += `，${target.Label}${target.Label ? '：' : ''}${target.Content}`;
             }
             break;
           case '元素组':
             target = getDisplayContentByGroupFromDetailData(ProductParams.GroupList, itemData, isStringify);
-            if (target && target.length > 0) {
-              if (!isStringify) arr.push(...target.map(it => ({ type: 'GroupList', Label: it.Label, Content: it.Content })));
-              else str += `${target}`;
-            }
+            // if (target && target.length > 0) {
+            //   if (!isStringify) arr.push(...target.map(it => ({ type: 'GroupList', Label: it.Label, Content: it.Content })));
+            //   else str += `${target}`;
+            // }
+            if (Array.isArray(target) && target.length > 0 && !isStringify) {
+              target.forEach((_it) => {
+                const { Label, Content } = _it;
+                if (Content) {
+                  // if (!Label) GroupContent.push(`${Content.join('，')}`);
+                  // else GroupContent.push(`${Label}：[ ${Content.join('，')} ]`);
+                  arr.push({ type: 'GroupList', Label, Content: `${Content.join('，')}` });
+                }
+              });
+            } else if (target) str += `${target}`;
             break;
           case '尺寸组':
             if (ProductParams.Size?.DisplayContent) {
@@ -205,7 +216,7 @@ export default class ProductDetailTypeShowClass {
             }
             break;
           case '工艺':
-            target = getDisplayContentByCraftFromDetailData(ProductParams.CraftList, itemData, isStringify);
+            target = getDisplayContentByCraftFromDetailData(ProductParams, itemData, isStringify);
             if (target) {
               if (!isStringify) arr.push({ type: 'CraftList', Label: target.Label, Content: target.Content });
               else str += `${target}`;

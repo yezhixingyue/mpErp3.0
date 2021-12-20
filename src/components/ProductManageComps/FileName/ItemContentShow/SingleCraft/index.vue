@@ -1,8 +1,8 @@
 <template>
   <div class="mp-erp-product-module-filename-item-content-show-single-craft-comp-wrap" v-if="craft">
-    <SingleElement :ElementData='craft' @change="onCraftDataChange" />
-    <SingleElement v-for="it in craft.ElementList" :key="it.ID" :ElementData='it' @change="onCraftDataChange" />
-    <SingleElementGroup v-for="group in craft.GroupList" :key="group.ID" :group='group' @change="onCraftDataChange" />
+    <SingleElement :ElementData='craft' @change="onCraftDataChange" :hidden="hidden" />
+    <SingleElement v-for="it in craft.ElementList" :key="it.ID" :ElementData='it' @change="onCraftDataChange" :hidden="hidden" />
+    <SingleElementGroup v-for="group in craft.GroupList" :key="group.ID" :group='group' @change="onCraftDataChange" :hidden="hidden" />
   </div>
 </template>
 
@@ -16,6 +16,10 @@ export default {
     craft: {
       type: Object,
       default: null,
+    },
+    hidden: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

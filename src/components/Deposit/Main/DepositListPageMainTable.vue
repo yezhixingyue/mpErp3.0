@@ -9,7 +9,7 @@
     border
     style="width: 100%"
   >
-    <el-table-column min-width="130px" label="限产品">
+    <el-table-column min-width="180px" label="限产品">
       <template slot-scope="scope">
         <el-tooltip popper-class="table-item" :enterable='true' placement="top-start">
           <ul slot="content">
@@ -19,38 +19,43 @@
         </el-tooltip>
       </template>
     </el-table-column>
-    <el-table-column min-width="120px" label="规则">
+    <el-table-column min-width="180px" label="使用区域">
+      <template slot-scope="scope">
+        <TableItemShowComp :list='getAreaContent(scope.row)' effect='dark' />
+      </template>
+    </el-table-column>
+    <el-table-column width="110px" label="规则">
       <template slot-scope="scope">
         <span>金额 ≥ {{scope.row.MinAmount}}</span>
       </template>
     </el-table-column>
-    <el-table-column min-width="108px" label="定金比例">
+    <el-table-column width="100px" label="定金比例">
       <template slot-scope="scope">
         <span>{{scope.row.Percent}}%</span>
       </template>
     </el-table-column>
-    <el-table-column show-overflow-tooltip min-width="210px" label="客户类型">
+    <el-table-column show-overflow-tooltip min-width="150px" label="客户类型">
       <template slot-scope="scope">{{scope.row.CustomerTypeList | formatPromoteCustomerType
       }}</template>
     </el-table-column>
-    <el-table-column show-overflow-tooltip min-width="210px" label="客户等级">
+    <el-table-column show-overflow-tooltip min-width="150px" label="客户等级">
       <template slot-scope="scope">{{scope.row.GradeList | formatPromoteCustomerType
       }}</template>
     </el-table-column>
-    <el-table-column show-overflow-tooltip min-width="260px" label="物流">
+    <el-table-column show-overflow-tooltip min-width="150px" label="物流">
       <template slot-scope="scope">
         <span>{{scope.row.LogisticsList | formatPromoteCustomerType
       }}</span>
       </template>
     </el-table-column>
-    <el-table-column min-width="155px" label="是否扣物流费用">
+    <el-table-column width="125px" label="是否扣物流费用">
       <template slot-scope="scope">
         <span v-if="scope.row.IsChargeFreight">是</span>
         <span v-else class="is-gray">否</span>
       </template>
     </el-table-column>
 
-    <el-table-column width="280px" label="操作">
+    <el-table-column width="200px" label="操作">
       <ul
          class="handle-menus"
          slot-scope="scope"
@@ -80,13 +85,18 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
+import TableItemShowComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp';
+import { getSelectedContentBySelectedDataAndAllData } from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/utils';
 
 export default {
   mixins: [tableMixin],
+  components: {
+    TableItemShowComp,
+  },
   computed: {
     ...mapState('deposit', ['listData', 'tableDataLoading']),
     ...mapState('common', ['Permission']),
-    ...mapGetters('common', ['twoLevelsProductClassify']),
+    ...mapGetters('common', ['twoLevelsProductClassify', 'allAreaTreeList']),
   },
   methods: {
     ...mapActions('couponStore', ['getCouponUseList', 'getCustomerData', 'getOrderDetail']),
@@ -100,10 +110,18 @@ export default {
     },
     handleDeleteClick(rowData, index) {
       const { ID } = rowData;
-      this.messageBox.warnCancelNullMsg('确定删除该条定金设置信息吗?', () => {
+      this.messageBox.warnCancelNullMsg('确定删除该条定金设置吗?', () => {
         this.$store.dispatch('deposit/removeDepositSetting', [ID, index]);
       });
     },
+    getAreaContent(item) {
+      const temp = { List: item.AreaList, IsIncludeIncreased: item.IsIncludeIncreasedArea };
+      const content = getSelectedContentBySelectedDataAndAllData(temp, this.allAreaTreeList);
+      return content;
+    },
+  },
+  mounted() {
+    this.$store.dispatch('common/getAreaList');
   },
 };
 </script>
@@ -124,6 +142,9 @@ export default {
                 white-space: nowrap;
                 // height: 16px;
                 line-height: 16px;
+                position: relative;
+                top: 3px;
+                padding: 0 6px;
               }
               > .handle-menus {
                 display: flex;
@@ -133,7 +154,7 @@ export default {
                   content: '';
                   display: block;
                 }
-                padding-right: 50px;
+                padding-right: 20px;
                 > li {
                   padding: 0 6px;
                   > span {

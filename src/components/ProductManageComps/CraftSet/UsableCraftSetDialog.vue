@@ -88,7 +88,7 @@ export default {
     },
     async getAllCraftDataList() {
       if (this.allCraftDataList.length > 0) return;
-      const resp = await this.api.getCraftListData({ Page: 1, PageSize: 100000, FieldType: 2 }).catch(() => {});
+      const resp = await this.api.getCraftListData({ Page: 1, PageSize: 100000, FieldType: 3 }).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
         this.allCraftDataList = resp.data.Data;
       }

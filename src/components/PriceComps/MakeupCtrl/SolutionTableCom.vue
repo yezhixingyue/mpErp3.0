@@ -173,11 +173,18 @@ export default {
       if (t.Name === '物料损耗') {
         const { Wastage } = item;
         if (typeof Wastage !== 'object') return [''];
-        const { Rule, Value, Unit, UnitType } = Wastage;
-        const RuleText = this.$utils.getNameFromListByIDs(Rule, this.WastageRuleList);
-        const UnitText = this.$utils.getNameFromListByIDs(Unit, this.WastageUnitList);
+        const { Rule, Value, Unit, UnitType, FormulaName, FormulaID } = Wastage;
         const UnitTypeText = this.$utils.getNameFromListByIDs(UnitType, this.WastageUnitTypeList);
-        return [`${RuleText}：${Value}${UnitText}（ ${UnitTypeText} ）`];
+        const RuleText = this.$utils.getNameFromListByIDs(Rule, this.WastageRuleList);
+        let msg;
+        if (FormulaID) {
+          if (FormulaName) msg = `${RuleText}：[公式:${FormulaName}]  张（ ${UnitTypeText} ）`;
+          else msg = `${RuleText}：[公式:未获取到名称] 张（ ${UnitTypeText} ）`;
+        } else {
+          const UnitText = this.$utils.getNameFromListByIDs(Unit, this.WastageUnitList);
+          msg = `${RuleText}：${Value}${UnitText}（ ${UnitTypeText} ）`;
+        }
+        return [msg];
       }
       if (t.Name === '物料尺寸') {
         const { MaterialSizeList } = item;

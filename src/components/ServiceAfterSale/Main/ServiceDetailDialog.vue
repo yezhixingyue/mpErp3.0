@@ -97,6 +97,7 @@ export default {
         || !this.isShowServiceDetail) return;
       const bottomDiv = document.getElementsByClassName('question-content')[0];
       const topDiv = document.getElementsByClassName('mp-service-detail-table-wrap')[0];
+      if (!topDiv) return;
       const topH = topDiv.offsetHeight;
       const botH = this.$refs.detailBottomList.offsetHeight;
       if (topH + botH < 356) {

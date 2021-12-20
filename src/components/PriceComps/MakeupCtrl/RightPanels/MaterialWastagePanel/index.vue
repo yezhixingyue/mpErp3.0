@@ -5,8 +5,8 @@
         <el-radio :label="it.ID" v-for="it in WastageRuleList" :key="it.ID">{{it.Name}}</el-radio>
       </el-radio-group>
       <div>
-        <el-input v-model.trim="Value" size="mini" maxlength="9"></el-input>
-        <el-select v-model="Unit" size="mini">
+        <el-input v-model.trim="Value" size="mini" maxlength="9" v-show="!Formula"></el-input>
+        <el-select v-model="Unit" size="mini" v-show="!Formula">
           <el-option
             v-for="item in WastageUnitList"
             :key="item.ID"
@@ -14,6 +14,10 @@
             :value="item.ID">
           </el-option>
         </el-select>
+        <div class="formula-box" v-show="Formula">
+          <span :title="Formula ? `公式:${Formula.Name}` : ''">{{ Formula ? `公式:${Formula.Name}` : '' }}</span>
+          <span>张</span>
+        </div>
         <el-select v-model="UnitType" size="mini">
           <el-option
             v-for="item in WastageUnitTypeList"
@@ -22,6 +26,8 @@
             :value="item.ID">
           </el-option>
         </el-select>
+        <span class="blue-span" @click="onUseFormulaClick">使用公式</span>
+        <span class="is-font-size-12 is-gray">（ {{ Formula ? '已使用' : '未使用' }} ）</span>
       </div>
     </header>
     <main>
@@ -37,11 +43,15 @@
         </ul>
       </div>
     </main>
+    <ProductFormulasSelectDialog :visible.sync='visible' :list='SizeNumberPropertyList' title='选择公式'
+     :productData='productData' @select='onPropSelect' :selectedIDs='selectedIDs' />
   </section>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+// import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
+import ProductFormulasSelectDialog from '@/components/common/FormulaAndConditionComps/ProductFormulasSelectDialog.vue';
 
 export default {
   props: {
@@ -49,48 +59,86 @@ export default {
       type: Object,
       default: null,
     },
+    SizeNumberPropertyList: {
+      type: Array,
+      default: () => [],
+    },
   },
-  computed: mapState('priceManage', ['WastageRuleList', 'WastageUnitTypeList', 'WastageUnitList']),
+  components: {
+    // FormulaPanelElementSelectDialog,
+    ProductFormulasSelectDialog,
+  },
+  computed: {
+    ...mapState('priceManage', ['WastageRuleList', 'WastageUnitTypeList', 'WastageUnitList']),
+    selectedIDs() {
+      if (!this.Formula) return [];
+      return [this.Formula.ID || ''];
+    },
+  },
   data() {
     return {
       Rule: 0,
       Value: '',
       Unit: 0,
       UnitType: 1,
+      visible: false,
+      productData: null,
+      Formula: null,
     };
   },
   methods: {
     getSubmitInfo() {
       const { Rule, Value, Unit, UnitType } = this;
-      if (!Value) {
+      if (!Value && !this.Formula) {
         this.messageBox.failSingleError('保存失败', '请设置损耗数量');
         return null;
       }
-      const bool = this.$utils.getValueIsOrNotNumber(Value, Unit !== 0);
-      if (!bool) {
-        this.messageBox.failSingleError('保存失败', '损耗数量输入不正确，应为数字类型，单位为%时可使用小数');
-        return null;
-      }
-      if (+Value < 0) {
-        this.messageBox.failSingleError('保存失败', '损耗数量不能为负');
-        return null;
+
+      if (!this.Formula) {
+        const bool = this.$utils.getValueIsOrNotNumber(Value, Unit !== 0);
+        if (!bool) {
+          this.messageBox.failSingleError('保存失败', '损耗数量输入不正确，应为数字类型，单位为%时可使用小数');
+          return null;
+        }
+        if (+Value < 0) {
+          this.messageBox.failSingleError('保存失败', '损耗数量不能为负');
+          return null;
+        }
       }
       const Wastage = {
         Rule,
-        Value,
-        Unit,
         UnitType,
       };
+      if (this.Formula) Wastage.FormulaID = this.Formula.ID;
+      else {
+        Wastage.Unit = Unit;
+        Wastage.Value = Value;
+      }
       return { Wastage };
     },
     initEditData() {
+      this.getProductData();
       if (this.initData && this.initData.Wastage) {
-        const { Rule, Value, Unit, UnitType } = this.initData.Wastage;
+        const { Rule, Value, Unit, UnitType, FormulaID } = this.initData.Wastage;
         this.Rule = (Rule || Rule === 0) ? Rule : 0;
         this.Value = (Value || Value === 0) ? Value : 0;
         this.Unit = (Unit || Unit === 0) ? Unit : 0;
         this.UnitType = (UnitType || UnitType === 0) ? UnitType : 0;
+        if (FormulaID) {
+          const t = this.SizeNumberPropertyList.find(it => it.ID === FormulaID);
+          if (t) this.Formula = t;
+        }
       }
+    },
+    onPropSelect(e) {
+      this.Formula = e;
+    },
+    onUseFormulaClick() {
+      this.visible = true;
+    },
+    async getProductData() {
+      const resp = await this.$store.dispatch('priceManage/getProductCraftData', this.$route.params.ProductID);
+      if (resp) this.productData = resp;
     },
   },
   mounted() {
@@ -115,6 +163,8 @@ export default {
     }
     > div {
       display: flex;
+      line-height: 28px;
+      align-items: center;
       > .el-input {
         width: 95px;
         margin-right: 15px;
@@ -128,6 +178,36 @@ export default {
       }
       .el-input__inner {
         font-size: 12px;
+      }
+      .blue-span {
+        line-height: 28px;
+        margin-left: 30px;
+        & + .is-gray {
+          letter-spacing: 0.5px;
+          margin-left: 2px;
+        }
+      }
+      .formula-box {
+        height: 28px;
+        color: #585858;
+        > span {
+          display: inline-block;
+          vertical-align: top;
+          width: 145px;
+          margin-right: 15px;
+          text-align: center;
+          color: #444;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 13px;
+          &:last-of-type {
+            color: #989898;
+            width: 30px;
+            margin-right: 0;
+            font-size: 12px;
+          }
+        }
       }
     }
   }

@@ -290,7 +290,7 @@ export default {
         // display: flex;
         // align-items: center;
         > i {
-          margin-right: 6px;
+          margin-right: 5px;
           margin-top: -2px;
           // text-align: left;
           &.iconfont {
@@ -389,10 +389,10 @@ export default {
       }
     }
   }
-  .el-menu .el-menu-item > i.el-icon-edit-outline {
+  .el-menu .el-menu-item > i.el-icon {
     margin-right: 0;
   }
-  .el-menu--vertical > .el-menu .el-menu-item > i.el-icon-edit-outline {
+  .el-menu--vertical > .el-menu .el-menu-item > i.el-icon {
     text-align: left;
   }
 </style>

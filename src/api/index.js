@@ -179,8 +179,8 @@ const api = {
   createPaymentOrder(data) { // POST /Api/PaymentOrder/Create 生成付款单 使用返回值中的阿里支付码
     return instance.post('/Api/PaymentOrder/Create', data);
   },
-  getPayResult(payCode) { // GET /Api/PaymentOrder/PayResult 查询付款结果
-    return instance.get(`/Api/PaymentOrder/PayResult?payCode=${payCode}`);
+  getPayResult(payCode, type = 11) { // GET /Api/PaymentOrder/PayResult 查询付款结果
+    return instance.get('/Api/PaymentOrder/PayResult', { params: { payCode, type } });
   },
   getPaymentData2Excel(data) { // POST /Api/PaymentOrder/Excel
     return instance.post('/Api/PaymentOrder/Excel', data, { responseType: 'arraybuffer' });
@@ -239,8 +239,8 @@ const api = {
   getCouponUseList(data) { // POST /Api/CouponCode/List   获取优惠券使用列表
     return instance.post('/Api/CouponCode/List', data);
   },
-  getCustomerList(data) { // POST /Api/Customer/List   优惠券使用列表中获取绑定客户信息
-    return instance.post('/Api/Customer/List', data);
+  getCustomerList(data, config) { // POST /Api/Customer/List   优惠券使用列表中获取绑定客户信息
+    return instance.post('/Api/Customer/List', data, config);
   },
 
   /* 定金设置api
@@ -534,8 +534,8 @@ const api = {
   getMixtureMakeupExcludeNumberSetup(solutionID, partID, formularID) { // PUT /Api/MixtureMakeup/ExcludeNumberSetup  混拼数量排除公式设置
     return instance.put('/Api/MixtureMakeup/ExcludeNumberSetup', '', { params: { solutionID, partID, formularID } });
   },
-  getProductFormulasList(productID) { // GET /Api/ProductFormula/List 获取产品公式和子公式列表
-    return instance.get('/Api/ProductFormula/List', { params: { productID } });
+  getProductFormulasList(productID, isIncludeCalculate = false) { // GET /Api/ProductFormula/List 获取产品公式和子公式列表
+    return instance.get('/Api/ProductFormula/List', { params: { productID, isIncludeCalculate } });
   },
   getProductChildConditionList(productID) { // GET /Api/ChildCondition/List  获取产品子条件列表
     return instance.get('/Api/ChildCondition/List', { params: { productID } });
@@ -763,6 +763,37 @@ const api = {
   },
   getCraftRemove(id) { // DELETE /Api/Craft/Remove 工艺删除
     return instance.delete(`/Api/Craft/Remove?id=${id}`);
+  },
+  /* 客户相关api
+  ----------------------------------------------------------------------------------- */
+  getCustomerFundBalance(customerID, config = {}) { // get /Api/Customer/FundBalance 获取客户余额信息
+    return instance.get('/Api/Customer/FundBalance', { ...config, params: { customerID } });
+  },
+  getCustomerRecharge(data) { // POST /Api/Customer/Recharge  客户充值
+    return instance.post('/Api/Customer/Recharge', data);
+  },
+  /* 文件批量上传api
+  ----------------------------------------------------------------------------------- */
+  getExpressValidList(data) { // POST /Api/Express/ValidList 查询可用物流列表
+    return instance.post('/Api/Express/ValidList', data, { closeLoading: true });
+  },
+  getAddressIDList(data) { // 查询地址ID
+    return instance.get(`/Api/District/List?parentID=${data}`, { closeLoading: true });
+  },
+  getAnalysisOutPlateNo(outPlateNo) { // 解析电商平台单号收件人信息   GET /Api/Analysis/OutPlateNo
+    return instance.get('/Api/Analysis/OutPlateNo', { params: { outPlateNo } });
+  },
+  getFileNameAnalysis(data) { // POST /Api/FileName/Analysis 文件名解析
+    return instance.post('/Api/FileName/Analysis', data, { closeLoading: true, closeTip: true });
+  },
+  getFileSuffixList() { // /Api/File/SuffixList 获取批量上传支持的文件格式
+    return instance.get('/Api/File/SuffixList');
+  },
+  getOrderCreate(data) { // POST /Api/Order/Create 提交下单
+    return instance.post('/Api/Order/Create', data, { closeLoading: true });
+  },
+  getFreightCalculate(data) { // POST /Api/Freight/Calculate 有效地址或配送方式发生变化时重新计算解析条目的运费价格
+    return instance.post('/Api/Freight/Calculate', data, { closeLoading: true, closeTip: true });
   },
 };
 

@@ -29,12 +29,25 @@ const routes = { // 客户订单管理
       name: 'GetPriceRecord',
       meta: {
         title: '报价记录',
-        icon: 'el-icon-edit-outline',
+        icon: 'el-icon-edit-outline el-icon',
         pageName: 'GetPriceRecordListPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
       },
       component: () => import('../../../views/GetPriceRecord/index.vue'),
+    },
+    {
+      path: '/BatchUpload',
+      name: 'BatchUpload',
+      meta: {
+        title: '批量上传',
+        // icon: 'el-icon-upload el-icon',
+        icon: 'iconfont icon-shangchuan',
+        pageName: 'OrderBatchUploadPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionManageOrder', 'Obj', 'HelpSubmit'],
+      },
+      component: () => import('../../../views/BatchUpload/BatchUploadPage.vue'),
     },
     /*  运单管理
     ------------------------------------------ */
@@ -120,6 +133,7 @@ const routeTree = {
     ------------------------------------------ */
     { name: 'orderManage', children: [] },
     { name: 'GetPriceRecord', children: [] },
+    { name: 'BatchUpload', children: [] },
     /*  运单管理
     ------------------------------------------ */
     { name: 'transport', children: [] },

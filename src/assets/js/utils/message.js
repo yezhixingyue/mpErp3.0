@@ -14,7 +14,7 @@ function failSingle(msg, successFunc, failFunc) {
     showClose: true,
     confirmButtonText: '确定',
     title: msg,
-    customClass: 'mp-order-del-pop-reverse-warn-null',
+    customClass: 'mp-order-del-pop-reverse-warn-null fail',
   }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
 }
 

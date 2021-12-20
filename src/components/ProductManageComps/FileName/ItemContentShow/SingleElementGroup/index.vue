@@ -1,7 +1,7 @@
 <template>
   <div v-if="group" class="mp-erp-product-module-filename-item-content-show-single-group-comp-wrap">
-    <SingleElement :ElementData='group' :isSizeGroup='isSizeGroup' @change="onElementDataChange" />
-    <SingleElement v-for="it in group.ElementList" :key="it.ID" :ElementData='it' @change="onElementDataChange" />
+    <SingleElement :ElementData='group' :isSizeGroup='isSizeGroup' @change="onElementDataChange" :hidden="hidden" />
+    <SingleElement v-for="it in group.ElementList" :key="it.ID" :ElementData='it' @change="onElementDataChange" :hidden="hidden" />
   </div>
 </template>
 
@@ -15,6 +15,10 @@ export default {
       default: null,
     },
     isSizeGroup: {
+      type: Boolean,
+      default: false,
+    },
+    hidden: {
       type: Boolean,
       default: false,
     },

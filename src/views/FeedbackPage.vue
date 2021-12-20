@@ -8,7 +8,7 @@
         <el-table-column prop="Customer.Name" label="客户名称" minWidth="100" show-overflow-tooltip></el-table-column>
         <el-table-column prop="Order.CustomerType" label="客户类型" minWidth="85" show-overflow-tooltip></el-table-column>
         <el-table-column label="产品名称" prop="Order.ProductName" minWidth="150" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.Order.SecondLevelName+' - '+ scope.row.Order.ProductName}}</template>
+          <template slot-scope="scope">{{scope.row.Order | getFullName}}</template>
         </el-table-column>
         <el-table-column prop="Order.Content" label="订单备注" minWidth="150" show-overflow-tooltip>
           <span class="is-gray" slot-scope="scope">{{scope.row.Order.Content}}</span>
@@ -79,7 +79,7 @@
               </li>
               <li>
                 <span class="title">产品名称：</span>
-                <span class="text">{{curItemData.Order.SecondLevelName + ' - ' + curItemData.Order.ProductName}}</span>
+                <span class="text">{{curItemData.Order | getFullName}}</span>
               </li>
               <li>
                 <span class="title">订单备注：</span>

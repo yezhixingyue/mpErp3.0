@@ -56,6 +56,7 @@ export const PropertyFixedType = [
   { ID: 33, Name: '款数' },
   { ID: 34, Name: '总价' },
   { ID: 35, Name: '自定义' },
+  { ID: 36, Name: '印刷幅面物料数量(不含损耗)' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表

@@ -4,16 +4,23 @@
       <span class="label" :class="{part:ShowData.Type==='Part', product: ShowData.Type==='product'}">{{ShowData.Type==='product'?'产品名称':'部件'}}：</span>
       <div class="text is-font-14" :class="{'is-bold': ShowData.Type==='product'}">{{ShowData.Name}}</div>
     </li>
-    <li v-for="(item) in localContentList" :key="item.Label + item.Content">
-      <span class="label">{{item.Label}}：</span>
+    <li v-for="(item, lv1Index) in localContentList" :key="item.Label + item.Content + lv1Index">
+      <span class="label" :class="{'opacity-0': item.Label.includes('-notFirst')}">{{item.Label.replace('-notFirst', '')}}{{item.Label ? '：' : ''}}</span>
       <div class="text">
         <span v-if="typeof item.Content === 'string'">{{item.Content}}</span>
         <ul v-else>
-          <li v-for="it in item.Content" :key="it.Name || it">
+          <li v-for="(it, lv2Index) in item.Content" :key="(it.Name || it) + lv2Index">
             <span v-if="typeof it === 'string'">{{it}}</span>
-            <div v-else-if="item.type==='CraftList'">
+            <div v-else-if="item.type==='CraftList'" class="craft-wrap">
               <span>{{it.Name}}</span>
-              <span class="is-gray" v-if="it.Content">（{{it.Content}}）</span>
+              <ul v-if="Array.isArray(it.Content)" class="craft-content-list">
+                <li v-for="(minItem, minIndex) in it.Content" :key="minItem + minIndex">
+                  <span v-if="minItem.Label">{{minItem.Label}}</span>
+                  <span v-if="minItem.Content && minItem.type === 'GroupList'"> [ {{minItem.Content}} ]</span>
+                  <span v-else-if="minItem.Content"> {{minItem.Content}}</span>
+                </li>
+              </ul>
+              <span class="is-gray" v-else-if="it.Content">（{{it.Content}}）</span>
             </div>
           </li>
         </ul>
@@ -72,6 +79,9 @@ export default {
           top: 8px;
         }
       }
+      &.opacity-0 {
+        opacity: 0;
+      }
     }
     > div.text {
       color: #585858;
@@ -86,6 +96,22 @@ export default {
           }
         }
         // margin-bottom: -5px;
+      }
+    }
+  }
+  .craft-wrap {
+    white-space: nowrap;
+    .craft-content-list {
+      display: inline-block;
+      vertical-align: top;
+      margin-left: 7px;
+      color: #989898;
+      line-height: 18px;
+      padding-top: 2px;
+      white-space: nowrap;
+      li {
+        white-space: normal;
+        margin-bottom: 0 !important;
       }
     }
   }

@@ -446,6 +446,13 @@ export default {
       { Name: 'Product', ID: 2 },
       { Name: 'Part', ID: 3 },
     ],
+    /** 报价、预下单、加入购物车时的忽略风险提示类型列表  传值：IgnoreRiskLevel
+    ---------------------------------------- */
+    RiskWarningTipsTypes: {
+      None: 0, // 不忽略提示 服务器默认为0
+      PageTips: 1, // 忽略页面提示（ 加入购物车默认忽略 ）
+      All: 2, // 忽略所有提示
+    },
   },
   getters: {
     /* 配送方式相关
@@ -822,8 +829,8 @@ export default {
     // 获取配送方式列表
     async getExpressList({ state, commit }) {
       if (state.ExpressList.length > 1) return;
-      const res = await api.getExpressList();
-      if (res.data.Status !== 1000) return;
+      const res = await api.getExpressList().catch(() => null);
+      if (!res || res.data.Status !== 1000) return;
       commit('setExpressList', res.data.Data);
     },
     // 获取客户售后申请反馈问题列表

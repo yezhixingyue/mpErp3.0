@@ -42,6 +42,7 @@ export default {
     /** 拼版控制相关
      ---------------------------------------- */
     ProductFormulaPropertyList: [],
+    ProductFormulasListJoinCalculate: [], // 带计算公式的产品公式列表
     curMakeupItemEditData: null,
     CuttingRuleList: [
       { Name: '最大数量', ID: 0 },
@@ -169,6 +170,9 @@ export default {
     },
     setCurMakeupItemEditData(state, data) {
       state.curMakeupItemEditData = data;
+    },
+    setProductFormulasListJoinCalculate(state, [ProductFormulaList]) {
+      state.ProductFormulasListJoinCalculate = Array.isArray(ProductFormulaList) ? ProductFormulaList : [];
     },
     /** 子条件
     ----------------------------------------- */
@@ -610,6 +614,19 @@ export default {
         return true;
       }
       commit('setMakeupPropertyList', [ProductFormulaList]);
+      return false;
+    },
+    async getProductFormulasListJoinCalculate({ commit }, ProductID) { // 物料损耗公式列表数据
+      commit('setProductFormulasListJoinCalculate', []);
+      const [ProductFormulaResp] = await Promise.all([
+        api.getProductFormulasList(ProductID, true).catch(() => {}), // 设置尺寸数量
+      ]);
+      const ProductFormulaList = ProductFormulaResp && ProductFormulaResp.data.Status === 1000 ? ProductFormulaResp.data.Data : [];
+      if (ProductFormulaResp && ProductFormulaResp.data.Status === 1000) {
+        commit('setProductFormulasListJoinCalculate', [ProductFormulaList]);
+        return true;
+      }
+      commit('setProductFormulasListJoinCalculate', [ProductFormulaList]);
       return false;
     },
     async getChildConditionPropertyList({ commit }, PartIDs) {

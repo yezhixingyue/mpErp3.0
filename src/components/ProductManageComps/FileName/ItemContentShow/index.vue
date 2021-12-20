@@ -9,34 +9,35 @@
     </header>
     <main v-show="showMain">
       <!-- 产品|部件名称 -->
-      <SingleElementItem v-model="PartFalseWords"  />
+      <SingleElementItem v-model="PartFalseWords" :showHidden='false' :hidden='hidden'  />
 
       <!-- 元素 -->
       <p class="part-title" v-if="itemData.ElementList.length > 0">元素 --</p>
       <div>
-        <SingleElement v-for="it in itemData.ElementList" :key="it.ID" :ElementData='it' @change="onNameDataChange($event, 'element')" />
+        <SingleElement v-for="it in itemData.ElementList" :key="it.ID" :ElementData='it' :hidden='hidden' @change="onNameDataChange($event, 'element')" />
       </div>
 
       <!-- 元素组 -->
       <p class="part-title" v-if="itemData.GroupList.length > 0">元素组 --</p>
-      <SingleElementGroup v-for="group in itemData.GroupList" :key="group.ID" :group='group' @change="onNameDataChange($event, 'group')" />
+      <SingleElementGroup v-for="group in itemData.GroupList" :key="group.ID" :group='group' :hidden='hidden' @change="onNameDataChange($event, 'group')" />
 
       <!-- 工艺 -->
       <p class="part-title" v-if="itemData.CraftList.length > 0">工艺 --</p>
       <div>
-        <SingleCraft v-for="craft in itemData.CraftList" :key="craft.ID" :craft='craft' @change="onNameDataChange($event, 'craft')" />
+        <SingleCraft v-for="craft in itemData.CraftList" :key="craft.ID" :craft='craft' :hidden='hidden' @change="onNameDataChange($event, 'craft')" />
       </div>
 
       <!-- 尺寸组 -->
       <p class="part-title" v-if="itemData.SizeGroup">尺寸组 --</p>
       <div>
         <SingleElementGroup
-         key="SizeGroup" isSizeGroup v-if="itemData.SizeGroup" :group='itemData.SizeGroup.GroupInfo' @change="onNameDataChange($event, 'SizeGroup')" />
+         key="SizeGroup" isSizeGroup v-if="itemData.SizeGroup"
+         :group='itemData.SizeGroup.GroupInfo' :hidden='hidden' @change="onNameDataChange($event, 'SizeGroup')" />
       </div>
 
       <!-- 物料  ? -->
       <p class="part-title">物料</p>
-      <SingleElement :ElementData='MaterialFalseWords' @change="onNameDataChange($event, 'material')" />
+      <SingleElement :ElementData='MaterialFalseWords' :hidden='hidden' @change="onNameDataChange($event, 'material')" />
     </main>
   </section>
 </template>
@@ -58,6 +59,10 @@ export default {
       default: false,
     },
     show: {
+      type: Boolean,
+      default: false,
+    },
+    hidden: {
       type: Boolean,
       default: false,
     },

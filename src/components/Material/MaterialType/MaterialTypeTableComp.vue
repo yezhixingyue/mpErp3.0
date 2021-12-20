@@ -101,10 +101,12 @@ export default {
       line-height: 36px;
       font-size: 14px;
     }
-    // &.menu-column {
-      // text-align: left;
-      // padding-left: 120px;
-    // }
+    &.menu-column {
+      .cell {
+        text-align: left;
+        padding-left: 425px !important;
+      }
+    }
   }
   .el-table__body-wrapper {
     .el-table__row {

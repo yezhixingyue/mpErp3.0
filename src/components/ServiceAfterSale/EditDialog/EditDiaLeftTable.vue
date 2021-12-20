@@ -64,7 +64,7 @@ export default {
     getH() {
       setTimeout(() => {
         const h1 = document.getElementsByClassName('right-submit-wrap')[0];
-        if (h1.offsetHeight) this.h = 362 - h1.offsetHeight;
+        if (h1 && h1.offsetHeight) this.h = 362 - h1.offsetHeight;
       //  console.log(h1.offsetHeight, this.h);
       }, 0);
     },

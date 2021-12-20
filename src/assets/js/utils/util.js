@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
  */
 import handleLoadingHOF from './handleLoading';
 
-import { normalNameReg, pointStartNumberReg } from './regexp';
+import { normalNameReg, pointStartNumberReg, pointEndReg } from './regexp';
 
 // import { UseModuleList } from '../TypeClass/PropertyClass';
 
@@ -181,7 +181,7 @@ export const getRandomRangeId = (num) => {
  */
 export const getValueIsOrNotNumber = (val, isInteger) => {
   if (!val && val !== 0) return false;
-  if (pointStartNumberReg.test(val)) return false;
+  if (pointStartNumberReg.test(val) || pointEndReg.test(val)) return false;
   const _val = typeof val === 'number' ? val : +val;
   let _bool = !Number.isNaN(_val);
   if (_bool && isInteger) _bool = Number.isInteger(_val);
@@ -303,6 +303,18 @@ export const checkName = name => normalNameReg.test(name);
  */
 export const getAUUID = () => uuidv4();
 
+/**
+ * 判断数组中是否存在重复项
+ *
+ * @param {*} list
+ */
+export const getIsOrNotHasRepeatItemInArray = list => {
+  if (!Array.isArray(list) || list.length < 2) return false;
+  const len1 = list.length;
+  const len2 = [...new Set(list)].length;
+  return len1 > len2;
+};
+
 export default {
   getStatusString,
   getExpress,
@@ -326,4 +338,5 @@ export default {
   getTreeDataFromListAndClassifyData,
   checkName,
   getAUUID,
+  getIsOrNotHasRepeatItemInArray,
 };

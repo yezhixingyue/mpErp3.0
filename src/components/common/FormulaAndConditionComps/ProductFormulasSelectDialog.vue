@@ -57,6 +57,10 @@ export default {
       type: Object,
       default: null,
     },
+    title: {
+      type: String,
+      default: '设置尺寸数量',
+    },
   },
   components: {
     CommonDialogComp,
@@ -87,7 +91,6 @@ export default {
   },
   data() {
     return {
-      title: '设置尺寸数量',
       radio: '',
     };
   },

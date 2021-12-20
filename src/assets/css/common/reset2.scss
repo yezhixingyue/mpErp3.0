@@ -8,10 +8,22 @@
 
 .mp-general-loading-box{
   z-index: 9999 !important;
+  .el-loading-spinner i {
+    font-size: 20px;
+  }
   .el-loading-spinner i,.el-loading-spinner .el-loading-text {
     color: $--color-blue !important;
   }
-  left: 180px;
+  // left: 180px;
+}
+.mp-general-loading-hidden-box {
+  z-index: 9999 !important;
+  .el-loading-spinner i {
+    font-size: 20px;
+  }
+  .el-loading-spinner i,.el-loading-spinner .el-loading-text {
+    color: rgba(0, 0, 0, 0) !important;
+  }
 }
 .tips{
   color: rgb(18, 188, 121) !important;

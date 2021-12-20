@@ -61,6 +61,7 @@ import TableColumnItem from '@/components/common/Table/TableColumnItem.vue';
 import TableInfoDefindHeaderColumnScope from '@/components/common/Table/TableInfoDefindHeaderColumnScope.vue';
 import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
+import { formatListItemSize, formatListItemCraft } from '@/assets/js/filters/filters';
 
 export default {
   computed: {
@@ -96,11 +97,6 @@ export default {
       if (Status === 10) return 'is-pending';
       if (Status === 200) return 'is-completed';
       return '';
-    },
-    getCraftTextList(craftList) {
-      if (craftList.length === 0) return '';
-      const _list = craftList.map(it => it.Name);
-      return _list.join(' ');
     },
     getTimeClass(ProducePeriod, Status) {
       if (!ProducePeriod) return '';
@@ -161,14 +157,14 @@ export default {
           label: '工艺',
           minWidth: '82px',
           showOverflowTooltip: true,
-          scope: (scope) => <span>{this.getCraftTextList(scope.row.CraftList)}</span>,
+          scope: (scope) => <span>{formatListItemCraft(scope.row.CraftList)}</span>,
           show: true,
         },
         {
           label: '尺寸',
           minWidth: '82px',
           showOverflowTooltip: true,
-          scope: (scope) => <span>{this.getCraftTextList(scope.row.SizeList)}</span>,
+          scope: (scope) => <span>{formatListItemSize(scope.row.SizeList)}</span>,
           show: true,
         },
         {

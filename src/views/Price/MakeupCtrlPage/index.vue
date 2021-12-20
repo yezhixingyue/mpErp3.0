@@ -521,6 +521,9 @@ export default {
       this.getMixtureMakeupList();
     },
   },
+  created() {
+    this.$store.dispatch('priceManage/getProductFormulasListJoinCalculate', this.$route.params.id);
+  },
   async mounted() {
     this.getMakeupSolutionList();
     await this.$store.dispatch('priceManage/getMakeupPropertyList', this.$route.params.id);

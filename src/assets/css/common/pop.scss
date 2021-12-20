@@ -305,6 +305,17 @@
             }
         }
     }
+    &.fail {
+        .el-message-box__header{
+            >.el-message-box__title{
+                > span{
+                    &::before{
+                        background-image: url('../images/error.png') !important;
+                    }
+                }
+            }
+        }
+    }
 }
 // MessageBox({
 //     showClose: true,

@@ -27,7 +27,8 @@
         <!-- 拼版算法 切割规则 -->
         <CuttingRulePanel ref="oCuttingRulePanel" v-if="routeInfo.setType==='3'" :initData='curMakeupItemEditData' :partName='routeInfo.PartName' />
         <PrintTimesPanel ref="oPrintTimesPanel" v-if="routeInfo.setType==='4'" :initData='curMakeupItemEditData' /> <!-- 印刷次数 -->
-        <MaterialWastagePanel ref="oMaterialWastagePanel" v-if="routeInfo.setType==='5'" :initData='curMakeupItemEditData' /> <!-- 物料损耗 -->
+        <MaterialWastagePanel ref="oMaterialWastagePanel" v-if="routeInfo.setType==='5'" :initData='curMakeupItemEditData'
+         :SizeNumberPropertyList='ProductFormulasListJoinCalculate' /> <!-- 物料损耗 -->
         <MaterialSizeSetPanel ref="oMaterialSizeSetPanel" v-if="routeInfo.setType==='6'" :initData='curMakeupItemEditData' /> <!-- 物料尺寸 -->
       </ContionCommonComp>
     </main>
@@ -70,7 +71,8 @@ export default {
     MaterialSizeSetPanel,
   },
   computed: {
-    ...mapState('priceManage', ['ProductFormulaPropertyList', 'curMakeupItemEditData', 'MakeupCtrlConditionSetupPropertyList']),
+    // eslint-disable-next-line max-len
+    ...mapState('priceManage', ['ProductFormulaPropertyList', 'curMakeupItemEditData', 'MakeupCtrlConditionSetupPropertyList', 'ProductFormulasListJoinCalculate']),
     rightTitle() {
       if (this.routeInfo.isMixin) return '则允许混拼';
       if (this.routeInfo.setType === '1') return '使用以下幅面';

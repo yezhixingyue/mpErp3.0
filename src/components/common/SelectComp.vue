@@ -1,9 +1,10 @@
 <template>
   <el-select
    v-model="value"
-   class="mp-common-select-comp-wrap"
-   :class="mini?'font-12':''"
+   :size="size"
+   :class="{'font-12': mini, 'mp-common-select-comp-wrap': !useOrigin}"
    :filterable='filterable'
+   :disabled='disabled'
    >
     <el-option
       v-for="item in options"
@@ -39,6 +40,18 @@ export default {
       default: false,
     },
     filterable: {
+      type: Boolean,
+      default: false,
+    },
+    size: {
+      type: String,
+      default: 'mini',
+    },
+    useOrigin: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },

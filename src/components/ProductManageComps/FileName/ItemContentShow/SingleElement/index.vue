@@ -12,13 +12,14 @@
     </header>
     <main>
       <!-- 名称通假字:  三种类型元素均有 -->
-      <SingleElementItem key="every" v-model="ElementDataFalseWords" />
+      <SingleElementItem key="every" v-model="ElementDataFalseWords" :hidden='hidden' />
       <!-- 单位通假字:  数值类型可能有 -->
-      <SingleElementItem key="number-unit" v-model="ElementDataFalseWords" type="Unit" v-if="ElementData.Unit && ElementData.Type === 1" />
+      <SingleElementItem key="number-unit" v-model="ElementDataFalseWords" type="Unit" :hidden='hidden' v-if="ElementData.Unit && ElementData.Type === 1" />
       <!-- 选项类型 -->
       <template v-if="ElementData.Type && ElementData.Type === 2 && ElementData.OptionAttribute.OptionList">
         <SingleElementItem
          :key="it.ID"
+         :hidden='hidden'
          :optionTitle="`选项通假字(${it.Name})`"
          :value="it.FalseWords"
          @change="onElementOptionChange($event, it.ID)"
@@ -43,6 +44,10 @@ export default {
       default: null,
     },
     isSizeGroup: {
+      type: Boolean,
+      default: false,
+    },
+    hidden: {
       type: Boolean,
       default: false,
     },

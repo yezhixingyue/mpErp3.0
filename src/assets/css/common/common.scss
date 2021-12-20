@@ -1,6 +1,11 @@
 @import "@/assets/css/common/var.scss";
 
-
+.el-loading-spinner {
+  .circular {
+    width: 30px;
+    height: 30px;
+  }
+}
 
 /* 表格部分公共样式
 -------------------------------*/

@@ -1,30 +1,39 @@
 <template>
   <ul class="mp-order-product-select-wrap">
-          <li class="text">
-            <span>产品：</span>
-          </li>
-          <li class="first-select-box">
-            <select-comp
-             :title="first"
-             :options='largeProduct'
-             :defaultProps='{label: "ClassName",value: "ID"}'
-             @handleChange="handleSwitch1" />
-          </li>
-          <li>
-            <select-comp
-             :title="second"
-             :options='midProduct'
-             :defaultProps='{label: "ClassName",value: "ID"}'
-             @handleChange="handleSwitch2" />
-          </li>
-          <li>
-            <select-comp
-             :title="third"
-             :options='productThirdList'
-             :defaultProps='{label: "ProductName",value: "ProductID"}'
-             @handleChange="handleSwitch3" />
-          </li>
-        </ul>
+    <li class="text" v-if="!hiddenLabel">
+      <span>产品：</span>
+    </li>
+    <li class="first-select-box">
+      <select-comp
+        :title="first"
+        :size='size'
+        :useOrigin='useOrigin'
+        :options='largeProduct'
+        :disabled='disabled'
+        :defaultProps='{label: "ClassName",value: "ID"}'
+        @handleChange="handleSwitch1" />
+    </li>
+    <li>
+      <select-comp
+        :title="second"
+        :size='size'
+        :useOrigin='useOrigin'
+        :options='midProduct'
+        :disabled='disabled'
+        :defaultProps='{label: "ClassName",value: "ID"}'
+        @handleChange="handleSwitch2" />
+    </li>
+    <li>
+      <select-comp
+        :title="third"
+        :size='size'
+        :useOrigin='useOrigin'
+        :options='productThirdList'
+        :disabled='disabled'
+        :defaultProps='{label: "ProductName",value: "ProductID"}'
+        @handleChange="handleSwitch3" />
+    </li>
+  </ul>
 </template>
 
 <script>
@@ -67,6 +76,34 @@ export default {
       type: Boolean,
       default: false,
     },
+    hiddenLabel: {
+      type: Boolean,
+      default: false,
+    },
+    size: {
+      type: String,
+      default: 'mini',
+    },
+    useOrigin: {
+      type: Boolean,
+      default: false,
+    },
+    level1EmptyLabel: {
+      type: String,
+      default: '不限',
+    },
+    level2EmptyLabel: {
+      type: String,
+      default: '不限',
+    },
+    level3EmptyLabel: {
+      type: String,
+      default: '不限',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapState('common', ['productNames', 'ProductMultipleClassifyList']),
@@ -76,7 +113,7 @@ export default {
       return target && Array.isArray(target.List) ? target.List : [];
     },
     largeProduct() {
-      const arr = [{ ID: '', ClassName: '不限' }];
+      const arr = [{ ID: '', ClassName: this.level1EmptyLabel }];
       if (this.productClassList.length > 0) {
         const tempArr = this.productClassList.filter((item) => item.Level === 1);
         return [...arr, ...tempArr];
@@ -84,7 +121,7 @@ export default {
       return arr;
     },
     midProduct() {
-      const arr = [{ ID: '', ClassName: '不限' }];
+      const arr = [{ ID: '', ClassName: this.level2EmptyLabel }];
       const id = this.first;
       if (id) {
         const tempArr = this.productClassList.filter((item) => item.ParentID === id);
@@ -130,7 +167,7 @@ export default {
         const { FirstLevel, SecondLevel } = t;
         return FirstLevel.ID === this.first && SecondLevel.ID === this.second;
       }).map(it => ({ ...it, ProductID: it.ID, ProductName: it.Name }));
-      return [{ ProductID: '', ProductName: '不限' }, ..._arr];
+      return [{ ProductID: '', ProductName: this.level3EmptyLabel }, ..._arr];
     },
   },
   methods: {
@@ -140,7 +177,7 @@ export default {
       this.changePropsFunc([this.typeList[1], '']);
       this.changePropsFunc([this.typeList[2], '']);
       this.first = e;
-      this.products = [{ ProductID: '', ProductName: '不限' }];
+      this.products = [{ ProductID: '', ProductName: this.level3EmptyLabel }];
     },
     handleSwitch2(e) {
       if (e === this.second) return;
@@ -181,12 +218,12 @@ export default {
           color: $--color-text-primary;
           font-size: 13px;
         }
-      }
-      .el-input__inner {
-        width: 110px;
-      }
-      &.first-select-box .el-input__inner{
-        width: 94px;
+        .el-input__inner {
+          width: 110px;
+        }
+        &.first-select-box .el-input__inner{
+          width: 94px;
+        }
       }
     }
  }

@@ -491,7 +491,7 @@ export default {
         return false;
       }
       t = this.PriceTableData.PriceList.find(it => {
-        const _list = it.List.map(_it => _it.Second).filter(_it => _it);
+        const _list = it.List.map(_it => _it.Second).filter(_it => _it || _it === 0);
         return _list.length > 0 && _list.length < it.List.length;
       });
       if (t) {
