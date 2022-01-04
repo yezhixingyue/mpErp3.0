@@ -17,6 +17,7 @@
       label-width="168px"
       class="ruleForm"
       size='small'
+      @submit.native.prevent
       v-if="ruleForm"
     >
       <el-form-item label="内部名称：" prop="Name">

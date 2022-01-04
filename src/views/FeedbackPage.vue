@@ -161,7 +161,7 @@
         v-dialogDrag
         class="mp-img-style-header turn-down-dialog"
         :before-close="handleTurnDownDialogClose">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="88px" class="demo-ruleForm">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="88px" class="demo-ruleForm" @submit.native.prevent>
           <el-form-item label="驳回原因:" prop="cause">
             <el-input type="textarea" v-model="ruleForm.cause" maxlength="200" show-word-limit></el-input>
           </el-form-item>

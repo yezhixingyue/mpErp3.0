@@ -8,13 +8,13 @@
     <main>
       <select-comp
         v-if="!isRadio"
-        :options='options'
+        :options='localOptions'
         :defaultProps='defaultProps'
         :title='title'
         @handleChange='handleChange'
        />
       <el-radio-group v-model="radio" v-else>
-        <el-radio :label="it[defaultProps.value]" :key="it[defaultProps.value]" v-for="it in options">{{it[defaultProps.label]}}</el-radio>
+        <el-radio :label="it[defaultProps.value]" :key="it[defaultProps.value]" v-for="it in localOptions">{{it[defaultProps.label]}}</el-radio>
       </el-radio-group>
     </main>
   </section>
@@ -67,6 +67,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    useEmpty: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     title() {
@@ -80,6 +84,16 @@ export default {
         this.changePropsFunc([this.typeList[0], newVal]);
         this.requestFunc();
       },
+    },
+    localOptions() {
+      const list = [];
+      if (Array.isArray(this.options)) {
+        list.push(...this.options);
+      }
+      if (this.useEmpty) {
+        list.unshift({ [this.defaultProps.label]: '不限', [this.defaultProps.value]: '' });
+      }
+      return list;
     },
   },
   methods: {

@@ -3,13 +3,14 @@
   <section class="mp-erp-price-module-price-table-result-formula-table-comp-container">
     <header>
       <span class="mp-common-title-wrap">{{title}}</span>
-      <span class="blue-span" @click="onSetupClick(null)">+ 添加公式</span>
+      <span class="blue-span" @click="onSetupClick(null)" :class="{'disabled': disabled}">+ 添加{{operationTitle}}</span>
       <span class="tips-box" v-if="!hiddenTip">
         <i class="el-icon-warning"></i> 注：最终输出结果以下列公式运算结果为准，如果匹配不到任何公式，则此表输出结果为空。
       </span>
     </header>
-    <main :class="{ loading: loading }">
-      <div v-for="item in localTableData" :key="item.ID">
+    <main :class="{ loading: loading || isLoading }">
+      <div v-for="(item, i) in localTableData" :key="item.ID" @click="onRowClick(item)" :class="{active: activeRowID === item.ID}">
+        <span class="sort">{{i + 1}}.</span>
         <div class="condition">
           <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
             <div slot="content">
@@ -88,7 +89,31 @@ export default {
       type: String,
       default: '结果公式列表',
     },
+    operationTitle: {
+      type: String,
+      default: '公式',
+    },
     hiddenTip: {
+      type: Boolean,
+      default: false,
+    },
+    usePropList: {
+      type: Boolean,
+      default: false,
+    },
+    FormulaList: {
+      type: Array,
+      default: () => [],
+    },
+    PropertyList: {
+      type: Array,
+      default: () => [],
+    },
+    isLoading: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },
@@ -98,16 +123,22 @@ export default {
   },
   computed: {
     ...mapState('priceManage', ['ResultFormulaList', 'PriceItemPropertyList']),
+    localFormulaList() {
+      return this.usePropList ? this.FormulaList : this.ResultFormulaList;
+    },
+    localPropertyList() {
+      return this.usePropList ? this.PropertyList : this.PriceItemPropertyList;
+    },
     localTableData() {
-      if (!this.ResultFormulaList || !Array.isArray(this.ResultFormulaList) || this.ResultFormulaList.length === 0) return [];
-      return this.ResultFormulaList.map(it => ({
+      if (!this.localFormulaList || !Array.isArray(this.localFormulaList) || this.localFormulaList.length === 0) return [];
+      return this.localFormulaList.map(it => ({
         ...it,
         // eslint-disable-next-line no-nested-ternary
         FilterTypeText: it.Constraint ? (it.Constraint.FilterType === 1 ? '满足所有' : '满足任一') : '',
         result: this.getShowResult(it),
       })).map(it => {
         if (!it.Constraint) return { ...it, _ConditionText: '无' };
-        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.PriceItemPropertyList);
+        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.localPropertyList);
         return { ...it, Constraint, _ConditionText };
       });
     },
@@ -115,10 +146,12 @@ export default {
   data() {
     return {
       loading: false,
+      activeRowID: '',
     };
   },
   methods: {
     onSetupClick(data) {
+      if (this.disabled) return;
       this.$emit('setup', data);
     },
     onRemoveClick(data) {
@@ -134,6 +167,9 @@ export default {
       this.loading = true;
       await this.$store.dispatch('priceManage/getResultFormulaList', this.fetchFormulaListData);
       this.loading = false;
+    },
+    onRowClick({ ID }) {
+      this.activeRowID = ID;
     },
   },
   mounted() {
@@ -184,10 +220,16 @@ export default {
       &:not(:last-of-type) {
         border-bottom: none;
       }
+      > .sort {
+        line-height: 20px;
+        padding-left: 15px;
+        min-width: 18px;
+      }
       > .condition {
         flex: 1;
         padding: 0px 25px;
         height: 36px;
+        padding-left: 13px;
         overflow: hidden;
         > div {
           height: 36px;
@@ -210,6 +252,13 @@ export default {
       &:hover {
         border-color: #ccc;
         background-color: #f8f8f8;
+        & + div {
+          border-top-color: #ccc;
+        }
+      }
+      &.active {
+        border-color: #ccc;
+        background-color: #eee;
         & + div {
           border-top-color: #ccc;
         }

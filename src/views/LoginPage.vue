@@ -2,6 +2,7 @@
   <div class="login-wrap">
     <el-form
         :model="ruleForm"
+        @submit.native.prevent
         status-icon ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <!-- <h3>登录</h3> -->
         <el-form-item label="账号" prop="Mobile">

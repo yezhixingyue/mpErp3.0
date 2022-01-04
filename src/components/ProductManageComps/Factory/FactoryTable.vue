@@ -10,7 +10,8 @@
     fit
     style="width: 100%"
    >
-    <el-table-column prop="conditionText" label="条件" min-width="260">
+    <el-table-column type="index" width="36"></el-table-column>
+    <el-table-column prop="conditionText" label="条件" min-width="220">
       <template slot-scope="scope">
         <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start"
          v-if="typeof scope.row.conditionText === 'object'">

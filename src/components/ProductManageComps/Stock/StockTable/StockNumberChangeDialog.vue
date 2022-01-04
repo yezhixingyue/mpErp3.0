@@ -26,7 +26,7 @@
         </template>
       </div>
     </div>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="202px" class="demo-ruleForm" hide-required-asterisk>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="202px" class="demo-ruleForm" hide-required-asterisk @submit.native.prevent>
       <el-form-item label="新库存：" prop="number">
         <el-input v-model.number.trim="ruleForm.number" size="small"></el-input>
         <span class="label">{{Unit}}</span>

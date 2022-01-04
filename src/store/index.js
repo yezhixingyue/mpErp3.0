@@ -20,6 +20,7 @@ import layout from './layout';
 import basicSet from './basicSet';
 import packageModule from './package';
 import PriceRecord from './GetPriceRecord/GetPriceRecord';
+import periodManage from './Period/periodManage';
 
 
 Vue.use(Vuex);
@@ -46,5 +47,6 @@ export default new Vuex.Store({
     basicSet,
     packageModule,
     PriceRecord,
+    periodManage,
   },
 });

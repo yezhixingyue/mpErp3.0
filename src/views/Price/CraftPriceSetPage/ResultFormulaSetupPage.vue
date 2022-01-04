@@ -53,7 +53,8 @@ export default {
     };
   },
   computed: {
-    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'curPriceTableItemData', 'curPriceTableResultFormulaData', 'PriceItemPropertyList']),
+    // eslint-disable-next-line max-len
+    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'curPriceTableItemData', 'curPriceTableResultFormulaData', 'PriceItemPropertyList', 'curSolutionItem']),
     Condition4getFormulaProperty() {
       if (this.isAllCostPage) {
         return {
@@ -64,10 +65,13 @@ export default {
           UseModule: 7,
         };
       }
+      let PartID = '';
+      if (this.curSolutionItem && this.curSolutionItem.ApplyRange) PartID = this.curSolutionItem.ApplyRange.PartID || '';
       return {
         ProductID: this.ProductID,
         PriceID: this.PriceID,
         TableID: this.curPriceTableItemData?.ID || '',
+        PartID,
         UseModule: 5,
       };
     },

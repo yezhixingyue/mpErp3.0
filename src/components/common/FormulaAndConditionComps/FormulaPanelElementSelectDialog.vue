@@ -56,6 +56,12 @@
            v-else-if="it.Type === 10"
            :dataList='it.list' :selectedElementIDs='selectedElementIDs' @submit="onSubmit"
            :isMultiple='isMultiple' @checked='onChecked' :checkedList='MultipleList' />
+          <!-- 工期类型 -->
+          <div v-else-if="it.Type === 12" class="pt-0">
+            <TipsSpanButton :disabled='selectedElementIDs.includes(item.StoredContent)'
+               :class="{'is-element': !item.FixedType && item.FixedType !== 0, 'is-font-size-14': true}"
+                v-for="item in it.list" :key="item.StoredContent" @click.native="onSubmit(item)" :text='getTextName(item) || item.DisplayContent || "未知名称"' />
+          </div>
           <!-- 其它类型 -->
           <div v-else>
             <template v-if="!isMultiple">
@@ -375,6 +381,9 @@ export default {
                 margin-right: 0;
               }
             }
+          }
+          > .pt-0 > span {
+            padding-bottom: 0;
           }
         }
         > p.constant {

@@ -13,7 +13,7 @@
           class="mp-img-style-header new-dialog-styles mp-erp-express-add-dialog-wrap"
           :before-close="handleAreaDialogClose">
           <section>
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm" @submit.native.prevent>
               <el-form-item label="名称:" prop="Name">
                 <el-input v-model="ruleForm.Name" maxlength="12" show-word-limit></el-input>
               </el-form-item>

@@ -11,7 +11,7 @@
     class="mp-erp-comps-price-module-price-solution-item-save-dialog-comp-wrap"
     :class="showGroup?'show-group':''"
   >
-    <el-form :model="ruleForm" ref="ruleForm" label-width="100px" hide-required-asterisk>
+    <el-form :model="ruleForm" ref="ruleForm" label-width="100px" hide-required-asterisk @submit.native.prevent>
       <el-form-item
         label="费用名称："
         prop='Name'

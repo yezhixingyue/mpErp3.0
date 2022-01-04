@@ -7,7 +7,7 @@
     label-width="82px"
     class="mp-place-order-address-set-comp-identify-ruleForm-containner"
   >
-    <el-form-item label="识别内容：" prop="Value" size="small">
+    <el-form-item label="识别内容：" prop="Value" size="small" @submit.native.prevent>
       <el-input
         size="small"
         ref="oInInp"

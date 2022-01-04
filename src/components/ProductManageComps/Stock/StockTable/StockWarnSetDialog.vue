@@ -13,7 +13,7 @@
     <div class="title">
       <!-- <span>规格： {{title}}全部规格通用</span> -->
     </div>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="204px" class="demo-ruleForm" hide-required-asterisk>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="204px" class="demo-ruleForm" hide-required-asterisk @submit.native.prevent>
       <el-form-item label="" prop="MinNumber">
         <span class="label">库存数量 <i>≤</i></span>
         <el-input v-model.number.trim="ruleForm.MinNumber" size="small"></el-input>

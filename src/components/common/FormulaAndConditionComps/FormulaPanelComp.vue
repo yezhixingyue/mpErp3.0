@@ -647,12 +647,15 @@ export default {
         }
         > .module-title {
           padding-bottom: 30px;
-          // margin-left: 10px;
         }
         > .test-box {
           padding-left: 15px;
           padding-bottom: 10px;
           > p {
+            display: flex;
+            align-items: center;
+            line-height: 16px;
+            height: 20px;
             > span {
               font-size: 14px;
               color: #888E99;

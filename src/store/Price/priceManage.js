@@ -9,11 +9,11 @@ const initConditon = {
   ProductClass: {
     First: '',
     Second: '',
-    Third: '',
   },
   Page: 1,
   PageSize: 24,
   KeyWords: '',
+  ClassType: '',
   FieldType: 4,
   NoPrice: false,
 };
@@ -282,7 +282,7 @@ export default {
         if (t2) {
           const setFunc = list => {
             if (!itemData.ID) { // 添加
-              list.unshift({ ...itemData, ID: itemID, TableNumber: 0 });
+              list.push({ ...itemData, ID: itemID, TableNumber: 0 });
             } else { // 编辑
               const i = list.findIndex(it => it.ID === itemData.ID);
               if (i > -1) list.splice(i, 1, { ...list[i], ...itemData });
@@ -299,7 +299,7 @@ export default {
               if (Array.isArray(t3.PriceTableList)) setFunc(t3.PriceTableList);
               else t3.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
             } else {
-              t2.CraftPriceList.unshift({
+              t2.CraftPriceList.push({
                 ID: CraftPriceID,
                 PriceTableList: [{ ...itemData, ID: itemID, TableNumber: 0 }],
                 CraftID: state.curCraftPriceItemData.Craft.ID,
@@ -311,7 +311,7 @@ export default {
               if (Array.isArray(curT3.PriceTableList)) setFunc(curT3.PriceTableList);
               else curT3.PriceTableList = [{ ...itemData, ID: itemID, TableNumber: 0 }];
             } else {
-              state.curPriceItem.CraftPriceList.unshift({
+              state.curPriceItem.CraftPriceList.push({
                 ID: CraftPriceID,
                 PriceTableList: [{ ...itemData, ID: itemID, TableNumber: 0 }],
                 CraftID: state.curCraftPriceItemData.Craft.ID,

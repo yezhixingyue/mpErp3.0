@@ -89,6 +89,7 @@ export default {
       }
       padding: 0 7px 0 5px;
       line-height: 25px;
+      padding-right: 20px;
     }
     &::after {
         content: "";

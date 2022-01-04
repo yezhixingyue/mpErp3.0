@@ -9,8 +9,8 @@ const initConditon = {
   ProductClass: {
     First: '',
     Second: '',
-    Third: '',
   },
+  ClassType: '',
   Page: 1,
   PageSize: 24,
   KeyWords: '',

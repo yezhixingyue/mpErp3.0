@@ -1,7 +1,7 @@
 <template>
   <CommonDialogComp
     width="800px"
-    top='10vh'
+    top='8vh'
     :title="title"
     :visible.sync="visible"
     @submit="onSubmit"
@@ -223,10 +223,10 @@ export default {
 
   .el-dialog__body {
     padding-left: 50px;
-    padding-right: 50px;
-    padding-bottom: 10px;
+    // padding-right: 50px;
+    padding-bottom: 20px;
     padding-top: 30px;
-    min-height: 530px;
+    max-height: 600px;
     overflow-y: auto;
     > p {
       color: #888E99;
@@ -236,6 +236,9 @@ export default {
         margin-right: 20px;
       }
     }
+  }
+  .el-dialog__footer {
+    padding-top: 16px;
   }
 }
 </style>

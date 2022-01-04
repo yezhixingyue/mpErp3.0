@@ -69,10 +69,14 @@ export default {
 </script>
 
 <style lang='scss'>
-.mp-finance-radio-box{
-    line-height: 25px;
-    > span > label > .el-radio__label {
-        font-size: 14px;
-    }
+.mp-order-user-select-wrap {
+  .mp-finance-radio-box{
+      line-height: 25px;
+      > span > label > .el-radio__label {
+          font-size: 14px;
+      }
+  }
+  display: flex;
 }
+
 </style>

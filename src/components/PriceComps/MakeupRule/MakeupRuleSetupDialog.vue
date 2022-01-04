@@ -10,7 +10,7 @@
     @closed='onClosed'
     class="mp-erp-comps-price-module-makeup-rule-save-dialog-comp-wrap"
   >
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="170px" class="demo-ruleForm">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="170px" class="demo-ruleForm" @submit.native.prevent>
       <el-form-item required>
         <el-col :span="7">
           <el-form-item prop="ColumnNumber">

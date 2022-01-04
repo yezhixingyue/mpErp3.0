@@ -10,7 +10,7 @@
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
         />
       <div class="user-selector">
-        <order-channel-selector
+        <OrderChannelSelector
           :options="userTypeList"
           :requestFunc="getPackageDataList"
           :changePropsFunc="setCondition4DataList"
@@ -19,7 +19,7 @@
           :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
           label="用户"
         />
-        <order-channel-selector
+        <OrderChannelSelector
           :showLabel="false"
           :options="userRankList"
           :requestFunc="getPackageDataList"
@@ -30,7 +30,7 @@
           label=""
         />
       </div>
-      <order-channel-selector
+      <OrderChannelSelector
         :options="expressList"
         :requestFunc="getPackageDataList"
         :changePropsFunc="setCondition4DataList"
@@ -39,7 +39,7 @@
         :value="condition4DataList.ExpressType"
         label="配送方式"
       />
-      <order-channel-selector
+      <OrderChannelSelector
         :options="deliverStatus"
         :requestFunc="getPackageDataList"
         :changePropsFunc="setCondition4DataList"

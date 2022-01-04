@@ -60,6 +60,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    haveNotEmpty: { // 下拉列表中不包含不限选项 -- 使用时会初始选中下拉参数
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapState('common', ['ProductMultipleClassifyList']),
@@ -69,15 +73,21 @@ export default {
       return target && Array.isArray(target.List) ? target.List : [];
     },
     largeProduct() {
-      const arr = [{ ID: '', ClassName: '不限' }];
+      const arr = this.haveNotEmpty ? [] : [{ ID: '', ClassName: '不限' }];
       if (this.productClassList.length > 0) {
-        const tempArr = this.productClassList.filter((item) => item.Level === 1);
+        let tempArr = this.productClassList.filter((item) => item.Level === 1);
+        if (this.haveNotEmpty) {
+          tempArr = tempArr.filter(it => {
+            const _list = this.productClassList.filter((item) => item.ParentID === it.ID);
+            return _list.length > 0;
+          });
+        }
         return [...arr, ...tempArr];
       }
       return arr;
     },
     midProduct() {
-      const arr = [{ ID: '', ClassName: '不限' }];
+      const arr = this.haveNotEmpty ? [] : [{ ID: '', ClassName: '不限' }];
       const id = this.first;
       if (id) {
         const tempArr = this.productClassList.filter((item) => item.ParentID === id);
@@ -92,7 +102,14 @@ export default {
       set(newVal) {
         if (newVal === this.ClassID) return;
         this.changePropsFunc([this.typeList[0], newVal]);
-        this.requestFunc();
+        if (!this.haveNotEmpty) this.requestFunc();
+        else {
+          this.$nextTick(() => {
+            if (this.midProduct.length > 0) {
+              this.second = this.midProduct[0].ID;
+            }
+          });
+        }
       },
     },
     second: {
@@ -112,11 +129,20 @@ export default {
       if (e === this.first) return;
       this.changePropsFunc([this.typeList[1], '']);
       this.first = e;
-      this.products = [{ ProductID: '', ProductName: '不限' }];
+      this.products = this.haveNotEmpty ? [] : [{ ProductID: '', ProductName: '不限' }];
     },
     handleSwitch2(e) {
       if (e === this.second) return;
       this.second = e;
+    },
+  },
+  watch: {
+    ProductMultipleClassifyList: { // 当下拉选项中不包含不限时，在初始获取到数据后，进行初始值设置
+      handler(val) {
+        if (!val || !this.haveNotEmpty || this.largeProduct.length === 0) return;
+        this.first = this.largeProduct[0].ID;
+      },
+      immediate: true,
     },
   },
   mounted() {

@@ -4,7 +4,8 @@
       <span class="mp-common-title-wrap">{{itemData.Name}}工艺费</span>
     </header>
     <main>
-      <div v-for="item in itemData.CraftList" :key="item.ID">
+      <div v-for="(item, i) in itemData.CraftList" :key="item.ID" @click="onRowClick(item)" :class="{active: activeRowID === item.ID}">
+        <span class="sort">{{i + 1}}.</span>
         <span class="craft-name">{{item.Name}}</span>
         <span class="cost" :title="item._PriceSolutionShowCentent">{{item._PriceSolutionShowCentent}}</span>
         <span class="all-cost">总费用（{{item._AllCostCount}}）</span>
@@ -31,6 +32,7 @@ export default {
   },
   data() {
     return {
+      activeRowID: '',
     };
   },
   methods: {
@@ -49,6 +51,9 @@ export default {
     onSetupAllCostClick(item) { // 设置总费用
       const temp = this.getSubmitData(item);
       this.$emit('allCost', temp);
+    },
+    onRowClick({ ID }) {
+      this.activeRowID = ID;
     },
   },
 };
@@ -91,6 +96,7 @@ export default {
         width: 15em;
         padding: 0 25px;
         line-height: 20px;
+        padding-left: 13px;
       }
       > .cost {
         flex: 1;
@@ -122,6 +128,18 @@ export default {
       &:hover {
         border-color: #ccc;
         background-color: #f8f8f8;
+        & + div {
+          border-top-color: #ccc;
+        }
+      }
+      > .sort {
+        line-height: 20px;
+        padding-left: 15px;
+        min-width: 18px;
+      }
+      &.active {
+        border-color: #ccc;
+        background-color: #eee;
         & + div {
           border-top-color: #ccc;
         }

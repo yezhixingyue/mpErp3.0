@@ -6,7 +6,7 @@
                 <span>开始日期:</span>
                 <el-date-picker
                   v-model="beginTime" value-format="yyyy-MM-dd" type="date" placeholder="选择开始日期">
-                  </el-date-picker>
+                </el-date-picker>
               </div>
               <div class="totext-box">至</div>
               <div class="block">

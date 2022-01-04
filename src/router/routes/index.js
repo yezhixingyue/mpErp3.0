@@ -6,6 +6,7 @@ import FinanceRoutes from './Finance';
 import OrderManageRoutes from './OrderManage';
 import MaterialRoutes from './Material';
 import BasicSetRoutes from './BasicSet';
+import ProducePeriodRoutes from './ProducePeriod';
 
 const routes = [
   { // 首页
@@ -33,6 +34,7 @@ const routes = [
   FinanceRoutes.routes,
   PriceStrategyRoutes.routes, // 价格策略
   ProductCraftManageModuleRoutes.routes, // 产品工艺管理
+  ProducePeriodRoutes.routes,
   MaterialRoutes.routes,
   BasicSetRoutes.routes,
 
@@ -59,6 +61,7 @@ const routeTree = [
   ProductCraftManageModuleRoutes.routeTree,
   MaterialRoutes.routeTree,
   BasicSetRoutes.routeTree,
+  ProducePeriodRoutes.routeTree,
 ];
 
 export default {

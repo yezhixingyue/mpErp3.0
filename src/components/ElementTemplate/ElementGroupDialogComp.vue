@@ -13,6 +13,7 @@
     <el-form
       :model="ruleGroupForm"
       :rules="rules"
+      @submit.native.prevent
       ref="ruleGroupForm"
       label-width="100px"
       class="element-group-ruleGroupForm"

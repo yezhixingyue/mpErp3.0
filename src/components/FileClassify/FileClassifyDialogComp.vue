@@ -14,6 +14,7 @@
       :model="ruleForm"
       :rules="rules"
       ref="ruleForm"
+      @submit.native.prevent
       label-width="168px"
       class="file-ruleForm"
       size='small'

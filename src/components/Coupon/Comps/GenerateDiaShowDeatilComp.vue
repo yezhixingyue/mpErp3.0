@@ -59,12 +59,14 @@ export default {
 
 <style lang='scss'>
 .mp-coupon-generate-dialog-show-detail-comp-wrap {
-  height: 120px;
+  height: 122px;
   width: 700px;
-  background: url(../../../assets/images/bg-border.png) no-repeat
-    center/100% 100%;
+  // background: url(../../../assets/images/bg-border.png) no-repeat
+  //   center/100% 100%;
   box-sizing: border-box;
   padding: 0 30px;
+  border: 1px solid #26bcf9;
+  border-radius: 3px;
   > header {
     height: 50px;
     width: 100%;

@@ -42,7 +42,6 @@
               <label v-else>{{ it.Label }}</label>
               <el-time-picker
                 :value='it.StartTime'
-                :editable='false'
                 :clearable='false'
                 @input="onPeriodItemTimeChange($event, it.Value, 'StartTime')"
                 value-format='HH:mm'

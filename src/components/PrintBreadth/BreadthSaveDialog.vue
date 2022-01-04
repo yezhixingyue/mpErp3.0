@@ -16,6 +16,7 @@
       ref="ruleForm"
       label-width="138px"
       class="file-ruleForm"
+      @submit.native.prevent
       size='small'
       v-if="ruleForm"
     >

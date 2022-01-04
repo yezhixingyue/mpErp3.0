@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-26 09:16:49
- * @LastEditTime: 2021-12-09 18:14:39
+ * @LastEditTime: 2022-01-03 15:01:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit 过滤器
  * @FilePath: /src/assets/js/filters/filters.js
@@ -10,6 +10,7 @@
 
 import Vue from 'vue';
 import store from '@/store';
+import { getNameFromListByIDs, getValueIsOrNotNumber } from '../utils/util';
 
 Vue.filter('formatDate', (date) => (date ? date.split('.')[0].slice(0, -3).replace('T', ' ') : ''));
 
@@ -40,6 +41,38 @@ Vue.filter('formatTransportStatus', (status) => {
   if (arr) return arr.name.trim();
   return '';
 });
+
+/**
+ * 配送方式
+ */
+Vue.filter('formatExpressList', (ExpressList, subExpressList) => {
+  if (!ExpressList || ExpressList.length === 0 || subExpressList.length === 0) return '';
+  const subExpressIDList = subExpressList.map(it => it.ID);
+  const _ExpressList = ExpressList.filter(it => subExpressIDList.includes(it.ID));
+  if (_ExpressList.length === subExpressList.length) return '全部';
+  if (_ExpressList.length === subExpressList.length - 1) {
+    const t1 = subExpressList.find(it => it.Name === '名片之家');
+    if (t1) {
+      const t = _ExpressList.find(it => it.ID === t1.ID);
+      if (!t) return '名片之家除外';
+    }
+  }
+  const res = getNameFromListByIDs(_ExpressList.map(it => it.ID), subExpressList);
+  return Array.isArray(res) ? res.join('、') : res;
+});
+
+export const formatTimeObjToStringFunc = obj => {
+  if (obj && typeof obj === 'object') {
+    const { First, Second } = obj;
+    if (getValueIsOrNotNumber(First, true) && getValueIsOrNotNumber(Second, true)) {
+      const _h = `0${First}`.slice(-2);
+      const _m = `0${Second}`.slice(-2);
+      return `${_h}:${_m}`;
+    }
+  }
+  return null;
+};
+Vue.filter('formatTimeObjToString', formatTimeObjToStringFunc);
 
 /**
  * 促销活动 - 活动状态转换
@@ -134,13 +167,14 @@ Vue.filter('format2LangTypeDate', date => {
 /**
  * 转换中长类型时间格式：   从 2020-07-24T23:59:59.997  转换为  2020-07-24  23:59
  */
-Vue.filter('format2MiddleLangTypeDate', date => {
+export const format2MiddleLangTypeDateFunc2 = date => {
   if (!date) return '';
   const _arr = date.split('T');
   const [t1, t2s] = _arr;
   const t2 = t2s.split('.')[0].slice(0, -3);
   return `${t1}  ${t2}`;
-});
+};
+Vue.filter('format2MiddleLangTypeDate', format2MiddleLangTypeDateFunc2);
 
 /**
  * 优惠券 -- 优惠券码状态  ...mapState('common', ['CouponCodeStatusList']),

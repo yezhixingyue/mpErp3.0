@@ -101,7 +101,7 @@ export default {
       padding-top: 6px;
       > .el-checkbox__label {
         font-size: 12px;
-        width: 9em;
+        width: 201px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

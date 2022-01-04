@@ -18,6 +18,7 @@
       class="ruleForm"
       size='small'
       v-if="ruleForm"
+      @submit.native.prevent
     >
       <el-form-item label="尺寸名称：" prop="Name" key="MaterialSizeName">
         <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="请输入尺寸名称" maxlength="20" show-word-limit></el-input>

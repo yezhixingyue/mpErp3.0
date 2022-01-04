@@ -10,7 +10,8 @@
     fit
     style="width: 100%"
    >
-    <el-table-column prop="Name" label="名称" width="260"></el-table-column>
+    <el-table-column prop="Name" label="显示名称" width="240"></el-table-column>
+    <el-table-column prop="InternalName" label="内部名称" width="240"></el-table-column>
     <el-table-column prop="Elements" label="元素"  min-width="240" show-overflow-tooltip></el-table-column>
     <el-table-column prop="UnionShowText" label="组合显示"  min-width="240" show-overflow-tooltip></el-table-column>
     <el-table-column label="操作" min-width="520" class-name='menu-column'>

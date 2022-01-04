@@ -730,7 +730,7 @@ export default {
     /* 物料列表
     -------------------------------*/
     setMaterialAllList(state, list) { // 设置全部物料列表
-      state.MaterialAllList = list;
+      state.MaterialAllList = list.sort((a, b) => a.DisplayName.localeCompare(b.DisplayName));
     },
     setLastPagePaths(state, path) { // 设置上一个页面的path路径
       state.lastPagePaths = state.lastPagePaths.filter(it => it.name !== path.name);
@@ -852,14 +852,14 @@ export default {
     async fetchAdAreaList({ state, commit }) {
       if (state.adAreaList.length > 1) return;
       let res = [];
-      const localAdAreaData = localStorage.getItem('localAdAreaData');
+      const localAdAreaData = sessionStorage.getItem('localAdAreaData');
       if (localAdAreaData) {
         res = JSON.parse(localAdAreaData);
       } else {
-        const resp = await api.getDistrictList();
-        if (resp.data.Status !== 1000) return;
+        const resp = await api.getDistrictList().catch(() => null);
+        if (!resp || resp.data.Status !== 1000) return;
         res = resp.data.Data;
-        localStorage.setItem('localAdAreaData', JSON.stringify(res));
+        sessionStorage.setItem('localAdAreaData', JSON.stringify(res));
       }
       commit('setAdAreaList', res);
     },

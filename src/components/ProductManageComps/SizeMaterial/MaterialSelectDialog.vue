@@ -92,6 +92,7 @@ export default {
   computed: {
     curTypeDataList() {
       if (!this.activeType || !this.dataList || this.dataList.length === 0) return [];
+      // const list = this.dataList.filter(it => it.Type && it.Type.ID === this.activeType).sort((a, b) => a.DisplayName.localeCompare(b.DisplayName));
       const list = this.dataList.filter(it => it.Type && it.Type.ID === this.activeType);
       const _temp = {};
       list.forEach(it => {

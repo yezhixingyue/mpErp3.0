@@ -1,39 +1,40 @@
 <template>
   <ul class="mp-common-comps-area-select-wrap">
-      <li class="text">销售区域：</li>
+      <li class="text">{{title}}：</li>
       <li class="first-select-box">
         <select-comp
          :title="first"
          :options='largeArea'
-         :defaultProps='{label: "ClassName",value: "ID"}'
+         :defaultProps='localSelectCompDefaultProps'
          @handleChange="handleSwitch1" />
       </li>
       <li>
         <select-comp
          :title="second"
          :options='midArea'
-         :defaultProps='{label: "ClassName",value: "ID"}'
+         :defaultProps='localSelectCompDefaultProps'
          @handleChange="handleSwitch2" />
       </li>
       <li>
         <select-comp
          :title="third"
          :options='smArea'
-         :defaultProps='{label: "ClassName",value: "ID"}'
+         :defaultProps='localSelectCompDefaultProps'
          @handleChange="handleSwitch3" />
       </li>
     </ul>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState } from 'vuex';
 import SelectComp from '../SelectComp.vue';
 
 export default {
-  components: {
-    SelectComp,
-  },
   props: {
+    title: {
+      type: String,
+      default: '销售区域',
+    },
     /**
      * 绑定的省ID值
      */
@@ -73,35 +74,79 @@ export default {
       type: Function,
       default: () => {},
     },
+    useADArea: {
+      type: Boolean,
+      default: false,
+    },
+    useLabel: {
+      type: Boolean,
+      default: false,
+    },
+    defaultProps: {
+      type: Object,
+      default: null,
+    },
+  },
+  components: {
+    SelectComp,
   },
   computed: {
-    ...mapState('common', ['areaList']),
+    ...mapState('common', ['areaList', 'adAreaList']),
+    localDefaultProps() {
+      if (this.defaultProps) return this.defaultProps;
+      if (!this.useADArea) return { label: 'ClassName', value: 'ID' };
+      return { label: 'Name', value: 'ID' };
+    },
+    localSelectCompDefaultProps() {
+      if (this.useLabel) {
+        return {
+          label: this.localDefaultProps.label,
+          value: this.localDefaultProps.label,
+        };
+      }
+      return this.localDefaultProps;
+    },
+    localAreaList() {
+      if (!this.useADArea) return this.areaList;
+      return this.adAreaList;
+    },
     largeArea() {
-      const arr = [{ ID: '', ClassName: '不限' }];
-      if (this.areaList.length > 0) {
-        const tempArr = this.areaList.filter((item) => item.Level === 1);
+      const arr = [{ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' }];
+      if (this.localAreaList.length > 0) {
+        const tempArr = this.localAreaList.filter((item) => item.Level === 1);
         return [...arr, ...tempArr];
       }
       return arr;
     },
     midArea() {
-      const arr = [{ ID: '', ClassName: '不限' }];
+      const arr = [{ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' }];
       if (this.first) {
-        const tempArr = this.areaList.filter((item) => item.ParentID === this.first);
+        let temp = this.first;
+        if (this.useLabel) {
+          const t = this.largeArea.find(it => it[this.localDefaultProps.label] === this.first);
+          if (t) temp = t[this.localDefaultProps.value];
+        }
+        const tempArr = this.localAreaList.filter((item) => item.ParentID === temp);
         return [...arr, ...tempArr];
       }
       return arr;
     },
     smArea() {
-      const arr = [{ ID: '', ClassName: '不限' }];
+      const arr = [{ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' }];
       if (this.second) {
-        const tempArr = this.areaList.filter((item) => item.ParentID === this.second);
+        let temp = this.second;
+        if (this.useLabel) {
+          const t = this.midArea.find(it => it[this.localDefaultProps.label] === this.second);
+          if (t) temp = t[this.localDefaultProps.value];
+        }
+        const tempArr = this.localAreaList.filter((item) => item.ParentID === temp);
         return [...arr, ...tempArr];
       }
       return arr;
     },
     first: {
       get() {
+        if (this.useLabel && this.RegionalID === '') return '不限';
         return this.RegionalID;
       },
       set(newVal) {
@@ -112,6 +157,7 @@ export default {
     },
     second: {
       get() {
+        if (this.useLabel && this.CityID === '') return '不限';
         return this.CityID;
       },
       set(newVal) {
@@ -122,6 +168,7 @@ export default {
     },
     third: {
       get() {
+        if (this.useLabel && this.CountyID === '') return '不限';
         return this.CountyID;
       },
       set(newVal) {
@@ -132,22 +179,28 @@ export default {
     },
   },
   methods: {
-    ...mapActions('common', ['getAreaList']),
     handleSwitch1(e) {
       this.changePropsFunc([this.typeList[1], '']);
       this.changePropsFunc([this.typeList[2], '']);
-      this.first = e;
+      let temp = e;
+      if (this.useLabel && e === '不限') temp = '';
+      this.first = temp;
     },
     handleSwitch2(e) {
       this.changePropsFunc([this.typeList[2], '']);
-      this.second = e;
+      let temp = e;
+      if (this.useLabel && e === '不限') temp = '';
+      this.second = temp;
     },
     handleSwitch3(e) {
-      this.third = e;
+      let temp = e;
+      if (this.useLabel && e === '不限') temp = '';
+      this.third = temp;
     },
   },
   created() {
-    this.getAreaList();
+    if (!this.useADArea) this.$store.dispatch('common/getAreaList');
+    else this.$store.dispatch('common/fetchAdAreaList');
   },
 };
 </script>

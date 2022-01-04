@@ -17,6 +17,7 @@
       label-width="188px"
       class="file-ruleForm"
       size='small'
+      @submit.native.prevent
       v-if="ruleForm"
     >
       <el-form-item label="名称：" prop="Name" key="FileName">

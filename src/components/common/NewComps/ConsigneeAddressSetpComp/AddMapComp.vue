@@ -18,7 +18,7 @@
     <ul class="change-add-dia-content"  :class="openType==='tempAdd'?'tempAdd':''">
       <li>
         <section v-show="openType !== 'tempAdd'">
-          <el-form :model="newAdd" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
+          <el-form :model="newAdd" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm" @submit.native.prevent>
             <header>
               <div>
                 <span class="title">收货人：</span>

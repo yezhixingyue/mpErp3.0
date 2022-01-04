@@ -315,6 +315,17 @@ export const getIsOrNotHasRepeatItemInArray = list => {
   return len1 > len2;
 };
 
+export const getFormatDateString = (date) => {
+  const _date = date ? new Date(date) : new Date();
+  const y = _date.getFullYear();
+  const m = `0${_date.getMonth() + 1}`.slice(-2);
+  const d = `0${_date.getDate()}`.slice(-2);
+  const h = `0${_date.getHours()}`.slice(-2);
+  const minute = `0${_date.getMinutes()}`.slice(-2);
+  const s = `0${_date.getSeconds()}`.slice(-2);
+  return `${y}-${m}-${d}T${h}:${minute}:${s}`;
+};
+
 export default {
   getStatusString,
   getExpress,
@@ -339,4 +350,5 @@ export default {
   checkName,
   getAUUID,
   getIsOrNotHasRepeatItemInArray,
+  getFormatDateString,
 };

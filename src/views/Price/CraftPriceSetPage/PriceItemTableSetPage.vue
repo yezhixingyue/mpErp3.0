@@ -207,12 +207,15 @@ export default {
     },
     fetchFormulaListData() {
       if (!this.PriceTableData || !this.PriceTableData.ID) return null;
+      let PartID = '';
+      if (this.curSolutionItem && this.curSolutionItem.ApplyRange) PartID = this.curSolutionItem.ApplyRange.PartID || '';
       return {
         TableID: this.PriceTableData.ID,
         ProductID: this.ProductID,
         PriceID: this.PriceID,
         CraftPriceID: this.CraftPriceID,
         UseModule: 5,
+        PartID,
       };
     },
     paramsArray() {

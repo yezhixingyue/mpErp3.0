@@ -10,7 +10,8 @@
     <main :class="{loading: allLoading || listLoading}">
       <ChildCondtionPartSelectDialog :visible.sync='visible' :list='canSetPartList' @select="handlePartSelect" />
       <ul>
-        <li v-for="it in localChildConditionList" :key="it.ID">
+        <li v-for="(it, i) in localChildConditionList" :key="it.ID" @click="onRowClick(it)" :class="{active: activeRowID === it.ID}">
+          <span class="sort">{{i + 1}}.</span>
           <div class="name">{{it.Name}}</div>
           <div class="condition">
             <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
@@ -74,6 +75,7 @@ export default {
       visible: false,
       allLoading: true,
       listLoading: true,
+      activeRowID: '',
     };
   },
   computed: {
@@ -174,6 +176,9 @@ export default {
       });
       return _list;
     },
+    onRowClick({ ID }) {
+      this.activeRowID = ID;
+    },
   },
   mounted() {
     this.getPathData(); // 初始化获取地址栏参数
@@ -238,6 +243,7 @@ export default {
           &.name {
             width: 11em;
             font-size: 13px;
+            padding-left: 13px;
           }
           &.target {
             width: 11em;
@@ -260,6 +266,16 @@ export default {
         &:hover {
           background-color: #f8f8f8;
           border-color: #ccc;
+        }
+        > .sort {
+          line-height: 24px;
+          min-width: 18px;
+          font-size: 12px;
+          color: #989898;
+        }
+        &.active {
+          border-color: #ccc;
+          background-color: #eee;
         }
       }
     }

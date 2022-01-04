@@ -25,9 +25,11 @@
         <SolutionTableCom
           @remove='onTableItemRemove'
           @setup="onSetupPageJump($event, '', '')"
+          @rowClick='onRowClick'
           :type='`${curControlType}`'
           :titleObj='getTitleObj(null, curControlType)'
           :dataList='getTargetItemList()'
+          :activeRowID='activeRowID'
           >
           <template #title>
             <p class="tips-box"> <i class="el-icon-warning"></i> {{tipsContent}}</p>
@@ -38,10 +40,12 @@
           v-for="item in curProduct.PartList" :key="item.ID"
           @remove='onTableItemRemove'
           @setup="onSetupPageJump($event, item.ID, item.Name)"
+          @rowClick='onRowClick'
           :type='`${curControlType}`'
           :title='item.Name'
           :titleObj='getTitleObj(item, curControlType)'
           :dataList='getTargetItemList(item.ID)'
+          :activeRowID='activeRowID'
           />
         </template>
         <!-- 混拼设置 -->
@@ -50,10 +54,12 @@
             v-for="item in canMixinMakeupPartList" :key="item.ID + 'mixin'"
             @remove='onMixinTableItemRemove($event, item.ID)'
             @setup="onSetupPageJump($event, item.ID, item.Name, true)"
+            @rowClick='onRowClick'
             :type='`${curControlType}`'
             :title='item.Name'
             :titleObj="{title: `多个[ ${item.Name} ]混拼设置`, btnText: '+ 添加条件'}"
             :dataList='item.mixinList'
+            :activeRowID='activeRowID'
             class="mixin-table"
             >
             <template #title>
@@ -99,9 +105,11 @@ import SolutionTableCom from '@/components/PriceComps/MakeupCtrl/SolutionTableCo
 import FormulaPanelElementSelectDialog from '@/components/common/FormulaAndConditionComps/FormulaPanelElementSelectDialog.vue';
 import PartMixinExcludeNumCtrlDialog from '@/components/PriceComps/MakeupCtrl/PartMixinExcludeNumCtrlDialog.vue';
 import TopRadioButtonComp from '@/components/common/NewComps/TopRadioButtonComp';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'MakeupCtrl',
+  mixins: [recordScrollPositionMixin('main.page-wrap')],
   components: {
     SolutionSaveDialog,
     SolutionTableCom,
@@ -216,6 +224,7 @@ export default {
       ExcludeNumCtrlVisible: false, // 排除数量设置弹窗开关
       curExcludeNumCtrlData: null,
       AllPropertyList: [],
+      activeRowID: '',
     };
   },
   methods: {
@@ -363,6 +372,7 @@ export default {
         setType,
       };
       this.$store.commit('priceManage/setCurMakeupItemEditData', editData);
+      this.activeRowID = editData ? editData.ID || '' : '';
       // setMakeupCtrlConditionSetupPropertyList
       // eslint-disable-next-line max-len
       const t = this.AllPropertyList.find(it => it.UseModule === this.curUseModule && it.ProductID === ProductID && (it.PartID === PartID || (!PartID && !it.PartID)));
@@ -507,6 +517,9 @@ export default {
         this.AllPropertyList.push(..._AllPropertyList);
         this.isPropertyListLoading = false;
       }
+    },
+    onRowClick(ID) {
+      this.activeRowID = ID;
     },
   },
   watch: {

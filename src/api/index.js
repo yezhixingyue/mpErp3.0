@@ -17,9 +17,6 @@ const api = {
   getOrderList(data) { // 获取客户订单列表（接单员）
     return instance.post('/Api/Order/List', data); // /Api/Customer/OrderList
   },
-  getProductLists(data) { // 获取列表头部产品第三级列表
-    return instance.post('/Api/Product/List', data);
-  },
   selectOrderProgress(data) { // 查询订单进度
     return instance.get(`/Api/Order/Progress?orderID=${data}`);
   },
@@ -794,6 +791,86 @@ const api = {
   },
   getFreightCalculate(data) { // POST /Api/Freight/Calculate 有效地址或配送方式发生变化时重新计算解析条目的运费价格
     return instance.post('/Api/Freight/Calculate', data, { closeLoading: true, closeTip: true });
+  },
+  /* 新工期管理api
+  ----------------------------------------------------------------------------------- */
+  // 1. 付款时间管理
+  getPayTimeSave(data) { // POST /Api/PayTime/Save  付款时间保存
+    return instance.post('/Api/PayTime/Save', data);
+  },
+  getPayTimeList(data) { // POST /Api/PayTime/List  付款时间列表
+    return instance.post('/Api/PayTime/List', data);
+  },
+  getPayTimeRemove(id) { // DELETE /Api/PayTime/Remove  付款时间删除
+    return instance.delete('/Api/PayTime/Remove', { params: { id } });
+  },
+  getPayTimeDetail(id) { // GET /Api/PayTime/Detail 付款时间详情
+    return instance.get('/Api/PayTime/Detail', { params: { id } });
+  },
+  // 2. 生产工期设置
+  getWorkPeriodProducePeriodList(typeID) { // GET /Api/WorkPeriod/ProducePeriodList  获取生产工期列表
+    return instance.get('/Api/WorkPeriod/ProducePeriodList', { params: { typeID } });
+  },
+  getWorkPeriodProducePeriodSave(data) { // POST /Api/WorkPeriod/ProducePeriodSave  工期组成保存
+    return instance.post('/Api/WorkPeriod/ProducePeriodSave', data);
+  },
+  getWorkPeriodProducePeriodRemove(id) { // DELETE /Api/WorkPeriod/ProducePeriodRemove  工期组成删除
+    return instance.delete('/Api/WorkPeriod/ProducePeriodRemove', { params: { id } });
+  },
+  // 3. 发货班次管理
+  getShiftTimeSave(data) { // POST /Api/ShiftTime/Save 发货班次保存
+    return instance.post('/Api/ShiftTime/Save', data);
+  },
+  getShiftTimeList(data) { // POST /Api/ShiftTime/List  发货班次列表
+    return instance.post('/Api/ShiftTime/List', data);
+  },
+  getShiftTimeRemove(id) { // DELETE /Api/ShiftTime/Remove  发货班次删除
+    return instance.delete('/Api/ShiftTime/Remove', { params: { id } });
+  },
+  getShiftTimeDetail(id) { // GET /Api/ShiftTime/Detail  发货班次详情
+    return instance.get('/Api/ShiftTime/Detail', { params: { id } });
+  },
+  // 4. 派件时间管理
+  getDispatchTimeSave(data) { // POST /Api/DispatchTime/Save  派件时间保存
+    return instance.post('/Api/DispatchTime/Save', data);
+  },
+  getDispatchTimeList(data) { // POST /Api/DispatchTime/List  派件时间列表
+    return instance.post('/Api/DispatchTime/List', data);
+  },
+  getDispatchTimeRemove(id) { // DELETE /Api/DispatchTime/Remove  派件时间删除
+    return instance.delete('/Api/DispatchTime/Remove', { params: { id } });
+  },
+  getDispatchTimeDetail(id) { // GET /Api/DispatchTime/Detail  派件时间详情
+    return instance.get('/Api/DispatchTime/Detail', { params: { id } });
+  },
+  // 5. 添加节假日管理
+  getRestDaySave(data) { // POST /Api/RestDay/Save  节假日保存
+    return instance.post('/Api/RestDay/Save', data);
+  },
+  getRestDayDetailByID(id) { // GET /Api/RestDay/DetailByID  节假日详情
+    return instance.get('/Api/RestDay/DetailByID', { params: { id }, closeLoading: true });
+  },
+  getRestDayDetailByMonth(yearMonth) { // GET GET /Api/RestDay/DetailByMonth  节假日详情2  非编辑时 切换年份月份时使用
+    return instance.get('/Api/RestDay/DetailByMonth', { params: { yearMonth }, closeLoading: true });
+  },
+  getRestDayRemove(id) { // DELETE /Api/RestDay/Remove  节假日删除
+    return instance.delete('/Api/RestDay/Remove', { params: { id } });
+  },
+  getRestDayList(data) { // POST /Api/RestDay/List  节假日列表
+    return instance.post('/Api/RestDay/List', data);
+  },
+  // 6. 特殊情况管理
+  getSpecialDaySave(data) { // POST /Api/SpecialDay/Save  特殊日期保存
+    return instance.post('/Api/SpecialDay/Save', data);
+  },
+  getSpecialDayList(data) { // POST /Api/SpecialDay/List  特殊日期列表
+    return instance.post('/Api/SpecialDay/List', data);
+  },
+  getSpecialDayRemove(id) { // DELETE /Api/SpecialDay/Remove  特殊日期删除
+    return instance.delete('/Api/SpecialDay/Remove', { params: { id } });
+  },
+  getSpecialDayDetail(id) { // GET /Api/SpecialDay/Detail  特殊日期详情
+    return instance.get('/Api/SpecialDay/Detail', { params: { id } });
   },
 };
 

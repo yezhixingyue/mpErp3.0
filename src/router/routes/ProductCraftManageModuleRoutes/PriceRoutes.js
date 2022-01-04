@@ -198,7 +198,7 @@ const routes = [
       pageName: 'ResultFormulaSetupPage',
       PermissionInfo: ['PermissionProductPrice', 'Obj', 'SetupAll'],
     },
-    component: () => import('../../../views/Price/CraftPriceSetPage/ResultFormulaSetupPage'),
+    component: () => import('../../../views/Price/CraftPriceSetPage/ResultFormulaSetupPage.vue'),
   },
   /** 报价表
   --------------------------------------------------------------  */
@@ -244,7 +244,7 @@ const routes = [
       pageName: 'ResultFormulaSetupPage',
       PermissionInfo: ['PermissionProductPrice', 'Obj', 'SetupAll'],
     },
-    component: () => import('../../../views/Price/CraftPriceSetPage/ResultFormulaSetupPage'),
+    component: () => import('../../../views/Price/CraftPriceSetPage/ResultFormulaSetupPage.vue'),
   },
   /** 报价方案
   --------------------------------------------------------------  */

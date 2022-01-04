@@ -72,6 +72,9 @@ export default {
   > .mp-order-product-select-wrap {
     > li {
       margin-right: 10px;
+      .el-input__inner {
+        width: 120px !important;
+      }
     }
   }
   > .el-select {

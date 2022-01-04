@@ -8,6 +8,7 @@
       :requestFunc="getDepositList"
       :ClassID="objForListData.Product.classID"
       :TypeID="objForListData.Product.typeID"
+      useCustomer
       :typeList="[['Product', 'classID'],['Product', 'typeID']]" />
   </header>
 </template>

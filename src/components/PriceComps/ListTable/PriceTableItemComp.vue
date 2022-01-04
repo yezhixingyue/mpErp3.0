@@ -39,7 +39,7 @@
             </i>
           </span>
           <TipsSpanButton @click.native="onIsOwnPriceSetClick(it)"
-            v-if="it.IsOwnPrice && Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll" text='设置报价方式'/>
+            v-if="Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll" text='设置报价方式'/>
         </div>
         <div class="menus" v-if="it.IsOwnPrice && Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll" >
           <TipsSpanButton text='数值转换' @click.native="onPriceItemSetMenuClick(it, 'NumberSwapList')" />
@@ -69,7 +69,7 @@
             <template v-else>新加</template>
           </span>
         </div>
-        <div class="ctrl" v-if="it.IsOwnPrice && Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll">
+        <div class="ctrl" v-if="Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll">
           <CtrlMenus :showList="['edit','del','copy']"
            @copy='onPriceItemSaveClick(it, "copy")'
            @edit='onPriceItemSaveClick(it)'

@@ -7,7 +7,8 @@
       <slot name="title"></slot>
     </header>
     <main>
-      <div v-for="item in localTableData" :key="item.ID">
+      <div v-for="(item, i) in localTableData" :key="item.ID" @click="onRowClick(item)" :class="{active: activeRowID === item.ID}">
+        <span class="sort">{{i + 1}}.</span>
         <div class="condition">
           <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
             <div slot="content">
@@ -84,6 +85,10 @@ export default {
       default: null,
     },
     title: {
+      type: String,
+      default: '',
+    },
+    activeRowID: {
       type: String,
       default: '',
     },
@@ -194,6 +199,10 @@ export default {
       }
       return ['其它类型，暂未生成对应结果'];
     },
+    onRowClick(item) {
+      // eslint-disable-next-line no-unused-expressions
+      item && item.ID && (this.$emit('rowClick', item.ID));
+    },
   },
 };
 </script>
@@ -240,16 +249,22 @@ export default {
         flex: 1;
         padding: 0px 25px;
         height: 36px;
+        padding-left: 13px;
         overflow: hidden;
         > div {
           height: 36px;
           line-height: 36px;
         }
       }
+      > .sort {
+        line-height: 20px;
+        padding-left: 15px;
+        min-width: 18px;
+      }
       > .priority-box, > .part-name {
         width: 165px;
         min-width: 120px;
-        padding-left: 15px;
+        padding-left: 13px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -262,6 +277,13 @@ export default {
       &:hover {
         border-color: #ccc;
         background-color: #f8f8f8;
+        & + div {
+          border-top-color: #ccc;
+        }
+      }
+      &.active {
+        border-color: #ccc;
+        background-color: #eee;
         & + div {
           border-top-color: #ccc;
         }

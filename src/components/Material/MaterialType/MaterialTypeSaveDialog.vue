@@ -17,10 +17,14 @@
       label-width="168px"
       class="file-ruleForm"
       size='small'
+      @submit.native.prevent
       v-if="ruleForm"
     >
-      <el-form-item label="名称：" prop="Name" key="FileName">
-        <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="请输入物料类型名称" maxlength="10" show-word-limit></el-input>
+      <el-form-item label="显示名称：" prop="Name">
+        <el-input style="width:350px" v-model.trim="ruleForm.Name" placeholder="显示名称" maxlength="10" show-word-limit></el-input>
+      </el-form-item>
+      <el-form-item label="内部名称：" prop="InternalName">
+        <el-input style="width:350px" v-model.trim="ruleForm.InternalName" placeholder="内部名称" maxlength="10" show-word-limit></el-input>
       </el-form-item>
     </el-form>
   </CommonDialogComp>
@@ -49,7 +53,11 @@ export default {
       ruleForm: null,
       rules: {
         Name: [
-          { required: true, message: '请输入物料类型名称', trigger: 'blur' },
+          { required: true, message: '请输入显示名称', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' },
+        ],
+        InternalName: [
+          { required: true, message: '请输入内部名称', trigger: 'blur' },
           { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' },
         ],
       },
@@ -73,7 +81,7 @@ export default {
     },
     initEditData() { // 数据初始化方法
       this.title = this.curData ? '编辑物料类型' : '添加物料类型';
-      this.ruleForm = { Name: '', ID: '', ElementList: [], UnionShowList: [] };
+      this.ruleForm = { Name: '', ID: '', InternalName: '', ElementList: [], UnionShowList: [] };
       if (this.curData) {
         this.ruleForm = { ...this.curData };
       }

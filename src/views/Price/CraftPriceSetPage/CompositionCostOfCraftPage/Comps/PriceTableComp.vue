@@ -7,7 +7,8 @@
     </header>
     <main>
       <ul>
-        <li v-for="item in localTableData" :key="item.ID">
+        <li v-for="(item, i) in localTableData" :key="item.ID" @click="onRowClick(item)" :class="{active: activeRowID === item.ID}">
+          <span class="sort">{{i + 1}}.</span>
           <div class="condition">
             <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
               <div slot="content">
@@ -124,6 +125,7 @@ export default {
   },
   data() {
     return {
+      activeRowID: '',
     };
   },
   methods: {
@@ -165,6 +167,9 @@ export default {
     },
     onExportClick(data) { // 导出
       this.$emit('export', data);
+    },
+    onRowClick({ ID }) {
+      this.activeRowID = ID;
     },
   },
 };
@@ -219,6 +224,7 @@ export default {
           height: 36px;
           overflow: hidden;
           min-width: 120px;
+          padding-left: 13px;
           > div {
             height: 36px;
             line-height: 36px;
@@ -253,6 +259,18 @@ export default {
         &:hover {
           border-color: #ccc;
           background-color: #f8f8f8;
+          & + li {
+            border-top-color: #ccc;
+          }
+        }
+        > .sort {
+          line-height: 20px;
+          padding-left: 15px;
+          min-width: 18px;
+        }
+        &.active {
+          border-color: #ccc;
+          background-color: #eee;
           & + li {
             border-top-color: #ccc;
           }

@@ -16,6 +16,7 @@
       ref="ruleForm"
       label-width="208px"
       class="ruleForm"
+      @submit.native.prevent
       size='small'
       v-if="curMaterialType && ruleForm"
     >

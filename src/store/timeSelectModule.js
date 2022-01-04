@@ -69,7 +69,7 @@ export default {
     curMonthDate(state) {
       const stringDate1 = ConvertTimeFormat(new Date(new Date(state.newDate).setDate(1)));
       const m = new Date(state.newDate).getMonth();
-      const t = new Date(new Date(new Date().setMonth(m + 1)).setDate(0));
+      const t = new Date(new Date(new Date(new Date().setDate(1)).setMonth(m + 1)).setDate(0));
       const stringDate2 = ConvertTimeFormat(new Date(t));
       return {
         First: `${stringDate1}T00:00:00.000Z`,
@@ -125,7 +125,7 @@ export default {
     financeCurMonthDate(state) {
       const stringDate1 = ConvertTimeFormat(new Date(new Date(state.newDate).setDate(1)));
       const m = new Date(state.newDate).getMonth();
-      const t = new Date(new Date(new Date().setMonth(m + 1)).setDate(0));
+      const t = new Date(new Date(new Date(new Date().setDate(1)).setMonth(m + 1)).setDate(0));
       const secondDate = getSecondTime(t);
       return {
         First: `${stringDate1}T08:00:00.000Z`,

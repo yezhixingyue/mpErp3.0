@@ -7,7 +7,7 @@
           <el-button type="primary" class="mp-common-btn-styles" @click="jumpAreaTempPage">适用范围模板</el-button>
           <el-button type="primary" class="mp-common-btn-styles" @click="jumpMakeupRulePage">拼版规则设置</el-button>
         </template>
-        <NewProductClassifySelectComp v-model="ProductClass" />
+        <NewProductClassifySelectComp v-model="ProductClassData" />
         <el-checkbox v-model="noPriceChecked">仅显示无报价产品</el-checkbox>
       </div>
       <search-input-comp
@@ -58,12 +58,15 @@ export default {
   computed: {
     ...mapState('priceManage', ['condition4PriceManageList', 'PriceManageList', 'PriceManageListNumber', 'isPriceDataLoading']),
     ...mapState('common', ['Permission']),
-    ProductClass: {
+    ProductClassData: {
       get() {
-        return this.condition4PriceManageList.ProductClass;
+        return this.condition4PriceManageList;
       },
       set(val) {
-        this.$store.commit('priceManage/setCondition4PriceManageList', [['ProductClass', ''], val]);
+        if (!val) return;
+        const { ProductClass, ClassType } = val;
+        this.$store.commit('priceManage/setCondition4PriceManageList', [['ClassType', ''], ClassType]);
+        this.$store.commit('priceManage/setCondition4PriceManageList', [['ProductClass', ''], ProductClass]);
         this.getPriceManageList();
       },
     },

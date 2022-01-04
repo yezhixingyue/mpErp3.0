@@ -1,8 +1,8 @@
 @font-face {
-  font-family: "iconfont"; /* Project id 2580815 */
-  src: url('iconfont.woff2?t=1622424167504') format('woff2'),
-       url('iconfont.woff?t=1622424167504') format('woff'),
-       url('iconfont.ttf?t=1622424167504') format('truetype');
+  font-family: "iconfont"; /* Project id 2672534 */
+  src: url('iconfont.woff2?t=1640683500512') format('woff2'),
+       url('iconfont.woff?t=1640683500512') format('woff'),
+       url('iconfont.ttf?t=1640683500512') format('truetype');
 }
 
 .iconfont {
@@ -13,7 +13,107 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-wenhao:before {
+.icon-fahuobanci:before {
+  content: "\e632";
+}
+
+.icon-paijianshijian:before {
+  content: "\e633";
+}
+
+.icon-shengchangongqi:before {
+  content: "\e634";
+}
+
+.icon-jiejiariguanli:before {
+  content: "\e635";
+}
+
+.icon-teshuqingkuangguanli:before {
+  content: "\e636";
+}
+
+.icon-fukuanshijian_2:before {
+  content: "\e637";
+}
+
+.icon-shangchuan:before {
+  content: "\e631";
+}
+
+.icon-piliangshangchuan1:before {
+  content: "\e662";
+}
+
+.icon-youhuiquan2:before {
+  content: "\e630";
+}
+
+.icon-youhuiquan1:before {
+  content: "\e62f";
+}
+
+.icon-youhuiquan:before {
+  content: "\e62b";
+}
+
+.icon-yundanguanli:before {
+  content: "\e62e";
+}
+
+.icon-weifukuandingdan:before {
+  content: "\e62c";
+}
+
+.icon-chanpindingjia:before {
+  content: "\e61f";
+}
+
+.icon-caiwuguanli:before {
+  content: "\e620";
+}
+
+.icon-dingdanguanli1:before {
+  content: "\e621";
+}
+
+.icon-fukuandanliebiao:before {
+  content: "\e622";
+}
+
+.icon-chanpinguanli:before {
+  content: "\e623";
+}
+
+.icon-cuxiaohuodong:before {
+  content: "\e624";
+}
+
+.icon-kehuliushui:before {
+  content: "\e626";
+}
+
+.icon-piliangshangchuan:before {
+  content: "\e627";
+}
+
+.icon-gongyiguanli:before {
+  content: "\e628";
+}
+
+.icon-shouhouguanli:before {
+  content: "\e629";
+}
+
+.icon-tongjifenxi:before {
+  content: "\e62a";
+}
+
+.icon-shouhoushenqingliebiao:before {
   content: "\e62d";
+}
+
+.icon-dingdanguanli:before {
+  content: "\e61e";
 }
 

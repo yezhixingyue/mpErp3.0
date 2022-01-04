@@ -6,7 +6,8 @@
       <span class="blue-span" @click="onSetupClick(null)">{{curTableType.btnText}}</span>
     </header>
     <main>
-      <div v-for="item in localTableData" :key="item.ID">
+      <div v-for="(item, i) in localTableData" :key="item.ID" @click="onRowClick(item)" :class="{active: activeRowID === item.ID}">
+        <span class="sort">{{i + 1}}.</span>
         <div class="condition">
           <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
             <div slot="content">
@@ -107,6 +108,7 @@ export default {
         { title: '子对比', btnText: '+ 添加子对比', type: 'subCompare' },
         { title: '子对比', btnText: '+ 添加子对比', type: 'sizeCount' },
       ],
+      activeRowID: '',
     };
   },
   methods: {
@@ -177,6 +179,10 @@ export default {
       }
       return ['其它类型，暂未生成对应结果'];
     },
+    onRowClick({ ID }) {
+      this.activeRowID = ID;
+    },
+
   },
 };
 </script>
@@ -216,6 +222,7 @@ export default {
         padding: 0px 25px;
         height: 36px;
         overflow: hidden;
+        padding-left: 13px;
         > div {
           height: 36px;
           line-height: 36px;
@@ -237,6 +244,18 @@ export default {
       &:hover {
         border-color: #ccc;
         background-color: #f8f8f8;
+        & + div {
+          border-top-color: #ccc;
+        }
+      }
+      > .sort {
+        line-height: 20px;
+        padding-left: 15px;
+        min-width: 18px;
+      }
+      &.active {
+        border-color: #ccc;
+        background-color: #eee;
         & + div {
           border-top-color: #ccc;
         }

@@ -38,6 +38,7 @@
           >
             <el-form
               :model="localNewAddressInfo"
+              @submit.native.prevent
               :rules="rules"
               ref="ruleForm"
               label-width="0px"

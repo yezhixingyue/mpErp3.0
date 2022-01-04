@@ -16,7 +16,7 @@
             <span class="blue-span" @click="visible=true">+ 添加条件</span>
           </p>
           <!-- 条件区域 -->
-          <el-form label-width="260px" class="constraint-ruleForm mp-scroll-wrap" ref="oConstraintForm">
+          <el-form label-width="260px" class="constraint-ruleForm mp-scroll-wrap" ref="oConstraintForm" @submit.native.prevent>
             <el-form-item
              v-for="(it, index) in ruleForm.Constraint.ItemList"
              :key="it.key || it.Property.StoredContent + index"

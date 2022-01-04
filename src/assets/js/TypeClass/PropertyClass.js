@@ -15,6 +15,7 @@ export const ElementSelectTypeEnum = [
   { label: ' 费用', ID: 9, nickName: '费用' },
   { label: ' 部件', ID: 10, nickName: '部件' },
   { label: ' 公共属性', ID: 11, nickName: '公共属性' },
+  { label: ' 工期数据', ID: 12, nickName: '工期数据' },
   { label: ' 其他', ID: 254, nickName: '其他' },
   { label: ' 常量', ID: 255, nickName: '常量' },
 ];
@@ -57,6 +58,9 @@ export const PropertyFixedType = [
   { ID: 34, Name: '总价' },
   { ID: 35, Name: '自定义' },
   { ID: 36, Name: '印刷幅面物料数量(不含损耗)' },
+  { ID: 37, Name: '拼版长' },
+  { ID: 38, Name: '拼版宽' },
+  { ID: 39, Name: '工期数据' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表

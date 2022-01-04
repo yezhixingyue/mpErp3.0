@@ -24,9 +24,13 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    defaultClassLabel: {
+      type: String,
+      default: 'ProductClass',
+    },
     defaultLabelProps: {
       type: Object,
-      default: () => ({ lv1PropName: 'First', lv2PropName: 'Second', lv3PropName: 'Third' }),
+      default: () => ({ lv1PropName: 'ClassType', lv2PropName: 'First', lv3PropName: 'Second' }),
     },
     defaultProps: {
       type: Object,
@@ -51,8 +55,8 @@ export default {
       get() {
         return {
           level1Val: this.value[this.defaultLabelProps.lv1PropName],
-          level2Val: this.value[this.defaultLabelProps.lv2PropName],
-          level3Val: this.value[this.defaultLabelProps.lv3PropName],
+          level2Val: this.value[this.defaultClassLabel][this.defaultLabelProps.lv2PropName],
+          level3Val: this.value[this.defaultClassLabel][this.defaultLabelProps.lv3PropName],
         };
       },
       set(val) {
@@ -64,8 +68,10 @@ export default {
         }
         const temp = {
           [this.defaultLabelProps.lv1PropName]: level1Val,
-          [this.defaultLabelProps.lv2PropName]: level2Val,
-          [this.defaultLabelProps.lv3PropName]: level3Val,
+          [this.defaultClassLabel]: {
+            [this.defaultLabelProps.lv2PropName]: level2Val,
+            [this.defaultLabelProps.lv3PropName]: level3Val,
+          },
         };
         this.$emit('change', temp);
       },

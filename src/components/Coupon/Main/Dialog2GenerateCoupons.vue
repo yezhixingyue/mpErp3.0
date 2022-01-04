@@ -12,11 +12,11 @@
     <section class="content-wrap">
       <header class="title mp-common-title-wrap">基本信息</header>
       <div class="content" v-if="dialogData">
-        <generate-dia-show-deatil-comp
+        <GenerateDiaShowDeatilComp
          :data="dialogData"
          :dialogProductInfo='dialogProductInfo' /> <!-- 优惠券信息详情 -->
         <div class="generate-box" v-if="Permission.PermissionList.PermissionCoupon.Obj.Generate">
-          <staff-selector
+          <StaffSelector
            isLineStyle
            title="领取人"
            :changePropsFunc="changeReceiveUser"
@@ -30,7 +30,7 @@
               :title='btnTitle' />
           </div>
         </div>
-        <generate-dia-table-comp
+        <GenerateDiaTableComp
          v-if="dialogData"
          :tableData='generatedCouponList'
          :amount='dialogData.Data.Amount'

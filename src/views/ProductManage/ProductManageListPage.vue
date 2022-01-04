@@ -7,7 +7,7 @@
          v-if="Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">添加产品</el-button>
         <el-button type="primary" class="mp-common-btn-styles" @click="goToClassifyPage"
          v-if="Permission.PermissionList.PermissionProductBase.Obj.ManageProductClass">管理产品分类</el-button>
-        <NewProductClassifySelectComp v-model="ProductClass" />
+        <NewProductClassifySelectComp v-model="ProductClassData" />
       </div>
       <search-input-comp
         class="search-section"
@@ -57,12 +57,15 @@ export default {
   computed: {
     ...mapState('productManage', ['condition4ProductManageList', 'ProductManageList', 'ProductManageListNumber', 'isTableDataLoading']),
     ...mapState('common', ['OperatorKeyValueList', 'Permission']),
-    ProductClass: {
+    ProductClassData: {
       get() {
-        return this.condition4ProductManageList.ProductClass;
+        return this.condition4ProductManageList;
       },
       set(val) {
-        this.$store.commit('productManage/setCondition4ProductManageList', [['ProductClass', ''], val]);
+        if (!val) return;
+        const { ProductClass, ClassType } = val;
+        this.$store.commit('productManage/setCondition4ProductManageList', [['ClassType', ''], ClassType]);
+        this.$store.commit('productManage/setCondition4ProductManageList', [['ProductClass', ''], ProductClass]);
         this.getManageProductList();
       },
     },

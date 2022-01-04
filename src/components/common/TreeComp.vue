@@ -85,6 +85,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    newDataType: { // 是否返回新数据格式 3.0新数据格式
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     defaultExpandedKeys() {
@@ -204,7 +208,7 @@ export default {
   },
   methods: {
     check(curItem, { checkedNodes, checkedKeys }) {
-      this.handleChangeFunc(checkedNodes, checkedKeys);
+      this.handleChangeFunc(checkedNodes, checkedKeys, checkedKeys.length === this.AllKeys.length);
       this.setCheckAllListAndStatus(checkedKeys);
     },
     renderContent(h, { node, data }) {
@@ -257,7 +261,7 @@ export default {
         this.selectKeys = this.AllKeys;
         const checkedNodes = this.$refs.treeComp.getCheckedNodes();
         const checkedKeys = this.$refs.treeComp.getCheckedKeys();
-        this.handleChangeFunc(checkedNodes, checkedKeys);
+        this.handleChangeFunc(checkedNodes, checkedKeys, true); // 第三个代表全部选中
       } else {
         this.$refs.treeComp.setCheckedKeys([]);
         this.selectKeys = [];
@@ -300,7 +304,7 @@ export default {
             const checkedKeys = this.$refs.treeComp.getCheckedKeys();
             this.setCheckAllListAndStatus(checkedKeys);
             const checkedNodes = this.$refs.treeComp.getCheckedNodes();
-            this.handleChangeFunc(checkedNodes, checkedKeys);
+            this.handleChangeFunc(checkedNodes, checkedKeys, checkedKeys.length === this.AllKeys.length);
           }
         });
       },

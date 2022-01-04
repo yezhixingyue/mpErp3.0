@@ -7,7 +7,8 @@
       <slot name="title"></slot>
     </header>
     <main>
-      <div v-for="item in localTableData" :key="item.ID">
+      <div v-for="(item, i) in localTableData" :key="item.ID" @click="onRowClick(item)" :class="{active: activeRowID === item.ID}">
+        <span class="sort">{{i + 1}}.</span>
         <div class="condition">
           <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
             <div slot="content">
@@ -100,6 +101,7 @@ export default {
   },
   data() {
     return {
+      activeRowID: '',
     };
   },
   methods: {
@@ -119,6 +121,9 @@ export default {
       const second = UseMinPrice ? '（最低价）' : '（最高价）';
       const all = first ? `${first}${second}` : '未知方案';
       return [all];
+    },
+    onRowClick({ ID }) {
+      this.activeRowID = ID;
     },
   },
 };
@@ -167,6 +172,7 @@ export default {
         padding: 0px 25px;
         height: 36px;
         overflow: hidden;
+        padding-left: 13px;
         > div {
           height: 36px;
           line-height: 36px;
@@ -188,6 +194,18 @@ export default {
       &:hover {
         border-color: #ccc;
         background-color: #f8f8f8;
+        & + div {
+          border-top-color: #ccc;
+        }
+      }
+      > .sort {
+        line-height: 20px;
+        padding-left: 15px;
+        min-width: 18px;
+      }
+      &.active {
+        border-color: #ccc;
+        background-color: #eee;
         & + div {
           border-top-color: #ccc;
         }

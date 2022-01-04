@@ -1049,20 +1049,33 @@ public enum MultiLevelClassType : byte
 
  public enum SizeNumberFormulaType:byte
     {
-        /// <summary>
-        /// 展开长
-        /// </summary>
+        展开长
         UnfoldLength=0,
-        /// <summary>
-        /// 展开宽
-        /// </summary>
+
+        展开宽
         UnfoldWidth = 1,
-        /// <summary>
-        /// 内容不同
-        /// </summary>
+
+        内容不同
         DifferentContent = 2,
-        /// <summary>
-        /// 印刷份数
-        /// </summary>
+        
+        印刷份数
         PrintNumber = 3,
     }
+
+UseModule枚举中加入
+        生产工期组成公式
+        ProducePeriodItemFormula = 9,
+
+        生产总工期公式
+        ProduceTotalPeriodFormula = 10,
+
+        生产工期组成条件
+
+        ProducePeriodItemConstraint = 44,
+        生产总工期条件
+
+        ProduceTotalPeriodConstraint = 45,
+
+PropertyFixedType枚举中加入
+        工期数据
+        ProducePeriodItemData = 39,
