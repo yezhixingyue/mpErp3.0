@@ -36,6 +36,10 @@
       <img src="@/assets/images/del.png" alt="">
       <i>删除</i>
     </span>
+    <span @click="onAddClick" :class="canAdd ? '' : 'disabled'" v-if="showList.includes('add')">
+      <img src="@/assets/images/add.png" alt="">
+      <i>添加一行</i>
+    </span>
   </div>
 </template>
 
@@ -47,6 +51,10 @@ export default {
       default: true,
     },
     canRemove: {
+      type: Boolean,
+      default: true,
+    },
+    canAdd: {
       type: Boolean,
       default: true,
     },
@@ -99,6 +107,10 @@ export default {
     onRemoveClick() {
       if (!this.canRemove) return;
       this.$emit('remove');
+    },
+    onAddClick() {
+      if (!this.canAdd) return;
+      this.$emit('add');
     },
     onCopyClick() {
       if (!this.canCopy) return;

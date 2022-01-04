@@ -79,16 +79,30 @@ function handlePermission(to, next, Permission, from) {
 
 const handleRouterEach = router => {
   router.beforeEach((to, from, next) => { // 使用全局路由导航守卫进行权限控制
+    if (to.path === '/pathFromClient') {
+      const { url, token } = to.query;
+      if (url && token) {
+        sessionStorage.clear();
+        sessionStorage.setItem('ErpToken', JSON.stringify(token));
+        // document.cookie = '';
+        next({
+          path: url,
+          query: {},
+        });
+        return;
+      }
+    }
     const token = JSON.parse(sessionStorage.getItem('ErpToken')); // 2.1 获取到token信息，可能为undefined
-    if (to.matched.some(record => record.meta.requiresAuth)) { // 2.2 判断要去往的页面中有无token要求，如果无则跳转否则则进入判断
+    if (to.matched.some(record => record.meta.requiresAuth)) { // 2.2 判断要去往的页面中有无token要求，如果无则跳转否则则进入判
       if (to.name === 'login') { // 2.3 登录页面不考虑，直接跳转
         NextHandler(from, to, next);
       } else if (token) { // 2.4 如果有token信息，获取到当前用户权限信息
         const permission = store.state.common.Permission;
         if (!permission || permission.Token !== token) {
-          // console.log('setPermission');
           getPermission(token).then(res => {
-            if (Object.prototype.toString.call(res) === '[object Object]' && res.Token && res.Token === token) {
+            // if (Object.prototype.toString.call(res) === '[object Object]' && res.Token && res.Token === token) {
+            if (Object.prototype.toString.call(res) === '[object Object]' && res.Token) {
+              sessionStorage.setItem('ErpToken', JSON.stringify(res.Token));
               store.commit('common/setPermission', res);
               handlePermission(to, next, res.PermissionList, from);
             }

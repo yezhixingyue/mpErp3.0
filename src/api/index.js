@@ -872,6 +872,21 @@ const api = {
   getSpecialDayDetail(id) { // GET /Api/SpecialDay/Detail  特殊日期详情
     return instance.get('/Api/SpecialDay/Detail', { params: { id } });
   },
+
+  /* 企业管理api
+  ----------------------------------------------------------------------------------- */
+  getJobPermissionsList() { // 获取岗位管理权限数据列表  /Api/Constant/VersionValid
+    return instance.post('/Api/Constant/VersionValid', { key: 82, value: -1 });
+  },
+  getJobPermissionsDetail(PositionID) { // POST /Api/Job/Info  PositionID=a77203ba-c769-4fdd-9220-aa2400b3b8f1  获取岗位权限详情 POST /Api/Job/Save
+    return instance.post('/Api/Job/Info', { PositionID });
+  },
+  getJobSave(data) { // POST /Api/Job/Save  岗位保存
+    return instance.post('/Api/Job/Save', data);
+  },
+  getJobPermissionSave(data) { // POST /Api/JobPermission/Save 岗位权限保存
+    return instance.post('/Api/JobPermission/Save', data);
+  },
 };
 
 export default api;

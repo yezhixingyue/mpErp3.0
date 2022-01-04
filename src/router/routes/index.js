@@ -7,6 +7,7 @@ import OrderManageRoutes from './OrderManage';
 import MaterialRoutes from './Material';
 import BasicSetRoutes from './BasicSet';
 import ProducePeriodRoutes from './ProducePeriod';
+import CompanyManageRoutes from './CompanyManage';
 
 const routes = [
   { // 首页
@@ -37,6 +38,7 @@ const routes = [
   ProducePeriodRoutes.routes,
   MaterialRoutes.routes,
   BasicSetRoutes.routes,
+  CompanyManageRoutes.routes,
 
   { // 无权限页
     path: '/notauth',
@@ -62,6 +64,7 @@ const routeTree = [
   MaterialRoutes.routeTree,
   BasicSetRoutes.routeTree,
   ProducePeriodRoutes.routeTree,
+  CompanyManageRoutes.routeTree,
 ];
 
 export default {

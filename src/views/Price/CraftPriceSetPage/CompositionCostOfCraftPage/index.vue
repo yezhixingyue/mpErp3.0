@@ -132,8 +132,12 @@ export default {
       return 'unkown';
     },
     curConditionList() {
-      const t = this.ConditionPropertyObjList.find(it => it.PartID === this.curSolutionPartID);
-      return t ? t.PropertyList : [];
+      if (this.curSolutionItem && this.curSolutionItem.ApplyRange) {
+        const { PartID, GroupID, CraftID } = this.curSolutionItem.ApplyRange;
+        const t = this.ConditionPropertyObjList.find(it => it.PartID === PartID && it.CraftID === CraftID && it.GroupID === GroupID);
+        return t ? t.PropertyList : [];
+      }
+      return [];
     },
   },
   data() {
@@ -276,12 +280,14 @@ export default {
       this.isTableLoading = false;
     },
     async getConditionPropertyList(PriceID, PartID, GroupID, CraftID) {
-      const t = this.ConditionPropertyObjList.find(it => it.PartID === PartID);
+      const t = this.ConditionPropertyObjList.find(it => it.PartID === PartID && it.CraftID === CraftID && it.GroupID === GroupID);
       if (t) return;
       const resp = await PropertyClass.getPropertyList({ UseModule: 32, ProductID: this.ProductID, PriceID, PartID, GroupID, CraftID });
       const PropertyList = resp || [];
       const obj = {
         PartID,
+        CraftID,
+        GroupID,
         PropertyList,
       };
       this.ConditionPropertyObjList.push(obj);

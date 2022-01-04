@@ -66,12 +66,20 @@ export default {
         };
       }
       let PartID = '';
-      if (this.curSolutionItem && this.curSolutionItem.ApplyRange) PartID = this.curSolutionItem.ApplyRange.PartID || '';
+      let CraftID = '';
+      let GroupID = '';
+      if (this.curSolutionItem && this.curSolutionItem.ApplyRange) {
+        PartID = this.curSolutionItem.ApplyRange.PartID || '';
+        CraftID = this.curSolutionItem.ApplyRange.CraftID || '';
+        GroupID = this.curSolutionItem.ApplyRange.GroupID || '';
+      }
       return {
         ProductID: this.ProductID,
         PriceID: this.PriceID,
         TableID: this.curPriceTableItemData?.ID || '',
         PartID,
+        CraftID,
+        GroupID,
         UseModule: 5,
       };
     },

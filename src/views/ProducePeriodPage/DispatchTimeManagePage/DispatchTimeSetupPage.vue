@@ -37,7 +37,7 @@
       </ul>
     </main>
     <footer>
-      <el-button type='primary' @click="onSubmitClick">保存</el-button>
+      <el-button type='primary' class="is-blue-button" @click="onSubmitClick">保存</el-button>
       <el-button class="cancel-blue-btn" @click="onGoBackClick"><i>＜＜</i> 返回</el-button>
     </footer>
   </section>
@@ -225,11 +225,6 @@ export default {
       height: 35px;
       padding: 0;
       border-radius: 3px;
-      &:first-of-type {
-        background: linear-gradient(to right, #26bcf9, #35dff9);
-        border: none;
-        margin-right: 20px;
-      }
       i {
         transform: scaleY(1.4);
         display: inline-block;

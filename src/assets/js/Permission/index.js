@@ -8,9 +8,8 @@ import api from '@/api/index';
 export default async function getPermission(token) {
   const _detailData = sessionStorage.getItem('staffDetailData');
   if (!_detailData) {
-    let key = true;
-    const res = await api.getStaffDetail().catch(() => { key = false; });
-    if (key && res && res.status === 200 && res.data.Status === 1000) {
+    const res = await api.getStaffDetail().catch(() => null);
+    if (res && res.status === 200 && res.data.Status === 1000) {
       sessionStorage.setItem('staffDetailData', JSON.stringify(res.data.Data));
       return res.data.Data;
     }

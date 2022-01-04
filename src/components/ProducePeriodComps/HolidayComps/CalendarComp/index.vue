@@ -341,6 +341,9 @@ export default {
               color: #aaa;
               background-color: #fff;
             }
+            &:not(.working):not(.resting):not(.disabled):not(.empty):not(.hidden) {
+              color: #444;
+            }
             transition: background-color 0.1s;
             // &.resting, &.working, &.empty {
             //   &:hover {

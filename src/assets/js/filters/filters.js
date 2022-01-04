@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-26 09:16:49
- * @LastEditTime: 2022-01-03 15:01:40
+ * @LastEditTime: 2022-01-04 18:34:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit 过滤器
  * @FilePath: /src/assets/js/filters/filters.js
@@ -63,10 +63,12 @@ Vue.filter('formatExpressList', (ExpressList, subExpressList) => {
 
 export const formatTimeObjToStringFunc = obj => {
   if (obj && typeof obj === 'object') {
-    const { First, Second } = obj;
-    if (getValueIsOrNotNumber(First, true) && getValueIsOrNotNumber(Second, true)) {
-      const _h = `0${First}`.slice(-2);
-      const _m = `0${Second}`.slice(-2);
+    const { First, Second, F, S } = obj;
+    const _First = First || F;
+    const _Second = Second || S;
+    if (getValueIsOrNotNumber(_First, true) && getValueIsOrNotNumber(_Second, true)) {
+      const _h = `0${_First}`.slice(-2);
+      const _m = `0${_Second}`.slice(-2);
       return `${_h}:${_m}`;
     }
   }

@@ -46,7 +46,7 @@
             <ul class='list'>
               <li v-for="(it, i) in DeliveryTimeForm.Shift" :key="it.key">
                 <el-time-picker
-                  :value="getFormatValue(it.ShiftTime)"
+                  :value="getFormatValue(it.S)"
                   @input="e => onShiftTimeItemInput(e, i)"
                   :clearable='false'
                   value-format="HH:mm"
@@ -58,9 +58,9 @@
                 >
                 </el-time-picker>
                 <label>运输时长：</label>
-                <el-input v-model.number="it.Day" maxlength="3" size="small" style="width:100px"></el-input>
+                <el-input v-model.number="it.D" maxlength="3" size="small" style="width:100px"></el-input>
                 <span class="remark">天</span>
-                <el-input v-model.number="it.Hour" maxlength="2" size="small" style="width:100px"></el-input>
+                <el-input v-model.number="it.H" maxlength="2" size="small" style="width:100px"></el-input>
                 <span class="remark">小时</span>
                 <CtrlMenus v-show="i > 0" :showList="['del']" @remove='onShiftRemoveClick(i)' />
               </li>
@@ -71,7 +71,7 @@
       <ADAreaDialogSelector :visible.sync="visible" v-model="DeliveryTimeForm.AreaList" :AreaDescribe.sync='DeliveryTimeForm.AreaDescribe' />
     </main>
     <footer>
-      <el-button type='primary' @click="onSubmitClick">保存</el-button>
+      <el-button type='primary' class="is-blue-button" @click="onSubmitClick">保存</el-button>
       <el-button class="cancel-blue-btn" @click="onGoBackClick"><i>＜＜</i> 返回</el-button>
     </footer>
   </section>
@@ -139,17 +139,17 @@ export default {
   methods: {
     getFormatValue(shiftItem) {
       if (!shiftItem) return '';
-      const { First, Second } = shiftItem;
-      if ((!First && First !== 0) || (!Second && Second !== 0)) return '';
-      const _f = `0${First}`.slice(-2);
-      const _s = `0${Second}`.slice(-2);
+      const { F, S } = shiftItem;
+      if ((!F && F !== 0) || (!S && S !== 0)) return '';
+      const _f = `0${F}`.slice(-2);
+      const _s = `0${S}`.slice(-2);
       return `${_f}:${_s}`;
     },
     onShiftTimeItemInput(data, index) {
       if (!data) return;
-      const [First, Second] = data.split(':');
-      this.DeliveryTimeForm.Shift[index].ShiftTime.First = First;
-      this.DeliveryTimeForm.Shift[index].ShiftTime.Second = Second;
+      const [F, S] = data.split(':');
+      this.DeliveryTimeForm.Shift[index].S.F = F;
+      this.DeliveryTimeForm.Shift[index].S.S = S;
     },
     onShiftRemoveClick(index) {
       this.DeliveryTimeForm.Shift.splice(index, 1);
@@ -311,11 +311,6 @@ export default {
       height: 35px;
       padding: 0;
       border-radius: 3px;
-      &:first-of-type {
-        background: linear-gradient(to right, #26bcf9, #35dff9);
-        border: none;
-        margin-right: 20px;
-      }
       i {
         transform: scaleY(1.4);
         display: inline-block;

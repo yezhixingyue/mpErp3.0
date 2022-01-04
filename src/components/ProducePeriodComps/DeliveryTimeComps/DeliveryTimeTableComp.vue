@@ -82,10 +82,10 @@ export default {
       const list = typeof Shift === 'string' ? JSON.parse(Shift) : Shift;
       if (!Array.isArray(list)) return '';
       const content = list.map(it => {
-        const { ShiftTime, Day, Hour } = it;
-        const time = formatTimeObjToStringFunc(ShiftTime);
-        const d = Day && this.$utils.getValueIsOrNotNumber(Day, true) ? `${Day}天` : '';
-        const h = Hour && this.$utils.getValueIsOrNotNumber(Hour, true) ? `${Hour}小时` : '';
+        const { S, D, H } = it;
+        const time = formatTimeObjToStringFunc(S);
+        const d = D && this.$utils.getValueIsOrNotNumber(D, true) ? `${D}天` : '';
+        const h = H && this.$utils.getValueIsOrNotNumber(H, true) ? `${H}小时` : '';
         return `${time} 运输时长：${d}${h}`;
       }).join('\r\n');
       return content;

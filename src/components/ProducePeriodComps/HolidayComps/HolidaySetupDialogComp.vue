@@ -107,6 +107,7 @@ export default {
   },
   computed: {
     dialogTitle() {
+      if (this.ItemID) return '编辑节假日';
       return '添加节假日';
     },
     localVisible: {

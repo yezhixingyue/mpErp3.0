@@ -43,12 +43,12 @@ export default class DeliveryTimeItemClass {
   static generateOneNewShiftItem(shiftTtem) { // 生成一条发货班次时间设置数据
     if (!shiftTtem) {
       return {
-        ShiftTime: { // 时间点
-          First: '', // number
-          Second: '', // number
+        S: { // 时间点
+          F: '', // number
+          S: '', // number
         },
-        Day: '', // number  运输时长 天
-        Hour: '', // number 运输时长 小时
+        D: '', // number  运输时长 天
+        H: '', // number 运输时长 小时
         key: Math.random().toString(16).slice(-10),
       };
     }
@@ -74,15 +74,15 @@ export default class DeliveryTimeItemClass {
     if (ExpressList.length === 0) return throwFalseFunc('请选择配送方式');
     if (Shift.length === 0) return throwFalseFunc('请设置发货班次');
 
-    let t = Shift.find(({ ShiftTime }) => (!ShiftTime.First && ShiftTime.First !== 0) || (!ShiftTime.Second && ShiftTime.Second !== 0));
+    let t = Shift.find(({ S }) => (!S.F && S.F !== 0) || (!S.S && S.S !== 0));
     if (t) return throwFalseFunc('发货班次信息不完整，请检查');
-    t = Shift.find(({ Day, Hour }) => (!Day && Day !== 0) && (!Hour && Hour !== 0));
+    t = Shift.find(({ D, H }) => (!D && D !== 0) && (!H && H !== 0));
     if (t) return throwFalseFunc('请设置运输时长');
-    t = Shift.find(({ Day, Hour }) => (Day && !getValueIsOrNotNumber(Day, true)) || (Hour && !getValueIsOrNotNumber(Hour, true)));
+    t = Shift.find(({ D, H }) => (D && !getValueIsOrNotNumber(D, true)) || (H && !getValueIsOrNotNumber(H, true)));
     if (t) return throwFalseFunc('运输时长类型设置不正确，应为整数类型');
-    t = Shift.find(({ Day, Hour }) => Day < 0 || Hour < 0);
+    t = Shift.find(({ D, H }) => D < 0 || H < 0);
     if (t) return throwFalseFunc('运输时长类型不能为负');
-    t = Shift.find(({ Day, Hour }) => Day === 0 && Hour === 0);
+    t = Shift.find(({ D, H }) => D === 0 && H === 0);
     if (t) return throwFalseFunc('运输时长天与小时不能同时为0');
     return true;
   }
