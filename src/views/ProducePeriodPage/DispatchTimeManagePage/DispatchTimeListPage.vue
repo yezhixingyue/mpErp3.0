@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-period-manage-dispatch-time-manage-list-page">
     <header>
-      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)">添加派件时间</el-button>
+      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.DispatchSetup">添加派件时间</el-button>
       <AreaSelector
         title="区域"
         useADArea
@@ -31,9 +31,9 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import DispatchTimeTableComp from '@/components/ProducePeriodComps/DispatchTimeComps/DispatchTimeTableComp';
 import CountComp from '@/components/common/Count.vue';
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
+import DispatchTimeTableComp from '../../../components/ProducePeriodComps/DispatchTimeComps/DispatchTimeTableComp.vue';
 
 export default {
   name: 'DispatchTimeListPage',
@@ -45,6 +45,13 @@ export default {
   computed: {
     ...mapState('periodManage', ['loading', 'DispatchTimeDataList', 'DispatchTimeDataNumber', 'Condition4DispatchTimeList']),
     ...mapGetters('common', ['subExpressList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
+        return this.Permission.PermissionList.PermissionProducePeriod.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     onItemSetupClick(item) { // 为null为新增 否则为编辑

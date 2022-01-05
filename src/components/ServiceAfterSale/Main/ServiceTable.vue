@@ -16,7 +16,7 @@
     <el-table-column show-overflow-tooltip
       prop="Order.Content" class-name='is-gray' minWidth="129" label="文件内容">
       <template slot-scope="scope">
-        {{scope.row.Order.Content || '无'}}
+        {{scope.row.Order && scope.row.Order.Content ? scope.row.Order.Content : '无'}}
       </template>
     </el-table-column>
     <el-table-column show-overflow-tooltip prop="Order.ProductName"
@@ -68,10 +68,12 @@
     <el-table-column prop="Operator.Name" minWidth="75" label="处理人"></el-table-column>
     <el-table-column label-class-name='menu-header' prop="handle" width="180" label="操作">
       <div class="handle-menus-wrap"  slot-scope="scope">
-          <span @click="jump2ServiceDetail(scope)">
-            <img src="@/assets/images/detail.png" alt />查看详情</span>
-          <span @click="onChangeQuestionClick(scope.row)">
-            <img src="@/assets/images/Compile.png" alt />问题修改</span>
+        <span @click="jump2ServiceDetail(scope)">
+          <img src="@/assets/images/detail.png" alt />查看详情
+        </span>
+        <span @click="onChangeQuestionClick(scope.row)" v-if="localPermission.UpdateQuestion">
+          <img src="@/assets/images/Compile.png" alt />问题修改
+        </span>
       </div>
     </el-table-column>
     <div slot="empty">
@@ -88,6 +90,13 @@ export default {
   mixins: [tableMixin],
   computed: {
     ...mapState('service', ['canLoadingMore', 'tableData', 'serviceTypeList', 'serviceDataLoading']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionManageAfterSales?.Obj) {
+        return this.Permission.PermissionList.PermissionManageAfterSales.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     ...mapMutations('service', ['setIsShowServiceDetailOpen', 'setIsShowServiceDetailClose']),

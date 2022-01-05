@@ -23,7 +23,7 @@
       <span class="left" slot-scope="scope" :title="scope.row.deliveryContent">{{scope.row.deliveryContent.replaceAll('\r\n', ' | ')}}</span>
     </el-table-column>
     <el-table-column label="操作" width="240">
-      <template slot-scope="scope">
+      <template slot-scope="scope" v-if="localPermission.ShiftSetup">
         <CtrlMenus @edit='onSetupClick(scope.row)' @remove='onRemoveClick(scope.row)' />
       </template>
     </el-table-column>
@@ -37,7 +37,7 @@
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 import { formatTimeObjToStringFunc } from '@/assets/js/filters/filters';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
@@ -57,6 +57,13 @@ export default {
   },
   computed: {
     ...mapGetters('common', ['subExpressList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
+        return this.Permission.PermissionList.PermissionProducePeriod.Obj;
+      }
+      return {};
+    },
     localDataList() {
       if (Array.isArray(this.dataList)) {
         return this.dataList.map(it => ({ ...it, deliveryContent: this.getDeliveryContent(it) }));

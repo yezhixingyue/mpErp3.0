@@ -14,8 +14,8 @@
     <el-table-column prop="MaterialText" label="物料"  min-width="240" show-overflow-tooltip></el-table-column>
     <el-table-column label="操作" min-width="380" class-name='menu-column'>
       <div class="menu-list" slot-scope="scope">
-        <span @click="onEditClick(scope.row)" v-if="Permission && Permission.PermissionList.PermissionMateriel.Obj.Edit"><i></i>编辑</span>
-        <span @click="onRemoveClick(scope.row, scope.$index)" v-if="Permission && Permission.PermissionList.PermissionMateriel.Obj.Delete"><i></i>删除</span>
+        <span @click="onEditClick(scope.row)" v-if="Permission && Permission.PermissionList.PermissionMaterial.Obj.Setup"><i></i>编辑</span>
+        <span @click="onRemoveClick(scope.row, scope.$index)" v-if="Permission && Permission.PermissionList.PermissionMaterial.Obj.Setup"><i></i>删除</span>
       </div>
     </el-table-column>
     <div slot="empty">

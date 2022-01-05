@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-05-12 10:57:32
- * @LastEditTime: 2020-09-08 15:00:29
+ * @LastEditTime: 2022-01-05 10:59:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/components/Finance/Main/index.vue
@@ -15,7 +15,7 @@
         :handlePageChange='handlePageChange'
         :count='count'
       />
-      <normalBtn @click.native="onClick" class="export-wrap" title="导出Excel表格" />
+      <normalBtn @click.native="onClick" class="export-wrap" title="导出Excel表格" v-if="localPermission.ExportExcel" />
     </div>
     <FinanceListSummary
       :UnPaidAmount='UnPaidAmount'
@@ -42,6 +42,13 @@ export default {
   computed: {
     ...mapState('finance', ['count', 'UnPaidAmount', 'PaidAmount', 'TotalAmount', 'searchCondition4Finance', 'PackageList']),
     ...mapGetters('timeSelectModule', ['TodayDate']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionFinance?.Obj) {
+        return this.Permission.PermissionList.PermissionFinance.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     ...mapActions('finance', ['getFinanceTableData', 'getAccountReceivableExcel']),

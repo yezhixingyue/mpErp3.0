@@ -16,7 +16,7 @@
     <el-table-column prop="FailTips" label="未上传提示文字" show-overflow-tooltip></el-table-column>
     <el-table-column prop="ShowIndex" label="显示顺序" sortable="" width="160"></el-table-column>
     <el-table-column label="操作" width="180">
-      <div class="menu-list" slot-scope="scope" v-if="Permission && Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">
+      <div class="menu-list" slot-scope="scope" v-if="Permission && Permission.PermissionList.PermissionFileCategory.Obj.SetupClass">
         <span @click="onEditClick(scope.row)"><i></i>编辑</span>
         <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
       </div>

@@ -72,11 +72,11 @@
       <template slot-scope="scope">
         <div class="menu-box" style="padding-right: 8px">
             <span @click="onSingleWriteClick(scope.row)"
-             v-if="!scope.row.HaveWriteOff && Permission && Permission.PermissionList.PermissionFinance.Obj.WriteOff" class="normal">
+             v-if="!scope.row.HaveWriteOff && localPermission.WriteOff" class="normal">
               <img src="@/assets/images/write.png" alt="">
               <i>销账</i>
             </span>
-            <span v-else class="disabled">
+            <span v-else-if="localPermission.WriteOff" class="disabled">
               <img src="@/assets/images/write.png" alt="">
               <i>销账</i>
             </span>
@@ -98,6 +98,12 @@ export default {
   computed: {
     ...mapState('finance', ['financeDataLoading', 'PackageList']),
     ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionFinance?.Obj) {
+        return this.Permission.PermissionList.PermissionFinance.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     ...mapMutations('finance', ['setWill2WriteCheckedList']),

@@ -41,7 +41,7 @@
     </el-table-column>
     <el-table-column prop="OperatorUserName" label="操作人" width="100"></el-table-column>
     <el-table-column label="操作" width="180">
-      <template slot-scope="scope">
+      <template slot-scope="scope" v-if="localPermission.SpecialDaySetup">
         <CtrlMenus @edit='onSetupClick(scope.row)' @remove='onRemoveClick(scope.row)' />
       </template>
     </el-table-column>
@@ -55,7 +55,7 @@
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 import { SpecialTypeEnums, DelayTypeEnumList } from '@/store/Period/ItemClass/SpecialDayItemClass';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { format2MiddleLangTypeDateFunc2 } from '@/assets/js/filters/filters';
 
@@ -81,6 +81,13 @@ export default {
   },
   computed: {
     ...mapGetters('common', ['subExpressList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
+        return this.Permission.PermissionList.PermissionProducePeriod.Obj;
+      }
+      return {};
+    },
     localDataList() {
       if (Array.isArray(this.dataList)) {
         return this.dataList.map(it => ({

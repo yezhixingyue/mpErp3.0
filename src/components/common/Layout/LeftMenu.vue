@@ -256,7 +256,8 @@ export default {
       background-color: rgb(34, 43, 58);
       color: #fff;
       // padding-bottom: 40px;
-      margin: 20px 0;
+      // margin: 20px 0;
+      margin-top: 20px;
       &:hover {
         background-color: rgb(54, 66, 88);
       }
@@ -278,6 +279,7 @@ export default {
     .el-menu-vertical-demo:not(.el-menu--collapse) {
       width: 100%;
       min-height: 400px;
+      min-height: calc(100vh - 120px);
       .el-submenu .el-menu-item {
         width: 100%;
         height: 40px;
@@ -343,9 +345,6 @@ export default {
       }
       &:hover {
         color: rgb(38, 188, 249) !important;
-        // > i {
-        //   color: rgb(38, 188, 249);
-        // }
         &::before {
           width: 2px;
         }

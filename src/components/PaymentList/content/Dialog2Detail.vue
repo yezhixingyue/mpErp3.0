@@ -26,11 +26,6 @@
         </p>
         <div class="pay-info-wrap top-line">
           <ul>
-            <!-- <li>
-              <span>运费：</span><span>
-                ¥{{numToFixed(PayDetailData.Freight, 2)}}元
-              </span>
-            </li> -->
             <li>
               <span>货到付款：</span><span>
                 ¥{{numToFixed(PayDetailData.PayOnDelivery, 2)}}元
@@ -64,7 +59,7 @@
           </p>
           <div class="pay-info-footer" :class="PayDetailData.Status === 1 ? 'active' : ''">
             <normalBtn class="close-btn" @click.native="setIsShow2DetailDialog(false)" />
-            <template v-if="PayDetailData.Status !== 1"> <!-- 已付款或取消时显示 -->
+            <template v-if="PayDetailData.Status !== 1 || !localPermission.Pay"> <!-- 已付款或取消时显示 -->
               <span class="pay-info-footer-line"></span>
               <span class="pay-info-pay-status-box">
                 状态：
@@ -81,7 +76,7 @@
               <normalBtnFull
                 title="支付"
                 class="state-btn"
-                v-if="PayTimeout !== '已超时'"
+                v-if="PayTimeout !== '已超时' && localPermission.Pay"
                 @click.native="jump2Pay" />
               <normalBtnFull title="已过期" class="state-btn is-timeout" v-if="PayTimeout === '已超时'" />
             </template>
@@ -89,7 +84,6 @@
         </div>
       </section>
       <span slot="footer" class="dialog-footer">
-        <!-- <normalBtn @click.native="setIsShow2DetailDialog(false)" /> -->
       </span>
     </template>
     <template v-else>
@@ -120,8 +114,14 @@ export default {
   },
   computed: {
     ...mapState('paymentModule', ['isShow2DetailDialog', 'PayDetailOrderList', 'PayDetailData']),
-    ...mapState('common', ['PayStatusList', 'isLoading']),
+    ...mapState('common', ['PayStatusList', 'isLoading', 'Permission']),
     ...mapGetters('common', ['PayTimeout', 'expressList']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionPayment?.Obj) {
+        return this.Permission.PermissionList.PermissionPayment.Obj;
+      }
+      return {};
+    },
     totalSum() { // 计算总产品价格
       let totalSum = 0;
       this.PayDetailOrderList.forEach((item) => {

@@ -2,16 +2,16 @@
   <article class="mp-fund-bill-page-wrap">
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <!-- <el-tab-pane disabled label="" name=""></el-tab-pane> -->
-        <el-tab-pane label="客户余额流水" name="second">
+        <el-tab-pane label="客户余额流水" name="second" v-if="localPermission.QueryBalanceBill">
         </el-tab-pane>
-        <el-tab-pane label="客户订单流水" name="third">
+        <el-tab-pane label="客户订单流水" name="third" v-if="localPermission.QueryOrderBill">
         </el-tab-pane>
       </el-tabs>
       <keep-alive>
-        <BalanceTypePageComp v-if="activeName === 'second'" />
+        <BalanceTypePageComp v-if="activeName === 'second' && localPermission.QueryBalanceBill" />
       </keep-alive>
       <keep-alive>
-        <OrderTypePageComp v-if="activeName === 'third'" />
+        <OrderTypePageComp v-if="activeName === 'third' && localPermission.QueryOrderBill" />
       </keep-alive>
   </article>
 </template>
@@ -36,6 +36,13 @@ export default {
   },
   computed: {
     ...mapState('fundBill', ['balanceTypeDataList', 'orderTypeDataList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCustomerBill?.Obj) {
+        return this.Permission.PermissionList.PermissionCustomerBill.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     handleClick() {
@@ -53,6 +60,17 @@ export default {
         default:
           break;
       }
+    },
+  },
+  watch: {
+    localPermission: {
+      handler(obj) {
+        if (obj && !obj.QueryBalanceBill && obj.QueryOrderBill) {
+          this.activeName = 'third';
+        }
+      },
+      deep: true,
+      immediate: true,
     },
   },
   mounted() {

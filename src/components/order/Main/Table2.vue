@@ -27,7 +27,7 @@
             <img src="@/assets/images/detail.png" alt />
           进度/详情/包裹</span>
         </li>
-        <li v-if="Permission.PermissionList.PermissionManageOrder.Obj.ApplyAfterSales">
+        <li v-if="localPermission.ApplyAfterSales">
           <span  @click="jump2Service(scope.row)" v-if="scope.row.AllowAfterSales">
             <img src="@/assets/images/service.png" alt />售后
           </span>
@@ -35,7 +35,7 @@
             <img src="@/assets/images/servicestop.png" alt />售后
           </span>
         </li>
-        <li v-if="Permission.PermissionList.PermissionManageOrder.Obj.CancleOrder">
+        <li v-if="localPermission.CancleOrder">
           <span
             v-if="[20, 30, 35, 40].includes(scope.row.Status)"
             @click="onOrderDel(scope.row, scope.$index)">
@@ -67,6 +67,12 @@ export default {
   computed: {
     ...mapState('orderModule', ['orderListData', 'OrderStatusList', 'expressArr', 'areaList', 'orderTotalCount', 'orderListCanLoadMore', 'orderDataLoading']),
     ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionManageOrder?.Obj) {
+        return this.Permission.PermissionList.PermissionManageOrder.Obj;
+      }
+      return {};
+    },
   },
   components: {
     TableColumnItem,

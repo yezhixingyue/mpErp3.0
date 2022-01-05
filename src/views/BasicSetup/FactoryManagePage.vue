@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import FactoryManageHeader from '@/components/FactoryManage/FactoryManageHeader.vue';
-import FactoryManageTable from '@/components/FactoryManage/FactoryManageTable.vue';
-import FactoryManageDialog from '@/components/FactoryManage/FactoryManageDialog.vue';
-import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState, mapGetters } from 'vuex';
+import FactoryManageHeader from '../../components/FactoryManage/FactoryManageHeader.vue';
+import FactoryManageTable from '../../components/FactoryManage/FactoryManageTable.vue';
+import FactoryManageDialog from '../../components/FactoryManage/FactoryManageDialog.vue';
+import recordScrollPositionMixin from '../../assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'FactoryManagePage',

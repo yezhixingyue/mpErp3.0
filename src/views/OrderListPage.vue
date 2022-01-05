@@ -2,7 +2,7 @@
   <div class="order-list-page-wrap">
     <Table />
     <div class="footer">
-      <div class="is-font-size-14">
+      <div class="is-font-size-14" v-if="localPermission.DisplayTotalAmount">
         <span class="is-primary is-bold">总金额:</span>
         <span class="is-pink is-font-size-16 is-bold"> {{orderTotalAmount}}
           <i class="is-font-size-13">元</i></span>
@@ -14,11 +14,11 @@
       :showLoading='isTableLoading'
       :count='orderTotalCount'
       >
-        <span class="is-blue" @click="handleDownloadClick('normal')">
+        <span class="is-blue" @click="handleDownloadClick('normal')" v-if="localPermission.ExportExcel">
           导出Excel表格
           <i class="el-icon-download"></i>
         </span>
-        <span class="is-blue" @click="handleDownloadClick('finance')">
+        <span class="is-blue" @click="handleDownloadClick('finance')" v-if="localPermission.ExportFinancialReport">
           导出财务报表
           <i class="el-icon-download"></i>
         </span>
@@ -47,6 +47,13 @@ export default {
   computed: {
     ...mapState('orderModule', ['orderTotalCount', 'orderTotalAmount', 'isTableLoading', 'objForOrderList', 'orderListData']),
     ...mapGetters('timeSelectModule', ['TodayDate']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionManageOrder?.Obj) {
+        return this.Permission.PermissionList.PermissionManageOrder.Obj;
+      }
+      return {};
+    },
     // ...mapGetters('layout', ['curTabPagesNameList']),
     // ...mapState
   },

@@ -29,7 +29,7 @@
       </template>
     </el-table-column>
     <el-table-column prop="AreaDescribe" label="操作" width="280">
-      <template slot-scope="scope">
+      <template slot-scope="scope" v-if="localPermission.PayTimeSetup">
         <CtrlMenus @edit='onSetupClick(scope.row)' @remove='onRemoveClick(scope.row)' />
       </template>
     </el-table-column>
@@ -43,7 +43,7 @@
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   props: {
@@ -61,11 +61,18 @@ export default {
   },
   computed: {
     ...mapGetters('common', ['subExpressList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
+        return this.Permission.PermissionList.PermissionProducePeriod.Obj;
+      }
+      return {};
+    },
   },
   mixins: [tableMixin, recordScrollPositionMixin('.mp-erp-period-paytime-page-main-table-comp-wrap .el-table__body-wrapper')],
   methods: {
     setHeight() {
-      const tempHeight = this.getHeight('header', 130, '.mp-erp-period-manage-pay-time-manage-list-page');
+      const tempHeight = this.getHeight('header', this.localPermission.PayTimeSetup ? 130 : 70, '.mp-erp-period-manage-pay-time-manage-list-page');
       this.h = tempHeight;
     },
     onSetupClick(item) {

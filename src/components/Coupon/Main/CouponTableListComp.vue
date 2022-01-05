@@ -112,13 +112,13 @@
 
     <el-table-column width="356px" label="操作">
       <ul class="handle-menus" slot-scope="scope">
-        <li class="stop-box" v-if="Permission.PermissionList.PermissionCoupon.Obj.Generate">
+        <li class="stop-box" v-if="localPermission.Generate">
           <span class="is-list-btn"
            @click="onGenerateCoupons(scope.row, scope.$index, scope.row.ProductString ? scope.row.ProductString.split('\n') : [])">
             <img src="@/assets/images/edit-icon.png" alt />手动生成
           </span>
         </li>
-        <li v-if="Permission.PermissionList.PermissionCoupon.Obj.Query">
+        <li v-if="localPermission.Query">
           <span
            v-if="scope.row.Data.GenerateNumber > 0"
            @click="handle2Detail(scope.row, scope.row.ProductString ? scope.row.ProductString.split('\n') : [])"
@@ -127,7 +127,7 @@
           <span v-else class="is-disabled">
             <img src="@/assets/images/detail-gray.png" alt />查看使用列表</span>
         </li>
-        <li v-if="Permission.PermissionList.PermissionCoupon.Obj.Setup">
+        <li v-if="localPermission.Setup">
           <span
            v-if="scope.row.ProvideStatus === 0"
            class="is-list-btn"
@@ -138,7 +138,7 @@
             <img src="@/assets/images/Compile-disabled.png" alt />编辑
           </span>
         </li>
-        <li v-if="Permission.PermissionList.PermissionCoupon.Obj.Setup">
+        <li v-if="localPermission.Setup">
           <span
             v-if="scope.row.Data.GenerateNumber === 0"
             @click="handleDeleteClick(scope.row, scope.$index)"
@@ -177,6 +177,12 @@ export default {
     ...mapState('couponStore', ['couponListData', 'tableDataLoading']),
     ...mapGetters('common', ['allProductClassify', 'allAreaTreeList']),
     ...mapState('common', ['CouponProvideStatusList', 'CouponUseStatusList', 'Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCoupon?.Obj) {
+        return this.Permission.PermissionList.PermissionCoupon.Obj;
+      }
+      return {};
+    },
 
     SellAreaArrayList() {
       if (this.allAreaTreeList.length === 0) return [];

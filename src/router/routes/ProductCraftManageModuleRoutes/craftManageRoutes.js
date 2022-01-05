@@ -18,7 +18,7 @@ const routes = [
       title: '工艺分类管理',
       requiresAuth: true,
       pageName: 'CraftClassifyManagePage',
-      PermissionInfo: ['PermissionCraftBase', 'Obj', 'Setup'],
+      PermissionInfo: ['PermissionCraftBase', 'Obj', 'SetupCraftClass'],
     },
     component: () => import('../../../views/Craft/CraftClassifyManagePage.vue'),
   },

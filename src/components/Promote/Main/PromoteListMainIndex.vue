@@ -1,6 +1,6 @@
 <template>
   <section>
-    <promote-main-table />
+    <PromoteMainTable />
     <footer>
         <count-comp
          :count='count'

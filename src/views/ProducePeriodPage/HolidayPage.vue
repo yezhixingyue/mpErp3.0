@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-period-holiday-page-wrap">
     <header>
-      <el-button type="primary" @click="onHolidaySaveClick(null)">添加节假日</el-button>
+      <el-button type="primary" @click="onHolidaySaveClick(null)" v-if="localPermission.HolidaySetup">添加节假日</el-button>
       <div>
         <label class="title">时间筛选：</label>
         <el-date-picker
@@ -27,11 +27,11 @@
 
 <script>
 import HolidaySetupDialogComp from '@/components/ProducePeriodComps/HolidayComps/HolidaySetupDialogComp';
-import HolidayTableComp from '@/components/ProducePeriodComps/HolidayComps/HolidayTableComp';
 import HolidayConditionClass from '@/store/Period/ConditionClass/HolidayConditionClass';
 import CommonClassType from '@/store/CommonClassType';
 import CountComp from '@/components/common/Count.vue';
-
+import { mapState } from 'vuex';
+import HolidayTableComp from '../../components/ProducePeriodComps/HolidayComps/HolidayTableComp.vue';
 
 export default {
   name: 'HolidayManagePage',
@@ -39,6 +39,15 @@ export default {
     HolidaySetupDialogComp,
     HolidayTableComp,
     CountComp,
+  },
+  computed: {
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
+        return this.Permission.PermissionList.PermissionProducePeriod.Obj;
+      }
+      return {};
+    },
   },
   data() {
     return {

@@ -36,7 +36,7 @@
         </el-table-column>
         <el-table-column label="操作" width="115" show-overflow-tooltip>
           <div class="is-font-12 btn-wrap" slot-scope="scope">
-            <span @click="onPhotoClick(scope.row)">
+            <span @click="onPhotoClick(scope.row)" v-if="localPermission.Operate">
               <img src="@/assets/images/detail.png" alt />详情/处理
             </span>
           </div>
@@ -193,6 +193,7 @@ import ClassType from '@/store/CommonClassType';
 import Count from '@/components/common/Count.vue';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+import { mapState } from 'vuex';
 
 export default {
   name: 'FeedbackPage',
@@ -246,6 +247,13 @@ export default {
     };
   },
   computed: {
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionAfterSalesApply?.Obj) {
+        return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;
+      }
+      return {};
+    },
     curPicList() {
       if (!this.curItemData || this.curItemData.PicList.length === 0) return [];
       // eslint-disable-next-line max-len

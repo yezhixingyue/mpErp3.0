@@ -7,13 +7,20 @@
       <ul>
         <li v-for="(it, i) in JobPermissionsDataList" :key="it.PositionID || it.key">
           <el-input :value="it.PositionName" @input="e => onInput(e, i)" placeholder="" size="small" maxlength="10"></el-input>
-          <span class="blue-span" @click="onPermissionSetupClick(it)">权限设置</span>
-          <CtrlMenus :showList="['del', 'add']" @remove='onRemoveClick(it, i)' @add='onAddClick' />
+          <span class="blue-span" @click="onPermissionSetupClick(it)" v-if="localPermission.SetupPermission">权限设置</span>
+          <CtrlMenus :showList="['del', 'add']" @remove='onRemoveClick(it, i)' @add='onAddClick' v-if="localPermission.Setup" />
         </li>
       </ul>
     </main>
     <footer>
-      <el-button type='primary' class="is-blue-button" @click="onSubmitClick">保存</el-button>
+      <el-button
+        type='primary'
+        class="is-blue-button"
+        :disabled='!JobPermissionsDataList || JobPermissionsDataList.length === 0'
+        v-if="localPermission.Setup"
+        @click="onSubmitClick">
+       保存
+      </el-button>
     </footer>
   </section>
 </template>
@@ -31,6 +38,13 @@ export default {
   },
   computed: {
     ...mapState('companyManage', ['JobPermissionsDataList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionManageJob?.Obj) {
+        return this.Permission.PermissionList.PermissionManageJob.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     onInput(value, index) { // 岗位名称修改

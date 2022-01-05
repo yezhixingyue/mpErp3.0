@@ -3,9 +3,11 @@
     <header>
       <template v-if="Permission && Permission.PermissionList.PermissionCraftBase.Obj.Setup">
         <el-button type="primary" @click="onCraftItemSave(null)">添加工艺</el-button>
+      </template>
+      <template v-if="Permission && Permission.PermissionList.PermissionCraftBase.Obj.SetupCraftClass">
         <span class="blue-span" @click="jumpToClassifyPageClick">管理工艺分类</span>
       </template>
-      <order-channel-selector
+      <OrderChannelSelector
         :options='level1OptionList'
         :requestFunc='getCraftListData'
         :changePropsFunc='setCondition4CraftList'
@@ -15,7 +17,7 @@
         :defaultProps="{ label: 'ClassName', value: 'ID' }"
         key='order-OrderType'
         />
-      <order-channel-selector
+      <OrderChannelSelector
         class="terminal-select"
         :options='level2OptionList'
         :requestFunc='getCraftListData'
@@ -44,11 +46,11 @@
 
 <script>
 import CraftSaveDialog from '@/components/CraftComps/CraftSaveDialog.vue';
-import CraftListTableComp from '@/components/CraftComps/CraftListTableComp.vue';
 import CountComp from '@/components/common/Count.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import { mapGetters, mapState, mapMutations } from 'vuex';
+import CraftListTableComp from '../../components/CraftComps/CraftListTableComp.vue';
 
 export default {
   name: 'CraftManageList',

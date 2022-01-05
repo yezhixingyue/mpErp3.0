@@ -7,7 +7,7 @@
           <span>
               应收：<i class="is-red is-thick-line">￥{{UnPaidAmount}}元</i>
           </span>
-          <template v-if="Permission.PermissionList.PermissionFinance.Obj.WriteOff">
+          <template v-if="localPermission.WriteOff">
             <!-- <span @click="filterPackageList" class="clear-btn">清除当前页已销账的包裹</span> -->
             <span>
                 <normalBtnFull @click.native="handleSelectList" title="销账选中" />
@@ -45,6 +45,12 @@ export default {
   computed: {
     ...mapState('finance', ['will2WriteCheckedList', 'searchCondition4Finance', 'PackageList', 'count']),
     ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionFinance?.Obj) {
+        return this.Permission.PermissionList.PermissionFinance.Obj;
+      }
+      return {};
+    },
   },
   filters: {
     toDate(value) {

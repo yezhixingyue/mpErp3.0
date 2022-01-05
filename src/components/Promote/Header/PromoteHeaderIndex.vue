@@ -5,7 +5,7 @@
         <normal-btn-full
          @click.native='onClick'
          title="新建活动促销"
-         v-if="Permission.PermissionList.PermissionPromote.Obj.Setup"
+         v-if="Permission && Permission.PermissionList.PermissionPromote.Obj.Setup"
          />
       </li>
       <li class="selector-wrap-2">

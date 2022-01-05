@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-material-list-page-wrap">
     <header>
-      <template v-if="Permission && Permission.PermissionList.PermissionMateriel.Obj.Add">
+      <template v-if="Permission && Permission.PermissionList.PermissionMaterial.Obj.Setup">
         <el-button type="primary" @click="onAddClick">添加</el-button>
         <el-button type="primary" @click="onMassClick">批量生成</el-button>
       </template>

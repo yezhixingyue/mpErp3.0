@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-period-manage-delivery-time-manage-list-page">
     <header>
-      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)">添加发货班次</el-button>
+      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.ShiftSetup">添加发货班次</el-button>
       <AreaSelector
         title="区域"
         useADArea
@@ -41,10 +41,10 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import DeliveryTimeTableComp from '@/components/ProducePeriodComps/DeliveryTimeComps/DeliveryTimeTableComp';
 import CountComp from '@/components/common/Count.vue';
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
+import DeliveryTimeTableComp from '../../../components/ProducePeriodComps/DeliveryTimeComps/DeliveryTimeTableComp.vue';
 
 export default {
   name: 'DeliveryTimeListPage',
@@ -57,6 +57,13 @@ export default {
   computed: {
     ...mapState('periodManage', ['loading', 'DeliveryTimeDataList', 'DeliveryTimeDataNumber', 'Condition4DeliveryTimeList']),
     ...mapGetters('common', ['subExpressList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
+        return this.Permission.PermissionList.PermissionProducePeriod.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     onItemSetupClick(item) { // 为null为新增 否则为编辑

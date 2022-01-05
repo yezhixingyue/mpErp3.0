@@ -22,7 +22,7 @@ const routes = { // 基本设置
         PermissionInfo: ['PermissionManageJob', 'Obj', 'Setup'],
         requiresAuth: true,
       },
-      component: () => import('../../../views/BasicSetup/PostManage/PostManageListPage.vue'),
+      component: () => import('../../../views/CompanyManage/JobPostManage/PostManageListPage.vue'),
     },
     {
       path: '/PostManageSetup/:PositionID',
@@ -33,7 +33,7 @@ const routes = { // 基本设置
         PermissionInfo: ['PermissionManageJob', 'Obj', 'SetupPermission'],
         requiresAuth: true,
       },
-      component: () => import('../../../views/BasicSetup/PostManage/PostManageSetupPage.vue'),
+      component: () => import('../../../views/CompanyManage/JobPostManage/PostManageSetupPage.vue'),
     },
   ],
 };

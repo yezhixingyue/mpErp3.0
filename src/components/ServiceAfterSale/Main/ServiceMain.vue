@@ -7,7 +7,7 @@
           导出Excel表格
           <i class="el-icon-download"></i>
         </span> -->
-        <DownLoadExcelComp :configObj="configObj" />
+        <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
       </Count>
       <ServiceDetailDialog />
       <ChangeQuestionDialog :visible.sync="changeQuestionVisible" :curData="curData" />
@@ -32,6 +32,13 @@ export default {
   },
   computed: {
     ...mapState('service', ['isShowLoadingMore', 'totalCount', 'obj4RequestServiceList', 'tableData']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionManageAfterSales?.Obj) {
+        return this.Permission.PermissionList.PermissionManageAfterSales.Obj;
+      }
+      return {};
+    },
     configObj() {
       return {
         condition: this.obj4RequestServiceList,

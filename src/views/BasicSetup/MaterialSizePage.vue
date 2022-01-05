@@ -1,6 +1,6 @@
 <template>
   <section class="mp-erp-material-size-manage-page-wrap">
-    <header v-if="Permission && Permission.PermissionList.PermissionMateriel.Obj.Add">
+    <header>
       <el-button type="primary" class="blue-full-color-btn-styles is-blue-button" @click="onMaterialSizeSaveClick(null)">添加尺寸</el-button>
     </header>
     <main>

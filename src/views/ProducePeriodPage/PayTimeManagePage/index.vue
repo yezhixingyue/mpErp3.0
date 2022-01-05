@@ -1,6 +1,6 @@
 <template>
   <section class="mp-erp-period-manage-pay-time-manage-list-page">
-    <header>
+    <header v-if="localPermission.PayTimeSetup">
       <el-button type="primary" sizi='small' @click="onPayTimeSetupClick(null)">添加最晚付款时间</el-button>
     </header>
     <main>
@@ -20,8 +20,8 @@
 
 <script>
 import { mapState } from 'vuex';
-import PayTimeTableComp from '@/components/ProducePeriodComps/PayTimeComps/PayTimeTableComp';
-import CountComp from '@/components/common/Count.vue';
+import PayTimeTableComp from '../../../components/ProducePeriodComps/PayTimeComps/PayTimeTableComp.vue';
+import CountComp from '../../../components/common/Count.vue';
 
 export default {
   name: 'PayTimeManagePage',
@@ -31,6 +31,13 @@ export default {
   },
   computed: {
     ...mapState('periodManage', ['loading', 'PayTimeDataList', 'PayTimeDataNumber', 'Condition4PayTimeList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
+        return this.Permission.PermissionList.PermissionProducePeriod.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     onPayTimeSetupClick(item) { // 设置最晚付款时间 为null为新增 否则为编辑

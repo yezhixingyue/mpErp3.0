@@ -1,9 +1,11 @@
 <template>
   <section class="mp-erp-print-breadth-page-wrap">
     <header>
-      <div class="menu" v-if="Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll">
-        <el-button type="primary" @click="onBreadthSaveClick(null)">添加印刷幅面</el-button>
-        <span class="blue-span" @click="onClassManageClick">管理分类</span>
+      <div class="menu">
+        <el-button type="primary" v-if="Permission && Permission.PermissionList.PermissionBreadth.Obj.SetupBreadth"
+         @click="onBreadthSaveClick(null)">添加印刷幅面</el-button>
+        <span class="blue-span" v-if="Permission && Permission.PermissionList.PermissionBreadth.Obj.SetupBreadthClass"
+         @click="onClassManageClick">管理分类</span>
       </div>
       <div class="list">
         <el-radio-group v-model="classID" size="small" v-if="BreadthCLassList.length>0">
@@ -27,8 +29,8 @@
 <script>
 import { mapState } from 'vuex';
 import BreadthSaveDialog from '@/components/PrintBreadth/BreadthSaveDialog.vue';
-import BreadthTableComp from '@/components/PrintBreadth/BreadthTableComp.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+import BreadthTableComp from '../../../components/PrintBreadth/BreadthTableComp.vue';
 
 export default {
   name: 'PrintFormatListPage',

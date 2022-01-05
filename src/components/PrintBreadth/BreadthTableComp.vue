@@ -15,7 +15,7 @@
     <el-table-column prop="MinSize" label="最小幅面" width="280"></el-table-column>
     <el-table-column prop="MaxSize" label="最大幅面" width="280"></el-table-column>
     <el-table-column label="操作" width="280">
-      <div class="menu-list" slot-scope="scope" v-if="Permission && Permission.PermissionList.PermissionProductPrice.Obj.SetupAll">
+      <div class="menu-list" slot-scope="scope" v-if="Permission && Permission.PermissionList.PermissionBreadth.Obj.SetupBreadth">
         <span @click="onEditClick(scope.row)"><i></i>编辑</span>
         <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
       </div>

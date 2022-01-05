@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-25 17:58:20
- * @LastEditTime: 2021-01-28 12:14:00
+ * @LastEditTime: 2022-01-05 10:25:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/components/PaymentList/content/PaymentListContent.vue
@@ -12,7 +12,7 @@
     <!-- <Test /> -->
     <Count :watchPage='set2PaymentList.Page'
     :handlePageChange='handlePageChange' :count='totalCount' :showLoading='showTableLoading'>
-      <span class="blue-span" @click="handleDownloadClick">
+      <span class="blue-span" @click="handleDownloadClick" v-if="localPermission.ExportExcel">
         导出Excel表格
         <i class="el-icon-download"></i>
       </span>
@@ -23,14 +23,14 @@
 </template>
 
 <script>
-import TablePayment from '@/components/PaymentList/content/TablePayment.vue';
-import Dialog2Pay from '@/components/PaymentList/content/Dialog2Pay.vue';
-import Dialog2Detail from '@/components/PaymentList/content/Dialog2Detail.vue';
 import Count from '@/components/common/Count.vue';
 import { mapState, mapActions, mapGetters } from 'vuex';
 // import Test from '../SmallComp/Test.vue';
 import handleExcelDownload from '@/assets/js/upload/downloadExcel';
 import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
+import TablePayment from './TablePayment.vue';
+import Dialog2Pay from './Dialog2Pay.vue';
+import Dialog2Detail from './Dialog2Detail.vue';
 
 export default {
   components: {
@@ -43,6 +43,13 @@ export default {
   computed: {
     ...mapState('paymentModule', ['totalCount', 'showTableLoading', 'set2PaymentList']),
     ...mapGetters('timeSelectModule', ['TodayDate']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionPayment?.Obj) {
+        return this.Permission.PermissionList.PermissionPayment.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     ...mapActions('paymentModule', ['getPaymentListTableData']),

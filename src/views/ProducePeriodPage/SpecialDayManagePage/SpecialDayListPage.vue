@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-period-manage-special-day-manage-list-page">
     <header>
-      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)">添加特殊情况</el-button>
+      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.SpecialDaySetup">添加特殊情况</el-button>
       <div>
         <label class="title">类型：</label>
         <el-radio-group v-model="localSpecialtype" size="small" @change='getTableDataList(1)'>
@@ -27,9 +27,9 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import SpecialDayTableComp from '@/components/ProducePeriodComps/SpecialDayComps/SpecialDayTableComp';
 import CountComp from '@/components/common/Count.vue';
 import { SpecialTypeEnumList } from '@/store/Period/ItemClass/SpecialDayItemClass';
+import SpecialDayTableComp from '../../../components/ProducePeriodComps/SpecialDayComps/SpecialDayTableComp.vue';
 
 export default {
   name: 'SpecialDayListPage',
@@ -45,6 +45,13 @@ export default {
   computed: {
     ...mapState('periodManage', ['loading', 'SpecialDayDataList', 'SpecialDayDataNumber', 'Condition4SpecialDayList']),
     ...mapGetters('common', ['subExpressList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
+        return this.Permission.PermissionList.PermissionProducePeriod.Obj;
+      }
+      return {};
+    },
     localSpecialtype: {
       get() {
         return this.Condition4SpecialDayList.Specialtype;

@@ -13,7 +13,7 @@
        :handlePageChange='handlePageChange'
        :count='balanceTypeDataCount'
        >
-        <DownLoadExcelComp :configObj="configObj" />
+        <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportBalanceBillExcel" />
       </Count>
     </footer>
   </section>
@@ -36,6 +36,13 @@ export default {
   },
   computed: {
     ...mapState('fundBill', ['balanceTypeDataCount', 'condition4BalanceType']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCustomerBill?.Obj) {
+        return this.Permission.PermissionList.PermissionCustomerBill.Obj;
+      }
+      return {};
+    },
     condition() {
       return FundBillClassType.filter(this.condition4BalanceType);
     },

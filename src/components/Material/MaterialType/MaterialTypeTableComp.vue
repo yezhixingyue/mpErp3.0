@@ -16,13 +16,13 @@
     <el-table-column prop="UnionShowText" label="组合显示"  min-width="240" show-overflow-tooltip></el-table-column>
     <el-table-column label="操作" min-width="520" class-name='menu-column'>
       <div class="menu-list" slot-scope="scope">
-        <template v-if="Permission && Permission.PermissionList.PermissionMateriel.Obj.Edit">
+        <template v-if="Permission && Permission.PermissionList.PermissionMaterialType.Obj.Setup">
           <TipsSpanButton text='设置元素' @click.native="onElementSetClick(scope.row)" />
           <TipsSpanButton text='元素组合显示' @click.native="onUnionShowSetClick(scope.row)" />
           <TipsSpanButton text='物料公式' @click.native="onFormulaSetClick(scope.row)" />
           <span class="icon-span" @click="onEditClick(scope.row)"><i></i>编辑</span>
+          <span class="icon-span" @click="onRemoveClick(scope.row)"><i></i>删除</span>
         </template>
-        <span v-if="Permission && Permission.PermissionList.PermissionMateriel.Obj.Delete" class="icon-span" @click="onRemoveClick(scope.row)"><i></i>删除</span>
       </div>
     </el-table-column>
     <div slot="empty">

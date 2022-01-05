@@ -102,39 +102,32 @@ async function checkIsTrue(data, uniqueName, baseURL) {
  * @param {*} onUploadProgressFunc 回调函数，用于设置进度条的百分比
  * @returns 返回true或false，用于告知该函数上传结果: 成功 还是 失败
  */
-async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPercentage = 100) {
-  let key = true;
-  const domainResp = await api.getFileServer(config.Position).catch(() => {
-    key = false;
-  });
-  if (!key) return false;
-  if (!domainResp || domainResp.data.Status !== 1000) return false;
+export default async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPercentage = 100) {
+  // 1. 获取服务器上传地址
+  const domainResp = await api.getFileServer(config.Position).catch(() => null);
+  if (!domainResp || domainResp.data.Status !== 1000 || !domainResp.data.Data) return false;
   const baseURL = domainResp.data.Data;
-  // console.log(domainResp, baseURL);
-  if (!baseURL) return false;
-  const hasUploadedInfo = await api.getUploadedProgress(uniqueName, baseURL).catch(() => {
-    key = false;
-  });
-  if (!key) return false;
-  if (hasUploadedInfo.data.Status !== 1000) return false; // 获取已上传信息
 
+  // 2. 获取文件已上传进度
+  const hasUploadedInfo = await api.getUploadedProgress(uniqueName, baseURL).catch(() => null);
+  if (!hasUploadedInfo || hasUploadedInfo.data.Status !== 1000) return false; // 获取已上传信息
+
+  // 3. 当文件未上传完成时，开始文件上传
   if (+hasUploadedInfo.data.Data < +data.size) {
-    // onUploadProgressFunc(_getPercentage(hasUploadedInfo.data.Data, data.size, finalPercentage)); // 根据已上传信息设置初始已上传百分比
-
     const chunkCount = Math.ceil((data.size - hasUploadedInfo.data.Data) / (chunkSize)); // 计算出总共需要上传的次数
     const curChunkNum = +hasUploadedInfo.data.Data; // 获取到当前已上传的节点位置
-    let key2 = true;
+    let key = true;
     await uploadFile(chunkCount, curChunkNum, {
       data, uniqueName, onUploadProgressFunc, finalPercentage, baseURL,
     }).catch(() => {
-      key2 = false;
+      key = false;
     }); // 上传
-    if (!key2) return false;
+    if (!key) return false;
     if (await checkIsTrue(data, uniqueName, baseURL)) return true;
     return false;
   }
+
+  // 4. 如果文件已上传完成，则直接设置进度条100%，并返回结果
   onUploadProgressFunc(+finalPercentage);
   return true;
 }
-
-export default breakPointUpload;

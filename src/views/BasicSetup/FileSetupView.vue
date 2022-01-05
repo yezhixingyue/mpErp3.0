@@ -1,6 +1,6 @@
 <template>
   <section class="mp-erp-file-manage-page-wrap">
-    <header v-if="Permission && Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">
+    <header v-if="Permission && Permission.PermissionList.PermissionFileCategory.Obj.SetupClass">
       <el-button type="primary" class="blue-full-color-btn-styles is-blue-button" @click="onFileSetClick(null)">添加文件类目</el-button>
     </header>
     <main>
@@ -15,9 +15,9 @@
 
 <script>
 import FileClassifyDialogComp from '@/components/FileClassify/FileClassifyDialogComp.vue';
-import FileClassifyTableComp from '@/components/FileClassify/FileClassifyTableComp.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
+import FileClassifyTableComp from '../../components/FileClassify/FileClassifyTableComp.vue';
 
 export default {
   name: 'FileSetupPage',

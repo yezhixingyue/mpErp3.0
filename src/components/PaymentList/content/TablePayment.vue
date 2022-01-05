@@ -59,7 +59,7 @@
             <img src="@/assets/images/detail.png" class="detail" alt="">详情</span>
         </li>
         <li
-          v-if="Permission.PermissionList.PermissionManageOrder.Obj.HelpSubmit"
+          v-if="localPermission.Pay"
           class="handle-menu-item"
         >
           <span
@@ -106,6 +106,12 @@ export default {
   computed: {
     ...mapState('paymentModule', ['tableData', 'PayDetailOrderList', 'PayDetailData', 'orderCreateTypeList', 'canLoadingMore', 'paymentDataLoading']),
     ...mapState('common', ['PayTypeList', 'PayStatusList', 'Permission', 'curTime']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionPayment?.Obj) {
+        return this.Permission.PermissionList.PermissionPayment.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     ...mapMutations('paymentModule', ['setID2Del', 'setIsShow2PayDialog', 'setIsShow2DetailDialog', 'setPayAmount', 'setPayImgSrc', 'setPayDetailData', 'setCurPayCode']),
