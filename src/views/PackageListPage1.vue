@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-21 10:19:17
- * @LastEditTime: 2021-10-19 15:26:02
+ * @LastEditTime: 2022-01-08 09:57:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/PackageListPage1.vue
@@ -54,12 +54,6 @@ export default {
     this.$store.commit('orderModule/setSelectTime', ['TodayDate', 1]);
     this.getExpressTableData();
   },
-  // created() {
-  //   const { token } = this.$route.params;
-  //   if (!token) return;
-  //   if (sessionStorage.getItem('ErpToken')) sessionStorage.removeItem('ErpToken');
-  //   sessionStorage.setItem('ErpToken', JSON.stringify(token));
-  // },
 };
 </script>
 

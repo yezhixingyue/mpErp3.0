@@ -1,6 +1,7 @@
 import messageBox from '@/assets/js/utils/message';
 import { getValueIsOrNotNumber } from '@/assets/js/utils/util';
 import { NotChineseWideCharReg } from '@/assets/js/utils/regexp';
+// eslint-disable-next-line no-unused-vars
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
 export const FormulaUseModuleEnum = [
@@ -55,56 +56,57 @@ export default class FormulaClass {
       messageBox.failSingleError('操作失败', '获取提交信息出错');
       return false;
     }
+    // eslint-disable-next-line no-unused-vars
     const { Name, PropertyList, Content } = obj;
     if (!Name && !hiddenHeader) {
       messageBox.failSingleError('操作失败', '请输入公式名称');
       return false;
     }
-    // if (!PropertyList || PropertyList.length === 0) {
+    // if (!PropertyList || PropertyList.length === 0) { // ---- 最开始注释
     //   messageBox.failSingleError('操作失败', '请添加元素并填写公式内容');
     //   return false;
     // }
-    if (PropertyList && PropertyList.length > 0) {
-      let t = PropertyList.find(it => !it.DefaultValue && it.DefaultValue !== 0 && it.Type !== 8 && it.Type !== 9);
-      if (!(t && [8, 9].includes(t.FixedType))) {
-        if (t) {
-          messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}未设置空值`);
-          return false;
-        }
-        t = PropertyList.find(it => {
-          if (!it.Element) {
-            return !getValueIsOrNotNumber(it.DefaultValue) && !(it.Type === 8 && !it.DefaultValue) && !(it.Type === 9 && !it.DefaultValue);
-          }
-          const { Type, NumbericAttribute } = it.Element;
-          const isInteger = Type === 1 ? !(NumbericAttribute && NumbericAttribute.AllowDecimal) : false;
-          return !getValueIsOrNotNumber(it.DefaultValue, isInteger);
-        });
-        if (t) {
-          messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不正确(检查是否为数字或是否允许小数)`);
-          return false;
-        }
-        for (let i = 0; i < PropertyList.length; i += 1) {
-          const it = PropertyList[i];
-          if (it.ValueRange) {
-            const { MinValue, MaxValue } = it.ValueRange;
-            if ((MinValue || MinValue === 0) && +it.DefaultValue < MinValue) {
-              messageBox.failSingleError('操作失败', `${it.Element ? it.Element.Name : it.DisplayContent}空值设置值不能小于${MinValue}`);
-              return false;
-            }
-            if ((MaxValue || MaxValue === 0) && +it.DefaultValue > MaxValue && MaxValue !== -1) {
-              messageBox.failSingleError('操作失败', `${it.Element ? it.Element.Name : it.DisplayContent}空值设置值不能大于${MaxValue}`);
-              return false;
-            }
-          }
-        }
+    // if (PropertyList && PropertyList.length > 0) { // ---- 后面注释
+    //   let t = PropertyList.find(it => !it.DefaultValue && it.DefaultValue !== 0 && it.Type !== 8 && it.Type !== 9);
+    //   if (!(t && [8, 9].includes(t.FixedType))) {
+    //     if (t) {
+    //       messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}未设置空值`);
+    //       return false;
+    //     }
+    //     t = PropertyList.find(it => {
+    //       if (!it.Element) {
+    //         return !getValueIsOrNotNumber(it.DefaultValue) && !(it.Type === 8 && !it.DefaultValue) && !(it.Type === 9 && !it.DefaultValue);
+    //       }
+    //       const { Type, NumbericAttribute } = it.Element;
+    //       const isInteger = Type === 1 ? !(NumbericAttribute && NumbericAttribute.AllowDecimal) : false;
+    //       return !getValueIsOrNotNumber(it.DefaultValue, isInteger);
+    //     });
+    //     if (t) {
+    //       messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不正确(检查是否为数字或是否允许小数)`);
+    //       return false;
+    //     }
+    //     for (let i = 0; i < PropertyList.length; i += 1) {
+    //       const it = PropertyList[i];
+    //       if (it.ValueRange) {
+    //         const { MinValue, MaxValue } = it.ValueRange;
+    //         if ((MinValue || MinValue === 0) && +it.DefaultValue < MinValue) {
+    //           messageBox.failSingleError('操作失败', `${it.Element ? it.Element.Name : it.DisplayContent}空值设置值不能小于${MinValue}`);
+    //           return false;
+    //         }
+    //         if ((MaxValue || MaxValue === 0) && +it.DefaultValue > MaxValue && MaxValue !== -1) {
+    //           messageBox.failSingleError('操作失败', `${it.Element ? it.Element.Name : it.DisplayContent}空值设置值不能大于${MaxValue}`);
+    //           return false;
+    //         }
+    //       }
+    //     }
 
-        t = PropertyList.find(({ DefaultValue, AvailableValueList }) => !PropertyClass.AvailableValueListChecker(DefaultValue, AvailableValueList));
-        if (t) {
-          messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不正确，请检查其取值范围`);
-          return false;
-        }
-      }
-    }
+    //     t = PropertyList.find(({ DefaultValue, AvailableValueList }) => !PropertyClass.AvailableValueListChecker(DefaultValue, AvailableValueList));
+    //     if (t) {
+    //       messageBox.failSingleError('操作失败', `${t.Element ? t.Element.Name : t.DisplayContent}空值设置值不正确，请检查其取值范围`);
+    //       return false;
+    //     }
+    //   }
+    // }
 
     if (!Content) {
       messageBox.failSingleError('操作失败', '请填写公式内容');

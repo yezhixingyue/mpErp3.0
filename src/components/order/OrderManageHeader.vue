@@ -16,7 +16,7 @@
         <StaffSelector />
         <ExpressSelector />
         <OrderStatusSelector />
-        <order-channel-selector
+        <OrderChannelSelector
           :options='orderCreateTypeList'
           :requestFunc='getDataList'
           :changePropsFunc='setOrderManageRequestObj'
@@ -25,17 +25,17 @@
           label='下单方式'
           key='order-OrderType'
          />
-           <order-channel-selector
-            class="terminal-select"
-            :options='selfHelpOrderTypeList'
-            :requestFunc='getDataList'
-            :changePropsFunc='setOrderManageRequestObj'
-            :typeList="[['Terminal', '']]"
-            :value='objForOrderList.Terminal'
-            v-show="objForOrderList.OrderType === 2"
-            key='order-Terminal'
-            label=''
-          />
+        <OrderChannelSelector
+          class="terminal-select"
+          :options='selfHelpOrderTypeList'
+          :requestFunc='getDataList'
+          :changePropsFunc='setOrderManageRequestObj'
+          :typeList="[['Terminal', '']]"
+          :value='objForOrderList.Terminal'
+          v-show="objForOrderList.OrderType === 2"
+          key='order-Terminal'
+          label=''
+        />
       </li>
       <li class="row-two">
         <TimeSearchSelector />

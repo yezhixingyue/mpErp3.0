@@ -21,7 +21,7 @@
         <li v-for="it in MaterialLocalList" :key="it.ID">
           <p>{{it.Name}}</p>
           <div class="sub-list">
-            <span v-for="sub in it.ShowList" :key="sub.Name">{{sub.Name}}（{{sub.List.length}}种） </span>
+            <span v-for="sub in it.ShowList" :key="sub.Name" :title="sub.title">{{sub.Name}}（{{sub.List.length}}种） </span>
           </div>
           <div class="menu">
             <span @click="onMaterialSaveClick(it)"> <i class="edit"></i> 编辑</span>
@@ -123,9 +123,10 @@ export default {
         it.List.forEach(sub => {
           const t = _list.find(_it => sub.FirstName === _it.Name);
           if (t) t.List.push(sub);
-          else _list.push({ Name: sub.FirstName, List: [sub] });
+          else _list.push({ Name: sub.FirstName, _Index: sub.Index, List: [sub] });
         });
-        return { ...it, ShowList: _list };
+        const ShowList = _list.map(_it => ({ ..._it, title: _it.List.map(({ DisplayName }) => DisplayName).join('\r\n') })).sort((a, b) => a._Index - b._Index);
+        return { ...it, ShowList };
       });
       return list;
     },

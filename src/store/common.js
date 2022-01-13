@@ -527,8 +527,15 @@ export default {
     },
     /* 2级分类 产品 树结构
     -------------------------------*/
-    twoLevelsProductClassify(state) { // 去除子列表为空的类别
+    twoLevelsProductClassify(state) { // 去除子列表为空的类别  代客下单分类
       const type = 6;
+      const target = state.ProductMultipleClassifyList.find(it => it.ID === type);
+      if (!target) return [];
+      const classList = target.List;
+      return getTwoLevelsClassifyDataFromList(classList);
+    },
+    twoLevelsProductClassify4Customer(state) { // 去除子列表为空的类别  客户分类
+      const type = 2;
       const target = state.ProductMultipleClassifyList.find(it => it.ID === type);
       if (!target) return [];
       const classList = target.List;
@@ -730,7 +737,7 @@ export default {
     /* 物料列表
     -------------------------------*/
     setMaterialAllList(state, list) { // 设置全部物料列表
-      state.MaterialAllList = list.sort((a, b) => a.DisplayName.localeCompare(b.DisplayName));
+      state.MaterialAllList = list.map((it, i) => ({ ...it, _originIndex: i })).sort((a, b) => a.DisplayName.localeCompare(b.DisplayName));
     },
     setLastPagePaths(state, path) { // 设置上一个页面的path路径
       state.lastPagePaths = state.lastPagePaths.filter(it => it.name !== path.name);

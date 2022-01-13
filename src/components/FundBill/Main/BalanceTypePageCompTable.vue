@@ -9,7 +9,7 @@
     fit
     style="width: 100%"
   >
-    <el-table-column prop="ThirdTradeCode" label="交易单号" min-width="150" show-overflow-tooltip>
+    <el-table-column prop="BillID" label="交易单号" min-width="150" show-overflow-tooltip>
     </el-table-column>
     <el-table-column prop="OutTradeCode" label="微信/支付宝号" min-width="230" show-overflow-tooltip>
     </el-table-column>

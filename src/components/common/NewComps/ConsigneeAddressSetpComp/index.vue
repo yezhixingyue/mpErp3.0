@@ -133,7 +133,6 @@
     </div>
     <!-- 地图定位弹窗组件 -->
     <AddMapComp
-      ref="mapComp"
       :openType="openType"
       isTemp
       :canClose='false'
@@ -624,26 +623,6 @@ export default {
           display: inline-block;
           &.platform-code-box {
             position: relative;
-            // > div {
-            //   .el-input {
-            //     width: 220px;
-            //     > input {
-            //       height: 30px;
-            //       line-height: 28px;
-            //       padding-left: 8px;
-            //       font-size: 13px;
-            //       &::placeholder {
-            //         font-size: 12px;
-            //       }
-            //     }
-            //   }
-            //   button {
-            //     margin-left: 10px;
-            //     padding: 6px 12px;
-            //     width: 50px;
-            //   }
-            //   display: inline-block;
-            // }
             > div {
               display: inline-block;
               min-width: 256px;
@@ -689,9 +668,6 @@ export default {
               margin-right: 30px;
               padding-left: 4px;
             }
-            // .title {
-            //   min-width: 4em;
-            // }
           }
           > .address {
             width: 400px;
@@ -813,7 +789,6 @@ export default {
     margin-right: 7px;
   }
   .set-craft-dia {
-    // height: 400px;
     min-width: 750px;
     max-height: 1050px;
     box-sizing: border-box;
@@ -846,7 +821,6 @@ export default {
     .el-dialog__body {
       padding-left: 22px;
       padding-right: 22px;
-      // height: 635px;
       min-height: 188px;
       font-size: 12px;
       > .change-add-dia-content {

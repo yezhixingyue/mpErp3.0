@@ -1,10 +1,10 @@
 const getEnumList = EnumsObj => {
   const list = [];
   Object.keys(EnumsObj).forEach(key => {
-    const { label, value } = EnumsObj[key];
+    const { Name, ID } = EnumsObj[key];
     const temp = {
-      ID: value,
-      Name: label,
+      ID,
+      Name,
     };
     list.push(temp);
   });

@@ -22,6 +22,7 @@
 
 <script>
 import { Base64 } from 'js-base64';
+import TokenClass from '@/assets/js/utils/tokenManage';
 
 export default {
   data() {
@@ -37,9 +38,8 @@ export default {
     async submitForm() {
       this.ruleForm.Password = Base64.encode(this.ruleForm.Password);
       const res = await this.api.getLogin(this.ruleForm);
-      if (res.data.Status === 1000) {
-        sessionStorage.setItem('ErpToken', JSON.stringify(res.data.Data));
-        // document.cookie = `ErpToken=${JSON.stringify(res.data.Data)};max-age=${1 * 24 * 60 * 60 * 1000}`;
+      if (res.data.Status === 1000 && res.data.Data) {
+        TokenClass.setToken(res.data.Data);
         window.location = window.location.pathname;
       }
     },

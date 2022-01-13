@@ -1,4 +1,4 @@
-import messageBox from '@/assets/js/utils/message';
+// import messageBox from '@/assets/js/utils/message';
 
 const Cookie = {
   /**
@@ -27,18 +27,20 @@ const Cookie = {
 };
 
 
-function setToken2SessionStorage() {
-  const { getCookie } = Cookie;
-  const cookie = getCookie('ErpToken');
+// function setToken2SessionStorage() {
+//   const { getCookie } = Cookie;
+//   const cookie = getCookie('ErpToken');
 
-  if (cookie) {
-    if (sessionStorage.getItem('ErpToken')) sessionStorage.removeItem('ErpToken');
-    sessionStorage.setItem('ErpToken', JSON.stringify(cookie));
-    return true;
-  }
-  messageBox.failSingleError(undefined, '[ 未获取到登录信息,请重新登录尝试 ]');
-  return false;
-}
+//   if (cookie) {
+//     if (localStorage.getItem('ErpToken')) localStorage.removeItem('ErpToken');
+//     localStorage.setItem('ErpToken', JSON.stringify(cookie));
+//     return true;
+//   }
+//   messageBox.failSingleError(undefined, '[ 未获取到登录信息,请重新登录尝试 ]');
+//   return false;
+// }
 
 
-export default setToken2SessionStorage;
+// export default setToken2SessionStorage;
+
+export default Cookie;

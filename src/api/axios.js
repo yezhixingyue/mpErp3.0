@@ -1,16 +1,22 @@
+/* eslint-disable max-len */
 import axios from 'axios';
 import { Loading, Message } from 'element-ui';
 import router from '@/router';
 // import setToken2SessionStorage from '../assets/js/utils/cookie'; // 获取cookie中的token信息存入到会话缓存中
 import store from '../store';
 import messageBox from '../assets/js/utils/message';
+import TokenClass from '../assets/js/utils/tokenManage';
 
-if (process.env.NODE_ENV === 'development') {
-  // const str = 'DsEs';
-  // sessionStorage.setItem('ErpToken', JSON.stringify(str));
-} else {
-  // setToken2SessionStorage();
-}
+const apiListByNotNeedToken = ['/Api/Staff/Login']; // 不需要token访问的接口列表
+
+const { CancelToken } = axios;
+let source = CancelToken.source();
+
+const clearToken = () => {
+  TokenClass.removeToken();
+  source.cancel(); // 跳转登录页时 清除页面其它后续请求
+  source = CancelToken.source(); // 清除后赋予axios新的取消信息
+};
 
 const getShowLoading = (config) => {
   let showLoading = true;
@@ -31,13 +37,15 @@ let closeTip = false;
 axios.interceptors.request.use(
   (config) => {
     const curConfig = config;
-    let token = sessionStorage.getItem('ErpToken');
-    closeTip = curConfig.closeTip;
-    if (!token) {
-      // setToken2SessionStorage();
-      token = sessionStorage.getItem('ErpToken');
+    curConfig.cancelToken = source.token;
+    const token = TokenClass.getToken();
+    if (!token && !apiListByNotNeedToken.includes(curConfig.url)) {
+      clearToken();
+      router.replace('/login');
+      throw new Error('请重新登录');
     }
-    curConfig.headers.common.Authorization = `Bearer ${JSON.parse(token)}`;
+    closeTip = curConfig.closeTip;
+    curConfig.headers.common.Authorization = `Bearer ${token}`;
     if (getShowLoading(curConfig)) {
       loadingInstance = Loading.service({
         lock: true,
@@ -47,6 +55,7 @@ axios.interceptors.request.use(
         customClass: 'mp-general-loading-box',
       });
     }
+
     return curConfig;
   },
   (error) => {
@@ -59,16 +68,19 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (response) => {
     if (getShowLoading(response.config) && loadingInstance) loadingInstance.close();
-    // eslint-disable-next-line max-len
     const _list2NotNeed2Toast = ['/Api/AccountReceivable/Excel', '/Api/PaymentOrder/Excel', '/Api/OrderList/Excel', '/Api/Coupon/DownLoad', '/Api/AfterSales/Excel', '/Api/PackageList/Excel', '/Api/CustomerBill/Excel', '/Api/OrderBill/Excel', '/Api/PriceTable/Export'];
     const _statusList2NotNeed2Toast = [1000, 9062, 8044];
     // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
 
-    // eslint-disable-next-line max-len
     if (!_statusList2NotNeed2Toast.includes(response.data.Status) && !_list2NotNeed2Toast.includes(response.config.url.split('?')[0])) {
       if ([7025, 8037].includes(response.data.Status)) {
-        if (!closeTip) messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`, () => router.replace('/login'));
-        else router.replace('/login');
+        clearToken();
+        if (!closeTip) {
+          const cb = () => {
+            router.replace('/login');
+          };
+          messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`, cb, cb);
+        } else router.replace('/login');
       } else if (!closeTip) {
         messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`);
       }
@@ -88,6 +100,7 @@ axios.interceptors.response.use(
         switch (error.response.status) {
           case 401:
             // if (process.env.NODE_ENV === 'development') {
+            clearToken();
             _func = () => {
               router.replace('/login');
             };
@@ -97,7 +110,6 @@ axios.interceptors.response.use(
             } else {
               router.replace('/login');
             }
-            sessionStorage.removeItem('staffDetailData');
             key = true;
             break;
           case 404:
@@ -116,7 +128,6 @@ axios.interceptors.response.use(
             key = true;
             break;
           default:
-            // eslint-disable-next-line max-len
             messageBox.failSingleError('操作失败', `${error.response.data && error.response.data.Message ? error.response.data.Message : error.response.statusText}`);
             key = true;
             break;
@@ -135,7 +146,7 @@ axios.interceptors.response.use(
           message: '网络超时',
           type: 'error',
         });
-      } else if (error.response.status === 404) {
+      } else if (error.response && error.response.status === 404) {
         Message({
           showClose: true,
           message: '404错误',
@@ -145,6 +156,8 @@ axios.interceptors.response.use(
         let msg = '未知错误';
         if (error.response && error.response.data && error.response.data.Message) {
           msg = error.response.data.Message;
+        } else if (error && error.message) {
+          msg = error.message;
         }
         Message({
           showClose: true,

@@ -19,7 +19,7 @@
       </span>
     </el-table-column>
     <el-table-column prop="ProduceDelayTime" label="类型" width="160">
-      <span class="left" slot-scope="scope" :class="{'is-pink': scope.row.SpecialType === SpecialTypeEnums.stop.value}">
+      <span class="left" slot-scope="scope" :class="{'is-pink': scope.row.SpecialType === SpecialTypeEnums.stop.ID}">
         {{scope.row.SpecialContent}}
       </span>
     </el-table-column>
@@ -114,14 +114,14 @@ export default {
       });
     },
     formatSpecialType({ SpecialType, DelayTime }) {
-      if (SpecialType === SpecialTypeEnums.stop.value) return SpecialTypeEnums.stop.label;
-      if (SpecialType === SpecialTypeEnums.delay.value) return `${SpecialTypeEnums.delay.label} ${DelayTime || DelayTime === 0 ? DelayTime : '未知'}小时`;
+      if (SpecialType === SpecialTypeEnums.stop.ID) return SpecialTypeEnums.stop.Name;
+      if (SpecialType === SpecialTypeEnums.delay.ID) return `${SpecialTypeEnums.delay.Name} ${DelayTime || DelayTime === 0 ? DelayTime : '未知'}小时`;
       return '';
     },
     getDateRangeContent({ StartTime, EndTime, SpecialType }) {
       let end = format2MiddleLangTypeDateFunc2(EndTime);
       let begin = end ? format2MiddleLangTypeDateFunc2(StartTime) : '';
-      if (SpecialType !== SpecialTypeEnums.delay.value) {
+      if (SpecialType !== SpecialTypeEnums.delay.ID) {
         end = end ? end.slice(0, 10) : '';
         begin = begin ? begin.slice(0, 10) : '';
       }
@@ -130,7 +130,7 @@ export default {
     },
     getDateRangeTitle({ SpecialType, DelayType }) {
       let title = '';
-      if (SpecialType === SpecialTypeEnums.delay.value) {
+      if (SpecialType === SpecialTypeEnums.delay.ID) {
         const t = DelayTypeEnumList.find(it => it.ID === DelayType);
         if (t) title = `${t.Name}：`;
       } else {

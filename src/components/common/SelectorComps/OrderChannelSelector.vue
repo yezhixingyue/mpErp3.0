@@ -129,6 +129,9 @@ export default {
       top: 5px;
       white-space: nowrap;
     }
+    .el-input__inner {
+      border-radius: 0;
+    }
   }
 }
 </style>

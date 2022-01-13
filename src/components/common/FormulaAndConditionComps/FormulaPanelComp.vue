@@ -308,7 +308,7 @@ export default {
         const temp = { ...t, DefaultValue: it.DefaultValue };
         if (Array.isArray(it.CraftOptionList) && it.CraftOptionList.length > 0 && Array.isArray(temp.CraftOptionList)) {
           temp.CraftOptionList = temp.CraftOptionList.map(option => {
-            const _target = it.CraftOptionList.find(_it => _it.ID === option.ID && _it.Part.ID === option.Part.ID);
+            const _target = it.CraftOptionList.find(_it => _it.ID === option.ID && ((!option.Part && !_it.Part) || (_it.Part?.ID === option.Part?.ID)));
             if (!_target) return option;
             return { ...option, DefaultValue: _target.DefaultValue, IsChecked: _target.IsChecked };
           });

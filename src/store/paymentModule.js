@@ -269,7 +269,7 @@ export default {
       commit('setPaymentDataLoading', true);
       const res = await api.getPaymentOrderList(state.set2PaymentList);
       commit('setPaymentDataLoading', false);
-      if (!res) return;
+      if (!res || res.data.Status !== 1000 || !res.data.Data) return;
       const list = res.data.Data.map((item) => {
         const OrderCreateTime = item.CreateTime ? item.CreateTime.split('.')[0].slice(0, -3).replace('T', ' ') : '';
         const OrderFinishTime = item.FinishTime ? item.FinishTime.split('.')[0].slice(0, -3).replace('T', ' ') : '';
