@@ -1,7 +1,7 @@
 import CommonNullView from '@/components/common/Layout/CommonNullView.vue';
 import craftManageRoutes from './craftManageRoutes';
 import productManageRoutes from './productManageRoutes';
-import timeLimitRoutes from './timeLimitRoutes';
+// import timeLimitRoutes from './timeLimitRoutes';
 import PriceRoutes from './PriceRoutes';
 
 const routes = { // 产品/工艺管理
@@ -16,7 +16,7 @@ const routes = { // 产品/工艺管理
     ...productManageRoutes.routes, // 产品管理
     ...PriceRoutes.routes,
     ...craftManageRoutes.routes, // 工艺管理
-    ...timeLimitRoutes.routes, // 工期管理
+    // ...timeLimitRoutes.routes, // 工期管理
   ],
 };
 
@@ -27,7 +27,7 @@ const routeTree = {
     productManageRoutes.routeTree,
     PriceRoutes.routeTree,
     craftManageRoutes.routeTree,
-    timeLimitRoutes.routeTree,
+    // timeLimitRoutes.routeTree,
   ],
 };
 

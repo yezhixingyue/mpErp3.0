@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-04-09 14:23:16
- * @LastEditTime: 2021-10-19 15:26:10
+ * @LastEditTime: 2022-01-08 09:57:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/ServicePage.vue
@@ -30,12 +30,6 @@ export default {
   methods: {
     ...mapActions('service', ['getServiceListData']),
   },
-  // created() {
-  //   const { token } = this.$route.params;
-  //   if (!token) return;
-  //   if (sessionStorage.getItem('ErpToken')) sessionStorage.removeItem('ErpToken');
-  //   sessionStorage.setItem('ErpToken', JSON.stringify(token));
-  // },
   mounted() {
   },
 };

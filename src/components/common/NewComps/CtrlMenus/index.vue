@@ -1,5 +1,9 @@
 <template>
   <div class="ctrl-menus-container">
+    <span @click="onDetailClick" :class="canDetail ? '' : 'disabled'" v-if="showList.includes('detail')">
+      <img src="@/assets/images/detail.png" alt="" style="height: 15px;position:relative;top:1px">
+      <i>详情</i>
+    </span>
     <span @click="onCopyClick" :class="canCopy ? '' : 'disabled'" v-if="showList.includes('copy')">
       <img src="@/assets/images/copy.png" alt="">
       <i>拷贝</i>
@@ -11,6 +15,10 @@
     <span @click="onSetupCostClick" :class="canSetupCost ? '' : 'disabled'" v-if="showList.includes('setup')">
       <img src="@/assets/images/setup.png" alt="">
       <i>{{setupCostText}}</i>
+    </span>
+    <span @click="onSetup2Click" :class="canSetup2 ? '' : 'disabled'" v-if="showList.includes('setup2')">
+      <img src="@/assets/images/setup.png" alt="">
+      <i>{{setupText2}}</i>
     </span>
     <span @click="onAllCostClick" :class="canAllCost ? '' : 'disabled'" v-if="showList.includes('allCost')">
       <img src="@/assets/images/cost.png" alt="">
@@ -62,11 +70,19 @@ export default {
       type: Boolean,
       default: true,
     },
+    canDetail: {
+      type: Boolean,
+      default: true,
+    },
     canSelect: {
       type: Boolean,
       default: true,
     },
     canSetupCost: {
+      type: Boolean,
+      default: true,
+    },
+    canSetup2: {
       type: Boolean,
       default: true,
     },
@@ -81,6 +97,10 @@ export default {
     setupCostText: {
       type: String,
       default: '设置费用组成',
+    },
+    setupText2: {
+      type: String,
+      default: '',
     },
     canExport: {
       type: Boolean,
@@ -128,6 +148,10 @@ export default {
       if (!this.canSetupCost) return;
       this.$emit('setup');
     },
+    onSetup2Click() {
+      if (!this.canSetup2) return;
+      this.$emit('setup2');
+    },
     onExportClick() {
       if (!this.canExport) return;
       this.$emit('export');
@@ -135,6 +159,10 @@ export default {
     onWriteClick() {
       if (!this.canWrite) return;
       this.$emit('write');
+    },
+    onDetailClick() {
+      if (!this.canDetail) return;
+      this.$emit('detail');
     },
   },
 };
@@ -161,6 +189,7 @@ export default {
     &.disabled {
       > img {
         filter: grayscale(1);
+        opacity: 0.4;
       }
       color: #cbcbcb;
       cursor: not-allowed;

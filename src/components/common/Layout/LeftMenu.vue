@@ -18,13 +18,13 @@
           </el-menu-item>
         </el-submenu>
       </el-menu>
-      <p @click="handleClick" class="login-out-box" :class="isCollapse?'hiden':'show'" v-show="showLoginout">
+      <!-- <p @click="handleClick" class="login-out-box" :class="isCollapse?'hiden':'show'" v-show="showLoginout">
         <template v-if="!isCollapse">
           <i class="el-icon-switch-button not-c"></i>
           <span>退出登录</span>
         </template>
         <TipsSpanButton tipContent='退出登录' v-else><i class="el-icon-switch-button"></i></TipsSpanButton>
-      </p>
+      </p> -->
     </el-scrollbar>
   </div>
 </template>
@@ -33,11 +33,12 @@
 import { routes } from '@/router';
 import { getJudgmentWhetherIsSamePage, modulePageNames, getChildrenRouteNamesByParentRouteName } from '@/router/getLastRouteInfoByName';
 import { mapState } from 'vuex';
-import TipsSpanButton from '../NewComps/TipsSpanButton.vue';
+// import TokenClass from '@/assets/js/utils/tokenManage';
+// import TipsSpanButton from '../NewComps/TipsSpanButton.vue';
 
 export default {
   components: {
-    TipsSpanButton,
+    // TipsSpanButton,
   },
   computed: {
     ...mapState('layout', ['editableTabs', 'leftMenuDefaultActive', 'isLeftCollapse', 'editableTabsValue']),
@@ -69,12 +70,12 @@ export default {
     };
   },
   methods: {
-    handleClick() { // 退出
-      this.messageBox.warnCancelNullMsg('确定退出登录吗?', () => {
-        sessionStorage.removeItem('ErpToken');
-        this.$router.replace('/login');
-      });
-    },
+    // handleClick() { // 退出
+    //   this.messageBox.warnCancelNullMsg('确定退出登录吗?', () => {
+    //     TokenClass.removeToken();
+    //     this.$router.replace('/login');
+    //   });
+    // },
     getShowMenuList() { // 初始化获取左侧按钮列表
       if (!routes || routes.length === 0 || !this.Permission) return;
       const list = routes.filter(it => (!it.meta || !it.meta.hideMenu) && (it.meta && it.meta.icon)).map(_it => {

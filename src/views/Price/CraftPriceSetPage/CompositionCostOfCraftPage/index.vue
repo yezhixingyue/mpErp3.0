@@ -42,9 +42,9 @@
 <script>
 import { mapState } from 'vuex';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
-import TopRadioButtonComp from '@/components/common/NewComps/TopRadioButtonComp';
 import handleExcelDownload from '@/assets/js/upload/downloadExcel';
 import CraftPriceTitleItemSaveDialog from './Comps/CraftPriceTitleItemSaveDialog.vue';
+import TopRadioButtonComp from '../../../../components/common/NewComps/TopRadioButtonComp/index.vue';
 import PriceTableComp from './Comps/PriceTableComp.vue';
 import { insertShowName4SolutionList } from '../utils';
 
@@ -373,7 +373,7 @@ export default {
   flex-direction: column;
   > header {
     padding: 20px;
-    padding-bottom: 25px;
+    padding-bottom: 22px;
     line-height: 15px;
     background-color: #fff;
     box-sizing: border-box;

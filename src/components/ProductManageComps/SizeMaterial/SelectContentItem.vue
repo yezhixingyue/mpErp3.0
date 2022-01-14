@@ -70,7 +70,10 @@ export default {
   methods: {
     change(item) {
       const bool = !this.checkedIDList.includes(item.ID);
-      const lastCheckedList = this.itemData.List.filter(it => this.checkedIDList.includes(it.ID));
+      const lastCheckedList = this.checkedIDList.map(ID => {
+        const t = this.itemData.List.find(it => it.ID === ID);
+        return t;
+      }).filter(it => it);
       const list = bool ? [...lastCheckedList, item] : lastCheckedList.filter(it => it.ID !== item.ID);
       this.$emit('change', [lastCheckedList.map(it => it.ID), list]);
     },

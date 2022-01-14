@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-26 09:16:49
- * @LastEditTime: 2022-01-05 14:18:25
+ * @LastEditTime: 2022-01-10 18:09:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit 过滤器
  * @FilePath: /src/assets/js/filters/filters.js
@@ -360,6 +360,11 @@ export const formatListItemCraft = CraftList => formatListItemSize(CraftList);
 
 Vue.filter('formatListItemSize', formatListItemSize);
 Vue.filter('formatListItemCraft', formatListItemCraft); // 暂同上共用同一个方法 后续如有需要再分开
+
+Vue.filter('formatNumber', num => {
+  if (!getValueIsOrNotNumber(num)) return num;
+  return +((+num).toFixed(2));
+});
 
 export default {
   formatListItemSize,

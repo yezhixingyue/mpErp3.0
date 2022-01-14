@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import getPermission from '@/assets/js/Permission/index';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import messageBox from '../assets/js/utils/message';
 import store from '../store';
+import TokenClass from '../assets/js/utils/tokenManage';
 import { getLastRouteInfoByName } from './getLastRouteInfoByName';
 
 /*  页面进度条
@@ -82,9 +82,7 @@ const handleRouterEach = router => {
     if (to.path === '/pathFromClient') {
       const { url, token } = to.query;
       if (url && token) {
-        sessionStorage.clear();
-        sessionStorage.setItem('ErpToken', JSON.stringify(token));
-        // document.cookie = '';
+        TokenClass.setToken(token);
         next({
           path: url,
           query: {},
@@ -92,17 +90,20 @@ const handleRouterEach = router => {
         return;
       }
     }
-    const token = JSON.parse(sessionStorage.getItem('ErpToken')); // 2.1 获取到token信息，可能为undefined
+    const token = TokenClass.getToken();
     if (to.matched.some(record => record.meta.requiresAuth)) { // 2.2 判断要去往的页面中有无token要求，如果无则跳转否则则进入判
       if (to.name === 'login') { // 2.3 登录页面不考虑，直接跳转
-        NextHandler(from, to, next);
+        if (token) { // 如果有token 不允许跳转
+          next({ name: 'home' });
+        } else {
+          TokenClass.removeToken();
+          NextHandler(from, to, next);
+        }
       } else if (token) { // 2.4 如果有token信息，获取到当前用户权限信息
         const permission = store.state.common.Permission;
         if (!permission || permission.Token !== token) {
-          getPermission(token).then(res => {
-            // if (Object.prototype.toString.call(res) === '[object Object]' && res.Token && res.Token === token) {
-            if (Object.prototype.toString.call(res) === '[object Object]' && res.Token) {
-              sessionStorage.setItem('ErpToken', JSON.stringify(res.Token));
+          TokenClass.getPermission(token).then(res => {
+            if (res && Object.prototype.toString.call(res) === '[object Object]' && res.Token && res.Token === token) {
               store.commit('common/setPermission', res);
               handlePermission(to, next, res.PermissionList, from);
             }
@@ -111,12 +112,16 @@ const handleRouterEach = router => {
           handlePermission(to, next, permission.PermissionList, from);
         }
       } else { // 如果没有token，跳转登录或提示页面
+        TokenClass.removeToken();
         next({
           path: '/login', // 此处应当跳转登录页面
           // query: { redirect: to.fullPath },
         });
       }
+    } else if (to.name === 'login' && token) {
+      next({ name: 'home' });
     } else {
+      TokenClass.removeToken();
       NextHandler(from, to, next);
     }
   });

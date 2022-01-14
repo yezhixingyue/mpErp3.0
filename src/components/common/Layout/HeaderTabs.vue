@@ -1,6 +1,6 @@
 <template>
   <header class="mp-erp-layout-header-comp-wrap">
-    <div class="info">
+    <div class="info" v-if="false">
       <div class="collapse-ctrl-box">
         <i class="el-icon-s-fold" v-if="!isLeftCollapse" @click="onCollapseClick(true)"></i>
         <i class="el-icon-s-unfold" v-else @click="onCollapseClick(false)"></i>
@@ -38,49 +38,61 @@
       <span>，祝你工作愉快</span>
       <i>!</i>
     </div>
-    <!-- <el-scrollbar wrap-class="header-scrollbar-wrapper"> -->
-      <div class="list" @contextmenu="onContextmenuclick" ref="oList">
-        <!-- <el-scrollbar wrap-class="header-scrollbar-wrapper" :vertical='false'> -->
-          <el-tabs
-            v-model="localTabsValue"
-            type="border-card"
-            @tab-remove="onCloseCurClick"
-          >
-            <el-tab-pane
-              v-for="(item) in editableTabs"
-              :key="item.name"
-              :label="item.title"
-              :name="item.name"
-              :closable="item.closable"
-            >
-            </el-tab-pane>
-          </el-tabs>
-          <el-tooltip
-            popper-class="mp-common-tip-span-btn-popper-box"
-            :open-delay="280"
-            :visible-arrow="false"
-            transition="none"
-            :enterable="false"
-            content="关闭所有标签"
-            placement="bottom-start"
-            v-if="editableTabs.length > 1"
-          >
-            <div class="clear-box" @click="onCloseAllClick">
-              <i class="el-icon-close"></i>
-            </div>
-          </el-tooltip>
-        <!-- </el-scrollbar> -->
-        <ul
-          class="mp-erp-layout-header-show-menu-box"
-          v-show="showContextMenu"
-          :style="`left:${contextMenuLeft}px;top:${contextMenuTop}px`"
-        >
-          <li @click="() => onCloseCurClick()">关闭</li>
-          <li @click="onCloseOtherClick">关闭其它</li>
-          <li @click="onCloseAllClick">关闭所有</li>
-        </ul>
+    <div class="list" @contextmenu="onContextmenuclick" ref="oList">
+      <div class="collapse-ctrl-box">
+        <i class="el-icon-s-fold" v-if="!isLeftCollapse" @click="onCollapseClick(true)"></i>
+        <i class="el-icon-s-unfold" v-else @click="onCollapseClick(false)"></i>
       </div>
-    <!-- </el-scrollbar> -->
+      <el-tabs
+        v-model="localTabsValue"
+        type="border-card"
+        @tab-remove="onCloseCurClick"
+      >
+        <el-tab-pane
+          v-for="(item) in editableTabs"
+          :key="item.name"
+          :label="item.title"
+          :name="item.name"
+          :closable="item.closable"
+        >
+        </el-tab-pane>
+      </el-tabs>
+      <el-tooltip
+        popper-class="mp-common-tip-span-btn-popper-box"
+        :open-delay="280"
+        :visible-arrow="false"
+        transition="none"
+        :enterable="false"
+        content="关闭所有标签"
+        placement="bottom-start"
+        v-if="editableTabs.length > 1"
+      >
+        <div class="clear-box" @click="onCloseAllClick">
+          <i class="el-icon-close"></i>
+        </div>
+      </el-tooltip>
+      <ul
+        class="mp-erp-layout-header-show-menu-box"
+        v-show="showContextMenu"
+        :style="`left:${contextMenuLeft}px;top:${contextMenuTop}px`"
+      >
+        <li @click="() => onCloseCurClick()">关闭</li>
+        <li @click="onCloseOtherClick">关闭其它</li>
+        <li @click="onCloseAllClick">关闭所有</li>
+      </ul>
+      <div class="user">
+        <el-dropdown trigger="click" v-if="Permission" @command='onCommand'>
+          <span class="el-dropdown-link">
+            <i class="el-icon-user"></i>
+            <span :title="Permission.StaffName">{{Permission.StaffName}}</span>
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown" class="mp-erp-user-drop-down-wrap">
+            <el-dropdown-item icon="el-icon-switch-button" command='logout'>退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+    </div>
   </header>
 </template>
 
@@ -88,6 +100,7 @@
 import { mapMutations, mapState } from 'vuex';
 import sortable from 'sortablejs';
 import { throttle } from '@/assets/js/utils/throttle';
+import TokenClass from '@/assets/js/utils/tokenManage';
 
 export default {
   data() {
@@ -112,6 +125,7 @@ export default {
   },
   computed: {
     ...mapState('layout', ['editableTabsValue', 'editableTabs', 'isLeftCollapse']),
+    ...mapState('common', ['Permission']),
     localTabsValue: {
       get() {
         return this.editableTabsValue;
@@ -168,7 +182,7 @@ export default {
     },
     onCloseCurClick(name) {
       // 关闭
-      if (!this.contextmenuItemData && !name) return;
+      if ((!this.contextmenuItemData && !name) || (this.contextmenuItemData && this.contextmenuItemData.title === '首页')) return;
       const tabs = this.editableTabs;
       let activeName = this.editableTabsValue;
       const itemName = name || this.contextmenuItemData.name;
@@ -216,6 +230,17 @@ export default {
     onCollapseClick(bool) {
       this.setLeftCollapse(bool);
     },
+    onCommand(command) {
+      if (command === 'logout') {
+        this.handleLogoutClick();
+      }
+    },
+    handleLogoutClick() { // 退出
+      this.messageBox.warnCancelNullMsg('确定退出登录吗?', () => {
+        TokenClass.removeToken();
+        this.$router.replace('/login');
+      });
+    },
   },
   mounted() {
     this.getCurDate();
@@ -232,6 +257,9 @@ export default {
 <style lang='scss'>
 .mp-erp-layout-header-comp-wrap {
   box-sizing: border-box;
+  // overflow-x: hidden;
+  width: 100%;
+  min-width: 400px;
   // overflow-x: hidden;
   > .info {
     height: 48px;
@@ -269,10 +297,25 @@ export default {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
     border-bottom: 1px solid #d8dce5;
     align-items: center;
-    padding-bottom: 1px;
-    height: 31px;
+    height: 40px;
+    padding-top: 6px;
     position: relative;
-    // overflow-x: hidden;
+    padding-bottom: 2px;
+    padding-right: 160px;
+    width: 100%;
+    box-sizing: border-box;
+    > div.collapse-ctrl-box {
+      margin-right: 5px;
+      font-size: 20px;
+      margin-left: 20px;
+      width: 25px;
+      box-sizing: border-box;
+      flex: none;
+      // padding-left: 10px;
+      > i {
+        cursor: pointer;
+      }
+    }
     .el-scrollbar__view {
       display: flex;
       align-items: center;
@@ -281,6 +324,9 @@ export default {
       border: none;
       margin-left: 12px;
       box-shadow: none;
+      flex: 0 1 auto;
+      height: 26px;
+      overflow-x: hidden;
       .el-tabs__header {
         margin: 0;
         border: none;
@@ -331,6 +377,12 @@ export default {
             background-color: #eee;
           }
         }
+        .el-tabs__nav-next, .el-tabs__nav-prev {
+          height: 26px;
+          line-height: 26px;
+          cursor: pointer !important;
+          color: #444;
+        }
       }
       .el-tabs__content {
         display: none;
@@ -345,6 +397,8 @@ export default {
       cursor: pointer;
       transition: 0.1s ease-in-out;
       font-size: 14px;
+      flex: none;
+      margin-right: 20px;
       &:hover {
         border-color: #999;
         color: #999;
@@ -381,6 +435,82 @@ export default {
         }
       }
     }
+    > .user {
+      position: absolute;
+      flex: none;
+      text-align: right;
+      width: 160px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      font-size: 14px;
+      padding: 10px;
+      // padding-top: 14px;
+      padding: 0 10px;
+      padding-right: 20px;
+      box-sizing: border-box;
+      .el-dropdown-link {
+        color: #888e99;
+        font-size: 13px;
+        line-height: 21px;
+        display: flex;
+        align-items: center;
+        height: 24px;
+        padding: 5px 0;
+        padding-top: 8px;
+        padding-right: 5px;
+        .el-icon-user {
+          font-size: 16px;
+          margin-right: 4px;
+          font-weight: 700;
+        }
+        span {
+          margin: 0 4px;
+          max-width: 6em;
+          overflow: hidden;
+          // text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        i {
+          font-weight: 700;
+        }
+        transition: color 0.12s ease-in-out;
+        user-select: none;
+        &:hover {
+          color: #26bcf9;
+        }
+        &:active {
+          color: #428dfa;
+        }
+      }
+    }
+  }
+}
+.mp-erp-user-drop-down-wrap {
+  padding: 4px 0px !important;
+  width: 130px !important;
+  .el-dropdown-menu__item {
+    line-height: 32px;
+    padding: 0 20px;
+    padding-left: 23px;
+    margin: 0;
+    i {
+      font-weight: 700;
+      font-size: 15px;
+      margin-right: 6px;
+    }
+    transition: 0.08s ease-in-out;
+  }
+  // &.el-popper[x-placement^=bottom] {
+  //   margin-top: 1px !important;
+  // }
+  &.el-popper[x-placement^=bottom] {
+    margin-top: 12px !important;
+    & > div::after,
+    & > div{
+      display: block !important;
+    }
+    overflow-y: visible;
   }
 }
 </style>

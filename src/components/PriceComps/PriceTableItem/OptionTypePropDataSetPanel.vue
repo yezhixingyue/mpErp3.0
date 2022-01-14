@@ -50,7 +50,8 @@ export default {
   computed: {
     optionList() {
       if (!this.Property || !Array.isArray(this.Property.OptionList)) return [];
-      return this.Property.OptionList;
+      const _list = [...this.Property.OptionList];
+      return _list.sort((a, b) => a.Second.localeCompare(b.Second));
     },
     checkList: {
       get() {

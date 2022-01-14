@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-25 17:41:47
- * @LastEditTime: 2021-09-28 18:04:56
+ * @LastEditTime: 2022-01-08 09:57:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/PaymentListPage.vue
@@ -28,15 +28,6 @@ export default {
     PaymentListHeader,
 
   },
-  // mounted() {
-  //   // window.onresize = null;
-  // },
-  // created() {
-  //   const { token } = this.$route.params;
-  //   if (!token) return;
-  //   if (sessionStorage.getItem('ErpToken')) sessionStorage.removeItem('ErpToken');
-  //   sessionStorage.setItem('ErpToken', JSON.stringify(token));
-  // },
 };
 </script>
 

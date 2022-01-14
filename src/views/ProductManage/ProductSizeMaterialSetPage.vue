@@ -112,9 +112,17 @@ export default {
       if (resp && resp.data && resp.data.Status === 1000) {
         const cb = () => {
           if (isEdit) {
-            const i = this.MaterialList.findIndex(it => it.Type.ID === TypeID);
-            this.MaterialList = this.MaterialList.filter(it => it.Type.ID !== TypeID);
-            this.MaterialList.splice(i, 0, ...dataList);
+            let _list = this.MaterialList.filter(it => it.Type.ID !== TypeID || List.includes(it.ID));
+            const index = _list.findIndex(it => it.Type.ID === TypeID);
+            const _beforeHasList = _list.filter(it => it.Type.ID === TypeID).map(it => {
+              const newIndex = dataList.findIndex(_it => _it.ID === it.ID) || 999;
+              return { data: it, newIndex };
+            }).sort((a, b) => a.newIndex - b.newIndex).map(it => it.data);
+            _list = _list.filter(it => it.Type.ID !== TypeID);
+            _list.splice(index, 0, ..._beforeHasList);
+            const _listIDs = _list.map(it => it.ID);
+            const _dataList = dataList.filter(it => !_listIDs.includes(it.ID));
+            this.MaterialList = [..._list, ..._dataList];
           } else {
             this.MaterialList.push(...dataList);
           }

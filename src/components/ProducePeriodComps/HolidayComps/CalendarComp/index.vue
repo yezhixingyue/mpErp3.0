@@ -322,9 +322,15 @@ export default {
             }
             &.working {
               background-color: #66A4FF;
+              &:not(.isBefore) {
+                cursor: pointer;
+              }
             }
             &.resting {
               background-color: #04E47E;
+              &:not(.isBefore) {
+                cursor: pointer;
+              }
             }
             &.disabled {
               background-color: #E5E5E5;
@@ -336,6 +342,9 @@ export default {
             }
             &.empty {
               background-color: #FF3769;
+              &:not(.isBefore) {
+                cursor: pointer;
+              }
             }
             &.hidden {
               color: #aaa;

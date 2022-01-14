@@ -41,7 +41,7 @@
             </el-radio-group>
           </div>
         </li>
-        <template v-if="SpecialDayForm.SpecialType === SpecialTypeEnums.delay.value">
+        <template v-if="SpecialDayForm.SpecialType === SpecialTypeEnums.delay.ID">
           <li>
             <span class="title"></span>
             <div class="content-item">
@@ -98,7 +98,7 @@
             </div>
           </li>
         </template>
-        <template v-if="SpecialDayForm.SpecialType === SpecialTypeEnums.stop.value">
+        <template v-if="SpecialDayForm.SpecialType === SpecialTypeEnums.stop.ID">
           <li>
             <span class="title">结束时间：</span>
             <div class="content-item">

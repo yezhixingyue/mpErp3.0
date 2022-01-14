@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-05-12 10:48:37
- * @LastEditTime: 2021-10-19 15:43:37
+ * @LastEditTime: 2022-01-08 09:57:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/FinancePage.vue
@@ -26,12 +26,6 @@ export default {
     Header,
     Main,
   },
-  // created() {
-  //   const { token } = this.$route.params;
-  //   if (!token) return;
-  //   if (sessionStorage.getItem('ErpToken')) sessionStorage.removeItem('ErpToken');
-  //   sessionStorage.setItem('ErpToken', JSON.stringify(token));
-  // },
   methods: {
     ...mapActions('finance', ['getFinanceTableData']),
   },

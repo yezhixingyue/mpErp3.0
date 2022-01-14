@@ -1,10 +1,10 @@
 <template>
   <div class="mp-erp-common-comps-top-radio-button-comp-wrap">
-    <el-scrollbar wrap-class="scrollbar-wrapper" v-if="!loading">
-      <el-radio-group v-model="radio" size="small">
+    <!-- <el-scrollbar wrap-class="scrollbar-wrapper" v-if="!loading"> -->
+      <el-radio-group v-model="radio" size="small" v-if="!loading">
         <el-radio-button v-for="it in list" :label="it.ID" :key="it.ID">{{it.ShowName ? `${it.ShowName}（${it.Count}）` : it.Name}}</el-radio-button>
       </el-radio-group>
-    </el-scrollbar>
+    <!-- </el-scrollbar> -->
     <span v-else class="is-font-size-12 is-gray" style=""> {{title}}加载中...</span>
     <span class="is-font-size-12 is-gray" v-if="!loading && list.length === 0">该分类尚无{{title}}，请添加</span>
     <span class="blue-span" @click="onItemSaveClick(null)">+添加{{title}}</span>
@@ -60,21 +60,28 @@ export default {
 .mp-erp-common-comps-top-radio-button-comp-wrap {
   display: flex;
   align-items: center;
-  height: 32px;
+  flex-wrap: wrap;
+  min-height: 32px;
   line-height: 32px;
   margin-top: 23px;
   font-weight: 400;
+  margin-bottom: -5px;
   > span {
     font-size: 14px;
     margin-right: 30px;
     white-space: nowrap;
+    margin-bottom: 5px;
     &.is-gray {
       text-indent: 1em;
+    }
+    &.blue-span {
+      margin-left: 2px;
     }
   }
   > .menus {
     font-size: 12px;
     white-space: nowrap;
+    margin-bottom: 5px;
     > span {
       margin-left: 30px;
       line-height: 32px;
@@ -93,14 +100,20 @@ export default {
     }
   }
   .el-radio-group {
+    white-space: normal;
+    margin-right: 20px;
     > .el-radio-button {
       user-select: none;
+      margin-bottom: 5px;
       .el-radio-button__inner {
         font-size: 14px;
         padding: 5px 16px;
         padding-left: 20px;
         min-width: 120px;
         line-height: 20px;
+        width: auto;
+        min-width: 100px;
+        box-shadow: -1px 0 0 0 #eee;
       }
       position: relative;
       &::before {
