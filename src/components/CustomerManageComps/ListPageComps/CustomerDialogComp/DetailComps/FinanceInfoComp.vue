@@ -20,8 +20,8 @@
     </ul>
     <ReChangeDialog :visible.sync='visible' :CustomerID='CustomerID' :type='type' @recharge='onRechargeClick' />
     <div class="footer">
-      <el-button size="small" @click="onAmountChangeClick('topUp')" type="warning" >手动充值</el-button>
-      <el-button size="small" @click="onAmountChangeClick('topDown')" class="cancel-blue-btn">手动扣款</el-button>
+      <el-button size="small" @click="onAmountChangeClick('topUp')" type="warning" v-if="PermissionObj.Charge">手动充值</el-button>
+      <el-button size="small" @click="onAmountChangeClick('topDown')" class="cancel-blue-btn" v-if="PermissionObj.Deduct">手动扣款</el-button>
     </div>
   </li>
 </template>
@@ -33,6 +33,10 @@ import { ReChangeTypeEnum } from '../../../../../store/customerManage/Enums';
 export default {
   props: {
     customer: {
+      type: Object,
+      default: () => ({}),
+    },
+    PermissionObj: {
       type: Object,
       default: () => ({}),
     },

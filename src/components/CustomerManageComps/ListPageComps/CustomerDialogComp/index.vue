@@ -15,9 +15,9 @@
    >
    <template v-if="customer">
     <ul v-show="showType === 'detail'" class="detail-box">
-      <BasicInfoComp :customer='customer' @changeStatus='handleChangeStatus' />
-      <FinanceInfoComp :customer='customer' @recharge='handleRecharge' />
-      <PriceInfoComp :customer='customer' @jump='onJumpClick("setPrice")' />
+      <BasicInfoComp :customer='customer' @changeStatus='handleChangeStatus' :disabled='!PermissionObj.Freeze' />
+      <FinanceInfoComp :customer='customer' @recharge='handleRecharge' :PermissionObj='PermissionObj' />
+      <PriceInfoComp :customer='customer' @jump='onJumpClick("setPrice")' :PermissionObj='PermissionObj' />
       <AuthenInfoComp :customer='customer' />
       <AddressInfoComp :customer='customer' />
     </ul>
@@ -28,6 +28,7 @@
 
 <script>
 import Customer from '@/store/customerManage/Customer';
+import { mapState } from 'vuex';
 import CommonDialogComp from '../../../common/NewComps/CommonDialogComp.vue';
 import BasicInfoComp from './DetailComps/BasicInfoComp.vue';
 import FinanceInfoComp from './DetailComps/FinanceInfoComp.vue';
@@ -61,6 +62,13 @@ export default {
     SetPriceComp,
   },
   computed: {
+    ...mapState('common', ['Permission']),
+    PermissionObj() {
+      if (this.Permission?.PermissionList?.PermissionManageCustomer?.Obj) {
+        return this.Permission.PermissionList.PermissionManageCustomer.Obj;
+      }
+      return {};
+    },
     showSubmit() {
       return this.showType === 'setPrice';
     },

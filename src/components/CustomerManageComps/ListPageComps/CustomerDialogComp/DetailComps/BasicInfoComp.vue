@@ -57,7 +57,11 @@
       </li>
     </ul>
     <div class="footer">
-      <el-button :type="isFreezed ? 'danger' : 'primary'" size="small" @click="onFreezedClick" :disabled="customer.Status === CustomerStatusEnum.Deleted.ID">
+      <el-button
+       :type="isFreezed ? 'danger' : 'primary'"
+       size="small" @click="onFreezedClick"
+       v-if="!disabled"
+       :disabled="customer.Status === CustomerStatusEnum.Deleted.ID || disabled">
         {{isFreezed ? '解除冻结' : '冻结'}}
       </el-button>
     </div>
@@ -73,6 +77,10 @@ export default {
     customer: {
       type: Object,
       default: () => ({}),
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   filters: {

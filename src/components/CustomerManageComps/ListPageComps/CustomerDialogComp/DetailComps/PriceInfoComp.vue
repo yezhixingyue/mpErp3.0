@@ -25,7 +25,7 @@
       </template>
     </ul>
     <div class="footer">
-      <el-button v-if="EBusinessObj" size="small" @click="onPriceDetailClick()" type="primary" >价格详情</el-button>
+      <el-button v-if="EBusinessObj && PermissionObj.SetPrice" size="small" @click="onPriceDetailClick()" type="primary">价格详情</el-button>
     </div>
   </li>
 </template>
@@ -37,6 +37,10 @@ import { CashBackTypeEnumList, CustomerPriceTypeEnum } from '../../../../../stor
 export default {
   props: {
     customer: {
+      type: Object,
+      default: () => ({}),
+    },
+    PermissionObj: {
       type: Object,
       default: () => ({}),
     },

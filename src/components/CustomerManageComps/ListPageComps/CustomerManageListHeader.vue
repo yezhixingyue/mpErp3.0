@@ -1,7 +1,8 @@
 <template>
   <header class="mp-erp-customer-manage-list-page-header-comp-wrap">
     <div class="f">
-      <el-button type="primary" size="small" @click="onSetupClick">新建客户</el-button>
+      <el-button type="primary" size="small" @click="onSetupClick"
+       v-if="Permission && Permission.PermissionList.PermissionManageCustomer.Obj.Add">新建客户</el-button>
       <SearchInputComp
         class="search-section"
         :typeList="[['KeyWords', '']]"
@@ -95,7 +96,7 @@ export default {
   },
   computed: {
     ...mapState('customerManage', ['condition4DataList', 'customerDataList']),
-    ...mapState('common', ['userTypeListNoneEmpty', 'userRankListNoneEmpty']),
+    ...mapState('common', ['userTypeListNoneEmpty', 'userRankListNoneEmpty', 'Permission']),
     localUserTypeList() {
       return [{ CategoryID: -777, CategoryName: '类别不限' }, ...this.userTypeListNoneEmpty];
     },

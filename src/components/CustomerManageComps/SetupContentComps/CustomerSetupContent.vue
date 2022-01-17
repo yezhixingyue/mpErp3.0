@@ -5,8 +5,8 @@
         <p class="mp-common-title-wrap">客户信息</p>
       </header>
       <main  v-if="customer">
-        <LeftFirstComp :customer="customer" ref="oInfoBox" />
-        <LeftSecondComp :customer="customer" ref="oAddressBox" />
+        <LeftFirstComp :customer="customer" ref="oInfoBox" :PermissionObj='PermissionObj' :isEdit='isEdit' />
+        <LeftSecondComp :customer="customer" ref="oAddressBox" :PermissionObj='PermissionObj' :isEdit='isEdit' />
       </main>
     </section>
     <section class="right">
@@ -14,13 +14,14 @@
         <p class="mp-common-title-wrap">营业执照照片</p>
       </header>
       <main  v-if="customer">
-        <RightPhotoComp :customer="customer" ref="oLicenseBox" />
+        <RightPhotoComp :customer="customer" ref="oLicenseBox" :AllowEdit="PermissionObj.EditOther || !isEdit" />
       </main>
     </section>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import LeftFirstComp from './LeftFirstComp.vue';
 import LeftSecondComp from './LeftSecondComp.vue';
 import RightPhotoComp from './RightPhotoComp.vue';
@@ -31,6 +32,10 @@ export default {
       type: Object,
       default: null,
     },
+    isEdit: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     LeftFirstComp,
@@ -38,6 +43,13 @@ export default {
     RightPhotoComp,
   },
   computed: {
+    ...mapState('common', ['Permission']),
+    PermissionObj() {
+      if (this.Permission?.PermissionList?.PermissionManageCustomer?.Obj) {
+        return this.Permission.PermissionList.PermissionManageCustomer.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     async submit() {

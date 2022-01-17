@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-customer-manage-setup-page-wrap">
     <main>
-      <CustomerSetupContent :customer="curCustomerData" ref="oContentWrap" />
+      <CustomerSetupContent :customer="curCustomerData" ref="oContentWrap" :isEdit='isEdit' />
     </main>
     <footer>
       <el-button type='primary' class="is-blue-button" @click="onSubmitClick">保存</el-button>
@@ -23,6 +23,7 @@ export default {
     return {
       curCustomerData: null,
       loading: false,
+      isEdit: true,
     };
   },
   methods: {
@@ -36,6 +37,7 @@ export default {
         }
       } else {
         this.curCustomerData = new Customer();
+        this.isEdit = false;
       }
       this.loading = false;
     },

@@ -16,7 +16,10 @@
       </div>
       <div class="text gray">
         <p class="is-bold">操作说明：</p>
-        <p class="is-font-size-12">单击查看照片；双击更换照片。</p>
+        <p class="is-font-size-12">
+          <span>单击查看照片；双击更换照片。</span>
+          <span v-if="!AllowEdit">( 注：当前账号无编辑权限 )</span>
+        </p>
       </div>
     </div>
   </div>

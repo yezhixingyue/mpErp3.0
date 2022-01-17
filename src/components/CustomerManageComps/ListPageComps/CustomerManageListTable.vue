@@ -37,7 +37,7 @@
       <template slot-scope="scope" >{{scope.row.RegType | formatRegType}}</template>
     </el-table-column>
     <el-table-column label="审核人" prop="AuthenInfo.CheckUser.StaffName" width="70" show-overflow-tooltip></el-table-column>
-    <el-table-column label="操作" min-width="350">
+    <el-table-column label="操作" :min-width="lastMinWidth">
       <template slot-scope="scope">
         <CtrlMenus
          @detail='onDetailClick(scope.row)'
@@ -45,7 +45,7 @@
          @setup2='onSetupShopClick(scope.row)'
          @edit='onSetupClick(scope.row)'
          @remove='onRemoveClick(scope.row)'
-         :showList="['detail','setup', 'setup2', 'edit', 'del']"
+         :showList="showList"
          :canSetupCost='scope.row._isSinglePriceType'
          setupCostText='设置价格'
          setupText2='关联店铺' />
@@ -104,9 +104,9 @@ export default {
   },
   computed: {
     ...mapState('common', ['Permission', 'userTypeList']),
-    localPermission() {
-      if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
-        return this.Permission.PermissionList.PermissionProducePeriod.Obj;
+    PermissionObj() {
+      if (this.Permission?.PermissionList?.PermissionManageCustomer?.Obj) {
+        return this.Permission.PermissionList.PermissionManageCustomer.Obj;
       }
       return {};
     },
@@ -124,6 +124,39 @@ export default {
         }));
       }
       return [];
+    },
+    hasEditPermission() {
+      if (!this.Permission) return false;
+      const hasEditPermission = this.PermissionObj.EditArea || this.PermissionObj.EditMobile || this.PermissionObj.EditOther || this.PermissionObj.EditType;
+      return hasEditPermission;
+    },
+    showList() {
+      if (!this.Permission) return [];
+      return [
+        'detail',
+        this.PermissionObj.SetPrice ? 'setup' : '',
+        this.PermissionObj.BindShop ? 'setup2' : '',
+        this.hasEditPermission ? 'edit' : '',
+        this.PermissionObj.Delete ? 'del' : '',
+      ].filter(it => it);
+    },
+    lastMinWidth() {
+      let num = 345;
+      if (this.Permission) {
+        if (!this.PermissionObj.SetPrice) {
+          num -= 80;
+        }
+        if (!this.PermissionObj.BindShop) {
+          num -= 80;
+        }
+        if (!this.PermissionObj.Delete) {
+          num -= 50;
+        }
+        if (!this.hasEditPermission) {
+          num -= 50;
+        }
+      }
+      return `${num}px`;
     },
   },
   methods: {

@@ -1,10 +1,12 @@
 <template>
   <el-form v-if="ruleForm" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="90px" class="customer-second-ruleForm-wrap" @submit.native.prevent>
     <el-form-item label="经营地址：" size="small">
-      <AreaAddressInfoSetupComp class="address-select" v-model="ruleForm.AuthenInfo.SellArea" :allAreaDataList='allAdAreaTreeList' />
+      <AreaAddressInfoSetupComp class="address-select"
+       v-model="ruleForm.AuthenInfo.SellArea" :allAreaDataList='allAdAreaTreeList' :disabled="!PermissionObj.EditArea && isEdit" />
     </el-form-item>
     <el-form-item prop="AuthenInfo.DetailAddress" size="small">
-      <el-input v-model.trim="ruleForm.AuthenInfo.DetailAddress" maxlength="30" class="detail-input" show-word-limit placeholder="在此输入详细地址"></el-input>
+      <el-input v-model.trim="ruleForm.AuthenInfo.DetailAddress" maxlength="30" :disabled="!PermissionObj.EditArea && isEdit"
+       class="detail-input" show-word-limit placeholder="在此输入详细地址"></el-input>
     </el-form-item>
     <el-form-item size="small" label="配送地址：">
       <ul class="express-address-list" v-show="ruleForm.Address.length > 0">
@@ -21,14 +23,14 @@
           <div>
             <span class="Consignee" :title="it.Consignee">{{it.Consignee}}</span>
             <span :title="it.Mobile">{{it.Mobile}}</span>
-            <CtrlMenus @edit='onAddressItemSaveClick(it, i)' @remove='onAddressItemRemoveClick(it, i)' />
+            <CtrlMenus @edit='onAddressItemSaveClick(it, i)' @remove='onAddressItemRemoveClick(it, i)' :showList='showList'  />
           </div>
         </li>
       </ul>
       <el-button
        class="cancel-blue-btn"
        @click="onAddressItemSaveClick(null)"
-       :disabled='ruleForm.Address.length >= 3'
+       :disabled='ruleForm.Address.length >= 3 || (!PermissionObj.EditOther  && isEdit)'
        title="最多可添加3条配送地址">+ 增加一条配送地址</el-button>
       <AddMapComp
         isEmitType
@@ -58,6 +60,14 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    PermissionObj: {
+      type: Object,
+      default: () => ({}),
+    },
+    isEdit: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {
     AreaAddressInfoSetupComp,
@@ -67,6 +77,10 @@ export default {
   computed: {
     ...mapState('common', ['userTypeListNoneEmpty', 'userRankListNoneEmpty']),
     ...mapGetters('common', ['allAdAreaTreeList']),
+    showList() {
+      if (!this.PermissionObj.EditOther && this.isEdit) return [];
+      return undefined;
+    },
   },
   data() {
     return {

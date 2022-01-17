@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LicensePathPhotoComp v-model="LicensePath" />
+    <LicensePathPhotoComp v-model="LicensePath" :AllowEdit='AllowEdit' />
   </div>
 </template>
 
@@ -12,6 +12,10 @@ export default {
     customer: {
       type: Object,
       default: () => ({}),
+    },
+    AllowEdit: {
+      type: Boolean,
+      default: true,
     },
   },
   components: {

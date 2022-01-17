@@ -1,16 +1,16 @@
 <template>
   <el-form v-if="ruleForm" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="110px" class="customer-first-ruleForm-wrap"  @submit.native.prevent>
     <el-form-item label="客户简称：" prop="CustomerName" size="small">
-      <el-input v-model.trim="ruleForm.CustomerName" maxlength="12" placeholder="客户的简短称呼，方便识别"></el-input>
+      <el-input v-model.trim="ruleForm.CustomerName" maxlength="12" :disabled='!PermissionObj.EditOther && isEdit' placeholder="客户的简短称呼，方便识别"></el-input>
     </el-form-item>
     <el-form-item label="手机号：" prop="Mobile" size="small">
-      <el-input v-model.trim="ruleForm.Mobile" maxlength="11" placeholder="手机号将作为客户的登录账号"></el-input>
+      <el-input v-model.trim="ruleForm.Mobile" maxlength="11" :disabled='!PermissionObj.EditMobile && isEdit' placeholder="手机号将作为客户的登录账号"></el-input>
     </el-form-item>
     <el-form-item label="QQ号：" prop="QQ" size="small">
-      <el-input v-model.trim="ruleForm.QQ" maxlength="12" placeholder="客户传单的常用QQ号"></el-input>
+      <el-input v-model.trim="ruleForm.QQ" maxlength="12" placeholder="客户传单的常用QQ号" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
     </el-form-item>
     <el-form-item label="客户等级分类：" size="small">
-      <el-select v-model="ruleForm.Type.First" placeholder="请选择" @change="onTypeChange">
+      <el-select v-model="ruleForm.Type.First" placeholder="请选择" @change="onTypeChange" :disabled='!PermissionObj.EditType && isEdit'>
         <el-option
           v-for="item in userTypeListNoneEmpty"
           :key="item.CategoryID"
@@ -18,7 +18,7 @@
           :value="item.CategoryID">
         </el-option>
       </el-select>
-      <el-select v-model="ruleForm.Grade.First" placeholder="请选择" @change="onGradeChange">
+      <el-select v-model="ruleForm.Grade.First" placeholder="请选择" @change="onGradeChange" :disabled='!PermissionObj.EditType && isEdit'>
         <el-option
           v-for="item in userRankListNoneEmpty"
           :key="item.CategoryID"
@@ -31,19 +31,20 @@
       <el-checkbox v-model="ruleForm.Config.IsAcceptNotify">接收未付款订单提醒</el-checkbox>
     </el-form-item>
     <el-form-item label="企业名称：" prop="AuthenInfo.CompanyName" size="small">
-      <el-input v-model.trim="ruleForm.AuthenInfo.CompanyName" maxlength="30" placeholder="须与营业执照上的名称一致"></el-input>
+      <el-input v-model.trim="ruleForm.AuthenInfo.CompanyName" maxlength="30"
+       placeholder="须与营业执照上的名称一致" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
     </el-form-item>
     <el-form-item label="纳税人识别号：" size="small">
-      <el-input v-model.trim="ruleForm.AuthenInfo.TaxID" maxlength="20" placeholder="营业执照上的纳税人识别号"></el-input>
+      <el-input v-model.trim="ruleForm.AuthenInfo.TaxID" maxlength="20" placeholder="营业执照上的纳税人识别号" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
     </el-form-item>
     <el-form-item label="法人：" size="small">
-      <el-input v-model.trim="ruleForm.AuthenInfo.LegalMan" maxlength="10" placeholder="营业执照上的法人名称"></el-input>
+      <el-input v-model.trim="ruleForm.AuthenInfo.LegalMan" maxlength="10" placeholder="营业执照上的法人名称" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
     </el-form-item>
     <el-form-item label="法人手机号：" prop="AuthenInfo.Mobile" size="small">
-      <el-input v-model.trim="ruleForm.AuthenInfo.Mobile" maxlength="11" placeholder="法人的手机号码"></el-input>
+      <el-input v-model.trim="ruleForm.AuthenInfo.Mobile" maxlength="11" placeholder="法人的手机号码" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
     </el-form-item>
     <el-form-item label="企业类型：" size="small">
-      <el-select v-model="ruleForm.AuthenInfo.Type" placeholder="请选择">
+      <el-select v-model="ruleForm.AuthenInfo.Type" placeholder="请选择" :disabled='!PermissionObj.EditOther && isEdit'>
         <el-option
           v-for="item in CompanyTypeEnumList"
           :key="item.ID"
@@ -51,7 +52,7 @@
           :value="item.ID">
         </el-option>
       </el-select>
-      <el-select v-model="ruleForm.AuthenInfo.Scale" placeholder="请选择">
+      <el-select v-model="ruleForm.AuthenInfo.Scale" placeholder="请选择" :disabled='!PermissionObj.EditOther && isEdit'>
         <el-option
           v-for="item in CompanyScaleEnumList"
           :key="item.ID"
@@ -61,7 +62,7 @@
       </el-select>
     </el-form-item>
     <el-form-item label="经营场所：" size="small">
-      <el-select v-model="ruleForm.AuthenInfo.Place" placeholder="请选择">
+      <el-select v-model="ruleForm.AuthenInfo.Place" placeholder="请选择" :disabled='!PermissionObj.EditOther && isEdit'>
         <el-option
           v-for="item in CompanyPlaceEnumList"
           :key="item.ID"
@@ -89,6 +90,14 @@ export default {
     customer: {
       type: Object,
       default: () => ({}),
+    },
+    PermissionObj: {
+      type: Object,
+      default: () => ({}),
+    },
+    isEdit: {
+      type: Boolean,
+      default: true,
     },
   },
   components: {
