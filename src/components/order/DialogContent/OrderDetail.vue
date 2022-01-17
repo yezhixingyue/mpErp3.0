@@ -216,6 +216,10 @@
                     <span class="text-title">文件内容：</span>
                     <span class="text">{{showData.Content || '无'}}</span>
                   </li>
+                  <li v-if="showData.FileAuthorMobile.trim()">
+                    <span class="text-title">传稿人电话：</span>
+                    <span class="text">{{showData.FileAuthorMobile.trim()}}</span>
+                  </li>
                   <li>
                     <span class="text-title special-title">下单方式：</span>
                     <span class="text">

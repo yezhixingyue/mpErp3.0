@@ -236,9 +236,6 @@ const api = {
   getCouponUseList(data) { // POST /Api/CouponCode/List   获取优惠券使用列表
     return instance.post('/Api/CouponCode/List', data);
   },
-  getCustomerList(data, config) { // POST /Api/Customer/List   优惠券使用列表中获取绑定客户信息
-    return instance.post('/Api/Customer/List', data, config);
-  },
 
   /* 定金设置api
   ----------------------------------------------------------------------------------- */
@@ -886,6 +883,39 @@ const api = {
   },
   getJobPermissionSave(data) { // POST /Api/JobPermission/Save 岗位权限保存
     return instance.post('/Api/JobPermission/Save', data);
+  },
+
+  /* 客户管理api
+  ----------------------------------------------------------------------------------- */
+  getCustomerList(data, config) { // POST /Api/Customer/List   优惠券使用列表中获取绑定客户信息 // POST /Api/Customer/List  获取客户列表  列表FieldType传2  详情传3 + ID
+    return instance.post('/Api/Customer/List', data, config);
+  },
+  // getScopeArrayDataList() { // /Api/Constant/VersionValid 获取主营产品原始数据列表 --- 和获取客户产品分类结果相同
+  //   return instance.post('/Api/Constant/VersionValid', { key: 2, Value: -1 });
+  // },
+  getCustomerCreate(data) { // POST  /Api/Customer/Create  客户信息保存
+    return instance.post('/Api/Customer/Create', data);
+  },
+  getCustomerList2Excel(data) { // POST /Api/CustomerList/Excel
+    return instance.post('/Api/CustomerList/Excel', data, { responseType: 'arraybuffer' });
+  },
+  getCustomerRemove(customerID) { // DELETE /Api/Customer/Remove  customerID  删除客户
+    return instance.delete('/Api/Customer/Remove', { params: { customerID } });
+  },
+  getCustomerChangeStatus(data) { // Post /Api/Customer/ChangeStatus  修改用户状态 ：  冻结及解冻
+    return instance.post('/Api/Customer/ChangeStatus', data);
+  },
+  getManualRecharge(data) { // POST /Api/Manual/Recharge  手动充值|扣款
+    return instance.post('/Api/Manual/Recharge', data);
+  },
+  getCustomerSetPrice(data) { // POST  /Api/Customer/SetPrice  设置单独定价的客户的价格
+    return instance.post('/Api/Customer/SetPrice', data);
+  },
+  getThirdPartyShopList() { // GET /Api/ThirdParty/ShopList 获取第三方店铺列表 用于关联店铺
+    return instance.get('/Api/ThirdParty/ShopList');
+  },
+  getCustomerShopSetup(customerID, shopID) { // PUT /Api/Customer/ShopSetup  设置客户关联店铺
+    return instance.put('/Api/Customer/ShopSetup', null, { params: { customerID, shopID } });
   },
 };
 

@@ -67,7 +67,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    useEmpty: {
+    withEmpty: {
+      type: Boolean,
+      default: false,
+    },
+    initSelect: { // 是否初始选中选项
       type: Boolean,
       default: false,
     },
@@ -81,8 +85,7 @@ export default {
         return this.value;
       },
       set(newVal) {
-        this.changePropsFunc([this.typeList[0], newVal]);
-        this.requestFunc();
+        this.handleChange(newVal);
       },
     },
     localOptions() {
@@ -90,7 +93,7 @@ export default {
       if (Array.isArray(this.options)) {
         list.push(...this.options);
       }
-      if (this.useEmpty) {
+      if (this.withEmpty) {
         list.unshift({ [this.defaultProps.label]: '不限', [this.defaultProps.value]: '' });
       }
       return list;
@@ -98,11 +101,14 @@ export default {
   },
   methods: {
     handleChange(newVal) {
-      // if (newVal === this.RegionalID) return;
-    //  console.log(this.typeList[0], newVal);
       this.changePropsFunc([this.typeList[0], newVal]);
       this.requestFunc();
     },
+  },
+  mounted() {
+    if (this.initSelect && this.value === '' && this.options.length > 0 && this.options[0][this.defaultProps.value] !== '') {
+      this.handleChange(this.options[0][this.defaultProps.value]);
+    }
   },
 };
 </script>
@@ -128,6 +134,9 @@ export default {
       position: relative;
       top: 5px;
       white-space: nowrap;
+    }
+    .el-input__inner {
+      border-radius: 0;
     }
   }
 }

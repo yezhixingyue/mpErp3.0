@@ -81,7 +81,8 @@ export default {
     },
     localOptionList() {
       if (!this.PropertyData || !Array.isArray(this.PropertyData.OptionList) || this.PropertyData.OptionList.length === 0) return [];
-      return this.PropertyData.OptionList;
+      const list = [...this.PropertyData.OptionList];
+      return list.sort((a, b) => a.Second.localeCompare(b.Second));
     },
     checkList: {
       get() {
@@ -238,7 +239,7 @@ export default {
               .el-checkbox {
                 margin-right: 15px;
                 .el-checkbox__label {
-                  width: 145px;
+                  width: 210px;
                   font-size: 12px;
                   text-overflow: ellipsis;
                 }

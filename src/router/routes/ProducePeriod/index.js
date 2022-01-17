@@ -7,7 +7,7 @@ const routes = { // 基本设置
   meta: {
     title: '工期管理',
     requiresAuth: true,
-    icon: 'iconfont icon-gongqiliebiao',
+    icon: 'iconfont icon-gongqiguanli_1',
   },
   children: [
     /*  付款时间

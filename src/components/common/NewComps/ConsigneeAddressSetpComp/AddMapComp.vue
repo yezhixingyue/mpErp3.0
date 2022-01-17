@@ -2,7 +2,7 @@
   <el-dialog
     :visible="visible"
     v-if="visible"
-    top='7vh'
+    :top='top'
     width="1000px"
     v-dialogDrag
     destroy-on-close
@@ -22,14 +22,14 @@
             <header>
               <div>
                 <span class="title">收货人：</span>
-                <el-form-item prop="Consignee">
+                <el-form-item prop="Consignee" size="mini">
                   <el-input v-model.trim="newAdd.Consignee" placeholder="收货人姓名"></el-input>
                 </el-form-item>
               </div>
               <div>
                 <span class="title">手机号：</span>
-                <el-form-item prop="Mobile">
-                  <el-input el-input v-model.trim="Mobile" class="phone-box" placeholder="手机号"></el-input>
+                <el-form-item prop="Mobile" size="mini">
+                  <el-input el-input v-model.trim="Mobile" class="phone-box" placeholder="手机号" maxlength="11"></el-input>
                 </el-form-item>
               </div>
             </header>
@@ -71,7 +71,7 @@
               </div>
               <div class="add-2">
                 <el-form-item prop="AddressDetail">
-                <el-input v-model.trim="AddressDetail" maxlength="60"
+                <el-input v-model.trim="AddressDetail" maxlength="30"
                   show-word-limit placeholder="详细地址 (不包含省市区)"></el-input>
                 </el-form-item>
                 <el-button
@@ -142,6 +142,18 @@ export default {
       type: Array,
       default: null,
     },
+    isEmitType: { // 收集完地址信息后的处理方式：不自动进行接口调用，而是把收集到的结果信息使用emit返回给上级组件，随后执行弹窗关闭
+      type: Boolean,
+      default: false,
+    },
+    top: {
+      type: String,
+      default: '7vh',
+    },
+    allAreaDataList: { // 尚未处理
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     const validateRegional = (rule, value, callback) => {
@@ -187,7 +199,7 @@ export default {
         ],
         AddressDetail: [
           { required: true, message: '请填写详细地址(不包含省市区)', trigger: 'blur' },
-          { min: 1, max: 60, message: '最多60个字符', trigger: 'blur' },
+          { min: 1, max: 30, message: '最多30个字符', trigger: 'blur' },
         ],
         Regional: [
           { validator: validateRegional, trigger: 'change' },
@@ -325,6 +337,11 @@ export default {
             }
             // 新增地址
             const _obj = JSON.parse(JSON.stringify(this.newAdd));
+            if (this.isEmitType) {
+              this.$emit('submit', _obj, this.openType);
+              this.handleBeforeDiaClose();
+              return;
+            }
             const res = await this.api.getCustomerAddress(_obj);
             // // console.log(res);
             if (res.data.Status === 1000) {
@@ -359,6 +376,11 @@ export default {
         this.$refs[formName].validate(async (valid) => {
           if (valid) {
             const _obj = JSON.parse(JSON.stringify(this.newAdd));
+            if (this.isEmitType) {
+              this.$emit('submit', _obj, this.openType);
+              this.handleBeforeDiaClose();
+              return;
+            }
             if (this.isTemp) {
               this.$message({
                 message: '已定位',
@@ -624,6 +646,29 @@ export default {
       display: inline-block;
       text-align: right;
     }
+    .el-dialog__header {
+      padding:  10px;
+      margin: 0 10px;
+      line-height: 30px;
+      border-bottom: 1px solid #eee;
+      font-size: 15px;
+      color: #888E99;
+      .el-dialog__headerbtn {
+        top: 15px;
+      }
+      > header {
+        &::before {
+          content: '';
+          height: 16px;
+          width: 3px;
+          background-color: #26bcf9;
+          display: inline-block;
+          position: relative;
+          top: 2px;
+          margin-right: 10px;
+        }
+      }
+    }
     .el-dialog__body {
       padding-left: 22px;
       padding-right: 22px;
@@ -652,33 +697,13 @@ export default {
                       > .el-form-item {
                         display: inline-block;
                         > .el-form-item__content {
-                          height: 35px;
+                          height: 28px;
                           > .el-input {
-                            width: 120px;
-                            > input {
-                              height: 30px !important;
-                              line-height: 26px\0;
-                              font-size: 14px;
-                              padding-left: 12px;
-                              // padding-right: 12px;
-                              &::placeholder {
-                                color: #cbcbcb;
-                              }
-                            }
-                            // &.phone-box {
-                            //   width: 126px;
-                            // }
+                            width: 128px;
                           }
                         }
-                        // &.is-error {
-                        //   > .el-form-item__content {
-                        //     // height: 50px;
-                        //     // margin-bottom: 14px;
-                        //   }
-                        // }
                       }
                     }
-                    // margin-bottom: 25px;
                   }
                   > .content {
                     .el-loading-mask {
@@ -695,21 +720,11 @@ export default {
                       > .el-form-item {
                         display: inline-block;
                         > .el-form-item__content {
-                          height: 35px;
+                          height: 28px;
                           > .el-select {
-                            line-height: 30px;
+                            line-height: 28px;
+                            width: 128px;
                             > .el-input {
-                              width: 100px;
-                              > input {
-                                height: 30px;
-                                font-size: 13px;
-                                padding-left: 12px;
-                                padding-right: 22px;
-                                line-height: 26px\0;
-                                &::placeholder {
-                                  color: #cbcbcb;
-                                }
-                              }
                               > span {
                                 right: 2px;
                               }
@@ -717,11 +732,9 @@ export default {
                             margin-right: 16px;
                           }
                         }
-                        &.is-error {
-                          > .el-form-item__content {
-                            // height: 50px;
-                            margin-bottom: 13px;
-                          }
+                        > .el-form-item__content {
+                          // height: 50px;
+                          margin-bottom: 13px;
                         }
                       }
                       // margin-bottom: 10px;
@@ -732,25 +745,14 @@ export default {
                         margin-left: 70px;
                         margin-right: 36px;
                         > .el-form-item__content {
-                          height: 35px;
-                          > .el-input {
+                          height: 28px;
+                          .el-input {
                             width: 700px;
-                            > input {
-                              height: 30px;
-                              font-size: 14px;
-                              padding-left: 12px;
-                              line-height: 26px\0;
-                              &::placeholder {
-                                color: #cbcbcb;
-                              }
-                            }
                           }
                         }
-                        &.is-error {
-                          > .el-form-item__content {
-                            // height: 50px;
-                            margin-bottom: 13px;
-                          }
+                        > .el-form-item__content {
+                          // height: 50px;
+                          margin-bottom: 13px;
                         }
                       }
                       > button {
@@ -773,6 +775,25 @@ export default {
                   margin-left: 8px;
                 }
                 color: #585858;
+                .el-input {
+                  height: 28px;
+                  > input {
+                    height: 28px !important;
+                    line-height: 24px\0;
+                    font-size: 12px;
+                    padding-left: 12px;
+                    &::placeholder {
+                      color: #cbcbcb;
+                      font-size: 13px;
+                    }
+                  }
+                  .el-input__icon {
+                    height: 28px;
+                  }
+                  &.phone-box {
+                    width: 202px !important;
+                  }
+                }
           }
           .el-form-item {
             margin-bottom: 3px;

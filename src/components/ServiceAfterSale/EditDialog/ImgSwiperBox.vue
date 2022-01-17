@@ -4,7 +4,7 @@
       class="mp-img-swiper-box" arrow="always" :autoplay="false" indicator-position="none">
       <el-carousel-item v-for="(item,i) in imgList" :key="i">
         <div class="img-box">
-          <el-image :src="item"
+          <el-image :src="item" :mpCloseViewer='()=>{}'
         :preview-src-list="[item]" @click="onImgClick" alt />
         </div>
       </el-carousel-item>

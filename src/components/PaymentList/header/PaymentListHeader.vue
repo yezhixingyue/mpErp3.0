@@ -73,5 +73,8 @@ export default {
       margin-right: 80px !important;
     }
   }
+  .mp-time-serach-wrap .text {
+    padding-left: 0;
+  }
 }
 </style>

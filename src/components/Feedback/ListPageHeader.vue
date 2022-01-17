@@ -63,7 +63,7 @@
         :dateList="dateList"
         dateType="date"
         />
-        <search-input-comp
+        <SearchInputComp
         class="search-section"
         :typeList="[['KeyWords', '']]"
         title="关键词"

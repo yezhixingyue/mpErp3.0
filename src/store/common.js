@@ -119,8 +119,10 @@ export default {
     -------------------------------*/
     userTypeList: [{ CategoryID: '', CategoryName: '不限' }], // 客户类型
     userRankList: [{ CategoryID: '', CategoryName: '不限' }], // 客户等级
+    userVipList: [{ CategoryID: '', CategoryName: '不限' }], // 价格等级
     userTypeListNoneEmpty: [], // 客户类型 -- 不包含不限
     userRankListNoneEmpty: [], // 客户等级 -- 不包含不限
+    userVipListNoneEmpty: [], // 客户价格等级 -- 不包含不险
     /* 下单方式相关
     -------------------------------*/
     orderCreateTypeList: [
@@ -527,8 +529,15 @@ export default {
     },
     /* 2级分类 产品 树结构
     -------------------------------*/
-    twoLevelsProductClassify(state) { // 去除子列表为空的类别
+    twoLevelsProductClassify(state) { // 去除子列表为空的类别  代客下单分类
       const type = 6;
+      const target = state.ProductMultipleClassifyList.find(it => it.ID === type);
+      if (!target) return [];
+      const classList = target.List;
+      return getTwoLevelsClassifyDataFromList(classList);
+    },
+    twoLevelsProductClassify4Customer(state) { // 去除子列表为空的类别  客户分类
+      const type = 2;
       const target = state.ProductMultipleClassifyList.find(it => it.ID === type);
       if (!target) return [];
       const classList = target.List;
@@ -628,11 +637,13 @@ export default {
     },
     /* 设置用户类别数据
     -------------------------------*/
-    setUserInfo(state, [type, rank]) {
+    setUserInfo(state, [type, rank, vip]) {
       state.userTypeList = type;
       state.userRankList = rank;
+      state.userVipList = vip;
       state.userTypeListNoneEmpty = type.filter(it => it.CategoryID);
       state.userRankListNoneEmpty = rank.filter(it => it.CategoryID);
+      state.userVipListNoneEmpty = vip.filter(it => it.CategoryID);
     },
     /* 设置接单员列表数据
     -------------------------------*/
@@ -730,7 +741,7 @@ export default {
     /* 物料列表
     -------------------------------*/
     setMaterialAllList(state, list) { // 设置全部物料列表
-      state.MaterialAllList = list.sort((a, b) => a.DisplayName.localeCompare(b.DisplayName));
+      state.MaterialAllList = list.map((it, i) => ({ ...it, _originIndex: i })).sort((a, b) => a.DisplayName.localeCompare(b.DisplayName));
     },
     setLastPagePaths(state, path) { // 设置上一个页面的path路径
       state.lastPagePaths = state.lastPagePaths.filter(it => it.name !== path.name);
@@ -814,8 +825,9 @@ export default {
         const tempArr = resp.data.Data;
         const type = tempArr.filter((item) => item.Type === 1);
         const rank = tempArr.filter((item) => item.Type === 2);
+        const vipRank = tempArr.filter((item) => item.Type === 3);
         const arr = [{ CategoryID: '', CategoryName: '不限' }];
-        commit('setUserInfo', [[...arr, ...type], [...arr, ...rank]]);
+        commit('setUserInfo', [[...arr, ...type], [...arr, ...rank], [...arr, ...vipRank]]);
       }
     },
     async getStaffList({ state, commit }) { // 获取员工列表

@@ -119,6 +119,31 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../views/FeedbackPage.vue'),
     },
+    /*  客户管理
+    ------------------------------------------ */
+    {
+      path: '/CustomerManageList',
+      name: 'CustomerManageList',
+      meta: {
+        title: '客户管理',
+        icon: 'iconfont icon-kehuguanli',
+        pageName: 'CustomerManageListPage',
+        PermissionInfo: ['PermissionManageCustomer', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CustomerManage/CustomerManageListPage.vue'),
+    },
+    {
+      path: '/CustomerManageSetup/:ID',
+      name: 'CustomerManageSetup',
+      meta: {
+        title: '客户设置',
+        pageName: 'CustomerManageSetupPage',
+        PermissionInfo: ['PermissionManageCustomer', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CustomerManage/CustomerManageSetupPage.vue'),
+    },
     /*  统计分析
     ------------------------------------------ */
     ...StatisticAnalyseRoutes.routes,
@@ -149,6 +174,13 @@ const routeTree = {
     /*  售后申请列表
     ------------------------------------------ */
     { name: 'feedback', children: [] },
+    /*  客户管理
+    ------------------------------------------ */
+    { name: 'CustomerManageList',
+      children: [
+        { name: 'CustomerManageSetup', children: [] },
+      ],
+    },
     /*  统计分析
     ------------------------------------------ */
     ...StatisticAnalyseRoutes.routeTree,

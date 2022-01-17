@@ -1,6 +1,6 @@
 <template>
   <section class="mp-erp-file-manage-page-wrap">
-    <header v-if="Permission && Permission.PermissionList.PermissionFileCategory.Obj.SetupClass">
+    <header v-if="Permission && Permission.PermissionList.PermissionFileCategory.Obj.Setup">
       <el-button type="primary" class="blue-full-color-btn-styles is-blue-button" @click="onFileSetClick(null)">添加文件类目</el-button>
     </header>
     <main>

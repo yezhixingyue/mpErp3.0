@@ -6,6 +6,76 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "27220505",
+      "name": "印豆管理",
+      "font_class": "yindouguanli",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "27220511",
+      "name": "消费返现",
+      "font_class": "xiaofeifanxian",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "27058555",
+      "name": "岗位管理_1",
+      "font_class": "gangweiguanli_1",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "27058513",
+      "name": "价格策略",
+      "font_class": "jiagecelve",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "27058514",
+      "name": "客户管理",
+      "font_class": "kehuguanli",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "27058516",
+      "name": "客户设置",
+      "font_class": "kehushezhi",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "27058517",
+      "name": "销售区域",
+      "font_class": "xiaoshouquyu",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "27058435",
+      "name": "员工管理",
+      "font_class": "yuangongguanli",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "27057433",
+      "name": "部门管理_2",
+      "font_class": "bumenguanli_2",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "27056370",
+      "name": "工期管理_1",
+      "font_class": "gongqiguanli_1",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
       "icon_id": "26704026",
       "name": "发货班次",
       "font_class": "fahuobanci",

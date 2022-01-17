@@ -89,7 +89,7 @@ export default {
       }
       padding: 0 7px 0 5px;
       line-height: 25px;
-      padding-right: 20px;
+      padding-right: 16px;
     }
     &::after {
         content: "";
@@ -100,6 +100,17 @@ export default {
         width: 11px;
         right: 5px;
         top: 5px;
+        top: 7px;
+        right: 4px;
+        background: none;
+        border: 5px solid #eee;
+        width: 0;
+        height: 0;
+        border-top-width: 6px;
+        border-bottom-width: 0px;
+        border-color: rgba($color: #000000, $alpha: 0);
+        border-top-color: rgba($color: #000000, $alpha: 0.3);
+        border-radius: 2px;
     }
     > .el-input__suffix {
         display: none;

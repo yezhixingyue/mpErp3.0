@@ -1,10 +1,10 @@
 /*
  * @Author: your name
  * @Date: 2020-05-11 12:16:03
- * @LastEditTime: 2020-05-26 10:36:42
+ * @LastEditTime: 2022-01-08 09:58:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \orderList\src\assets\js\setInfo.js
+ * @FilePath: /src/assets/js/utils/setInfo.js
  */
 
 /**
@@ -13,11 +13,11 @@
  * @param {*} token
  * @returns
  */
-const setInfo = (token) => {
-  if (!token) return;
-  if (sessionStorage.getItem('ErpToken')) sessionStorage.removeItem('ErpToken');
-  sessionStorage.setItem('ErpToken', JSON.stringify(token));
-  delete window.setInfo;
-};
+// const setInfo = (token) => {
+//   if (!token) return;
+//   if (localStorage.getItem('ErpToken')) localStorage.removeItem('ErpToken');
+//   localStorage.setItem('ErpToken', JSON.stringify(token));
+//   delete window.setInfo;
+// };
 
-export default setInfo;
+// export default setInfo;

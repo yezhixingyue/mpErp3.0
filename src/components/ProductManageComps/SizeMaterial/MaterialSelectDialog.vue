@@ -126,6 +126,7 @@ export default {
       set(bool) {
         this.list = this.list.filter(it => it.Type && it.Type.ID !== this.activeType);
         if (bool) this.list.push(...this.curTypeItemList);
+        // 触发顺序变动
       },
     },
     isIndeterminateAll() {

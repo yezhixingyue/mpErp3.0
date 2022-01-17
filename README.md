@@ -1079,3 +1079,118 @@ UseModule枚举中加入
 PropertyFixedType枚举中加入
         工期数据
         ProducePeriodItemData = 39,
+
+## 注册方式  RegType ----------- 客户管理使用
+
+        客户端
+        Client = 0,
+
+        网页版
+        Web = 1,
+
+        微信
+        Mobile = 2,
+
+        员工添加
+        Manual = 255
+
+## 认证状态  AuthStatus
+
+        未申请
+        Initial = 0,
+
+        申请
+        Apply = 1,
+
+        通过
+        Checked = 2,
+
+        拒绝
+        Refuse = 3,
+
+## 客户状态  CustomerStatus
+
+        正常
+        Nomal = 1,
+
+        已冻结
+        Freezed = 2,
+
+        已删除
+        Deleted = 3
+
+## 账号状态  AccountStatus
+
+        正常
+        Nomal = 1,
+
+        禁用
+        Forbit,
+
+## 返现类型  CashBackType
+
+        充值返现
+        Recharge = 1,
+
+        消费返现
+        Consume,
+
+## 企业类型  CompanyType
+
+        类型不清楚
+        UnKown =   0
+        
+        设计公司
+        
+        DesignCompany = 1,
+        
+        个体户
+        
+        SelfEmployed = 2,
+        
+        连锁店
+        
+        MultyShop = 3,
+        
+        渠道店铺
+        
+        ChannelShop = 4,
+        
+        电商商户
+        
+        EBusiness = 5,
+    }
+
+## 经营场所  CompanyPlace
+
+        场所不清楚
+        UnKown =   0
+
+        店面
+        Shops = 1,
+        
+        住宅
+        House,
+
+        办公室
+        Office,
+        
+        工业园
+        IndustrialPark
+
+## 经营规模 CompanyScale
+
+        规模不清楚
+        UnKown =   0
+
+        1-5
+        OneToFive = 1,
+        
+        6-15
+        SixToFifteen 2,
+        
+        16-50
+        SixteenToFifty 3,
+
+        大于50
+        MoreThanFifty 4

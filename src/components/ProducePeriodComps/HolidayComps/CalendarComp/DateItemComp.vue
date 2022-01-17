@@ -157,7 +157,7 @@ export default {
   &.isBefore {
     // cursor: not-allowed;
     // pointer-events: none;
-    cursor: auto;
+    cursor: not-allowed;
     opacity: 0.4;
   }
   &.visible {

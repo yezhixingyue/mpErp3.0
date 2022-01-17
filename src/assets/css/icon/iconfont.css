@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2672534 */
-  src: url('iconfont.woff2?t=1640683500512') format('woff2'),
-       url('iconfont.woff?t=1640683500512') format('woff'),
-       url('iconfont.ttf?t=1640683500512') format('truetype');
+  src: url('iconfont.woff2?t=1642403433292') format('woff2'),
+       url('iconfont.woff?t=1642403433292') format('woff'),
+       url('iconfont.ttf?t=1642403433292') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,46 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-yindouguanli:before {
+  content: "\e642";
+}
+
+.icon-xiaofeifanxian:before {
+  content: "\e643";
+}
+
+.icon-gangweiguanli_1:before {
+  content: "\e63f";
+}
+
+.icon-jiagecelve:before {
+  content: "\e63d";
+}
+
+.icon-kehuguanli:before {
+  content: "\e63e";
+}
+
+.icon-kehushezhi:before {
+  content: "\e640";
+}
+
+.icon-xiaoshouquyu:before {
+  content: "\e641";
+}
+
+.icon-yuangongguanli:before {
+  content: "\e63b";
+}
+
+.icon-bumenguanli_2:before {
+  content: "\e639";
+}
+
+.icon-gongqiguanli_1:before {
+  content: "\e63a";
 }
 
 .icon-fahuobanci:before {

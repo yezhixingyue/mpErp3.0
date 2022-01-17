@@ -144,7 +144,7 @@ export default class HolidayClass {
     const _RestDateList = dateList.filter(it => it.resting).map(it => it.d);
     const _NoSetDateList = dateList.filter(it => it.empty).map(it => it.d);
     const _WorkDateList = dateList.filter(it => it.working).map(it => it.d);
-    if (_RestDateList.length === 0 && _NoSetDateList.length === 0 && _WorkDateList.length === 0) return throwFalseFunc('未设置有效状态'); // --- !!
+    if (_RestDateList.length === 0 && _NoSetDateList.length === 0 && _WorkDateList.length === 0) return throwFalseFunc('未设置有效日期状态'); // --- !!
     // 完成校验
 
     _itemData.RestDateList = _RestDateList;
