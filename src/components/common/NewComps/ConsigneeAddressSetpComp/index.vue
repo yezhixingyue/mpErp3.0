@@ -97,6 +97,7 @@
                     :key="item.ID"
                     :label="item.Name"
                     :value="item.ID"
+                    :disabled='!ExpressValidList.includes(item.ID)'
                   >
                   </el-option>
                 </el-select>
@@ -113,6 +114,7 @@
                     :key="item.ID"
                     :label="item.Name"
                     :value="item.ID"
+                    :disabled='!ExpressValidList.includes(item.ID)'
                   >
                   </el-option>
                 </el-select>
@@ -162,6 +164,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { amapAppkey } from '@/assets/js/setup';
 import AddMapComp from './AddMapComp.vue';
 import IdentifyFormItem from './IdentifyFormItem.vue';
@@ -197,8 +200,8 @@ export default {
   },
   data() {
     return {
-      secondExVal: 11, // 快递
-      thirdExVal: 31, // 物流
+      secondExVal: '', // 快递
+      thirdExVal: '', // 物流
       Express: {
         First: 1,
         Second: 1,
@@ -226,7 +229,7 @@ export default {
         isSelected: true,
       },
       curAddIndex: '', //  new | 地址数组索引号
-      ExpressValidList: [1, 2, 3], // 当前可用物流方式
+      ExpressValidList: [], // 当前可用物流方式
       ValidExpressLoading: false, // 获取有效配送方式的loading状态
       OutPlateNo: '', // 平台单号
       ParseContent: '',
@@ -238,13 +241,21 @@ export default {
     };
   },
   computed: {
+    ...mapState('Quotation', ['curProductID']),
+    localExpressList() {
+      return this.ExpressList.map(it => ({
+        ...it,
+        ids: it.List.map(_it => _it.ID),
+        useableIds: it.List.map(_it => _it.ID).filter(_it => this.ExpressValidList.includes(_it)),
+      }));
+    },
     secondExpressList() {
-      if (this.ExpressList.length === 0) return [];
-      return this.ExpressList.find((it) => it.Type === 3).List;
+      if (this.localExpressList.length === 0) return [];
+      return this.localExpressList.find((it) => it.Type === 3).List;
     },
     thirdExpressList() {
-      if (this.ExpressList.length === 0) return [];
-      return this.ExpressList.find((it) => it.Type === 2).List;
+      if (this.localExpressList.length === 0) return [];
+      return this.localExpressList.find((it) => it.Type === 2).List;
     },
     curAddressInfo() {
       if (!this.customerInfo) return '';
@@ -265,10 +276,8 @@ export default {
         return this.secondExVal;
       },
       set(newVal) {
-        this.secondExVal = newVal;
-        this.Express.Second = newVal;
-        this.setInfo4ReqObj();
-        this.handleValidAddressChange();
+        if (newVal === this.Express.Second) return;
+        this.onRadioChange(this.Express.First, newVal);
       },
     },
     thirdExValFor2: {
@@ -276,17 +285,17 @@ export default {
         return this.thirdExVal;
       },
       set(newVal) {
-        this.thirdExVal = newVal;
-        this.Express.Second = newVal;
-        this.setInfo4ReqObj();
-        this.handleValidAddressChange();
+        if (newVal === this.Express.Second) return;
+        this.onRadioChange(this.Express.First, newVal);
       },
     },
     ExpressTypeDisabled() {
+      const logisticItem = this.localExpressList.find(it => it.Type === 2);
+      const expressItem = this.localExpressList.find(it => it.Type === 3);
       return {
         canMpzj: this.ExpressValidList.includes(1) && !this.OutPlateNo, // 名片之家
-        canExpress: this.ExpressValidList.includes(3), // 快递
-        canLogistic: this.ExpressValidList.includes(2), // 物流
+        canExpress: expressItem && expressItem.useableIds.length > 0, // 快递
+        canLogistic: logisticItem && logisticItem.useableIds.length > 0, // 物流
       };
     },
     addCompTitle() {
@@ -301,34 +310,47 @@ export default {
     onVisibleChangeFor2(bool) {
       if (!bool || !this.ExpressTypeDisabled.canLogistic) return;
       if (this.Express.First === 2 && this.Express.Second === this.thirdExVal) return;
-      this.Express.First = 2;
-      this.Express.Second = this.thirdExVal;
-      this.setInfo4ReqObj();
-      this.handleValidAddressChange();
+      this.onRadioChange(2);
     },
     onVisibleChangeFor3(bool) {
       if (!bool || !this.ExpressTypeDisabled.canExpress) return;
       if (this.Express.First === 3 && this.Express.Second === this.secondExVal) return;
-      this.Express.First = 3;
-      this.Express.Second = this.secondExVal;
-      this.setInfo4ReqObj();
-      this.handleValidAddressChange();
+      this.onRadioChange(3);
     },
-    onRadioChange(num) { // 配送方式选择切换
-      switch (num) {
-        case 1: // mpzj
-          this.Express.Second = 1;
-          break;
-        case 2: // wuliu
-          this.Express.Second = this.thirdExVal;
-          break;
-        case 3: // kuaidi
-          this.Express.Second = this.secondExVal;
-          break;
-        default:
-          break;
+    onRadioChange(First, Second) { // 配送方式选择切换
+      let _Second;
+      if (First === '') {
+        _Second = '';
+      } else if (Second || Second === 0) {
+        _Second = Second;
+      } else {
+        let temp = '';
+        switch (First) {
+          case 1: // mpzj
+            temp = 1;
+            break;
+          case 2: // wuliu
+            temp = this.thirdExVal;
+            break;
+          case 3: // kuaidi
+            temp = this.secondExVal;
+            break;
+          default:
+            break;
+        }
+        if (this.ExpressValidList.includes(temp)) {
+          _Second = temp;
+        } else {
+          const t = this.localExpressList.find(it => it.Type === First);
+          // eslint-disable-next-line prefer-destructuring
+          if (t && t.useableIds.length > 0) _Second = t.useableIds[0];
+          else _Second = '';
+        }
       }
-      if (this.Express.First !== num) this.Express.First = num;
+      this.Express.Second = _Second;
+      if (First === 2) this.thirdExVal = _Second;
+      if (First === 3) this.secondExVal = _Second;
+      if (this.Express.First !== First) this.Express.First = First;
       this.setInfo4ReqObj();
       this.handleValidAddressChange();
     },
@@ -367,11 +389,11 @@ export default {
       this.SetAddressVisible = false;
       if (this.setMapVisible) this.setMapVisible = false;
       this.ValidExpressLoading = true;
-      const resp = await this.api.getExpressValidList(this.NewAddressInfo);
+      const resp = await this.api.getExpressUseableCompanyList(this.NewAddressInfo);
       this.ValidExpressLoading = false;
       if (resp.data.Status === 1000) {
         this.ExpressValidList = resp.data.Data;
-        if (resp.data.Data.includes(this.Express.First)) {
+        if (resp.data.Data.includes(this.Express.Second)) {
           this.judgeValidEventEmit(ExpressArea, oldExpressArea);
         }
       }
@@ -549,17 +571,48 @@ export default {
         this.$emit('validChange', e);
       });
     },
+    handleInfoChange() {
+      if (this.customerInfo) {
+        this.curAddIndex = '';
+        this.Express = {
+          First: 1,
+          Second: 1,
+        };
+        this.$nextTick(() => {
+          this.initCurAddIndex();
+        });
+      }
+    },
   },
   watch: {
     ExpressValidList(newVal) {
-      if (newVal.length === 3) return;
       if (newVal.length === 0) {
-        this.messageBox.failSingleError('地址匹配失败', '当前地址没有可用配送方式，请更换地址');
+        this.messageBox.failSingleError('当前地址无法配送', '请更换地址或留意当地配送信息公告');
+        this.onRadioChange('');
+        return;
       }
-      if (newVal.length > 0 && newVal.length < 3) {
-        if (newVal.includes(this.Express.First)) return;
-        const _t = newVal[0];
-        this.onRadioChange(_t);
+      if (this.secondExVal === '') {
+        const t = this.localExpressList.find(it => it.Type === 3);
+        if (t && t.useableIds.length > 0) {
+          [this.secondExVal] = t.useableIds;
+        }
+      }
+      if (this.thirdExVal === '') {
+        const t = this.localExpressList.find(it => it.Type === 2);
+        if (t && t.useableIds.length > 0) {
+          [this.thirdExVal] = t.useableIds;
+        }
+      }
+      if (newVal.includes(this.Express.Second)) return;
+      if (newVal.includes(1)) {
+        this.onRadioChange(1);
+        return;
+      }
+      const t = this.localExpressList.find(it => it.useableIds.length > 0);
+      if (t) {
+        this.onRadioChange(t.Type);
+      } else {
+        this.onRadioChange('');
       }
     },
     async curAddIndex(newVal, oldVal) {
@@ -569,11 +622,11 @@ export default {
       // this.$store.commit('common/changeSelectedAdd', _t);
       this.$emit('changeDefaultSelectAddress', _t);
       this.ValidExpressLoading = true;
-      const res = await this.api.getExpressValidList(_t);
+      const res = await this.api.getExpressUseableCompanyList(_t).catch(() => null);
       this.ValidExpressLoading = false;
-      if (res.data.Status === 1000) {
+      if (res && res.data.Status === 1000) {
         this.ExpressValidList = res.data.Data;
-        if (res.data.Data.includes(this.Express.First)) {
+        if (res.data.Data.includes(this.Express.Second)) {
           const curAddExpressArea = this.customerInfo.Address[newVal] ? this.customerInfo.Address[newVal].ExpressArea : null;
           let oldAddExpressArea = typeof oldVal === 'number' ? this.customerInfo.Address[oldVal]?.ExpressArea : null;
           if (!oldAddExpressArea && oldVal === 'new') oldAddExpressArea = this.NewAddressInfo.ExpressArea;
@@ -584,18 +637,8 @@ export default {
     watchClearVal() {
       this.clearCurProductState();
     },
-    customerInfo(val) {
-      if (val) {
-        this.curAddIndex = '';
-        this.ExpressValidList = [1, 2, 3];
-        this.Express = {
-          First: 1,
-          Second: 1,
-        };
-        this.$nextTick(() => {
-          this.initCurAddIndex();
-        });
-      }
+    customerInfo() {
+      this.handleInfoChange();
     },
   },
   created() {
@@ -650,6 +693,9 @@ export default {
               .el-radio__label {
                 color: #585858;
                 font-size: 13px;
+              }
+              .is-cancel {
+                color: #bbb !important;
               }
             }
           }

@@ -68,6 +68,7 @@
        @removeSelected='handleRemoveSelected'
        @checkAll='handleCheckAll'
        @clearSuccess='handleClearSuccess'
+       :address='address'
        />
     </footer>
   </section>
