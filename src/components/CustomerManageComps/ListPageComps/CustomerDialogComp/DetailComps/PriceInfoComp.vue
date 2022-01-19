@@ -15,7 +15,7 @@
           <span>{{EBusinessObj.CashBackTypeContent}}</span>
         </li>
         <li>
-          <label>返现最小充值金额：</label>
+          <label>{{amountLabel}}</label>
           <span class="is-bold is-pink">{{EBusinessObj.MinAmount}}元</span>
         </li>
         <li>
@@ -32,7 +32,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import { CashBackTypeEnumList, CustomerPriceTypeEnum } from '../../../../../store/customerManage/Enums';
+import { CashBackTypeEnumList, CustomerPriceTypeEnum, CashBackTypeEnum } from '../../../../../store/customerManage/Enums';
 
 export default {
   props: {
@@ -77,6 +77,11 @@ export default {
         };
       }
       return null;
+    },
+    amountLabel() {
+      if (this.customer.FundInfo.CashBackType === CashBackTypeEnum.Recharge.ID) return '返现最小充值金额：';
+      if (this.customer.FundInfo.CashBackType === CashBackTypeEnum.Consume.ID) return '月消费金额：';
+      return '';
     },
   },
   methods: {

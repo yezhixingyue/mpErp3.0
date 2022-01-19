@@ -45,7 +45,7 @@ const api = {
     return instance.post('/Api/PaymentOrder/List', data);
   },
   cancelCustomerPay(payCode) { // 取消付款单 /Api/PaymentOrder/Cancle
-    return instance.put(`/Api/PaymentOrder/Cancle?payCode=${payCode}`);
+    return instance.put(`/Api/PaymentOrder/Cancle?payCode=${payCode}&isAddPrepare=false`);
   },
   transferToPrepareOrder(payCode) { // 付款单转待下单
     return instance.put(`/Api/PaymentOrder/TransferToPrepareOrder?payCode=${payCode}`);

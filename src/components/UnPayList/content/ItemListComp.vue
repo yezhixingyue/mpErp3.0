@@ -75,7 +75,7 @@
               <span v-else class="is-cancel">
                 <img src="@/assets/images/unpay.png" alt />付款
               </span>
-            </li>
+            </li> -->
             <li class="handle-menu-item"
              v-if="Permission.PermissionList.PermissionManageOrder.Obj.HelpSubmit">
               <span v-if="item.Status !== 254 && item.Status !== 200" @click="cancelOrder(item)">
@@ -84,7 +84,7 @@
               <span v-else class="is-cancel">
                 <img src="@/assets/images/cancelstop.png" alt />取消
               </span>
-            </li> -->
+            </li>
           </ul>
         </div> <!-- 操作 -->
       </li>

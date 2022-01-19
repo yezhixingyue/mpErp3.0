@@ -70,7 +70,7 @@
           </span>
           <span v-else class="is-cancel"><img src="@/assets/images/unpay.png" alt="">付款</span>
         </li>
-        <!-- <li class="handle-menu-item">
+        <li class="handle-menu-item" v-if="localPermission.Pay">
           <span
             v-if="scope.row.Status !== 255 && scope.row.Status !== 2"
             @click="onMenuClick(scope.row, 2)">
@@ -78,7 +78,7 @@
           </span>
           <span v-else class="is-cancel"><img src="@/assets/images/cancelstop.png" alt="">取消</span>
         </li>
-        <li class="handle-menu-item" style="width: 80px;">
+        <!-- <li class="handle-menu-item" style="width: 80px;">
           <div v-show="scope.row.Status === 255" >
             <span @click="onMenuClick(scope.row, 3)"
              v-if="!scope.row.HaveBackOrderPrepare && makeTrue(scope.row.CreateTime)">

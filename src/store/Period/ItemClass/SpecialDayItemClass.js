@@ -123,9 +123,9 @@ export default class SpecialDayItemClass {
       if (new Date(getDateString(DelayStartTime)).getTime() >= new Date(getDateString(DelayEndTime)).getTime()) {
         return throwFalseFunc('结束时间必须晚于开始时间');
       }
-      if (new Date(getDateString(DelayEndTime)).getTime() <= Date.now()) {
-        return throwFalseFunc('结束时间必须晚于当前时间');
-      }
+      // if (new Date(getDateString(DelayEndTime)).getTime() <= Date.now()) {
+      //   return throwFalseFunc('结束时间必须晚于当前时间');
+      // }
       if (!DelayTypeEnumIDList.includes(DelayType)) return throwFalseFunc('请选择时间范围类型');
       if (!DelayTime && DelayTime !== 0) return throwFalseFunc('请输入延长工时');
       if (!getValueIsOrNotNumber(DelayTime, true)) return throwFalseFunc('延长工时必须为整数格式');

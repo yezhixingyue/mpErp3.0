@@ -47,7 +47,7 @@
                 </p>
                 <p>
                   <em v-for="(res,ri) in item.result.filter(_it => _it)" :key="res + ri" style="margin-right:4px">{{res}}
-                    <i style="color:#33BBD5;font-weight:700;font-size:13px" v-if="ri < item.result.length - 1">；</i>
+                    <i style="font-weight:700;font-size:13px" v-if="ri < item.result.length - 1">；</i>
                   </em>
                 </p> -->
               </div>

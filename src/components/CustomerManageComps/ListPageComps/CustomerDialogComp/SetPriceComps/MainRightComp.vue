@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     amountLabel() {
-      if (this.FundInfo.CashBackType === CashBackTypeEnum.Recharge.ID) return '返点最小充值金额：';
+      if (this.FundInfo.CashBackType === CashBackTypeEnum.Recharge.ID) return '返现最小充值金额：';
       if (this.FundInfo.CashBackType === CashBackTypeEnum.Consume.ID) return '月消费金额：';
       return '';
     },

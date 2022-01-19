@@ -106,5 +106,8 @@ export default {
       }
     }
   }
+  .mp-el-del-btn {
+    display: none;
+  }
 }
 </style>
