@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-period-manage-special-day-manage-setup-page" v-if="SpecialDayForm">
     <header>
-      <p class="mp-common-title-wrap">{{saveType}}特殊情况</p>
+      <p class="mp-common-title-wrap">{{saveType}}运输特殊情况</p>
     </header>
     <main>
       <ul>
@@ -118,8 +118,9 @@
       <ADAreaDialogSelector :visible.sync="visible" v-model="SpecialDayForm.AreaList" :AreaDescribe.sync='SpecialDayForm.AreaDescribe' />
     </main>
     <footer>
-      <el-button type='primary' class="is-blue-button" @click="onSubmitClick">保存</el-button>
+      <el-button type='primary' class="is-blue-button" :disabled='hasError' @click="onSubmitClick">保存</el-button>
       <el-button class="cancel-blue-btn" @click="onGoBackClick"><i>＜＜</i> 返回</el-button>
+      <span v-if="hasError" class="is-pink is-font-size-12" style="margin-left:30px">获取详情数据发生错误，请退出重进</span>
     </footer>
   </section>
 </template>
@@ -130,7 +131,7 @@ import SpecialDayItemClass, { SpecialTypeEnumList, DelayTypeEnumList, SpecialTyp
 import ADAreaDialogSelector from '@/components/common/SelectorComps/ADAreaDialogSelector/index.vue';
 
 export default {
-  name: 'SpecialDaySetupPage',
+  name: 'ExpressSpecialDaySetupPage',
   components: {
     ADAreaDialogSelector,
   },
@@ -141,6 +142,7 @@ export default {
       SpecialTypeList: SpecialTypeEnumList,
       DelayTypeList: DelayTypeEnumList,
       SpecialTypeEnums,
+      hasError: false,
     };
   },
   computed: {
@@ -207,8 +209,10 @@ export default {
       let temp;
       const { ItemID } = this.$route.params;
       if (ItemID !== 'null') {
+        this.hasError = false;
         const resp = await this.api.getSpecialDayDetail(ItemID).catch(() => null);
         if (resp && resp.data.Status === 1000) temp = resp.data.Data;
+        else this.hasError = true;
       }
       this.SpecialDayForm = new SpecialDayItemClass(temp);
       this.filterEditDataExpressList();
@@ -354,7 +358,7 @@ export default {
     background-color: #fff;
     height: 100px;
     padding-left: 306px;
-    button {
+    button.el-button {
       width: 120px;
       height: 35px;
       padding: 0;
@@ -362,6 +366,9 @@ export default {
       i {
         transform: scaleY(1.4);
         display: inline-block;
+      }
+      & + button {
+        margin-left: 30px;
       }
     }
   }

@@ -89,6 +89,10 @@
           </span>
           <el-dropdown-menu slot="dropdown" class="mp-erp-user-drop-down-wrap">
             <el-dropdown-item icon="el-icon-switch-button" command='logout'>退出登录</el-dropdown-item>
+            <!-- <el-dropdown-item command='downtime' class="downtime">
+              <img src="@/assets/images/downtime.png" alt="">
+              <span>停机维护</span>
+            </el-dropdown-item> -->
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -132,7 +136,6 @@ export default {
       },
       set(val) {
         if (this.editableTabsValue === val) return;
-        // console.log(val);
         const t = this.editableTabs.find((it) => it.name === val);
         if (t) {
           this.$store.commit('layout/setEditableTabsValue', t.name);
@@ -231,8 +234,16 @@ export default {
       this.setLeftCollapse(bool);
     },
     onCommand(command) {
-      if (command === 'logout') {
-        this.handleLogoutClick();
+      switch (command) {
+        case 'logout':
+          this.handleLogoutClick();
+          break;
+        case 'downtime':
+          this.handleDownTimeClick();
+          break;
+
+        default:
+          break;
       }
     },
     handleLogoutClick() { // 退出
@@ -240,6 +251,10 @@ export default {
         TokenClass.removeToken();
         this.$router.replace('/login');
       });
+    },
+    handleDownTimeClick() { // 停机维护点击事件
+      if (this.$route.name === 'downtimeManage') return;
+      this.$emit('downtime', 'downtimeManage');
     },
   },
   mounted() {
@@ -257,23 +272,19 @@ export default {
 <style lang='scss'>
 .mp-erp-layout-header-comp-wrap {
   box-sizing: border-box;
-  // overflow-x: hidden;
   width: 100%;
   min-width: 400px;
-  // overflow-x: hidden;
   > .info {
     height: 48px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     padding: 10px 20px;
-    // background-color: #eee;
     > div.collapse-ctrl-box {
       margin-right: 19px;
       font-size: 20px;
       width: 35px;
       box-sizing: border-box;
-      // padding-left: 10px;
       > i {
         cursor: pointer;
       }
@@ -311,7 +322,6 @@ export default {
       width: 25px;
       box-sizing: border-box;
       flex: none;
-      // padding-left: 10px;
       > i {
         cursor: pointer;
       }
@@ -500,6 +510,14 @@ export default {
       margin-right: 6px;
     }
     transition: 0.08s ease-in-out;
+    &.downtime {
+      > img {
+        width: 15px;
+        position: relative;
+        top: 2px;
+        margin-right: 6px;
+      }
+    }
   }
   // &.el-popper[x-placement^=bottom] {
   //   margin-top: 1px !important;

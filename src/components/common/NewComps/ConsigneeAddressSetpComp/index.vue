@@ -362,13 +362,14 @@ export default {
       }
       // this.SetAddressVisible = true; // 打开设置
     },
-    async setLatitudeLongitudeAfterPositioning(data) { // 定位后,设置经纬度
+    setLatitudeLongitudeAfterPositioning(data) { // 定位后,设置经纬度
       const {
         Latitude, Longitude, AddressDetail, Consignee, Mobile, ExpressArea, RegionalList, CityList, CountyList,
       } = data;
       if (!this.tempDataForMapPosition || !Latitude || !Longitude) return;
-      const oldExpressArea = this.NewAddressInfo.ExpressArea;
       const { curAddIndex, OutPlateNo, NewAddressInfo } = this.tempDataForMapPosition;
+      const oldIndex = this.curAddIndex;
+      const oldExpressArea = oldIndex === 'new' ? this.NewAddressInfo.ExpressArea : null;
       if (this.openType === 'edit') {
         NewAddressInfo.AddressDetail = AddressDetail;
         NewAddressInfo.Consignee = Consignee;
@@ -388,15 +389,7 @@ export default {
       this.setInfo4ReqObj();
       this.SetAddressVisible = false;
       if (this.setMapVisible) this.setMapVisible = false;
-      this.ValidExpressLoading = true;
-      const resp = await this.api.getExpressUseableCompanyList(this.NewAddressInfo);
-      this.ValidExpressLoading = false;
-      if (resp.data.Status === 1000) {
-        this.ExpressValidList = resp.data.Data;
-        if (resp.data.Data.includes(this.Express.Second)) {
-          this.judgeValidEventEmit(ExpressArea, oldExpressArea);
-        }
-      }
+      if (oldIndex === 'new') this.handleUseableCompanyList(this.NewAddressInfo, oldIndex, oldExpressArea);
     },
     /** 修改远程仓库相关数据
     ---------------------------------------------------- */
@@ -583,24 +576,43 @@ export default {
         });
       }
     },
+    async handleUseableCompanyList(data, oldIndex, oldExpressArea) {
+      this.ValidExpressLoading = true;
+      const resp = await this.api.getExpressUseableCompanyList(data);
+      this.ValidExpressLoading = false;
+      if (resp.data.Status === 1000) {
+        this.ExpressValidList = resp.data.Data;
+        if (resp.data.Data.includes(this.Express.Second)) {
+          let oldAddExpressArea = typeof oldIndex === 'number' ? this.customerInfo.Address[oldIndex]?.ExpressArea : null;
+          if (!oldAddExpressArea && oldIndex === 'new') oldAddExpressArea = oldExpressArea; // 该情况不会出现，new只有一个不会new之间切换状态
+          this.judgeValidEventEmit(data.ExpressArea, oldAddExpressArea);
+        }
+      }
+    },
   },
   watch: {
     ExpressValidList(newVal) {
       if (newVal.length === 0) {
         this.messageBox.failSingleError('当前地址无法配送', '请更换地址或留意当地配送信息公告');
         this.onRadioChange('');
+        this.secondExVal = '';
+        this.thirdExVal = '';
         return;
       }
-      if (this.secondExVal === '') {
+      if (this.secondExVal === '' || !newVal.includes(this.secondExVal)) {
         const t = this.localExpressList.find(it => it.Type === 3);
         if (t && t.useableIds.length > 0) {
           [this.secondExVal] = t.useableIds;
+        } else {
+          this.secondExVal = '';
         }
       }
-      if (this.thirdExVal === '') {
+      if (this.thirdExVal === '' || !newVal.includes(this.thirdExVal)) {
         const t = this.localExpressList.find(it => it.Type === 2);
         if (t && t.useableIds.length > 0) {
           [this.thirdExVal] = t.useableIds;
+        } else {
+          this.thirdExVal = '';
         }
       }
       if (newVal.includes(this.Express.Second)) return;
@@ -616,23 +628,15 @@ export default {
       }
     },
     async curAddIndex(newVal, oldVal) {
-      if (newVal === 'new') return;
+      if (newVal === 'new') {
+        this.handleUseableCompanyList(this.NewAddressInfo, oldVal, null);
+        return;
+      }
       const _t = this.customerInfo.Address.find((it, i) => i === newVal);
       if (!_t) return;
       // this.$store.commit('common/changeSelectedAdd', _t);
       this.$emit('changeDefaultSelectAddress', _t);
-      this.ValidExpressLoading = true;
-      const res = await this.api.getExpressUseableCompanyList(_t).catch(() => null);
-      this.ValidExpressLoading = false;
-      if (res && res.data.Status === 1000) {
-        this.ExpressValidList = res.data.Data;
-        if (res.data.Data.includes(this.Express.Second)) {
-          const curAddExpressArea = this.customerInfo.Address[newVal] ? this.customerInfo.Address[newVal].ExpressArea : null;
-          let oldAddExpressArea = typeof oldVal === 'number' ? this.customerInfo.Address[oldVal]?.ExpressArea : null;
-          if (!oldAddExpressArea && oldVal === 'new') oldAddExpressArea = this.NewAddressInfo.ExpressArea;
-          this.judgeValidEventEmit(curAddExpressArea, oldAddExpressArea);
-        }
-      }
+      this.handleUseableCompanyList(_t, oldVal, this.NewAddressInfo.ExpressArea);
     },
     watchClearVal() {
       this.clearCurProductState();

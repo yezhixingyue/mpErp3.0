@@ -88,6 +88,12 @@ export default class Customer {
 
   LastLoginIP = ''
 
+  ShopName = ''
+
+  ShopID = ''
+
+  ShopIDString = ''
+
   constructor(data) {
     restoreClassByOriginData(this, data);
     if (data && Object.prototype.toString.call(data) === '[object Object]') {

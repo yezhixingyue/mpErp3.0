@@ -18,7 +18,7 @@ const DelayTypeEnums = {
     ID: 1,
   },
   dispatch: {
-    Name: '发货 / 送达时间范围',
+    Name: '送达时间范围',
     ID: 2,
   },
 };

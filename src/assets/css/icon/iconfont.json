@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "27383749",
+      "name": "生产特殊情况_2",
+      "font_class": "shengchanteshuqingkuang_2",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "27383716",
+      "name": "运输特殊情况_1",
+      "font_class": "yunshuteshuqingkuang_1",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
       "icon_id": "27220505",
       "name": "印豆管理",
       "font_class": "yindouguanli",

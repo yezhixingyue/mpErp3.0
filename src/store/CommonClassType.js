@@ -1,4 +1,5 @@
 import store from '@/store';
+import { getProductArrayList, reg } from '@/components/Promote/promoteUtils';
 
 export default class ClassType {
   static setDate(obj, key = 'Date') {
@@ -63,5 +64,44 @@ export default class ClassType {
       }
     });
     return _tempObj;
+  }
+
+  static generateProductString(ProductList, allProductClassify, defalutProps) {
+    if (!Array.isArray(ProductList) || !Array.isArray(allProductClassify) || ProductList.length === 0 || allProductClassify.length === 0) return '';
+    try {
+      const _defalutProps = defalutProps || { FirstLevelID: 'FirstLevelID', SecondLevelID: 'SecondLevelID', ProductID: 'ProductID' };
+      const temp = getProductArrayList(ProductList, allProductClassify, _defalutProps);
+      const _textArr = [];
+      if (temp === '全部产品') return ['全部产品'];
+      temp.forEach(l1 => {
+        if (reg.test(l1.children[0])) {
+          _textArr.push(`${l1.ClassName}全部产品`);
+        } else {
+          let _text = `${l1.ClassName}：[`;
+          l1.children.forEach((l2, i2) => {
+            if (i2 > 0) {
+              _text += '、';
+            }
+            if (reg.test(l2.children[0])) {
+              _text += `全部${l2.ClassName}产品 `;
+            } else {
+              _text += `${l2.ClassName}: `;
+              l2.children.forEach((l3, i) => {
+                if (i === 0) {
+                  _text += `${l3.ClassName}`;
+                } else {
+                  _text += `、${l3.ClassName}`;
+                }
+              });
+            }
+          });
+          _text += ']';
+          _textArr.push(_text);
+        }
+      });
+      return _textArr.join('\n');
+    } catch (error) {
+      return '';
+    }
   }
 }

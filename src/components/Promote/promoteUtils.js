@@ -55,12 +55,12 @@ export function getAreaList(SellAreaArray, allAreaTreeList, type = 'ClassName') 
   }
   return _allAreaTreeList1;
 }
-export function getProductArrayList(ProductList, allProductClassify) {
+export function getProductArrayList(ProductList, allProductClassify, defalutProps = {}) {
   if (!ProductList || ProductList.length === 0) return [];
   const _allProductClassify = JSON.parse(JSON.stringify(allProductClassify));
-  const _firstList = [...new Set(ProductList.map(it => it.FirstLevelID))];
-  const _secondList = [...new Set(ProductList.map(it => it.SecondLevelID))];
-  const _thirdList = [...new Set(ProductList.map(it => it.ProductID))];
+  const _firstList = [...new Set(ProductList.map(it => it[defalutProps.FirstLevelID || 'FirstLevelID']))];
+  const _secondList = [...new Set(ProductList.map(it => it[defalutProps.SecondLevelID || 'SecondLevelID']))];
+  const _thirdList = [...new Set(ProductList.map(it => it[defalutProps.ProductID || 'ProductID']))];
   let _allProductClassify1 = _allProductClassify.filter(level1 => _firstList.includes(level1.ID));
   // const _initLen1 = _allProductClassify1.children.length;
   _allProductClassify1 = _allProductClassify1.map(

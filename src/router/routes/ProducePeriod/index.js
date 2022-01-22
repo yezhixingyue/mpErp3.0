@@ -158,30 +158,55 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/ProducePeriodPage/HolidayPage.vue'),
     },
-    /*  特殊情况管理
+    /*  生产特殊情况管理
     ------------------------------------------ */
     {
-      path: '/SpecialDayList',
-      name: 'SpecialDayList',
+      path: '/ProduceSpecialDayList',
+      name: 'ProduceSpecialDayList',
       meta: {
-        title: '特殊情况管理',
+        title: '生产特殊情况',
         requiresAuth: true,
-        icon: 'iconfont icon-teshuqingkuangguanli',
-        pageName: 'SpecialDayListPage',
+        icon: 'iconfont icon-shengchanteshuqingkuang_2',
+        pageName: 'ProduceSpecialDayListPage',
         PermissionInfo: ['PermissionProducePeriod', 'Obj', 'SpecialDayQuery'],
       },
-      component: () => import('../../../views/ProducePeriodPage/SpecialDayManagePage/SpecialDayListPage.vue'),
+      component: () => import('../../../views/ProducePeriodPage/ProduceSpecialDayManagePage/ProduceSpecialDayListPage.vue'),
     },
     {
-      path: '/SpecialDaySetup/:ItemID',
-      name: 'SpecialDaySetup',
+      path: '/ProduceSpecialDaySetup/:ItemID',
+      name: 'ProduceSpecialDaySetup',
       meta: {
-        title: '特殊情况设置',
+        title: '生产特殊情况设置',
         requiresAuth: true,
         pageName: 'SpecialDaySetupPage',
         PermissionInfo: ['PermissionProducePeriod', 'Obj', 'SpecialDaySetup'],
       },
-      component: () => import('../../../views/ProducePeriodPage/SpecialDayManagePage/SpecialDaySetupPage.vue'),
+      component: () => import('../../../views/ProducePeriodPage/ProduceSpecialDayManagePage/ProduceSpecialDaySetupPage.vue'),
+    },
+    /*  运输配送特殊情况管理
+    ------------------------------------------ */
+    {
+      path: '/ExpressSpecialDayList',
+      name: 'ExpressSpecialDayList',
+      meta: {
+        title: '运输特殊情况',
+        requiresAuth: true,
+        icon: 'iconfont icon-yunshuteshuqingkuang_1',
+        pageName: 'ExpressSpecialDayListPage',
+        PermissionInfo: ['PermissionProducePeriod', 'Obj', 'SpecialDayQuery'],
+      },
+      component: () => import('../../../views/ProducePeriodPage/ExpressSpecialDayManagePage/ExpressSpecialDayListPage.vue'),
+    },
+    {
+      path: '/ExpressSpecialDaySetup/:ItemID',
+      name: 'ExpressSpecialDaySetup',
+      meta: {
+        title: '运输特殊情况设置',
+        requiresAuth: true,
+        pageName: 'ExpressSpecialDaySetupPage',
+        PermissionInfo: ['PermissionProducePeriod', 'Obj', 'SpecialDaySetup'],
+      },
+      component: () => import('../../../views/ProducePeriodPage/ExpressSpecialDayManagePage/ExpressSpecialDaySetupPage.vue'),
     },
   ],
 };
@@ -216,20 +241,20 @@ const routeTree = {
           ] },
       ],
     },
-    /*  付款时间
+    /*  发货班次
     ------------------------------------------ */
     {
-      name: 'DeliveryTimeList', // 付款时间列表管理
+      name: 'DeliveryTimeList', // 发货班次列表管理
       children: [
-        { name: 'DeliveryTimeSetup', children: [] }, // 付款时间设置页面
+        { name: 'DeliveryTimeSetup', children: [] }, // 发货班次设置页面
       ],
     },
     /*  派件时间
     ------------------------------------------ */
     {
-      name: 'DispatchTimeList', // 付款时间列表管理
+      name: 'DispatchTimeList', // 派件时间列表管理
       children: [
-        { name: 'DispatchTimeSetup', children: [] }, // 付款时间设置页面
+        { name: 'DispatchTimeSetup', children: [] }, // 派件时间设置页面
       ],
     },
     /*  节假日
@@ -238,12 +263,20 @@ const routeTree = {
       name: 'holidayManage',
       children: [],
     },
-    /*  特殊情况管理
+    /*  生产特殊情况管理
     ------------------------------------------ */
     {
-      name: 'SpecialDayList', // 付款时间列表管理
+      name: 'ProduceSpecialDayList', // 生产特殊情况管理列表管理
       children: [
-        { name: 'SpecialDaySetup', children: [] }, // 付款时间设置页面
+        { name: 'ProduceSpecialDaySetup', children: [] }, // 生产特殊情况设置页面
+      ],
+    },
+    /*  运输特殊情况管理
+    ------------------------------------------ */
+    {
+      name: 'ExpressSpecialDayList', // 运输特殊情况管理列表管理
+      children: [
+        { name: 'ExpressSpecialDaySetup', children: [] }, // 生产特殊情况设置页面
       ],
     },
   ],

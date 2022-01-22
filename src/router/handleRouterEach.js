@@ -110,6 +110,11 @@ const handleRouterEach = router => {
           });
         } else if (permission.Token === token) {
           handlePermission(to, next, permission.PermissionList, from);
+        } else {
+          TokenClass.removeToken();
+          next({
+            path: '/login',
+          });
         }
       } else { // 如果没有token，跳转登录或提示页面
         TokenClass.removeToken();

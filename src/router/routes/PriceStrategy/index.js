@@ -82,6 +82,56 @@ const routes = { // 价格策略
       },
       component: () => import('../../../views/PromotePage/PromoteConditionSet.vue'),
     },
+    /*  印豆管理
+    ------------------------------------------ */
+    {
+      path: '/printBeanList',
+      name: 'printBeanList',
+      meta: {
+        requiresAuth: true,
+        title: '印豆管理',
+        icon: 'iconfont icon-yindouguanli',
+        pageName: 'PrintBeanListPage',
+        PermissionInfo: ['Developing', 'HavePomission'],
+      },
+      component: () => import('../../../views/PrintBeanManagePages/PrintBeanListPage.vue'),
+    },
+    {
+      path: '/printBeanSetup/:ID',
+      name: 'printBeanSetup',
+      meta: {
+        requiresAuth: true,
+        title: '印豆设置',
+        pageName: 'PrintBeanSetupPage',
+        PermissionInfo: ['Developing', 'HavePomission'],
+      },
+      component: () => import('../../../views/PrintBeanManagePages/PrintBeanSetupPage.vue'),
+    },
+    /*  消费返现
+    ------------------------------------------ */
+    {
+      path: '/cashBackList',
+      name: 'cashBackList',
+      meta: {
+        requiresAuth: true,
+        title: '消费返现',
+        icon: 'iconfont icon-xiaofeifanxian',
+        pageName: 'CashBackListPage',
+        PermissionInfo: ['Developing', 'HavePomission'],
+      },
+      component: () => import('../../../views/PrintBeanManagePages/CashBackListPage.vue'),
+    },
+    {
+      path: '/cashBackSetup/:ID',
+      name: 'cashBackSetup',
+      meta: {
+        requiresAuth: true,
+        title: '消费返现设置',
+        pageName: 'CashBackSetupPage',
+        PermissionInfo: ['Developing', 'HavePomission'],
+      },
+      component: () => import('../../../views/PrintBeanManagePages/CashBackSetupPage.vue'),
+    },
   ],
 };
 
@@ -108,6 +158,22 @@ const routeTree = {
             { name: 'promoteConditionSet', children: [] },
           ],
         },
+      ],
+    },
+    /*  印豆管理
+    ------------------------------------------ */
+    {
+      name: 'printBeanList',
+      children: [
+        { name: 'printBeanSetup', children: [] },
+      ],
+    },
+    /*  消费返现
+    ------------------------------------------ */
+    {
+      name: 'cashBackList',
+      children: [
+        { name: 'cashBackSetup', children: [] },
       ],
     },
   ],

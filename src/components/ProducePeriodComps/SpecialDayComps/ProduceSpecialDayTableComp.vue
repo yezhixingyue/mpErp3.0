@@ -1,25 +1,23 @@
 <template>
   <el-table
-    class="mp-erp-period-special-day-page-main-table-comp-wrap"
+    class="mp-erp-period-produce-special-day-page-main-table-comp-wrap"
     :max-height="h"
     :height="h"
     stripe
     border
     :data="localDataList"
-    key="mp-erp-period-special-day-page-main-table-comp-wrap"
+    key="mp-erp-period-produce-special-day-page-main-table-comp-wrap"
     fit
     style="width: 100%"
    >
-    <el-table-column label="区域" min-width="240">
-      <span class="left" slot-scope="scope" :title="scope.row.AreaDescribe">{{scope.row.AreaDescribe.replaceAll('\r\n', '、')}}</span>
+    <el-table-column label="产品" min-width="250">
+      <span class="left" slot-scope="scope" :title="scope.row.ProductString">{{scope.row.ProductString && scope.row.ProductString.replaceAll('\n', '、')}}</span>
     </el-table-column>
-    <el-table-column label="配送方式" min-width="200">
-      <span class="left" slot-scope="scope" :title="scope.row.ExpressList | formatExpressList(subExpressList)">
-        {{scope.row.ExpressList | formatExpressList(subExpressList)}}
-      </span>
+    <el-table-column label="标题" width="220">
+      <span class="left" slot-scope="scope" :title="scope.row.ItemName">{{scope.row.ItemName || ''}}</span>
     </el-table-column>
-    <el-table-column prop="ProduceDelayTime" label="类型" width="160">
-      <span class="left" slot-scope="scope" :class="{'is-pink': scope.row.SpecialType === SpecialTypeEnums.stop.ID}">
+    <el-table-column prop="ProduceDelayTime" label="类型" width="220">
+      <span class="left" slot-scope="scope" :class="{'is-pink': scope.row.SpecialType === ProduceSpecialTypeEnums.stop.ID}">
         {{scope.row.SpecialContent}}
       </span>
     </el-table-column>
@@ -29,12 +27,12 @@
         {{scope.row.DateRangeContent}}
       </span>
     </el-table-column>
-    <el-table-column prop="Tips" label="客户提示" width="240">
+    <el-table-column prop="Tips" label="客户提示" width="230">
       <span class="left" slot-scope="scope" :title="scope.row.Tips">
         {{scope.row.Tips}}
       </span>
     </el-table-column>
-    <el-table-column prop="Tips" label="添加时间" width="150">
+    <el-table-column prop="Tips" label="添加时间" width="140">
       <span slot-scope="scope">
         {{scope.row.AddTime | format2MiddleLangTypeDate}}
       </span>
@@ -54,13 +52,13 @@
 <script>
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
-import { SpecialTypeEnums, DelayTypeEnumList } from '@/store/Period/ItemClass/SpecialDayItemClass';
-import { mapGetters, mapState } from 'vuex';
+import { ProduceSpecialTypeEnums, ProduceDelayTypeEnumList } from '@/store/Period/ItemClass/ProduceSpecialDayItemClass';
+import { mapState } from 'vuex';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { format2MiddleLangTypeDateFunc2 } from '@/assets/js/filters/filters';
 
 export default {
-  mixins: [tableMixin, recordScrollPositionMixin('.mp-erp-period-special-day-page-main-table-comp-wrap .el-table__body-wrapper')],
+  mixins: [tableMixin, recordScrollPositionMixin('.mp-erp-period-produce-special-day-page-main-table-comp-wrap .el-table__body-wrapper')],
   props: {
     dataList: {
       default: () => [],
@@ -76,11 +74,10 @@ export default {
   },
   data() {
     return {
-      SpecialTypeEnums,
+      ProduceSpecialTypeEnums,
     };
   },
   computed: {
-    ...mapGetters('common', ['subExpressList']),
     ...mapState('common', ['Permission']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
@@ -102,39 +99,37 @@ export default {
   },
   methods: {
     setHeight() {
-      const tempHeight = this.getHeight('header', 130, '.mp-erp-period-manage-special-day-manage-list-page');
+      const tempHeight = this.getHeight('header', 130, '.mp-erp-period-manage-produce-special-day-manage-list-page');
       this.h = tempHeight;
     },
     onSetupClick(item) {
       this.$emit('edit', item);
     },
     onRemoveClick(item) {
-      this.messageBox.warnCancelBox('确定删除该条特殊情况吗', `类型：${item.SpecialContent}`, () => {
+      this.messageBox.warnCancelBox('确定删除该条特殊情况吗', `标题：${item.ItemName}`, () => {
         this.$emit('remove', item);
       });
     },
-    formatSpecialType({ SpecialType, DelayTime }) {
-      if (SpecialType === SpecialTypeEnums.stop.ID) return SpecialTypeEnums.stop.Name;
-      if (SpecialType === SpecialTypeEnums.delay.ID) return `${SpecialTypeEnums.delay.Name} ${DelayTime || DelayTime === 0 ? DelayTime : '未知'}小时`;
+    formatSpecialType({ SpecialType, ProductionTime }) {
+      // eslint-disable-next-line max-len
+      if (SpecialType === ProduceSpecialTypeEnums.stop.ID) return `${ProduceSpecialTypeEnums.stop.Name} ( 可生产工期${ProductionTime || ProductionTime === 0 ? ProductionTime : '未知'}小时)`;
+      // eslint-disable-next-line max-len
+      if (SpecialType === ProduceSpecialTypeEnums.delay.ID) return `${ProduceSpecialTypeEnums.delay.Name} ${ProductionTime || ProductionTime === 0 ? ProductionTime : '未知'}小时`;
       return '';
     },
-    getDateRangeContent({ StartTime, EndTime, SpecialType }) {
-      let end = format2MiddleLangTypeDateFunc2(EndTime);
-      let begin = end ? format2MiddleLangTypeDateFunc2(StartTime) : '';
-      if (SpecialType !== SpecialTypeEnums.delay.ID) {
-        end = end ? end.slice(0, 10) : '';
-        begin = begin ? begin.slice(0, 10) : '';
-      }
+    getDateRangeContent({ StartTime, EndTime }) {
+      const end = format2MiddleLangTypeDateFunc2(EndTime);
+      const begin = end ? format2MiddleLangTypeDateFunc2(StartTime) : '';
       const dateContent = `${begin}${end ? ' 至 ' : ''}${end}`;
       return dateContent;
     },
     getDateRangeTitle({ SpecialType, DelayType }) {
       let title = '';
-      if (SpecialType === SpecialTypeEnums.delay.ID) {
-        const t = DelayTypeEnumList.find(it => it.ID === DelayType);
+      if (SpecialType === ProduceSpecialTypeEnums.delay.ID) {
+        const t = ProduceDelayTypeEnumList.find(it => it.ID === DelayType);
         if (t) title = `${t.Name.slice(0, 4)}：`;
       } else {
-        title = '停发时间：';
+        title = '停产时间：';
       }
       return title;
     },
@@ -142,7 +137,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-period-special-day-page-main-table-comp-wrap {
+.mp-erp-period-produce-special-day-page-main-table-comp-wrap {
   border-top-color: rgb(230, 230, 230);
   border-left: 1px solid rgb(230, 230, 230);
   .el-table__header-wrapper thead tr th {

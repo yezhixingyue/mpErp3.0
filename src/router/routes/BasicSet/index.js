@@ -138,6 +138,21 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/BasicSetup/FactoryManagePage.vue'),
     },
+    /*  停机维护
+    ------------------------------------------ */
+    {
+      path: '/downtimeManage',
+      name: 'downtimeManage',
+      meta: {
+        title: '停机维护',
+        pageName: 'DowntimeManagePage',
+        icon: 'el-icon-school',
+        PermissionInfo: ['Developing', 'HavePomission'],
+        requiresAuth: true,
+        hiddenItem: true,
+      },
+      component: () => import('../../../views/BasicSetup/DowntimeManagePage.vue'),
+    },
   ],
 };
 
@@ -186,6 +201,12 @@ const routeTree = {
     ------------------------------------------ */
     {
       name: 'factoryManage',
+      children: [],
+    },
+    /*  停机维护
+    ------------------------------------------ */
+    {
+      name: 'downtimeManage',
       children: [],
     },
   ],

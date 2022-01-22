@@ -11,20 +11,17 @@
             <i :class="routeWrap.meta.icon" class="title-icon" v-show="isCollapse"></i>
             <span slot="title">{{routeWrap.meta.title}}</span>
           </template>
-          <el-menu-item :index="`${index + 1}-${i + 1}`" @click="onMenuItemClick(route, `${index + 1}-${i + 1}`)"
-            v-for="(route, i) in routeWrap.children" :key="route.path">
+          <el-menu-item
+           :index="`${index + 1}-${i + 1}`"
+           @click="onMenuItemClick(route, `${index + 1}-${i + 1}`)"
+            v-for="(route, i) in routeWrap.children"
+           :key="route.path"
+           :class="{hidden: route.meta.hiddenItem}">
             <i v-if="route.meta" :class="route.meta.icon"></i>
             <span v-if="route.meta" slot="title">{{route.meta.title}}</span>
           </el-menu-item>
         </el-submenu>
       </el-menu>
-      <!-- <p @click="handleClick" class="login-out-box" :class="isCollapse?'hiden':'show'" v-show="showLoginout">
-        <template v-if="!isCollapse">
-          <i class="el-icon-switch-button not-c"></i>
-          <span>退出登录</span>
-        </template>
-        <TipsSpanButton tipContent='退出登录' v-else><i class="el-icon-switch-button"></i></TipsSpanButton>
-      </p> -->
     </el-scrollbar>
   </div>
 </template>
@@ -156,6 +153,26 @@ export default {
       } else if (route.path === '/') {
         this.defaultActive = '0';
         if (bool) this.onMenuItemClick(route, this.defaultActive);
+      }
+    },
+    handlePathChange(pathName) {
+      let lv1Index;
+      let lv2Index;
+      let target;
+      this.menuList.forEach((lv1, index1) => {
+        if (target) return;
+        lv1.children.forEach((lv2, index2) => {
+          if (target) return;
+          if (lv2.name === pathName) {
+            lv1Index = index1;
+            lv2Index = index2;
+            target = lv2;
+          }
+        });
+      });
+      if (target) {
+        const tempIndex = `${lv1Index + 1}-${lv2Index + 1}`;
+        this.onMenuItemClick(target, tempIndex);
       }
     },
   },
@@ -290,18 +307,13 @@ export default {
         background-color: rgb(15, 29, 53);
         transition: 0.05s ease-in-out;
         user-select: none;
-        // display: flex;
-        // align-items: center;
         > i {
           margin-right: 5px;
           margin-top: -2px;
-          // text-align: left;
           &.iconfont {
             font-size: 15px;
             margin-left: 4px;
             margin-right: 10px;
-            // position: relative;
-            // top: 1px;
           }
         }
         > i, > span {
@@ -320,6 +332,9 @@ export default {
             color: #fff;
             color: rgb(38, 188, 249) !important;
           }
+        }
+        &.hidden {
+          display: none;
         }
       }
     }

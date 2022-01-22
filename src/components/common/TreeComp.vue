@@ -388,7 +388,7 @@ export default {
               overflow: hidden;
               flex: none;
               height: 32px;
-              line-height: 32px;
+              line-height: 26px;
               display: inline-block;
               .el-tree-node__label {
                 font-size: 12px;

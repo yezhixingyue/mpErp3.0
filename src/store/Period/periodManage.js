@@ -7,6 +7,7 @@ import PayTimeConditionClass from './ConditionClass/PayTimeConditionClass';
 import DeliveryTimeConditionClass from './ConditionClass/DeliveryTimeConditionClass';
 import DispatchTimeConditionClass from './ConditionClass/DispatchTimeConditionClass';
 import SpecialDayConditionClass from './ConditionClass/SpecialDayConditionClass';
+import ProduceSpecialDayConditionClass from './ConditionClass/ProduceSpecialDayConditionClass';
 import CommonClassType from '../CommonClassType';
 import { SpecialTypeEnums } from './ItemClass/SpecialDayItemClass';
 
@@ -44,7 +45,13 @@ export default {
     DispatchTimeDataList: [], // 列表数据
     DispatchTimeDataNumber: 0, // 列表数据条目数 分页使用
 
-    /** 特殊情况管理相关
+    /** 生产特殊情况管理相关
+    ---------------------------------------- */
+    Condition4ProduceSpecialDayList: new ProduceSpecialDayConditionClass(),
+    ProduceSpecialDayDataList: [], // 列表数据
+    ProduceSpecialDayDataNumber: 0, // 列表数据条目数 分页使用
+
+    /** 运输特殊情况管理相关
     ---------------------------------------- */
     Condition4SpecialDayList: new SpecialDayConditionClass(),
     SpecialDayDataList: [], // 列表数据
@@ -227,7 +234,46 @@ export default {
       }
     },
 
-    /** 特殊情况管理相关
+    /** 生产特殊情况管理相关
+    ---------------------------------------- */
+    clearCondition4ProduceSpecialDayList(state) { // 清除列表条件
+      state.Condition4ProduceSpecialDayList = new ProduceSpecialDayConditionClass();
+    },
+    setCondition4ProduceSpecialDayList(state, [[key1, key2], value]) {
+      if (!key2) state.Condition4ProduceSpecialDayList[key1] = value;
+      else state.Condition4ProduceSpecialDayList[key1][key2] = value;
+    },
+    setProduceSpecialDayItemSave(state, [data, ItemID]) { // 生产特殊情况编辑与添加
+      const temp = { ...data };
+      if (this.state.common?.Permission?.StaffName) temp.OperatorUserName = this.state.common.Permission.StaffName;
+      // 生成ProductString
+      const defaultProps = { FirstLevelID: 'classID', SecondLevelID: 'typeID', ProductID: 'productID' };
+      const ProductString = CommonClassType.generateProductString(temp.ProductList, this.getters['common/allProductClassify'], defaultProps);
+      if (!data.ItemID) { // 添加
+        temp.AddTime = getFormatDateString();
+        state.ProduceSpecialDayDataList.unshift({ ...temp, ItemID, ProductString });
+        state.ProduceSpecialDayDataNumber += 1;
+      } else { // 编辑
+        const i = state.ProduceSpecialDayDataList.findIndex(it => it.ItemID === ItemID);
+        if (i > -1) {
+          const { AddTime } = state.ProduceSpecialDayDataList[i];
+          state.ProduceSpecialDayDataList.splice(i, 1, { ...temp, AddTime, ProductString });
+        }
+      }
+    },
+    setProduceSpecialDayDataList(state, { Data, DataNumber }) { // 设置列表数据
+      state.ProduceSpecialDayDataList = Data || [];
+      state.ProduceSpecialDayDataNumber = DataNumber || 0;
+    },
+    setProduceSpecialDayItemRemove(state, ItemID) { // 删除生产特殊情况项目
+      const i = state.ProduceSpecialDayDataList.findIndex(it => it.ItemID === ItemID);
+      if (i > -1) {
+        state.ProduceSpecialDayDataList.splice(i, 1);
+        state.ProduceSpecialDayDataNumber -= 1;
+      }
+    },
+
+    /** 运输特殊情况管理相关
     ---------------------------------------- */
     clearCondition4SpecialDayList(state) {
       state.Condition4SpecialDayList = new SpecialDayConditionClass();
@@ -236,7 +282,7 @@ export default {
       if (!key2) state.Condition4SpecialDayList[key1] = value;
       else state.Condition4SpecialDayList[key1][key2] = value;
     },
-    setSpecialDayItemSave(state, [data, ItemID]) { // 特殊情况编辑与添加
+    setSpecialDayItemSave(state, [data, ItemID]) { // 运输特殊情况编辑与添加
       const temp = { ...data };
       if (this.state.common?.Permission?.StaffName) temp.OperatorUserName = this.state.common.Permission.StaffName;
       if (!data.ItemID) { // 添加
@@ -260,7 +306,7 @@ export default {
       state.SpecialDayDataList = Data || [];
       state.SpecialDayDataNumber = DataNumber || 0;
     },
-    setSpecialDayItemRemove(state, ItemID) { // 删除特殊情况项目
+    setSpecialDayItemRemove(state, ItemID) { // 删除运输特殊情况项目
       const i = state.SpecialDayDataList.findIndex(it => it.ItemID === ItemID);
       if (i > -1) {
         state.SpecialDayDataList.splice(i, 1);
@@ -411,9 +457,42 @@ export default {
         messageBox.successSingle('删除成功', cb, cb);
       }
     },
-    /** 特殊情况相关
+    /** 生产特殊情况相关
     ---------------------------------------- */
-    async getSpecialDayItemSave({ commit }, [data, cbFunc]) { // 保存特殊情况
+    async getProduceSpecialDayItemSave({ commit }, [data, cbFunc]) { // 保存运输特殊情况
+      const resp = await api.getProduceSpecialDaySave(data).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const title = data.ItemID ? '编辑成功' : '添加成功';
+        const cb = () => {
+          commit('setProduceSpecialDayItemSave', [data, resp.data.Data]);
+          if (cbFunc) cbFunc();
+        };
+        messageBox.successSingle(title, cb, cb);
+      }
+    },
+    async getProduceSpecialDayDataList({ state, commit }, page = 1) {
+      commit('setProduceSpecialDayDataList', { Data: [], DataNumber: state.SpecialDayDataNumber });
+      commit('setCondition4ProduceSpecialDayList', [['Page', ''], page]);
+      const temp = CommonClassType.filter(state.Condition4ProduceSpecialDayList);
+      commit('setLoading', true);
+      const resp = await api.getProduceSpecialDayList(temp).catch(() => null);
+      commit('setLoading', false);
+      if (resp && resp.data.Status === 1000) {
+        commit('setProduceSpecialDayDataList', resp.data);
+      }
+    },
+    async getProduceSpecialDayItemRemove({ commit }, { ItemID }) {
+      const resp = await api.getProduceSpecialDayRemove(ItemID).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setProduceSpecialDayItemRemove', ItemID);
+        };
+        messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    /** 运输特殊情况相关
+    ---------------------------------------- */
+    async getSpecialDayItemSave({ commit }, [data, cbFunc]) { // 保存运输特殊情况
       const resp = await api.getSpecialDaySave(data).catch(() => null);
       if (resp && resp.data.Status === 1000) {
         const title = data.ItemID ? '编辑成功' : '添加成功';

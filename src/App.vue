@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <LeftMenu v-if="key" />
+    <LeftMenu v-if="key" ref="oLeft" />
     <section>
-      <HeaderTabs v-if="key" />
+      <HeaderTabs v-if="key" @downtime='handlePathChange' />
       <main class="page-wrap">
         <router-view />
       </main>
@@ -25,6 +25,13 @@ export default {
     },
     curRouter() {
       return this.$route.fullPath;
+    },
+  },
+  methods: {
+    handlePathChange(pathName) {
+      if (this.$refs.oLeft && typeof this.$refs.oLeft.handlePathChange === 'function') {
+        this.$refs.oLeft.handlePathChange(pathName);
+      }
     },
   },
   watch: {

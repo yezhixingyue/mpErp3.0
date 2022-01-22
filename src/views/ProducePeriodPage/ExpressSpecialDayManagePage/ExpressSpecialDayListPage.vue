@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-period-manage-special-day-manage-list-page">
     <header>
-      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.SpecialDaySetup">添加特殊情况</el-button>
+      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.SpecialDaySetup">添加运输特殊情况</el-button>
       <div>
         <label class="title">类型：</label>
         <el-radio-group v-model="localSpecialtype" size="small" @change='getTableDataList(1)'>
@@ -32,7 +32,7 @@ import { SpecialTypeEnumList } from '@/store/Period/ItemClass/SpecialDayItemClas
 import SpecialDayTableComp from '../../../components/ProducePeriodComps/SpecialDayComps/SpecialDayTableComp.vue';
 
 export default {
-  name: 'SpecialDayListPage',
+  name: 'ExpressSpecialDayListPage',
   components: {
     SpecialDayTableComp,
     CountComp,
@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     onItemSetupClick(item) { // 为null为新增 否则为编辑
-      this.$router.push({ name: 'SpecialDaySetup', params: { ItemID: item ? item.ItemID : 'null' } });
+      this.$router.push({ name: 'ExpressSpecialDaySetup', params: { ItemID: item ? item.ItemID : 'null' } });
     },
     onRemoveClick(item) {
       if (!item || !item.ItemID) return;

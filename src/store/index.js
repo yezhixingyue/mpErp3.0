@@ -23,6 +23,7 @@ import PriceRecord from './GetPriceRecord/GetPriceRecord';
 import periodManage from './Period/periodManage';
 import companyManage from './companyManage/companyManage';
 import customerManage from './customerManage/customerManage';
+import printBean from './printBean/printBean';
 
 
 Vue.use(Vuex);
@@ -52,5 +53,6 @@ export default new Vuex.Store({
     periodManage,
     companyManage,
     customerManage,
+    printBean,
   },
 });

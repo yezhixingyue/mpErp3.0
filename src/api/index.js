@@ -859,7 +859,7 @@ const api = {
   getRestDayList(data) { // POST /Api/RestDay/List  节假日列表
     return instance.post('/Api/RestDay/List', data);
   },
-  // 6. 特殊情况管理
+  // 6. 运输特殊情况管理
   getSpecialDaySave(data) { // POST /Api/SpecialDay/Save  特殊日期保存
     return instance.post('/Api/SpecialDay/Save', data);
   },
@@ -871,6 +871,19 @@ const api = {
   },
   getSpecialDayDetail(id) { // GET /Api/SpecialDay/Detail  特殊日期详情
     return instance.get('/Api/SpecialDay/Detail', { params: { id } });
+  },
+  // 7. 生产特殊情况管理
+  getProduceSpecialDaySave(data) { // POST /Api/ProduceSpecialDay/Save  生产特殊日期保存
+    return instance.post('/Api/ProduceSpecialDay/Save', data);
+  },
+  getProduceSpecialDayList(data) { // POST /Api/ProduceSpecialDay/List  生产特殊日期列表
+    return instance.post('/Api/ProduceSpecialDay/List', data);
+  },
+  getProduceSpecialDayRemove(id) { // DELETE /Api/ProduceSpecialDay/Remove  生产特殊日期删除
+    return instance.delete('/Api/ProduceSpecialDay/Remove', { params: { id } });
+  },
+  getProduceSpecialDayDetail(id) { // GET /Api/ProduceSpecialDay/Detail  生产特殊日期详情
+    return instance.get('/Api/ProduceSpecialDay/Detail', { params: { id } });
   },
 
   /* 企业管理api

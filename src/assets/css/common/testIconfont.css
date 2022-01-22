@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2672534 */
-  src: url('iconfont.woff2?t=1642821552828') format('woff2'),
-       url('iconfont.woff?t=1642821552828') format('woff'),
-       url('iconfont.ttf?t=1642821552828') format('truetype');
+  src: url('//at.alicdn.com/t/font_2672534_kttp43u8v5h.woff2?t=1642820984740') format('woff2'),
+       url('//at.alicdn.com/t/font_2672534_kttp43u8v5h.woff?t=1642820984740') format('woff'),
+       url('//at.alicdn.com/t/font_2672534_kttp43u8v5h.ttf?t=1642820984740') format('truetype');
 }
 
 .iconfont {
@@ -164,4 +164,3 @@
 .icon-dingdanguanli:before {
   content: "\e61e";
 }
-
