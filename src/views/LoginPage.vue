@@ -69,8 +69,9 @@ export default {
     async submitForm() {
       const bool = await this.$refs.ruleForm.validate().catch(() => false);
       if (!bool) return;
-      this.ruleForm.Password = Base64.encode(this.ruleForm.Password);
-      const res = await this.api.getLogin(this.ruleForm);
+      const temp = { ...this.ruleForm };
+      temp.Password = Base64.encode(this.ruleForm.Password);
+      const res = await this.api.getLogin(temp);
       if (res.data.Status === 1000 && res.data.Data) {
         TokenClass.setToken(res.data.Data);
         window.location = window.location.pathname;
