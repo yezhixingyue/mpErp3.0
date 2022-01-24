@@ -30,7 +30,7 @@
                 <span class="is-origin is-bold">{{showData.Funds.FinalPrice}}元</span>
               </el-tooltip>
             </li>
-            <li v-if="(showData.Funds.DiscountPrice - showData.Funds.CouponAmount).toFixed(2) > 0">
+            <!-- <li v-if="(showData.Funds.DiscountPrice - showData.Funds.CouponAmount).toFixed(2) > 0">
               <span>活动：</span>
               <el-tooltip
                :content="`活动：-${(showData.Funds.DiscountPrice - showData.Funds.CouponAmount).toFixed(2)}元`"
@@ -42,7 +42,7 @@
                   }}元
                 </span>
               </el-tooltip>
-            </li>
+            </li> -->
             <li v-if="showData.Funds.CouponAmount > 0">
               <span>优惠券：</span>
               <el-tooltip :content="`优惠券：-${showData.Funds.CouponAmount}元`" placement="top">

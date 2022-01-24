@@ -9,7 +9,7 @@ export const ProduceSpecialTypeEnums = {
     ID: 1,
   },
   stop: {
-    Name: '快递停发',
+    Name: '停工停产',
     ID: 2,
   },
 };
@@ -116,9 +116,13 @@ export default class ProduceSpecialDayItemClass {
         return throwFalseFunc('开始时间不能早于当前时间');
       }
     }
-    if (!ProductionTime && ProductionTime !== 0) return throwFalseFunc('请设置可生产工期');
-    if (!getValueIsOrNotNumber(ProductionTime, true)) return throwFalseFunc('可生产工期必须为整数');
-    if (ProductionTime <= 0) return throwFalseFunc('可生产工期必须大于0');
+    // if (SpecialType === ProduceSpecialTypeEnums.delay.ID) { // 选中延长工时
+    let title = '';
+    if (SpecialType === ProduceSpecialTypeEnums.delay.ID) title = '延长工时';
+    if (SpecialType === ProduceSpecialTypeEnums.stop.ID) title = '可生产工期';
+    if (!ProductionTime && ProductionTime !== 0) return throwFalseFunc(`请设置${title}时间`);
+    if (!getValueIsOrNotNumber(ProductionTime, true) || ProductionTime <= 0) return throwFalseFunc(`${title}时间必须为正整数`);
+    // }
     if (!Tips) return throwFalseFunc('请填写客户提示');
     return true;
   }
@@ -129,7 +133,8 @@ export default class ProduceSpecialDayItemClass {
     temp.StartTime = getDateString(data.StartTime, true);
     temp.EndTime = getDateString(data.EndTime, false, true);
     if (data.SpecialType === ProduceSpecialTypeEnums.stop.ID) {
-      delete temp.DelayType;
+      delete temp.DelayType; // 删除时间范围类型
+      delete temp.ProductionTime; // 删除延长工时
     }
     return temp;
   }

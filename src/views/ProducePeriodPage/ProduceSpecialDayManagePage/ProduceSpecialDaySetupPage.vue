@@ -40,16 +40,15 @@
                 </el-radio-group>
               </div>
             </li>
-            <template v-if="SpecialDayForm.SpecialType === ProduceSpecialTypeEnums.delay.ID">
-              <li>
-                <span class="title"></span>
-                <div class="content-item">
-                  <el-radio-group v-model="SpecialDayForm.DelayType" size="small">
-                    <el-radio :label="it.ID" v-for="it in DelayTypeList" :key="it.ID">{{it.Name}}</el-radio>
-                  </el-radio-group>
-                </div>
-              </li>
-            </template>
+            <!-- 仅延长工时时显示 -->
+            <li v-if="SpecialDayForm.SpecialType === ProduceSpecialTypeEnums.delay.ID">
+              <span class="title"></span>
+              <div class="content-item">
+                <el-radio-group v-model="SpecialDayForm.DelayType" size="small">
+                  <el-radio :label="it.ID" v-for="it in DelayTypeList" :key="it.ID">{{it.Name}}</el-radio>
+                </el-radio-group>
+              </div>
+            </li>
             <li>
               <span class="title">开始时间：</span>
               <div class="content-item">
@@ -97,17 +96,6 @@
                 <span class="ml-8">小时</span>
               </div>
             </li>
-            <!-- </template> -->
-            <!-- <template v-if="SpecialDayForm.SpecialType === ProduceSpecialTypeEnums.stop.ID">
-              <li>
-                <span class="title">结束时间：</span>
-                <div class="content-item">
-                  <el-date-picker
-                    v-model="SpecialDayForm.StopEndTime.First" value-format="yyyy-MM-dd" type="date" placeholder=" 年 / 月 / 日">
-                  </el-date-picker>
-                </div>
-              </li>
-            </template> -->
             <li>
               <span class="title">给客户的提示：</span>
               <div class="content-item">
