@@ -8,12 +8,33 @@ $--color-danger: #ff3769;
 /* 改变 icon 字体路径变量，必需 */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
+
+@font-face {
+  font-family: 'PingFang-R'; 
+  src: url('./font/PingFang Regular_0.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PingFang-M'; 
+  src: url('./font/PingFang Medium.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PingFang-H'; 
+  src: url('./font/PingFang Heavy.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @import "~element-ui/packages/theme-chalk/src/index";
+
 
 
 @import './common/pop.scss';
 @import './common/reset2.scss';
 @import './common/reset.css';
 @import './icon/iconfont.css';
-// @import './icon3.0/iconfont.css';
+@import './icon3.0/iconfont.css';
 // @import './common/testIconfont.css';

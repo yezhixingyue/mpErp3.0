@@ -145,14 +145,14 @@ export default {
       font-size: 15px;
       color: #888E99;
       &::before {
-        width: 3px;
+        width: 3px !important;
         background-color: #26bcf9;
       }
     }
     border-radius: 5px 5px 0px 0;
-    background-color: #fff;
-    height: 30px;
-    line-height: 30px;
+    background-color: #fff !important;
+    height: 30px !important;
+    line-height: 30px !important;
     position: relative;
     .el-dialog__headerbtn {
       top: 13px;

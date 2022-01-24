@@ -88,15 +88,17 @@
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown" class="mp-erp-user-drop-down-wrap">
-            <el-dropdown-item icon="el-icon-switch-button" command='logout'>退出登录</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-lock" command='changePwd'>修改密码</el-dropdown-item>
             <!-- <el-dropdown-item command='downtime' class="downtime">
               <img src="@/assets/images/downtime.png" alt="">
               <span>停机维护</span>
             </el-dropdown-item> -->
+            <el-dropdown-item icon="el-icon-switch-button" command='logout'>退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
     </div>
+    <ChangePwdDialog :visible.sync="visible4ChangePassword" />
   </header>
 </template>
 
@@ -105,8 +107,12 @@ import { mapMutations, mapState } from 'vuex';
 import sortable from 'sortablejs';
 import { throttle } from '@/assets/js/utils/throttle';
 import TokenClass from '@/assets/js/utils/tokenManage';
+import ChangePwdDialog from './ChangePwdDialog.vue';
 
 export default {
+  components: {
+    ChangePwdDialog,
+  },
   data() {
     return {
       dateString: '',
@@ -125,6 +131,7 @@ export default {
       contextMenuTop: 0,
       contextmenuItemData: null,
       sortItem: null,
+      visible4ChangePassword: false, // 修改密码弹窗打开状态
     };
   },
   computed: {
@@ -235,10 +242,13 @@ export default {
     },
     onCommand(command) {
       switch (command) {
-        case 'logout':
+        case 'logout': // 退出登录
           this.handleLogoutClick();
           break;
-        case 'downtime':
+        case 'changePwd': // 修改密码
+          this.visible4ChangePassword = true;
+          break;
+        case 'downtime': // 停机维护
           this.handleDownTimeClick();
           break;
 
@@ -497,7 +507,7 @@ export default {
   }
 }
 .mp-erp-user-drop-down-wrap {
-  padding: 4px 0px !important;
+  padding: 10px 0px !important;
   width: 130px !important;
   .el-dropdown-menu__item {
     line-height: 32px;
@@ -506,17 +516,26 @@ export default {
     margin: 0;
     i {
       font-weight: 700;
-      font-size: 15px;
-      margin-right: 6px;
+      font-size: 16px;
+      margin-right: 8px;
+      color: #888;
+      transition: color 0.08s ease-in-out;
     }
     transition: 0.08s ease-in-out;
+    color: #585858;
     &.downtime {
       > img {
         width: 15px;
         position: relative;
         top: 2px;
-        margin-right: 6px;
+        margin-right: 8px;
       }
+    }
+    & + .el-dropdown-menu__item {
+      margin-top: 4px;
+    }
+    &:hover > i {
+      color: #26bcf9;
     }
   }
   // &.el-popper[x-placement^=bottom] {

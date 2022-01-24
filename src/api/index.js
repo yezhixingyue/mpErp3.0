@@ -260,6 +260,10 @@ const api = {
   getLogin(data) { // POST /Api/Staff/Login
     return instance.post('/Api/Staff/Login', data);
   },
+  // POST /Api/Staff/ChangePassword 修改密码
+  getStaffChangePassword(data) {
+    return instance.post('/Api/Staff/ChangePassword', data);
+  },
   /* 客户流水api
   ----------------------------------------------------------------------------------- */
   getCustomerBill(data) { // POST /Api/Customer/Bill  获取客户余额流水
