@@ -510,6 +510,7 @@ export default {
         list.push(...Parts);
         const _AllPropertyList = await Promise.all(list.map(async (it) => {
           const _t = this.AllPropertyList.find(_it => _it.ProductID === it.ProductID && _it.PartID === it.PartID && _it.UseModule === it.UseModule);
+          // console.log(_t);
           if (_t) return _t;
           const PropertyList = await PropertyClass.getPropertyList(it);
           return { ...it, PropertyList };

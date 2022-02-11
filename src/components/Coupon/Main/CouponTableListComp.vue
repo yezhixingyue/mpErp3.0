@@ -183,7 +183,6 @@ export default {
       }
       return {};
     },
-
     SellAreaArrayList() {
       if (this.allAreaTreeList.length === 0) return [];
       const _list = this.couponListData.map(data => data.SellAreaArray);

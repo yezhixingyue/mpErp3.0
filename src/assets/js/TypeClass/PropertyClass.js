@@ -60,7 +60,8 @@ export const PropertyFixedType = [
   { ID: 36, Name: '印刷幅面物料数量(不含损耗)' },
   { ID: 37, Name: '拼版长' },
   { ID: 38, Name: '拼版宽' },
-  { ID: 39, Name: '工期数据' },
+  // { ID: 39, Name: '工期数据' },
+  { ID: 40, Name: '拼版方式' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表

@@ -107,5 +107,6 @@ export const RegTypeEnumList = getEnumList(RegTypeEnum);
 export const AccountStatusEnumList = getEnumList(AccountStatusEnum);
 export const ReChangeTypeEnumList = getEnumList(ReChangeTypeEnum);
 export const CashBackTypeEnumList = getEnumList(CashBackTypeEnum);
+export const CustomerPriceTypeEnumList = getEnumList(CustomerPriceTypeEnum);
 
 export default {};

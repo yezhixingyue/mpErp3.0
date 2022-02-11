@@ -13,7 +13,7 @@ const restoreClassByOriginData = (obj, data) => {
           restoreClassByOriginData(obj[key], data[key]);
         } else if (Array.isArray(data[key])) {
           _obj[key] = JSON.parse(JSON.stringify(data[key]));
-        } else if (data[key] || data[key] === 0) {
+        } else if (data[key] || data[key] === 0 || data[key] === false) {
           _obj[key] = data[key];
         }
       }

@@ -101,7 +101,7 @@ section.login-wrap {
       height: 91px;
       box-sizing: border-box;
       > img {
-        width: 236px;
+        width: 228px;
       }
     }
     > main {

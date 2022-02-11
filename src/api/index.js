@@ -937,6 +937,18 @@ const api = {
   getCustomerShopSetup(customerID, shopID) { // PUT /Api/Customer/ShopSetup  设置客户关联店铺
     return instance.put('/Api/Customer/ShopSetup', null, { params: { customerID, shopID } });
   },
+  getCustomerCategoryList() { // POST /Api/Category/List 客户设置 - 获取客户设置列表数据
+    return instance.post('/Api/Category/List', {});
+  },
+  getPriceGradeSaveRange(data) { // POST  /Api/PriceGrade/SaveRange  客户设置 - 保存价格等级
+    return instance.post('/Api/PriceGrade/SaveRange', data);
+  },
+  getCustomerCategorySave(data) { // POST /Api/Customer/Category/Save  客户设置 - 编辑|新增客户分类
+    return instance.post('/Api/Customer/Category/Save', data);
+  },
+  getCustomerCategoryRemove(categoryID, type) { // DELETE /Api/Customer/Category/Remove?categoryID=13&type=1  客户设置 - 客户分类删除
+    return instance.delete('/Api/Customer/Category/Remove', { params: { categoryID, type } });
+  },
 };
 
 export default api;

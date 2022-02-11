@@ -10,6 +10,20 @@ const routes = { // 基本设置
     icon: 'el-icon-s-tools',
   },
   children: [
+    /*  客户设置
+    ------------------------------------------ */
+    {
+      path: '/customerSetup',
+      name: 'customerSetup',
+      meta: {
+        title: '客户设置',
+        icon: 'iconfont icon-kehushezhi',
+        pageName: 'CustomerSetupPage',
+        PermissionInfo: ['PermissionSetupCustomerType', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/BasicSetup/CustomerSetupPage.vue'),
+    },
     /*  定金设置
     ------------------------------------------ */
     {
@@ -160,6 +174,12 @@ const routeTree = {
   name: 'basicSet',
   isModuleRoot: true,
   children: [
+    /*  客户设置
+    ------------------------------------------ */
+    {
+      name: 'customerSetup',
+      children: [],
+    },
     /*  定金设置
     ------------------------------------------ */
     {

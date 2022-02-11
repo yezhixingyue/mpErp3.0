@@ -637,13 +637,18 @@ export default {
     },
     /* 设置用户类别数据
     -------------------------------*/
-    setUserInfo(state, [type, rank, vip]) {
-      state.userTypeList = type;
-      state.userRankList = rank;
-      state.userVipList = vip;
-      state.userTypeListNoneEmpty = type.filter(it => it.CategoryID);
-      state.userRankListNoneEmpty = rank.filter(it => it.CategoryID);
-      state.userVipListNoneEmpty = vip.filter(it => it.CategoryID);
+    setUserInfo(state, list) {
+      if (!Array.isArray(list)) return;
+      const type = list.filter((item) => item.Type === 1);
+      const rank = list.filter((item) => item.Type === 2);
+      const vipRank = list.filter((item) => item.Type === 3);
+      const arr = [{ CategoryID: '', CategoryName: '不限' }];
+      state.userTypeList = [...arr, ...type];
+      state.userRankList = [...arr, ...rank];
+      state.userVipList = [...arr, ...vipRank];
+      state.userTypeListNoneEmpty = type;
+      state.userRankListNoneEmpty = rank;
+      state.userVipListNoneEmpty = vipRank;
     },
     /* 设置接单员列表数据
     -------------------------------*/
@@ -820,14 +825,9 @@ export default {
     async getUserClassify({ state, commit }) { // 获取用户等级
       if (state.userTypeList.length > 1 && state.userRankList.length > 1) return;
 
-      const resp = await api.getVersionValid({ Key: 71 });
-      if (resp.data.Status === 1000) {
-        const tempArr = resp.data.Data;
-        const type = tempArr.filter((item) => item.Type === 1);
-        const rank = tempArr.filter((item) => item.Type === 2);
-        const vipRank = tempArr.filter((item) => item.Type === 3);
-        const arr = [{ CategoryID: '', CategoryName: '不限' }];
-        commit('setUserInfo', [[...arr, ...type], [...arr, ...rank], [...arr, ...vipRank]]);
+      const resp = await api.getVersionValid({ Key: 71 }).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        commit('setUserInfo', resp.data.Data);
       }
     },
     async getStaffList({ state, commit }) { // 获取员工列表
