@@ -9,6 +9,20 @@ const routes = { // 价格策略
     icon: 'el-icon-s-help',
   },
   children: [
+    /*  价格策略
+    ------------------------------------------ */
+    {
+      path: '/priceTacticList',
+      name: 'priceTacticList',
+      meta: {
+        requiresAuth: true,
+        title: '价格策略',
+        icon: 'iconfont icon-jiagecelve',
+        pageName: 'PriceTacticListPage',
+        PermissionInfo: ['PermissionPricePolicy', 'HavePomission'],
+      },
+      component: () => import('../../../views/PriceTactic/PriceTacticListPage.vue'),
+    },
     /*  优惠券
     ------------------------------------------ */
     {
@@ -139,6 +153,12 @@ const routeTree = {
   name: 'priceTactics',
   isModuleRoot: true,
   children: [
+    /*  价格策略
+    ------------------------------------------ */
+    {
+      name: 'priceTacticList',
+      children: [],
+    },
     /*  优惠券
     ------------------------------------------ */
     {

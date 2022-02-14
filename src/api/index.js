@@ -949,6 +949,17 @@ const api = {
   getCustomerCategoryRemove(categoryID, type) { // DELETE /Api/Customer/Category/Remove?categoryID=13&type=1  客户设置 - 客户分类删除
     return instance.delete('/Api/Customer/Category/Remove', { params: { categoryID, type } });
   },
+  /* 价格策略api
+  ----------------------------------------------------------------------------------- */
+  getCustomerPricePolicy(data) { // POST /Api/CustomerPricePolicy 获取价格策略价格列表
+    return instance.post('/Api/CustomerPricePolicy', data);
+  },
+  getPricePolicyCoverage(data) { // POST /Api/PricePolicy/Coverage 获取价格策略生效日期列表数据
+    return instance.post('/Api/PricePolicy/Coverage', data);
+  },
+  getCustomerPricePolicySetup(data) { // POST /Api/CustomerPricePolicy/Setup 保存价格策略
+    return instance.post('/Api/CustomerPricePolicy/Setup', data);
+  },
 };
 
 export default api;

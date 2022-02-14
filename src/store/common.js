@@ -823,12 +823,15 @@ export default {
       if (resp.data.Status === 1000) commit('setProductNames', resp.data.Data);
     },
     async getUserClassify({ state, commit }) { // 获取用户等级
-      if (state.userTypeList.length > 1 && state.userRankList.length > 1) return;
+      if (state.userTypeList.length > 1 && state.userRankList.length > 1 && state.userVipList.length > 1) return true;
 
-      const resp = await api.getVersionValid({ Key: 71 }).catch(() => null);
+      // const resp = await api.getVersionValid({ Key: 71 }).catch(() => null); // getCustomerCategoryList
+      const resp = await api.getCustomerCategoryList().catch(() => null); // getCustomerCategoryList
       if (resp && resp.data.Status === 1000) {
         commit('setUserInfo', resp.data.Data);
+        return true;
       }
+      return false;
     },
     async getStaffList({ state, commit }) { // 获取员工列表
       if (state.staffList.length > 1) return;

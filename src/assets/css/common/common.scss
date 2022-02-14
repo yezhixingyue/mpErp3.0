@@ -278,6 +278,9 @@
     margin-left: -14px;
   }
 }
+.el-input.is-disabled .el-input__inner {
+  background-color: #f6f6f6;
+}
 
 .cancel-blue-btn {
   color: #26bcf9;
@@ -498,6 +501,7 @@ button.border-blue-btn {
   margin-right: 8px;
   width: 22px;
   text-align: left;
+  margin-left: 5px;
 }
 
 
