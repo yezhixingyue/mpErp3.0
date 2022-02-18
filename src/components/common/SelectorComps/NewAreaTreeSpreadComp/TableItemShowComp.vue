@@ -11,7 +11,7 @@
       </div>
     </div>
     <div style="text-overflow: ellipsis;overflow: hidden;">
-      {{title}}<template v-if="showContent">：</template>{{showContent}}
+      {{showContent ? title : ''}}<template v-if="showContent">：</template>{{showContent}}
     </div>
   </el-tooltip>
 </template>

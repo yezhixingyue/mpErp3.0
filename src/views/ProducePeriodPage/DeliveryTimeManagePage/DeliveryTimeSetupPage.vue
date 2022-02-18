@@ -58,9 +58,9 @@
                 >
                 </el-time-picker>
                 <label>运输时长：</label>
-                <el-input v-model.number="it.D" maxlength="3" size="small" style="width:100px"></el-input>
+                <el-input v-model="it.D" maxlength="3" size="small" style="width:100px"></el-input>
                 <span class="remark">天</span>
-                <el-input v-model.number="it.H" maxlength="2" size="small" style="width:100px"></el-input>
+                <el-input v-model="it.H" maxlength="2" size="small" style="width:100px"></el-input>
                 <span class="remark">小时</span>
                 <CtrlMenus v-show="i > 0" :showList="['del']" @remove='onShiftRemoveClick(i)' />
               </li>

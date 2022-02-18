@@ -93,7 +93,9 @@ export default {
         const time = formatTimeObjToStringFunc(S);
         const d = D && this.$utils.getValueIsOrNotNumber(D, true) ? `${D}天` : '';
         const h = H && this.$utils.getValueIsOrNotNumber(H, true) ? `${H}小时` : '';
-        return `${time} 运输时长：${d}${h}`;
+        let str = d || h ? `${d}${h}` : '未设置';
+        if (D === 0 && H === 0) str = '0小时';
+        return `${time} 运输时长：${str}`;
       }).join('\r\n');
       return content;
     },

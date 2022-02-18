@@ -106,9 +106,9 @@ const routes = { // 价格策略
         title: '印豆管理',
         icon: 'iconfont icon-yindouguanli',
         pageName: 'PrintBeanListPage',
-        PermissionInfo: ['Developing', 'HavePomission'],
+        PermissionInfo: ['PermissionPromote', 'HavePomission'],
       },
-      component: () => import('../../../views/PrintBeanManagePages/PrintBeanListPage.vue'),
+      component: () => import('../../../views/PrintBeanManagePages/PrintBeanManageListPage.vue'),
     },
     {
       path: '/printBeanSetup/:ID',
@@ -117,9 +117,9 @@ const routes = { // 价格策略
         requiresAuth: true,
         title: '印豆设置',
         pageName: 'PrintBeanSetupPage',
-        PermissionInfo: ['Developing', 'HavePomission'],
+        PermissionInfo: ['PermissionPromote', 'HavePomission'],
       },
-      component: () => import('../../../views/PrintBeanManagePages/PrintBeanSetupPage.vue'),
+      component: () => import('../../../views/PrintBeanManagePages/PrintBeanManageSetupPage.vue'),
     },
     /*  消费返现
     ------------------------------------------ */

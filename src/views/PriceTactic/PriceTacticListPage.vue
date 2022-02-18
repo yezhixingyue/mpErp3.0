@@ -233,6 +233,7 @@ export default {
     text-align: center;
     padding: 25px;
     padding-bottom: 25px;
+    padding-right: 400px;
     button {
       width: 120px;
     }

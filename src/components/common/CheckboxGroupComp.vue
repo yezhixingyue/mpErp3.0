@@ -8,7 +8,7 @@
         :key='(item[defaultProps.value] + "-" + item[defaultProps.label] + i)'
         :disabled='isDisabled'
         >
-        <el-tooltip popper-class="checkbox-tip" :visible-arrow='false' transition='none'
+        <el-tooltip v-if="showTips" popper-class="checkbox-tip" :visible-arrow='false' transition='none'
          :content="item[defaultProps.label]" placement="bottom" :enterable='false'>
           <span>{{item[defaultProps.label]}}</span>
         </el-tooltip>
@@ -52,6 +52,10 @@ export default {
       default: true,
     },
     useLabel: {
+      type: Boolean,
+      default: true,
+    },
+    showTips: {
       type: Boolean,
       default: true,
     },

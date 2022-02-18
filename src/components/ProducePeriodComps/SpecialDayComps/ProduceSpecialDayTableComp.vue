@@ -110,11 +110,11 @@ export default {
         this.$emit('remove', item);
       });
     },
-    formatSpecialType({ SpecialType, ProductionTime }) {
+    formatSpecialType({ SpecialType, ChangeTime }) {
       // eslint-disable-next-line max-len
-      if (SpecialType === ProduceSpecialTypeEnums.stop.ID) return `${ProduceSpecialTypeEnums.stop.Name} ( 可生产工期${ProductionTime || ProductionTime === 0 ? ProductionTime : '未知'}小时)`;
+      if (SpecialType === ProduceSpecialTypeEnums.stop.ID) return `${ProduceSpecialTypeEnums.stop.Name} ( 可生产工期${ChangeTime || ChangeTime === 0 ? ChangeTime : '未知'}小时)`;
       // eslint-disable-next-line max-len
-      if (SpecialType === ProduceSpecialTypeEnums.delay.ID) return `${ProduceSpecialTypeEnums.delay.Name} ${ProductionTime || ProductionTime === 0 ? ProductionTime : '未知'}小时`;
+      if (SpecialType === ProduceSpecialTypeEnums.delay.ID) return `${ProduceSpecialTypeEnums.delay.Name} ${ChangeTime || ChangeTime === 0 ? ChangeTime : '未知'}小时`;
       return '';
     },
     getDateRangeContent({ StartTime, EndTime }) {

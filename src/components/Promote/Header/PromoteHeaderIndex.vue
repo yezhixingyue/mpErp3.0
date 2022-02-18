@@ -9,7 +9,7 @@
          />
       </li>
       <li class="selector-wrap-2">
-        <area-selector
+        <AreaSelector
           :changePropsFunc='setPromoteListRequestObj'
           :requestFunc='getPromoteList'
           :RegionalID='promoteListRequestObj.SellArea.RegionalID'
@@ -17,7 +17,7 @@
           :CountyID='promoteListRequestObj.SellArea.CountyID'
           :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
          />
-        <product-selector
+        <ProductSelector
           useCustomer
           :changePropsFunc='setPromoteListRequestObj'
           :requestFunc='getPromoteList'
@@ -26,14 +26,14 @@
           :ProductID='promoteListRequestObj.Product.ProductID'
           :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
          />
-        <user-selector
+        <UserSelector
           :changePropsFunc='setPromoteListRequestObj'
           :requestFunc='getPromoteList'
           :userType='promoteListRequestObj.Customer.First'
           :userRank='promoteListRequestObj.Customer.Second'
           :typeList="[['Customer', 'First'],['Customer', 'Second']]"
          />
-        <order-channel-selector
+        <OrderChannelSelector
           :options='orderCreateTypeList'
           :requestFunc='getPromoteList'
           :changePropsFunc='setPromoteListRequestObj'

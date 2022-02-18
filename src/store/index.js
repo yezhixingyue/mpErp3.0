@@ -23,7 +23,7 @@ import PriceRecord from './GetPriceRecord/GetPriceRecord';
 import periodManage from './Period/periodManage';
 import companyManage from './companyManage/companyManage';
 import customerManage from './customerManage/customerManage';
-import printBean from './printBean/printBean';
+import printBean from './printBean/printBeanStore';
 
 
 Vue.use(Vuex);

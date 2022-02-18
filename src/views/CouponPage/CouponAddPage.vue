@@ -63,6 +63,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.commit('couponStore/clearCondition2CouponSave');
     const { type } = this.$route.params;
     const { CouponID } = this.$store.state.couponStore.condition2CouponSave;
     if (type === 'edit' && !CouponID) {

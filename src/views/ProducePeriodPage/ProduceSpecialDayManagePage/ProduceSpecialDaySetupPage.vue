@@ -92,7 +92,7 @@
             <li>
               <span class="title">{{dateTypeTitle}}：</span>
               <div class="content-item">
-                <el-input maxlength="3" v-model.number.trim="SpecialDayForm.ProductionTime" size="small"></el-input>
+                <el-input maxlength="3" v-model.number.trim="SpecialDayForm.ChangeTime" size="small"></el-input>
                 <span class="ml-8">小时</span>
               </div>
             </li>
@@ -120,7 +120,7 @@ import ProduceSpecialDayItemClass,
 { ProduceSpecialTypeEnumList, ProduceDelayTypeEnumList, ProduceSpecialTypeEnums } from '@/store/Period/ItemClass/ProduceSpecialDayItemClass';
 import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
 // import NewAreaTreeSpreadComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp';
-import TreeComp from '@/components/common/TreeComp.vue';
+import TreeComp from '../../../components/common/TreeComp.vue';
 
 export default {
   name: 'ProduceSpecialDaySetupPage',
@@ -149,7 +149,7 @@ export default {
     },
     defaultCheckedKeys() {
       if (!this.SpecialDayForm) return [];
-      return this.SpecialDayForm.ProductList.map(it => it.productID);
+      return this.SpecialDayForm.ProductList.map(it => it.ProductID);
     },
     dateTypeTitle() {
       if (!this.SpecialDayForm) return '';
@@ -189,9 +189,9 @@ export default {
         const t = _it.ClassifyList.find(({ Type }) => Type === 1);
         if (t) {
           return {
-            classID: t.FirstLevel.ID,
-            typeID: t.SecondLevel.ID,
-            productID: _it.ID,
+            ClassID: t.FirstLevel.ID,
+            TypeID: t.SecondLevel.ID,
+            ProductID: _it.ID,
             // ProductName: _it.Name,
           };
         }

@@ -960,6 +960,17 @@ const api = {
   getCustomerPricePolicySetup(data) { // POST /Api/CustomerPricePolicy/Setup 保存价格策略
     return instance.post('/Api/CustomerPricePolicy/Setup', data);
   },
+  /* 印豆管理api
+  ----------------------------------------------------------------------------------- */
+  getPrintBeanList(data) { // POST /Api/PrintBean/List   获取印豆列表数据
+    return instance.post('/Api/PrintBean/List', data);
+  },
+  getPrintBeanSave(data) { // POST /Api/PrintBean/Save  印豆编辑保存
+    return instance.post('/Api/PrintBean/Save', data);
+  },
+  getPrintBeanRemove(id) { // DELETE /Api/PrintBean/Remove  印豆删除
+    return instance.delete('/Api/PrintBean/Remove', { params: { id } });
+  },
 };
 
 export default api;

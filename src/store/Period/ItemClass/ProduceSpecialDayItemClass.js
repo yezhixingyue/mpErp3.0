@@ -52,7 +52,7 @@ export default class ProduceSpecialDayItemClass {
     Second: '',
   }
 
-  ProductionTime = '' // number
+  ChangeTime = '' // number
 
   Tips = ''
 
@@ -64,7 +64,7 @@ export default class ProduceSpecialDayItemClass {
 
   constructor(data) {
     if (data) {
-      const { ItemID, ItemName, ProductList, SpecialType, DelayType, StartTime, EndTime, ProductionTime, Tips, AddTime, OperatorUserName } = data;
+      const { ItemID, ItemName, ProductList, SpecialType, DelayType, StartTime, EndTime, ChangeTime, Tips, AddTime, OperatorUserName } = data;
       if (ItemID) this.ItemID = ItemID;
       if (ItemName) this.ItemName = ItemName;
       if (ProduceSpecialTypeEnumIDList.includes(SpecialType)) this.SpecialType = SpecialType;
@@ -77,7 +77,7 @@ export default class ProduceSpecialDayItemClass {
         this.EndTime.First = EndTime.split('T')[0] || '';
         this.EndTime.Second = EndTime.split('T')[1] ? (EndTime.split('T')[1].slice(0, 5) || '') : '';
       }
-      if (ProductionTime || ProductionTime === 0) this.ProductionTime = ProductionTime;
+      if (ChangeTime || ChangeTime === 0) this.ChangeTime = ChangeTime;
       if (Tips) this.Tips = Tips;
       if (Array.isArray(ProductList) && ProductList.length > 0) this.ProductList = [...ProductList];
       if (AddTime) this.AddTime = AddTime;
@@ -98,7 +98,7 @@ export default class ProduceSpecialDayItemClass {
       return false;
     };
     if (!data) return throwFalseFunc('未获取到数据');
-    const { ProductList, SpecialType, StartTime, EndTime, DelayType, ProductionTime, Tips, ItemName } = data;
+    const { ProductList, SpecialType, StartTime, EndTime, DelayType, ChangeTime, Tips, ItemName } = data;
     if (ProductList.length === 0) return throwFalseFunc('请选择产品');
     if (!ItemName) return throwFalseFunc('请输入标题');
     if (SpecialType === ProduceSpecialTypeEnums.delay.ID) { // 选中延长工时
@@ -120,8 +120,8 @@ export default class ProduceSpecialDayItemClass {
     let title = '';
     if (SpecialType === ProduceSpecialTypeEnums.delay.ID) title = '延长工时';
     if (SpecialType === ProduceSpecialTypeEnums.stop.ID) title = '可生产工期';
-    if (!ProductionTime && ProductionTime !== 0) return throwFalseFunc(`请设置${title}时间`);
-    if (!getValueIsOrNotNumber(ProductionTime, true) || ProductionTime <= 0) return throwFalseFunc(`${title}时间必须为正整数`);
+    if (!ChangeTime && ChangeTime !== 0) return throwFalseFunc(`请设置${title}时间`);
+    if (!getValueIsOrNotNumber(ChangeTime, true) || ChangeTime <= 0) return throwFalseFunc(`${title}时间必须为正整数`);
     // }
     if (!Tips) return throwFalseFunc('请填写客户提示');
     return true;
@@ -134,7 +134,6 @@ export default class ProduceSpecialDayItemClass {
     temp.EndTime = getDateString(data.EndTime, false, true);
     if (data.SpecialType === ProduceSpecialTypeEnums.stop.ID) {
       delete temp.DelayType; // 删除时间范围类型
-      delete temp.ProductionTime; // 删除延长工时
     }
     return temp;
   }

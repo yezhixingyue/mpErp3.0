@@ -76,8 +76,8 @@ export default class DeliveryTimeItemClass {
 
     let t = Shift.find(({ S }) => (!S.F && S.F !== 0) || (!S.S && S.S !== 0));
     if (t) return throwFalseFunc('发货班次信息不完整，请检查');
-    t = Shift.find(({ D, H }) => (!D && D !== 0) && (!H && H !== 0));
-    if (t) return throwFalseFunc('请设置运输时长');
+    // t = Shift.find(({ D, H }) => (!D && D !== 0) && (!H && H !== 0));
+    // if (t) return throwFalseFunc('请设置运输时长');
     t = Shift.find(({ D, H }) => (D && !getValueIsOrNotNumber(D, true)) || (H && !getValueIsOrNotNumber(H, true)));
     if (t) return throwFalseFunc('运输时长类型设置不正确，应为整数类型');
     t = Shift.find(({ D, H }) => D < 0 || H < 0);

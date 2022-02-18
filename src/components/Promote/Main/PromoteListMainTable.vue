@@ -79,7 +79,7 @@
       label="操作人"
     ></el-table-column>
 
-    <el-table-column width="380px" label="操作">
+    <el-table-column width="220px" label="操作">
       <ul class="handle-menus" slot-scope="scope">
         <li>
           <span  @click="handle2Detail(scope.row)" class="is-list-btn">
@@ -373,6 +373,7 @@ export default {
         }
       }
       height: 24px;
+      line-height: 24px;
     }
   }
 }

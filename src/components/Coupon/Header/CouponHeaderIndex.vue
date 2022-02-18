@@ -33,7 +33,7 @@
         />
       </li>
       <li>
-        <radio-button-group-comp
+        <RadioButtonGroupComp
           :radioList="CouponProvideStatusList"
           :requestFunc="getCouponList"
           v-model="CouponProvideStatus"
@@ -42,7 +42,7 @@
         />
       </li>
       <li class="last-row-selector-wrap">
-        <radio-button-group-comp
+        <RadioButtonGroupComp
           :radioList="CouponUseStatusList"
           :requestFunc="getCouponList"
           v-model="CouponUseStatus"

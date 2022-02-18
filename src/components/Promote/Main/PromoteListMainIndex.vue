@@ -2,7 +2,7 @@
   <section>
     <PromoteMainTable />
     <footer>
-        <count-comp
+        <CountComp
          :count='count'
          :watchPage='promoteListRequestObj.Page'
          :handlePageChange='handlePageChange'

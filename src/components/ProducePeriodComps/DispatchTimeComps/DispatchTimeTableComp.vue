@@ -38,7 +38,6 @@
 <script>
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
-import { formatTimeObjToStringFunc } from '@/assets/js/filters/filters';
 import { mapGetters, mapState } from 'vuex';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
@@ -68,7 +67,7 @@ export default {
     },
     localDataList() {
       if (Array.isArray(this.dataList)) {
-        return this.dataList.map(it => ({ ...it, deliveryContent: this.getDeliveryContent(it) }));
+        return this.dataList.map(it => ({ ...it }));
       }
       return [];
     },
@@ -85,19 +84,6 @@ export default {
       this.messageBox.warnCancelBox('确定删除该派件时间吗', `名称：${item.ItemName}`, () => {
         this.$emit('remove', item);
       });
-    },
-    getDeliveryContent({ Shift }) {
-      if (!Shift) return '';
-      const list = typeof Shift === 'string' ? JSON.parse(Shift) : Shift;
-      if (!Array.isArray(list)) return '';
-      const content = list.map(it => {
-        const { ShiftTime, Day, Hour } = it;
-        const time = formatTimeObjToStringFunc(ShiftTime);
-        const d = Day && this.$utils.getValueIsOrNotNumber(Day, true) ? `${Day}天` : '';
-        const h = Hour && this.$utils.getValueIsOrNotNumber(Hour, true) ? `${Hour}小时` : '';
-        return `${time} 运输时长：${d}${h}`;
-      }).join('\r\n');
-      return content;
     },
   },
 };
