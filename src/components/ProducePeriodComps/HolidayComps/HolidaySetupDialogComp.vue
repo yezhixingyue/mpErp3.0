@@ -61,6 +61,25 @@
                 <el-input v-model.number="ItemData.ChangeTime" placeholder="" style="width:100px" maxlength="4"></el-input>
                 <span>小时</span>
                 <span class="is-font-size-12 tips-box">（ 注：负数往前，正数往后推移 ）</span>
+                <el-popover
+                  placement="top"
+                  width="200"
+                  trigger="hover"
+                  offset='20'
+                  popper-class='mp-erp-holiday-setup-dialog-comp-tips-popover-box-wrap'
+                  >
+                  <ul>
+                    <li>1. 在无人为干预的情况下默认均为工作日；</li>
+                    <li>2. 每次调整仅在单个自然月内设置并生效；</li>
+                    <li>3.“最晚付款时间”仅对工作日有效；</li>
+                    <li>4.“可生产日期”起始点为第一个休息日的零点；</li>
+                    <li>5.“给客户提示”与“可生产日期”仅对休息日有效。</li>
+                  </ul>
+                  <span slot="reference" @mouseenter="showBImg = true">
+                    <img src="@/assets/images/wen-w.png" class="w" alt="">
+                    <img src="@/assets/images/wen-b.png" class="b" alt="" v-if="showBImg">
+                  </span>
+                </el-popover>
               </template>
             </p>
           </div>
@@ -147,6 +166,7 @@ export default {
       yearList: [],
       ItemData: null,
       loading: false,
+      showBImg: false,
     };
   },
   methods: {
@@ -155,6 +175,7 @@ export default {
     },
     onClosed() {
       this.ItemData = null;
+      this.showBImg = false;
     },
     async getInitDateData(params, item) { // 此方法应在弹窗打开时进行调用 或 弹窗月份手动改变时调用
       this.loading = true;
@@ -223,7 +244,7 @@ export default {
             display: flex;
             align-items: center;
             white-space: nowrap;
-            width: 500px;
+            width: 600px;
             label {
               margin-right: 8px;
               min-width: 9em;
@@ -233,6 +254,59 @@ export default {
               margin-left: 12px;
               width: 210px;
               padding-left: 8px;
+            }
+            .el-popover__reference {
+              display: inline-block;
+              margin-left: 76px;
+              width: 30px;
+              height: 30px;
+              position: relative;
+              > img {
+                position: absolute;
+                // transition: opacity 0.12s ease-in-out;
+                cursor: pointer;
+              }
+              .w {
+                opacity: 1;
+              }
+              .b {
+                opacity: 0;
+              }
+              @keyframes toWhite {
+                0% {
+                  opacity: 100%;
+                }
+                50% {
+                  opacity: 100%;
+                }
+                100% {
+                  opacity: 0%;
+                }
+              }
+              .b {
+                opacity: 0;
+                animation: toWhite 0.5s;
+              }
+              &:hover {
+                @keyframes toBlack {
+                  0% {
+                    opacity: 0;
+                  }
+                  50% {
+                    opacity: 30%;
+                  }
+                  75% {
+                    opacity: 85%;
+                  }
+                  100% {
+                    opacity: 1;
+                  }
+                }
+                .b {
+                  opacity: 1;
+                  animation: toBlack 0.15s;
+                }
+              }
             }
           }
           .el-radio-group {
@@ -257,6 +331,31 @@ export default {
             margin-bottom: 10px;
           }
         }
+      }
+    }
+  }
+}
+.mp-erp-holiday-setup-dialog-comp-tips-popover-box-wrap {
+  width: 205px !important;
+  background: #444;
+  .popper__arrow::after {
+    border-top-color: #444 !important;
+    border-width: 8px !important;
+    border-bottom: none !important;
+    bottom: -1px !important;
+    right: -8px !important;
+  }
+  padding: 12px 25px;
+  box-sizing: border-box;
+  > ul {
+    > li {
+      color: #b5b7bb;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #5b5b5b;
+      padding: 5px 0;
+      &:last-of-type {
+        border: none;
       }
     }
   }
