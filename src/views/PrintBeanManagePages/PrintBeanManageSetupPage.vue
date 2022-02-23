@@ -108,6 +108,9 @@ export default {
             index: -1,
           };
           this.$store.commit('printBean/setItemChange', temp);
+          if (data.itemData.ItemList.some(it => !it.ID && it.ID !== 0)) {
+            this.$store.dispatch('printBean/getPrintBeanList'); // 内部印豆列表ID获取不到，所以此时重新获取列表数据
+          }
           this.onGobackClick();
         };
         this.messageBox.successSingle(`${this.field}成功`, cb, cb);

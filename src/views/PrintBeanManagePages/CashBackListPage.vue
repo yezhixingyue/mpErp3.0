@@ -13,8 +13,11 @@
 </template>
 
 <script>
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+
 export default {
   name: 'CashBackListPage',
+  mixins: [recordScrollPositionMixin('.mp-erp-print-bean-list-page-wrap .el-table__body-wrapper')],
   methods: {
     onAddClick() {
       this.$router.push({

@@ -26,12 +26,14 @@
 
 <script>
 import { mapState } from 'vuex';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import PrintBeanListPageHeader from '../../components/PrintBeanComps/ListPageComps/PrintBeanListPageHeader.vue';
 import PrintBeanListPageTable from '../../components/PrintBeanComps/ListPageComps/PrintBeanListPageTable.vue';
 import CountComp from '../../components/common/Count.vue';
 
 export default {
   name: 'PrintBeanListPage',
+  mixins: [recordScrollPositionMixin('.mp-erp-print-bean-list-page-wrap .el-table__body-wrapper')],
   components: {
     PrintBeanListPageHeader,
     PrintBeanListPageTable,

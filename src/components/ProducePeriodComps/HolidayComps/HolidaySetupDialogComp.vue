@@ -61,26 +61,26 @@
                 <el-input v-model.number="ItemData.ChangeTime" placeholder="" style="width:100px" maxlength="4"></el-input>
                 <span>小时</span>
                 <span class="is-font-size-12 tips-box">（ 注：负数往前，正数往后推移 ）</span>
-                <el-popover
-                  placement="top"
-                  width="200"
-                  trigger="hover"
-                  offset='20'
-                  popper-class='mp-erp-holiday-setup-dialog-comp-tips-popover-box-wrap'
-                  >
-                  <ul>
-                    <li>1. 在无人为干预的情况下默认均为工作日；</li>
-                    <li>2. 每次调整仅在单个自然月内设置并生效；</li>
-                    <li>3.“最晚付款时间”仅对工作日有效；</li>
-                    <li>4.“可生产日期”起始点为第一个休息日的零点；</li>
-                    <li>5.“给客户提示”与“可生产日期”仅对休息日有效。</li>
-                  </ul>
-                  <span slot="reference" @mouseenter="showBImg = true">
-                    <img src="@/assets/images/wen-w.png" class="w" alt="">
-                    <img src="@/assets/images/wen-b.png" class="b" alt="" v-if="showBImg">
-                  </span>
-                </el-popover>
               </template>
+              <el-popover
+                placement="top"
+                width="200"
+                trigger="hover"
+                offset='20'
+                popper-class='mp-erp-holiday-setup-dialog-comp-tips-popover-box-wrap'
+                >
+                <ul>
+                  <li>1. 在无人为干预的情况下默认均为工作日；</li>
+                  <li>2. 每次调整仅在单个自然月内设置并生效；</li>
+                  <li>3.“最晚付款时间”仅对工作日有效；</li>
+                  <li>4.“可生产日期”起始点为第一个休息日的零点；</li>
+                  <li>5.“给客户提示”与“可生产日期”仅对休息日有效。</li>
+                </ul>
+                <span slot="reference" @mouseenter="showBImg = true">
+                  <img src="@/assets/images/wen-w.png" class="w" alt="">
+                  <img src="@/assets/images/wen-b.png" class="b" alt="" v-if="showBImg">
+                </span>
+              </el-popover>
             </p>
           </div>
         </li>
@@ -245,6 +245,7 @@ export default {
             align-items: center;
             white-space: nowrap;
             width: 600px;
+            position: relative;
             label {
               margin-right: 8px;
               min-width: 9em;
@@ -260,7 +261,9 @@ export default {
               margin-left: 76px;
               width: 30px;
               height: 30px;
-              position: relative;
+              position: absolute;
+              right: 2px;
+              top: 0;
               > img {
                 position: absolute;
                 // transition: opacity 0.12s ease-in-out;
