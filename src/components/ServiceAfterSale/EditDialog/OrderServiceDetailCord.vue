@@ -27,39 +27,15 @@
           </div>
         </li>
       </ul>
-      <div class="right"> <!-- 金额部分 -->
-        <div>
-          <span class="title">总金额：</span>
-          <span class="text-content">￥{{orderData.Order.Funds.FinalPrice}}元</span>
-        </div>
-        <div>
-          <span class="title">已付：</span>
-          <span class="text-content">￥{{orderData.Order.Funds.HavePaid}}元</span>
-        </div>
-        <div v-if="PayPackageData">
-          <span class="title">运费：</span>
-          <span class="text-content">￥{{PayPackageData.Freight}}元<i class="is-font-size-12 is-gray">（含{{PayPackageData.OrderList.length}}个订单）</i></span>
-        </div>
-        <div>
-          <span class="title">订单退款：</span>
-          <span class="text-content">￥{{orderData.Order.Funds.Refund}}元</span>
-        </div>
-        <div v-if="PayPackageData">
-          <span class="title">运费退款：</span>
-          <span class="text-content">￥{{PayPackageData.RefundFreight}}元</span>
-        </div>
-        <div>
-          <span class="title">售后优惠：</span>
-          <span class="text-content">￥{{orderData.Order.Funds.Reduced}}元</span>
-        </div>
-      </div>
+      <!-- 金额部分 -->
+      <DetailInfoHeader class="right" :Funds="orderData.Order.Funds" :PayPackageData='PayPackageData' />
     </main>
     <footer>
       <div class="title">配送信息：</div>
       <div class="text-content">
         <span class="address">{{this.orderDetailData.Address.Address | combineAdd}}</span>
         <span class="phone">{{orderDetailData.Address.Address.Mobile}}</span>
-        <span>配送方式 :（ {{orderDetailData.Address.ExpressText}} ）</span>
+        <span>（ 配送: {{orderDetailData.Address.ExpressText}} ）</span>
       </div>
     </footer>
   </section>
@@ -67,6 +43,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import DetailInfoHeader from './DetailInfoHeader.vue';
 
 export default {
   props: {
@@ -89,6 +66,9 @@ export default {
       type: Object,
       default: () => ({}),
     },
+  },
+  components: {
+    DetailInfoHeader,
   },
   data() {
     return {
@@ -154,7 +134,7 @@ export default {
       line-height: 13px;
     }
     .address{
-        max-width: 405px;
+        max-width: 360px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -183,7 +163,7 @@ export default {
     display: flex;
     position: relative;
     .left {
-      width: 732px;
+      width: 680px;
       padding-top: 4px;
       position: relative;
       flex: none;

@@ -50,7 +50,7 @@ export default {
     -------------------------------*/
     UnPaidAmount: 0, // 余额
     PackageList: [], // 列表数据
-    PaidAmount: 0, // 已付金额
+    HavePaid: 0, // 已付金额
     TotalAmount: 0, // 总金额
     /* 财务列表数据总条数
     -------------------------------*/
@@ -186,11 +186,11 @@ export default {
     /* 设置财务列表页面相关数据
     -------------------------------*/
     setFinanceData(state, {
-      UnPaidAmount, PackageList, PaidAmount, TotalAmount,
+      UnPaidAmount, PackageList, HavePaid, TotalAmount,
     }) {
       state.UnPaidAmount = UnPaidAmount; // 余额
       state.PackageList = PackageList; // 列表数据
-      state.PaidAmount = PaidAmount; // 已付金额
+      state.HavePaid = HavePaid; // 已付金额
       state.TotalAmount = TotalAmount; // 总金额
     },
     /* 筛选掉财务列表中当前数据中的已销账状态订单
@@ -248,7 +248,7 @@ export default {
       commit('setFinanceData', {
         UnPaidAmount: 0,
         PackageList: null,
-        PaidAmount: 0,
+        HavePaid: 0,
         TotalAmount: 0,
       });
       commit('setFinanceDataLoading', true);

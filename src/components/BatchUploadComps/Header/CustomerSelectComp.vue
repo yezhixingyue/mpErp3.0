@@ -21,7 +21,11 @@
       <li class="rechange" v-if="Amount || Amount === 0">
         <span>余额：</span>
         <span class="is-pink">￥{{Amount}}元</span>
-        <RechargeComp :customer='customer' @success="handleRechargeSuccess" />
+        <template v-if="BeanNumber || BeanNumber === 0">
+          <span style="margin-left:15px">印豆：</span>
+          <span class="is-pink">￥{{BeanNumber}}个</span>
+        </template>
+        <RechargeComp :customer='customer' @success="handleRechargeSuccess" @getBalance="handleGetBalance" />
       </li>
     </template>
   </ul>
@@ -46,19 +50,39 @@ export default {
     CustomerRemoteSelector,
     RechargeComp,
   },
+  data() {
+    return {
+      Amount: '',
+      BeanNumber: '',
+    };
+  },
   computed: {
-    Amount() {
-      if (!this.customer || !this.customer.FundInfo) return '';
-      if (this.customer.FundInfo.Amount || this.customer.FundInfo.Amount === 0) return this.customer.FundInfo.Amount;
-      return '';
-    },
   },
   methods: {
     onCustomerChange(data) {
       this.$emit('setCustomer', data);
     },
     handleRechargeSuccess(allAmount) { // 充值成功
-      this.$emit('pay', allAmount);
+      this.$emit('paid', allAmount);
+    },
+    handleGetBalance(data) {
+      this.$emit('getBalance', data);
+    },
+  },
+  watch: {
+    customer: {
+      handler(val) {
+        if (val && val.FundInfo) {
+          const { BeanNumber, Amount } = val.FundInfo;
+          this.Amount = Amount;
+          this.BeanNumber = BeanNumber;
+        } else {
+          this.Amount = '';
+          this.BeanNumber = '';
+        }
+      },
+      immediate: true,
+      deep: true,
     },
   },
 };

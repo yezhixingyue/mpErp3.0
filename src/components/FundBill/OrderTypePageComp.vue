@@ -23,7 +23,7 @@
 import Count from '@/components/common/Count.vue';
 import { mapState } from 'vuex';
 import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
-import FundBillClassType from '@/store/fundBill/fundBillClassType';
+import CommonClassType from '@/store/CommonClassType';
 import OrderTypePageCompHeader from './Header/OrderTypePageCompHeader.vue';
 import OrderTypePageCompTable from './Main/OrderTypePageCompTable.vue';
 
@@ -44,7 +44,7 @@ export default {
       return {};
     },
     condition() {
-      return FundBillClassType.filter(this.condition4OrderType);
+      return CommonClassType.filter(this.condition4OrderType);
     },
     configObj() {
       return {

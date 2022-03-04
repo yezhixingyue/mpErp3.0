@@ -2,16 +2,16 @@
   <el-table
     :max-height="h" :height="h" :data="tableData" stripe class="mp-payment-module-table"
     :cell-class-name="initStyle" border>
-    <el-table-column prop="PayCode" label="付款单号" minWidth="150"></el-table-column>
+    <el-table-column prop="PayCode" label="付款单号" minWidth="130"></el-table-column>
     <el-table-column prop="Customer.SN" label="客户编号" minWidth="90"></el-table-column>
     <el-table-column
-     show-overflow-tooltip prop="Customer.Name" label="客户" minWidth="165"></el-table-column>
+     show-overflow-tooltip prop="Customer.Name" label="客户" minWidth="140"></el-table-column>
      <el-table-column
-     show-overflow-tooltip prop="Customer.Type.Second" label="客户类型" minWidth="85"></el-table-column>
+     show-overflow-tooltip prop="Customer.Type.Second" label="客户类型" minWidth="80"></el-table-column>
      <el-table-column
-     show-overflow-tooltip prop="Customer.Grade.Second" label="客户等级" minWidth="85"></el-table-column>
+     show-overflow-tooltip prop="Customer.Grade.Second" label="客户等级" minWidth="80"></el-table-column>
     <el-table-column
-      class-name='md-font-item' prop="OrderCount" label="订单数量" minWidth="80"></el-table-column>
+      class-name='md-font-item' prop="OrderCount" label="订单数量" minWidth="75"></el-table-column>
     <el-table-column class-name='md-font-item' label="总金额(含运费)" minWidth="109">
       <template slot-scope="scope">
         {{scope.row.DepositAmount}}元
@@ -27,12 +27,17 @@
         {{scope.row.BalanceAmount}}元
       </template>
     </el-table-column>
+    <el-table-column class-name='md-font-item' label="使用印豆" minWidth="87">
+      <template slot-scope="scope">
+        {{scope.row.PaidBeanNumber}}个
+      </template>
+    </el-table-column>
     <el-table-column class-name='md-font-item' label="在线支付" minWidth="92">
       <template slot-scope="scope">
         {{scope.row.PayOnlineAmount}}元
       </template>
     </el-table-column>
-    <el-table-column class-name='md-font-item' label="状态" minWidth="65">
+    <el-table-column class-name='md-font-item' label="状态" minWidth="63">
       <template slot-scope="scope">
         {{$utils.getPaymentStatus(scope.row.Status, PayStatusList)}}
       </template>
@@ -42,17 +47,17 @@
         {{getPayType(scope.row.Payment)}}
       </template>
     </el-table-column> -->
-    <el-table-column class-name='md-font-item' prop="OrderCreateType" label="下单方式" minWidth="75">
+    <el-table-column class-name='md-font-item' prop="OrderCreateType" label="下单方式" minWidth="70">
       <template slot-scope="scope">
         {{getOrderType(scope.row.OrderType)}}
       </template>
     </el-table-column>
-    <el-table-column prop="OrderTaker.Value" label="创建人" minWidth="85"></el-table-column>
+    <el-table-column prop="OrderTaker.Value" label="创建人" minWidth="80" show-overflow-tooltip></el-table-column>
     <el-table-column
-      prop="OrderCreateTime" class-name='time-item' label="创建时间" minWidth="130"></el-table-column>
+      prop="OrderCreateTime" class-name='time-item' label="创建时间" minWidth="125"></el-table-column>
     <el-table-column
-      prop="OrderFinishTime" class-name='time-item' label="支付时间" minWidth="130"></el-table-column>
-    <el-table-column  width="220" label="操作">
+      prop="OrderFinishTime" class-name='time-item' label="支付时间" minWidth="125"></el-table-column>
+    <el-table-column  width="215" label="操作">
       <ul class="payment-table-handle-menu-wrap" slot-scope="scope">
         <li class="handle-menu-item">
           <span @click="onMenuClick(scope.row, 0)">
@@ -150,10 +155,10 @@ export default {
     getPayFundInfo(row) {
       const { Name } = row.Customer;
       const {
-        PayQRCode, PayOnlineAmount, BalanceAmount, PayOnDelivery, FullPayout, // 应付、余额、货到付款、总金额
+        PayQRCode, PayOnlineAmount, BalanceAmount, PaidBeanNumber, PayOnDelivery, FullPayout, // 应付、余额、货到付款、总金额
       } = row;
       this.setPayAmount({
-        PayOnlineAmount, BalanceAmount, PayOnDelivery, FullPayout, Name,
+        PayOnlineAmount, BalanceAmount, PaidBeanNumber, PayOnDelivery, FullPayout, Name,
       });
       this.setPayImgSrc(PayQRCode);
     },

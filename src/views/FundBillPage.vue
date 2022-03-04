@@ -2,7 +2,7 @@
   <article class="mp-fund-bill-page-wrap">
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <!-- <el-tab-pane disabled label="" name=""></el-tab-pane> -->
-        <el-tab-pane label="客户余额流水" name="second" v-if="localPermission.QueryBalanceBill">
+        <el-tab-pane label="客户资金流水" name="second" v-if="localPermission.QueryBalanceBill">
         </el-tab-pane>
         <el-tab-pane label="客户订单流水" name="third" v-if="localPermission.QueryOrderBill">
         </el-tab-pane>

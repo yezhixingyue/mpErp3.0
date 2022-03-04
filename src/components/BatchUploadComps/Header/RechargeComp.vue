@@ -30,6 +30,10 @@
           <span class="is-pink is-bold" v-if="!loading">{{ curAmount }}元</span>
           <span class="is-gray is-font-size-12" v-else>获取中</span>
         </el-form-item>
+        <el-form-item label="当前印豆：">
+          <span class="is-pink is-bold" v-if="!loading">{{ PrintBean }}个</span>
+          <span class="is-gray is-font-size-12" v-else>获取中</span>
+        </el-form-item>
         <el-form-item label="充值金额：" prop="Amount">
           <el-input v-model.trim="ruleForm.Amount" :disabled="loading" placeholder="请输入充值金额" size="mini"></el-input>
           <span>元</span>
@@ -88,6 +92,7 @@ export default {
     return {
       visible: false,
       curAmount: '',
+      PrintBean: '',
       loading: false,
       ruleForm: {
         Amount: '',
@@ -111,11 +116,13 @@ export default {
       if (this.customer && this.customer.CustomerID) {
         this.loading = true;
         const resp = await this.api
-          .getCustomerFundBalance(this.customer.CustomerID, { closeLoading: true })
+          .getCustomerBalance(this.customer.CustomerID, { closeLoading: true })
           .catch(() => null);
         this.loading = false;
         if (resp && resp.data.Status === 1000) {
-          this.curAmount = resp.data.Data;
+          this.curAmount = resp.data.Data.Cash;
+          this.PrintBean = resp.data.Data.PrintBean;
+          this.$emit('getBalance', resp.data.Data);
         }
       }
     },

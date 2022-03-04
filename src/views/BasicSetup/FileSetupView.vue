@@ -4,7 +4,7 @@
       <el-button type="primary" class="blue-full-color-btn-styles is-blue-button" @click="onFileSetClick(null)">添加文件类目</el-button>
     </header>
     <main>
-      <FileClassifyDialogComp :visible.sync='visible' @submit='onFileSaveSubmit' :curData='SaveData' :FileTypeList='FileTypeList' />
+      <FileClassifyDialogComp :visible.sync='visible' @submit='onFileSaveSubmit' :curData='SaveData' :FileTypeList='FileTypeList' :FileList='FileDataList' />
       <FileClassifyTableComp :dataList='FileDataList' @edit='onFileSetClick' @remove='onFileRemove' :loading='isTableDataLoading' :FileTypeList='FileTypeList'/>
     </main>
     <footer>
@@ -56,9 +56,9 @@ export default {
     },
     onFileRemove(data) {
       if (!data) return;
-      const { ID, Name } = data;
-      if ((!ID && ID !== 0) || !Name) return;
-      this.messageBox.warnCancelBox('确定删除该文件类目吗', `类目名称：[ ${Name} ]`, () => {
+      const { ID, InternalName } = data;
+      if ((!ID && ID !== 0) || !InternalName) return;
+      this.messageBox.warnCancelBox('确定删除该文件类目吗', `内部名称：[ ${InternalName} ]`, () => {
         this.$store.dispatch('common/getFileInfoRemove', ID);
       });
     },

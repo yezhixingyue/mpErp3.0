@@ -91,7 +91,7 @@ export default {
     /* 售后提交单 -- 提交问题集合
     -------------------------------*/
     submitQuestionList: [{
-      ID: '', Remark: '', IDErr: '', RemarkErr: '', Department: '', DepartmentErr: '',
+      level1ID: '', ID: '', Remark: '', IDErr: '', RemarkErr: '', Department: '', DepartmentErr: '',
     }],
     CouponList: [],
     /* 售后提交单 -- 文件上传进度条百分比
@@ -135,6 +135,10 @@ export default {
   getters: {
     /* 产品类别相关
     -------------------------------*/
+    QuestionTypeLevelList(state) {
+      if (!Array.isArray(state.QuestionTypeList) || state.QuestionTypeList.length === 0) return [];
+      return CommonClassType.getTwoLevelsClassifyDataFromList(state.QuestionTypeList, true);
+    },
   },
   mutations: {
     setCondition(state, [[key1, key2], value]) {
@@ -197,7 +201,7 @@ export default {
       state.fileName = '';
       state.PayPackageData = null;
       state.submitQuestionList = [{
-        ID: '', Remark: '', IDErr: '', RemarkErr: '', Department: '', DepartmentErr: '',
+        level1ID: '', ID: '', Remark: '', IDErr: '', RemarkErr: '', Department: '', DepartmentErr: '',
       }];
       state.replenish = {
         KindCount: 0, Amount: 0, src: '', KindCountErr: '', AmountErr: '',
@@ -293,7 +297,7 @@ export default {
     },
     addQuestionList(state) {
       state.submitQuestionList.push({
-        ID: '', Remark: '', IDErr: '', RemarkErr: '', Department: '', DepartmentErr: '',
+        level1ID: '', ID: '', Remark: '', IDErr: '', RemarkErr: '', Department: '', DepartmentErr: '',
       });
     },
     delQuestionList(state, i) {
@@ -466,8 +470,8 @@ export default {
       }
       if (state.SolutionType === 'refund') { // 减款
         _obj.Solution.Type = 2; // 减款为2  补印为7
-        _obj.Solution.RefundAmount = +state.refund.refund || '';
-        _obj.Solution.RefundFreightAmount = +state.refundFreight.refundFreight || '';
+        _obj.Solution.Refund = +state.refund.refund || '';
+        _obj.Solution.RefundFreight = +state.refundFreight.refundFreight || '';
       }
       if (state.SolutionType === 'giveCoupons') { // 赠送优惠券
         _obj.Solution.Type = 8; // 减款为2  补印为7

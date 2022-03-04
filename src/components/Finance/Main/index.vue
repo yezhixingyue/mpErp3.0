@@ -19,7 +19,7 @@
     </div>
     <FinanceListSummary
       :UnPaidAmount='UnPaidAmount'
-      :PaidAmount='PaidAmount'
+      :HavePaid='HavePaid'
       :TotalAmount='TotalAmount'
     />
   </main>
@@ -40,7 +40,7 @@ export default {
     normalBtn,
   },
   computed: {
-    ...mapState('finance', ['count', 'UnPaidAmount', 'PaidAmount', 'TotalAmount', 'searchCondition4Finance', 'PackageList']),
+    ...mapState('finance', ['count', 'UnPaidAmount', 'HavePaid', 'TotalAmount', 'searchCondition4Finance', 'PackageList']),
     ...mapGetters('timeSelectModule', ['TodayDate']),
     ...mapState('common', ['Permission']),
     localPermission() {

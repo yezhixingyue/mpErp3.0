@@ -31,6 +31,9 @@
             <span>已扣余额:</span>
           </p>
           <p>
+            <span>已扣印豆:</span>
+          </p>
+          <p>
             <span>货到付款:</span>
           </p>
           <p>
@@ -48,6 +51,11 @@
             <span>
               <i>￥</i>
               {{numToFixed(BalanceAmount, 2)}}元
+            </span>
+          </p>
+          <p>
+            <span>
+              {{PaidBeanNumber}}个
             </span>
           </p>
           <p>
@@ -95,6 +103,7 @@ export default {
       'PayOnlineAmount',
       'curCustomerName',
       'BalanceAmount',
+      'PaidBeanNumber',
       'tableData',
       'PayOnDelivery',
       'FullPayout',

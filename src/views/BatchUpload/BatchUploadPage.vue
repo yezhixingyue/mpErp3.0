@@ -1,7 +1,13 @@
 <template>
   <section class="mp-c-batch-upload-page-wrap">
     <header>
-      <CustomerSelectComp @setCustomer='handleCustomerChange' :customer='customer' @pay="handlePaid" :disabled='canSelectList.length > 0' />
+      <CustomerSelectComp
+       :customer='customer'
+       :disabled='canSelectList.length > 0'
+       @setCustomer='handleCustomerChange'
+       @paid="handlePaid"
+       @getBalance='handleGetBalance'
+      />
       <hr />
       <AddressChangeComp :customer='customer' @change="handleAddressChange" @validAddChange='handleValidAddChange' />
     </header>
@@ -43,6 +49,10 @@
         <div class="item">
           <span class="k">已扣余额：</span>
           <span class="v">￥{{+(+payInfoData.BalanceAmount).toFixed(2)}}元</span>
+        </div>
+        <div class="item bean" v-if="payInfoData.PaidBeanNumber">
+          <span class="k">已扣印豆：</span>
+          <span class="v">{{payInfoData.PaidBeanNumber}}个</span>
         </div>
         <div class="item">
           <span class="k">货到付款：</span>
@@ -201,6 +211,23 @@ export default {
         this.customer.FundInfo.Amount = allAmount;
       }
     },
+    handleGetBalance(funds) {
+      if (this.customer && this.customer.FundInfo && funds) {
+        const { Cash, PrintBean } = funds;
+        this.customer.FundInfo.Amount = Cash;
+        this.customer.FundInfo.BeanNumber = PrintBean;
+      }
+    },
+    async getCustomerBalance() {
+      if (this.customer && this.customer.CustomerID) {
+        const resp = await this.api
+          .getCustomerBalance(this.customer.CustomerID)
+          .catch(() => null);
+        if (resp && resp.data.Status === 1000) {
+          this.handleGetBalance(resp.data.Data);
+        }
+      }
+    },
     handleAddressChange(address) { // 设置地址信息 --- 检查是否已有解析过的文件（解析成功且待上传） 如果有根据特定改变内容去改变列表价格 -- 待定
       this.address = address;
     },
@@ -258,7 +285,7 @@ export default {
             this.successedList.splice(i, 1);
           }
         });
-        this.$message.success('已清除');
+        // this.$message.success('已清除');
       }
     },
     handleRemoveSelected() { // 删除选中文件
@@ -294,6 +321,7 @@ export default {
     },
     handleSubmitSuccess(list, resp) { // 创建订单成功后的回调函数，打开支付窗口
       this.cbToClearSuccessItem(list);
+      this.getCustomerBalance();
       if (resp) {
         this.payInfoData = resp;
         this.QrCodeVisible = true;
@@ -425,6 +453,9 @@ export default {
           .is-origin {
             font-size: 15px;
           }
+        }
+        &.bean .v{
+          text-indent: 1em;
         }
       }
     }

@@ -1,16 +1,18 @@
 <template>
-    <el-dropdown size='service-order-drop'
+    <el-dropdown size='service-order-drop'  :disabled='disabled' :class="{disabled: disabled, em: isUnSelect}"
       trigger="click" class="mp-dorp-down-wrap" placement="bottom-start" @command="onCommand">
       <span class="el-dropdown-link">
-        {{selfTitle}}
+        {{localLabel}}
         <i class="el-icon-arrow-down el-icon-caret-bottom"></i>
       </span>
-      <el-dropdown-menu slot="dropdown">
+      <el-dropdown-menu slot="dropdown" :disabled='disabled'>
         <el-dropdown-item
-          v-for="(item,index) in list"
+          :disabled='disabled'
+          v-for="(item,index) in localList"
           :key="item + '-' + index"
+          :class="{active: item[defaultProps.value] === watchTarget}"
           :command="item"
-        >{{item.name}}</el-dropdown-item>
+        >{{item[defaultProps.label]}}</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
 </template>
@@ -45,11 +47,37 @@ export default {
      */
     watchTarget: {
     },
+    defaultProps: {
+      type: Object,
+      default: () => ({
+        label: 'name',
+        value: 'ID',
+      }),
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       selfTitle: '不限',
     };
+  },
+  computed: {
+    localList() {
+      return this.disabled ? [] : this.list;
+    },
+    localLabel() {
+      if (this.watchTarget || this.watchTarget === 0) {
+        const t = this.list.find(it => it[this.defaultProps.value] === this.watchTarget);
+        if (t) return t[this.defaultProps.label];
+      }
+      return this.title;
+    },
+    isUnSelect() {
+      return !this.watchTarget && this.watchTarget !== 0;
+    },
   },
   watch: {
     watchTarget(newVal) {
@@ -59,15 +87,16 @@ export default {
       }
       // eslint-disable-next-line max-len
       // else if (this.list[newVal - 1].Title !== this.selfTitle) this.selfTitle = this.list[newVal - 1].Title;
-      const t = this.list.find(it => it.ID === newVal);
-      if (t) this.selfTitle = t.Title;
+      const t = this.list.find(it => it[this.defaultProps.value] === newVal);
+      if (t) this.selfTitle = t[this.defaultProps.label];
       else this.selfTitle = '';
     },
   },
   methods: {
     onCommand(command) {
-      this.selfTitle = command.name;
-      this.$emit('select', [command.ID, command.name, this.index]);
+      if (this.disabled || command[this.defaultProps.value] === this.watchTarget) return;
+      this.selfTitle = command[this.defaultProps.label];
+      this.$emit('select', [command[this.defaultProps.value], command[this.defaultProps.label], this.index]);
     },
   },
   mounted() {
@@ -90,14 +119,33 @@ export default {
     & > span {
       outline: none;
       display: flex;
-      width: 100%;
+      width: calc(100% - 15px);
       color: $--color-text-regular;
       line-height: 23px;
       justify-content: space-between;
       padding: 0 7px 0 5px;
       box-sizing: border-box;
+      white-space: nowrap;
+      overflow: hidden;
+      padding-right: 0px;
       > i {
         display: none;
+      }
+    }
+    &.disabled {
+      // background: #f5f5f5;
+      > span {
+        cursor: not-allowed;
+        // background: #f8f8f8;
+        // pointer-events: none;
+      }
+    }
+    &.em {
+      > span {
+        color: #cbcbcb;
+      }
+      &::after {
+        opacity: 0.4;
       }
     }
   }
@@ -109,13 +157,13 @@ export default {
     background-size: 100% 100%;
     height: 9px;
     width: 11px;
-    right: 5px;
+    right: 3px;
     top: 5px;
   }
 }
 .el-dropdown-menu--service-order-drop {
   padding: 0;
-  width: 89px;
+  // width: 99px;
   border-radius: 0px;
   &.el-popper[x-placement^=bottom] {
     margin: 0;
@@ -127,9 +175,13 @@ export default {
   > li{
     padding: 0;
     margin: 0;
-    padding-left: 16px;
+    padding-left: 12px;
     font-size: 12px;
     text-align: left;
+    &.active {
+      font-weight: 700;
+      color: #26bcf9;
+    }
   }
 }
 </style>

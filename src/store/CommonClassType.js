@@ -66,6 +66,16 @@ export default class ClassType {
     return _tempObj;
   }
 
+  /**
+   * 生成产品选择的描述文字
+   *
+   * @static
+   * @param {*} ProductList  已选择的产品列表
+   * @param {*} allProductClassify 产品的树形结构数据
+   * @param {*} defalutProps 产品列表中产品内部的名称字段组成的对象
+   * @returns
+   * @memberof ClassType
+   */
   static generateProductString(ProductList, allProductClassify, defalutProps) {
     if (!Array.isArray(ProductList) || !Array.isArray(allProductClassify) || ProductList.length === 0 || allProductClassify.length === 0) return '';
     try {
@@ -103,5 +113,33 @@ export default class ClassType {
     } catch (error) {
       return '';
     }
+  }
+
+  /**
+   * 根据平铺开的两级列表数据生成树形结构列表数据
+   *
+   * @static
+   * @param {*} list 两级组合列表数据
+   * @param {*} bool 是否去除下级列表为空的项
+   * @returns
+   * @memberof ClassType
+   */
+  static getTwoLevelsClassifyDataFromList(list, bool) {
+    if (!list || !Array.isArray(list) || list.length === 0) return [];
+
+    let level1List = list // 挑选第一级分类
+      .filter(item => item.Level === 1)
+      .map(item => ({ ...item, children: [] }))
+      .sort((a, b) => a.Index - b.Index);
+    // 设置第二级分类
+    level1List.forEach(level1 => {
+      const _list = list.filter(item => item.ParentID === level1.ID).sort((a, b) => a.Index - b.Index);
+      const _level1 = level1;
+      _level1.children = _list;
+    });
+    // 筛选去除无下属产品的分类 bool --- 确定是否保留无下属产品分类 （当设置排序时不应删除） 为true时不删除
+    if (!bool) level1List = level1List.filter(leve1 => leve1.children.length > 0);
+
+    return level1List;
   }
 }

@@ -10,6 +10,10 @@
         <span class="is-bold is-pink">￥{{customer.FundInfo.Amount | formatNumber}}元</span>
       </li>
       <li>
+        <label>可用印豆：</label>
+        <span class="is-bold is-pink" style="margin-left:12px">{{customer.FundInfo.BeanNumber}}个</span>
+      </li>
+      <li>
         <label>信用额度：</label>
         <span class="is-bold is-pink indent">{{customer.FundInfo.TotalCredit | formatNumber}}元</span>
       </li>

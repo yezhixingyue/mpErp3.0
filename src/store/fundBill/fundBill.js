@@ -1,4 +1,5 @@
 import api from '@/api/index';
+import ClassType from '../CommonClassType';
 import FundBillClassType from './fundBillClassType';
 
 export default {
@@ -77,7 +78,7 @@ export default {
       commit('setBalanceTypeDataList', [[], undefined]);
       commit('setConditionDate4Balance');
       commit('setIsBalanceDataLoading', true);
-      const _obj = FundBillClassType.filter(state.condition4BalanceType);
+      const _obj = ClassType.filter(state.condition4BalanceType, true);
       const res = await api.getCustomerBill(_obj);
       commit('setIsBalanceDataLoading', false);
       if (res.data.Status === 1000) {
@@ -89,7 +90,7 @@ export default {
       commit('setOrderTypeDataList', [[], undefined]);
       commit('setConditionDate4Order');
       commit('setIsOrderDataLoading', true);
-      const _obj = FundBillClassType.filter(state.condition4OrderType);
+      const _obj = ClassType.filter(state.condition4OrderType, true);
       const res = await api.getCustomerOrderBill(_obj);
       commit('setIsOrderDataLoading', false);
       if (res.data.Status === 1000) {

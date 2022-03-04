@@ -3,7 +3,7 @@
   <div class="mp-finance-list-summary">
       <div class="right">
           <span>总金额：￥{{TotalAmount}}元</span>
-          <span>预付：￥{{PaidAmount}}元</span>
+          <span>预付：￥{{HavePaid}}元</span>
           <span>
               应收：<i class="is-red is-thick-line">￥{{UnPaidAmount}}元</i>
           </span>
@@ -30,7 +30,7 @@ export default {
       type: Number,
       required: true,
     },
-    PaidAmount: {
+    HavePaid: {
       type: Number,
       required: true,
     },

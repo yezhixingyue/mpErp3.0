@@ -767,6 +767,9 @@ const api = {
   getCustomerFundBalance(customerID, config = {}) { // get /Api/Customer/FundBalance 获取客户余额信息
     return instance.get('/Api/Customer/FundBalance', { ...config, params: { customerID } });
   },
+  getCustomerBalance(customerID, config = {}) { // get 获取余额及印豆余额  /Api/Customer/Balance
+    return instance.get('/Api/Customer/Balance', { ...config, params: { customerID } });
+  },
   getCustomerRecharge(data) { // POST /Api/Customer/Recharge  客户充值
     return instance.post('/Api/Customer/Recharge', data);
   },
@@ -864,17 +867,17 @@ const api = {
     return instance.post('/Api/RestDay/List', data);
   },
   // 6. 运输特殊情况管理
-  getSpecialDaySave(data) { // POST /Api/SpecialDay/Save  特殊日期保存
-    return instance.post('/Api/SpecialDay/Save', data);
+  getSpecialDaySave(data) { // POST /Api/TransportSpecialDay/Save  特殊日期保存
+    return instance.post('/Api/TransportSpecialDay/Save', data);
   },
-  getSpecialDayList(data) { // POST /Api/SpecialDay/List  特殊日期列表
-    return instance.post('/Api/SpecialDay/List', data);
+  getSpecialDayList(data) { // POST /Api/TransportSpecialDay/List  特殊日期列表
+    return instance.post('/Api/TransportSpecialDay/List', data);
   },
-  getSpecialDayRemove(id) { // DELETE /Api/SpecialDay/Remove  特殊日期删除
-    return instance.delete('/Api/SpecialDay/Remove', { params: { id } });
+  getSpecialDayRemove(id) { // DELETE /Api/TransportSpecialDay/Remove  特殊日期删除
+    return instance.delete('/Api/TransportSpecialDay/Remove', { params: { id } });
   },
-  getSpecialDayDetail(id) { // GET /Api/SpecialDay/Detail  特殊日期详情
-    return instance.get('/Api/SpecialDay/Detail', { params: { id } });
+  getSpecialDayDetail(id) { // GET /Api/TransportSpecialDay/Detail  特殊日期详情
+    return instance.get('/Api/TransportSpecialDay/Detail', { params: { id } });
   },
   // 7. 生产特殊情况管理
   getProduceSpecialDaySave(data) { // POST /Api/ProduceSpecialDay/Save  生产特殊日期保存

@@ -11,15 +11,18 @@ export default class FileClassType {
 
   Name = '';
 
+  InternalName = '';
+
   AllowMultiple = false;
 
   IsPrintFile = false;
 
   constructor(initData) {
     if (!initData || Object.prototype.toString.call(initData) !== '[object Object]') return;
-    const { ID, Name, Remark, FailTips, TypeList, ShowIndex, AllowMultiple, IsPrintFile } = JSON.parse(JSON.stringify(initData));
+    const { ID, Name, InternalName, Remark, FailTips, TypeList, ShowIndex, AllowMultiple, IsPrintFile } = JSON.parse(JSON.stringify(initData));
     if (ID) this.ID = ID;
     if (Name) this.Name = Name;
+    if (InternalName) this.InternalName = InternalName;
     if (Remark) this.Remark = Remark;
     if (AllowMultiple) this.AllowMultiple = AllowMultiple;
     if (FailTips) this.FailTips = FailTips;

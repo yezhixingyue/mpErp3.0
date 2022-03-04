@@ -30,7 +30,7 @@
       <template slot-scope="scope">{{scope.row.TotalAmount}}元</template>
     </el-table-column>
     <el-table-column min-width="71px" class-name="is-font-size-14" label="预付">
-      <template slot-scope="scope">{{scope.row.PaidAmount}}元</template>
+      <template slot-scope="scope">{{scope.row.HavePaid}}元</template>
     </el-table-column>
     <el-table-column min-width="71px" class-name="is-font-size-14" label="应收">
       <template slot-scope="scope">

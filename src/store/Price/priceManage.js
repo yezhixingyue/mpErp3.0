@@ -221,6 +221,20 @@ export default {
     },
     setCurCraftPriceItemData(state, data) {
       state.curCraftPriceItemData = data;
+      if (!data.PriceID) return;
+      // 下面是新增工艺费用组成或总费用而新获取到CraftPriceID时对原有CraftPriceID的数据更新操作
+      const target = state.curPriceItem.CraftPriceList.find(it => it.CraftID === data.Craft.ID && (it.PartID === data.PartID || (!it.PartID && !data.PartID)));
+      if (target) target.ID = data.Craft.CraftPriceID;
+      const t = state.PriceManageList.find(it => it.ID === data.ProductID); // 目标产品
+      if (t) {
+        const t2 = t.PriceList.find(it => it.ID === data.PriceID); // 目标价格条目
+        if (t2) {
+          const t3 = t2.CraftPriceList.find(it => it.CraftID === data.Craft.ID && (it.PartID === data.PartID || (!it.PartID && !data.PartID)));
+          if (t3) {
+            t3.ID = data.Craft.CraftPriceID;
+          }
+        }
+      }
     },
     setCurQuotationSchemeData(state, data) {
       state.curQuotationSchemeData = data;
@@ -258,7 +272,6 @@ export default {
       if (t) {
         const t2 = t.PriceList.find(it => it.ID === PriceID); // 目标价格条目
         if (t2) {
-          // console.log(t2);
           if (isQuotationPage) {
             t2.PriceTableList = t2.PriceTableList.filter(it => it.ID !== itemID);
             state.curPriceItem.PriceTableList = state.curPriceItem.PriceTableList.filter(it => it.ID !== itemID);
@@ -687,6 +700,18 @@ export default {
       if (resp && resp.data.Status === 1000) {
         commit('setNumberSwapList', resp.data.Data || []);
       }
+    },
+    async getCraftPriceIDAndSetToCurItem({ state, commit }, PriceID) {
+      if (!state.curCraftPriceItemData) return;
+      const { Craft, PartID, ProductID } = state.curCraftPriceItemData;
+      const resp = await api.getCraftPriceTagID(ProductID, PriceID, Craft.ID, PartID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        const CraftPriceID = resp.data.Data;
+        const temp = { ...state.curCraftPriceItemData, Craft: { ...Craft, CraftPriceID }, PriceID };
+        commit('setCurCraftPriceItemData', temp);
+        return;
+      }
+      commit('setCurCraftPriceItemData', null);
     },
   },
 };

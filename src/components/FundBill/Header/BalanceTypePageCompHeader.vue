@@ -9,24 +9,33 @@
         :CountyID="condition4BalanceType.SellArea.CountyID"
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
        />
-        <order-channel-selector
-        :options='FundBillBalanceTypeList'
-        :requestFunc='getCustomerBill'
-        :changePropsFunc='setCondition4BalanceType'
-        :typeList="[['Type', '']]"
-        :value='condition4BalanceType.Type'
-        label="类型"
-       />
-        <order-channel-selector
-        :options='FundBillBalanceCurrencyList'
-        :requestFunc='getCustomerBill'
-        :changePropsFunc='setCondition4BalanceType'
-        :typeList="[['Currency', '']]"
-        :value='condition4BalanceType.Currency'
-        label="方式"
-       />
-       <div class="user-selector">
-        <order-channel-selector
+      <OrderChannelSelector
+      :options='FundBillMonetyTypeList'
+      :requestFunc='getCustomerBill'
+      :changePropsFunc='setCondition4BalanceType'
+      :typeList="[['BillType', '']]"
+      :value='condition4BalanceType.BillType'
+      label="账单类型"
+      style="margin-right:12px"
+      />
+      <OrderChannelSelector
+      :options='FundBillBalanceTypeList'
+      :requestFunc='getCustomerBill'
+      :changePropsFunc='setCondition4BalanceType'
+      :typeList="[['Type', '']]"
+      :value='condition4BalanceType.Type'
+      label="交易类型"
+      />
+      <OrderChannelSelector
+      :options='FundBillBalanceCurrencyList'
+      :requestFunc='getCustomerBill'
+      :changePropsFunc='setCondition4BalanceType'
+      :typeList="[['Currency', '']]"
+      :value='condition4BalanceType.Currency'
+      label="方式"
+      />
+      <div class="user-selector">
+        <OrderChannelSelector
           :options="userTypeList"
           :requestFunc="getCustomerBill"
           :changePropsFunc="setCondition4BalanceType"
@@ -35,7 +44,7 @@
           :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
           label="用户"
         />
-        <order-channel-selector
+        <OrderChannelSelector
           :showLabel="false"
           :options="userRankList"
           :requestFunc="getCustomerBill"
@@ -90,7 +99,7 @@ export default {
   },
   computed: {
     ...mapState('fundBill', ['condition4BalanceType', 'balanceTypeDataList']),
-    ...mapState('common', ['FundBillBalanceTypeList', 'FundBillBalanceCurrencyList', 'userTypeList', 'userRankList']),
+    ...mapState('common', ['FundBillBalanceTypeList', 'FundBillBalanceCurrencyList', 'userTypeList', 'userRankList', 'FundBillMonetyTypeList']),
     UserDefinedTimeIsActive() {
       // eslint-disable-next-line max-len
       return this.condition4BalanceType.DateType === '' && !!this.condition4BalanceType.Date.First && !!this.condition4BalanceType.Date.Second;

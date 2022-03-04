@@ -300,8 +300,8 @@ export default {
       min-height: calc(100vh - 120px);
       .el-submenu .el-menu-item {
         width: 100%;
-        height: 40px;
-        line-height: 40px;
+        height: 42px;
+        line-height: 42px;
         box-sizing: border-box;
         min-width: unset;
         background-color: rgb(15, 29, 53);
@@ -346,8 +346,8 @@ export default {
     }
     .el-submenu__title {
       background-color: rgb(15, 29, 53) !important;
-      height: 40px;
-      line-height: 36px;
+      height: 42px;
+      line-height: 38px;
       user-select: none;
       &::before {
         content: '';

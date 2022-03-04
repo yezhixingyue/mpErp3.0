@@ -17,6 +17,9 @@
     <el-table-column label="可用余额" width="80" show-overflow-tooltip>
       <template slot-scope="scope" >{{scope.row.FundInfo.Amount | formatNumber}}</template>
     </el-table-column>
+    <el-table-column label="可用印豆" width="80" show-overflow-tooltip>
+      <template slot-scope="scope" >{{scope.row.FundInfo.BeanNumber | formatNumber}}个</template>
+    </el-table-column>
     <el-table-column label="信用额度" width="75" show-overflow-tooltip>
       <template slot-scope="scope" >{{scope.row.FundInfo.TotalCredit | formatNumber}}</template>
     </el-table-column>
@@ -37,7 +40,7 @@
       <template slot-scope="scope" >{{scope.row.RegType | formatRegType}}</template>
     </el-table-column>
     <el-table-column label="审核人" prop="AuthenInfo.CheckUser.StaffName" width="70" show-overflow-tooltip></el-table-column>
-    <el-table-column label="操作" :min-width="lastMinWidth">
+    <el-table-column label="操作" :min-width="lastMinWidth" fixed="right" class-name='l'>
       <template slot-scope="scope">
         <CtrlMenus
          @detail='onDetailClick(scope.row)'
@@ -141,7 +144,7 @@ export default {
       ].filter(it => it);
     },
     lastMinWidth() {
-      let num = 345;
+      let num = 335;
       if (this.Permission) {
         if (!this.PermissionObj.SetPrice) {
           num -= 80;
@@ -249,23 +252,28 @@ export default {
       }
     }
   }
-  .el-table__body-wrapper {
-    .el-table__row {
-      width: 100%;
-      > td {
-          color: #585858;
-        > .cell {
-          font-size: 12px;
-          height: 30px;
-          padding: 0 5px;
-          .left {
-            display: inline-block;
-            width: 85%;
-            text-align: left;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-          }
+  .el-table__fixed-header-wrapper th.l {
+    height: 36px;
+    border-bottom: none;
+    .cell {
+      font-size: 14px;
+    }
+  }
+  .el-table__row {
+    width: 100%;
+    > td {
+        color: #585858;
+      > .cell {
+        font-size: 12px;
+        height: 30px;
+        padding: 0 5px;
+        .left {
+          display: inline-block;
+          width: 85%;
+          text-align: left;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
     }

@@ -9,6 +9,8 @@ export default class FundBillClassType {
 
     Type= ''
 
+    BillType = 1
+
     Currency= ''
 
     Date = {
@@ -23,7 +25,7 @@ export default class FundBillClassType {
 
     KeyWords= ''
 
-    Page= 0
+    Page= 1
 
     PageSize= 30
 
@@ -66,23 +68,5 @@ export default class FundBillClassType {
             break;
         }
       }
-    }
-
-    static filter(obj) {
-      const _tempObj = {};
-      Object.keys(obj).forEach(key => {
-        if (Object.prototype.toString.call(obj[key]) !== '[object Object]') {
-          if (obj[key] && key !== 'DateType') _tempObj[key] = obj[key];
-        } else {
-          const _t = obj[key];
-          Object.keys(_t).forEach(subKey => {
-            if (_t[subKey]) {
-              if (!_tempObj[key]) _tempObj[key] = {};
-              _tempObj[key][subKey] = _t[subKey];
-            }
-          });
-        }
-      });
-      return _tempObj;
     }
 }

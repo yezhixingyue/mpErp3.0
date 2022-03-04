@@ -12,6 +12,7 @@
     </header>
     <main>
       <ResultFormulaTableCom
+        ref="oTable"
        title="总费用公式列表"
        hiddenTip
        @setup='onFormulaSetupClick' @remove="onFormulaRemove"
@@ -82,7 +83,10 @@ export default {
         this.messageBox.successSingle('删除成功', cb, cb);
       }
     },
-    onFormulaSetupClick(data) {
+    async onFormulaSetupClick(data) {
+      if (!data && this.$refs.oTable && this.$refs.oTable.localTableData && this.$refs.oTable.localTableData.length === 0) {
+        await this.$store.dispatch('priceManage/getCraftPriceIDAndSetToCurItem', this.PriceID);
+      }
       const { params } = this.$route;
       this.$store.commit('priceManage/setCurPriceTableItemResultFormulaInfo', [null, data]);
       this.$router.push({ name: 'CraftAllCostFormulaSet', params: { ...params, isAllCost: true } });

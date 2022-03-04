@@ -56,7 +56,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('priceManage', ['curCraftPriceItemData', 'curPriceItem', 'curPriceTableItemData']),
+    ...mapState('priceManage', ['curPriceItem', 'curPriceTableItemData']),
   },
   methods: {
     onGoBackClick() { // 返回上一页

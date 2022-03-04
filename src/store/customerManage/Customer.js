@@ -67,6 +67,7 @@ export default class Customer {
     UsedCredit: '/', // 已用信用额度 -- 可用额度需要与总额度计算
     TotalCredit: '/', // 总信用额度
     CashBackType: '',
+    BeanNumber: '',
     MinAmount: null,
     BackPercent: null,
   }

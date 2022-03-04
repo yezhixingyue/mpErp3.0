@@ -5,7 +5,7 @@
     custom-class="mp-dialog-to-detail-box"
     :close-on-click-modal='false'
     title="详情"
-    top="10vh"
+    top="9vh"
     center
     :modal='false'
     :before-close="handleClose"
@@ -34,6 +34,11 @@
             <li>
               <span>已扣余额：</span><span>
                 ¥{{numToFixed(PayDetailData.BalanceAmount, 2)}}元
+              </span>
+            </li>
+            <li>
+              <span>已扣印豆：</span><span>
+                {{PayDetailData.PaidBeanNumber}}个
               </span>
             </li>
             <li class="pay-box">
@@ -154,10 +159,10 @@ export default {
     getPayFundInfo(row) {
       const { Name } = row.Customer;
       const {
-        PayQRCode, PayOnlineAmount, BalanceAmount, PayOnDelivery, FullPayout, // 应付、余额、货到付款、总金额
+        PayQRCode, PayOnlineAmount, BalanceAmount, PaidBeanNumber, PayOnDelivery, FullPayout, // 应付、余额、货到付款、总金额
       } = row;
       this.setPayAmount({
-        PayOnlineAmount, BalanceAmount, PayOnDelivery, FullPayout, Name,
+        PayOnlineAmount, BalanceAmount, PaidBeanNumber, PayOnDelivery, FullPayout, Name,
       });
       this.setPayImgSrc(PayQRCode);
     },
@@ -187,7 +192,7 @@ export default {
 <style lang='scss'>
 @import "@/assets/css/common/var.scss";
 .mp-dialog-to-detail-box {
-  height: 700px;
+  height: 725px;
   border-radius: 5px;
   overflow: hidden;
   .el-dialog__header {

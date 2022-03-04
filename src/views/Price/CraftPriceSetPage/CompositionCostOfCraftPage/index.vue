@@ -139,6 +139,12 @@ export default {
       }
       return [];
     },
+    CraftPriceID() {
+      if (!this.isQuotationPage) { // 工艺费用组成设置页面
+        return this.curCraftPriceItemData?.Craft?.CraftPriceID || '';
+      }
+      return '';
+    },
   },
   data() {
     return {
@@ -147,7 +153,6 @@ export default {
       PriceName: '',
       ProductID: '',
       ProductName: '',
-      CraftPriceID: '',
       visible: false,
       saveData: null,
       ProductData: null,
@@ -166,7 +171,10 @@ export default {
         this.getPriceSolutionRemove();
       });
     },
-    onItemSaveClick(ID) { // 添加 | 编辑方案   ok
+    async onItemSaveClick(ID) { // 添加 | 编辑方案   ok
+      if (!ID && this.SolutionList.length === 0) {
+        await this.$store.dispatch('priceManage/getCraftPriceIDAndSetToCurItem', this.PriceID);
+      }
       const data = ID ? this.SolutionList.find(it => it.ID === ID) : null;
       let PartID = '';
       let CraftID = '';
@@ -328,8 +336,8 @@ export default {
     },
   },
   watch: {
-    SolutionList(newVal, oldVal) {
-      if (newVal.length > 0 && oldVal.length === 0 && !this.SolutionID) this.SolutionID = newVal[0].ID;
+    SolutionList(newVal) {
+      if (newVal.length > 0 && !this.SolutionID) this.SolutionID = newVal[0].ID;
     },
     SolutionID(val) {
       if (!val) return;
@@ -356,7 +364,7 @@ export default {
     }
     if (!isQuotationPage) { // 工艺费用组成设置页面
       // 暂无操作
-      this.CraftPriceID = this.curCraftPriceItemData.Craft.CraftPriceID;
+      // this.CraftPriceID = this.curCraftPriceItemData.Craft.CraftPriceID;
     }
     this.getProductData();
   },

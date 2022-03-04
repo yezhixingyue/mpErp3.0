@@ -7,24 +7,7 @@
 import api from '@/api/index';
 import Product from '@/assets/js/TypeClass/ProductClass';
 import messageBox from '../assets/js/utils/message';
-
-const getTwoLevelsClassifyDataFromList = (list, bool) => { // 通过平级的列表数据区分出上下两层的列表数据（用于产品|工艺分类2级列表数据形成树形数据结构）
-  if (!list || !Array.isArray(list) || list.length === 0) return [];
-
-  let level1List = list // 挑选第一级分类
-    .filter(item => item.Level === 1)
-    .map(item => ({ ...item, children: [] }))
-    .sort((a, b) => a.Index - b.Index);
-  // 设置第二级分类
-  level1List.forEach(level1 => {
-    const _list = list.filter(item => item.ParentID === level1.ID).sort((a, b) => a.Index - b.Index);
-    level1.children = _list;
-  });
-  // 筛选去除无下属产品的分类 bool --- 确定是否保留无下属产品分类 （当设置排序时不应删除） 为true时不删除
-  if (!bool) level1List = level1List.filter(leve1 => leve1.children.length > 0);
-
-  return level1List;
-};
+import CommonClassType from './CommonClassType';
 
 const getAllProductClassifyFunc = (productClassList, productNames, type) => {
   if (productClassList.length === 0 || productNames.length === 0) return [];
@@ -210,6 +193,10 @@ export default {
       { name: '不限', ID: '' },
       { name: '充值', ID: 11 },
       { name: '支出', ID: 21 },
+    ],
+    FundBillMonetyTypeList: [
+      { name: '印豆', ID: 0 },
+      { name: '现金', ID: 1 },
     ],
     /* 客户余额流水方式列表
     -------------------------------*/
@@ -534,35 +521,39 @@ export default {
       const target = state.ProductMultipleClassifyList.find(it => it.ID === type);
       if (!target) return [];
       const classList = target.List;
-      return getTwoLevelsClassifyDataFromList(classList);
+      return CommonClassType.getTwoLevelsClassifyDataFromList(classList);
     },
     twoLevelsProductClassify4Customer(state) { // 去除子列表为空的类别  客户分类
       const type = 2;
       const target = state.ProductMultipleClassifyList.find(it => it.ID === type);
       if (!target) return [];
       const classList = target.List;
-      return getTwoLevelsClassifyDataFromList(classList);
+      return CommonClassType.getTwoLevelsClassifyDataFromList(classList);
     },
     twoLevelsProductClassify4Sort(state) { // 不去除 用于类别管理
       const type = 6;
       const target = state.ProductMultipleClassifyList.find(it => it.ID === type);
       if (!target) return [];
       const classList = target.List;
-      return getTwoLevelsClassifyDataFromList(classList, true);
+      return CommonClassType.getTwoLevelsClassifyDataFromList(classList, true);
     },
     twoLevelsMultipleProductClassifyList(state) { // 去除子列表为空的类别
-      return state.ProductMultipleClassifyList.map(it => ({ ...it, List: getTwoLevelsClassifyDataFromList(it.List) })).sort((a, b) => a.Type - b.Type);
+      return state.ProductMultipleClassifyList
+        .map(it => ({ ...it, List: CommonClassType.getTwoLevelsClassifyDataFromList(it.List) }))
+        .sort((a, b) => a.Type - b.Type);
     },
     twoLevelsMultipleProductClassifyList4Sort(state) { // 不去除 用于类别管理
-      return state.ProductMultipleClassifyList.map(it => ({ ...it, List: getTwoLevelsClassifyDataFromList(it.List, true) })).sort((a, b) => a.Type - b.Type);
+      return state.ProductMultipleClassifyList
+        .map(it => ({ ...it, List: CommonClassType.getTwoLevelsClassifyDataFromList(it.List, true) }))
+        .sort((a, b) => a.Type - b.Type);
     },
     /* 2级分类 工艺 树结构
     -------------------------------*/
     twoLevelsCraftClassify(state) {
-      return getTwoLevelsClassifyDataFromList(state.CraftClassifyData);
+      return CommonClassType.getTwoLevelsClassifyDataFromList(state.CraftClassifyData);
     },
     twoLevelsCraftClassify4Sort(state) {
-      return getTwoLevelsClassifyDataFromList(state.CraftClassifyData, true);
+      return CommonClassType.getTwoLevelsClassifyDataFromList(state.CraftClassifyData, true);
     },
     /* 细分类 物流配送方式列表
     -------------------------------*/

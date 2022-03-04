@@ -125,16 +125,17 @@ export default {
       return _solutionList.map(it => `${it.ShowName}（${it.Count}）`).join('、');
     },
     async getDataInsertCraftPriceID(itemData) {
-      if (!itemData) return null;
-      const { Craft, PartID, ProductID } = itemData;
-      if (Craft.CraftPriceID) return itemData;
-      // 如果CraftPriceID不存在则远程请求获取
-      const resp = await this.api.getCraftPriceTagID(ProductID, this.PriceID, Craft.ID, PartID).catch(() => {});
-      if (resp && resp.data.Status === 1000) {
-        const CraftPriceID = resp.data.Data;
-        return { ...itemData, Craft: { ...Craft, CraftPriceID } };
-      }
-      return null;
+      return itemData;
+      // if (!itemData) return null;
+      // const { Craft, PartID, ProductID } = itemData;
+      // if (Craft.CraftPriceID) return itemData;
+      // // 如果CraftPriceID不存在则远程请求获取
+      // const resp = await this.api.getCraftPriceTagID(ProductID, this.PriceID, Craft.ID, PartID).catch(() => {});
+      // if (resp && resp.data.Status === 1000) {
+      //   const CraftPriceID = resp.data.Data;
+      //   return { ...itemData, Craft: { ...Craft, CraftPriceID } };
+      // }
+      // return null;
     },
   },
   mounted() {

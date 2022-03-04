@@ -8,7 +8,7 @@ const obj = {
       PayCode: 0,
       TotalAmount: 0,
       UnpaidAmount: 0,
-      PaidAmount: 0,
+      HavePaid: 0,
       Customer: {
         ID: '00000000-0000-0000-0000-000000000000',
         Name: 'string',

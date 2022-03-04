@@ -7,15 +7,34 @@
             </header>
             <ul class="mp-scroll-wrap question-list">
                 <li v-for="(item, i) in submitQuestionList.length" :key="i">
-
+                  <!-- 下拉问题列表1 -->
                   <DropDown :class="submitQuestionList[i].IDErr ? 'is-warn' : ''"
-                   :list='questionList' :title='title' :index='i'
+                   :list='questionList' title='请选择问题' :index='i'
+                   :watchTarget='submitQuestionList[i].level1ID'
+                   :default-props="{label:'Name', value:'ID'}"
+                   @select='onLevel1Select'
+                   class="level1-drop" />
+                   <!-- 下拉问题列表2 -->
+                   <DropDown :class="submitQuestionList[i].IDErr ? 'is-warn' : ''"
+                   :list='getLevel2QuestionList(i)' :index='i'
                    :watchTarget='submitQuestionList[i].ID'
-                   @select='onSelect' />  <!-- 下拉问题列表 -->
+                   :disabled='!submitQuestionList[i].level1ID && submitQuestionList[i].level1ID !== 0'
+                   :title="!submitQuestionList[i].level1ID && submitQuestionList[i].level1ID !== 0 ? '请先选择大类' : '请选择具体问题'"
+                   :default-props="{label:'Name', value:'ID'}"
+                   @select='onSelect'
+                   class="level2-drop" />
+                   <!-- <el-cascader
+                      :value="submitQuestionList[i].ID"
+                      @change="ID => onSelect([ID, '', i])"
+                      :options="questionList"
+                      :show-all-levels="false"
+                      :props="{ expandTrigger: 'hover', label: 'Name', value: 'ID' }"
+                      size="mini"
+                    /> -->
                   <MpTextInput :handleInput='handleInput'
                    :class="submitQuestionList[i].RemarkErr ? 'is-warn' : ''"
                    :watchTarget='submitQuestionList[i].Remark' :index='i' />
-                   <DropDown class="second-dropdown"
+                  <DropDown class="second-dropdown"
                     :class="{
                       'is-gray': !submitQuestionList[i].Department && submitQuestionList[i].Department !== 0,
                       'is-warn': submitQuestionList[i].DepartmentErr
@@ -160,12 +179,12 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
-import DropDown from '@/components/common/DropDown.vue';
 import ServiceBlueBtn from '@/components/ServiceAfterSale/EditDialog/ServiceBlueBtn.vue'; // serviceSingleRadio
 import SingleRadio from '@/components/common/SingleRadio.vue';
 // import { Base64 } from 'js-base64';
 import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 import MpTextInput from './MpTextInput.vue';
+import DropDown from '../../common/DropDown.vue';
 
 export default {
   components: {
@@ -190,7 +209,6 @@ export default {
       amountNum: null,
       refundNum: null,
       refundFreightAmount: 0,
-      title: '请选择',
       dialogVisible: false,
       couponList: [],
       selectedCouponList: [],
@@ -200,17 +218,13 @@ export default {
   },
   computed: {
     // eslint-disable-next-line max-len
-    ...mapState('service', ['submitQuestionList', 'fileName', 'replenishFile', 'QuestionTypeList', 'SolutionType', 'replenish', 'refund', 'refundFreight', 'FileCaseList']),
+    ...mapState('service', ['submitQuestionList', 'fileName', 'replenishFile', 'SolutionType', 'replenish', 'refund', 'refundFreight', 'FileCaseList']),
     ...mapState('orderModule', ['isShowServiceDia', 'orderDetailData']),
     ...mapState('common', ['DepartmentList', 'AfterSalesTypeList']),
     ...mapGetters('common', ['allProductClassify']),
+    ...mapGetters('service', ['QuestionTypeLevelList']),
     questionList() {
-      if (this.QuestionTypeList.length < 1) return [];
-      const list = this.QuestionTypeList.map((it) => ({
-        ...it,
-        name: it.Title,
-      }));
-      return list;
+      return this.QuestionTypeLevelList;
     },
     selectList() {
       return [{ value: '减款', type: true }, { value: '补印', type: true }, { value: '赠送优惠券', type: true }]; // 判断信息不明确 ，暂时先全部都可选择
@@ -260,9 +274,10 @@ export default {
     addQuestion() { // 增加问题框
       this.addQuestionList();
       const oUl = document.querySelector('.mp-scroll-wrap.question-list');
-      this.$utils.animateScroll(oUl.scrollTop, oUl.scrollHeight, (num) => {
-        oUl.scrollTop = num;
-      });
+      oUl.scrollTop = oUl.scrollHeight;
+      setTimeout(() => {
+        oUl.scrollTop = oUl.scrollHeight;
+      }, 10);
     },
     delQuestion(i) { // 删除问题框
       this.delQuestionList(i);
@@ -317,6 +332,11 @@ export default {
       else if (value === 2) str = 'giveCoupons';
       this.setSolutionType(str);
     },
+    onLevel1Select([ID, , index]) {
+      if (this.submitQuestionList[index].level1ID === ID) return;
+      this.setSubmitQuestionList(['level1ID', ID, index]);
+      this.setSubmitQuestionList(['ID', '', index]);
+    },
     onSelect([ID, , index]) {
       this.setSubmitQuestionList(['ID', ID, index]);
     },
@@ -347,32 +367,6 @@ export default {
       if (resp && resp.data.Status === 1000) {
         this.isCouponListLoaded = true;
         this.couponList = resp.data.Data.map(it => {
-          // const temp = getProductArrayList(it.ProductList, this.allProductClassify);
-          // const _textArr = [];
-          // if (temp === '全部产品') _textArr.push('全部产品');
-          // else {
-          //   temp.forEach(l1 => {
-          //     if (reg.test(l1.children[0])) {
-          //       _textArr.push(`${l1.ClassName}全部产品`);
-          //     } else {
-          //       let _text = `${l1.ClassName}：[`;
-          //       l1.children.forEach((l2, i2) => {
-          //         if (i2 > 0) _text += '、';
-          //         if (reg.test(l2.children[0])) {
-          //           _text += `全部${l2.ClassName}产品 `;
-          //         } else {
-          //           _text += `${l2.ClassName}: `;
-          //           l2.children.forEach((l3, i) => {
-          //             if (i === 0) _text += `${l3.ClassName}`;
-          //             else _text += `、${l3.ClassName}`;
-          //           });
-          //         }
-          //       });
-          //       _text += ' ]';
-          //       _textArr.push(_text);
-          //     }
-          //   });
-          // }
           const ProductListTextArray = it.ProductString ? it.ProductString.split('\n') : [];
           return {
             ...it,
@@ -405,6 +399,14 @@ export default {
       this.$store.commit('service/setCouponList', _list);
       this.dialogVisible = false;
     },
+    getLevel2QuestionList(i) {
+      const { level1ID } = this.submitQuestionList[i];
+      if (level1ID || level1ID === 0) {
+        const t = this.QuestionTypeLevelList.find(it => it.ID === level1ID);
+        if (t) return t.children || [];
+      }
+      return [];
+    },
   },
   mounted() {
     this.$store.dispatch('common/getAfterSalesDepartmentList');
@@ -425,7 +427,7 @@ export default {
     section {
       &.problem-box {
         display: flex;
-        width: 800px;
+        width: 100%;
         header {
           padding-top: 5px;
         }
@@ -455,16 +457,23 @@ export default {
                 border-color: rgba($color:  $--color-text-table-pending, $alpha: 0.6);
               }
               &.second-dropdown {
-                margin-left: 20px;
-                width: 120px;
+                margin-left: 18px;
+                width: 110px;
                 &.is-gray {
                   > .el-dropdown-link {
                     color: #cbcbcb;
                   }
                 }
               }
+              &.level1-drop {
+                width: 85px;
+              }
+              &.level2-drop {
+                width: 105px;
+              }
             }
             .mp-text-input-wrap {
+              margin-left: 20px;
               &.is-warn {
                 > input {
                   border-color: rgba($color:  $--color-text-table-pending, $alpha: 0.6);
@@ -492,6 +501,9 @@ export default {
               color: $--color-text-light;
               &:hover {
                 color: $--color-text-table;
+              }
+              &:last-of-type {
+                margin-left: 13px;
               }
             }
           }

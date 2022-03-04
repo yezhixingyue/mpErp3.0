@@ -51,11 +51,14 @@
               </el-tooltip>
             </li>
             <li>
-              <i v-if="showData.Funds.CouponAmount > 0">（</i>
+              <!-- <i v-if="showData.Funds.CouponAmount > 0">（</i> -->
               <span>已付：</span>
               <el-tooltip :content="`已付：${showData.Funds.HavePaid}元`" placement="top">
                 <span>{{showData.Funds.HavePaid}}元</span>
               </el-tooltip>
+              <span class="remark" v-if="showData.Funds.PaidBeanAmount && showData.Funds.PaidBeanAmount > 0">
+                （ <i>印豆抵扣{{showData.Funds.PaidBeanAmount}}元</i> ）
+              </span>
             </li>
             <li class="text-left">
               <span>未付：</span>
@@ -68,14 +71,14 @@
               <el-tooltip :content="`退款：${showData.Funds.Refund}元`" placement="top">
                 <span>{{showData.Funds.Refund}}元</span>
               </el-tooltip>
-              <i v-if="showData.Funds.CouponAmount > 0">）</i>
+              <!-- <i v-if="showData.Funds.CouponAmount > 0">）</i> -->
             </li>
             <li v-if="showData.Funds.Reduced > 0">
               <span class="em4-text">售后优惠：</span>
               <el-tooltip :content="`售后优惠：${showData.Funds.Reduced}元`" placement="top">
                 <span>{{showData.Funds.Reduced}}元</span>
               </el-tooltip>
-              <i v-if="showData.Funds.CouponAmount > 0">）</i>
+              <!-- <i v-if="showData.Funds.CouponAmount > 0">）</i> -->
             </li>
           </ul>
         </footer>
@@ -515,6 +518,12 @@ export default {
           text-align: left;
           &.text-left {
             text-align: left;
+          }
+          .remark {
+            font-size: 12px;
+            > i {
+              color: #989898;
+            }
           }
         }
       }

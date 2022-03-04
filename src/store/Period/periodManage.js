@@ -247,7 +247,7 @@ export default {
       const temp = { ...data };
       if (this.state.common?.Permission?.StaffName) temp.OperatorUserName = this.state.common.Permission.StaffName;
       // 生成ProductString
-      const defaultProps = { FirstLevelID: 'classID', SecondLevelID: 'typeID', ProductID: 'productID' };
+      const defaultProps = { FirstLevelID: 'ClassID', SecondLevelID: 'TypeID', ProductID: 'ProductID' };
       const ProductString = CommonClassType.generateProductString(temp.ProductList, this.getters['common/allProductClassify'], defaultProps);
       if (!data.ItemID) { // 添加
         temp.AddTime = getFormatDateString();

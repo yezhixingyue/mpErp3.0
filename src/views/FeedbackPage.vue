@@ -311,10 +311,6 @@ export default {
         this.dataNumber = res.data.DataNumber;
       }
     },
-    // async getQuestionList() { // 获取问题列表
-    //   const res = await this.api.getApplyQuestionList();
-    //   if (res && res.data.Status === 1000) this.questionList = res.data.Data;
-    // },
     getStatusClass(status) {
       let str = '';
       switch (status) {
@@ -410,7 +406,6 @@ export default {
   },
   mounted() {
     this.getDataList();
-    // this.getQuestionList();
     if (this.$route.query.AppyCode) this.$router.push({ query: {} });
     this.$nextTick(() => this.setHeight());
     window.onresize = () => this.setHeight();

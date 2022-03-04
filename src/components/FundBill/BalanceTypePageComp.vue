@@ -2,7 +2,7 @@
   <section
    class="mp-fund-bill-page-balance-type-page-comp-wrap mp-fund-bill-page-common-style-wrap">
     <header>
-      <balance-type-page-comp-header />
+      <BalanceTypePageCompHeader />
     </header>
     <div class="content">
       <BalanceTypePageCompTable />
@@ -23,7 +23,7 @@
 import Count from '@/components/common/Count.vue';
 import { mapState } from 'vuex';
 import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
-import FundBillClassType from '@/store/fundBill/fundBillClassType';
+import CommonClassType from '@/store/CommonClassType';
 import BalanceTypePageCompHeader from './Header/BalanceTypePageCompHeader.vue';
 import BalanceTypePageCompTable from './Main/BalanceTypePageCompTable.vue';
 
@@ -44,7 +44,7 @@ export default {
       return {};
     },
     condition() {
-      return FundBillClassType.filter(this.condition4BalanceType);
+      return CommonClassType.filter(this.condition4BalanceType);
     },
     configObj() {
       return {

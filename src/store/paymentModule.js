@@ -67,6 +67,7 @@ export default {
     -------------------------------*/
     PayOnlineAmount: 0,
     BalanceAmount: 0,
+    PaidBeanNumber: 0,
     PayOnDelivery: 0,
     FullPayout: 0,
     payImgSrc: '', // 支付码src
@@ -199,10 +200,11 @@ export default {
     /* 设置支付金额 (支付弹窗中使用)
     -------------------------------*/
     setPayAmount(state, {
-      PayOnlineAmount, BalanceAmount, PayOnDelivery, FullPayout, Name,
+      PayOnlineAmount, BalanceAmount, PaidBeanNumber, PayOnDelivery, FullPayout, Name,
     }) {
       state.PayOnlineAmount = PayOnlineAmount;
       state.BalanceAmount = BalanceAmount;
+      state.PaidBeanNumber = PaidBeanNumber;
       state.PayOnDelivery = PayOnDelivery;
       state.FullPayout = FullPayout;
       state.curCustomerName = Name;

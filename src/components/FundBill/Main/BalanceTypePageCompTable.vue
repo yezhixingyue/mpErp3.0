@@ -34,16 +34,16 @@
         scope.row.OperateTime | format2MiddleLangTypeDate
       }}</span>
     </el-table-column>
-    <el-table-column prop="name" label="金额" min-width="100" show-overflow-tooltip>
+    <el-table-column prop="name" :label="isBeanType ? '印豆数量' : '金额'" min-width="100" show-overflow-tooltip>
       <span
        :class="{ 'is-red': scope.row.Amount < 0, 'is-success': scope.row.Amount > 0 }"
-        slot-scope="scope"><i class="is-font-size-13">{{ scope.row.Amount}}</i>元</span>
+        slot-scope="scope"><i class="is-font-size-13">{{ scope.row.Amount}}</i>{{isBeanType ? '个' : '元'}}</span>
     </el-table-column>
     <!-- <el-table-column label="原账户余额" min-width="110">
-      <template slot-scope="scope">{{ scope.row.CurrentAmount}}元</template>
+      <template slot-scope="scope">{{ scope.row.CurrentAmount}}{{isBeanType ? '个' : '元'}}</template>
     </el-table-column> -->
-    <el-table-column label="账户余额" min-width="122">
-      <template slot-scope="scope">{{ scope.row.NewAmount}}元</template>
+    <el-table-column  :label="isBeanType ? '印豆余额' : '账户余额'"  min-width="122">
+      <template slot-scope="scope">{{ scope.row.NewAmount}}{{isBeanType ? '个' : '元'}}</template>
     </el-table-column>
     <el-table-column prop="Remark" label="备注" min-width="130">
         <span class="is-gray" slot-scope="scope">{{scope.row.Remark}}</span>
@@ -70,7 +70,10 @@ import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 
 export default {
   computed: {
-    ...mapState('fundBill', ['balanceTypeDataList', 'isBalanceDataLoading']),
+    ...mapState('fundBill', ['balanceTypeDataList', 'isBalanceDataLoading', 'condition4BalanceType']),
+    isBeanType() {
+      return this.condition4BalanceType.BillType === 0;
+    },
   },
   mixins: [tableMixin],
   methods: {

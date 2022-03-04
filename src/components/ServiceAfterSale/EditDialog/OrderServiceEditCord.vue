@@ -39,39 +39,15 @@
           </div>
         </li>
       </ul>
-      <div class="right"> <!-- 金额部分 -->
-        <div>
-          <span class="title">总金额：</span>
-          <span class="text-content">￥{{orderData.Funds.FinalPrice}}元</span>
-        </div>
-        <div>
-          <span class="title">已付：</span>
-          <span class="text-content">￥{{orderData.Funds.HavePaid}}元</span>
-        </div>
-        <div v-if="PayPackageData">
-          <span class="title">运费：</span>
-          <span class="text-content">￥{{PayPackageData.Freight}}元<i class="is-font-size-12 is-gray">（含{{PayPackageData.OrderList.length}}个订单）</i></span>
-        </div>
-        <div>
-          <span class="title">订单退款：</span>
-          <span class="text-content">￥{{orderData.Funds.Refund}}元</span>
-        </div>
-        <div v-if="PayPackageData">
-          <span class="title">运费退款：</span>
-          <span class="text-content">￥{{PayPackageData.RefundFreight}}元</span>
-        </div>
-        <div>
-          <span class="title">售后优惠：</span>
-          <span class="text-content">￥{{orderData.Funds.Reduced}}元</span>
-        </div>
-      </div>
+      <!-- 金额部分 -->
+      <DetailInfoHeader class="right" :Funds="orderData.Funds" :PayPackageData='PayPackageData' />
     </main>
     <footer>
       <div class="title">配送信息：</div>
       <div class="text-content">
         <span class="address">{{shippingAddress}}</span>
         <span class="phone">{{orderData.Address.Address.Mobile}}</span>
-        <span>配送方式 :（ {{orderData.Address.ExpressText}} ）</span>
+        <span>（ 配送: {{orderData.Address.ExpressText}} ）</span>
       </div>
     </footer>
     <el-dialog :title="curDialogTitle" :visible.sync="dialogVisible" width="800px" append-to-body top="10vh" :modal='false'
@@ -124,6 +100,7 @@
 <script>
 import normalBtn from '@/components/common/normalBtn.vue';
 import { mapState } from 'vuex';
+import DetailInfoHeader from './DetailInfoHeader.vue';
 
 export default {
   props: {
@@ -176,6 +153,7 @@ export default {
   },
   components: {
     normalBtn,
+    DetailInfoHeader,
   },
   computed: {
     ...mapState('service', ['PayPackageData']),
@@ -224,8 +202,8 @@ export default {
     getSolution(solution) {
       const arr = [];
       if (solution.Type === 2) {
-        arr.push(`订单减款${solution.RefundAmount}元`);
-        arr.push(`运费减款${solution.RefundFreightAmount}元`);
+        arr.push(`订单减款${solution.Refund}元`);
+        arr.push(`运费减款${solution.RefundFreight}元`);
       } else if (solution.Type === 7) {
         arr.push('补印');
         arr.push(`${solution.KindCount}款`);
@@ -334,7 +312,7 @@ export default {
       line-height: 13px;
     }
     .address{
-        max-width: 405px;
+        max-width: 360px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -363,7 +341,7 @@ export default {
     display: flex;
     position: relative;
     .left {
-      width: 732px;
+      width: 680px;
       padding-top: 2px !important;
       position: relative;
       flex: none;

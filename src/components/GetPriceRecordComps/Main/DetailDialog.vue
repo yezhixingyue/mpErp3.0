@@ -56,16 +56,16 @@ export default {
     > .el-dialog__body {
       padding: 0 20px;
       .order-list-dialog-orderdetail-wrap {
-        height: 520px;
+        height: 560px;
         .product-content {
           height: calc(100% - 40px);
           box-sizing: border-box;
         }
       }
       li.customer-info {
-        height: 290px;
+        height: 310px;
         .customer-content {
-          height: 245px;
+          height: 265px;
           > section {
             &:first-of-type {
               margin-bottom: 50px;
@@ -74,7 +74,7 @@ export default {
         }
       }
       .order-info {
-        height: 210px;
+        height: 230px;
         .order-content {
           height: calc(100% - 40px);
         }

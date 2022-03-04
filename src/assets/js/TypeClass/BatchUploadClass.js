@@ -196,6 +196,7 @@ export default class BatchUpload {
       OrderType,
       List,
       IsBatchUpload,
+      UsePrintBean: true,
     };
   }
 

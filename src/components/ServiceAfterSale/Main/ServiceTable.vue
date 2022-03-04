@@ -14,7 +14,7 @@
     <el-table-column show-overflow-tooltip prop="Order.CustomerName" minWidth="122" label="客户">
     </el-table-column>
     <el-table-column show-overflow-tooltip
-      prop="Order.Content" class-name='is-gray' minWidth="129" label="文件内容">
+      prop="Order.Content" class-name='is-gray' minWidth="110" label="文件内容">
       <template slot-scope="scope">
         {{scope.row.Order && scope.row.Order.Content ? scope.row.Order.Content : '无'}}
       </template>
@@ -33,13 +33,13 @@
     </el-table-column>
     <el-table-column prop="RePrintOrderID" minWidth="80" label="补印单号"></el-table-column>
     <el-table-column minWidth="72" label="订单减款">
-      <template slot-scope="scope"  v-if="scope.row.Solution.RefundAmount > 0">
-        {{scope.row.Solution.RefundAmount}}元
+      <template slot-scope="scope"  v-if="scope.row.Solution.Refund > 0">
+        {{scope.row.Solution.Refund}}元
       </template>
     </el-table-column>
     <el-table-column minWidth="70" label="运费减款">
-      <template slot-scope="scope"  v-if="scope.row.Solution.RefundFreightAmount > 0">
-        {{scope.row.Solution.RefundFreightAmount}}元
+      <template slot-scope="scope"  v-if="scope.row.Solution.RefundFreight > 0">
+        {{scope.row.Solution.RefundFreight}}元
       </template>
     </el-table-column>
     <el-table-column minWidth="100" label="优惠券" show-overflow-tooltip>

@@ -10,7 +10,8 @@
     fit
     style="width: 100%"
    >
-    <el-table-column prop="Name" label="类目名称" width="185"></el-table-column>
+    <el-table-column prop="InternalName" label="内部名称" width="185"></el-table-column>
+    <el-table-column prop="Name" label="显示名称" width="185"></el-table-column>
     <el-table-column prop="TypeText" label="文件类型" width="220"></el-table-column>
     <el-table-column prop="Remark" label="说明文字" width="240" show-overflow-tooltip></el-table-column>
     <el-table-column prop="FailTips" label="未上传提示文字" show-overflow-tooltip></el-table-column>

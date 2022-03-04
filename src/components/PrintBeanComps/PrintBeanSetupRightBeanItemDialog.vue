@@ -26,7 +26,7 @@
         <el-form-item label="印豆数量：" prop="BeanNumber">
           <el-input v-model.trim.number="ruleForm.BeanNumber" maxlength="9" :disabled='disabled'></el-input>
           <span class="unit">个</span>
-          <span class="tips-box"><i class="el-icon-warning"></i> 注：100个印豆价值1元</span>
+          <span class="tips-box"><i class="el-icon-warning"></i> 注：10个印豆价值1元</span>
         </el-form-item>
         <el-form-item label="价格：" prop="Price" class="price">
           <el-input v-model.trim="ruleForm.Price" maxlength="9" :disabled='disabled'></el-input>

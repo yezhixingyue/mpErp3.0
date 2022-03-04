@@ -9,7 +9,7 @@
         <span>文件类目：</span>
         <ul class="file-list">
           <li v-for="it in FileDataList" :key="it.ID">
-            <el-checkbox :value='checkedFileIDs.includes(it.ID)' @change="selectChange(it)">{{it.Name}}{{it.IsPrintFile ? '（印刷文件）' : ''}}</el-checkbox>
+            <el-checkbox :value='checkedFileIDs.includes(it.ID)' @change="selectChange(it)">{{it.InternalName}}{{it.IsPrintFile ? '（印刷文件）' : ''}}</el-checkbox>
             <el-checkbox v-if="checkedFileIDs.includes(it.ID)" :value='getIsRequiredByID(it.ID)' @change="requiredChange(it.ID)">必须上传</el-checkbox>
             <div class="max-size-box" v-if="checkedFileIDs.includes(it.ID)">
               <span title="多文件时，指全部文件总大小限制">文件最大限制：</span>
