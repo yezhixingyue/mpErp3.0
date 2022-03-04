@@ -44,11 +44,12 @@ export default {
   },
   methods: {
     onSubmit() {
-      const t = this.checkList.find(it => !it.HiddenToCustomer);
-      if (t) this.$emit('change', this.checkList);
-      else {
-        this.messageBox.failSingleError('保存失败', '不能设置全部工艺均对客户隐藏');
-      }
+      this.$emit('change', this.checkList);
+      // const t = this.checkList.find(it => !it.HiddenToCustomer);
+      // if (t) this.$emit('change', this.checkList);
+      // else {
+      //   this.messageBox.failSingleError('保存失败', '不能设置全部工艺均对客户隐藏');
+      // }
     },
     onCancle() { // 取消  关闭弹窗
       this.$emit('update:visible', false);

@@ -51,7 +51,7 @@
     <el-table-column label="销售区域" min-width="160" show-overflow-tooltip>
       <span slot-scope="scope">{{ getAdd(scope.row.Customer.Location) }}</span>
     </el-table-column>
-    <el-table-column label="操作人" min-width="88">
+    <el-table-column label="操作人" min-width="80">
       <template slot-scope="scope">{{
         scope.row.Operator ? scope.row.Operator.StaffName : ''
       }}</template>

@@ -44,7 +44,7 @@ export default {
       return {};
     },
     condition() {
-      return CommonClassType.filter(this.condition4BalanceType);
+      return CommonClassType.filter(this.condition4BalanceType, true);
     },
     configObj() {
       return {

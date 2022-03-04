@@ -14,7 +14,7 @@
       class-name='md-font-item' prop="OrderCount" label="订单数量" minWidth="75"></el-table-column>
     <el-table-column class-name='md-font-item' label="总金额(含运费)" minWidth="109">
       <template slot-scope="scope">
-        {{scope.row.DepositAmount}}元
+        {{scope.row.FullPayout}}元
       </template>
     </el-table-column>
     <el-table-column class-name='md-font-item' label="运费" minWidth="60">
@@ -127,7 +127,7 @@ export default {
       this.h = tempHeight;
     },
     initStyle(rowData) {
-      if (rowData.columnIndex === 10) {
+      if (rowData.columnIndex === 11) {
         const data = rowData.row;
         if (data.Status === 255) return 'canc-gray';
         if (data.Status === 1) return 'pend-red';
