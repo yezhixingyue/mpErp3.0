@@ -1,4 +1,4 @@
-import restoreClassByOriginData from '../reduction';
+import restoreClassByOriginData from '../../assets/js/utils/reduction';
 
 /**
  * 设置印豆时，右侧的单个类对象

@@ -1,6 +1,6 @@
 /* eslint-disable brace-style */
 // import messageBox from '../../assets/js/utils/message';
-import restoreClassByOriginData from '../reduction';
+import restoreClassByOriginData from '../../assets/js/utils/reduction';
 import getEnumList from '../../assets/js/utils/getEnumList';
 import { getValueIsOrNotNumber } from '../../assets/js/utils/util';
 import PrintBeanTableItem from './PrintBeanTableItemClass';

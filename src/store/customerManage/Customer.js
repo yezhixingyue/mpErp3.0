@@ -1,6 +1,6 @@
 import { RegTypeEnum, AuthStatusEnum, CustomerStatusEnum } from './Enums';
 import AddressClass from './Address';
-import restoreClassByOriginData from '../reduction';
+import restoreClassByOriginData from '../../assets/js/utils/reduction';
 
 export default class Customer {
   CustomerID = ''

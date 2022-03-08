@@ -27,10 +27,10 @@
       </p>
       <NewAreaTreeSpreadComp v-model="ruleForm.Range" :list='allAreaTreeList' />
       <p class="mp-common-title-wrap" style="margin-top:25px">
-        <span>适用等级价格</span>
+        <span>适用价格等级</span>
       </p>
       <el-checkbox-group v-model="ruleForm.GradeList">
-        <el-checkbox :label="it.CategoryID" v-for="it in userRankListNoneEmpty" :key="it.CategoryID">{{it.CategoryName}}</el-checkbox>
+        <el-checkbox :label="it.CategoryID" v-for="it in userVipListNoneEmpty" :key="it.CategoryID">{{it.CategoryName}}</el-checkbox>
       </el-checkbox-group>
     </div>
     <div class="footer">
@@ -71,7 +71,7 @@ export default {
   },
   computed: {
     ...mapGetters('common', ['allAreaTreeList']),
-    ...mapState('common', ['userRankListNoneEmpty']),
+    ...mapState('common', ['userVipListNoneEmpty']),
   },
   data() {
     return {
@@ -94,7 +94,7 @@ export default {
       if (bool) {
         const { ID, Name, Range, GradeList } = this.ruleForm;
         const { IsIncludeIncreased, List } = Range;
-        const list = this.userRankListNoneEmpty.filter(it => GradeList.includes(it.CategoryID)).map(it => ({ ID: it.CategoryID, Name: it.CategoryName }));
+        const list = this.userVipListNoneEmpty.filter(it => GradeList.includes(it.CategoryID)).map(it => ({ ID: it.CategoryID, Name: it.CategoryName }));
         const temp = { ID, Name, AreaList: List, IsIncludeIncreasedArea: IsIncludeIncreased, GradeList: list };
         this.$emit('submit', temp);
       }
@@ -197,10 +197,14 @@ export default {
         }
       }
       > .el-checkbox-group {
-        margin-top: 10px;
-        .el-checkbox__label {
-          font-size: 12px;
-          color: #585858;
+        .el-checkbox {
+          margin-bottom: 5px;
+          margin-right: 8px;
+          .el-checkbox__label {
+            font-size: 12px;
+            color: #585858;
+            min-width: 6em;
+          }
         }
       }
     }

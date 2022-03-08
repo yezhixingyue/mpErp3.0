@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'ExpressPriceAddEditPage',
+  name: 'LogisticPriceSetupPage',
 };
 </script>
 <style lang='scss'>

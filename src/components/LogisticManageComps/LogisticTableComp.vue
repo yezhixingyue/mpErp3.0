@@ -1,10 +1,11 @@
 <template>
   <el-table
-    class="mp-express-list-page-table-comp-wrap"
+    class="mp-logistic-list-page-table-comp-wrap"
+    :class="{sorting: isSorting}"
     ref="singleTable"
     :max-height="h"
     :height="h"
-    :data="listData"
+    :data="localDataList"
     stripe
     border
     fit
@@ -14,15 +15,15 @@
       <span slot-scope="scope" :class="(curMoveIndex === scope.$index) && sorting ? 'just-now-move-index' : ''">{{scope.$index + 1}}</span>
     </el-table-column> -->
     <el-table-column prop="name" label="姓名" width="180"> </el-table-column>
-    <el-table-column width="520" label="排序调整" v-if="sorting">
+    <el-table-column width="520" label="排序调整" v-if="sorting && false">
       <ul slot-scope="scope" class="mp-sort-change-box" :class="curMoveIndex === scope.$index ? 'just-now-move' : ''">
         <li class="blue-span" @click="onSortChange(0, scope, true)" :class="scope.$index === 0 ? 'disabled':''">
           <i style="font-size:17px;vertical-align: -2px;" class="el-icon-top"></i>置顶</li>
         <li class="blue-span" @click="onSortChange(scope.$index === 0 ? scope.$index : scope.$index - 1, scope)" :class="scope.$index === 0 ? 'disabled':''">
           <i style="font-size:15px;vertical-align: 0px;" class="el-icon-sort-up"></i>上移
         </li>
-        <li class="blue-span" :class="scope.$index === tableData.length - 1 ? 'disabled':''"
-         @click="onSortChange(scope.$index ===  tableData.length - 1 ? scope.$index : scope.$index + 1, scope)">
+        <li class="blue-span" :class="scope.$index === sortDataList.length - 1 ? 'disabled':''"
+         @click="onSortChange(scope.$index ===  sortDataList.length - 1 ? scope.$index : scope.$index + 1, scope)">
           <i style="font-size:15px;vertical-align: -2px;" class="el-icon-sort-down"></i>下移</li>
         <li class="jump-box">
           <span style="color:#888E99">跳转指定位置：</span>
@@ -31,7 +32,7 @@
             @focus="onInpNumFocus"
             v-model="scope.row.index"
             :min="1"
-            :max="tableData.length">
+            :max="sortDataList.length">
           </el-input-number>
           <span style="margin-left:10px" @click="onSortChange(scope.row.index - 1, scope, true)" class="blue-span">确定</span>
         </li>
@@ -60,25 +61,23 @@ export default {
   mixins: [tableMixin],
   data() {
     return {
-      tableData: [],
+      sortDataList: [],
       curMoveIndex: null,
       sortItem: null,
     };
   },
   computed: {
-    sortingState() {
-      if (!this.sorting) return false;
+    isSorting() {
       if (!this.dataList || this.dataList.length === 0) return false;
-      return true;
+      return this.sorting;
     },
-    listData() {
-      if (this.sorting) return this.tableData;
-      return this.dataList;
+    localDataList() {
+      return this.sorting ? this.sortDataList : this.dataList;
     },
   },
   methods: {
     setHeight() {
-      const tempHeight = this.getHeight('', 230);
+      const tempHeight = this.getHeight('', 175);
       this.h = tempHeight;
     },
     onInpNumFocus(e) {
@@ -91,9 +90,9 @@ export default {
     },
     onSortChange(num, { $index }, showTip = false) {
       if (num === $index) return;
-      const t = this.tableData[$index];
-      this.tableData.splice([$index], 1); // 删除
-      this.tableData.splice(num, 0, t);
+      const t = this.sortDataList[$index];
+      this.sortDataList.splice([$index], 1); // 删除
+      this.sortDataList.splice(num, 0, t);
       this.curMoveIndex = num;
       this.setTableDataIndex();
       if (showTip) {
@@ -102,40 +101,32 @@ export default {
       }
     },
     setTableDataIndex() {
-      if (!this.tableData || this.tableData.length === 0) return;
-      this.tableData = this.tableData.map((it, i) => ({ ...it, index: i + 1 }));
+      if (!this.sortDataList || this.sortDataList.length === 0) return;
+      this.sortDataList = this.sortDataList.map((it, i) => ({ ...it, index: i + 1 }));
     },
-    tableSort() {
-      // console.log('tableSort');
+    handleTableToSort() { // 开启排序状态
       const tbody = document.querySelector('.el-table__body-wrapper tbody');
       const ops = {
         onEnd: (evt) => {
           const { newIndex, oldIndex } = evt;
           this.onSortChange(newIndex, { $index: oldIndex });
-          const temp = this.tableData;
-          this.tableData = [];
-          this.$nextTick(() => { this.tableData = temp; });
+          const temp = this.sortDataList;
+          this.sortDataList = [];
+          this.$nextTick(() => { this.sortDataList = temp; });
         },
       };
       this.sortItem = sortable.create(tbody, ops);
     },
-    handleSortSubmit() {
-      // console.log(this.listData); // 修改后数据
-      // console.log(this.dataList); // 原始数据
-      // 1. 判断数据顺序是否修改
-      // 2. 修改后执行后端数据发送，成功后对原始数据进行修改，最后关闭排序模式
-      this.$emit('exitSorting');
-    },
   },
   watch: {
-    sortingState: {
+    isSorting: {
       immediate: false,
       handler(bool) {
         if (bool) {
-          this.tableData = this.dataList;
+          this.sortDataList = this.dataList;
           this.setTableDataIndex();
           this.$nextTick(() => {
-            this.tableSort();
+            this.handleTableToSort();
           });
         } else if (this.sortItem) {
           this.sortItem.destroy();
@@ -146,7 +137,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-express-list-page-table-comp-wrap {
+.mp-logistic-list-page-table-comp-wrap {
   .el-table__header-wrapper thead tr th .cell {
     line-height: 36px;
     font-size: 14px;
@@ -217,6 +208,9 @@ export default {
         }
       }
     }
+  }
+  &.sorting .el-table__body-wrapper .el-table__row {
+    cursor: move;
   }
 }
 </style>

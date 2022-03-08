@@ -232,7 +232,6 @@ export default {
       state.MaterialTypeList = state.MaterialTypeList.filter(it => it.ID !== id);
     },
     setMaterialTypeElementChange(state, [isEdit, data, ID]) {
-      // console.log(data);
       const targetMaterialType = state.MaterialTypeList.find(it => it.ID === ID);
       if (targetMaterialType) {
         if (!isEdit) {

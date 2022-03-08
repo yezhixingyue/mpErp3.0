@@ -11,8 +11,8 @@
   @opened='onOpened'
   @close='onClose'
   @closed='onClosed'
-
   class="mp-img-style-header mp-erp-common-dialog-comp-wrap"
+  :class="{smallBtn: smallBtn}"
   :before-close="onCancleClick">
   <slot></slot>
   <span slot="footer" class="dialog-footer">
@@ -91,6 +91,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    smallBtn: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     dialogVisible: {
@@ -143,7 +147,7 @@ export default {
   .el-dialog__header {
     > span{
       font-size: 15px;
-      color: #888E99;
+      color: #888E99 !important;
       &::before {
         width: 3px !important;
         background-color: #26bcf9;
@@ -222,6 +226,17 @@ export default {
           &.is-disabled {
             background: #cbcbcb !important;
             opacity: 1 !important;
+          }
+        }
+      }
+    }
+  }
+  &.smallBtn {
+    .el-dialog__footer {
+      > .dialog-footer {
+        > p {
+          > button {
+            height: 32px;
           }
         }
       }

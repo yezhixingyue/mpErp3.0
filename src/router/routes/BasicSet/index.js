@@ -52,38 +52,38 @@ const routes = { // 基本设置
     /*  物流费用
     ------------------------------------------ */
     {
-      path: '/ExpressList',
-      name: 'ExpressList',
+      path: '/LogisticList',
+      name: 'LogisticList',
       meta: {
         title: '物流费用',
         requiresAuth: true,
-        pageName: 'ExpressListPage',
+        pageName: 'LogisticManageListPage',
         icon: 'el-icon-connection',
         PermissionInfo: ['Developing', 'None'],
       },
-      component: () => import('../../../views/ExpressManage/ExpressManageListPage.vue'),
+      component: () => import('../../../views/LogisticManage/LogisticManageListPage.vue'),
     },
     {
-      path: '/ExpressPriceSettingList/:id',
-      name: 'ExpressPriceSettingList',
+      path: '/LogisticPriceList/:id',
+      name: 'LogisticPriceList',
       meta: {
-        title: '物流管理价格设置列表',
+        title: '设置价格 - 物流费用',
         requiresAuth: true,
-        pageName: 'ExpressPriceSettingListPage',
+        pageName: 'LogisticPriceSettingListPage',
         PermissionInfo: ['Developing', 'None'],
       },
-      component: () => import('../../../views/ExpressManage/ExpressPriceSettingListPage.vue'),
+      component: () => import('../../../views/LogisticManage/LogisticPriceSettingListPage.vue'),
     },
     {
-      path: '/ExpressPriceAddEdit/:type',
-      name: 'ExpressPriceAddEdit',
+      path: '/LogisticPriceSetup/:type',
+      name: 'LogisticPriceSetup',
       meta: {
         title: '物流价格添加与编辑',
         requiresAuth: true,
-        pageName: 'ExpressPriceAddEditPage',
+        pageName: 'LogisticPriceSetupPage',
         PermissionInfo: ['Developing', 'None'],
       },
-      component: () => import('../../../views/ExpressManage/ExpressPriceAddEditPage.vue'),
+      component: () => import('../../../views/LogisticManage/LogisticPriceSetupPage.vue'),
     },
     /*  印刷幅面
     ------------------------------------------ */
@@ -191,10 +191,10 @@ const routeTree = {
     /*  物流费用
     ------------------------------------------ */
     {
-      name: 'ExpressList',
+      name: 'LogisticList',
       children: [
-        { name: 'ExpressPriceSettingList', children: [] },
-        { name: 'ExpressPriceAddEdit', children: [] },
+        { name: 'LogisticPriceList', children: [] },
+        { name: 'LogisticPriceSetup', children: [] },
       ],
     },
     /*  印刷幅面
