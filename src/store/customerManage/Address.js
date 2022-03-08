@@ -1,4 +1,4 @@
-import restoreClassByOriginData from '../reduction';
+import restoreClassByOriginData from '../../assets/js/utils/reduction';
 
 export default class Address {
   CustomerID = ''

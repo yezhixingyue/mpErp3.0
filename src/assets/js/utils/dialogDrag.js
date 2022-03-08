@@ -1,9 +1,8 @@
 /* eslint-disable func-names */
 import Vue from 'vue';
 // v-dialogDrag: 弹窗拖拽属性
-Vue.directive('dialogDrag', {
-  // eslint-disable-next-line no-unused-vars
-  bind(el, binding, vnode, oldVnode) {
+export const dialogDraghandleObj = {
+  bind(el) {
     const dialogHeaderEl = el.querySelector('.el-dialog__header');
     const dragDom = el.querySelector('.el-dialog');
     dialogHeaderEl.style.cssText += ';cursor:move;';
@@ -79,4 +78,6 @@ Vue.directive('dialogDrag', {
       return false;
     };
   },
-});
+};
+
+Vue.directive('dialogDrag', dialogDraghandleObj);

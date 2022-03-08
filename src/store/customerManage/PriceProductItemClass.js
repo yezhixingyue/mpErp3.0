@@ -1,4 +1,4 @@
-import restoreClassByOriginData from '../reduction';
+import restoreClassByOriginData from '../../assets/js/utils/reduction';
 import messageBox from '../../assets/js/utils/message';
 
 export default class PriceProductItemClass {

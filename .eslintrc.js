@@ -9,6 +9,7 @@ module.exports = {
   ],
   parserOptions: {
     parser: 'babel-eslint',
+    // parser: '@babel/eslint-parser',
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -24,7 +25,8 @@ module.exports = {
     "import/extensions":  ['error', 'always', {
       'js': 'never',
       'vue': 'ignorePackages'
-    }]
+    }],
+    "import/prefer-default-export": "off",
   },
   overrides: [
     {

@@ -47,6 +47,9 @@ export default {
         this.setHeightByDebounce();
       }, t);
     },
+    curPathName() {
+      if (this.notify) this.notify.close();
+    },
   },
   computed: {
     ...mapState('layout', ['isLeftCollapse']),
@@ -57,6 +60,9 @@ export default {
     curShowColTableData() {
       if (!this.tableColData) return [];
       return this.tableColData.filter(it => it.show);
+    },
+    curPathName() {
+      return this.$route?.name || '';
     },
   },
   methods: {

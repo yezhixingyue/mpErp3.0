@@ -43,9 +43,6 @@ export default {
       default: null,
     },
   },
-  mounted() {
-    console.log(this.Funds, this.PayPackageData);
-  },
 };
 </script>
 <style lang='scss'>

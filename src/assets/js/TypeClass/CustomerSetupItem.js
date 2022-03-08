@@ -1,4 +1,4 @@
-import restoreClassByOriginData from '../../../store/reduction';
+import restoreClassByOriginData from '../utils/reduction';
 
 export default class CustomerSetupItem {
   Type = ''
