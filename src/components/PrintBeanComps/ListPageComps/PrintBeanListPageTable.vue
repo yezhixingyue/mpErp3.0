@@ -24,9 +24,13 @@
       </template>
     </el-table-column>
 
-    <el-table-column width="220px" label="操作">
+    <el-table-column width="220px" label="操作" v-if="localPermission.SetupPrintBean">
       <template slot-scope="scope">
-        <CtrlMenus @edit='onEditClick(scope.row)' @remove='onRemoveClick(scope.row, scope.$index)' :canRemove='scope.row._canRemove' />
+        <CtrlMenus
+          @edit='onEditClick(scope.row)'
+          @remove='onRemoveClick(scope.row, scope.$index)'
+          :canRemove='scope.row._canRemove'
+        />
       </template>
     </el-table-column>
     <div slot="empty">
@@ -59,9 +63,15 @@ export default {
     CtrlMenus,
   },
   computed: {
-    // ...mapState('common', ['Permission']),
     ...mapState('common', ['userTypeList', 'userRankList']),
     ...mapGetters('common', ['allAreaTreeList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionManagePrintBean?.Obj) {
+        return this.Permission.PermissionList.PermissionManagePrintBean.Obj;
+      }
+      return {};
+    },
     localDataList() {
       if (!Array.isArray(this.list)) return [];
       return this.list.map(it => ({

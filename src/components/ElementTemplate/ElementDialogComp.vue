@@ -94,7 +94,7 @@
             <li v-for="it in ruleForm.NumbericAttribute.SectionList" :key="it.key">
               <div>
                 <el-input style='width:110px' v-model.trim="it.MinValue" maxlength="9"></el-input>
-                <span class="text" style="margin:0 8px">＜值≤</span>
+                <span class="text" style="margin:0 8px">≤值≤</span>
                 <el-input style='width:110px' v-model.trim="it.MaxValue" maxlength="9"></el-input>
               </div>
               <div style="padding:0 32px">
@@ -512,9 +512,9 @@ export default {
           callback(new Error('输入值必须为数字类型，在不允许小数时应为整数类型'));
           return;
         }
-        index = this.ruleForm.NumbericAttribute.SectionList.findIndex(it => +it.MaxValue <= +it.MinValue && it.MaxValue !== '-1');
+        index = this.ruleForm.NumbericAttribute.SectionList.findIndex(it => +it.MaxValue < +it.MinValue && it.MaxValue !== '-1');
         if (index >= 0) {
-          callback(new Error('分段范围值中后面值不能小于等于前面值'));
+          callback(new Error('分段范围值中后面值不能小于前面值'));
           return;
         }
         index = this.ruleForm.NumbericAttribute.SectionList.findIndex(it => !it.IsGeneralValue && it.Increment <= 0);
@@ -545,7 +545,7 @@ export default {
         index = this.ruleForm.NumbericAttribute.SectionList.findIndex(it => {
           if (!it.IsGeneralValue) return false;
           if (this.formatNumberValueList.length === 0) return true;
-          const _target = this.formatNumberValueList.find(val => +val > +it.MinValue && (it.MaxValue === '-1' || +val <= +it.MaxValue));
+          const _target = this.formatNumberValueList.find(val => +val >= +it.MinValue && (it.MaxValue === '-1' || +val <= +it.MaxValue));
           if (!_target) return true;
           return false;
         });

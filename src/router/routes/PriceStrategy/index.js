@@ -106,7 +106,7 @@ const routes = { // 价格策略
         title: '印豆管理',
         icon: 'iconfont icon-yindouguanli',
         pageName: 'PrintBeanListPage',
-        PermissionInfo: ['PermissionPromote', 'HavePomission'],
+        PermissionInfo: ['PermissionManagePrintBean', 'HavePomission'],
       },
       component: () => import('../../../views/PrintBeanManagePages/PrintBeanManageListPage.vue'),
     },

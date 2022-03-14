@@ -39,7 +39,7 @@
     </el-table-column>
     <el-table-column prop="OperatorUserName" label="操作人" width="100"></el-table-column>
     <el-table-column label="操作" width="180">
-      <template slot-scope="scope" v-if="localPermission.SpecialDaySetup">
+      <template slot-scope="scope" v-if="localPermission.ProducePeriodSetup">
         <CtrlMenus @edit='onSetupClick(scope.row)' @remove='onRemoveClick(scope.row)' />
       </template>
     </el-table-column>

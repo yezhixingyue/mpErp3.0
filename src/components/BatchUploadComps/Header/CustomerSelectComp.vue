@@ -89,7 +89,7 @@ export default {
 </script>
 <style lang='scss'>
 .mp-batch-upload-page-header-comps-customer-select-comp-wrap {
-  height: 50px;
+  height: 30px;
   display: flex;
   align-items: center;
   box-sizing: border-box;

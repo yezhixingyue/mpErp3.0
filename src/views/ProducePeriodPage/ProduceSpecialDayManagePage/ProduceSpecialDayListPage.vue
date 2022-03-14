@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-period-manage-produce-special-day-manage-list-page">
     <header>
-      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.SpecialDaySetup">添加生产特殊情况</el-button>
+      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.ProducePeriodSetup">添加生产特殊情况</el-button>
       <div>
         <ProductSelector
           :changePropsFunc="setCondition2ListData"

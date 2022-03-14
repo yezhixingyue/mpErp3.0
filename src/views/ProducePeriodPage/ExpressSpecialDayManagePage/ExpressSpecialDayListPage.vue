@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-period-manage-special-day-manage-list-page">
     <header>
-      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.SpecialDaySetup">添加运输特殊情况</el-button>
+      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.DiliverySpecialSetup">添加运输特殊情况</el-button>
       <div>
         <label class="title">类型：</label>
         <el-radio-group v-model="localSpecialtype" size="small" @change='getTableDataList(1)'>

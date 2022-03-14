@@ -764,8 +764,8 @@ export default {
     },
   },
   actions: {
-    async getAreaList({ state, commit }) { // 获取地区列表数据
-      if (state.areaList.length > 0) return true;
+    async getAreaList({ state, commit }, useCache = true) { // 获取地区列表数据
+      if (state.areaList.length > 0 && useCache) return true;
 
       const resp = await api.getVersionValid({ Key: 3 }).catch(() => {});
       if (resp && resp.data.Status === 1000) {

@@ -35,6 +35,31 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/CompanyManage/JobPostManage/PostManageSetupPage.vue'),
     },
+    /*  员工管理
+    ------------------------------------------ */
+    {
+      path: '/StaffManageList',
+      name: 'StaffManageList',
+      meta: {
+        title: '员工管理',
+        icon: 'iconfont icon-yuangongguanli',
+        pageName: 'StaffManageListPage',
+        PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CompanyManage/JobPostManage/PostManageListPage.vue'),
+    },
+    {
+      path: '/StaffManageSetup/:id',
+      name: 'StaffManageSetup',
+      meta: {
+        title: '员工设置',
+        pageName: 'StaffManageSetupPage',
+        PermissionInfo: ['PermissionManageStaffBase', 'Obj', 'Add'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CompanyManage/JobPostManage/PostManageSetupPage.vue'),
+    },
   ],
 };
 
@@ -48,6 +73,14 @@ const routeTree = {
       name: 'PostManageList',
       children: [
         { name: 'PostManageSetup', children: [] },
+      ],
+    },
+    /*  员工管理
+    ------------------------------------------ */
+    {
+      name: 'StaffManageList',
+      children: [
+        { name: 'StaffManageSetup', children: [] },
       ],
     },
   ],

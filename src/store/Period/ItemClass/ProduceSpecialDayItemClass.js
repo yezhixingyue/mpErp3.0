@@ -31,7 +31,8 @@ const ProduceSpecialTypeEnumIDList = ProduceDelayTypeEnumList.map(it => it.ID);
 const ProduceDelayTypeEnumIDList = ProduceDelayTypeEnumList.map(it => it.ID);
 
 // eslint-disable-next-line no-nested-ternary
-const getDateString = ({ First, Second }, isStart, isEnd) => `${First}T${Second}${isStart ? ':00.000Z' : (isEnd ? ':59.997Z' : '')}`;
+// const getDateString = ({ First, Second }, isStart, isEnd) => `${First}T${Second}${isStart ? ':00.000Z' : (isEnd ? ':59.997Z' : '')}`;
+const getDateString = ({ First, Second }) => `${First}T${Second}:00.000Z`;
 
 export default class ProduceSpecialDayItemClass {
   ItemID = ''
@@ -121,7 +122,7 @@ export default class ProduceSpecialDayItemClass {
     if (SpecialType === ProduceSpecialTypeEnums.delay.ID) title = '延长工时';
     if (SpecialType === ProduceSpecialTypeEnums.stop.ID) title = '可生产工期';
     if (!ChangeTime && ChangeTime !== 0) return throwFalseFunc(`请设置${title}时间`);
-    if (!getValueIsOrNotNumber(ChangeTime, true) || ChangeTime <= 0) return throwFalseFunc(`${title}时间必须为正整数`);
+    if (!getValueIsOrNotNumber(ChangeTime, true) || ChangeTime < 0) return throwFalseFunc(`${title}时间不能小于0`);
     // }
     if (!Tips) return throwFalseFunc('请填写客户提示');
     return true;

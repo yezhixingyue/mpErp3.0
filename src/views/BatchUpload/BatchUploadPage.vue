@@ -9,7 +9,13 @@
        @getBalance='handleGetBalance'
       />
       <hr />
-      <AddressChangeComp :customer='customer' @change="handleAddressChange" @validAddChange='handleValidAddChange' />
+      <AddressChangeComp
+       :customer='customer'
+       :PayInFull.sync='PayInFull'
+       :UsePrintBean.sync='UsePrintBean'
+       @change="handleAddressChange"
+       @validAddChange='handleValidAddChange'
+      />
     </header>
     <main>
       <div class="workbench">
@@ -129,6 +135,8 @@ export default {
       QrCodeVisible: false,
       payInfoData: null,
       IsBatchUpload: true,
+      PayInFull: false, // 是否支付全款
+      UsePrintBean: false,
       Product: {
         isSingle: false,
         ClassID: '',
@@ -174,7 +182,8 @@ export default {
         Address: BatchUploadClass.getAddress4SubmitFromEditObj(this.address),
         Terminal: this.Terminal,
         ProductID: this.Product.ProductID && this.Product.isSingle ? this.Product.ProductID : '',
-        PayInFull: false,
+        PayInFull: this.PayInFull,
+        UsePrintBean: this.UsePrintBean,
         OrderType: this.OrderType, // 2 是自助
         Position: this.Position, // 255 是自助上传
         IsBatchUpload: this.IsBatchUpload,
@@ -194,6 +203,10 @@ export default {
      * 顶部区域： 客户信息与地址相关
      */
     handleCustomerChange(data) { // 选中客户 --- 此时应清空已解析订单列表
+      if (!this.customer || !data || this.customer.CustomerID !== data.CustomerID) {
+        this.PayInFull = false;
+        this.UsePrintBean = false;
+      }
       this.customer = data;
       this.handleCheckAll(false);
       this.successedList = [];
@@ -355,7 +368,7 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  padding: 0 10px;
+  padding-left: 10px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -365,7 +378,7 @@ export default {
   position: relative;
   > header {
     flex: none;
-    height: 190px;
+    height: 198px;
     background-color: #fff;
     padding: 0px 20px;
     padding-top: 30px;
@@ -374,6 +387,12 @@ export default {
       margin-right: 82px;
       border: none;
       border-bottom: 1px solid #eee;
+    }
+    .mp-pc-place-order-address-show-and-change-wrap > .content.isBatchUploadUse > ul {
+      margin-top: 13px;
+      > li {
+        margin-top: 6px;
+      }
     }
   }
   > main {

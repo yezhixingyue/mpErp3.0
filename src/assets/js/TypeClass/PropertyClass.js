@@ -206,7 +206,7 @@ export default class PropertyClass {
             const _list = SectionList.map(it => {
               const { MinValue, MaxValue, IsGeneralValue, Increment } = it;
               const str = IsGeneralValue ? `需从${InputContent}中取符合该范围取值` : `增量应为${Increment}`;
-              TipsContent += `范围在(${MinValue},${MaxValue}]时，${str}；`;
+              TipsContent += `范围在[${MinValue},${MaxValue}]时，${str}；`;
               return { ...it, InputContent, AllowDecimal };
             });
             AvailableValueList.push(..._list);
@@ -293,7 +293,7 @@ export default class PropertyClass {
           }
           const valueList = getNumberValueList(InputContent);
           if (valueList.includes(`${val}`)) return true;
-          if (val > MinValue && (val <= MaxValue || MaxValue === -1) && Increment) { // 符合范围区间 进入判断
+          if (val >= MinValue && (val <= MaxValue || MaxValue === -1) && Increment) { // 符合范围区间 进入判断
             let T = Increment.toString().indexOf('.');
             T = T === -1 ? 0 : Increment.toString().length - T - 1;
             const arr = new Array(T);

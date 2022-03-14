@@ -6,7 +6,7 @@ export const checkNumberSectionList = (value, SectionList, valueList) => {
   for (let i = 0; i < SectionList.length; i += 1) {
     const section = SectionList[i];
     const { MinValue, MaxValue, IsGeneralValue, Increment } = section;
-    if (+value > MinValue && (+value <= MaxValue || +MaxValue === -1)) { // 符合范围区间 进入判断
+    if (+value >= MinValue && (+value <= MaxValue || +MaxValue === -1)) { // 符合范围区间 进入判断
       isInSection = true;
       let msg = '';
       if (!IsGeneralValue) {
@@ -16,11 +16,11 @@ export const checkNumberSectionList = (value, SectionList, valueList) => {
         arr.fill('0');
         T = `1${arr.join('')}`;
         if ((+value * T - MinValue * T) % (Increment * T) !== 0) {
-          msg = `（${MinValue}, ${MaxValue}]区间内应符合增量为${Increment}`;
+          msg = `[${MinValue}, ${MaxValue}]区间内应符合增量为${Increment}`;
         }
       }
       if (IsGeneralValue && valueList) {
-        msg = `（${MinValue}, ${MaxValue}]区间内应从${valueList}对应区间中取值`;
+        msg = `[${MinValue}, ${MaxValue}]区间内应从${valueList}对应区间中取值`;
       }
       msgArr.push(msg);
     }

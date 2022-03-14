@@ -1,7 +1,7 @@
 <template>
   <header>
     <div>
-      <el-button type="primary" @click="onAddClick">添加印豆设置</el-button>
+      <el-button type="primary" @click="onAddClick" v-if="localPermission.SetupPrintBean">添加印豆设置</el-button>
       <AreaSelector
         :changePropsFunc='setCondtiion'
         :requestFunc='getList'
@@ -92,6 +92,13 @@ export default {
   },
   computed: {
     ...mapState('common', ['userTypeList', 'userRankList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionManagePrintBean?.Obj) {
+        return this.Permission.PermissionList.PermissionManagePrintBean.Obj;
+      }
+      return {};
+    },
     Status: {
       get() {
         return this.condition.Status;

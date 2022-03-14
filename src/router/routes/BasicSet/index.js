@@ -24,6 +24,20 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/BasicSetup/CustomerSetupPage.vue'),
     },
+    /*  销售区域
+    ------------------------------------------ */
+    {
+      path: '/sellArea',
+      name: 'sellArea',
+      meta: {
+        title: '销售区域',
+        icon: 'iconfont icon-xiaoshouquyu',
+        pageName: 'SellAreaSetupPage',
+        PermissionInfo: ['PermissionSetupSellArea', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/BasicSetup/SellAreaSetupPage.vue'),
+    },
     /*  定金设置
     ------------------------------------------ */
     {
@@ -178,6 +192,12 @@ const routeTree = {
     ------------------------------------------ */
     {
       name: 'customerSetup',
+      children: [],
+    },
+    /*  销售区域
+    ------------------------------------------ */
+    {
+      name: 'sellArea',
       children: [],
     },
     /*  定金设置

@@ -664,6 +664,13 @@ const api = {
   getFileInfoRemove(id) { // DELETE /Api/FileInfo/Remove 文件类目删除
     return instance.delete(`/Api/FileInfo/Remove?id=${id}`);
   },
+  getProductClassSave(data) { // /Api/ProductClass/Save 保持销售区域使用到 -- 一级大区排序|编辑|新增
+    return instance.post('/Api/ProductClass/Save', data);
+  },
+  getAreaRemoveRange({ ids, type }) { // /Api/RemoveRange?ID=1020&ID=1019&ID=1018&type=3  销售区域一级大区删除
+    const queryStr = `${ids.map(ID => `ID=${ID}`).join('&')}&type=${type}`;
+    return instance.delete(`/Api/RemoveRange?${queryStr}`);
+  },
   /* 印刷幅面api
   ----------------------------------------------------------------------------------- */
   getBreadthClassList() { // GET /Api/BreadthClass/List 印刷幅面分类列表

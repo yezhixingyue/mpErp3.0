@@ -30,7 +30,7 @@ const SpecialTypeEnumIDList = SpecialTypeEnumList.map(it => it.ID);
 const DelayTypeEnumIDList = DelayTypeEnumList.map(it => it.ID);
 
 // eslint-disable-next-line no-nested-ternary
-const getDateString = ({ First, Second }, isStart, isEnd) => `${First}T${Second}${isStart ? ':00.000Z' : (isEnd ? ':59.997Z' : '')}`;
+const getDateString = ({ First, Second }) => `${First}T${Second}':00.000Z'`;
 
 export default class SpecialDayItemClass {
   ItemID = ''
