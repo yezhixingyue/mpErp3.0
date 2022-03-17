@@ -213,5 +213,10 @@ export default {
       right: 70px;
     }
   }
+  @media screen and (max-width: 1000px) {
+    > .count {
+      display: none;
+    }
+  }
 }
 </style>

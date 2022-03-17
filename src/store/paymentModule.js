@@ -250,11 +250,6 @@ export default {
     },
   },
   actions: {
-    // 获取接单员列表
-    // async getStaffList({ commit }) {
-    //   const data = await api.getStaffList({ FieldType: 1 }).then((res) => res.data.Data);
-    //   commit('setstaffList', data);
-    // },
     // 获取付款单列表 type值： get  add  代表是第一次获取数据 或 加载更多数据
     async getPaymentListTableData({ state, commit }, prop = { page: 1, type: 'get' }) {
       let method = 'setTableData';

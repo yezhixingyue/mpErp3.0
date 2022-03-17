@@ -207,6 +207,9 @@ export default {
         this.PayInFull = false;
         this.UsePrintBean = false;
       }
+      if (this.customer && data && this.customer.CustomerID !== data.CustomerID) {
+        this.getCustomerBalance();
+      }
       this.customer = data;
       this.handleCheckAll(false);
       this.successedList = [];

@@ -4,10 +4,10 @@
       <span>{{title}}：</span>
     </li>
     <li class="first-select-box">
-      <SelectComp v-model="level1" :options='level1Options' :defaultProps='defaultProps' />
+      <SelectComp v-model="level1" :options='level1Options' :defaultProps='defaultProps' :showLine='showLine' />
     </li>
     <li>
-      <SelectComp v-model="level2" :options='level2Options' :defaultProps='lv2DefaultProps || defaultProps' />
+      <SelectComp v-model="level2" :options='level2Options' :defaultProps='lv2DefaultProps || defaultProps' :showLine='showLine' />
     </li>
   </ul>
 </template>
@@ -44,6 +44,10 @@ export default {
     isAssociated: { // 2级分类关联 第一个改变时清除第二个内容
       type: Boolean,
       default: true,
+    },
+    showLine: {
+      type: Boolean,
+      default: false,
     },
   },
   model: {

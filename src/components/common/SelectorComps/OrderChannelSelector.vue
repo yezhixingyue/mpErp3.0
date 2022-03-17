@@ -119,6 +119,7 @@ export default {
   display: flex;
   height: 25px;
   overflow: hidden;
+  line-height: 20px;
   > header {
     font-size: 14px;
     line-height: 25px;

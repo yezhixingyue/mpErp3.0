@@ -5,16 +5,13 @@ import instance from '@/api/axios';
 const api = {
   /* 订单列表部分api
    ------------------------------------------------------------------------------------ */
-  getVersionValid(data) { // 缓存版本对比 ---  暂用于获取企业类型    POST /Api/Constant/VersionValid
+  getVersionValid(data) { // 缓存版本对比 ---  暂用于获取企业类型    POST
     return instance.post('/Api/Constant/VersionValid', data);
-  },
-  getStaffList(data) { // 获取接单员信息列表
-    return instance.post('/Api/Staff/List', data);
   },
   getExpressList(data) { // 获取配送方式
     return instance.get('/Api/Express/List', data);
   },
-  getOrderList(data) { // 获取客户订单列表（接单员）
+  getOrderList(data) { // 获取客户订单列表（后台）
     return instance.post('/Api/Order/List', data); // /Api/Customer/OrderList
   },
   selectOrderProgress(data) { // 查询订单进度
@@ -608,7 +605,7 @@ const api = {
   },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
-  getFactoryList() { // /Api/Constant/VersionValid 获取生产工厂列表
+  getFactoryList() { // 获取生产工厂列表
     return instance.post('/Api/Constant/VersionValid', { key: 1, Value: -1 });
   },
   getFactorySave(data) { // /Api/Factory/Save 工厂信息保存:   添加 | 编辑
@@ -902,7 +899,7 @@ const api = {
 
   /* 企业管理api
   ----------------------------------------------------------------------------------- */
-  getJobPermissionsList() { // 获取岗位管理权限数据列表  /Api/Constant/VersionValid
+  getJobPermissionsList() { // 获取岗位管理权限数据列表
     return instance.post('/Api/Constant/VersionValid', { key: 82, value: -1 });
   },
   getJobPermissionsDetail(PositionID) { // POST /Api/Job/Info  PositionID=a77203ba-c769-4fdd-9220-aa2400b3b8f1  获取岗位权限详情 POST /Api/Job/Save
@@ -914,13 +911,19 @@ const api = {
   getJobPermissionSave(data) { // POST /Api/JobPermission/Save 岗位权限保存
     return instance.post('/Api/JobPermission/Save', data);
   },
+  getStaffList(data) { // 获取员工信息列表
+    return instance.post('/Api/Staff/List', data);
+  },
+  getDepartmentList() { //  获取部门列表数据
+    return instance.post('/Api/Constant/VersionValid', { key: 81, Value: -1 });
+  },
 
   /* 客户管理api
   ----------------------------------------------------------------------------------- */
   getCustomerList(data, config) { // POST /Api/Customer/List   优惠券使用列表中获取绑定客户信息 // POST /Api/Customer/List  获取客户列表  列表FieldType传2  详情传3 + ID
     return instance.post('/Api/Customer/List', data, config);
   },
-  // getScopeArrayDataList() { // /Api/Constant/VersionValid 获取主营产品原始数据列表 --- 和获取客户产品分类结果相同
+  // getScopeArrayDataList() { // 获取主营产品原始数据列表 --- 和获取客户产品分类结果相同
   //   return instance.post('/Api/Constant/VersionValid', { key: 2, Value: -1 });
   // },
   getCustomerCreate(data) { // POST  /Api/Customer/Create  客户信息保存

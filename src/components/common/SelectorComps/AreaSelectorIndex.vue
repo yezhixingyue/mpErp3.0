@@ -26,6 +26,7 @@
 </template>
 
 <script>
+// 可用作3级筛选组件 （数据格式符合规范的话）
 import { mapState } from 'vuex';
 import SelectComp from '../SelectComp.vue';
 
@@ -86,6 +87,17 @@ export default {
       type: Object,
       default: null,
     },
+    propList: {
+      type: Array,
+      default: null,
+    },
+    hasNullOption: {
+      type: Boolean,
+      default: false,
+    },
+    NullOptionValue: {
+      default: -666,
+    },
   },
   components: {
     SelectComp,
@@ -107,11 +119,13 @@ export default {
       return this.localDefaultProps;
     },
     localAreaList() {
+      if (Array.isArray(this.propList)) return this.propList;
       if (!this.useADArea) return this.areaList;
       return this.adAreaList;
     },
     largeArea() {
       const arr = [{ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' }];
+      if (this.hasNullOption) arr.push({ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' });
       if (this.localAreaList.length > 0) {
         const tempArr = this.localAreaList.filter((item) => item.Level === 1);
         return [...arr, ...tempArr];
@@ -120,6 +134,13 @@ export default {
     },
     midArea() {
       const arr = [{ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' }];
+      if (!this.first && this.first !== 0) {
+        return arr;
+      }
+      if (this.first === this.NullOptionValue) {
+        return [{ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' }];
+      }
+      if (this.hasNullOption) arr.push({ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' });
       if (this.first) {
         let temp = this.first;
         if (this.useLabel) {
@@ -133,6 +154,13 @@ export default {
     },
     smArea() {
       const arr = [{ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' }];
+      if (!this.first && this.first !== 0) {
+        return arr;
+      }
+      if (this.second === this.NullOptionValue) {
+        return [{ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' }];
+      }
+      if (this.hasNullOption) arr.push({ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' });
       if (this.second) {
         let temp = this.second;
         if (this.useLabel) {
@@ -180,14 +208,16 @@ export default {
   },
   methods: {
     handleSwitch1(e) {
-      this.changePropsFunc([this.typeList[1], '']);
-      this.changePropsFunc([this.typeList[2], '']);
+      const val = this.hasNullOption && e === this.NullOptionValue ? this.NullOptionValue : '';
+      this.changePropsFunc([this.typeList[1], val]);
+      this.changePropsFunc([this.typeList[2], val]);
       let temp = e;
       if (this.useLabel && e === '不限') temp = '';
       this.first = temp;
     },
     handleSwitch2(e) {
-      this.changePropsFunc([this.typeList[2], '']);
+      const val = this.hasNullOption && e === this.NullOptionValue ? this.NullOptionValue : '';
+      this.changePropsFunc([this.typeList[2], val]);
       let temp = e;
       if (this.useLabel && e === '不限') temp = '';
       this.second = temp;
@@ -199,6 +229,7 @@ export default {
     },
   },
   created() {
+    if (Array.isArray(this.propList)) return;
     if (!this.useADArea) this.$store.dispatch('common/getAreaList');
     else this.$store.dispatch('common/fetchAdAreaList');
   },

@@ -281,6 +281,11 @@
 .el-input.is-disabled .el-input__inner {
   background-color: #f6f6f6;
 }
+.el-input.line input, .el-date-editor.line input {
+  border: none;
+  border-bottom: 1px solid #cbcbcb;
+  border-radius: 0;
+}
 
 .cancel-blue-btn {
   color: #26bcf9;

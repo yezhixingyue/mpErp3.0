@@ -19,7 +19,7 @@ const getAllProductClassifyFunc = (productClassList, productNames, type) => {
   // 设置第二级分类
   level1List.forEach(level1 => {
     const _list = productClassList
-      .filter(item => item.ParentID === level1.ID)
+      .filter(item => item.Level === 2 && item.ParentID === level1.ID)
       .map(item => ({ ...item, children: [] }));
     level1.children = _list;
   });
@@ -487,11 +487,11 @@ export default {
       if (_list.length === 0) return [];
       const level1List = _list.filter(item => item.Level === 1).map(i => ({ ...i, children: [] }));
       level1List.forEach(level1 => {
-        const _level1list = _list.filter(item => item.ParentID === level1.ID)
+        const _level1list = _list.filter(item => item.Level === 2 && item.ParentID === level1.ID)
           .map(item => ({ ...item, children: [] }));
         level1.children = _level1list;
         level1.children.forEach(level2 => {
-          const _level3list = _list.filter(item => item.ParentID === level2.ID);
+          const _level3list = _list.filter(item => item.Level === 3 && item.ParentID === level2.ID);
           level2.children = _level3list;
         });
       });
@@ -504,11 +504,11 @@ export default {
       if (_list.length === 0) return [];
       const level1List = _list.filter(item => item.Level === 1).map(i => ({ ...i, children: [] }));
       level1List.forEach(level1 => {
-        const _level2list = _list.filter(item => item.ParentID === level1.ID)
+        const _level2list = _list.filter(item => item.Level === 2 && item.ParentID === level1.ID)
           .map(item => ({ ...item, children: [] }));
         level1.children = _level2list;
         level1.children.forEach(level2 => {
-          const _level3list = _list.filter(item => item.ParentID === level2.ID);
+          const _level3list = _list.filter(item => item.Level === 3 && item.ParentID === level2.ID);
           level2.children = _level3list;
         });
       });

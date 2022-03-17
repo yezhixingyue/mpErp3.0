@@ -10,6 +10,45 @@ const routes = { // 基本设置
     icon: 'el-icon-s-home',
   },
   children: [
+    /*  员工管理
+    ------------------------------------------ */
+    {
+      path: '/StaffManageList',
+      name: 'StaffManageList',
+      meta: {
+        title: '员工管理',
+        icon: 'iconfont icon-yuangongguanli',
+        pageName: 'StaffManageListPage',
+        PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CompanyManage/StaffManage/StaffManageListPage.vue'),
+    },
+    {
+      path: '/StaffManageSetup/:id',
+      name: 'StaffManageSetup',
+      meta: {
+        title: '员工设置',
+        pageName: 'StaffManageSetupPage',
+        PermissionInfo: ['PermissionManageStaffBase', 'Obj', 'Add'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CompanyManage/StaffManage/StaffManageSetupPage.vue'),
+    },
+    /*  部门管理
+    ------------------------------------------ */
+    {
+      path: '/departmentManage',
+      name: 'departmentManage',
+      meta: {
+        title: '部门管理',
+        icon: 'iconfont icon-bumenguanli_2',
+        pageName: 'DepartmentManagePage',
+        PermissionInfo: ['PermissionManageDepartment', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CompanyManage/DepartmentManage/DepartmentManagePage.vue'),
+    },
     /*  岗位管理
     ------------------------------------------ */
     {
@@ -31,31 +70,6 @@ const routes = { // 基本设置
         title: '岗位权限设置',
         pageName: 'PostManageSetupPage',
         PermissionInfo: ['PermissionManageJob', 'Obj', 'SetupPermission'],
-        requiresAuth: true,
-      },
-      component: () => import('../../../views/CompanyManage/JobPostManage/PostManageSetupPage.vue'),
-    },
-    /*  员工管理
-    ------------------------------------------ */
-    {
-      path: '/StaffManageList',
-      name: 'StaffManageList',
-      meta: {
-        title: '员工管理',
-        icon: 'iconfont icon-yuangongguanli',
-        pageName: 'StaffManageListPage',
-        PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
-        requiresAuth: true,
-      },
-      component: () => import('../../../views/CompanyManage/JobPostManage/PostManageListPage.vue'),
-    },
-    {
-      path: '/StaffManageSetup/:id',
-      name: 'StaffManageSetup',
-      meta: {
-        title: '员工设置',
-        pageName: 'StaffManageSetupPage',
-        PermissionInfo: ['PermissionManageStaffBase', 'Obj', 'Add'],
         requiresAuth: true,
       },
       component: () => import('../../../views/CompanyManage/JobPostManage/PostManageSetupPage.vue'),

@@ -3,7 +3,7 @@
     <div>
       <el-button type="primary" @click="onAddClick" v-if="localPermission.SetupPrintBean">添加印豆设置</el-button>
       <AreaSelector
-        :changePropsFunc='setCondtiion'
+        :changePropsFunc='setCondition'
         :requestFunc='getList'
         :RegionalID='condition.SellArea.RegionalID'
         :CityID='condition.SellArea.CityID'
@@ -15,7 +15,7 @@
         withEmpty
         :options='CategoryEnumsList'
         :requestFunc='getList'
-        :changePropsFunc='setCondtiion'
+        :changePropsFunc='setCondition'
         :typeList="[['Category', '']]"
         :value='condition.Category'
         :defaultProps="{label: 'Name',value: 'ID'}"
@@ -24,7 +24,7 @@
         label='客户类型'
         :options='userTypeList'
         :requestFunc='getList'
-        :changePropsFunc='setCondtiion'
+        :changePropsFunc='setCondition'
         :typeList="[['CustomerType', '']]"
         :value='condition.CustomerType'
         :defaultProps="{label: 'CategoryName',value: 'CategoryID'}"
@@ -33,7 +33,7 @@
         label='客户等级'
         :options='userRankList'
         :requestFunc='getList'
-        :changePropsFunc='setCondtiion'
+        :changePropsFunc='setCondition'
         :typeList="[['CustomerGrade', '']]"
         :value='condition.CustomerGrade'
         :defaultProps="{label: 'CategoryName',value: 'CategoryID'}"
@@ -51,7 +51,7 @@
         class="search-section"
         :typeList="[['KeyWords', '']]"
         :requestFunc='getList'
-        :changePropsFunc='setCondtiion'
+        :changePropsFunc='setCondition'
         :word='condition.KeyWords'
         @reset='clearCondition'
         :searchWatchKey="searchWatchKey"
@@ -104,7 +104,7 @@ export default {
         return this.condition.Status;
       },
       set(newVal) {
-        this.setCondtiion([['Status', ''], newVal]);
+        this.setCondition([['Status', ''], newVal]);
       },
     },
     statusEnumList() {
@@ -119,7 +119,7 @@ export default {
     getList() {
       this.$store.dispatch('printBean/getPrintBeanList');
     },
-    setCondtiion(data) {
+    setCondition(data) {
       this.$store.commit('printBean/setCondition', data);
     },
     clearCondition(data) {

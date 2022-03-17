@@ -8,6 +8,15 @@
       <img src="@/assets/images/copy.png" alt="">
       <i>拷贝</i>
     </span>
+    <span @click="onDimissionClick" :class="{disabled: !canDimission}" class="em-4" v-if="showList.includes('dimission')">
+      <img v-if="!isDimission" src="@/assets/images/dimission.png" alt="">
+      <img v-else src="@/assets/images/regain.png" alt="">
+      <i>{{isDimission ? '取消离职' : '离职'}}</i>
+    </span>
+    <span @click="onCheckClick" v-if="showList.includes('check')" class="em-4">
+      <img src="@/assets/images/check.png" alt="">
+      <i>审核</i>
+    </span>
     <span @click="onSelectClick" :class="canSelect ? '' : 'disabled'" v-if="showList.includes('select')">
       <img src="@/assets/images/select.png" alt="">
       <i>选择</i>
@@ -69,6 +78,14 @@ export default {
     canCopy: {
       type: Boolean,
       default: true,
+    },
+    canDimission: {
+      type: Boolean,
+      default: true,
+    },
+    isDimission: {
+      type: Boolean,
+      default: false,
     },
     canDetail: {
       type: Boolean,
@@ -139,6 +156,13 @@ export default {
     onCopyClick() {
       if (!this.canCopy) return;
       this.$emit('copy');
+    },
+    onDimissionClick() {
+      if (!this.canDimission) return;
+      this.$emit('dimission');
+    },
+    onCheckClick() {
+      this.$emit('check');
     },
     onSelectClick() {
       if (!this.canSelect) return;

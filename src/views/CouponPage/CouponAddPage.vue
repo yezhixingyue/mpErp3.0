@@ -63,14 +63,16 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('couponStore/clearCondition2CouponSave');
     const { type } = this.$route.params;
     const { CouponID } = this.$store.state.couponStore.condition2CouponSave;
     if (type === 'edit' && !CouponID) {
       this.onReturnClick();
       return;
     }
-    if (type === 'add') this.pageTitle = '添加优惠券';
+    if (type === 'add') {
+      this.$store.commit('couponStore/clearCondition2CouponSave');
+      this.pageTitle = '添加优惠券';
+    }
     if (type === 'edit') this.pageTitle = '编辑优惠券';
   },
 };

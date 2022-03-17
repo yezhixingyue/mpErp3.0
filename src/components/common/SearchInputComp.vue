@@ -13,6 +13,7 @@
       <!-- <i class="el-icon-search"></i> -->
       <i></i>
     </button>
+    <i v-if="spaceBetween" class="space-between"></i>
     <button
      class="order-header-reset-btn" v-if="showResetBtn" @click="onResetBtn">{{resetWords}}</button>
   </section>
@@ -57,6 +58,10 @@ export default {
     },
     searchWatchKey: {
       default: 0,
+    },
+    spaceBetween: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -203,6 +208,9 @@ export default {
   }
   > button.order-header-reset-btn {
     line-height: 26px !important;
+  }
+  > .space-between {
+    flex: 1;
   }
 }
 </style>
