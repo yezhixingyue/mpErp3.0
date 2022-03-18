@@ -1,11 +1,11 @@
 <template>
   <section class="mp-erp-basic-set-up-sell-area-set-up-page-wrap">
     <main>
-      <LRWidthDragAutoChangeComp leftWidth='460px'>
+      <LRWidthDragAutoChangeComp leftWidth='460px' v-if="departmentList.length">
         <template v-slot:left>
           <DepartmentManageLeft
            v-model='isSorting'
-           :sellAreaList='allAreaTreeList'
+           :sellAreaList='departmentList'
            @totalManage='onManageTotalClick'
            @subManage='onManageSubClick'
            @sort='onSortClick'
@@ -13,9 +13,8 @@
         </template>
         <template v-slot:right>
           <DepartmentManageRight
-           :subAreaID='subAreaID'
-           :isManageRoot='isManageRoot'
-           :allAreaTreeList='allAreaTreeList'
+           :departmentParentID='departmentParentID'
+           :departmentList='departmentList'
             ref="oRight"
            @level1Submit='handleLevel1Submit'
            @subAreaSubmit='handleSubAreaSubmit'
@@ -42,25 +41,22 @@ export default {
   computed: {
     ...mapState('common', ['areaList']),
     ...mapGetters('common', ['allAreaTreeList']),
+    ...mapState('department', ['departmentList']),
   },
   data() {
     return {
       isSorting: false, // 是否正在排序中
       subAreaID: '', // 当前正在管理的子类ID
-      isManageRoot: true, // 是否正在管理一级区
+      departmentParentID: true, // 正在管理的一级部门父级id
     };
   },
   methods: {
     async getAreaList() {
       await this.$store.dispatch('common/getAreaList', false);
     },
-    onManageTotalClick(needCheck) { // 点击管理一级区域
+    onManageTotalClick(needCheck) { // 点击管理一级部门
       const handler = async () => { // 切换执行函数
-        if (this.isManageRoot) {
-          this.isManageRoot = false;
-          await this.$nextTick();
-        }
-        this.isManageRoot = true;
+        this.$store.commit('department/modificationDepartmentParentID', -1);
       };
       if (needCheck === true) {
         handler();
@@ -70,12 +66,7 @@ export default {
     },
     onManageSubClick(ID) { // 点击管理子区域，此处应传递该子区域大区ID
       const handler = async () => {
-        if (!this.isManageRoot && this.subAreaID === ID) {
-          this.subAreaID = '';
-          await this.$nextTick();
-        }
-        this.isManageRoot = false;
-        this.subAreaID = ID;
+        this.$store.commit('department/modificationDepartmentParentID', ID);
       };
 
       this.handleSwitch(handler);
@@ -181,7 +172,12 @@ export default {
   },
   mounted() {
     this.getAreaList();
-    this.$store.dispatch('common/fetchAdAreaList');
+    this.$store.dispatch('department/getDepartmentList');
+
+    setTimeout(() => {
+      console.log(this.areaList, this.allAreaTreeList);
+      console.log(this.departmentList);
+    }, 2000);
   },
 };
 </script>

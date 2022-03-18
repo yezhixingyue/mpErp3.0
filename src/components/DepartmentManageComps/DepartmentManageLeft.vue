@@ -11,11 +11,13 @@
         <span>部门名称</span>
         <span>操作</span>
       </p>
-      <draggable tag='ul' :class="{moving: sorting}" v-bind="dragOptions" v-model="localSellAreaList" v-if="localSellAreaList.length > 0" :group='group'
+      <draggable tag='ul' :class="{moving: sorting}" v-bind="dragOptions" v-model="getSuperiorDepartment" v-if="departmentList.length > 0" :group='group'
          @end="onWrapMovEnd">
+         <!-- 一级部门列表 -->
         <AreaItemComp
-          v-for="it in localSellAreaList"
+          v-for="it in getSuperiorDepartment"
           :key="it.ID" :itemData='it'
+          :departmentList="departmentList"
           :activeId='activeId'
           :moving='sorting'
           :extendIds="extendIds"
@@ -36,10 +38,15 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
 import draggable from 'vuedraggable';
 import AreaItemComp from './AreaItemComp/index.vue';
 
 export default {
+  mounted() {
+    console.log(this.getSuperiorDepartment);
+    console.log(this.$store.state);
+  },
   props: {
     sellAreaList: {
       type: Array,
@@ -64,6 +71,8 @@ export default {
     };
   },
   computed: {
+    ...mapState('department', ['departmentList']),
+    ...mapGetters('department', ['getSuperiorDepartment']),
     dragOptions() {
       return {
         animation: 0,
@@ -99,7 +108,7 @@ export default {
     },
     onSortClick() { // 点击排序
       this.cacheExtendIds = [...this.extendIds];
-      this.extendIds = [];
+      // this.extendIds = [];
       this.sorting = true;
     },
     onCancelClick() { // 取消排序

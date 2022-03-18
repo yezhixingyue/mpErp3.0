@@ -1,11 +1,10 @@
 <template>
   <section class="mp-erp-basic-set-up-sell-area-set-up-page-right-content-wrap">
     <header>
-      <p class="mp-common-title-wrap">{{title}}</p>
+      <p class="mp-common-title-wrap">{{title}} {{departmentParentID +'0'}}</p>
     </header>
     <main>
-      <Level1ManageComp v-if="isManageRoot && level1List.length > 0" :level1List='level1List' ref="oLevel1Comp"  />
-      <SubAreaManageComp v-if="!isManageRoot && curManageArea" :curManageArea='curManageArea' ref="oSubAreaComp" />
+      <Level1ManageComp :level1List='level1List' ref="oLevel1Comp"  />
     </main>
     <footer>
       <el-button type="primary" size="small" @click="onSubmitClick">保存</el-button>
@@ -14,38 +13,33 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Level1ManageComp from './Right/Level1ManageComp';
-import SubAreaManageComp from './Right/SubAreaManageComp/index';
+// import SubAreaManageComp from './Right/SubAreaManageComp/index';
 
 export default {
   props: {
-    isManageRoot: { // 是否正在管理一级区列表 优先级高
-      type: Boolean,
-      default: true,
-    },
-    subAreaID: { // 正在管理的子区域的区域ID
-      default: '',
-    },
-    allAreaTreeList: {
+    departmentList: {
       type: Array,
       default: () => [],
     },
   },
   components: {
     Level1ManageComp,
-    SubAreaManageComp,
+    // SubAreaManageComp,
   },
   computed: {
+    ...mapState('department', ['departmentParentID']),
     title() {
-      if (this.isManageRoot) return '一级区域';
-      if (this.curManageArea) return this.curManageArea.ClassName;
-      return '子区域管理';
+      console.log(this.departmentParentID);
+      if (this.departmentParentID === -1) return '一级部门';
+      if (this.departmentParentID !== -1) return this.departmentList.find((item) => item.ID === this.departmentParentID).ClassName;
+      return '子部门管理';
     },
-    level1List() { // 当前一级区域列表数据（不含子区域）
-      return this.isManageRoot ? this.allAreaTreeList.map(it => ({ ...it, children: null, canRemove: !it.children || it.children.length === 0 })) : [];
-    },
-    curManageArea() {
-      return this.allAreaTreeList.find(it => it.ID === this.subAreaID);
+    level1List() { // 当前一级部门数据（不含子部门）
+      console.log(this.departmentList.filter((item) => item.ParentID === this.departmentParentID));
+      return this.departmentList.filter((item) => item.ParentID === this.departmentParentID);
+      // return this.isManageRoot ? this.allAreaTreeList.map(it => ({ ...it, children: null, canRemove: !it.children || it.children.length === 0 })) : [];
     },
   },
   methods: {

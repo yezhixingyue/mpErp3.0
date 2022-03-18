@@ -2,18 +2,26 @@
   <li class="mp-erp-basic-set-up-sell-area-set-up-page-left-content-area-item-comp-wrap" :class="{other: itemData.Index === 999 && moving}">
     <div class="header" @click="onActiveIDClick(itemData.ID)" @dblclick="onExtendClick" :class="{active: activeId === itemData.ID}">
       <span>{{itemData.ClassName}}</span>
-      <div class="menu" @dblclick.stop @click="onManageSubClick" :class="{moving: moving}">
-        <template v-if="itemData.Index !== 999">
+      <div class="menu" @dblclick.stop @click="onManageSubClick(itemData.ID)" :class="{moving: moving}">
+        <template v-if="itemData.Level < 3">
           <img src="@/assets/images/setup.png" alt="">
           <span>管理子部门</span>
         </template>
       </div>
       <div class="icon" :class="{extend: isExtend, moving: moving}" @dblclick.stop>
-        <i class="el-icon-arrow-right" v-show="itemData.children.length > 0" @click.stop="onExtendClick"></i>
+        <i class="el-icon-arrow-right" @click.stop="onExtendClick"></i>
       </div>
     </div>
-    <ul v-show="isExtend">
-      <CityItemComp v-for="it in itemData.children" :key="it.ID" :activeId='activeId' :item="it" @active='onActiveIDClick' />
+    <ul v-show="isExtend && departmentList">
+      <!-- {{secondLevelList}} -->
+      <CityItemComp
+       v-for="it in secondLevelList(itemData.ID)"
+       :key="it.ID" :departmentList='departmentList'
+       :activeId='activeId'
+       :item="it"
+       @active='onActiveIDClick'
+       @subManage="onManageSubClick"
+       />
     </ul>
   </li>
 </template>
@@ -28,6 +36,10 @@ export default {
       default: () => ({}),
     },
     extendIds: { // 当前已展开的大区ID列表
+      type: Array,
+      default: () => [],
+    },
+    departmentList: { // 当前已展开的大区ID列表
       type: Array,
       default: () => [],
     },
@@ -50,6 +62,7 @@ export default {
     isExtend() { // 是否已展开
       return this.extendIds.includes(this.itemData.ID);
     },
+
   },
   methods: {
     onExtendClick() { // 展开|收起
@@ -59,10 +72,14 @@ export default {
     onActiveIDClick(id) { // 点击行加深颜色
       this.$emit('active', id);
     },
-    onManageSubClick() { // 管理子区域
-      if (this.itemData.Index !== 999 && !this.moving) {
-        this.$emit('subManage', this.itemData.ID);
+    onManageSubClick(ID) { // 管理子区域
+      if (this.itemData.Level < 3 && !this.moving) {
+        this.$emit('subManage', ID);
       }
+    },
+    secondLevelList() {
+      // console.log(this.departmentList.filter(item => item.ParentID === this.itemData.ID));
+      return this.departmentList.filter(item => item.ParentID === this.itemData.ID);
     },
   },
 };

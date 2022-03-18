@@ -8,13 +8,13 @@
             <img src="@/assets/images/add.png" alt="">
             <span>添加</span>
           </menuitem>
-          <menuitem :class="{'is-disabled': !it.canRemove}" @click="onRemoveClick(it, i)">
-            <img src="@/assets/images/del.png" alt="" v-if="it.canRemove">
+          <menuitem :class="{'is-disabled': !it.canRemove || localList.length<2}" @click="onRemoveClick(it, i)">
+            <img src="@/assets/images/del.png" alt="" v-if="it.canRemove && localList.length>1">
             <img src="@/assets/images/del-disabled.png" alt="" v-else>
             <span>删除</span>
           </menuitem>
         </menu>
-        <el-button type="text" @click="dialogTableVisible = true">划分责任区域及产品</el-button>
+        <el-button type="text" @click="zoningButton(it)">划分责任区域及产品</el-button>
       </div>
       <div class="text-row">
         关联区域：
@@ -39,26 +39,29 @@
             <div class="left">责任区域：</div>
             <div class="right">
               <ul>
-                <li>
+                <li v-for="(SellAreaItem, index) in editData.SellAreaList" :key="SellAreaItem.CityID">
                   <!-- 大区 -->
-                  <el-select size="mini" v-model="value" placeholder="请选择">
+                  <el-select v-model="SellAreaItem.CityID" size="mini"  placeholder="请选择">
                     <el-option
-                      :label="1"
-                      :value="2">
+                      v-for="(FirstGradeAreaItem) in FirstGradeArea" :key="FirstGradeAreaItem.CityID"
+                      :label="FirstGradeAreaItem.ClassName"
+                      :value="FirstGradeAreaItem.ID">
                     </el-option>
                   </el-select>
                   <!-- 市区 -->
-                  <el-select size="mini" v-model="value" placeholder="请选择">
+                  <el-select v-model="SellAreaItem.CountyID" size="mini"  placeholder="请选择">
                     <el-option
-                      :label="1"
-                      :value="2">
+                      v-for="(SecondLevelAreaItem) in SecondLevelArea(index)" :key="SecondLevelAreaItem.CityID"
+                      :label="SecondLevelAreaItem.ClassName"
+                      :value="SecondLevelAreaItem.ID">
                     </el-option>
                   </el-select>
                   <!-- 县区 -->
-                  <el-select size="mini" v-model="value" placeholder="请选择">
+                  <el-select v-model="SellAreaItem.RegionalID" size="mini"  placeholder="请选择">
                     <el-option
-                      :label="1"
-                      :value="2">
+                       v-for="(threeLevelAreaItem) in threeLevelArea(index)" :key="threeLevelAreaItem.CityID"
+                      :label="threeLevelAreaItem.ClassName"
+                      :value="threeLevelAreaItem.ID">
                     </el-option>
                   </el-select>
                   <menu>
@@ -81,16 +84,16 @@
             <div class="left">产品分类:</div>
             <div class="right">
               <ul>
-                <li>
+                <li v-for="(ProductClassItem,index) in editData.ProductClassList" :key="index">
                   <!-- 大类 -->
-                  <el-select size="mini" v-model="value" placeholder="请选择">
+                  <el-select size="mini" placeholder="请选择">
                     <el-option
                       :label="1"
                       :value="2">
                     </el-option>
                   </el-select>
                   <!-- 二类 -->
-                  <el-select size="mini" v-model="value" placeholder="请选择">
+                  <el-select size="mini"  placeholder="请选择">
                     <el-option
                       :label="1"
                       :value="2">
@@ -118,7 +121,7 @@
               <ul>
                 <li>
                   <!-- 用户类型 -->
-                  <el-select size="mini" v-model="value" placeholder="请选择">
+                  <el-select size="mini"  placeholder="请选择">
                     <el-option
                       :label="1"
                       :value="2">
@@ -152,6 +155,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 
 export default {
   props: {
@@ -164,7 +168,34 @@ export default {
     return {
       dialogTableVisible: false,
       localList: [],
+
+      // 正在修改的部门
+      editData: {},
+
     };
+  },
+  computed: {
+    ...mapState('common', ['areaList']),
+    // 一级区域
+    FirstGradeArea() {
+      return this.areaList.filter(item => item.ParentID === -1);
+    },
+    // 二级区域
+    SecondLevelArea() {
+      return (index) => {
+        console.log(this.editData.SellAreaList[index]);
+        const ParentID = this.editData.SellAreaList[index].CityID;
+        return this.areaList.filter(item => item.ParentID === ParentID);
+      };
+    },
+    // 三级区域
+    threeLevelArea() {
+      return (index) => {
+        console.log(this.editData.SellAreaList[index]);
+        const ParentID = this.editData.SellAreaList[index].CountyID;
+        return this.areaList.filter(item => item.ParentID === ParentID);
+      };
+    },
   },
   methods: {
     getIsOrNotChange() { // 是否发生变化 （切换时使用）
@@ -226,10 +257,28 @@ export default {
       }
       return null;
     },
+    zoningButton(item) {
+      this.dialogTableVisible = true;
+      this.editData = item;
+      console.log(this.editData);
+    },
+    // 获取各个选择项
+    getSelectData() {
+      this.$store.dispatch('common/getAreaList');
+    },
   },
   mounted() {
     this.localList = JSON.parse(JSON.stringify(this.level1List)) || [];
     this.localList.push(this.createAAreaItem());
+    console.log(this.areaList);
+    this.getSelectData();
+  },
+  watch: {
+    level1List(newVal) {
+      console.log(this.level1List);
+      this.localList = JSON.parse(JSON.stringify(newVal)) || [];
+      this.localList.push(this.createAAreaItem());
+    },
   },
 };
 </script>
