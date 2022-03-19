@@ -78,7 +78,6 @@ export default {
       }
     },
     secondLevelList() {
-      // console.log(this.departmentList.filter(item => item.ParentID === this.itemData.ID));
       return this.departmentList.filter(item => item.ParentID === this.itemData.ID);
     },
   },

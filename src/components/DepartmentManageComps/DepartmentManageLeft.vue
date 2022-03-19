@@ -43,10 +43,6 @@ import draggable from 'vuedraggable';
 import AreaItemComp from './AreaItemComp/index.vue';
 
 export default {
-  mounted() {
-    console.log(this.getSuperiorDepartment);
-    console.log(this.$store.state);
-  },
   props: {
     sellAreaList: {
       type: Array,

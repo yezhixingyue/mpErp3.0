@@ -31,13 +31,11 @@ export default {
   computed: {
     ...mapState('department', ['departmentParentID']),
     title() {
-      console.log(this.departmentParentID);
       if (this.departmentParentID === -1) return '一级部门';
       if (this.departmentParentID !== -1) return this.departmentList.find((item) => item.ID === this.departmentParentID).ClassName;
       return '子部门管理';
     },
     level1List() { // 当前一级部门数据（不含子部门）
-      console.log(this.departmentList.filter((item) => item.ParentID === this.departmentParentID));
       return this.departmentList.filter((item) => item.ParentID === this.departmentParentID);
       // return this.isManageRoot ? this.allAreaTreeList.map(it => ({ ...it, children: null, canRemove: !it.children || it.children.length === 0 })) : [];
     },
@@ -50,18 +48,20 @@ export default {
       return this.$refs.oSubAreaComp ? this.$refs.oSubAreaComp.getIsOrNotChange() : false;
     },
     onSubmitClick() { // 提交
-      if (this.isManageRoot && this.$refs.oLevel1Comp) { // 一级区域提交
-        const data = this.$refs.oLevel1Comp.handleSubmit();
-        if (data) {
-          this.$emit('level1Submit', data);
-        }
+      console.log(this.$refs.oLevel1Comp);
+      const data = this.$refs.oLevel1Comp.save();
+      console.log(data);
+      if (data) {
+        this.$emit('level1Submit', data);
       }
-      if (!this.isManageRoot && this.$refs.oSubAreaComp) { // 一级区域提交
-        const data = this.$refs.oSubAreaComp.getSubmitData();
-        if (data) {
-          this.$emit('subAreaSubmit', data);
-        }
-      }
+      // if (this.isManageRoot && this.$refs.oLevel1Comp) { // 一级区域提交
+      // }
+      // if (!this.isManageRoot && this.$refs.oSubAreaComp) { // 一级区域提交
+      //   const data = this.$refs.oSubAreaComp.getSubmitData();
+      //   if (data) {
+      //     this.$emit('subAreaSubmit', data);
+      //   }
+      // }
     },
   },
 };

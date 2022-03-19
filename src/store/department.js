@@ -7,6 +7,8 @@ export default {
     departmentList: [],
     // 部门父级id
     departmentParentID: -1,
+    // 用户类型列表
+    userTypeList: [],
 
   },
   getters: {
@@ -16,12 +18,13 @@ export default {
   },
   mutations: {
     setDepartmentList(state, departmentList) { // setDepartmentList 保存部门列表数据
-      console.log(departmentList);
       state.departmentList = departmentList;
+    },
+    setUserTypeList(state, userTypeList) { //
+      state.userTypeList = userTypeList;
     },
     // 修改部门的父级id
     modificationDepartmentParentID(state, ParentID) {
-      console.log('aa');
       state.departmentParentID = ParentID;
     },
   },
@@ -30,9 +33,18 @@ export default {
       commit,
     }) { // getDepartmentList 获取部门列表数据
       const res = await api.getDepartmentList();
-      console.log(res);
       if (res && res.data.Status === 1000) {
         commit('setDepartmentList', res.data.Data);
+        return true;
+      }
+      return false;
+    },
+    async getUserTypeList({
+      commit,
+    }) { // 获取用户类型
+      const res = await api.getCustomerCategoryList();
+      if (res && res.data.Status === 1000) {
+        commit('setUserTypeList', res.data.Data);
         return true;
       }
       return false;

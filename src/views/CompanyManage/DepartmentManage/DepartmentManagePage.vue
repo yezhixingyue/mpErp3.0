@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import api from '@/api/index';
 import { mapState, mapGetters } from 'vuex';
 import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
 import DepartmentManageLeft from '../../../components/DepartmentManageComps/DepartmentManageLeft.vue';
@@ -105,46 +106,14 @@ export default {
         this.messageBox.successSingle('保存排序成功', cb, cb);
       }
     },
-    async handleLevel1Submit(data) { // 一级区域提交保存
-      if (this.isSorting) {
-        this.messageBox.failSingleError('保存失败', '左侧列表正在排序，请先取消排序');
-        return;
-      }
-      const { saveList, removeList } = data;
-      const removeIds = removeList.map(it => it.ID);
-      const temp1 = saveList.length > 0 ? { Array: saveList, IsSave: true, Type: 3 } : null;
-      const temp2 = removeIds.length > 0 ? { ids: removeIds, type: 3 } : null;
-      const func1 = temp1 ? () => this.api.getProductClassSave(temp1).catch(() => null) : null;
-      const func2 = temp2 ? () => this.api.getAreaRemoveRange(temp2).catch(() => null) : null;
-      const list = [func1, func2].filter(it => it);
-      const resp = await Promise.all(list.map(it => it()));
-      const callback = async () => {
-        await this.getAreaList();
-        this.onManageTotalClick(true);
-      };
-      if (resp.every(it => it && it.data && it.data.Status === 1000)) {
-        // 全部保存成功;
-        const t = resp.find(it => it && /^\/Api\/RemoveRange/.test(it.config.url));
-        if (t) {
-          const obj = t.data.Data;
-          const removeSuccessIds = Object.entries(obj).filter(([, value]) => value).map(([key]) => +key);
-          if (removeSuccessIds.length < removeList.length) {
-            const removeFailList = removeList.filter(_it => !removeSuccessIds.includes(_it.ID)).map(_it => _it.ClassName);
-            if (removeFailList.length > 0) {
-              const msg = `${removeFailList.join('、')}删除失败，其余保存成功`;
-              this.messageBox.failSingleError('部分保存失败', msg, callback, callback);
-              return;
-            }
-          }
+    async handleLevel1Submit(data) {
+      console.log(data);
+      api.getDepartmentSave(data).then((res) => {
+        console.log(res);
+        if (res.status === 200 && res.data.Status === 1000) {
+          this.$store.dispatch('department/getDepartmentList');
         }
-        this.messageBox.successSingle('保存成功', callback, callback);
-        return;
-      }
-      if (resp.some(it => it && it.data && it.data.Status === 1000)) {
-        this.messageBox.successSingle('部分保存成功', callback, callback);
-        return;
-      }
-      if (temp1) callback();
+      });
     },
     async handleSubAreaSubmit(data) {
       if (this.isSorting) {

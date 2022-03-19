@@ -43,7 +43,6 @@ export default {
   },
   computed: {
     tertiarySectorlList() {
-      console.log(this.departmentList.filter(item => item.ParentID === this.item.ID));
       return this.departmentList.filter(item => item.ParentID === this.item.ID);
     },
   },
@@ -59,7 +58,6 @@ export default {
     },
     onManageSubClick() { // 管理子区域
       if (this.item.Level < 3 && !this.moving) {
-        console.log(this.item.Level);
         this.$emit('subManage', this.item.ID);
       }
     },
