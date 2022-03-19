@@ -30,7 +30,7 @@ const routes = { // 基本设置
       meta: {
         title: '员工设置',
         pageName: 'StaffManageSetupPage',
-        PermissionInfo: ['PermissionManageStaffBase', 'Obj', 'Add'],
+        PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
         requiresAuth: true,
       },
       component: () => import('../../../views/CompanyManage/StaffManage/StaffManageSetupPage.vue'),

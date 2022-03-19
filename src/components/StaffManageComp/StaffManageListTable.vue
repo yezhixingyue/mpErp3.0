@@ -14,7 +14,7 @@
     <el-table-column width="160px" prop='IDCard' show-overflow-tooltip label="身份证号"></el-table-column>
     <el-table-column width="70px" prop="_gender" show-overflow-tooltip label="性别"></el-table-column>
     <el-table-column width="85px" prop="_EducationText" show-overflow-tooltip label="学历"></el-table-column>
-    <el-table-column width="140px" prop="_address" show-overflow-tooltip label="籍贯"></el-table-column>
+    <el-table-column min-width="120px" prop="_address" show-overflow-tooltip label="籍贯"></el-table-column>
     <el-table-column width="100px" prop="_Birthday" show-overflow-tooltip label="出生日期"></el-table-column>
     <el-table-column width="100px" prop="_JoinDate" show-overflow-tooltip label="入职日期"></el-table-column>
     <el-table-column min-width="160px" prop="_department" label="部门岗位">
@@ -25,7 +25,7 @@
     </el-table-column>
     <el-table-column width="80px" prop="CheckUser.StaffName" show-overflow-tooltip label="审核人"></el-table-column>
 
-    <el-table-column width="310px" label="操作">
+    <el-table-column :width="lastColWidth" label="操作" v-if="maxMenuLen">
       <div class="menus" slot-scope="scope">
         <CtrlMenus
          :showList="scope.row._icons"
@@ -93,6 +93,17 @@ export default {
         _class: this.getItemDisplayClass(it.Status),
       }));
     },
+    maxMenuLen() {
+      const lens = this.localDataList.map(it => it._icons.length);
+      return lens.length > 0 ? Math.max(...lens) : 0;
+    },
+    lastColWidth() {
+      if (this.maxMenuLen >= 4) return '310px';
+      if (this.maxMenuLen === 3) return '240px';
+      if (this.maxMenuLen === 2) return '160px';
+      if (this.maxMenuLen === 1) return '120px';
+      return '0px';
+    },
   },
   methods: {
     setHeight() {
@@ -147,11 +158,22 @@ export default {
       return '';
     },
     getIconList(it) {
-      const list = ['edit', 'del'];
+      const list = [];
+      if (this.localPermission.Edit) {
+        list.push('edit');
+      }
+      if (this.localPermission.Delete) {
+        list.push('del');
+      }
       if (it.Status === StaffStatusEnumObj.pending.ID) {
-        list.push('check');
+        if (this.localPermission.Check) list.push('check');
       } else {
-        list.push('detail', 'dimission');
+        if (this.localPermission.ViewStaffDetail) {
+          list.push('detail');
+        }
+        if (this.localPermission.Dimission) {
+          list.push('dimission');
+        }
       }
       return list;
     },

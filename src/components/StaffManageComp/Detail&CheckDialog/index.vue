@@ -7,7 +7,7 @@
       :visible.sync="visible"
       :showDanger="showRemove"
       :submitText='submitText'
-      :disabled='disabled'
+      :showSubmit='!disabled'
       dangerText="删除"
       cancelText='关闭'
       @submit="onSetJobClick"
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
 import { StaffStatusEnumObj } from '../../../assets/js/TypeClass/StaffManage/enums';
 import DetailDisplayComp from './DetailDisplayComp.vue';
@@ -73,6 +74,10 @@ export default {
     };
   },
   computed: {
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      return this.Permission?.PermissionList?.PermissionManageStaffBase?.Obj || {};
+    },
     visible: {
       get() {
         return this.value;
@@ -113,7 +118,7 @@ export default {
       return this.editData && this.editData.Status === StaffStatusEnumObj.pending.ID;
     },
     disabled() { // 离职状态时禁止设置岗位
-      return this.editData?.Status === StaffStatusEnumObj.leaved.ID;
+      return this.editData?.Status === StaffStatusEnumObj.leaved.ID || !this.localPermission.Check;
     },
   },
   methods: {
