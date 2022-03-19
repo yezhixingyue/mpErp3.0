@@ -38,15 +38,13 @@ const getShowLoading = (config) => { // 查看当前请求是否需要展示弹�
 };
 const handleLoadingOpen = () => { // 打开弹窗
   requestNum += 1;
-  if (!loadingInstance) {
-    loadingInstance = Loading.service({
-      lock: true,
-      text: 'Loading',
-      spinner: 'el-icon-loading',
-      background: 'rgba(255, 255, 255, 0.3)',
-      customClass: 'mp-general-loading-box',
-    });
-  }
+  loadingInstance = Loading.service({
+    lock: true,
+    text: 'Loading',
+    spinner: 'el-icon-loading',
+    background: 'rgba(255, 255, 255, 0.3)',
+    customClass: 'mp-general-loading-box',
+  });
 };
 const handleLoadingClose = () => { // 关闭弹窗
   requestNum -= 1;

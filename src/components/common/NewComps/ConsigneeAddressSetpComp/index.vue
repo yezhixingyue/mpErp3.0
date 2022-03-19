@@ -15,10 +15,7 @@
     <div class="content" v-loading="ValidExpressLoading" :class="{isBatchUploadUse:isBatchUploadUse}">
       <ul>
         <!-- 收货地址展示 与 修改按钮 -->
-        <li
-          class="consignee-wrap"
-          v-if="customerInfo.Address.length > 0 || NewAddressInfo.isSaved"
-        >
+        <li class="consignee-wrap" v-if="customerInfo.Address.length > 0 || NewAddressInfo.isSaved">
           <template v-if="!isBatchUploadUse">
             <div class="consignee-box">
               <span class="title">收货人：</span>
@@ -35,7 +32,9 @@
           <template v-else>
             <label for="">
               <img src="@/assets/images/position.png" alt="">
-              <span>收货地址：</span>
+              <span>收货地址</span>
+              <span style="font-weight: bold;font-size: 12px;color: #585858;">（ 无平台单号时使用此地址 ）</span>
+              <span>：</span>
             </label>
             <div class="is-font-size-13">
               <span class="address" :title="curAddressInfo && curAddressInfo.address.length>50?curAddressInfo.address:''">{{ curAddressInfo.address }}</span>

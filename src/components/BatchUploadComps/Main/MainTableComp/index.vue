@@ -1,13 +1,18 @@
 <template>
   <section class="mp-c-batch-upload-page-main-table-comp-wrap">
     <el-table
-      v-show="list.length > 0"
       ref="multipleTable"
       :data="list"
       :max-height="h"
       :height="h"
       style="width: 100%"
       :checkAllDisabled='handleCheckAllDisabled'
+      :class="{
+        'is-dragover': dragover,
+      }"
+      @drop.native.prevent="onDrop"
+      @dragover.native.prevent="onDragover"
+      @dragleave.native.prevent="dragover = false"
       @selection-change="handleSelectionChange">
 
       <el-table-column type="selection" width="55" :selectable='handleSelectable'></el-table-column>
@@ -145,6 +150,7 @@ export default {
     return {
       drawer: false,
       curDetailData: null,
+      dragover: false,
     };
   },
   methods: {
@@ -197,6 +203,13 @@ export default {
     handleCheckAllDisabled() {
       return this.checkAllDisabled;
     },
+    onDragover() {
+      this.dragover = true;
+    },
+    onDrop(e) {
+      this.dragover = false;
+      this.$emit('droped', e);
+    },
   },
 };
 </script>
@@ -244,6 +257,9 @@ export default {
           }
         }
       }
+    }
+    &.is-dragover {
+      border: 2px dashed #428dfa;
     }
   }
 }
