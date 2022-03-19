@@ -2,11 +2,18 @@
   <!-- 风险提示组件 -->
   <section class="mp-erp-price-module-makeup-ctrl-table-comp-container">
     <header v-if="titleObj">
-      <span class="mp-common-title-wrap">{{titleObj.title}}</span>
+      <span class="mp-common-title-wrap">
+        {{titleObj.title}}
+        <!-- <em class="blue-span is-font-size-12" style="margin-left:5px" @click="visible=!visible">
+          {{visible ? '隐藏' : '展开'}}
+          <i v-show="visible" class="el-icon-caret-top"></i>
+          <i v-show="!visible" class="el-icon-caret-bottom"></i>
+        </em> -->
+      </span>
       <span class="blue-span" @click="onSetupClick(null)">{{titleObj.btnText}}</span>
       <slot name="title"></slot>
     </header>
-    <main>
+    <main v-show="visible">
       <div v-for="(item, i) in localTableData" :key="item.ID" @click="onRowClick(item)" :class="{active: activeRowID === item.ID}">
         <span class="sort">{{i + 1}}.</span>
         <div class="condition">
@@ -115,6 +122,7 @@ export default {
   },
   data() {
     return {
+      visible: true,
     };
   },
   methods: {

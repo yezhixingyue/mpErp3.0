@@ -1,5 +1,9 @@
 <template>
   <div class="ctrl-menus-container">
+    <span @click="onAddClick" :class="canAdd ? '' : 'disabled'" v-if="showList.includes('add') && addBefore">
+      <img src="@/assets/images/add.png" alt="">
+      <i>{{addText}}</i>
+    </span>
     <span @click="onDetailClick" :class="canDetail ? '' : 'disabled'" v-if="showList.includes('detail')">
       <img src="@/assets/images/detail.png" alt="" style="height: 15px;position:relative;top:1px">
       <i>详情</i>
@@ -53,7 +57,7 @@
       <img src="@/assets/images/del.png" alt="">
       <i>删除</i>
     </span>
-    <span @click="onAddClick" :class="canAdd ? '' : 'disabled'" v-if="showList.includes('add')">
+    <span @click="onAddClick" :class="canAdd ? '' : 'disabled'" v-if="showList.includes('add') && !addBefore">
       <img src="@/assets/images/add.png" alt="">
       <i>{{addText}}</i>
     </span>
@@ -74,6 +78,10 @@ export default {
     canAdd: {
       type: Boolean,
       default: true,
+    },
+    addBefore: { // 在删除前面，可自由移动位置
+      type: Boolean,
+      default: false,
     },
     canCopy: {
       type: Boolean,

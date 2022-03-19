@@ -104,7 +104,7 @@ export default {
     SearchInputComp,
   },
   computed: {
-    ...mapGetters('common', ['twoLevelsProductClassify']),
+    ...mapGetters('common', ['allAdAreaTreeList']),
     localSexEnumList() {
       return [{ ID: '', Name: '性别不限' }, ...SexEnumList];
     },
@@ -116,14 +116,14 @@ export default {
     },
     level1Options() {
       const temp = { ID: '', Name: '不限' };
-      if (!this.twoLevelsProductClassify || this.twoLevelsProductClassify.length === 0) return [temp];
-      return [temp, ...this.twoLevelsProductClassify.map(it => ({ Name: it.ClassName, ID: it.ID }))];
+      if (!this.allAdAreaTreeList || this.allAdAreaTreeList.length === 0) return [temp];
+      return [temp, ...this.allAdAreaTreeList.map(it => ({ Name: it.Name, ID: it.ID }))];
     },
     level2Options() {
       const temp = { ID: '', Name: '不限' };
-      if (!this.twoLevelsProductClassify || this.twoLevelsProductClassify.length === 0 || !this.locationIDs.level1Val) return [temp];
-      const t = this.twoLevelsProductClassify.find(it => it.ID === this.locationIDs.level1Val);
-      if (t) return [temp, ...t.children.map(it => ({ Name: it.ClassName, ID: it.ID }))];
+      if (!this.allAdAreaTreeList || this.allAdAreaTreeList.length === 0 || !this.locationIDs.level1Val) return [temp];
+      const t = this.allAdAreaTreeList.find(it => it.ID === this.locationIDs.level1Val);
+      if (t) return [temp, ...t.children.map(it => ({ Name: it.Name, ID: it.ID }))];
       return [temp];
     },
     locationIDs: {

@@ -1,7 +1,7 @@
 import store from '@/store';
 import { getProductArrayList, reg } from '@/components/Promote/promoteUtils';
 
-export default class ClassType {
+export default class CommonClassType {
   static setDate(obj, key = 'Date') {
     const _obj = obj;
     // console.log(obj[key], store);
@@ -133,7 +133,7 @@ export default class ClassType {
       .sort((a, b) => a.Index - b.Index);
     // 设置第二级分类
     level1List.forEach(level1 => {
-      const _list = list.filter(item => item.ParentID === level1.ID).sort((a, b) => a.Index - b.Index);
+      const _list = list.filter(item => item.Level === 2 && item.ParentID === level1.ID).sort((a, b) => a.Index - b.Index);
       const _level1 = level1;
       _level1.children = _list;
     });

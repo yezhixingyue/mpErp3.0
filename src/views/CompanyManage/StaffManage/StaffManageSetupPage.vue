@@ -1,16 +1,28 @@
 <template>
   <section v-if="staffForm" class="mp-erp-staff-manage-setup-page-wrap">
     <main>
-      <StaffSetupLeftComp :staffForm='staffForm' @change="handleFormChange" ref="oLeft" />
+      <LRWidthDragAutoChangeComp leftWidth='450px'>
+        <template v-slot:left>
+          <StaffSetupLeftComp :staffForm='staffForm' @change="changeFormItem" ref="oLeft" />
+        </template>
+        <template v-slot:right>
+          <div class="right-content-img-upload-box">
+            <p class="mp-common-title-wrap">员工照片</p>
+            <LicensePathPhotoComp v-model="staffForm.HeadPic" :options="photoOptions" @error="onImgLoadError" @change="onImgChange" />
+          </div>
+        </template>
+      </LRWidthDragAutoChangeComp>
     </main>
     <footer>
       <el-button type="primary" @click="submit">保存</el-button>
-      <el-button class="cancel-blue-btn">＜＜ 返回</el-button>
+      <el-button class="cancel-blue-btn" @click="goback">＜＜ 返回</el-button>
     </footer>
   </section>
 </template>
 
 <script>
+import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
+import LicensePathPhotoComp from '@/components/CustomerManageComps/SetupContentComps/LicensePathPhotoComp';
 import Staff from '../../../assets/js/TypeClass/StaffManage/Staff';
 import StaffSetupLeftComp from '../../../components/StaffManageComp/StaffSetupLeftComp.vue';
 
@@ -18,10 +30,21 @@ export default {
   name: 'StaffManageSetupPage',
   components: {
     StaffSetupLeftComp,
+    LicensePathPhotoComp,
+    LRWidthDragAutoChangeComp,
   },
   data() {
     return {
       staffForm: null,
+      photoOptions: {
+        width: 250,
+        height: 350,
+        limitWidth: 250,
+        limitHeight: 350,
+        title: '员工',
+        fit: 'cover',
+      },
+      HeadPicError: false,
     };
   },
   methods: {
@@ -39,7 +62,7 @@ export default {
         }
       }
     },
-    handleFormChange([[key1, key2], val]) {
+    changeFormItem([[key1, key2], val]) {
       if (!this.staffForm || !key1) return;
       if (key2) {
         this.staffForm[key1][key2] = val;
@@ -49,7 +72,36 @@ export default {
     },
     async submit() {
       if (!this.$refs.oLeft) return;
-      console.log(await this.$refs.oLeft.submitForm());
+      const result = await this.$refs.oLeft.submitForm();
+      if (!result) return;
+      if (!this.staffForm.HeadPic || this.HeadPicError) {
+        this.messageBox.failSingleError('保存失败', '请上传员工照片');
+        return;
+      }
+      // 信息提取转换(性别、出生日期)
+      const temp = this.staffForm.transformToSubmit();
+      if (!temp) {
+        this.messageBox.failSingleError('保存失败', '身份证号解析失败');
+        return;
+      }
+      // 提交
+      const resp = await this.api.getStaffBaseInfoSave(temp).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          sessionStorage.setItem('needFetchStaffList', true);
+          this.goback();
+        };
+        this.messageBox.successSingle('保存成功', cb, cb);
+      }
+    },
+    goback() {
+      this.$goback();
+    },
+    onImgLoadError() {
+      this.HeadPicError = true;
+    },
+    onImgChange() {
+      this.HeadPicError = false;
     },
   },
   mounted() {
@@ -66,6 +118,13 @@ export default {
   box-sizing: border-box;
   > main {
     flex: 1;
+    overflow: hidden;
+    .right-content-img-upload-box {
+      padding-left: 120px;
+      > p.mp-common-title-wrap {
+        padding-bottom: 25px;
+      }
+    }
   }
   > footer {
     flex: none;

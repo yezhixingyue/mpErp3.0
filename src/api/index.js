@@ -914,6 +914,18 @@ const api = {
   getStaffList(data) { // 获取员工信息列表
     return instance.post('/Api/Staff/List', data);
   },
+  getStaffBaseInfoSave(data) { // /Api/StaffBaseInfo/Save 保存员工信息
+    return instance.post('/Api/StaffBaseInfo/Save', data);
+  },
+  getStaffRemove(staffID) { // delete /Api/Staff/Remove 员工删除
+    return instance.delete('/Api/Staff/Remove', { params: { staffID } });
+  },
+  getStaffChangeStatus(data) { // PUT /Api/Staff/ChangeStatus  员工离职|取消离职
+    return instance.put('/Api/Staff/ChangeStatus', data);
+  },
+  getCheckStaffPassed(data) { // POST /Api/CheckStaff/Passed  审核员工或修改员工岗位部门信息
+    return instance.post('/Api/CheckStaff/Passed', data);
+  },
   getDepartmentList() { //  获取部门列表数据
     return instance.post('/Api/Constant/VersionValid', { key: 81, Value: -1 });
   },

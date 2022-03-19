@@ -1,6 +1,9 @@
+import CommonClassType from '../../../../store/CommonClassType';
 import { EducationEnumObj, SexEnumObj, StaffStatusEnumObj } from './enums';
 import { getFormatDateString } from '../../utils/util';
 import restoreClassByOriginData from '../../utils/reduction';
+import { getInfoFormIdCard } from '../../utils/IdCardvalidator';
+
 /**
  * 员工类
  *
@@ -34,6 +37,7 @@ export default class Staff {
   Status = StaffStatusEnumObj.pending.ID
 
   CheckUser = {
+    StaffID: '',
     StaffName: '',
   }
 
@@ -53,5 +57,19 @@ export default class Staff {
 
   constructor(data) {
     restoreClassByOriginData(this, data);
+  }
+
+  transformToSubmit() {
+    // 1. 转换
+    const result = getInfoFormIdCard(this.IDCard);
+    if (result) {
+      const { Birthday, Sex } = result;
+      this.Sex = Sex;
+      this.TimeRecord.Birthday = Birthday;
+      // 2. 筛选
+      const temp = CommonClassType.filter(this, true);
+      return temp;
+    }
+    return null;
   }
 }

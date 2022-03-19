@@ -10,9 +10,10 @@
           prop="StaffName"
           :rules="[
             { required: true, message: '姓名不能为空'},
+            { min: 2, message: '姓名长度应在2 - 5字符'},
           ]"
         >
-          <el-input class="line" :value="staffForm.StaffName" @input="val => change([['StaffName'], val])" maxlength="18" placeholder='请输入员工姓名'></el-input>
+          <el-input class="line" :value="staffForm.StaffName" @input="val => change([['StaffName'], val])" maxlength="5" placeholder='请输入员工姓名'></el-input>
         </el-form-item>
         <el-form-item
           label="手机号："
@@ -160,8 +161,8 @@ export default {
 <style lang='scss'>
 .mp-erp-staff-manage-setup-page-left-comp-wrap {
   width: 450px;
-  height: 100%;
-  border-right: 1px solid #eee;
+  // height: 100%;
+  // border-right: 1px solid #eee;
   padding-right: 90px;
   box-sizing: border-box;
   > main {
@@ -186,17 +187,22 @@ export default {
           }
         }
       }
-      .el-date-editor {
+      .el-date-editor.el-input {
         width: 110px;
-        input {
+         input {
           padding-right: 0;
+          padding-left: 25px;
         }
         .el-input__suffix {
           display: none;
         }
+        .el-input__prefix {
+          left: 0;
+        }
       }
       .el-input input {
         font-size: 13px;
+        padding-left: 5px;
         &::placeholder {
           color: #aaa;
         }

@@ -80,13 +80,13 @@ export default {
       if (!Property) return '';
       // 1. 获取到该属性的类型： 数字 | 选择项 | 尺寸
       if (Property.ValueType === 0) { // 数字类型 需要考虑关系
-        const { Unit } = Property;
+        const { Unit } = Property.Element || {};
         const arr = it.Value.split(' ');
         if (arr.length === 1) return Unit ? `${arr[0]}${Unit}` : arr[0];
         if (arr.length === 2) {
           let beginNum = arr[0];
           let EndNum = Unit ? `${arr[1]}${Unit}` : arr[1];
-          if (EndNum === '-1') {
+          if (arr[1] === '-1') {
             beginNum = Unit ? `${arr[0]}${Unit}` : arr[0];
             EndNum = '无穷大';
           }
@@ -202,6 +202,7 @@ export default {
       white-space: nowrap;
       background-color: #f5f5f5;
       flex: none;
+      font-size: 13px;
       &.space {
         width: 180px;
       }
@@ -241,7 +242,7 @@ export default {
           display: flex;
           flex-direction: column;
           .el-input {
-            width: 100px;
+            width: 105px;
             padding: 4px 0;
             margin: 0 8px;
             input {

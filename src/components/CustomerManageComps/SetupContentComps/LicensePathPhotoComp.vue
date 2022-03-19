@@ -2,15 +2,15 @@
   <div class="mp-liscense-path-photo-img-upload-com">
     <!-- <p class="blue-v-line is-bold is-black">营业执照照片</p> -->
     <div class="img-box">
-      <div class="pic is-font-size-18" :class="value?'':'show-bg'">
+      <div class="pic is-font-size-18" :class="value?'':'show-bg'" :style="imgStyle">
         <input type="file" class="upload" @change="onChange" accept='.png,.jpeg,.jpg,.bmp'>
         <div class="empty" v-if="!value">
           <div class="remark">
             <p class="remoark-text1">照片支持 .png, .jpg,.bmp 格式；</p>
-            <p>请上传完整清晰的营业执照图片</p>
+            <p>请上传完整清晰的{{finalOptions.title}}照片</p>
           </div>
         </div>
-        <el-image v-else fit='contain' :src="value" class="liscense-upload-img" :preview-src-list="srcList" :mpCloseViewer='()=>{}'>
+        <el-image v-else :fit='finalOptions.fit' :src="value" class="liscense-upload-img" :preview-src-list="srcList" :mpCloseViewer='()=>{}' @error='onError'>
         </el-image>
         <div class="liscense-img-mask" @click="onImgClick"></div>
       </div>
@@ -18,7 +18,7 @@
         <p class="is-bold">操作说明：</p>
         <p class="is-font-size-12">
           <span>单击查看照片；双击更换照片。</span>
-          <span v-if="!AllowEdit">( 注：当前账号无编辑权限 )</span>
+          <span v-if="!AllowEdit">( 暂不可编辑 )</span>
         </p>
       </div>
     </div>
@@ -40,17 +40,39 @@ export default {
       type: Boolean,
       default: true,
     },
+    options: {
+      type: Object,
+      default: () => ({}),
+    },
+    canSingleClick: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
       firstClickTime: '',
       secondClickTime: '',
       timer: null,
+      defaultOptions: {
+        width: 360,
+        height: 360,
+        limitWidth: 600,
+        limitHeight: 600,
+        fit: 'contain',
+        title: '营业执照',
+      },
     };
   },
   computed: {
     srcList() {
       return this.value ? [this.value] : [];
+    },
+    finalOptions() {
+      return { ...this.defaultOptions, ...this.options };
+    },
+    imgStyle() {
+      return `width:${this.finalOptions.width}px;height:${this.finalOptions.height}px`;
     },
   },
   methods: {
@@ -84,8 +106,9 @@ export default {
             width: img.naturalWidth,
             height: img.naturalHeight,
           };
-          if (imgInfo.width < 600 || imgInfo.height < 600) {
-            this.messageBox.failSingleError('图片尺寸太小', '请上传大于等于600×600像素的图片');
+          if ((imgInfo.width < this.finalOptions.limitWidth || imgInfo.height < this.finalOptions.limitHeight)
+           && (imgInfo.width < this.finalOptions.limitHeight || imgInfo.height < this.finalOptions.limitWidth)) {
+            this.messageBox.failSingleError('图片尺寸太小', `请上传大于等于${this.finalOptions.limitWidth}×${this.finalOptions.limitHeight}像素的图片`);
             e.target.value = '';
             return;
           }
@@ -119,6 +142,7 @@ export default {
       }
     },
     handleSingleClick() {
+      if (!this.canSingleClick) return;
       const oImg = document.querySelector('div.liscense-upload-img.el-image > img');
       if (!oImg) return;
       const oMask = document.querySelector('div.liscense-img-mask');
@@ -128,6 +152,9 @@ export default {
         this.timer = null;
         oMask.style.cursor = 'default';
       }, 300);
+    },
+    onError(e) {
+      this.$emit('error', e);
     },
   },
 };
@@ -149,7 +176,7 @@ export default {
         user-select: none;
         position: relative;
         &.show-bg {
-          background: url(../../../assets/images/license-empty.jpg) no-repeat center/100% 100%;
+          background: url(../../../assets/images/license-empty.jpg) no-repeat center/cover;
         }
         color: #aaa;
         > .el-image {
@@ -213,5 +240,8 @@ export default {
       }
     }
   }
+}
+.mp-el-del-btn {
+  display: none;
 }
 </style>

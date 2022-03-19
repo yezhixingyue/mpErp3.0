@@ -9,6 +9,7 @@ import TokenClass from '../assets/js/utils/tokenManage';
 
 const apiListByNotNeedToken = ['/Api/Staff/Login']; // 不需要token访问的接口列表
 
+
 const { CancelToken } = axios;
 let source = CancelToken.source();
 
@@ -18,7 +19,11 @@ const clearToken = () => {
   source = CancelToken.source(); // 清除后赋予axios新的取消信息
 };
 
-const getShowLoading = (config) => {
+
+let closeTip = false;
+let requestNum = 0;
+let loadingInstance;
+const getShowLoading = (config) => { // 查看当前请求是否需要展示弹窗
   let showLoading = true;
   const arr = ['/Api/PaymentOrder/PayResult', '/Api/Upload/File', '/Api/PaymentOrder/Create', '/Api/Staff/List',
     '/Api/FileNode', '/Api/FileServer']; // 不需要展示loading的api地址
@@ -31,9 +36,23 @@ const getShowLoading = (config) => {
   }
   return showLoading;
 };
+const handleLoadingOpen = () => { // 打开弹窗
+  requestNum += 1;
+  if (!loadingInstance) {
+    loadingInstance = Loading.service({
+      lock: true,
+      text: 'Loading',
+      spinner: 'el-icon-loading',
+      background: 'rgba(255, 255, 255, 0.3)',
+      customClass: 'mp-general-loading-box',
+    });
+  }
+};
+const handleLoadingClose = () => { // 关闭弹窗
+  requestNum -= 1;
+  if (requestNum === 0) loadingInstance.close();
+};
 
-let loadingInstance;
-let closeTip = false;
 axios.interceptors.request.use(
   (config) => {
     const curConfig = config;
@@ -46,20 +65,12 @@ axios.interceptors.request.use(
     }
     closeTip = curConfig.closeTip;
     curConfig.headers.common.Authorization = `Bearer ${token}`;
-    if (getShowLoading(curConfig)) {
-      loadingInstance = Loading.service({
-        lock: true,
-        text: 'Loading',
-        spinner: 'el-icon-loading',
-        background: 'rgba(255, 255, 255, 0.3)',
-        customClass: 'mp-general-loading-box',
-      });
-    }
+    if (getShowLoading(curConfig)) handleLoadingOpen();
 
     return curConfig;
   },
   (error) => {
-    if (getShowLoading(error.config) && loadingInstance) loadingInstance.close();
+    if (getShowLoading(error.config) && loadingInstance) handleLoadingClose();
     messageBox.failSingleError(error);
     return Promise.reject(error);
   },
@@ -67,9 +78,7 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   (response) => {
-    if (getShowLoading(response.config) && loadingInstance) {
-      loadingInstance.close();
-    }
+    if (getShowLoading(response.config) && loadingInstance) handleLoadingClose();
     const _list2NotNeed2Toast = ['/Api/AccountReceivable/Excel', '/Api/PaymentOrder/Excel', '/Api/CustomerList/Excel', '/Api/OrderList/Excel', '/Api/Coupon/DownLoad', '/Api/AfterSales/Excel', '/Api/PackageList/Excel', '/Api/CustomerBill/Excel', '/Api/OrderBill/Excel', '/Api/PriceTable/Export'];
     const _statusList2NotNeed2Toast = [1000, 9062, 8044];
     // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
@@ -91,7 +100,7 @@ axios.interceptors.response.use(
   },
   async (error) => {
     if (!store.state.common.isLoading) {
-      if (getShowLoading(error.config) && loadingInstance) loadingInstance.close();
+      if (getShowLoading(error.config) && loadingInstance) handleLoadingClose();
       if (error.response) {
         let key = false;
         let b;
