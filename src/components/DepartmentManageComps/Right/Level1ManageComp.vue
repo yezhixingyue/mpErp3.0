@@ -375,7 +375,6 @@ export default {
         this.messageBox.failSingleError('保存失败', '数据未发生变化');
         return null;
       }
-      this.localList.filter((item) => console.log(item.canRemove));
       const returnData = this.localList.filter((item) => item.ClassName !== '' || !item.canRemove);
       return returnData;
     },
