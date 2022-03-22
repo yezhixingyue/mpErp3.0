@@ -207,6 +207,13 @@ export default class BatchUpload {
    * @memberof BatchUpload
    */
   static async BatchUploadFils(list, basicObj, handleSuccessFunc) {
+    if (basicObj?.Address?.Express?.First === 1 && basicObj?.Address?.Express?.Second === 1) {
+      const t = list.find(it => it.result.OutPlate?.Second);
+      if (t) {
+        messageBox.failSingleError('上传失败', '选中订单中含有平台单号，不能使用名片之家配送，请切换配送方式');
+        return;
+      }
+    }
     const loadingInstance = Loading.service({
       lock: true,
       text: '正在读取文件（文件大小会影响读取速度）...',

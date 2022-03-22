@@ -1,7 +1,7 @@
 <template>
   <header class="mp-erp-staff-manage-list-page-header-comp-wrap">
     <p>
-      <el-button type="primary" @click="onAddClick">+添加员工</el-button>
+      <el-button type="primary" @click="onAddClick" v-if="localPermission.Add">+添加员工</el-button>
     </p>
     <div class="s">
       <div class="bundle">
@@ -79,7 +79,7 @@ import TwoLevelSelectComp from '@/components/common/SelectorComps/TwoLevelSelect
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import SearchInputComp from '@/components/common/SearchInputComp';
 import { SexEnumList, EducationEnumList, StaffStatusEnumList } from '@/assets/js/TypeClass/StaffManage/enums';
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
   props: {
@@ -104,7 +104,11 @@ export default {
     SearchInputComp,
   },
   computed: {
-    ...mapGetters('common', ['twoLevelsProductClassify']),
+    ...mapState('common', ['Permission']),
+    ...mapGetters('common', ['allAdAreaTreeList']),
+    localPermission() {
+      return this.Permission?.PermissionList?.PermissionManageStaffBase?.Obj || {};
+    },
     localSexEnumList() {
       return [{ ID: '', Name: '性别不限' }, ...SexEnumList];
     },
@@ -116,14 +120,14 @@ export default {
     },
     level1Options() {
       const temp = { ID: '', Name: '不限' };
-      if (!this.twoLevelsProductClassify || this.twoLevelsProductClassify.length === 0) return [temp];
-      return [temp, ...this.twoLevelsProductClassify.map(it => ({ Name: it.ClassName, ID: it.ID }))];
+      if (!this.allAdAreaTreeList || this.allAdAreaTreeList.length === 0) return [temp];
+      return [temp, ...this.allAdAreaTreeList.map(it => ({ Name: it.Name, ID: it.ID }))];
     },
     level2Options() {
       const temp = { ID: '', Name: '不限' };
-      if (!this.twoLevelsProductClassify || this.twoLevelsProductClassify.length === 0 || !this.locationIDs.level1Val) return [temp];
-      const t = this.twoLevelsProductClassify.find(it => it.ID === this.locationIDs.level1Val);
-      if (t) return [temp, ...t.children.map(it => ({ Name: it.ClassName, ID: it.ID }))];
+      if (!this.allAdAreaTreeList || this.allAdAreaTreeList.length === 0 || !this.locationIDs.level1Val) return [temp];
+      const t = this.allAdAreaTreeList.find(it => it.ID === this.locationIDs.level1Val);
+      if (t) return [temp, ...t.children.map(it => ({ Name: it.Name, ID: it.ID }))];
       return [temp];
     },
     locationIDs: {

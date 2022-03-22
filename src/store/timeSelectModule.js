@@ -71,6 +71,7 @@ export default {
       const m = new Date(state.newDate).getMonth();
       const t = new Date(new Date(new Date(new Date().setDate(1)).setMonth(m + 1)).setDate(0));
       const stringDate2 = ConvertTimeFormat(new Date(t));
+      // const stringDate2 = ConvertTimeFormat(new Date(state.newDate));
       return {
         First: `${stringDate1}T00:00:00.000Z`,
         Second: `${stringDate2}T23:59:59.997Z`,

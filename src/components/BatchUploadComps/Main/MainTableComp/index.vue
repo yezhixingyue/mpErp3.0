@@ -1,13 +1,18 @@
 <template>
   <section class="mp-c-batch-upload-page-main-table-comp-wrap">
     <el-table
-      v-show="list.length > 0"
       ref="multipleTable"
       :data="list"
       :max-height="h"
       :height="h"
       style="width: 100%"
       :checkAllDisabled='handleCheckAllDisabled'
+      :class="{
+        'is-dragover': dragover,
+      }"
+      @drop.native.prevent="onDrop"
+      @dragover.native.prevent="onDragover"
+      @dragleave.native.prevent="dragover = false"
       @selection-change="handleSelectionChange">
 
       <el-table-column type="selection" width="55" :selectable='handleSelectable'></el-table-column>
@@ -41,6 +46,13 @@
           <ItemOperationComp :itemData='scope.row' @upload='handleItemUpload' @detail='handleDetailClick' @remove='handleItemRemove' />
         </template>
       </el-table-column>
+      <div slot="empty">
+        <p class="content">请点击右上角 <i class="is-bold is-font-14">[ 选择文件 ]</i> 按钮选择文件 或 <i class="is-bold is-font-14">[ 拖动文件至此区域 ]</i> 进行解析并上传</p>
+        <p class="remark" v-if="accept">注：1、支持的文件格式：{{accept}}</p>
+        <p class="remark two">{{accept ? 2 : 1}}、文件名称需携带订单信息且符合指定格式（ 下单页面计算价格后会生成符合格式的订单信息 ）</p>
+        <p class="remark two">{{accept ? 3 : 2}}、选择文件后会覆盖上次已选择文件，请在当次选择完全部需要上传的订单文件</p>
+        <p class="remark two is-pink">3、IE9及IE9以下版本浏览器不支持使用，请升级浏览器</p>
+      </div>
     </el-table>
     <ProductDetailDrawer v-model="drawer" :curDetailData='curDetailData' />
   </section>
@@ -64,6 +76,10 @@ export default {
     checkAllDisabled: {
       type: Boolean,
       default: false,
+    },
+    accept: {
+      type: String,
+      default: '',
     },
   },
   mixins: [tableMixin],
@@ -145,6 +161,7 @@ export default {
     return {
       drawer: false,
       curDetailData: null,
+      dragover: false,
     };
   },
   methods: {
@@ -197,6 +214,13 @@ export default {
     handleCheckAllDisabled() {
       return this.checkAllDisabled;
     },
+    onDragover() {
+      this.dragover = true;
+    },
+    onDrop(e) {
+      this.dragover = false;
+      this.$emit('droped', e);
+    },
   },
 };
 </script>
@@ -244,6 +268,38 @@ export default {
           }
         }
       }
+    }
+    .el-table__empty-block {
+      align-items: flex-start;
+      padding-top: 12vh;
+      box-sizing: border-box;
+      .el-table__empty-text {
+        line-height: 30px;
+        padding: 50px 20px;
+        width: 800px;
+        padding-top: 0px;
+        color: #989898;
+        .remark {
+          width: 550px;
+          margin: 0 auto;
+          text-align: left;
+          &.two {
+            text-indent: 2em;
+          }
+          &.is-pink {
+            display: none;
+            display: block\9;
+          }
+        }
+        .content {
+          color: #585858;
+          padding-bottom: 20px;
+          padding-right: 10px;
+        }
+      }
+    }
+    &.is-dragover {
+      border: 2px dashed #428dfa;
     }
   }
 }

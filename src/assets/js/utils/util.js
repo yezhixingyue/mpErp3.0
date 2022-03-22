@@ -326,6 +326,48 @@ export const getFormatDateString = (date) => {
   return `${y}-${m}-${d}T${h}:${minute}:${s}`;
 };
 
+/**
+ * 数组乱序
+ *
+ * @param {*} arr
+ */
+export const shuffleArray = (arr) => arr.sort(() => Math.random() - 0.5);
+
+/**
+ * 复制到粘贴板
+ *
+ * @param {*} text
+ */
+export const copyToClipboard = (text) => navigator.clipboard?.writeText && navigator.clipboard.writeText(text);
+
+
+/**
+ * 检测黑暗模式
+ *
+ */
+export const isDarkMode = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+/**
+ * 滚动到顶部
+ *
+ * @param {*} element
+ */
+export const scrollToTop = element => element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+/**
+ * 滚动到顶部
+ *
+ * @param {*} element
+ */
+export const scrollToBottom = element => element.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+/**
+ * 生成随机颜色
+ *
+ */
+export const generateRandomHexColor = () => `#${Math.floor(Math.random() * 0xffffff).toString(16)}`;
+
+
 export default {
   getStatusString,
   getExpress,
@@ -351,4 +393,10 @@ export default {
   getAUUID,
   getIsOrNotHasRepeatItemInArray,
   getFormatDateString,
+  shuffleArray,
+  copyToClipboard,
+  isDarkMode,
+  scrollToTop,
+  scrollToBottom,
+  generateRandomHexColor,
 };

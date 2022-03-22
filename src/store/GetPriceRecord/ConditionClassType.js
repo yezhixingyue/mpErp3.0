@@ -1,3 +1,5 @@
+import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
+
 export default class RecordListConditonClass {
   Page = 1; // 页码
 
@@ -8,8 +10,8 @@ export default class RecordListConditonClass {
   DateType = 'today';
 
   CalculateDate = {
-    First: '',
-    Second: '',
+    First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
+    Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
   }
 
   Terminal = '';

@@ -38,7 +38,19 @@
         />
       </li>
       <li class="row-two">
-        <TimeSearchSelector />
+        <!-- <TimeSearchSelector /> -->
+        <ElDateRangeSelector v-model="conditionDate" :max-span="366" :menus="dateMenus" />
+        <SearchInputComp
+          class="search-section"
+          :typeList="[['KeyWords', '']]"
+          title="关键词"
+          placeholder='请输入搜索关键词'
+          :requestFunc='getDataList'
+          :changePropsFunc='setOrderManageRequestObj'
+          :word='objForOrderList.KeyWords'
+          :searchWatchKey="orderListData"
+          @reset='() => this.clearCondition()'
+        />
       </li>
     </ul>
   </div>
@@ -53,8 +65,9 @@ import StaffSelector from '@/components/order/orderListHeader/StaffSelector.vue'
 import ExpressSelector from '@/components/order/orderListHeader/ExpressSelector.vue';
 import OrderStatusSelector from '@/components/order/orderListHeader/OrderStatusSelector.vue';
 // import DeliverStatusSelector from '@/components/order/orderListHeader/DeliverStatusSelector.vue';
-import TimeSearchSelector from '@/components/order/orderListHeader/TimeSearchSelector.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
+import SearchInputComp from '@/components/common/SearchInputComp.vue';
+import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 
 export default {
@@ -64,13 +77,36 @@ export default {
     ProductSelector,
     UserSelector,
     StaffSelector,
-    TimeSearchSelector,
     OrderStatusSelector,
     OrderChannelSelector,
+    ElDateRangeSelector,
+    SearchInputComp,
   },
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'selfHelpOrderTypeList']),
-    ...mapState('orderModule', ['objForOrderList']),
+    ...mapState('orderModule', ['objForOrderList', 'orderListData']),
+    conditionDate: {
+      get() {
+        return [this.objForOrderList.PlaceDate.First, this.objForOrderList.PlaceDate.Second];
+      },
+      set(newVal) {
+        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
+        this.setOrderManageRequestObj([['PlaceDate', 'First'], key]);
+        this.setOrderManageRequestObj([['PlaceDate', 'Second'], value]);
+        this.getDataList();
+      },
+    },
+  },
+  data() {
+    return {
+      dateMenus: [
+        { text: '今天', key: 'TodayDate' },
+        { text: '昨天', key: 'YesterdayDate' },
+        { text: '前天', key: 'BeforeYesterdayTimeDate' },
+        { text: '本月', key: 'curMonthDate' },
+        { text: '上月', key: 'lastMonthDate' },
+      ],
+    };
   },
   methods: {
     ...mapMutations('orderModule', ['setOrderManageRequestObj']),
@@ -78,6 +114,9 @@ export default {
     ...mapActions('common', ['getAreaList']),
     getDataList() {
       this.getOrderTableData();
+    },
+    clearCondition() {
+      this.$store.commit('orderModule/clearConfigObj');
     },
   },
 };
@@ -137,6 +176,15 @@ export default {
         > header {
           display: none;
         }
+      }
+    }
+    .row-two {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      > div, > section {
+        margin-bottom: 18px;
       }
     }
   }

@@ -15,11 +15,20 @@
         :list='StaffManageData.dataList'
         :loading='StaffManageData.loading'
         :departmentLevelList='departmentLevelList'
-        @detail='handleDetail'
-        @check='handleCheck'
+        @detail='handleDetailAndCheck'
+        @check='handleDetailAndCheck'
         @dimission='handleDimission'
         @edit='onJumpToSetupClick'
         @remove='handleRemove'
+      />
+      <DetailAndCheckDialog
+        v-model="visible"
+        :curStaffData='curStaffData'
+        :curIndex='curIndex'
+        :departmentList='departmentList'
+        :jobPermissionsList='jobPermissionsList'
+        @remove='handleRemove'
+        @submit="checkOrSetJobSubmit"
       />
     </main>
     <footer>
@@ -35,16 +44,21 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import StaffManageClass from '../../../assets/js/TypeClass/StaffManage/StaffManageClass';
 import StaffManageListHeader from '../../../components/StaffManageComp/StaffManageListHeader.vue';
 import StaffManageListTable from '../../../components/StaffManageComp/StaffManageListTable.vue';
+import DetailAndCheckDialog from '../../../components/StaffManageComp/Detail&CheckDialog/index.vue';
 import CountComp from '../../../components/common/Count.vue';
 
 export default {
   name: 'StaffManageListPage',
+  mixins: [recordScrollPositionMixin('.mp-erp-staff-manage-list-page-wrap .el-table__body-wrapper')],
   components: {
     StaffManageListHeader,
     StaffManageListTable,
+    DetailAndCheckDialog,
     CountComp,
   },
   data() {
@@ -53,7 +67,13 @@ export default {
       departmentList: [], // 部门平铺列表
       departmentLevelList: [], // 部门树形列表 -- 后面不用则删除
       jobPermissionsList: [], // 岗位列表数据
+      visible: false,
+      curStaffData: null,
+      curIndex: -1,
     };
+  },
+  computed: {
+    ...mapState('common', ['Permission']),
   },
   methods: {
     async getDepartmentList() { // 获取部门列表数据
@@ -92,14 +112,13 @@ export default {
     clearCondition() { // 清除筛选条件
       this.StaffManageData.clearConditon();
     },
-    handleDetail({ item }) { // 员工详情
-      console.log('handleDetail', item);
+    handleDetailAndCheck({ item, index }) { // 员工详情|审核 ---------------- 审核通过后应补充审核时间
+      this.curStaffData = item;
+      this.curIndex = index;
+      this.visible = true;
     },
-    handleCheck({ item }) { // 员工审核
-      console.log('handleCheck', item);
-    },
-    handleDimission({ item, isCancel }) { // 员工离职|取消离职
-      console.log('handleDimission', item, isCancel);
+    handleDimission({ item, expectStatus, index }) { // 员工离职|取消离职
+      this.StaffManageData.setItemStatusChange(item, expectStatus, index);
     },
     onJumpToSetupClick(data) { // 员工编辑|添加 --- 跳转对应页面
       const id = data ? data.id : 'null';
@@ -111,15 +130,36 @@ export default {
       });
     },
     handleRemove({ item, index }) { // 员工删除
-      console.log('handleRemove', item, index);
+      const cb = () => {
+        if (this.visible) this.visible = false;
+      };
+      this.StaffManageData.removeItem(item, index, cb);
+    },
+    checkOrSetJobSubmit(data) {
+      const cb = () => {
+        if (this.visible) this.visible = false;
+      };
+      this.StaffManageData.checkOrSetJobSubmit(data, this.curIndex, this.Permission, cb);
     },
   },
   mounted() {
+    sessionStorage.removeItem('needFetchStaffList');
     this.getStaffManageList();
     this.getDepartmentList();
     this.getJobPermissionsList();
     this.$store.dispatch('common/getProductClassifyData'); // 获取产品二级分类数据
     this.$store.dispatch('common/fetchAdAreaList'); // 获取地区列表数据
+  },
+  async activated() { // 当从设置页面返回且保存员工设置的时候可以完整执行此处内部代码
+    const bool = sessionStorage.getItem('needFetchStaffList') === 'true';
+    if (!bool) return;
+    sessionStorage.removeItem('needFetchStaffList');
+    await this.StaffManageData.getDataList(this.StaffManageData.condition.Page);
+    await this.$nextTick();
+    const oDom = document.querySelector('.mp-erp-staff-manage-list-page-wrap .el-table__body-wrapper');
+    if (!oDom) return;
+    oDom.scrollTop = this.SCROLL_Y;
+    oDom.scrollLeft = this.SCROLL_X;
   },
 };
 </script>

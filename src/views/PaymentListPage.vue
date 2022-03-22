@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-25 17:41:47
- * @LastEditTime: 2022-01-08 09:57:48
+ * @LastEditTime: 2022-03-22 09:40:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/PaymentListPage.vue
@@ -17,8 +17,8 @@
 
 <script>
 import PaymentListContent from '@/components/PaymentList/content/PaymentListContent.vue';
-import PaymentListHeader from '@/components/PaymentList/header/PaymentListHeader.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+import PaymentListHeader from '../components/PaymentList/header/PaymentListHeader.vue';
 
 export default {
   name: 'PaymentListPage',
@@ -27,6 +27,10 @@ export default {
     PaymentListContent,
     PaymentListHeader,
 
+  },
+  mounted() {
+    this.$store.commit('paymentModule/clearConfigObj');
+    this.$store.dispatch('paymentModule/getPaymentListTableData');
   },
 };
 </script>

@@ -1,4 +1,13 @@
 /* eslint-disable max-len */
+import { getValueIsOrNotNumber } from './util';
+import { SexEnumObj } from '../TypeClass/StaffManage/enums';
+
+/**
+ * 验证身份证是否正确
+ *
+ * @param {*} idCard
+ * @returns
+ */
 export const validateIdCard = idCard => {
   const code = idCard.toUpperCase();
 
@@ -26,4 +35,33 @@ export const validateIdCard = idCard => {
   }
 
   return parity[sum % 11].toString() === arrCode[17];
+};
+
+/**
+ * 从身份证号中提取生日及性别信息
+ *
+ * @param {*} idCard
+ * @returns
+ */
+export const getInfoFormIdCard = idCard => {
+  if (!idCard) return null;
+
+  const _idCard = idCard.toUpperCase();
+  let sexBit;
+  let birthString;
+
+  if (_idCard.length === 18 && validateIdCard(_idCard)) {
+    sexBit = _idCard.substr(16, 1);
+    birthString = _idCard.substr(6, 8);
+  } else if (_idCard.length === 15) {
+    sexBit = _idCard.substr(13, 1);
+    birthString = `19${_idCard.substr(6, 6)}`;
+  }
+
+  if (birthString && getValueIsOrNotNumber(sexBit, true)) {
+    const Birthday = `${birthString.substr(0, 4)}-${birthString.substr(4, 2)}-${birthString.substr(6, 2)}T00:00:00`;
+    const Sex = +sexBit % 2 === 0 ? SexEnumObj.female.ID : SexEnumObj.male.ID;
+    return { Birthday, Sex };
+  }
+  return null;
 };

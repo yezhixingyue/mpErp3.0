@@ -19,7 +19,7 @@ const ProduceDelayTypeEnums = {
     ID: 1,
   },
   dispatch: {
-    Name: '发货时间范围',
+    Name: '出货时间范围',
     ID: 2,
   },
 };

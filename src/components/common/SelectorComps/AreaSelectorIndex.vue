@@ -91,7 +91,11 @@ export default {
       type: Array,
       default: null,
     },
-    hasNullOption: {
+    hasNoLimitItem: { // 是否有‘不限’的下拉项
+      type: Boolean,
+      default: true,
+    },
+    hasNullOption: { // 是否有‘无’的下拉项
       type: Boolean,
       default: false,
     },
@@ -124,7 +128,8 @@ export default {
       return this.adAreaList;
     },
     largeArea() {
-      const arr = [{ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' }];
+      const arr = [];
+      if (this.hasNoLimitItem) arr.push({ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' });
       if (this.hasNullOption) arr.push({ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' });
       if (this.localAreaList.length > 0) {
         const tempArr = this.localAreaList.filter((item) => item.Level === 1);
@@ -133,14 +138,15 @@ export default {
       return arr;
     },
     midArea() {
-      const arr = [{ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' }];
+      const arr = [];
+      if (this.hasNoLimitItem) arr.push({ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' });
       if (!this.first && this.first !== 0) {
         return arr;
       }
       if (this.first === this.NullOptionValue) {
         return [{ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' }];
       }
-      if (this.hasNullOption) arr.push({ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' });
+      if (this.hasNullOption && this.first) arr.push({ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' });
       if (this.first) {
         let temp = this.first;
         if (this.useLabel) {
@@ -153,14 +159,15 @@ export default {
       return arr;
     },
     smArea() {
-      const arr = [{ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' }];
+      const arr = [];
+      if (this.hasNoLimitItem) arr.push({ [this.localDefaultProps.value]: '', [this.localDefaultProps.label]: '不限' });
       if (!this.first && this.first !== 0) {
         return arr;
       }
       if (this.second === this.NullOptionValue) {
         return [{ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' }];
       }
-      if (this.hasNullOption) arr.push({ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' });
+      if (this.hasNullOption && this.second) arr.push({ [this.localDefaultProps.value]: this.NullOptionValue, [this.localDefaultProps.label]: '无' });
       if (this.second) {
         let temp = this.second;
         if (this.useLabel) {
@@ -208,7 +215,7 @@ export default {
   },
   methods: {
     handleSwitch1(e) {
-      const val = this.hasNullOption && e === this.NullOptionValue ? this.NullOptionValue : '';
+      const val = this.hasNullOption && (e === this.NullOptionValue || !this.hasNoLimitItem) ? this.NullOptionValue : '';
       this.changePropsFunc([this.typeList[1], val]);
       this.changePropsFunc([this.typeList[2], val]);
       let temp = e;
@@ -216,7 +223,7 @@ export default {
       this.first = temp;
     },
     handleSwitch2(e) {
-      const val = this.hasNullOption && e === this.NullOptionValue ? this.NullOptionValue : '';
+      const val = this.hasNullOption && (e === this.NullOptionValue || !this.hasNoLimitItem) ? this.NullOptionValue : '';
       this.changePropsFunc([this.typeList[2], val]);
       let temp = e;
       if (this.useLabel && e === '不限') temp = '';

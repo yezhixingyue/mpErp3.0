@@ -12,7 +12,7 @@
        />
     </div>
     <div>
-      <LineDateSelectorComp
+      <!-- <LineDateSelectorComp
         :changePropsFunc='setRequestObj'
         :requestFunc='getRecordList'
         :typeList="[['DateType', ''], ['CalculateDate', 'First'], ['CalculateDate', 'Second']]"
@@ -21,7 +21,8 @@
         :dateList="dateList"
         isFull
         label="时间筛选"
-        dateType="date" />
+        dateType="date" /> -->
+      <ElDateRangeSelector v-model="conditionDate" :max-span="366" :menus="dateMenus" />
       <SearchInputComp
         :typeList="[['KeyWords', '']]"
         :requestFunc='getRecordList'
@@ -37,26 +38,47 @@
 
 <script>
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
-import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+// import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
+import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState } from 'vuex';
 
 export default {
   components: {
     SearchInputComp,
-    LineDateSelectorComp,
+    // LineDateSelectorComp,
     OrderChannelSelector,
+    ElDateRangeSelector,
   },
   computed: {
     ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataList']),
     ...mapState('common', ['selfHelpOrderTypeList']),
-    UserDefinedTimeIsActive() {
-      return this.condition4RecordList.DateType === '' && !!this.condition4RecordList.CalculateDate.First && !!this.condition4RecordList.CalculateDate.Second;
+    // UserDefinedTimeIsActive() {
+    //   return this.condition4RecordList.DateType === ''
+    //    && !!this.condition4RecordList.CalculateDate.First && !!this.condition4RecordList.CalculateDate.Second;
+    // },
+    conditionDate: {
+      get() {
+        return [this.condition4RecordList.CalculateDate.First, this.condition4RecordList.CalculateDate.Second];
+      },
+      set(newVal) {
+        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
+        this.setRequestObj([['CalculateDate', 'First'], key]);
+        this.setRequestObj([['CalculateDate', 'Second'], value]);
+        this.getRecordList();
+      },
     },
   },
   data() {
     return {
-      dateList: [{ name: '今日报价', ID: 'today' }, { name: '昨日报价', ID: 'yesterday' }, { name: '本周报价', ID: 'curWeek' }, { name: '上周报价', ID: 'lastWeek' }],
+      // dateList: [{ name: '今日报价', ID: 'today' }, { name: '昨日报价', ID: 'yesterday' }, { name: '本周报价', ID: 'curWeek' }, { name: '上周报价', ID: 'lastWeek' }],
+      dateMenus: [
+        { text: '今天', key: 'TodayDate' },
+        { text: '昨天', key: 'YesterdayDate' },
+        { text: '前天', key: 'BeforeYesterdayTimeDate' },
+        { text: '本周', key: 'curWeekDate' },
+        { text: '上周', key: 'lastWeekDate' },
+      ],
     };
   },
   methods: {
@@ -91,7 +113,7 @@ export default {
     &:first-of-type {
       height: 30px;
     }
-    .mp-line-date-selector-wrap, .mp-common-comps-search-box {
+    .mp-common-comps-el-date-range-selector-comp-wrap, .mp-common-comps-search-box {
       margin-top: 0px;
       padding-top: 10px;
       height: 30px;

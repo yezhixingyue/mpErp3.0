@@ -26,17 +26,20 @@
           </p>
           <ProductFilterComp v-model="Product" :disabled='canSelectList.length > 0' @change="onProductFilterChange" />
         </div>
-        <FileSelectComp @change="handleFileChange" :disabled='!canSelectFile' :accept='accept' :selectTitle='selectTitle' />
+        <FileSelectComp @change="handleFileChange" :disabled='!canSelectFile' :accept='accept' :selectTitle='selectTitle' ref="oFileBox" />
       </div>
       <MainTableComp
        ref="oTableWrap"
+       v-show="customer"
        :list='successedList'
        class="table"
        :multipleSelection='multipleSelection'
        :checkAllDisabled='canSelectList.length === 0'
+       :accept='accept'
        @itemRemove='handleItemRemove'
        @itemUpload='handleItemUpload'
-       @multipleSelect='handleMultipleSelect' />
+       @multipleSelect='handleMultipleSelect'
+       @droped='onDroped' />
       <QrCodeForPayDialogComp v-model="QrCodeVisible" :payInfoData="payInfoData" @success='handlePaidSuccess' payType='21'>
       <div class="page-pay-info-box" v-if="payInfoData">
         <div class="customer">
@@ -277,6 +280,11 @@ export default {
      */
     handleMultipleSelect(val) { // 表格中复选框选中文件
       this.multipleSelection = val;
+    },
+    onDroped(e) {
+      if (this.$refs.oFileBox?.$refs?.onFileSelector?.onDrop) {
+        this.$refs.oFileBox.$refs.onFileSelector.onDrop(e);
+      }
     },
     handleCheckAll(bool) { // 处理底部复选框选中事件
       if (this.$refs.oTableWrap && this.$refs.oTableWrap.$refs.multipleTable) {

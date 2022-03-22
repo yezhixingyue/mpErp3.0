@@ -14,22 +14,26 @@
     <el-table-column width="160px" prop='IDCard' show-overflow-tooltip label="身份证号"></el-table-column>
     <el-table-column width="70px" prop="_gender" show-overflow-tooltip label="性别"></el-table-column>
     <el-table-column width="85px" prop="_EducationText" show-overflow-tooltip label="学历"></el-table-column>
-    <el-table-column min-width="140px" prop="_address" show-overflow-tooltip label="籍贯"></el-table-column>
+    <el-table-column min-width="120px" prop="_address" show-overflow-tooltip label="籍贯"></el-table-column>
     <el-table-column width="100px" prop="_Birthday" show-overflow-tooltip label="出生日期"></el-table-column>
     <el-table-column width="100px" prop="_JoinDate" show-overflow-tooltip label="入职日期"></el-table-column>
-    <el-table-column min-width="160px" prop="_department" show-overflow-tooltip label="部门岗位"></el-table-column>
-    <el-table-column width="80px" prop="_statusText" show-overflow-tooltip label="状态"></el-table-column>
+    <el-table-column min-width="160px" prop="_department" label="部门岗位">
+      <span slot-scope="scope" :title="scope.row._department.replaceAll(' | ', '\r\n')">{{scope.row._department}}</span>
+    </el-table-column>
+    <el-table-column width="80px" prop="_statusText" show-overflow-tooltip label="状态">
+      <!-- <span slot-scope="scope" :class="scope.row._class">{{scope.row._statusText}}</span> -->
+    </el-table-column>
     <el-table-column width="80px" prop="CheckUser.StaffName" show-overflow-tooltip label="审核人"></el-table-column>
 
-    <el-table-column width="310px" label="操作">
+    <el-table-column :width="lastColWidth" label="操作" v-if="maxMenuLen">
       <div class="menus" slot-scope="scope">
         <CtrlMenus
          :showList="scope.row._icons"
          :isDimission='scope.row._isDimission'
          :canRemove='scope.row._canRemove'
-         @detail='onDetailClick(scope.row)'
-         @check='onCheckClick(scope.row)'
-         @dimission='onDimissionClick(scope.row)'
+         @detail='onDetailClick(scope.row, scope.$index)'
+         @check='onCheckClick(scope.row, scope.$index)'
+         @dimission='onDimissionClick(scope.row, scope.$index)'
          @edit='onEditClick(scope.row)'
          @remove='onRemoveClick(scope.row, scope.$index)'
          />
@@ -81,12 +85,24 @@ export default {
         _address: this.getAddressContent(it.LinkArea, this.allAdAreaTreeList),
         _Birthday: this.formatDate(it.TimeRecord?.Birthday),
         _JoinDate: this.formatDate(it.TimeRecord?.JoinDate),
-        _department: this.formatDepartment(it.PositionList, this.departmentLevelList),
+        _department: this.formatDepartment(it, this.departmentLevelList),
         _statusText: this.formatEnumName(it.Status, StaffStatusEnumList),
         _icons: this.getIconList(it),
         _isDimission: it.Status === StaffStatusEnumObj.leaved.ID,
         _canRemove: it.Status === StaffStatusEnumObj.pending.ID,
+        _class: this.getItemDisplayClass(it.Status),
       }));
+    },
+    maxMenuLen() {
+      const lens = this.localDataList.map(it => it._icons.length);
+      return lens.length > 0 ? Math.max(...lens) : 0;
+    },
+    lastColWidth() {
+      if (this.maxMenuLen >= 4) return '310px';
+      if (this.maxMenuLen === 3) return '240px';
+      if (this.maxMenuLen === 2) return '160px';
+      if (this.maxMenuLen === 1) return '120px';
+      return '0px';
     },
   },
   methods: {
@@ -102,9 +118,7 @@ export default {
       const Regional = list.find(it => it.ID === RegionalID);
       if (Regional) {
         const City = Regional.children.find(it => it.ID === CityID);
-        if (City) {
-          return `${Regional.Name}${City.Name}`;
-        }
+        if (City) return `${Regional.Name}${City.Name}`;
       }
       return '';
     },
@@ -114,7 +128,7 @@ export default {
       }
       return '';
     },
-    formatDepartment(PositionList, departmentLevelList) {
+    formatDepartment({ PositionList }, departmentLevelList) {
       if (Array.isArray(PositionList) && PositionList.length > 0) {
         const list = PositionList.map(({ First, Second }) => {
           const { FirstDepartmentID, SecondDepartmentID, ThirdDepartmentID } = First;
@@ -144,32 +158,53 @@ export default {
       return '';
     },
     getIconList(it) {
-      const list = ['edit', 'del'];
+      const list = [];
+      if (this.localPermission.Edit) {
+        list.push('edit');
+      }
+      if (this.localPermission.Delete) {
+        list.push('del');
+      }
       if (it.Status === StaffStatusEnumObj.pending.ID) {
-        list.push('check');
+        if (this.localPermission.Check) list.push('check');
       } else {
-        list.push('detail', 'dimission');
+        if (this.localPermission.ViewStaffDetail) {
+          list.push('detail');
+        }
+        if (this.localPermission.Dimission) {
+          list.push('dimission');
+        }
       }
       return list;
     },
-    onDetailClick(item) {
-      this.$emit('detail', { item });
+    getItemDisplayClass(Status) {
+      return {
+        'is-pink': Status === StaffStatusEnumObj.pending.ID,
+        'is-success': Status === StaffStatusEnumObj.approved.ID,
+        'is-font-size-12': true,
+      };
     },
-    onCheckClick(item) {
-      this.$emit('check', { item });
+    onDetailClick(item, index) {
+      this.$emit('detail', { item, index });
     },
-    onDimissionClick(item) { // 离职|取消离职
+    onCheckClick(item, index) {
+      this.$emit('check', { item, index });
+    },
+    onDimissionClick(item, index) { // 离职|取消离职
       let title;
       let msg;
+      let expectStatus;
       if (item._isDimission) { // 取消离职
         title = '确定要取消离职吗 ?';
         msg = `取消离职：${item.StaffName}`;
+        expectStatus = StaffStatusEnumObj.approved.ID;
       } else { // 设置离职
         title = '确定设为离职状态吗 ?';
         msg = `员工离职：${item.StaffName}`;
+        expectStatus = StaffStatusEnumObj.leaved.ID;
       }
       this.messageBox.warnCancelBox(title, msg, () => {
-        this.$emit('dimission', { item, isCancel: item._isDimission });
+        this.$emit('dimission', { item, expectStatus, index });
       }, null);
     },
     onEditClick(item) {
