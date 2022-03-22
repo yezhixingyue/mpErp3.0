@@ -1,8 +1,9 @@
 <template>
   <li>
-    <p class="header" @dblclick="onExtendClick" @click="onActiveIDClick(item.ID)" :class="{active: activeId === item.ID}">
+    <p class="header hover-margin" @dblclick="onExtendClick" @click="onActiveIDClick(item.ID)"
+    :class="{active: activeId === item.ID,'moving-tow': this.moving}">
       <span>{{item.ClassName}}</span>
-      <span class="menu" @dblclick.stop @click="onManageSubClick" :class="{moving: true}">
+      <span class="menu" @dblclick.stop  @click="onManageSubClick" >
         <template v-if="item.Level < 3">
           <img src="@/assets/images/setup.png" alt="">
           <span>管理子部门</span>
@@ -10,19 +11,27 @@
       </span>
       <i class="el-icon-arrow-right" :class="{extend: extend}" @dblclick.stop @click.stop="onExtendClick"></i>
     </p>
-    <div v-if="tertiarySectorlList.length" class="countys" v-show="extend">
-      <!-- {{tertiarySectorlList}} -->
-      <span
-      v-for="it in tertiarySectorlList"
-      :key="it.ID" @click="onActiveIDClick(it.ID)"
-      :class="{active: activeId === it.ID}">
-        {{it.ClassName}}
-      </span>
+    <div class="countys" v-show="extend">
+      <draggable
+      :scroll="true"
+      tag='ul'
+      v-bind="dragOptions"
+      v-model="item.children"
+      group="three">
+        <li
+        v-for="it in item.children"
+        :key="it.ID" @click="onActiveIDClick(it.ID)"
+        :class="{active: activeId === it.ID,'moving-tow': moving}">
+          {{it.ClassName}}
+        </li>
+      </draggable>
     </div>
   </li>
 </template>
 
 <script>
+import draggable from 'vuedraggable';
+
 export default {
   props: {
     item: {
@@ -35,6 +44,13 @@ export default {
     departmentList: {
       type: Array,
     },
+    moving: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  components: {
+    draggable,
   },
   data() {
     return {
@@ -42,13 +58,17 @@ export default {
     };
   },
   computed: {
-    tertiarySectorlList() {
-      return this.departmentList.filter(item => item.ParentID === this.item.ID);
+    dragOptions() {
+      return {
+        animation: 0,
+        disabled: !this.moving,
+        ghostClass: 'ghost',
+      };
     },
   },
   methods: {
     onExtendClick() {
-      if (this.tertiarySectorlList.length === 0) {
+      if (this.item.children.length === 0) {
         return;
       }
       this.extend = !this.extend;
@@ -64,17 +84,26 @@ export default {
   },
 };
 </script>
-<style lang='scss' scope>
+<style lang='scss' >
+.moving-tow:hover {
+    cursor: move;
+  }
 .menu{
   display: flex;
   justify-content: end;
   margin-right: 25px;
   &:hover {
-          cursor: pointer;
-          color: #585858;
-        }
+    cursor: pointer;
+    color: #585858;
+  }
   span{
     margin-left: 11px;
+  }
+}
+.countys{
+  li {
+    padding: 10px;
+    padding-left: 100px;
   }
 }
 

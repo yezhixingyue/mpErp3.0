@@ -11,13 +11,15 @@
         <span>部门名称</span>
         <span>操作</span>
       </p>
-      <draggable tag='ul' :class="{moving: sorting}" v-bind="dragOptions" v-model="getSuperiorDepartment" v-if="departmentList.length > 0" :group='group'
-         @end="onWrapMovEnd">
+      <draggable tag='ul' :scroll="true" animation="200"
+      :class="{moving: sorting}" v-bind="dragOptions"
+      v-model="localDepartmentList" v-if="localDepartmentList.length > 0" :group='group'
+         >
          <!-- 一级部门列表 -->
         <AreaItemComp
-          v-for="it in getSuperiorDepartment"
+          v-for="it in localDepartmentList"
           :key="it.ID" :itemData='it'
-          :departmentList="departmentList"
+          :departmentList="localDepartmentList"
           :activeId='activeId'
           :moving='sorting'
           :extendIds="extendIds"
@@ -28,7 +30,7 @@
       </draggable>
     </main>
     <footer>
-      <el-button v-if="!sorting" type="primary" @click="onSortClick" :disabled='localSellAreaList.length === 0'>排序</el-button>
+      <el-button v-if="!sorting" type="primary" @click="onSortClick" :disabled='localDepartmentList.length === 0'>排序</el-button>
       <template v-else>
         <el-button type="primary" @click="onSubmitClick">保存</el-button>
         <el-button class="cancel-blue-btn" @click="onCancelClick">取消</el-button>
@@ -59,7 +61,10 @@ export default {
   },
   data() {
     return {
-      localSellAreaList: [],
+      // 排序之前的数据
+      sortDepartment: [],
+      // 数据
+      localDepartmentList: [],
       extendIds: [], // 展开的区域ID列表
       activeId: '',
       cacheExtendIds: [],
@@ -86,8 +91,21 @@ export default {
     },
   },
   methods: {
-    setLocalSellAreaList() { // 设置本地列表数据
-      this.localSellAreaList = JSON.parse(JSON.stringify(this.sellAreaList)) || [];
+    setSuperiorDepartmentAreaList() { // 设置本地列表数据
+      this.localDepartmentList = JSON.parse(JSON.stringify(this.getSuperiorDepartment)) || [];
+      this.localDepartmentList.forEach(SuperiorDepartment => {
+        this.$set(SuperiorDepartment, 'children', this.departmentList.filter(item => item.ParentID === SuperiorDepartment.ID) || []);
+        console.log(SuperiorDepartment);
+      });
+      this.localDepartmentList = JSON.parse(JSON.stringify(this.localDepartmentList)) || [];
+      this.localDepartmentList.forEach(SuperiorDepartment => {
+        SuperiorDepartment.children.forEach(SecondLevelDepartment => {
+          this.$set(SecondLevelDepartment, 'children', this.departmentList.filter(item => item.ParentID === SecondLevelDepartment.ID) || []);
+        });
+      });
+      // this.localDepartmentList =
+      this.sortDepartment = JSON.parse(JSON.stringify(this.localDepartmentList)) || [];
+      console.log(this.localDepartmentList);
     },
     onTotalClick() { // 管理一级区  -- 点击时，如果此时为排序状态，则应取消排序状态
       this.onCancelClick();
@@ -110,38 +128,51 @@ export default {
     onCancelClick() { // 取消排序
       this.extendIds = [...this.cacheExtendIds];
       this.sorting = false;
-      this.setLocalSellAreaList();
+      this.setSuperiorDepartmentAreaList();
     },
     onSubmitClick() { // 提交保存排序
-      const bool = JSON.stringify(this.localSellAreaList) === JSON.stringify(this.sellAreaList);
+      const bool = JSON.stringify(this.localDepartmentList) === JSON.stringify(this.sortDepartment);
       if (bool) {
         this.messageBox.failSingleError('保存失败', '排序未发生变化');
         return;
       }
-      const list = this.localSellAreaList.map((it, i) => {
-        const Index = it.Index !== 999 ? i : 999;
-        const _it = { ...it, Index };
-        delete _it.children;
-        return _it;
+      const returnData = [];
+      const returnOneIt = this.localDepartmentList.map((oneIt, oneI) => {
+        const _oneIt = { ...oneIt, Index: oneIt.Index !== 999 ? oneI : 999 };
+        const returntowIt = oneIt.children.map((towIt, towI) => {
+          const _towIt = { ...towIt, Index: towIt.Index !== 999 ? towI : 999 };
+          const returnThreeIt = towIt.children.map((threeIt, threeI) => {
+            const _threeIt = { ...threeIt, Index: threeIt.Index !== 999 ? threeI : 999 };
+            delete _threeIt.children;
+            return _threeIt;
+          });
+          returnData.push(...returnThreeIt);
+          delete _towIt.children;
+          return _towIt;
+        });
+
+        returnData.push(...returntowIt);
+        console.log(...returntowIt);
+        delete _oneIt.children;
+        return _oneIt;
       });
-      const callback = () => {
-        this.extendIds = [...this.cacheExtendIds];
-        this.sorting = false;
-      };
-      this.$emit('sort', list, callback);
+      returnData.push(...returnOneIt);
+      console.log(returnData);
+      // const returnData = [];
+      this.$emit('sort', returnData);
     },
-    onWrapMovEnd({ oldIndex, newIndex }) { // 处理其它大区移动特殊情况（该大区位置不能移动）
-      if (oldIndex === this.localSellAreaList.length - 1 || newIndex === this.localSellAreaList.length - 1) {
-        const tempArr = this.localSellAreaList.splice(newIndex, 1);
-        this.localSellAreaList.splice(oldIndex, 0, tempArr[0]);
-        this.$message.error('其它大区位置不可变动(保持最后一位)');
-      }
-    },
+    // onWrapMovEnd({ oldIndex, newIndex }) { // 处理其它大区移动特殊情况（该大区位置不能移动）
+    //   if (oldIndex === this.localDepartmentList.length - 1 || newIndex === this.localDepartmentList.length - 1) {
+    //     const tempArr = this.localDepartmentList.splice(newIndex, 1);
+    //     this.localDepartmentList.splice(oldIndex, 0, tempArr[0]);
+    //     this.$message.error('其它大区位置不可变动(保持最后一位)');
+    //   }
+    // },
   },
   watch: {
-    sellAreaList: {
+    getSuperiorDepartment: {
       handler() {
-        this.setLocalSellAreaList();
+        this.setSuperiorDepartmentAreaList();
       },
       immediate: true,
     },
@@ -150,6 +181,9 @@ export default {
 </script>
 <style lang='scss'>
 .mp-erp-basic-set-up-sell-area-set-up-page-left-content-wrap {
+  .hover-margin {
+    margin: 5px 0;
+  }
   display: flex;
   flex-direction: column;
   min-width: 440px;

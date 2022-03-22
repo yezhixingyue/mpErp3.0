@@ -1,6 +1,6 @@
 <template>
   <li class="mp-erp-basic-set-up-sell-area-set-up-page-left-content-area-item-comp-wrap" :class="{other: itemData.Index === 999 && moving}">
-    <div class="header" @click="onActiveIDClick(itemData.ID)" @dblclick="onExtendClick" :class="{active: activeId === itemData.ID}">
+    <div class="header hover-margin" @click="onActiveIDClick(itemData.ID)" @dblclick="onExtendClick" :class="{active: activeId === itemData.ID}">
       <span>{{itemData.ClassName}}</span>
       <div class="menu" @dblclick.stop @click="onManageSubClick(itemData.ID)" :class="{moving: moving}">
         <template v-if="itemData.Level < 3">
@@ -12,21 +12,28 @@
         <i class="el-icon-arrow-right" @click.stop="onExtendClick"></i>
       </div>
     </div>
-    <ul v-show="isExtend && departmentList">
-      <!-- {{secondLevelList}} -->
-      <CityItemComp
-       v-for="it in secondLevelList(itemData.ID)"
-       :key="it.ID" :departmentList='departmentList'
-       :activeId='activeId'
-       :item="it"
-       @active='onActiveIDClick'
-       @subManage="onManageSubClick"
-       />
-    </ul>
+    <draggable
+      :scroll="true"
+      tag='ul'
+      v-show="isExtend && departmentList"
+      v-bind="dragOptions"
+      v-model="itemData.children"
+      group="tow">
+        <CityItemComp
+        v-for="it in itemData.children" :key="it.ID"
+        :departmentList='departmentList'
+        :activeId='activeId'
+        :item="it"
+        :moving="moving"
+        @active='onActiveIDClick'
+        @subManage="onManageSubClick"
+        />
+    </draggable>
   </li>
 </template>
 
 <script>
+import draggable from 'vuedraggable';
 import CityItemComp from './CityItemComp.vue';
 
 export default {
@@ -53,6 +60,7 @@ export default {
   },
   components: {
     CityItemComp,
+    draggable,
   },
   data() {
     return {
@@ -62,7 +70,13 @@ export default {
     isExtend() { // 是否已展开
       return this.extendIds.includes(this.itemData.ID);
     },
-
+    dragOptions() {
+      return {
+        animation: 0,
+        disabled: !this.moving,
+        ghostClass: 'ghost',
+      };
+    },
   },
   methods: {
     onExtendClick() { // 展开|收起

@@ -920,6 +920,9 @@ const api = {
   getDepartmentSave(data) { //  部门保存
     return instance.post('/Api/Department/Save', data);
   },
+  getDepartmentOrder(data) { //  部门保存
+    return instance.post('/Api/Department/Order', data);
+  },
 
   /* 客户管理api
   ----------------------------------------------------------------------------------- */

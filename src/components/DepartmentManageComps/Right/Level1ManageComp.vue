@@ -330,8 +330,8 @@ export default {
         Value: 0,
       });
     },
-    onDelUserTypeClick() {
-
+    onDelUserTypeClick(index) {
+      this.editData.CustomerTypeList.splice(index, 1);
     },
 
     onRemoveClick(it, i) { // 删除一行
@@ -368,8 +368,13 @@ export default {
         this.editData.SellAreaList[index].CountyName = filtrateCounty.length ? filtrateCounty[0].ClassName : '';
         this.editData.SellAreaList[index].RegionalName = filtrateRegional.length ? filtrateRegional[0].ClassName : '';
       });
+      this.dialogTableVisible = false;
     },
     save() {
+      if (!this.getIsOrNotChange()) { // 此处判断右侧数据是否需要保存 -- 确认提示
+        this.messageBox.failSingleError('保存失败', '数据未发生变化');
+        return null;
+      }
       this.localList.filter((item) => console.log(item.canRemove));
       const returnData = this.localList.filter((item) => item.ClassName !== '' || !item.canRemove);
       return returnData;
@@ -417,7 +422,7 @@ export default {
     },
     // 分类文字
     getProductClassText(item) {
-      const ProductMultipleClassifyList = this.ProductMultipleClassifyList[0].List;
+      const ProductMultipleClassifyList = this.ProductMultipleClassifyList[0] ? this.ProductMultipleClassifyList[0].List : [];
       const filtrateFirst = ProductMultipleClassifyList.filter((element) => element.ID === item.First);
       const filtrateSecond = ProductMultipleClassifyList.filter((element) => element.ID === item.Second);
       let returnText = '';

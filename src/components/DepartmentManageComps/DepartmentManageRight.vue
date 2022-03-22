@@ -44,9 +44,9 @@ export default {
     checkLevel1IsOrNotChange() { // 判断一级区域是否有改变
       return this.$refs.oLevel1Comp ? this.$refs.oLevel1Comp.getIsOrNotChange() : false;
     },
-    checkSubAreaIsOrNotChange() { // 判断子区域设置是否有改变
-      return this.$refs.oSubAreaComp ? this.$refs.oSubAreaComp.getIsOrNotChange() : false;
-    },
+    // checkSubAreaIsOrNotChange() { // 判断子区域设置是否有改变
+    //   return this.$refs.oSubAreaComp ? this.$refs.oSubAreaComp.getIsOrNotChange() : false;
+    // },
     onSubmitClick() { // 提交
       console.log(this.$refs.oLevel1Comp);
       const data = this.$refs.oLevel1Comp.save();
@@ -54,14 +54,6 @@ export default {
       if (data) {
         this.$emit('level1Submit', data);
       }
-      // if (this.isManageRoot && this.$refs.oLevel1Comp) { // 一级区域提交
-      // }
-      // if (!this.isManageRoot && this.$refs.oSubAreaComp) { // 一级区域提交
-      //   const data = this.$refs.oSubAreaComp.getSubmitData();
-      //   if (data) {
-      //     this.$emit('subAreaSubmit', data);
-      //   }
-      // }
     },
   },
 };
@@ -75,7 +67,7 @@ export default {
   overflow: hidden;
   font-size: 14px;
   color: #585858;
-  min-width: 750px;
+  min-width: 600px;
   > header {
     flex: none;
     padding-bottom: 20px;

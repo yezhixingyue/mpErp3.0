@@ -73,37 +73,25 @@ export default {
       this.handleSwitch(handler);
     },
     handleSwitch(handler) { // 处理右侧切换（ 根据情况看是否显示确认弹窗 ）
-      if (this.$refs.oRight && (this.$refs.oRight.checkLevel1IsOrNotChange() || this.$refs.oRight.checkSubAreaIsOrNotChange())) { // 此处判断右侧数据是否需要保存 -- 确认提示
+      if (this.$refs.oRight && (this.$refs.oRight.checkLevel1IsOrNotChange())) { // 此处判断右侧数据是否需要保存 -- 确认提示
         this.messageBox.warnCancelBox('有数据未保存，确定切换区域吗', '切换后未保存数据将丢失，如需继续请点击确认', handler);
       } else {
         handler();
       }
     },
-    onSortClick(Array, callback) { // 点击保存排序
-      if (this.$refs.oRight && (this.$refs.oRight.checkLevel1IsOrNotChange() || this.$refs.oRight.checkSubAreaIsOrNotChange())) { // 此处判断右侧数据是否需要保存 -- 确认提示
+    onSortClick(Array) { // 点击保存排序
+      if (this.$refs.oRight && (this.$refs.oRight.checkLevel1IsOrNotChange())) { // 此处判断右侧数据是否需要保存 -- 确认提示
         this.messageBox.warnCancelBox('右侧有数据未保存，确定保存排序吗', '保存排序将丢失改动内容，如需继续请点击确认', () => {
-          this.handleSort(Array, callback);
+          this.handleSort(Array);
         });
       } else {
-        this.handleSort(Array, callback);
+        this.handleSort(Array);
       }
     },
-    async handleSort(Array, callback) { // 处理保存排序
-      const temp = {
-        Array,
-        IsSave: false,
-        Type: 3,
-      };
-      const resp = await this.api.getProductClassSave(temp).catch(() => null);
+    async handleSort(Array) { // 处理保存排序
+      const resp = await this.api.getDepartmentOrder(Array).catch(() => null);
       if (resp && resp.data.Status === 1000) {
-        const cb = () => {
-          if (callback) callback();
-          const list = this.areaList.filter(it => it.Level > 1);
-          list.unshift(...Array);
-          this.$store.commit('common/setAreaList', list);
-          if (this.isManageRoot) this.onManageTotalClick(true);
-        };
-        this.messageBox.successSingle('保存排序成功', cb, cb);
+        this.messageBox.successSingle('保存排序成功');
       }
     },
     async handleLevel1Submit(data) {
