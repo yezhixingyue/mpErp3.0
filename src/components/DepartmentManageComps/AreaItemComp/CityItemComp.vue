@@ -90,7 +90,7 @@ export default {
   }
 .menu{
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   margin-right: 25px;
   &:hover {
     cursor: pointer;
