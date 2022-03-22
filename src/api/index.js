@@ -929,6 +929,12 @@ const api = {
   getDepartmentList() { //  获取部门列表数据
     return instance.post('/Api/Constant/VersionValid', { key: 81, Value: -1 });
   },
+  getDepartmentSave(data) { //  部门保存
+    return instance.post('/Api/Department/Save', data);
+  },
+  getDepartmentOrder(data) { //  部门保存
+    return instance.post('/Api/Department/Order', data);
+  },
 
   /* 客户管理api
   ----------------------------------------------------------------------------------- */
