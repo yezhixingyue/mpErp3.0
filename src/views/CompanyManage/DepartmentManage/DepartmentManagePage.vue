@@ -17,7 +17,6 @@
            :departmentList='departmentList'
             ref="oRight"
            @level1Submit='handleLevel1Submit'
-           @subAreaSubmit='handleSubAreaSubmit'
           />
         </template>
       </LRWidthDragAutoChangeComp>
@@ -103,38 +102,10 @@ export default {
         }
       });
     },
-    async handleSubAreaSubmit(data) {
-      if (this.isSorting) {
-        this.messageBox.failSingleError('保存失败', '左侧列表正在排序，请先取消排序');
-        return;
-      }
-      const { RegionalID, level2List, level3List } = data;
-      const temp = {
-        Array: level3List,
-        RegionalID,
-        Type: 3,
-        IsSave: true,
-      };
-      const resp = await this.api.getProductClassSave(temp).catch(() => null);
-      if (resp && resp.data.Status === 1000) {
-        const cb = () => {
-          const originCityIds = this.areaList.filter(it => it.Level === 2 && it.ParentID === RegionalID).map(it => it.ID);
-          const list = [...this.areaList].filter(it => !originCityIds.includes(it.ID) && !originCityIds.includes(it.ParentID));
-          list.push(...[...level2List, ...level3List]);
-          this.$store.commit('common/setAreaList', list);
-        };
-        this.messageBox.successSingle('保存成功', cb, cb);
-      }
-    },
   },
   mounted() {
-    this.getAreaList();
+    // this.getAreaList();
     this.$store.dispatch('department/getDepartmentList');
-
-    setTimeout(() => {
-      console.log(this.areaList, this.allAreaTreeList);
-      console.log(this.departmentList);
-    }, 2000);
   },
 };
 </script>

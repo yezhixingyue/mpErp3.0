@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-basic-set-up-sell-area-set-up-page-right-content-wrap">
     <header>
-      <p class="mp-common-title-wrap">{{title}} {{departmentParentID +'0'}}</p>
+      <p class="mp-common-title-wrap">{{title}}</p>
     </header>
     <main>
       <Level1ManageComp :level1List='level1List' ref="oLevel1Comp"  />
@@ -48,9 +48,7 @@ export default {
     //   return this.$refs.oSubAreaComp ? this.$refs.oSubAreaComp.getIsOrNotChange() : false;
     // },
     onSubmitClick() { // 提交
-      console.log(this.$refs.oLevel1Comp);
       const data = this.$refs.oLevel1Comp.save();
-      console.log(data);
       if (data) {
         this.$emit('level1Submit', data);
       }

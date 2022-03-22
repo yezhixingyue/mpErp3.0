@@ -321,7 +321,6 @@ export default {
     },
 
     onAddUserTypeClick() {
-      console.log(this.editData.CustomerTypeList);
       this.editData.CustomerTypeList.push({
         AllowRemove: false,
         CategoryID: -666,
@@ -345,11 +344,9 @@ export default {
       });
     },
     handleSubmit() {
-      console.log(this.editData);
       // 用户类型
       this.editData.CustomerTypeList.forEach((element, index) => {
         const filtrate = this.userTypeList.filter((item) => item.Type === 1 && item.CategoryID === element.CategoryID);
-        console.log(filtrate);
         this.editData.CustomerTypeList[index].CategoryName = filtrate.length ? filtrate[0].CategoryName : '';
       });
       // 产品分类
@@ -381,7 +378,6 @@ export default {
 
     // 划分区域按钮
     zoningButton(item) {
-      console.log(item);
       this.dialogTableVisible = true;
       this.editData = item;
       if (!item.CustomerTypeList || !item.CustomerTypeList.length) this.onAddUserTypeClick();

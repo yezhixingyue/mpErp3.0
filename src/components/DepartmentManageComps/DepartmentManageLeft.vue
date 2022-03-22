@@ -95,7 +95,6 @@ export default {
       this.localDepartmentList = JSON.parse(JSON.stringify(this.getSuperiorDepartment)) || [];
       this.localDepartmentList.forEach(SuperiorDepartment => {
         this.$set(SuperiorDepartment, 'children', this.departmentList.filter(item => item.ParentID === SuperiorDepartment.ID) || []);
-        console.log(SuperiorDepartment);
       });
       this.localDepartmentList = JSON.parse(JSON.stringify(this.localDepartmentList)) || [];
       this.localDepartmentList.forEach(SuperiorDepartment => {
@@ -105,7 +104,6 @@ export default {
       });
       // this.localDepartmentList =
       this.sortDepartment = JSON.parse(JSON.stringify(this.localDepartmentList)) || [];
-      console.log(this.localDepartmentList);
     },
     onTotalClick() { // 管理一级区  -- 点击时，如果此时为排序状态，则应取消排序状态
       this.onCancelClick();
@@ -152,12 +150,10 @@ export default {
         });
 
         returnData.push(...returntowIt);
-        console.log(...returntowIt);
         delete _oneIt.children;
         return _oneIt;
       });
       returnData.push(...returnOneIt);
-      console.log(returnData);
       // const returnData = [];
       this.$emit('sort', returnData);
     },
