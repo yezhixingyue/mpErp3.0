@@ -77,8 +77,8 @@ export default {
       OrderType: '',
       Terminal: '',
       PlaceDate: {
-        First: '',
-        Second: '',
+        First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
+        Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
       },
       OrderTaker: '',
       DeliverStatus: '',
@@ -277,8 +277,8 @@ export default {
         OrderType: '',
         Terminal: '',
         PlaceDate: {
-          First: '',
-          Second: '',
+          First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
+          Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
         },
         OrderTaker: '',
         DeliverStatus: '',

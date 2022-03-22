@@ -20,8 +20,8 @@ export default {
       ProductID: '',
       ExpressType: '',
       OutstoreDate: { // 时间区间
-        First: '',
-        Second: '',
+        First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
+        Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
       },
       OrderType: '',
       KeyWords: '', // 关键字搜索
@@ -139,8 +139,7 @@ export default {
     },
     /* 清除筛选项相关
     -------------------------------*/
-    clearConfigObj(state, type = 'clear') {
-      const _keywordsText = state.searchCondition4Finance.KeyWords;
+    clearConfigObj(state) {
       state.searchCondition4Finance = {
         SellArea: {
           RegionalID: '',
@@ -153,8 +152,8 @@ export default {
         },
         ProductID: '',
         OutstoreDate: { // 时间区间
-          First: '',
-          Second: '',
+          First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
+          Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
         },
         HaveWriteOff: '',
         KeyWords: '', // 关键字搜索=
@@ -166,12 +165,10 @@ export default {
         WriteOffOperator: '',
         HaveUnPaid: '',
       };
-      if (type === 'onKeyWordSubmit') state.searchCondition4Finance.KeyWords = _keywordsText;
       state.largeTitle = '不限';
       state.midTitle = '不限';
       state.smTitle = '不限';
       state.expressTitle = '不限';
-      state.selectedTimeArr = [0, 1, 0, 0, 0, 0];
       state.searchCondition4Finance.HaveWriteOff = '';
     },
 

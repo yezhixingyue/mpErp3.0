@@ -48,7 +48,7 @@
       </div>
     </li>
     <li>
-      <LineDateSelectorComp
+      <!-- <LineDateSelectorComp
         :changePropsFunc='setCondition4OrderType'
         :requestFunc='getCustomerOrderBill'
         :isFull="true"
@@ -58,7 +58,8 @@
         label="时间"
         :dateList="dateList"
         dateType="date"
-        />
+        /> -->
+      <ElDateRangeSelector v-model="conditionDate"  :menus='dateMenus' title="时间" />
       <search-input-comp
         class="search-section"
         :typeList="[['KeyWords', '']]"
@@ -77,29 +78,50 @@
 <script>
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
-import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+// import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
+import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState, mapMutations, mapActions } from 'vuex';
 
 export default {
   components: {
     AreaSelector,
     OrderChannelSelector,
-    LineDateSelectorComp,
+    // LineDateSelectorComp,
     SearchInputComp,
+    ElDateRangeSelector,
   },
   computed: {
     ...mapState('fundBill', ['condition4OrderType', 'orderTypeDataList']),
     ...mapState('common', ['FundBillOrderTypeList', 'FundBillOrderCurrencyList', 'userTypeList', 'userRankList']),
-    UserDefinedTimeIsActive() {
-      // eslint-disable-next-line max-len
-      return this.condition4OrderType.DateType === '' && !!this.condition4OrderType.Date.First && !!this.condition4OrderType.Date.Second;
+    // UserDefinedTimeIsActive() {
+    //   // eslint-disable-next-line max-len
+    //   return this.condition4OrderType.DateType === '' && !!this.condition4OrderType.Date.First && !!this.condition4OrderType.Date.Second;
+    // },
+    conditionDate: {
+      get() {
+        return [this.condition4OrderType.Date.First, this.condition4OrderType.Date.Second];
+      },
+      set(newVal) {
+        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
+        this.setCondition4OrderType([['Date', 'First'], key]);
+        this.setCondition4OrderType([['Date', 'Second'], value]);
+        this.getCustomerOrderBill();
+      },
     },
   },
   data() {
     return {
       // eslint-disable-next-line max-len
-      dateList: [{ name: '不限', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
+      // dateList: [{ name: '不限', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
+      dateMenus: [
+        { text: '不限', key: 'all' },
+        { text: '今天', key: 'TodayDate' },
+        { text: '昨天', key: 'YesterdayDate' },
+        { text: '前天', key: 'BeforeYesterdayTimeDate' },
+        { text: '本月', key: 'curMonthDate' },
+        { text: '上月', key: 'lastMonthDate' },
+      ],
     };
   },
   methods: {

@@ -65,7 +65,7 @@ export default {
     setStatusInPromoteListData(state, [index, status]) {
       state.PromoteListData[index].Status = status;
     },
-    /** 调整请求对象信息中的时间信息
+    /** 调整请求对象信息中的时间信息 --- 原日期筛选组件不用后该方法废弃
      ---------------------------------------- */
     setRequestObjDate(state) {
       const dateTypeList = ['all', 'today', 'yesterday', 'beforeyesterday'];
@@ -165,7 +165,7 @@ export default {
   },
   actions: {
     async getPromoteList({ state, commit }, page = 1) {
-      commit('setRequestObjDate');
+      // commit('setRequestObjDate');
       commit('setPromoteListRequestObj', [['Page', ''], page]);
       commit('setPromoteListData', [[], '']);
       const _obj = PromoteListRequestObj.filter(state.promoteListRequestObj);

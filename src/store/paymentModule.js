@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 // eslint-disable-next-line import/no-cycle
 import api from '@/api/index';
+import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 import messageBox from '../assets/js/utils/message';
 /**
  * 该模块主要用于付款列表模块状态管理
@@ -17,8 +18,8 @@ export default {
       // payment: '',
       OrderType: '',
       CreateDate: {
-        First: '',
-        Second: '',
+        First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
+        Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
       },
       CustomerType: {
         First: '',
@@ -122,19 +123,6 @@ export default {
     setOrderCreateType(state, value) {
       state.set2PaymentList.OrderType = value;
     },
-    /* 时间选择相关
-    -------------------------------*/
-    setSelectTime(state, [type, num, obj]) {
-      if (type !== 'timeSelect') {
-        const timeObj = this.getters[`timeSelectModule/${type}`];
-        state.set2PaymentList.CreateDate = timeObj;
-      } else {
-        state.set2PaymentList.CreateDate = obj;
-      }
-      state.selectedTimeArr = [0, 0, 0, 0, 0, 0];
-      state.selectedTimeArr[num] = 1;
-    //  console.log(state.set2PaymentList);
-    },
     /* 关键字搜索相关
     -------------------------------*/
     setPlaceWord(state, type) {
@@ -143,16 +131,15 @@ export default {
     },
     /* 清除筛选项相关
     -------------------------------*/
-    clearConfigObj(state, type = 'clear') {
-      const _keywordsText = state.set2PaymentList.KeyWords;
+    clearConfigObj(state) {
       state.set2PaymentList = {
         Status: '',
         Operator: '',
         // payment: '',
         OrderType: '',
         CreateDate: {
-          First: '',
-          Second: '',
+          First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
+          Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
         },
         CustomerType: {
           First: '',
@@ -162,9 +149,6 @@ export default {
         Page: 1,
         PageSize: 30,
       };
-      if (type === 'onKeyWordSubmit') state.set2PaymentList.KeyWords = _keywordsText;
-      state.selectedTimeArr = [0, 1, 0, 0, 0, 0];
-      state.selectedItemArr = [1, 0, 0, 0];
     },
     /* 设置想要被删除的付款单ID
     -------------------------------*/

@@ -47,7 +47,20 @@
         :value='searchCondition4Finance.WriteOffOperator'
         />
     </div>
-    <TimeSearchSelector />
+    <div class="s">
+      <ElDateRangeSelector v-model="conditionDate" :menus="dateMenus" />
+      <SearchInputComp
+        class="search-section"
+        :typeList="[['KeyWords', '']]"
+        title="关键词"
+        placeholder='请输入搜索关键词'
+        :requestFunc='getFinanceTableData'
+        :changePropsFunc='setFinanceRequestObj'
+        :word='searchCondition4Finance.KeyWords'
+        :searchWatchKey="PackageList"
+        @reset='() => this.clearConfigObj()'
+      />
+    </div>
     <div class="title-remark">
       <span class="is-red">注：</span>
       <span class="is-gray">今天入库明天早上8点开始计入应收</span>
@@ -60,13 +73,15 @@ import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannel
 import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import { mapState, mapMutations, mapActions } from 'vuex';
 import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
+import SearchInputComp from '@/components/common/SearchInputComp.vue';
+import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import AreaSelector from './AreaSelector.vue';
 // import UserSelector from './UserSelector.vue';
 // import OrderStatusSelector from './OrderStatusSelector.vue';
 // import ProductSelector from './ProductSelector.vue';
 import ExpressSelector from './ExpressSelector.vue';
 import WriteComp from './WriteComp.vue';
-import TimeSearchSelector from './TimeSearchSelector.vue';
+// import TimeSearchSelector from './TimeSearchSelector.vue';
 
 export default {
   components: {
@@ -75,13 +90,26 @@ export default {
     ExpressSelector,
     // OrderStatusSelector,
     WriteComp,
-    TimeSearchSelector,
+    // TimeSearchSelector,
     OrderChannelSelector,
     StaffSelector,
+    ElDateRangeSelector,
+    SearchInputComp,
   },
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'deliverStatus']),
-    ...mapState('finance', ['searchCondition4Finance']),
+    ...mapState('finance', ['searchCondition4Finance', 'PackageList']),
+    conditionDate: {
+      get() {
+        return [this.searchCondition4Finance.OutstoreDate.First, this.searchCondition4Finance.OutstoreDate.Second];
+      },
+      set(newVal) {
+        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
+        this.setFinanceRequestObj([['OutstoreDate', 'First'], key]);
+        this.setFinanceRequestObj([['OutstoreDate', 'Second'], value]);
+        this.getFinanceTableData();
+      },
+    },
   },
   data() {
     return {
@@ -90,10 +118,17 @@ export default {
         { ID: true, name: '有' },
         { ID: false, name: '无' },
       ],
+      dateMenus: [
+        { text: '今天入库', key: 'TodayDate' },
+        { text: '昨天入库', key: 'YesterdayDate' },
+        { text: '前天入库', key: 'BeforeYesterdayTimeDate' },
+        { text: '本月入库', key: 'curMonthDate' },
+        { text: '上月入库', key: 'lastMonthDate' },
+      ],
     };
   },
   methods: {
-    ...mapMutations('finance', ['setFinanceRequestObj']),
+    ...mapMutations('finance', ['setFinanceRequestObj', 'clearConfigObj']),
     ...mapActions('finance', ['getFinanceTableData']),
   },
 };
@@ -152,6 +187,16 @@ header.mp-finance-page-header {
       width: 114px;
     }
   }
+  > .s {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding-right: 40px;
+    > div, > section {
+      margin-bottom: 12px;
+    }
+  }
   .mp-order-time-select-box {
     .mp-head-page-title {
       width: 5em;
@@ -168,7 +213,7 @@ header.mp-finance-page-header {
   }
   > .title-remark {
     font-size: 12px;
-    padding-left: calc(5em + 20px);
+    padding-left: calc(5em + 26px);
     // margin-top: -8px;
     margin-bottom: 18px;
   }

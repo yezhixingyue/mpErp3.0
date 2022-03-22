@@ -1,5 +1,6 @@
 import api from '@/api/index';
 import CommonClassType from '@/store/CommonClassType';
+import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 
 const _condition = {
   SellArea: { // 销售区域
@@ -12,8 +13,8 @@ const _condition = {
     Second: '',
   },
   CreateTime: { // 时间筛选
-    First: '',
-    Second: '',
+    First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
+    Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
   },
   ExpressType: '', // 配送方式
   Status: '', // 物流状态
@@ -63,7 +64,7 @@ export default {
   },
   actions: {
     async getPackageDataList({ state, commit }, page = 1) {
-      commit('setConditionDateFormat');
+      // commit('setConditionDateFormat');
       commit('setCondition4DataList', [['Page', ''], page]);
       commit('setPackageDataList', [[], undefined]);
       const _obj = CommonClassType.filter(state.condition4DataList, true);

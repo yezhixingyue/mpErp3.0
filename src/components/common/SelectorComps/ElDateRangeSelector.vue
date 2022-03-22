@@ -1,0 +1,173 @@
+<template>
+  <div class="mp-common-comps-el-date-range-selector-comp-wrap">
+    <label>{{title}}：</label>
+    <el-date-picker
+      v-model="localValue"
+      :type="type"
+      align="center"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      value-format="yyyy-MM-ddTHH:mm:ss"
+      :format="format"
+      :picker-options="pickerOptions"
+      :default-time='defaultTime'
+      :clearable='clearable'
+      :popper-class="popperClassName"
+      size="mini"
+    />
+  </div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex';
+
+export default {
+  props: {
+    value: {
+      type: Array,
+      default: () => [],
+    },
+    type: {
+      type: String,
+      default: 'daterange',
+    },
+    title: {
+      type: String,
+      default: '时间筛选',
+    },
+    menus: { // 日期筛选按钮列表
+      type: Array,
+      default: () => [
+        { text: '不限', key: 'all' },
+        { text: '今天', key: 'TodayDate' },
+        { text: '昨天', key: 'YesterdayDate' },
+        { text: '本月', key: 'curMonthDate' },
+        { text: '上月', key: 'lastMonthDate' },
+      ],
+    },
+    maxSpan: { // 最大时间跨度，如订单管理最大不能超出一年
+      type: Number,
+      default: 0, // 天数
+    },
+  },
+  computed: {
+    ...mapGetters('timeSelectModule', [
+      'TodayDate', 'YesterdayDate', 'BeforeYesterdayTimeDate', 'curWeekDate', 'lastWeekDate', 'curMonthDate', 'lastMonthDate',
+    ]),
+    localValue: {
+      get() {
+        return this.value ? this.value.map(it => (it ? it.split('.')[0] : '')) : [];
+      },
+      set(val) {
+        const _list = val ? val.map((it, i) => (it ? `${it}.${i === 0 ? '000Z' : '997Z'}` : '')) : [];
+        if (this.maxSpan > 0 && _list.length === 2) {
+          const [start, end] = _list;
+          if (start && end && new Date(end).getTime() - new Date(start).getTime() > this.maxSpan * 24 * 60 * 60 * 1000) {
+            this.messageBox.failSingleError('日期设置失败', `时间跨度不可超过${this.maxSpan}天，请缩小时间跨度`);
+            return;
+          }
+        }
+        this.$emit('input', _list);
+      },
+    },
+    defaultTime() { // 后续的特殊处理？
+      return ['00:00:00', '23:59:59'];
+    },
+    format() {
+      if (this.type === 'daterange') return 'yyyy-MM-dd';
+      return 'yyyy-MM-dd HH:mm';
+    },
+    pickerOptions() { // 全部选项包括：不限、今天、昨天、前天、本周、上周、本月、上月
+      const shortcuts = this.menus.map(({ key, text }) => {
+        if (key === 'all') {
+          return {
+            text,
+            onClick(picker) {
+              picker.$emit('pick', ['', '']);
+            },
+          };
+        }
+        if (this[key]) {
+          const _date = this[key];
+          return {
+            text,
+            onClick: picker => {
+              const start = new Date(_date.First.replace('Z', ''));
+              const end = new Date(_date.Second.replace('Z', ''));
+              picker.$emit('pick', [start, end]);
+            },
+          };
+        }
+        return null;
+      }).filter(it => it);
+      return { shortcuts };
+    },
+    clearable() { // 是否显示清除按钮，当menus中包含不限选项的时候可以清除
+      const keys = this.menus.map(it => it.key);
+      return keys.includes('all');
+    },
+    popperClassName() {
+      const arr = ['mp-date-range'];
+      if (!this.clearable) arr.push('unable-clear');
+      return arr.join(' ');
+    },
+  },
+};
+</script>
+<style lang='scss'>
+.mp-common-comps-el-date-range-selector-comp-wrap {
+  display: flex;
+  align-items: center;
+  > label {
+    min-width: 5em;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444444;
+    line-height: 24px;
+    margin-right: 15px;
+    text-align: right;
+  }
+  > .el-date-editor {
+    border-radius: 2px;
+    > input {
+      font-size: 13px;
+      // color: #26bcf9;
+      &::placeholder {
+        color: #cbcbcb;
+        color: #a2a2a2;
+      }
+    }
+    .el-range-separator {
+      color: #989898;
+      font-weight: 700;
+    }
+  }
+}
+.el-picker-panel.mp-date-range{
+  .today.start-date, .today.end-date {
+    > div > span {
+      color: #fff !important;
+    }
+  }
+  &.unable-clear {
+    .el-picker-panel__footer {
+      .el-button--text {
+        display: none;
+      }
+    }
+  }
+  &.finance-use {
+    .el-date-range-picker__editors-wrap {
+      .el-date-range-picker__time-picker-wrap:last-of-type {
+        pointer-events: none;
+        .el-input__inner {
+          background-color: #eee;
+          color: #989898;
+        }
+      }
+    }
+  }
+}
+</style>

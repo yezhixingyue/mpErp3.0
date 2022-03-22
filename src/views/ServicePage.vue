@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-04-09 14:23:16
- * @LastEditTime: 2022-01-08 09:57:51
+ * @LastEditTime: 2022-03-22 09:45:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/views/ServicePage.vue
@@ -15,9 +15,9 @@
 
 <script>
 import { mapActions } from 'vuex';
-import ServiceHeader from '@/components/ServiceAfterSale/Header/ServiceHeader.vue';
 import ServiceMain from '@/components/ServiceAfterSale/Main/ServiceMain.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+import ServiceHeader from '../components/ServiceAfterSale/Header/ServiceHeader.vue';
 
 
 export default {
@@ -31,6 +31,8 @@ export default {
     ...mapActions('service', ['getServiceListData']),
   },
   mounted() {
+    this.$store.commit('service/clearConfigObj');
+    this.getServiceListData();
   },
 };
 </script>

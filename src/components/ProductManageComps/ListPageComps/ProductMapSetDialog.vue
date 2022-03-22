@@ -144,13 +144,17 @@ export default {
       this.loading = true;
       const [ElementList, FormulaList] = await Promise.all([this.getElementList(), this.getFormulaList()]);
       this.loading = false;
-      const _ElementList = ElementList.filter(it => it.Type === 1 && it.NumbericAttribute && it.NumbericAttribute.AllowDecimal === false);
+      const _ElementList = ElementList
+        .filter(it => (it.Type === 1 && it.NumbericAttribute?.AllowDecimal === false)
+          || (it.Type === 2 && it.OptionAttribute?.OptionList?.length > 0 && it.OptionAttribute?.OptionList?.length <= 2));
       this.ElementData.List = [..._ElementList, ...FormulaList];
       return [_ElementList, FormulaList];
     },
     async getElementList() { // getElementGroupList
-      const [resp, groupResp] = await Promise.all([this.api.getElementList({ positionID: this.ElementData.PositionID }, true).catch(() => {}),
-        this.api.getElementGroupList(this.ElementData.PositionID, true).catch(() => {})]);
+      const [resp, groupResp] = await Promise.all([
+        this.api.getElementList({ positionID: this.ElementData.PositionID }, true).catch(() => {}),
+        this.api.getElementGroupList(this.ElementData.PositionID, true).catch(() => {}),
+      ]);
       const list = [];
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         list.push(...resp.data.Data.filter(it => !it.Group));

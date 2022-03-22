@@ -76,7 +76,7 @@ export default {
     async getCustomerBill({ state, commit }, page = 1) { // 获取客户余额流水数据
       commit('setCondition4BalanceType', [['Page', ''], page]);
       commit('setBalanceTypeDataList', [[], undefined]);
-      commit('setConditionDate4Balance');
+      // commit('setConditionDate4Balance');
       commit('setIsBalanceDataLoading', true);
       const _obj = ClassType.filter(state.condition4BalanceType, true);
       const res = await api.getCustomerBill(_obj);
@@ -88,7 +88,7 @@ export default {
     async getCustomerOrderBill({ state, commit }, page = 1) { // 获取客户订单流水数据
       commit('setCondition4OrderType', [['Page', ''], page]);
       commit('setOrderTypeDataList', [[], undefined]);
-      commit('setConditionDate4Order');
+      // commit('setConditionDate4Order');
       commit('setIsOrderDataLoading', true);
       const _obj = ClassType.filter(state.condition4OrderType, true);
       const res = await api.getCustomerOrderBill(_obj);

@@ -50,7 +50,7 @@
       />
     </div>
     <div class="second">
-      <LineDateSelectorComp
+      <!-- <LineDateSelectorComp
         :changePropsFunc='setCondition4DataList'
         :requestFunc='getPackageDataList'
         :isFull="true"
@@ -60,8 +60,9 @@
         label="时间筛选"
         :dateList="dateList"
         dateType="date"
-        />
-        <search-input-comp
+        /> -->
+        <ElDateRangeSelector v-model="conditionDate" />
+        <SearchInputComp
         class="search-section"
         :typeList="[['KeyWords', '']]"
         title="关键词"
@@ -79,7 +80,8 @@
 <script>
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
-import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
+// import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
@@ -87,15 +89,27 @@ export default {
   components: {
     AreaSelector,
     OrderChannelSelector,
-    LineDateSelectorComp,
+    // LineDateSelectorComp,
     SearchInputComp,
+    ElDateRangeSelector,
   },
   computed: {
     ...mapState('packageModule', ['condition4DataList', 'packageDataList']),
     ...mapState('common', ['userTypeList', 'userRankList', 'deliverStatus']),
     ...mapGetters('common', ['expressList']),
-    UserDefinedTimeIsActive() {
-      return this.condition4DataList.DateType === '' && !!this.condition4DataList.CreateTime.First && !!this.condition4DataList.CreateTime.Second;
+    // UserDefinedTimeIsActive() {
+    //   return this.condition4DataList.DateType === '' && !!this.condition4DataList.CreateTime.First && !!this.condition4DataList.CreateTime.Second;
+    // },
+    conditionDate: {
+      get() {
+        return [this.condition4DataList.CreateTime.First, this.condition4DataList.CreateTime.Second];
+      },
+      set(newVal) {
+        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
+        this.setCondition4DataList([['CreateTime', 'First'], key]);
+        this.setCondition4DataList([['CreateTime', 'Second'], value]);
+        this.getPackageDataList();
+      },
     },
   },
   data() {

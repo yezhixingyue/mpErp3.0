@@ -2,8 +2,8 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
 import api from '@/api/index';
-// import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 import CommonClassType from '@/store/CommonClassType';
+import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 import messageBox from '../assets/js/utils/message';
 import UploadFileByBreakPoint from '../assets/js/upload/UploadFileByBreakPoint';
 
@@ -61,8 +61,8 @@ export default {
         ProductID: '',
       },
       CreateTime: { // 时间区间
-        First: '',
-        Second: '',
+        First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
+        Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
       },
       KeyWords: '', // 关键字搜索
       Page: 1,
@@ -82,9 +82,6 @@ export default {
     largeProTitle: '不限',
     midProTitle: '不限',
     smProTitle: '不限',
-    /* 时间选择相关
-    -------------------------------*/
-    selectedTimeArr: [0, 1, 0, 0, 0, 0],
     /* 售后提交单 -- 提交问题时对应的包裹信息
     -------------------------------*/
     submitPackageList: [],
@@ -244,29 +241,9 @@ export default {
     setServiceDataLoading(state, boolean) {
       state.serviceDataLoading = boolean;
     },
-    /* 时间选择相关
-    -------------------------------*/
-    setSelectTime(state, [type, num, obj]) {
-      if (type !== 'timeSelect') {
-        const timeObj = this.getters[`timeSelectModule/${type}`];
-        state.obj4RequestServiceList.CreateTime = timeObj;
-      } else {
-        state.obj4RequestServiceList.CreateTime = obj;
-      }
-      state.selectedTimeArr = [0, 0, 0, 0, 0, 0];
-      state.selectedTimeArr[num] = 1;
-      // console.log(state.obj4RequestServiceList);
-    },
-    /* 关键字搜索相关
-    -------------------------------*/
-    setPlaceWord(state, type) {
-      // console.log(state.obj4RequestServiceList.KeyWords, type);
-      state.obj4RequestServiceList.KeyWords = type;
-    },
     /* 清除筛选条件
     -------------------------------*/
-    clearConfigObj(state, type = 'clear') {
-      const _keywordsText = state.obj4RequestServiceList.KeyWords;
+    clearConfigObj(state) {
       state.obj4RequestServiceList = {
         Type: '',
         Product: {
@@ -275,8 +252,8 @@ export default {
           ProductID: '',
         },
         CreateTime: {
-          First: '',
-          Second: '',
+          First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
+          Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
         },
         KeyWords: '',
         Page: 1,
@@ -287,8 +264,6 @@ export default {
         },
         Operator: '',
       };
-      if (type === 'onKeyWordSubmit') state.obj4RequestServiceList.KeyWords = _keywordsText;
-      state.selectedTimeArr = [0, 1, 0, 0, 0, 0];
     },
     /* 售后提交单 -- 设置提交问题对象 submitQuestionList
     -------------------------------*/
@@ -537,11 +512,6 @@ export default {
       const onUploadProgressFunc = (complete) => commit('setPercentage', complete);
       if (data && uniqueName && state.SolutionType === 'replenish') { // 上传补印文件
         const key = await UploadFileByBreakPoint(data, uniqueName, onUploadProgressFunc);
-        // if (key) commit('setFileName', uniqueName);
-        // else {
-        //   commit('setPercentage', null);
-        //   return;
-        // }
         if (!key) {
           commit('setPercentage', null);
           return;
@@ -580,14 +550,12 @@ export default {
       if (state.QuestionTypeList.length > 0) return;
       const res = await api.getQuestionList();
       if (res.data.Status === 1000) {
-      //  console.log(res);
         commit('setQuestionTypeList', res.data.Data);
       }
     },
     /* 根据订单号获取该单包含的包裹列表 -- 售后单中使用 getPackageListByOrderID
     -------------------------------*/
     async getPackageListByOrderID({ commit }, orderId) {
-      // console.log('getPackageListByOrderID');
       const res = await api.getPackageListByOrderID(orderId);
       if (res.data.Status === 1000) commit('setOrderPackageListTableData', res.data.Data);
     },
@@ -603,60 +571,6 @@ export default {
         throw new Error(res.data.Message);
       }
     },
-    // async getServiceListData2Excel({ state }) { // excel文件下载
-    //   const config = JSON.parse(JSON.stringify(state.obj4RequestServiceList)); // 获取经过处理过的请求头配置对象
-
-    //   delete config.Page;
-    //   delete config.PageSize;
-
-    //   const res = await api.getServiceListData2Excel(config);
-    //   if (res.status !== 200) {
-    //     messageBox.failSingleError('出错啦 ！', `[ 下载失败：${res.statusText} ]`);
-    //     return;
-    //   }
-
-    //   const { data } = res;
-    //   const blobData = new Blob([data]);
-
-    //   let fileName = '售后单列表.xls';
-    //   if (!config.CreateTime) {
-    //     fileName = '售后单列表(全部).xls';
-    //   } else {
-    //     const { First, Second } = config.CreateTime;
-    //     if (First && Second) {
-    //       const f = First.split('T')[0];
-    //       let _second = '';
-    //       if (new Date(Second) > new Date()) {
-    //         const PlaceDate = this.getters['timeSelectModule/TodayDate'];
-    //         _second = PlaceDate.Second;
-    //       } else {
-    //         _second = Second;
-    //       }
-    //       const t2 = _second ? ConvertTimeFormat(new Date(new Date(_second).getTime() - 24 * 60 * 60 * 1000)) : '';
-    //       if (f) fileName = `售后单列表(${f}至${t2}).xls`;
-    //     } else {
-    //       fileName = '售后单列表(全部).xls';
-    //     }
-    //   }
-
-    //   if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-    //     window.navigator.msSaveOrOpenBlob(blobData, fileName);
-    //   } else {
-    //     const url = window.URL.createObjectURL(blobData, { type: 'application/vnd.ms-excel' });
-    //     const link = document.createElement('a');
-    //     link.style.display = 'none';
-    //     link.href = url;
-
-    //     link.setAttribute('download', `${fileName}`);
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-
-    //     link.onload = () => {
-    //       window.URL.revokeObjectURL(url);
-    //     };
-    //   }
-    // },
     async downLoadOrderFile({ rootState }) {
       const orderID = rootState.orderModule.curOrderID;
       const res = await api.getOrderFilePath2DownLoad(orderID);
@@ -685,7 +599,6 @@ export default {
       }
     },
     async getPayPackageByOrder({ commit }, orderId) {
-      // console.log('getPayPackageByOrder');
       const res = await api.getPayPackageByOrder(orderId);
       if (res && res.data.Status === 1000) {
         // 获取成功
