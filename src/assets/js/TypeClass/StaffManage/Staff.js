@@ -1,7 +1,7 @@
 import CommonClassType from '../../../../store/CommonClassType';
 import { EducationEnumObj, SexEnumObj, StaffStatusEnumObj } from './enums';
 import { getFormatDateString } from '../../utils/util';
-import restoreClassByOriginData from '../../utils/reduction';
+import restoreInitDataByOrigin from '../../utils/reduction';
 import { getInfoFormIdCard } from '../../utils/IdCardvalidator';
 
 /**
@@ -56,7 +56,7 @@ export default class Staff {
   }
 
   constructor(data) {
-    restoreClassByOriginData(this, data);
+    restoreInitDataByOrigin(this, data);
   }
 
   transformToSubmit() {

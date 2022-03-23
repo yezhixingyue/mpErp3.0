@@ -39,7 +39,7 @@
       </li>
       <li class="row-two">
         <!-- <TimeSearchSelector /> -->
-        <ElDateRangeSelector v-model="conditionDate" :max-span="366" :menus="dateMenus" />
+        <ElDateRangeSelector v-model="conditionDate" :menus="dateMenus" :max-span="366" :condition="objForOrderList" initText='今天' />
         <SearchInputComp
           class="search-section"
           :typeList="[['KeyWords', '']]"
@@ -103,6 +103,8 @@ export default {
         { text: '今天', key: 'TodayDate' },
         { text: '昨天', key: 'YesterdayDate' },
         { text: '前天', key: 'BeforeYesterdayTimeDate' },
+        { text: '本周', key: 'curWeekDate' },
+        { text: '上周', key: 'lastWeekDate' },
         { text: '本月', key: 'curMonthDate' },
         { text: '上月', key: 'lastMonthDate' },
       ],

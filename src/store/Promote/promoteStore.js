@@ -51,7 +51,7 @@ export default {
     /** 重置清除请求对象信息
      ---------------------------------------- */
     clearPromoteListRequestObj(state) {
-      PromoteListRequestObj.clear(state.promoteListRequestObj);
+      state.promoteListRequestObj = new PromoteListRequestObj();
     },
     /** 设置活动列表数据
      ---------------------------------------- */

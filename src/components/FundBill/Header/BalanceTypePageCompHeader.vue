@@ -68,7 +68,7 @@
         :dateList="dateList"
         dateType="date"
         /> -->
-      <ElDateRangeSelector v-model="conditionDate"  :menus='dateMenus' title="时间" />
+      <ElDateRangeSelector v-model="conditionDate"  :menus='dateMenus' title="时间" :condition="condition4BalanceType" />
       <search-input-comp
         class="search-section"
         :typeList="[['KeyWords', '']]"

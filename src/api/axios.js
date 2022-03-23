@@ -25,7 +25,7 @@ let requestNum = 0;
 let loadingInstance;
 const getShowLoading = (config) => { // 查看当前请求是否需要展示弹窗
   let showLoading = true;
-  const arr = ['/Api/PaymentOrder/PayResult', '/Api/Upload/File', '/Api/PaymentOrder/Create', '/Api/Staff/List',
+  const arr = ['/Api/PaymentOrder/PayResult', '/Api/Upload/File', '/Api/PaymentOrder/Create',
     '/Api/FileNode', '/Api/FileServer']; // 不需要展示loading的api地址
   if (config && config.url) {
     for (let i = 0; i < arr.length; i += 1) {

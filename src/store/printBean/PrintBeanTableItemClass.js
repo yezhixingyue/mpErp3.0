@@ -1,4 +1,4 @@
-import restoreClassByOriginData from '../../assets/js/utils/reduction';
+import restoreInitDataByOrigin from '../../assets/js/utils/reduction';
 
 /**
  * 设置印豆时，右侧的单个类对象
@@ -25,7 +25,7 @@ export default class PrintBeanTableItem {
 
   constructor(data) {
     if (data) {
-      restoreClassByOriginData(this, data);
+      restoreInitDataByOrigin(this, data);
     } else { // 没有ID时则生成key
       this.key = Math.random().toString(32).slice(-10);
     }

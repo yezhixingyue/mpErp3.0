@@ -1,4 +1,4 @@
-import restoreClassByOriginData from '../../assets/js/utils/reduction';
+import restoreInitDataByOrigin from '../../assets/js/utils/reduction';
 import messageBox from '../../assets/js/utils/message';
 
 export default class PriceProductItemClass {
@@ -14,7 +14,7 @@ export default class PriceProductItemClass {
   key = Math.random().toString(36).slice(-8)
 
   constructor(data) {
-    restoreClassByOriginData(this, data);
+    restoreInitDataByOrigin(this, data);
   }
 
   static checker(PolicyList) {

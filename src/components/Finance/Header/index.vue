@@ -48,7 +48,7 @@
         />
     </div>
     <div class="s">
-      <ElDateRangeSelector v-model="conditionDate" :menus="dateMenus" />
+      <ElDateRangeSelector v-model="conditionDate" :menus="dateMenus" :condition="searchCondition4Finance" initText='今天入库' />
       <SearchInputComp
         class="search-section"
         :typeList="[['KeyWords', '']]"

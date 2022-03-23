@@ -4,13 +4,13 @@
  * @param {Object} obj
  * @param {Object} data
  */
-const restoreClassByOriginData = (obj, data) => {
+const restoreInitDataByOrigin = (obj, data) => {
   if (data && Object.prototype.toString.call(data) === '[object Object]' && obj && Object.prototype.toString.call(obj) === '[object Object]') {
     const _obj = obj;
     Object.keys(data).forEach(key => {
       if (Object.prototype.hasOwnProperty.call(_obj, key)) {
         if (data[key] && Object.prototype.toString.call(data[key]) === '[object Object]') {
-          restoreClassByOriginData(obj[key], data[key]);
+          restoreInitDataByOrigin(obj[key], data[key]);
         } else if (Array.isArray(data[key])) {
           _obj[key] = JSON.parse(JSON.stringify(data[key]));
         } else if (data[key] || data[key] === 0 || data[key] === false) {
@@ -21,4 +21,4 @@ const restoreClassByOriginData = (obj, data) => {
   }
 };
 
-export default restoreClassByOriginData;
+export default restoreInitDataByOrigin;

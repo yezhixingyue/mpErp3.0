@@ -22,6 +22,7 @@ const _condition = {
   DateType: 'today',
   Page: 1,
   PageSize: 30,
+  initDateText: '今天',
 };
 
 export default {

@@ -1,4 +1,4 @@
-import restoreClassByOriginData from '../../assets/js/utils/reduction';
+import restoreInitDataByOrigin from '../../assets/js/utils/reduction';
 
 export default class Address {
   CustomerID = ''
@@ -31,7 +31,7 @@ export default class Address {
   key = Math.random().toString(32).slice(-8)
 
   constructor(data) {
-    restoreClassByOriginData(this, data);
+    restoreInitDataByOrigin(this, data);
     // if (data && Object.prototype.toString.call(data) === '[object Object]') {
     //   const { CustomerID, AddressID, ExpressArea, AddressDetail, Consignee, Mobile, Longitude, Latitude, HavePosition } = data;
     //   if (CustomerID) this.CustomerID = CustomerID;

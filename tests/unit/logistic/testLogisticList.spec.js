@@ -1,5 +1,5 @@
 import { mount, createLocalVue } from '@vue/test-utils';
-import LogisticManageListPage from '@/views/LogisticManage/LogisticManageListPage.vue';
+import LogisticManageListPage from '@/views/LogisticManagePages/LogisticManageListPage.vue';
 import ElementUI from 'element-ui';
 import { dialogDraghandleObj } from '../../../src/assets/js/utils/dialogDrag';
 

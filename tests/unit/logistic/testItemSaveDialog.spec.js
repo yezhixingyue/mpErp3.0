@@ -1,5 +1,5 @@
 import { mount, createLocalVue } from '@vue/test-utils';
-import LogisticItemSaveDialog from '@/components/LogisticManageComps/LogisticItemSaveDialog';
+import LogisticItemSaveDialog from '@/components/LogisticManage/LogisticItemSaveDialog';
 import ElementUI from 'element-ui';
 import { dialogDraghandleObj } from '../../../src/assets/js/utils/dialogDrag';
 

@@ -61,7 +61,7 @@
         :dateList="dateList"
         dateType="date"
         /> -->
-        <ElDateRangeSelector v-model="conditionDate" />
+        <ElDateRangeSelector v-model="conditionDate" :condition="condition4DataList" />
         <SearchInputComp
         class="search-section"
         :typeList="[['KeyWords', '']]"

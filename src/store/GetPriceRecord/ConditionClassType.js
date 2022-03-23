@@ -15,4 +15,6 @@ export default class RecordListConditonClass {
   }
 
   Terminal = '';
+
+  initDateText = '今天';
 }

@@ -6,8 +6,8 @@
       </div>
     </header>
     <main>
-      <LogisticTableComp v-if="false" ref="SortTable" :dataList='tableData' :sorting='sorting' />
-      <LogisticItemSaveDialog :visible.sync="visible" :edit-data="curEditItem" />
+      <LogisticTableComp v-if="false" ref="SortTable" :dataList='logisticList' :sorting='sorting' />
+      <LogisticItemSaveDialog :visible.sync="visible" :edit-data="curEditItem" @submit="handleItemSave" :list='logisticList' />
     </main>
     <footer>
       <template v-if="!sorting">
@@ -22,8 +22,9 @@
 </template>
 
 <script>
-import LogisticTableComp from '../../components/LogisticManageComps/LogisticTableComp.vue';
-import LogisticItemSaveDialog from '../../components/LogisticManageComps/LogisticItemSaveDialog';
+import { mapState } from 'vuex';
+import LogisticTableComp from '../../components/LogisticManage/LogisticTableComp.vue';
+import LogisticItemSaveDialog from '../../components/LogisticManage/LogisticItemSaveDialog';
 
 export default {
   name: 'LogisticManageListPage',
@@ -36,34 +37,21 @@ export default {
       visible: false,
       curEditItem: null,
       sorting: false,
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '京东物流[外]',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-04',
-          name: '中通快递[外]',
-          address: '上海市普陀区金沙江路 1517 弄',
-        },
-        {
-          date: '2016-05-01',
-          name: '名片之家[外]',
-          address: '上海市普陀区金沙江路 1519 弄',
-        },
-        {
-          date: '2016-05-03',
-          name: '顺丰快递物流[外]',
-          address: '上海市普陀区金沙江路 1516 弄',
-        },
-      ],
     };
+  },
+  computed: {
+    ...mapState('basicSet', ['logisticList']),
   },
   methods: {
     onItemSaveClick(data) { // 添加|编辑物流快递
       this.curEditItem = data;
       this.visible = true;
+    },
+    handleItemSave(data) { // 物流快递保存 编辑|新增
+      const callback = () => {
+        this.visible = false;
+      };
+      this.$store.dispatch('basicSet/getLogisticItemSave', { data, callback });
     },
     onSortingClick() { // 排序
       if (!this.tableData || this.tableData.length === 0) return;
@@ -76,6 +64,9 @@ export default {
       // 此处执行原始表格数据还原 已不需要 只执行关闭
       this.sorting = false;
     },
+  },
+  mounted() {
+    this.$store.dispatch('basicSet/getLogisticList');
   },
 };
 </script>

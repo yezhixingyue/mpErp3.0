@@ -22,7 +22,7 @@
         isFull
         label="时间筛选"
         dateType="date" /> -->
-      <ElDateRangeSelector v-model="conditionDate" :max-span="366" :menus="dateMenus" />
+      <ElDateRangeSelector v-model="conditionDate" :max-span="366" :menus="dateMenus" :condition="condition4RecordList" />
       <SearchInputComp
         :typeList="[['KeyWords', '']]"
         :requestFunc='getRecordList'

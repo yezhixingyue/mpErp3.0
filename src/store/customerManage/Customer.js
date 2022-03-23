@@ -1,6 +1,6 @@
 import { RegTypeEnum, AuthStatusEnum, CustomerStatusEnum } from './Enums';
 import AddressClass from './Address';
-import restoreClassByOriginData from '../../assets/js/utils/reduction';
+import restoreInitDataByOrigin from '../../assets/js/utils/reduction';
 
 export default class Customer {
   CustomerID = ''
@@ -96,7 +96,7 @@ export default class Customer {
   ShopIDString = ''
 
   constructor(data) {
-    restoreClassByOriginData(this, data);
+    restoreInitDataByOrigin(this, data);
     if (data && Object.prototype.toString.call(data) === '[object Object]') {
       const { Address } = data;
       if (Address && Array.isArray(Address)) {

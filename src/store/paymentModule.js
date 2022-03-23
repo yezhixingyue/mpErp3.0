@@ -28,6 +28,7 @@ export default {
       KeyWords: '',
       Page: 1,
       PageSize: 30,
+      initDateText: '今天',
     },
     /* 接单员列表相关
     -------------------------------*/
@@ -148,6 +149,7 @@ export default {
         KeyWords: '',
         Page: 1,
         PageSize: 30,
+        initDateText: '今天',
       };
     },
     /* 设置想要被删除的付款单ID

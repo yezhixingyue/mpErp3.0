@@ -1,6 +1,6 @@
 /* eslint-disable brace-style */
 // import messageBox from '../../assets/js/utils/message';
-import restoreClassByOriginData from '../../assets/js/utils/reduction';
+import restoreInitDataByOrigin from '../../assets/js/utils/reduction';
 import getEnumList from '../../assets/js/utils/getEnumList';
 import { getValueIsOrNotNumber } from '../../assets/js/utils/util';
 import PrintBeanTableItem from './PrintBeanTableItemClass';
@@ -61,7 +61,7 @@ export default class PrintBeanClass {
 
   constructor(data) {
     if (data) {
-      restoreClassByOriginData(this, data);
+      restoreInitDataByOrigin(this, data);
       const { StartTime, EndTime, ItemList } = data;
       if (StartTime && StartTime.length >= 10) this.StartTime = StartTime.slice(0, 10);
       if (EndTime && EndTime.length >= 10) this.EndTime = EndTime.slice(0, 10);

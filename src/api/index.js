@@ -1002,6 +1002,44 @@ const api = {
   getPrintBeanRemove(id) { // DELETE /Api/PrintBean/Remove  印豆删除
     return instance.delete('/Api/PrintBean/Remove', { params: { id } });
   },
+
+  /* 物流费用api
+  ----------------------------------------------------------------------------------- */
+  getLogisticsList() { // GET /Api/Logistics/List   物流快递列表
+    return instance.get('/Api/Logistics/List');
+  },
+  getLogisticsSave(data) { // POST /Api/Logistics/Save  物流快递保存
+    return instance.post('/Api/Logistics/Save', data);
+  },
+  getLogisticsRemove(id) { // DELETE /Api/Logistics/Remove  物流快递删除
+    return instance.delete('/Api/Logistics/Remove', { params: { id } });
+  },
+  /**
+   * 物流快递排序
+   *
+   * @param {*} ids 物流快递ID列表
+   * @returns
+   */
+  getLogisticsSetOrder(ids) { // POST /Api/Logistics/SetOrder 物流快递排序
+    return instance.post('/Api/Logistics/SetOrder', ids);
+  },
+  getThirdPlatExpressList() { // GET /Api/ThirdPlat/Express/List  获取第三方物流快递列表
+    return instance.get('/Api/ThirdPlat/Express/List');
+  },
+  /**
+   * 关联第三方快递
+   *
+   * @param {*} id 物流快递ID
+   * @param {*} type 第三方平台类型
+   * @param {*} thirdID 第三方快递ID
+   * @returns
+   */
+  getLogisticsBindExpress(id, type, thirdID) { // PUT /Api//BindExpress  关联第三方快递
+    return instance.put('/Api//BindExpress', null, { params: { id, type, thirdID } });
+  },
+  getLogisticsBindStation(data) { // POST /Api/Logistics/BindStation  关联网点 -- 参数同保存参数 RelationList
+    return instance.post('/Api/Logistics/BindStation', data);
+  },
 };
 
 export default api;

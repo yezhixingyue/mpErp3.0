@@ -244,6 +244,7 @@ export default {
           CityID: '',
           CountyID: '',
         },
+        initDateText: '今天',
       },
     };
   },
@@ -287,6 +288,7 @@ export default {
           CityID: '',
           CountyID: '',
         },
+        initDateText: '今天',
       };
     },
     handlePageChange(page) {
