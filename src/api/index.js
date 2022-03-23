@@ -932,7 +932,7 @@ const api = {
   getDepartmentSave(data) { //  部门保存
     return instance.post('/Api/Department/Save', data);
   },
-  getDepartmentOrder(data) { //  部门保存
+  getDepartmentOrder(data) { //  部门排序保存
     return instance.post('/Api/Department/Order', data);
   },
 

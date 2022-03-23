@@ -9,7 +9,8 @@
           <span>管理子部门</span>
         </template>
       </span>
-      <i class="el-icon-arrow-right" :class="{extend: extend}" @dblclick.stop @click.stop="onExtendClick"></i>
+      <i v-if="item.children.length" class="el-icon-arrow-right" :class="{extend: extend}" @dblclick.stop @click.stop="onExtendClick"></i>
+      <i style="width:18px;" v-else></i>
     </p>
     <div class="countys" v-show="extend">
       <draggable

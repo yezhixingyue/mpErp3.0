@@ -4,7 +4,7 @@
       <p class="mp-common-title-wrap">{{title}}</p>
     </header>
     <main>
-      <Level1ManageComp :level1List='level1List' ref="oLevel1Comp"  />
+      <Level1ManageComp :departmentList="departmentList" :level1List='level1List' ref="oLevel1Comp"  />
     </main>
     <footer>
       <el-button type="primary" size="small" @click="onSubmitClick">保存</el-button>

@@ -4,7 +4,7 @@
     <header>
       <p class="mp-common-title-wrap">部门列表</p>
       <el-button class="cancel-blue-btn" @click="onTotalClick" :disabled='sorting'>管理一级部门</el-button>
-      <span v-show="sorting" class="is-font-size-12" style="margin-left:15px">排序中.. ( 注：其它大区不参与排序)</span>
+      <span v-show="sorting" class="is-font-size-12" style="margin-left:15px">排序中.. </span>
     </header>
     <main>
       <p>

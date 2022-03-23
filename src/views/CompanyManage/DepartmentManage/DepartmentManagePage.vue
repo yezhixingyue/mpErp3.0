@@ -91,6 +91,7 @@ export default {
       const resp = await this.api.getDepartmentOrder(Array).catch(() => null);
       if (resp && resp.data.Status === 1000) {
         this.messageBox.successSingle('保存排序成功');
+        this.isSorting = false;
       }
     },
     async handleLevel1Submit(data) {
@@ -98,6 +99,7 @@ export default {
       api.getDepartmentSave(data).then((res) => {
         // console.log(res);
         if (res.status === 200 && res.data.Status === 1000) {
+          this.messageBox.successSingle('保存成功');
           this.$store.dispatch('department/getDepartmentList');
         }
       });

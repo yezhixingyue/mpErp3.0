@@ -8,13 +8,13 @@
             <img src="@/assets/images/add.png" alt="">
             <span>添加</span>
           </menuitem>
-          <menuitem :class="{'is-disabled': !it.canRemove || localList.length<2}" @click="onRemoveClick(it, i)">
-            <img src="@/assets/images/del.png" alt="" v-if="it.canRemove && localList.length>1">
+          <menuitem :class="{'is-disabled': childrenLingth(it.ID)}" @click="onRemoveClick(it, i)">
+            <img src="@/assets/images/del.png" alt="" v-if="!childrenLingth(it.ID)">
             <img src="@/assets/images/del-disabled.png" alt="" v-else>
-            <span>删除</span>
+            <span>删除{{childrenLingth(it.ID)}}</span>
           </menuitem>
         </menu>
-        <el-button type="text" @click="zoningButton(it)">划分责任区域及产品</el-button>
+        <el-button type="text" @click="zoningButton(it,i)">划分责任区域及产品</el-button>
       </div>
       <div class="text-row">
         关联区域：
@@ -26,11 +26,13 @@
       </div>
     </li>
 
-    <el-dialog custom-class="dialog" :visible.sync="dialogTableVisible">
-      <div class="dialog-title" slot="title">
-        <!-- <img src="" alt=""> -->
-        划分责任区域及产品
-      </div>
+    <CommonDialogComp
+    title="划分责任区域及产品"
+    :visible.sync="dialogTableVisible"
+    @cancle="onCancleClick"
+    @open="onOpen"
+    @closed="onClosed"
+    @submit="onSubmitClick">
       <div class="dialog-body">
         <div class="department-name">部门：<span>{{editData.ClassName}}</span></div>
         <div class="select-box">
@@ -155,21 +157,26 @@
 
         </div>
       </div>
-      <div class="dialog-footer">
+      <!-- <div class="dialog-footer">
         <el-button @click="handleSubmit" size="mini">确定</el-button>
-      </div>
-    </el-dialog>
+      </div> -->
+    </CommonDialogComp>
 
   </ul>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
 import AddAndDel from './addAndDelbutton';
 
 export default {
   props: {
     level1List: {
+      type: Array,
+      default: () => [],
+    },
+    departmentList: {
       type: Array,
       default: () => [],
     },
@@ -181,17 +188,21 @@ export default {
 
       // 正在修改的部门
       editData: {},
-
+      editDataIndex: null,
     };
   },
   components: {
     AddAndDel,
+    CommonDialogComp,
   },
   computed: {
     ...mapState('common', ['areaList']),
     ...mapState('common', ['ProductMultipleClassifyList']),
     ...mapState('department', ['userTypeList']),
     ...mapState('department', ['departmentParentID']),
+    childrenLingth() {
+      return (id) => this.departmentList.filter((item) => item.ParentID === id).length;
+    },
     // 一级区域
     FirstGradeArea() {
       return this.areaList.filter(item => item.ParentID === -1);
@@ -279,7 +290,7 @@ export default {
         Index: '',
         Level: 1,
         ParentID: this.departmentParentID,
-        // Type: 0,
+        Type: 1,
         canRemove: true,
         CustomerTypeList: [],
         ProductClassList: [],
@@ -334,12 +345,12 @@ export default {
     },
 
     onRemoveClick(it, i) { // 删除一行
-      if (!it.canRemove) return;
+      // if (!it.canRemove) return;
       if (!it.ID) { // 没有ID时可以直接删除
         this.localList.splice(i, 1);
         return;
       }
-      this.messageBox.warnCancelBox('确定删除该销售区域吗', `区域名称：[ ${it.ClassName || '未设置'} ]`, () => {
+      this.messageBox.warnCancelBox('确定删除该部门吗', `部门名称：[ ${it.ClassName || '未设置'} ]`, () => {
         this.localList.splice(i, 1);
       });
     },
@@ -365,7 +376,16 @@ export default {
         this.editData.SellAreaList[index].CountyName = filtrateCounty.length ? filtrateCounty[0].ClassName : '';
         this.editData.SellAreaList[index].RegionalName = filtrateRegional.length ? filtrateRegional[0].ClassName : '';
       });
+      this.localList.splice(this.editDataIndex, 1, this.editData);
       this.dialogTableVisible = false;
+    },
+    onCancleClick() {
+      this.dialogTableVisible = false;
+    },
+    onOpen() {},
+    onClosed() {},
+    onSubmitClick() {
+      this.handleSubmit();
     },
     save() {
       if (!this.getIsOrNotChange()) { // 此处判断右侧数据是否需要保存 -- 确认提示
@@ -377,9 +397,10 @@ export default {
     },
 
     // 划分区域按钮
-    zoningButton(item) {
+    zoningButton(item, index) {
       this.dialogTableVisible = true;
-      this.editData = item;
+      this.editData = JSON.parse(JSON.stringify(item));
+      this.editDataIndex = index;
       if (!item.CustomerTypeList || !item.CustomerTypeList.length) this.onAddUserTypeClick();
       if (!item.ProductClassList || !item.ProductClassList.length) this.onAddProductClassClick();
       if (!item.SellAreaList || !item.SellAreaList.length) this.onAddSellAreaClick();
@@ -450,6 +471,10 @@ export default {
   max-height: 100%;
   overflow: auto;
   scroll-behavior: smooth;
+  >li{
+    display: flex;
+    flex-direction: column;
+  }
   menu {
     display: flex;
     align-items: center;
@@ -496,6 +521,10 @@ export default {
       }
     }
     > .text-row{
+      overflow: hidden;
+      text-overflow:ellipsis;
+      white-space: nowrap;
+      line-height: 1em;
       color: #999;
       font-size: 14px;
       margin-top: 5px;
@@ -518,14 +547,12 @@ export default {
     > .department-name{
       border-bottom: 1px solid #26bcf9;
       padding-bottom: 5px;
-      > span{
-        color: #26bcf9;
-      }
     }
 
     > .select-box{
       padding: 1.5em;
       height: 400px;
+      overflow:auto;
       > .item{
         display: flex;
         margin-bottom: 10px;
@@ -552,15 +579,5 @@ export default {
     }
 
   }
-    .dialog-footer{
-      display: flex;
-      justify-content: center;
-      .el-button{
-        background-color: #26bcf9;
-        width: 80px;
-        border: none;
-        color: #fff;
-      }
-    }
 }
 </style>

@@ -9,7 +9,8 @@
         </template>
       </div>
       <div class="icon" :class="{extend: isExtend, moving: moving}" @dblclick.stop>
-        <i class="el-icon-arrow-right" @click.stop="onExtendClick"></i>
+        <i v-if="itemData.children.length" class="el-icon-arrow-right" @click.stop="onExtendClick"></i>
+        <i v-else></i>
       </div>
     </div>
     <draggable
