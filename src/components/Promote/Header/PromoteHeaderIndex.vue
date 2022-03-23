@@ -88,7 +88,7 @@
           :dateValue='promoteListRequestObj.DateType'
           :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
          /> -->
-        <ElDateRangeSelector v-model="conditionDate" type="datetimerange" :menus='dateMenus' />
+        <ElDateRangeSelector v-model="conditionDate" type="datetimerange" :menus='dateMenus' :condition="promoteListRequestObj" initText='不限' />
         <search-input-comp
           class="search-section"
           :typeList="[['KeyWords', '']]"
@@ -137,6 +137,8 @@ export default {
         { text: '今天', key: 'TodayDate' },
         { text: '昨天', key: 'YesterdayDate' },
         { text: '前天', key: 'BeforeYesterdayTimeDate' },
+        { text: '本月', key: 'curMonthDate' },
+        { text: '上月', key: 'lastMonthDate' },
       ],
     };
   },

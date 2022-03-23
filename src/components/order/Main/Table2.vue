@@ -106,8 +106,9 @@ export default {
     },
     getTimeClass(ProducePeriod, Status) {
       if (!ProducePeriod) return '';
-      const { TotalTime, IncludeDiliveryTime, ProduceTime } = ProducePeriod;
-      const _time = IncludeDiliveryTime ? TotalTime : ProduceTime;
+      const { TotalTime, IncludeDiliveryTime } = ProducePeriod;
+      const _time = TotalTime;
+      if (!_time) return '';
       const endTime = new Date(_time.replace('Z', '')).getTime();
       const now = Date.now();
       if (endTime - now < 0) {

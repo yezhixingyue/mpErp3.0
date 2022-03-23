@@ -42,6 +42,10 @@ export default {
     },
     craftFetchData: false,
     MakeupRuleList: [], // 拼版规则列表数据
+
+    /* 物流费用列表数据相关
+    -------------------------------*/
+    logisticList: [],
   },
   getters: {
     BreadthTreeList(state) {
@@ -320,6 +324,22 @@ export default {
     setMakeupRuleList(state, list) {
       state.MakeupRuleList = list;
     },
+
+    /* 物流费用列表数据相关
+    -------------------------------*/
+    setLogisticList(state, list) {
+      state.logisticList = list || [];
+    },
+    setLogisticItemSave(state, { data, ID }) { // 编辑|新增
+      if (!data.ID) { // 新增
+        state.logisticList.push({ ...data, ID });
+      } else { // 编辑
+        const i = state.logisticList.findIndex(it => it.ID === ID);
+        if (i > -1) {
+          state.logisticList.splice(i, { ...state.logisticList[i], ...data });
+        }
+      }
+    },
   },
   actions: {
     async getElementList({ state, commit }) { // 获取元素列表（暂固定为公共模板列表）
@@ -483,6 +503,26 @@ export default {
       const resp = await api.getMakeupRuleList().catch(() => {});
       if (resp && resp.data.Status === 1000) {
         commit('setMakeupRuleList', resp.data.Data);
+      }
+    },
+    /* 物流费用列表数据相关
+    -------------------------------*/
+    async getLogisticList({ commit }) {
+      commit('setLogisticList', []);
+      const resp = await api.getLogisticsList().catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        commit('setLogisticList', resp.data.Data);
+      }
+    },
+    async getLogisticItemSave({ commit }, { data, callback }) {
+      const resp = await api.getLogisticsSave(data).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const title = data.ID ? '编辑成功' : '添加成功';
+        const cb = () => {
+          commit('setLogisticItemSave', { data, ID: resp.data.Data });
+          if (callback && typeof callback === 'function') callback();
+        };
+        messageBox.successSingle(title, cb, cb);
       }
     },
   },

@@ -16,23 +16,22 @@
       <el-form-item label="名称:" prop="Name">
         <el-input v-model="ruleForm.Name" maxlength="12" show-word-limit></el-input>
       </el-form-item>
-      <el-form-item label="分类:" prop="Classify">
-        <el-radio-group v-model="ruleForm.Classify">
-          <el-radio label="自建"></el-radio>
-          <el-radio label="物流"></el-radio>
-          <el-radio label="快递"></el-radio>
+      <el-form-item label="分类:" prop="Type">
+        <el-radio-group v-model="ruleForm.Type">
+          <el-radio :label="it.ID" v-for="it in logisticTypeEnumList" :key='it.ID'>{{it.Name}}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="是否启用:" prop="Enable">
-        <el-switch v-model="ruleForm.Enable"></el-switch>
+      <el-form-item label="是否启用:" prop="IsEnabled">
+        <el-switch v-model="ruleForm.IsEnabled"></el-switch>
       </el-form-item>
     </el-form>
   </CommonDialogComp>
 </template>
 
 <script>
-import LogisticItem from '@/assets/js/TypeClass/logistic/LogisticItem';
 import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
+import LogisticItem from '../../assets/js/TypeClass/LogisticTypeClass/LogisticItem';
+import { logisticTypeEnumList } from '../../assets/js/TypeClass/LogisticTypeClass/logisticEnums';
 
 export default {
   props: {
@@ -43,6 +42,10 @@ export default {
     editData: {
       type: Object,
       default: null,
+    },
+    list: {
+      type: Array,
+      default: () => [],
     },
   },
   components: {
@@ -57,10 +60,11 @@ export default {
           { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' },
           // 名称不能重复校验， 后面补充
         ],
-        Classify: [
+        Type: [
           { required: true, message: '请选择分类', trigger: 'change' },
         ],
       },
+      logisticTypeEnumList,
     };
   },
   computed: {
@@ -85,6 +89,7 @@ export default {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           // console.log('验证通过,可以保存', this.ruleForm);
+          this.$emit('submit', this.ruleForm);
         }
       });
     },

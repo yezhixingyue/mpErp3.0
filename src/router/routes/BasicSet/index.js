@@ -75,7 +75,7 @@ const routes = { // 基本设置
         icon: 'el-icon-connection',
         PermissionInfo: ['Developing', 'None'],
       },
-      component: () => import('../../../views/LogisticManage/LogisticManageListPage.vue'),
+      component: () => import('../../../views/LogisticManagePages/LogisticManageListPage.vue'),
     },
     {
       path: '/LogisticPriceList/:id',
@@ -86,7 +86,7 @@ const routes = { // 基本设置
         pageName: 'LogisticPriceSettingListPage',
         PermissionInfo: ['Developing', 'None'],
       },
-      component: () => import('../../../views/LogisticManage/LogisticPriceSettingListPage.vue'),
+      component: () => import('../../../views/LogisticManagePages/LogisticPriceSettingListPage.vue'),
     },
     {
       path: '/LogisticPriceSetup/:type',
@@ -97,7 +97,7 @@ const routes = { // 基本设置
         pageName: 'LogisticPriceSetupPage',
         PermissionInfo: ['Developing', 'None'],
       },
-      component: () => import('../../../views/LogisticManage/LogisticPriceSetupPage.vue'),
+      component: () => import('../../../views/LogisticManagePages/LogisticPriceSetupPage.vue'),
     },
     /*  印刷幅面
     ------------------------------------------ */

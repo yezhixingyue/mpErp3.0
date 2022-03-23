@@ -42,7 +42,7 @@
             />
         </div>
         <div class="s">
-          <ElDateRangeSelector v-model="conditionDate" />
+          <ElDateRangeSelector v-model="conditionDate" :condition="obj4RequestServiceList" initText='今天' />
           <SearchInputComp
             class="search-section"
             :typeList="[['KeyWords', '']]"

@@ -28,7 +28,7 @@
       <OrderMethod />
     </div>
     <div class="s">
-      <ElDateRangeSelector v-model="conditionDate" />
+      <ElDateRangeSelector v-model="conditionDate" :condition="set2PaymentList" />
       <SearchInputComp
         class="search-section"
         :typeList="[['KeyWords', '']]"

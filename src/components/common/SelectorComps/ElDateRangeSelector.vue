@@ -1,10 +1,11 @@
 <template>
-  <div class="mp-common-comps-el-date-range-selector-comp-wrap">
+  <div class="mp-common-comps-el-date-range-selector-comp-wrap" :class="type">
     <label>{{title}}：</label>
     <el-date-picker
       v-model="localValue"
       :type="type"
-      align="center"
+      align="left"
+      :offset='-100'
       unlink-panels
       range-separator="至"
       start-placeholder="开始日期"
@@ -15,8 +16,11 @@
       :default-time='defaultTime'
       :clearable='clearable'
       :popper-class="popperClassName"
+      @change='onChange'
       size="mini"
-    />
+    >
+    </el-date-picker>
+    <span class="d" v-if="text">{{text}}</span>
   </div>
 </template>
 
@@ -43,6 +47,9 @@ export default {
         { text: '不限', key: 'all' },
         { text: '今天', key: 'TodayDate' },
         { text: '昨天', key: 'YesterdayDate' },
+        { text: '前天', key: 'BeforeYesterdayTimeDate' },
+        { text: '本周', key: 'curWeekDate' },
+        { text: '上周', key: 'lastWeekDate' },
         { text: '本月', key: 'curMonthDate' },
         { text: '上月', key: 'lastMonthDate' },
       ],
@@ -50,6 +57,14 @@ export default {
     maxSpan: { // 最大时间跨度，如订单管理最大不能超出一年
       type: Number,
       default: 0, // 天数
+    },
+    condition: {
+      type: Object,
+      default: null,
+    },
+    initText: {
+      type: String,
+      default: '',
     },
   },
   computed: {
@@ -84,7 +99,9 @@ export default {
         if (key === 'all') {
           return {
             text,
-            onClick(picker) {
+            onClick: picker => {
+              if (this.text === text) return;
+              this.temp = text;
               picker.$emit('pick', ['', '']);
             },
           };
@@ -94,8 +111,10 @@ export default {
           return {
             text,
             onClick: picker => {
-              const start = new Date(_date.First.replace('Z', ''));
-              const end = new Date(_date.Second.replace('Z', ''));
+              if (this.text === text) return;
+              this.temp = text;
+              const start = new Date(_date.First?.replace('Z', ''));
+              const end = new Date(_date.Second?.replace('Z', ''));
               picker.$emit('pick', [start, end]);
             },
           };
@@ -112,6 +131,26 @@ export default {
       const arr = ['mp-date-range'];
       if (!this.clearable) arr.push('unable-clear');
       return arr.join(' ');
+    },
+  },
+  data() {
+    return {
+      temp: '',
+      text: '',
+    };
+  },
+  methods: {
+    onChange() {
+      this.text = this.temp;
+      this.temp = '';
+    },
+  },
+  watch: {
+    condition: {
+      handler(val) {
+        this.text = val && val.initDateText ? val.initDateText : this.initText;
+      },
+      immediate: true,
     },
   },
 };
@@ -131,6 +170,7 @@ export default {
   }
   > .el-date-editor {
     border-radius: 2px;
+    width: 305px;
     > input {
       font-size: 13px;
       // color: #26bcf9;
@@ -142,6 +182,19 @@ export default {
     .el-range-separator {
       color: #989898;
       font-weight: 700;
+    }
+  }
+  > .d {
+    font-size: 14px;
+    font-weight: 700;
+    // color: #428dfa;
+    margin-left: 8px;
+    color: #585858;
+    // color: #26bcf9;
+  }
+  &.datetimerange {
+    > .el-date-editor {
+      width: 335px;
     }
   }
 }

@@ -246,11 +246,6 @@
                     <span class="text is-pink">{{getMiDate(showData.ProducePeriod.LatestPayTime)}}</span>
                   </li>
                   <template v-if="[254, 255].indexOf(showData.Status) === -1">
-                    <li v-if="showData.ProducePeriod && showData.ProducePeriod.ProduceTime">
-                      <span class="text-title">预计完工：</span>
-                      <span class="text is-gray">{{getDayDate(showData.ProducePeriod.ProduceTime)}}</span>
-                      <span class="text is-gray">{{getMiDate(showData.ProducePeriod.ProduceTime)}}</span>
-                    </li>
                     <li v-if="showData.ProducePeriod && showData.ProducePeriod.TotalTime
                       && showData.ProducePeriod.IncludeDiliveryTime">
                       <span class="text-title">{{showData.ProducePeriod.IncludeDiliveryTime ? '预计送达：' : '预计出货：'}}</span>

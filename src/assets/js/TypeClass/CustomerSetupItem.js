@@ -1,4 +1,4 @@
-import restoreClassByOriginData from '../utils/reduction';
+import restoreInitDataByOrigin from '../utils/reduction';
 
 export default class CustomerSetupItem {
   Type = ''
@@ -12,7 +12,7 @@ export default class CustomerSetupItem {
   AllowRemove = true
 
   constructor(data) {
-    restoreClassByOriginData(this, data);
+    restoreInitDataByOrigin(this, data);
     if (!data) this.key = Math.random().toString(16).slice(-10);
   }
 }
