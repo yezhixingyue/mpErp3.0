@@ -94,9 +94,9 @@ export default {
       }
     },
     async handleLevel1Submit(data) {
-      console.log(data);
+      // console.log(data);
       api.getDepartmentSave(data).then((res) => {
-        console.log(res);
+        // console.log(res);
         if (res.status === 200 && res.data.Status === 1000) {
           this.$store.dispatch('department/getDepartmentList');
         }
