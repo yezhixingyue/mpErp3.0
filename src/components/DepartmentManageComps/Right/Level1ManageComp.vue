@@ -29,6 +29,7 @@
     <CommonDialogComp
     title="划分责任区域及产品"
     :visible.sync="dialogTableVisible"
+    submitText="确定"
     @cancle="onCancleClick"
     @open="onOpen"
     @closed="onClosed"

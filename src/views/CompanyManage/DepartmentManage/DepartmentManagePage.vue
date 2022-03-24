@@ -32,7 +32,7 @@ import DepartmentManageLeft from '../../../components/DepartmentManageComps/Depa
 import DepartmentManageRight from '../../../components/DepartmentManageComps/DepartmentManageRight';
 
 export default {
-  name: 'SellAreaSetupPage',
+  name: 'DepartmentManagePage',
   components: {
     LRWidthDragAutoChangeComp,
     DepartmentManageLeft,
