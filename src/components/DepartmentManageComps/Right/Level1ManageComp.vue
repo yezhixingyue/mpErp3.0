@@ -1,5 +1,5 @@
 <template>
-  <ul class="mp-erp-basic-set-up-sell-area-set-up-page-right-content-level1-manage-wrap" ref="oWrap">
+  <ul class="mp-erp-basic-set-up-sell-area-set-up-page-right-content-level1-manage-wrap department-manage" ref="oWrap">
     <li v-for="(it, i) in localList" :key="it.ID || it.key">
       <div class="operate-row">
         <el-input v-model="it.ClassName" maxlength="10" size="small" placeholder="在此输入区域名称" :disabled='it.Index === 999' />
@@ -16,14 +16,25 @@
         </menu>
         <el-button type="text" @click="zoningButton(it,i)">划分责任区域及产品</el-button>
       </div>
-      <div class="text-row">
-        关联区域：
-        <span v-for="(item, index) in it.SellAreaList" :key="index+'SellArea'">{{getSellAreaText(item)}} &nbsp; </span>
-        关联产品：
-        <span v-for="(item, index) in it.ProductClassList" :key="index+'ProductClass'">{{getProductClassText(item)}} &nbsp; </span>
-        关联客户类型：
-        <span v-for="(item, index) in it.CustomerTypeList" :key="index+'CustomerType'">{{getCustomerTypeText(item)}} &nbsp; </span>
-      </div>
+      <el-tooltip class="item" effect="dark" content="Top Left 提示文字" placement="bottom-start">
+        <!-- <el-button>上左</el-button> -->
+        <div class="text-row">
+          关联区域：
+          <span v-for="(item, index) in it.SellAreaList" :key="index+'SellArea'">{{getSellAreaText(item)}} &nbsp; </span>
+          关联产品：
+          <span v-for="(item, index) in it.ProductClassList" :key="index+'ProductClass'">{{getProductClassText(item)}} &nbsp; </span>
+          关联客户类型：
+          <span v-for="(item, index) in it.CustomerTypeList" :key="index+'CustomerType'">{{getCustomerTypeText(item)}} &nbsp; </span>
+        </div>
+        <div slot="content" class="text-row">
+          关联区域：
+          <span v-for="(item, index) in it.SellAreaList" :key="index+'SellArea'">{{getSellAreaText(item)}} &nbsp; </span><br/>
+          关联产品：
+          <span v-for="(item, index) in it.ProductClassList" :key="index+'ProductClass'">{{getProductClassText(item)}} &nbsp; </span><br/>
+          关联客户类型：
+          <span v-for="(item, index) in it.CustomerTypeList" :key="index+'CustomerType'">{{getCustomerTypeText(item)}} &nbsp; </span>
+        </div>
+      </el-tooltip>
     </li>
 
     <CommonDialogComp
@@ -348,7 +359,7 @@ export default {
     },
 
     onRemoveClick(it, i) { // 删除一行
-      // if (!it.canRemove) return;
+      if (this.childrenLingth(it.ID)) return;
       if (!it.ID) { // 没有ID时可以直接删除
         this.localList.splice(i, 1);
         return;
@@ -476,10 +487,13 @@ export default {
   max-height: 100%;
   overflow: auto;
   scroll-behavior: smooth;
-  >li{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  &.department-manage{
+
+    >li{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
   menu {
     display: flex;
@@ -535,6 +549,7 @@ export default {
       font-size: 14px;
       margin-top: 5px;
       font-weight: 700;
+      width: 600px;
       >span{
         font-weight: 400;
         margin-right: 10px;

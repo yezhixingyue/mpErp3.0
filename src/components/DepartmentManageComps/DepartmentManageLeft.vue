@@ -139,8 +139,10 @@ export default {
         const _oneIt = { ...oneIt, Index: oneIt.Index !== 999 ? oneI : 999 };
         const returntowIt = oneIt.children.map((towIt, towI) => {
           const _towIt = { ...towIt, Index: towIt.Index !== 999 ? towI : 999 };
+          _towIt.ParentID = oneIt.ID;
           const returnThreeIt = towIt.children.map((threeIt, threeI) => {
             const _threeIt = { ...threeIt, Index: threeIt.Index !== 999 ? threeI : 999 };
+            _threeIt.ParentID = towIt.ID;
             delete _threeIt.children;
             return _threeIt;
           });

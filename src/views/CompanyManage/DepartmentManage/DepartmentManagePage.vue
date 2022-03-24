@@ -90,6 +90,7 @@ export default {
     async handleSort(Array) { // 处理保存排序
       const resp = await this.api.getDepartmentOrder(Array).catch(() => null);
       if (resp && resp.data.Status === 1000) {
+        await this.$store.dispatch('department/getDepartmentList');
         this.messageBox.successSingle('保存排序成功');
         this.isSorting = false;
       }
