@@ -94,15 +94,15 @@ export default {
         this.isSorting = false;
       }
     },
-    async handleLevel1Submit(data) {
-      // console.log(data);
-      api.getDepartmentSave(data).then((res) => {
-        // console.log(res);
-        if (res.status === 200 && res.data.Status === 1000) {
-          this.messageBox.successSingle('保存成功');
-          this.$store.dispatch('department/getDepartmentList');
-        }
-      });
+    async handleLevel1Submit({ returnData, removeIds }) {
+      // 删除
+      if (removeIds.length) await api.getAreaRemoveRange({ ids: removeIds, type: 81 });
+      // 保存
+      const res = await api.getDepartmentSave(returnData);
+      if (res.status === 200 && res.data.Status === 1000) {
+        await this.$store.dispatch('department/getDepartmentList');
+        this.messageBox.successSingle('保存成功');
+      }
     },
   },
   mounted() {

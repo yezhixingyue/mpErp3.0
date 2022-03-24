@@ -48,10 +48,8 @@ export default {
     //   return this.$refs.oSubAreaComp ? this.$refs.oSubAreaComp.getIsOrNotChange() : false;
     // },
     onSubmitClick() { // 提交
-      const data = this.$refs.oLevel1Comp.save();
-      if (data) {
-        this.$emit('level1Submit', data);
-      }
+      const { returnData, removeIds } = this.$refs.oLevel1Comp.save();
+      this.$emit('level1Submit', { returnData, removeIds });
     },
   },
 };

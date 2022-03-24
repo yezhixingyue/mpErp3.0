@@ -11,7 +11,7 @@
           <menuitem :class="{'is-disabled': childrenLingth(it.ID)}" @click="onRemoveClick(it, i)">
             <img src="@/assets/images/del.png" alt="" v-if="!childrenLingth(it.ID)">
             <img src="@/assets/images/del-disabled.png" alt="" v-else>
-            <span>删除{{childrenLingth(it.ID)}}</span>
+            <span>删除</span>
           </menuitem>
         </menu>
         <el-button type="text" @click="zoningButton(it,i)">划分责任区域及产品</el-button>
@@ -41,9 +41,9 @@
             <div class="left">责任区域：</div>
             <div class="right">
               <ul>
-                <li v-for="(SellAreaItem, index) in editData.SellAreaList" :key="SellAreaItem.CityID + index">
+                <li v-for="(SellAreaItem, index) in editData.SellAreaList" :key="SellAreaItem.RegionalID + index">
                   <!-- 大区 -->
-                  <el-select @change="FirstGradeAreaChange(index)" v-model="SellAreaItem.CityID" size="mini"  placeholder="请选择">
+                  <el-select @change="FirstGradeAreaChange(index)" v-model="SellAreaItem.RegionalID" size="mini"  placeholder="请选择">
                     <el-option
                       label="所有大区"
                       :value="-666">
@@ -55,7 +55,7 @@
                     </el-option>
                   </el-select>
                   <!-- 市区 -->
-                  <el-select @change="SecondLevelAreaChange(index)" v-model="SellAreaItem.CountyID" size="mini"  placeholder="请选择">
+                  <el-select @change="SecondLevelAreaChange(index)" v-model="SellAreaItem.CityID" size="mini"  placeholder="请选择">
                     <el-option
                       v-for="(SecondLevelAreaItem) in SecondLevelArea(index)" :key="SecondLevelAreaItem.ID"
                       :label="SecondLevelAreaItem.ClassName"
@@ -63,7 +63,7 @@
                     </el-option>
                   </el-select>
                   <!-- 县区 -->
-                  <el-select v-model="SellAreaItem.RegionalID" size="mini"  placeholder="请选择">
+                  <el-select v-model="SellAreaItem.CountyID" size="mini"  placeholder="请选择">
 
                     <el-option
                        v-for="(threeLevelAreaItem) in threeLevelArea(index)" :key="threeLevelAreaItem.ID"
@@ -189,6 +189,8 @@ export default {
       // 正在修改的部门
       editData: {},
       editDataIndex: null,
+      // 被删除的id列表
+      removeIds: [],
     };
   },
   components: {
@@ -211,11 +213,11 @@ export default {
     SecondLevelArea() {
       return (index) => {
         const returnArr = [];
-        const ParentID = this.editData.SellAreaList[index].CityID;
+        const ParentID = this.editData.SellAreaList[index].RegionalID;
         // 选择了大区
         if (this.areaList.filter(item => item.ID === ParentID).length) {
           returnArr.push({
-            ClassName: `所有${this.areaList.filter(item => item.ID === this.editData.SellAreaList[index].CityID)[0].ClassName}`,
+            ClassName: `所有${this.areaList.filter(item => item.ID === ParentID)[0].ClassName}`,
             ID: -666,
           });
         } else {
@@ -231,11 +233,11 @@ export default {
     threeLevelArea() {
       return (index) => {
         const returnArr = [];
-        const ParentID = this.editData.SellAreaList[index].CountyID;
+        const ParentID = this.editData.SellAreaList[index].CityID;
         // 选择了大区
         if (this.areaList.filter(item => item.ID === ParentID).length) {
           returnArr.push({
-            ClassName: `所有${this.areaList.filter(item => item.ID === this.editData.SellAreaList[index].CountyID)[0].ClassName}`,
+            ClassName: `所有${this.areaList.filter(item => item.ID === ParentID)[0].ClassName}`,
             ID: -666,
           });
         } else {
@@ -351,6 +353,7 @@ export default {
         return;
       }
       this.messageBox.warnCancelBox('确定删除该部门吗', `部门名称：[ ${it.ClassName || '未设置'} ]`, () => {
+        this.removeIds.push(it.ID);
         this.localList.splice(i, 1);
       });
     },
@@ -392,8 +395,8 @@ export default {
         this.messageBox.failSingleError('保存失败', '数据未发生变化');
         return null;
       }
-      const returnData = this.localList.filter((item) => item.ClassName !== '' || !item.canRemove);
-      return returnData;
+      const returnData = this.localList.filter((item) => item.ClassName !== '');
+      return { returnData, removeIds: this.removeIds };
     },
 
     // 划分区域按钮
@@ -414,15 +417,16 @@ export default {
       // 获取用户类型
       this.$store.dispatch('department/getUserTypeList');
     },
-    // 一级分类切换
+    // 一级责任区域：
     FirstGradeAreaChange(index) {
       this.editData.SellAreaList[index].CountyID = -666;
-      this.editData.SellAreaList[index].RegionalID = -666;
+      this.editData.SellAreaList[index].CityID = -666;
     },
-    // 二级分类切换
+    // 二级责任区域：
     SecondLevelAreaChange(index) {
-      this.editData.SellAreaList[index].RegionalID = -666;
+      this.editData.SellAreaList[index].CountyID = -666;
     },
+
     // 一级分类切换
     FirstGradeProductClassChange(index) {
       this.editData.ProductClassList[index].Second = -666;
@@ -474,6 +478,7 @@ export default {
   >li{
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
   }
   menu {
     display: flex;
