@@ -95,13 +95,17 @@ export default {
         this.isSorting = false;
       }
     },
-    async handleLevel1Submit({ returnData, removeIds }) {
+    async handleLevel1Submit({ returnData, removeIds, callback }) {
       // 删除
-      if (removeIds.length) await api.getAreaRemoveRange({ ids: removeIds, type: 81 });
+      if (removeIds.length) {
+        const removeRes = await api.getAreaRemoveRange({ ids: removeIds, type: 81 });
+        if (removeRes.status === 200 && removeRes.data.Status === 1000);
+      }
       // 保存
       const res = await api.getDepartmentSave(returnData);
       if (res.status === 200 && res.data.Status === 1000) {
         await this.$store.dispatch('department/getDepartmentList');
+        callback();
         this.messageBox.successSingle('保存成功');
       }
     },

@@ -301,7 +301,7 @@ export default {
       const temp = {
         ClassName: '',
         ID: '',
-        Index: '',
+        Index: this.localList.length,
         Level: 1,
         ParentID: this.departmentParentID,
         Type: 1,
@@ -408,9 +408,11 @@ export default {
         return null;
       }
       const returnData = this.localList.filter((item) => item.ClassName !== '');
-      return { returnData, removeIds: this.removeIds };
+      const clearRemoveIds = () => {
+        this.removeIds = [];
+      };
+      return { returnData, removeIds: this.removeIds, callback: clearRemoveIds };
     },
-
     // 划分区域按钮
     zoningButton(item, index) {
       this.dialogTableVisible = true;
@@ -491,6 +493,9 @@ export default {
     level1List(newVal) {
       this.localList = JSON.parse(JSON.stringify(newVal)) || [];
       this.localList.push(this.createAAreaItem());
+    },
+    departmentParentID() {
+      this.removeIds = [];
     },
   },
 };
