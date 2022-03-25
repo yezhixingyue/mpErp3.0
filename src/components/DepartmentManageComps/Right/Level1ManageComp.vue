@@ -569,8 +569,8 @@ export default {
     background-color: #efefef;
   }
   .el-dialog{
-    max-width: 800px;
-    min-width: 700px;
+    max-width: 900px;
+    min-width: 850px;
   }
   .dialog-body{
     // background-color: red;
@@ -595,7 +595,7 @@ export default {
               height:30px;
               display: flex;
               > .el-select{
-                width: 100px;
+                width: 150px;
                 margin-right: 10px;
                 border-bottom: 1px solid #ccc;
                 input{
