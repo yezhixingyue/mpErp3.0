@@ -16,7 +16,7 @@
         </menu>
         <el-button type="text" @click="zoningButton(it,i)">划分责任区域及产品</el-button>
       </div>
-      <el-tooltip class="item" effect="dark" content="Top Left 提示文字" placement="bottom-start">
+      <el-tooltip class="item" effect="dark" placement="bottom-start">
         <!-- <el-button>上左</el-button> -->
         <div class="text-row">
           关联区域：
@@ -471,10 +471,14 @@ export default {
       if (item.Second !== -666) returnText += filtrateSecond.length ? filtrateSecond[0].ClassName : '';
       return returnText === '' || returnText === 'null' ? '所有分类' : returnText;
     },
+    useIdGetCustomerTypeName(ID) {
+      const filterList = this.CustomerTypeList.filter(item => item.CategoryID === ID);
+      return filterList.length ? filterList[0].CategoryName : '';
+    },
     // 客户类型
     getCustomerTypeText(item) {
       let returnText = '';
-      if (item.CategoryID !== -666) returnText += item.CategoryName;
+      if (item.CategoryID !== -666) returnText += this.useIdGetCustomerTypeName(item.CategoryID);
       return returnText === '' || returnText === 'null' ? '所有类型' : returnText;
     },
   },
