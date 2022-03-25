@@ -544,6 +544,7 @@ export default {
       > .el-input {
         width: 240px;
         > input {
+          font-weight: 700;
           border-left: none;
           border-right: none;
           border-top: none;
@@ -583,13 +584,18 @@ export default {
   }
   .dialog-body{
     // background-color: red;
+    padding: 0 1.5em;
     > .department-name{
       border-bottom: 1px solid #26bcf9;
-      padding-bottom: 5px;
+      padding-bottom: 10px;
+      span{
+        font-weight: 700;
+        color: #26bcf9;
+      }
     }
 
     > .select-box{
-      padding: 1.5em;
+      padding-top: 1.5em;
       height: 400px;
       overflow:auto;
       > .item{
@@ -603,6 +609,7 @@ export default {
             > li{
               height:30px;
               display: flex;
+              margin-bottom: 10px;
               > .el-select{
                 width: 150px;
                 margin-right: 10px;
