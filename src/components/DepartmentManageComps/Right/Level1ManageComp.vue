@@ -444,12 +444,21 @@ export default {
       this.editData.ProductClassList[index].Second = -666;
     },
 
+    // 根据ID获取区域的名字
+    useIdGetSellAreaClassName(ID) {
+      const filterList = this.areaList.filter(item => item.ID === ID);
+      return filterList.length ? filterList[0].ClassName : '';
+    },
     // 区域文字
     getSellAreaText(item) {
       let returnText = '';
-      if (item.CityName) returnText += item.CityName;
-      if (item.CountyName) returnText += item.CountyName;
-      if (item.RegionalName) returnText += item.RegionalName;
+      if (item.RegionalID) returnText += this.useIdGetSellAreaClassName(item.RegionalID);
+      if (item.CityID) returnText += this.useIdGetSellAreaClassName(item.CityID);
+      if (item.CountyID) returnText += this.useIdGetSellAreaClassName(item.CountyID);
+
+      // if (item.CityName) returnText += item.CityName;
+      // if (item.CountyName) returnText += item.CountyName;
+      // if (item.RegionalName) returnText += item.RegionalName;
       return returnText === '' || returnText === 'null' ? '所有大区' : returnText;
     },
     // 分类文字

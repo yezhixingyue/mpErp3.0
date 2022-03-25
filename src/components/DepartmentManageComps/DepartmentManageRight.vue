@@ -48,8 +48,9 @@ export default {
     //   return this.$refs.oSubAreaComp ? this.$refs.oSubAreaComp.getIsOrNotChange() : false;
     // },
     onSubmitClick() { // 提交
-      const { returnData, removeIds } = this.$refs.oLevel1Comp.save();
-      this.$emit('level1Submit', { returnData, removeIds });
+      const oLevel1CompData = this.$refs.oLevel1Comp.save();
+      if (!oLevel1CompData) return;
+      this.$emit('level1Submit', oLevel1CompData);
     },
   },
 };
