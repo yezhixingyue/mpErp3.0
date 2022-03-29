@@ -53,7 +53,7 @@ export default {
       this.$emit('edit', item);
     },
     onRemoveClick(item) {
-      this.messageBox.warnCancelBox('确定删除该客户分类吗 ?', `分类名称：[ ${item.CategoryName} ]`, () => this.$emit('remove', item), null);
+      this.messageBox.warnCancelBox('确定删除该功能分类吗 ?', `分类名称：[ ${item.CategoryName} ]`, () => this.$emit('remove', item), null);
     },
     onSermissionSetting(item) {
       this.$emit('sermissionSetting', item);

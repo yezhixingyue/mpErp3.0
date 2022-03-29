@@ -225,7 +225,7 @@ export default {
       this.rangeVisible = true;
     },
     onFunctionSaveClick(item) {
-      // 客户等级保存 (编辑|新增)
+      // 功能分类 (编辑|新增)
       this.curEditData = item || { Type: this.typeObj.functionDivision.ID };
       this.functionDivisionVisible = true;
     },

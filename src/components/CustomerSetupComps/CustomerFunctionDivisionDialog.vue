@@ -53,10 +53,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    permissionList: {
-      type: Array,
-      default: () => [],
-    },
   },
   components: {
     CommonDialogComp,
@@ -68,7 +64,7 @@ export default {
   },
   computed: {
     title() {
-      return this.itemData && (this.itemData.CategoryID || this.itemData.CategoryID === 0) ? '编辑分类名称' : '添加分类名称';
+      return this.itemData && (this.itemData.CategoryID || this.itemData.CategoryID === 0) ? '编辑功能分类' : '添加功能分类';
     },
   },
   methods: {
@@ -89,7 +85,7 @@ export default {
         return false;
       }
       if (!this.localItemData.CategoryName) {
-        this.messageBox.failSingleError('保存失败', '请输入客户等级名称');
+        this.messageBox.failSingleError('保存失败', '请输入分类名称');
         return false;
       }
       // if (!this.localItemData.Value && this.localItemData.Value !== 0) {
@@ -111,7 +107,7 @@ export default {
     },
     onSubmit() {
       if (!this.checker()) return;
-      this.$emit('submit', { ...this.localItemData, PermissionList: this.permissionList });
+      this.$emit('submit', { ...this.localItemData });
     },
   },
 };

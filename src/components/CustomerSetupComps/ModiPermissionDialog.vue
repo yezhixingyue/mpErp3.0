@@ -39,10 +39,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    permissionList: {
-      type: Array,
-      default: () => [],
-    },
   },
   components: {
     CommonDialogComp,

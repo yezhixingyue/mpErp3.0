@@ -167,6 +167,11 @@ export default {
         this.ruleForm.Feature.First = this.userfunctionClassEmpty[0].CategoryID;
         this.ruleForm.Feature.Second = this.userfunctionClassEmpty[0].CategoryName;
       }
+      // 如果有且等于 1
+      if (this.ruleForm.Feature.First === 1 && this.userfunctionClassEmpty.length > 0) {
+        this.ruleForm.Feature.First = this.userfunctionClassEmpty[0].CategoryID;
+        this.ruleForm.Feature.Second = this.userfunctionClassEmpty[0].CategoryName;
+      }
     },
     onScopeArraySetupClick() {
       this.visible = true;
