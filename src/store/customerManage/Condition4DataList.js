@@ -4,6 +4,8 @@ export default class ConditionClass4CustomerDataList {
     Second: -777,
   }
 
+  Feature = -777
+
   Status = '' // 状态 number
 
   AuthStatus = '' // 认证状态 number

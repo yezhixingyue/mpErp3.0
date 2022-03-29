@@ -105,6 +105,7 @@ export default {
     userVipList: [{ CategoryID: '', CategoryName: '不限' }], // 价格等级
     userTypeListNoneEmpty: [], // 客户类型 -- 不包含不限
     userRankListNoneEmpty: [], // 客户等级 -- 不包含不限
+    userfunctionClassEmpty: [], // 功能分类 -- 不包含不限
     userVipListNoneEmpty: [], // 客户价格等级 -- 不包含不险
     /* 下单方式相关
     -------------------------------*/
@@ -633,6 +634,7 @@ export default {
       const type = list.filter((item) => item.Type === 1);
       const rank = list.filter((item) => item.Type === 2);
       const vipRank = list.filter((item) => item.Type === 3);
+      const functionClass = list.filter((item) => item.Type === 4);
       const arr = [{ CategoryID: '', CategoryName: '不限' }];
       state.userTypeList = [...arr, ...type];
       state.userRankList = [...arr, ...rank];
@@ -640,6 +642,7 @@ export default {
       state.userTypeListNoneEmpty = type;
       state.userRankListNoneEmpty = rank;
       state.userVipListNoneEmpty = vipRank;
+      state.userfunctionClassEmpty = functionClass;
     },
     /* 设置接单员列表数据
     -------------------------------*/

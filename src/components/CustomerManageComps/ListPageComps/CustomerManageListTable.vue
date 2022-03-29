@@ -14,6 +14,9 @@
     <el-table-column label="手机号" prop="Mobile" width="96"></el-table-column>
     <el-table-column label="QQ号" prop="QQ" width="90"></el-table-column>
     <el-table-column label="分类等级" prop="TypeGradeContent" width="116" show-overflow-tooltip></el-table-column>
+    <el-table-column label="功能分类" width="116" show-overflow-tooltip>
+       <template slot-scope="scope" >{{scope.row.Feature ? getFunctionClassName(scope.row.Feature.First): '' }}</template>
+    </el-table-column>
     <el-table-column label="可用余额" width="80" show-overflow-tooltip>
       <template slot-scope="scope" >{{scope.row.FundInfo.Amount | formatNumber}}</template>
     </el-table-column>
@@ -106,12 +109,19 @@ export default {
     },
   },
   computed: {
-    ...mapState('common', ['Permission', 'userTypeList']),
+    ...mapState('common', ['Permission', 'userTypeList', 'userfunctionClassEmpty']),
     PermissionObj() {
       if (this.Permission?.PermissionList?.PermissionManageCustomer?.Obj) {
         return this.Permission.PermissionList.PermissionManageCustomer.Obj;
       }
       return {};
+    },
+    getFunctionClassName() {
+      return (id) => {
+        const temp = this.userfunctionClassEmpty.filter(it => it.CategoryID === id);
+        if (temp.length) return temp[0].CategoryName;
+        return '';
+      };
     },
     localDataList() {
       if (Array.isArray(this.dataList)) {

@@ -11,6 +11,8 @@ export default class CustomerSetupItem {
 
   AllowRemove = true
 
+  PermissionList = []
+
   constructor(data) {
     restoreInitDataByOrigin(this, data);
     if (!data) this.key = Math.random().toString(16).slice(-10);

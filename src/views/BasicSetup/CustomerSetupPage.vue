@@ -7,6 +7,9 @@
       <el-button type="primary" size="small" @click="onRangeSaveClick(null)"
         >添加客户等级</el-button
       >
+      <el-button type="primary" size="small" @click="onFunctionSaveClick(null)"
+        >添加功能分类</el-button
+      >
     </header>
     <main>
       <!-- 导航 -->
@@ -46,6 +49,15 @@
           :canSetup='localPermission.SetupPriceGrade'
           @change="onPriceRangeChange"
         />
+        <!-- 功能分类 -->
+        <CustomerFunctionDivisionTable
+          v-if="curType === typeObj.functionDivision.ID"
+          :list="curTypeDataList"
+          :canSetup='localPermission.SetupType'
+          @edit="onFunctionSaveClick"
+          @remove="onRemoveClick"
+          @sermissionSetting="onSermissionSettingClick"
+        />
       </div>
       <!-- 弹窗 -->
       <CustomerClassifyDialog
@@ -58,6 +70,20 @@
         :visible.sync="rangeVisible"
         :itemData="curEditData"
         @submit="handleClassifySaveSubmit"
+        :list="curTypeDataList"
+      />
+      <CustomerFunctionDivisionDialog
+        :visible.sync="functionDivisionVisible"
+        :itemData="curEditData"
+        :permissionList="permissionList"
+        @submit="handleClassifySaveSubmit"
+        :list="curTypeDataList"
+      />
+      <ModiPermissionDialog
+        :visible.sync="sermissionSettingVisible"
+        :itemData="curEditData"
+        :permissionList="permissionList"
+        @submit="handleSetPermissionSubmit"
         :list="curTypeDataList"
       />
     </main>
@@ -76,8 +102,11 @@ import getEnumList from '../../assets/js/utils/getEnumList';
 import CustomerClassifyTable from '../../components/CustomerSetupComps/CustomerClassifyTable.vue';
 import CustomerRangeTable from '../../components/CustomerSetupComps/CustomerRangeTable.vue';
 import PriceRangeTable from '../../components/CustomerSetupComps/PriceRangeTable.vue';
+import CustomerFunctionDivisionTable from '../../components/CustomerSetupComps/CustomerFunctionDivisionTable.vue';
 import CustomerClassifyDialog from '../../components/CustomerSetupComps/CustomerClassifyDialog.vue';
 import CustomerRangeDialog from '../../components/CustomerSetupComps/CustomerRangeDialog.vue';
+import CustomerFunctionDivisionDialog from '../../components/CustomerSetupComps/CustomerFunctionDivisionDialog.vue';
+import ModiPermissionDialog from '../../components/CustomerSetupComps/ModiPermissionDialog.vue';
 
 export default {
   name: 'CustomerSetupPage',
@@ -87,6 +116,9 @@ export default {
     PriceRangeTable,
     CustomerClassifyDialog,
     CustomerRangeDialog,
+    CustomerFunctionDivisionTable,
+    CustomerFunctionDivisionDialog,
+    ModiPermissionDialog,
   },
   data() {
     const typeObj = {
@@ -102,13 +134,20 @@ export default {
         ID: 3,
         Name: '价格等级',
       },
+      functionDivision: {
+        ID: 4,
+        Name: '功能分类',
+      },
     };
     return {
       dataList: [],
+      permissionList: [], // 权限列表 - 所有
       typeObj,
       curType: typeObj.classify.ID,
       classifyVisible: false,
       rangeVisible: false,
+      functionDivisionVisible: false,
+      sermissionSettingVisible: false, // 设置权限弹框
       curEditData: null,
     };
   },
@@ -134,6 +173,14 @@ export default {
       const resp = await this.api.getCustomerCategoryList().catch(() => null);
       if (resp && resp.data.Status === 1000) {
         this.dataList = resp.data.Data;
+      }
+    },
+    // 获取权限数据
+    async getPermissionList() {
+      // /Api/Customer/Feature/Permission
+      const resp = await this.api.getPermissionList().catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        this.permissionList = resp.data.Data;
       }
     },
     onPriceRangeChange(data) {
@@ -167,10 +214,20 @@ export default {
         this.messageBox.successSingle('删除成功', cb, cb);
       }
     },
+    // 分配权限
+    onSermissionSettingClick(item) {
+      this.curEditData = item;
+      this.sermissionSettingVisible = true;
+    },
     onRangeSaveClick(item) {
       // 客户等级保存 (编辑|新增)
       this.curEditData = item || { Type: this.typeObj.customerRange.ID };
       this.rangeVisible = true;
+    },
+    onFunctionSaveClick(item) {
+      // 客户等级保存 (编辑|新增)
+      this.curEditData = item || { Type: this.typeObj.functionDivision.ID };
+      this.functionDivisionVisible = true;
     },
     async handleClassifySaveSubmit(item) {
       // 客户分类和客户等级保存提交
@@ -194,10 +251,28 @@ export default {
           }
           this.classifyVisible = false;
           this.rangeVisible = false;
+          this.functionDivisionVisible = false;
           this.curType = item.Type;
         };
         this.messageBox.successSingle(title, cb, cb);
       }
+    },
+    handleSetPermissionSubmit(item) {
+      const temp = {
+        ID: item.CategoryID,
+        Permission: {},
+      };
+      item.PermissionList.forEach(element => {
+        temp.Permission[element.Key] = element.HavePermission;
+      });
+      this.api.getPermissionSetting(temp).then(res => {
+        if (res.status === 200 && res.data.Status === 1000) {
+          this.sermissionSettingVisible = false;
+          this.messageBox.successSingle('分配成功', () => {
+            this.getDataList();
+          });
+        }
+      });
     },
   },
   watch: {
@@ -209,6 +284,7 @@ export default {
   },
   mounted() {
     this.getDataList();
+    this.getPermissionList();
   },
 };
 </script>
@@ -342,10 +418,10 @@ export default {
           }
           &:nth-of-type(2) {
             width: 380px;
-            padding-right: 80px;
+            padding-right: 40px;
           }
           &:last-of-type {
-            width: 180px;
+            width: 220px;
           }
         }
         > footer {

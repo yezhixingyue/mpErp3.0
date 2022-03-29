@@ -9,6 +9,7 @@
     <el-form-item label="QQ号：" prop="QQ" size="small">
       <el-input v-model.trim="ruleForm.QQ" maxlength="12" placeholder="客户传单的常用QQ号" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
     </el-form-item>
+
     <el-form-item label="客户等级分类：" size="small">
       <el-select v-model="ruleForm.Type.First" placeholder="请选择" @change="onTypeChange" :disabled='!PermissionObj.EditType && isEdit'>
         <el-option
@@ -21,6 +22,16 @@
       <el-select v-model="ruleForm.Grade.First" placeholder="请选择" @change="onGradeChange" :disabled='!PermissionObj.EditType && isEdit'>
         <el-option
           v-for="item in userRankListNoneEmpty"
+          :key="item.CategoryID"
+          :label="item.CategoryName"
+          :value="item.CategoryID">
+        </el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="功能分类：" size="small">
+      <el-select v-model="ruleForm.Feature.First" placeholder="请选择" @change="onFeatureChange" :disabled='!PermissionObj.EditType && isEdit'>
+        <el-option
+          v-for="item in userfunctionClassEmpty"
           :key="item.CategoryID"
           :label="item.CategoryName"
           :value="item.CategoryID">
@@ -104,7 +115,7 @@ export default {
     // ScopeArrayDialog,
   },
   computed: {
-    ...mapState('common', ['userTypeListNoneEmpty', 'userRankListNoneEmpty']),
+    ...mapState('common', ['userTypeListNoneEmpty', 'userRankListNoneEmpty', 'userfunctionClassEmpty']),
   },
   data() {
     return {
@@ -152,6 +163,10 @@ export default {
         this.ruleForm.Grade.First = this.userRankListNoneEmpty[0].CategoryID;
         this.ruleForm.Grade.Second = this.userRankListNoneEmpty[0].CategoryName;
       }
+      if (!this.ruleForm.Feature.First && this.ruleForm.Feature.First !== 0 && this.userfunctionClassEmpty.length > 0) {
+        this.ruleForm.Feature.First = this.userfunctionClassEmpty[0].CategoryID;
+        this.ruleForm.Feature.Second = this.userfunctionClassEmpty[0].CategoryName;
+      }
     },
     onScopeArraySetupClick() {
       this.visible = true;
@@ -163,6 +178,10 @@ export default {
     onGradeChange(e) {
       const t = this.userRankListNoneEmpty.find(it => it.CategoryID === e);
       if (t) this.ruleForm.Grade.Second = t.CategoryName;
+    },
+    onFeatureChange(e) {
+      const t = this.userfunctionClassEmpty.find(it => it.CategoryID === e);
+      if (t) this.ruleForm.Feature.Second = t.CategoryName;
     },
     async submitForm(formName = 'ruleForm') {
       const bool = await this.$refs[formName].validate().catch(() => false);

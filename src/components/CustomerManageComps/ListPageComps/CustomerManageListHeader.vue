@@ -68,6 +68,7 @@
         :CountyID="condition4DataList.SellArea.CountyID"
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
       />
+      <div class="double">
       <OrderChannelSelector
         :options='localRegTypeEnumList'
         :requestFunc='getDataList'
@@ -76,6 +77,16 @@
         :value='condition4DataList.RegType'
         :defaultProps='{label: "Name", value: "ID"}'
         label='注册方式'
+        />
+      </div>
+      <OrderChannelSelector
+        :options='localfunctionClassEnumList'
+        :requestFunc='getDataList'
+        :changePropsFunc='setCondition4DataList'
+        :typeList="[['Feature', '']]"
+        :value='condition4DataList.Feature'
+        :defaultProps='{label: "CategoryName", value: "CategoryID"}'
+        label='功能分类'
         />
     </div>
   </header>
@@ -96,7 +107,7 @@ export default {
   },
   computed: {
     ...mapState('customerManage', ['condition4DataList', 'customerDataList']),
-    ...mapState('common', ['userTypeListNoneEmpty', 'userRankListNoneEmpty', 'Permission']),
+    ...mapState('common', ['userTypeListNoneEmpty', 'userRankListNoneEmpty', 'Permission', 'userfunctionClassEmpty']),
     localUserTypeList() {
       return [{ CategoryID: -777, CategoryName: '类别不限' }, ...this.userTypeListNoneEmpty];
     },
@@ -111,6 +122,9 @@ export default {
     },
     localRegTypeEnumList() {
       return [{ ID: '', Name: '注册来源不限' }, ...RegTypeEnumList];
+    },
+    localfunctionClassEnumList() {
+      return [{ CategoryID: -777, CategoryName: '类别不限' }, ...this.userfunctionClassEmpty];
     },
   },
   methods: {

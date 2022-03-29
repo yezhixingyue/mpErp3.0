@@ -616,6 +616,7 @@ export default {
                 border-bottom: 1px solid #ccc;
                 input{
                   border: none;
+                  font-size: 1.1em;
                 }
               }
             }

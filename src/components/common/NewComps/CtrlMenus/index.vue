@@ -49,6 +49,10 @@
       <img src="@/assets/images/export.png" alt="">
       <i>{{exportText}}</i>
     </span>
+    <span @click="onSermissionClick" :class="permissionSetting ? '' : 'disabled'" v-if="showList.includes('permissionSetting')">
+      <img src="@/assets/images/setup.png" alt="">
+      <i>分配权限</i>
+    </span>
     <span @click="onEditClick" :class="canEdit ? '' : 'disabled'" v-if="showList.includes('edit')">
       <img src="@/assets/images/Compile.png" alt="">
       <i>编辑</i>
@@ -131,6 +135,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    permissionSetting: {
+      type: Boolean,
+      default: true,
+    },
     exportText: {
       type: String,
       default: '导出表',
@@ -191,6 +199,10 @@ export default {
     onExportClick() {
       if (!this.canExport) return;
       this.$emit('export');
+    },
+    onSermissionClick() {
+      if (!this.canExport) return;
+      this.$emit('onSermissionSetting');
     },
     onWriteClick() {
       if (!this.canWrite) return;

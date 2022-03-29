@@ -23,6 +23,11 @@ export default class Customer {
     Second: '',
   }
 
+  Feature = {
+    First: '',
+    Second: '',
+  }
+
   Config = {
     IsAcceptNotify: true, // 是否接收未付款订单提醒
   }

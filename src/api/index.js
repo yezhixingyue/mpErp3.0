@@ -980,6 +980,12 @@ const api = {
   getCustomerCategoryRemove(categoryID, type) { // DELETE /Api/Customer/Category/Remove?categoryID=13&type=1  客户设置 - 客户分类删除
     return instance.delete('/Api/Customer/Category/Remove', { params: { categoryID, type } });
   },
+  getPermissionList() { // 客户设置 - 功能分类权限
+    return instance.get('/Api/Customer/Feature/Permission');
+  },
+  getPermissionSetting(data) { // 客户设置 - 设置客户功能分类权限
+    return instance.post('/Api/Customer/Category/SetPermission', data);
+  },
   /* 价格策略api
   ----------------------------------------------------------------------------------- */
   getCustomerPricePolicy(data) { // POST /Api/CustomerPricePolicy 获取价格策略价格列表
