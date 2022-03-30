@@ -118,7 +118,7 @@ export default {
     },
     getFunctionClassName() {
       return (id) => {
-        const temp = this.userfunctionClassEmpty.filter(it => it.CategoryID === id);
+        const temp = this.userfunctionClassEmpty.filter(it => Number(it.CategoryID) === Number(id));
         if (temp.length) return temp[0].CategoryName;
         return '';
       };

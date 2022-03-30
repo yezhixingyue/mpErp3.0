@@ -53,6 +53,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    permissionList: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     CommonDialogComp,
@@ -107,7 +111,7 @@ export default {
     },
     onSubmit() {
       if (!this.checker()) return;
-      this.$emit('submit', { ...this.localItemData });
+      this.$emit('submit', { ...this.localItemData, PermissionList: this.localItemData.CategoryID ? this.localItemData.PermissionList : this.permissionList });
     },
   },
 };

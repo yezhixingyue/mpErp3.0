@@ -34,7 +34,7 @@
           v-for="item in userfunctionClassEmpty"
           :key="item.CategoryID"
           :label="item.CategoryName"
-          :value="item.CategoryID">
+          :value="Number(item.CategoryID)">
         </el-option>
       </el-select>
     </el-form-item>
