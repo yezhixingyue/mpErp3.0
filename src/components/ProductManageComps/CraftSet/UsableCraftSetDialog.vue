@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import { mapGetters } from 'vuex';
 import CraftSelectFoldItem from './CraftSelectFoldItem.vue';
 

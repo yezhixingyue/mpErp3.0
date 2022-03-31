@@ -31,7 +31,7 @@ const getAllProductClassifyFunc = (productClassList, productNames, type) => {
       if (FirstLevel.ID === leve1.ID) {
         leve1.children.forEach(level2 => {
           if (SecondLevel.ID === level2.ID) {
-            level2.children.push({ ...item, ClassName: item.Name, ID: item.ID });
+            level2.children.push({ ...item, ClassName: item.Name, ID: item.ID, ParentID: SecondLevel.ID, Level: 3 });
           }
         });
       }
@@ -475,6 +475,19 @@ export default {
       const classList = target.List;
       return getAllProductClassifyFunc(classList, state.productNames, 1);
     },
+    allProductAndLevelList(state, getters) { // 包含一级二级类别平铺开
+      const _arr = [];
+      getters.allProductClassify.forEach(l1 => {
+        _arr.push(l1);
+        l1.children.forEach(l2 => {
+          _arr.push(l2);
+          l2.children.forEach(l3 => {
+            _arr.push(l3);
+          });
+        });
+      });
+      return _arr;
+    },
     allProductClassify4Customer(state) {
       const target = state.ProductMultipleClassifyList.find(it => it.ID === 2);
       if (!target) return [];
@@ -565,6 +578,7 @@ export default {
         level1.List.forEach(level2 => {
           const _obj = { ...level2 };
           _obj.name = level2.Name;
+          _obj._Type = level1.Type;
           _list.push(_obj);
         });
       });
@@ -813,8 +827,8 @@ export default {
     async getAllProductNames({ state, commit }, bool) { // 获取全部产品第三级分类数据
       if (state.productNames.length > 0 && !bool) return;
 
-      const resp = await api.getAllProductLists();
-      if (resp.data.Status === 1000) commit('setProductNames', resp.data.Data);
+      const resp = await api.getAllProductLists().catch(() => null);
+      if (resp && resp.data.Status === 1000) commit('setProductNames', resp.data.Data);
     },
     async getUserClassify({ state, commit }) { // 获取用户等级
       if (state.userTypeList.length > 1 && state.userRankList.length > 1 && state.userVipList.length > 1) return true;

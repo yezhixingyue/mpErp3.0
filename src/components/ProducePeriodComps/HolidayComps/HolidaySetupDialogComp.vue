@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import HolidayClass, { createYearMonthByYM } from '@/store/Period/HolidayClass';
 import CalendarComp from './CalendarComp/index.vue';
 

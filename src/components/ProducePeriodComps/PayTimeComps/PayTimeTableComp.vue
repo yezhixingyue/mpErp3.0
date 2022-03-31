@@ -23,9 +23,9 @@
         {{scope.row.LatestPayTime | formatTimeObjToString}} 之前
       </template>
     </el-table-column>
-    <el-table-column prop="ProduceDelayTime" label="生产延后时长" width="240">
+    <el-table-column prop="ProduceDelayTime" label="生产开始时间" width="240">
       <template slot-scope="scope">
-        {{scope.row.ProduceDelayTime}}小时
+        {{scope.row.ProduceDelayTime | formatTimeObjToString}}
       </template>
     </el-table-column>
     <el-table-column prop="AreaDescribe" label="操作" width="280">

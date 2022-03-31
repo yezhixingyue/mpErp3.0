@@ -50,7 +50,7 @@ export default {
       const day = new Date().getDay();
       const num = day - 1 >= 0 ? day - 1 : 6;
       const stringDate1 = ConvertTimeFormat(new Date(new Date(state.newDate) - 24 * 60 * 60 * 1000 * num));
-      const stringDate2 = ConvertTimeFormat(new Date(state.newDate));
+      const stringDate2 = ConvertTimeFormat(new Date(new Date(stringDate1).getTime() + 6 * 24 * 60 * 60 * 1000));
       return {
         First: `${stringDate1}T00:00:00.000Z`,
         Second: `${stringDate2}T23:59:59.997Z`,

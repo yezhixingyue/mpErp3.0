@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import MaterialSizeClass from '@/assets/js/TypeClass/MaterialSizeClass';
 
 export default {

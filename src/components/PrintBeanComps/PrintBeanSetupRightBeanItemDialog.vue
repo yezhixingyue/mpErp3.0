@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import PrintBeanTableItemClass from '../../store/printBean/PrintBeanTableItemClass';
 
 export default {

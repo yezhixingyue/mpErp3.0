@@ -61,7 +61,6 @@ export default {
 .mp-erp-period-manage-pay-time-manage-list-page {
   background-color: #f5f5f5;
   padding: 0 8px;
-  // padding-left: 8px;
   display: flex;
   flex-direction: column;
   height: 100%;

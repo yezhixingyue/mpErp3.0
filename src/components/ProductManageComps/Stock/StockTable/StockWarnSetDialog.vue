@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import { MobileReg } from '@/assets/js/utils/regexp';
 
 export default {

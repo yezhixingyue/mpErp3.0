@@ -38,6 +38,10 @@ export default class BatchUpload {
         PrintFileID: resp.data.Data[0].PrintFileID,
         isParsing: false, // 是否正在解析文件唯一名中
         parseStatus: 'ready', // ready | success | parsing
+        Express: {
+          First: '',
+          Second: '',
+        },
       };
     }
     let error = resp && resp.data && resp.data.Message && resp.data.Status !== 1000 ? resp.data.Message : '文件解析失败';
@@ -163,9 +167,9 @@ export default class BatchUpload {
   }
 
   static generateCommitData(list, basicObj) { // 生成下单提交数据
-    const { CustomerID, Address, Terminal, PayInFull, UsePrintBean, OrderType, Position, IsBatchUpload, IgnoreRiskLevel } = basicObj;
+    const { CustomerID, Address, Terminal, UsePrintBean, PayInFull, OrderType, Position, IsBatchUpload, IgnoreRiskLevel, UseSameAddress } = basicObj;
     const List = list.map(it => {
-      const { ProductParams, Content, OutPlate, PrintFileID } = it.result;
+      const { ProductParams, Content, PrintFileID } = it.result;
       const FileList = PrintFileID || PrintFileID === 0 ? [{
         ID: PrintFileID,
         List: [{
@@ -176,18 +180,24 @@ export default class BatchUpload {
         }],
       }] : [];
       const Customer = { CustomerID };
+      let add = Address;
+      if (!UseSameAddress) {
+        add = {};
+        if (it.Express) add.Express = it.Express;
+        if (it.result.Address) add.Address = it.result.Address;
+      }
       const temp = {
         ProductParams,
         Content,
-        OutPlate,
         FileList,
         Terminal,
-        Address,
+        Address: add,
         Customer,
         Position,
         key: it.key,
         IgnoreRiskLevel,
       };
+      if (it.result.Address?.OutPlateSN) temp.OutPlate = { First: 1, Second: it.result.Address.OutPlateSN };
       return temp;
     });
     return {
@@ -197,6 +207,7 @@ export default class BatchUpload {
       List,
       IsBatchUpload,
       UsePrintBean,
+      UseSameAddress,
     };
   }
 
@@ -206,14 +217,14 @@ export default class BatchUpload {
    * @static
    * @memberof BatchUpload
    */
-  static async BatchUploadFils(list, basicObj, handleSuccessFunc) {
-    if (basicObj?.Address?.Express?.First === 1 && basicObj?.Address?.Express?.Second === 1) {
-      const t = list.find(it => it.result.OutPlate?.Second);
-      if (t) {
-        messageBox.failSingleError('上传失败', '选中订单中含有平台单号，不能使用名片之家配送，请切换配送方式');
-        return;
-      }
-    }
+  static async BatchUploadFiles(list, basicObj, handleSuccessFunc) {
+    // if (basicObj?.Address?.Express?.First === 1 && basicObj?.Address?.Express?.Second === 1 && basicObj?.UseSameAddress) {
+    //   const t = list.find(it => it.result.Address?.OutPlateSN);
+    //   if (t) {
+    //     messageBox.failSingleError('上传失败', '选中订单中含有平台单号，不能使用名片之家配送，请切换配送方式');
+    //     return;
+    //   }
+    // }
     const loadingInstance = Loading.service({
       lock: true,
       text: '正在读取文件（文件大小会影响读取速度）...',
@@ -273,12 +284,37 @@ export default class BatchUpload {
     loadingInstance.close();
   }
 
+  static async getPreOrderCreate(list, basicObj) {
+    if (basicObj?.Address?.Express?.First === 1 && basicObj?.Address?.Express?.Second === 1 && basicObj?.UseSameAddress) {
+      const t = list.find(it => it.result.Address?.OutPlateSN);
+      if (t) {
+        messageBox.failSingleError('上传失败', '选中订单中含有平台单号，不能使用名片之家配送，请切换配送方式');
+        return null;
+      }
+    }
+    if (!basicObj?.UseSameAddress
+       && list.some(it => !it.Express || (!it.Express.First && it.Express.First !== 0) || (!it.Express.Second && it.Express.Second !== 0))) {
+      messageBox.failSingleError('上传失败', '配送方式必须选择');
+      return null;
+    }
+    list.forEach(it => {
+      const _it = it;
+      _it.error = '';
+    });
+    const temp = this.generateCommitData(list, basicObj, true);
+    const resp = await api.getOrderPreCreate(temp).catch(() => null);
+    if (resp && resp.data.Status === 1000) {
+      return resp.data.Data;
+    }
+    return null;
+  }
+
   static async getFreightCalculateAfterValidAddressChange(list, basicObj, onlyAddChange) {
     if (!Array.isArray(list) || list.length === 0 || !basicObj) return;
     const { CustomerID, Address } = basicObj;
     if (!CustomerID || !Address) return;
     list.forEach(async it => {
-      if (it.OutPlate && it.OutPlate.Second && onlyAddChange) return; // ? 是否要跳过有平台单号的订单 - 仅地址发生改变时进行跳过，配送方式改变时仍需计算
+      if (it.result.Address?.OutPlateSN && onlyAddChange) return; // ? 是否要跳过有平台单号的订单 - 仅地址发生改变时进行跳过，配送方式改变时仍需计算
       const _it = it;
       _it.result.ExpressCost = '-';
       const { Weight, ProductParams } = _it.result;

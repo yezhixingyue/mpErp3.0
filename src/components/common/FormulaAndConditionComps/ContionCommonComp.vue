@@ -235,14 +235,14 @@ export default {
       for (let i = 0; i < ItemList.length; i += 1) {
         const { Property, ValueList } = ItemList[i];
         // eslint-disable-next-line no-unused-vars
-        const { ValueType, AvailableValueList, ValueRange } = Property;
+        const { ValueType, AvailableValueList, ValueRange, FixedType } = Property;
         if (ValueType === 0 && !ValueList[0].Property) { // 为0 数值校验
           const val = ValueList[0].Value;
-          if (!this.$utils.getValueIsOrNotNumber(val)) {
+          if (!this.$utils.getValueIsOrNotNumber(val) && FixedType !== 41) {
             this.alertError(`第${i + 1}行值应为数字类型`);
             return false;
           }
-          if (ValueRange) {
+          if (ValueRange && FixedType !== 41) {
             const { MinValue, MaxValue } = ValueRange;
             if ((MinValue || MinValue === 0) && +val < MinValue) {
               this.alertError(`第${i + 1}行值不能小于${MinValue}`);

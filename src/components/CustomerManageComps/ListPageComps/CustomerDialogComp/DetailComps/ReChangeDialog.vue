@@ -39,7 +39,7 @@
 
 <script>
 /* eslint-disable no-unused-expressions */
-import CommonDialogComp from '../../../../common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import { ReChangeTypeEnumList } from '../../../../../store/customerManage/Enums';
 
 export default {

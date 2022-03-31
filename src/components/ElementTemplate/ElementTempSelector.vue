@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import TipsSpanButton from '@/components/common/NewComps/TipsSpanButton.vue';
 
 export default {

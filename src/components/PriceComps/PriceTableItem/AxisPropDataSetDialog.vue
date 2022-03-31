@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import NumberTypePropDataSetPanel from './NumberTypePropDataSetPanel.vue';
 import OptionTypePropDataSetPanel from './OptionTypePropDataSetPanel.vue';
 

@@ -13,24 +13,27 @@
     </div>
     <span v-if="isMultiple && !hidden">{{operatContent}}</span>
     <div v-if="isMultiple && !hidden" class="multiple-select">
-      <el-checkbox-group v-model="checkList" v-if="localOptionList.length < 4">
-        <el-checkbox v-for="it in localOptionList" :key="it.First" :label="it.First" :title="it.Second">{{it.Second}}</el-checkbox>
-      </el-checkbox-group>
-      <div class="multiple" v-else>
+      <div class="multiple" v-if="localOptionList.length >= 4 || [46, 47].includes(PropertyData.FixedType)">
         <span class="blue-span" @click="onSelectDialogClick">选择</span>
-        <div class="show-text" :title="localMaterialSelectedList">{{localMaterialSelectedList}}</div>
+        <div class="show-text" :title="showSelectedText">{{showSelectedText}}</div>
         <CheckboxDialogComp v-if="!(ValueType === 6 && PropertyData.Type === 5)"
          :visible.sync='propVisibel' v-model="checkList" :list='localOptionList' width='800px'
          title="选择选项" submitText='确定' :defaultProps="{label: 'Second', value: 'First'}" class="CheckboxDialogComp" />
         <MaterialSelectDialog submitText='确定' v-else :visible.sync='materialVisible' v-model="checkList" :optionList='localMaterialOptionList' />
+        <ADAreaDialogSelector :visible.sync="areaVisible" v-model="checkList" :treeType='treeType' />
       </div>
+      <el-checkbox-group v-model="checkList" v-else>
+        <el-checkbox v-for="it in localOptionList" :key="it.First" :label="it.First" :title="it.Second">{{it.Second}}</el-checkbox>
+      </el-checkbox-group>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { AllOperatorList, getTempMaterialListObj, getTempMaterialOptionList, getTempMaterialSelectedListShowText } from '@/assets/js/TypeClass/PropertyClass';
 import CheckboxDialogComp from '@/components/common/NewComps/CheckboxDialogComp.vue';
+import ADAreaDialogSelector from '@/components/common/SelectorComps/ADAreaDialogSelector/index.vue';
 import MaterialSelectDialog from './MaterialSelectDialog.vue';
 
 export default {
@@ -57,8 +60,10 @@ export default {
   components: {
     CheckboxDialogComp,
     MaterialSelectDialog,
+    ADAreaDialogSelector,
   },
   computed: {
+    ...mapGetters('common', ['allAdAreaTreeList', 'allProductClassify']),
     localOperatorList() {
       if (!this.PropertyData || !AllOperatorList || AllOperatorList.length === 0 || !this.PropertyData.OperatorList) return [];
       return AllOperatorList.filter(it => this.PropertyData.OperatorList.includes(it.ID));
@@ -72,7 +77,6 @@ export default {
       },
     },
     isMultiple() {
-      // return this.ValueType === 1 || this.ValueType === 6 || (this.PropertyData && [18, 26].includes(this.PropertyData.FixedType));
       return [1, 2, 3, 6].includes(this.ValueType) || (this.PropertyData && [18, 26].includes(this.PropertyData.FixedType));
     },
     operatContent() {
@@ -82,10 +86,23 @@ export default {
     localOptionList() {
       if (!this.PropertyData || !Array.isArray(this.PropertyData.OptionList) || this.PropertyData.OptionList.length === 0) return [];
       const list = [...this.PropertyData.OptionList];
+      if ([42, 43, 45].includes(this.PropertyData.FixedType)) return list;
       return list.sort((a, b) => a.Second.localeCompare(b.Second));
+    },
+    treeType() {
+      if (this.PropertyData.FixedType === 47) {
+        return 'product';
+      }
+      return 'area';
     },
     checkList: {
       get() {
+        if ([46, 47].includes(this.PropertyData.FixedType)) {
+          if (Array.isArray(this.valueList) && this.valueList.length > 0) {
+            return this.valueList.filter(it => it && it.Value).map(it => JSON.parse(it.Value)).filter(it => it);
+          }
+          return [];
+        }
         if (Array.isArray(this.valueList) && this.valueList.length > 0) {
           const _list = this.valueList.filter(it => it || it === 0);
           return this.isMultiple ? _list.map(it => it.Value) : this.valueList[0].Value;
@@ -93,6 +110,11 @@ export default {
         return this.isMultiple ? [] : '';
       },
       set(val) {
+        if ([46, 47].includes(this.PropertyData.FixedType)) {
+          const valueList = val.map(it => ({ Value: JSON.stringify(it) }));
+          this.$emit('update:valueList', valueList);
+          return;
+        }
         const _val = val.filter(it => !!(typeof it === 'object' ? it.First : (it || it === 0)));
         const _list = this.isMultiple ? _val.map(Value => ({ Value: (typeof Value === 'object') ? (Value.First || '') : Value })) : [{ Value: _val }];
         this.$emit('update:valueList', _list);
@@ -104,7 +126,13 @@ export default {
     localMaterialOptionList() { // 仅为物料时且列表数量大于3时使用
       return getTempMaterialOptionList(this.localMaterialListObj);
     },
-    localMaterialSelectedList() { // 已选择物料显示文字
+    showSelectedText() { // 已选择物料显示文字
+      if (this.PropertyData.FixedType === 46) {
+        return this.$utils.getTreeTextDisplayContent(this.checkList, this.allAdAreaTreeList);
+      }
+      if (this.PropertyData.FixedType === 47) {
+        return this.$utils.getTreeTextDisplayContent(this.checkList, this.allProductClassify, 'product');
+      }
       if (this.ValueType !== 6) {
         const list = this.checkList.map(it => {
           const t = this.localOptionList.find(_it => _it.First === (it.First ? it.First : it));
@@ -122,11 +150,13 @@ export default {
       ValueType: '',
       propVisibel: false,
       materialVisible: false,
+      areaVisible: false,
     };
   },
   methods: {
     onSelectDialogClick() {
-      if (this.ValueType === 6 && this.PropertyData.Type === 5) this.materialVisible = true;
+      if ([46, 47].includes(this.PropertyData.FixedType)) this.areaVisible = true;
+      else if (this.ValueType === 6 && this.PropertyData.Type === 5) this.materialVisible = true;
       else this.propVisibel = true;
     },
   },
@@ -143,6 +173,13 @@ export default {
       }
     }
     this.ValueType = this.PropertyData.ValueType;
+    if (this.PropertyData.FixedType === 46) {
+      this.$store.dispatch('common/fetchAdAreaList');
+    }
+    if (this.PropertyData.FixedType === 47) {
+      this.$store.dispatch('common/getProductClassifyData');
+      this.$store.dispatch('common/getAllProductNames');
+    }
   },
 };
 </script>

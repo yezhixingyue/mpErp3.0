@@ -1,15 +1,15 @@
 // import CommonClassType from '@/store/CommonClassType';
 import messageBox from '@/assets/js/utils/message';
 import { getFormatDateString } from '@/assets/js/utils/util';
+import PropertyClass from '../../assets/js/TypeClass/PropertyClass';
 import api from '../../api';
 import ProductionPeriodConditionClass from './ConditionClass/ProductionPeriodConditionClass';
 import PayTimeConditionClass from './ConditionClass/PayTimeConditionClass';
 import DeliveryTimeConditionClass from './ConditionClass/DeliveryTimeConditionClass';
 import DispatchTimeConditionClass from './ConditionClass/DispatchTimeConditionClass';
-import SpecialDayConditionClass from './ConditionClass/SpecialDayConditionClass';
-import ProduceSpecialDayConditionClass from './ConditionClass/ProduceSpecialDayConditionClass';
+import ExpressStopConditionClass from './ConditionClass/ExpressStopConditionClass';
+import NewSpecialConditionClass from './ConditionClass/NewSpecialConditionClass';
 import CommonClassType from '../CommonClassType';
-import { SpecialTypeEnums } from './ItemClass/SpecialDayItemClass';
 
 export default {
   namespaced: true,
@@ -45,23 +45,44 @@ export default {
     DispatchTimeDataList: [], // 列表数据
     DispatchTimeDataNumber: 0, // 列表数据条目数 分页使用
 
-    /** 生产特殊情况管理相关
-    ---------------------------------------- */
-    Condition4ProduceSpecialDayList: new ProduceSpecialDayConditionClass(),
-    ProduceSpecialDayDataList: [], // 列表数据
-    ProduceSpecialDayDataNumber: 0, // 列表数据条目数 分页使用
-
     /** 运输特殊情况管理相关
     ---------------------------------------- */
-    Condition4SpecialDayList: new SpecialDayConditionClass(),
-    SpecialDayDataList: [], // 列表数据
-    SpecialDayDataNumber: 0, // 列表数据条目数 分页使用
+    Condition4ExpressStopList: new ExpressStopConditionClass(),
+    ExpressStopDataList: [], // 列表数据
+    ExpressStopDataNumber: 0, // 列表数据条目数 分页使用
 
+    /** 新特殊情况管理相关
+    ---------------------------------------- */
+    Condition4NewSpecialList: new NewSpecialConditionClass(),
+    NewSpecialDataList: [], // 列表数据
+    NewSpecialDataNumber: 0, // 列表数据条目数 分页使用
+    PeriodSpecialPropertyList: [], // 条件属性列表
   },
   getters: {
     curSetupProduct(state) { // 生产工期 当前正在选中的生产工期产品
       if (state.curSetupProductIndex === -1 || state.RootDataList.length === 0 || !state.RootDataList[state.curSetupProductIndex]) return null;
       return state.RootDataList[state.curSetupProductIndex];
+    },
+    NewSpecialDataListByGetters(state, getters, global, root) {
+      const _allAdAreaTreeList = root['common/allAdAreaTreeList'];
+      const _allProductClassify = root['common/allProductClassify'];
+      return state.NewSpecialDataList.map(it => {
+        if (!it.Constraint) return { ...it, _ConditionText: '无' };
+        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
+          it.Constraint,
+          state.PeriodSpecialPropertyList,
+          [],
+          _allAdAreaTreeList,
+          _allProductClassify,
+        );
+        return {
+          ...it,
+          Constraint,
+          _ConditionText,
+          // eslint-disable-next-line no-nested-ternary
+          FilterTypeText: Constraint ? (Constraint.FilterType === 1 ? '满足所有' : '满足任一') : '',
+        };
+      });
     },
   },
   mutations: {
@@ -234,53 +255,26 @@ export default {
       }
     },
 
-    /** 生产特殊情况管理相关
-    ---------------------------------------- */
-    clearCondition4ProduceSpecialDayList(state) { // 清除列表条件
-      state.Condition4ProduceSpecialDayList = new ProduceSpecialDayConditionClass();
-    },
-    setCondition4ProduceSpecialDayList(state, [[key1, key2], value]) {
-      if (!key2) state.Condition4ProduceSpecialDayList[key1] = value;
-      else state.Condition4ProduceSpecialDayList[key1][key2] = value;
-    },
-    setProduceSpecialDayItemSave(state, [data, ItemID]) { // 生产特殊情况编辑与添加
-      const temp = { ...data };
-      if (this.state.common?.Permission?.StaffName) temp.OperatorUserName = this.state.common.Permission.StaffName;
-      // 生成ProductString
-      const defaultProps = { FirstLevelID: 'ClassID', SecondLevelID: 'TypeID', ProductID: 'ProductID' };
-      const ProductString = CommonClassType.generateProductString(temp.ProductList, this.getters['common/allProductClassify'], defaultProps);
-      if (!data.ItemID) { // 添加
-        temp.AddTime = getFormatDateString();
-        state.ProduceSpecialDayDataList.unshift({ ...temp, ItemID, ProductString });
-        state.ProduceSpecialDayDataNumber += 1;
-      } else { // 编辑
-        const i = state.ProduceSpecialDayDataList.findIndex(it => it.ItemID === ItemID);
-        if (i > -1) {
-          const { AddTime } = state.ProduceSpecialDayDataList[i];
-          state.ProduceSpecialDayDataList.splice(i, 1, { ...temp, AddTime, ProductString });
-        }
-      }
-    },
-    setProduceSpecialDayDataList(state, { Data, DataNumber }) { // 设置列表数据
-      state.ProduceSpecialDayDataList = Data || [];
-      state.ProduceSpecialDayDataNumber = DataNumber || 0;
+    setProduceExpressStopDataList(state, { Data, DataNumber }) { // 设置列表数据
+      state.ProduceExpressStopDataList = Data || [];
+      state.ProduceExpressStopDataNumber = DataNumber || 0;
     },
     setProduceSpecialDayItemRemove(state, ItemID) { // 删除生产特殊情况项目
-      const i = state.ProduceSpecialDayDataList.findIndex(it => it.ItemID === ItemID);
+      const i = state.ProduceExpressStopDataList.findIndex(it => it.ItemID === ItemID);
       if (i > -1) {
-        state.ProduceSpecialDayDataList.splice(i, 1);
-        state.ProduceSpecialDayDataNumber -= 1;
+        state.ProduceExpressStopDataList.splice(i, 1);
+        state.ProduceExpressStopDataNumber -= 1;
       }
     },
 
     /** 运输特殊情况管理相关
     ---------------------------------------- */
-    clearCondition4SpecialDayList(state) {
-      state.Condition4SpecialDayList = new SpecialDayConditionClass();
+    clearCondition4ExpressStopList(state) {
+      state.Condition4ExpressStopList = new ExpressStopConditionClass();
     },
-    setCondition4SpecialDayList(state, [[key1, key2], value]) {
-      if (!key2) state.Condition4SpecialDayList[key1] = value;
-      else state.Condition4SpecialDayList[key1][key2] = value;
+    setCondition4ExpressStopList(state, [[key1, key2], value]) {
+      if (!key2) state.Condition4ExpressStopList[key1] = value;
+      else state.Condition4ExpressStopList[key1][key2] = value;
     },
     setSpecialDayItemSave(state, [data, ItemID]) { // 运输特殊情况编辑与添加
       const temp = { ...data };
@@ -288,30 +282,61 @@ export default {
       if (!data.ItemID) { // 添加
         temp.AddTime = getFormatDateString();
         if (!temp.StartTime) temp.StartTime = temp.AddTime;
-        state.SpecialDayDataList.unshift({ ...temp, ItemID });
-        state.SpecialDayDataNumber += 1;
+        state.ExpressStopDataList.unshift({ ...temp, ItemID });
+        state.ExpressStopDataNumber += 1;
       } else { // 编辑
-        const i = state.SpecialDayDataList.findIndex(it => it.ItemID === ItemID);
+        const i = state.ExpressStopDataList.findIndex(it => it.ItemID === ItemID);
         if (i > -1) {
-          const { StartTime, AddTime, SpecialType } = state.SpecialDayDataList[i];
-          let _StartTime = temp.StartTime || StartTime;
-          if (SpecialType === SpecialTypeEnums.delay.value && temp.SpecialType === SpecialTypeEnums.stop.value) {
-            _StartTime = getFormatDateString();
-          }
-          state.SpecialDayDataList.splice(i, 1, { ...temp, AddTime, StartTime: _StartTime });
+          const { StartTime, AddTime } = state.ExpressStopDataList[i];
+          const _StartTime = temp.StartTime || StartTime;
+          state.ExpressStopDataList.splice(i, 1, { ...temp, AddTime, StartTime: _StartTime });
         }
       }
     },
-    setSpecialDayDataList(state, { Data, DataNumber }) { // 设置列表数据
-      state.SpecialDayDataList = Data || [];
-      state.SpecialDayDataNumber = DataNumber || 0;
+    setExpressStopDataList(state, { Data, DataNumber }) { // 设置列表数据
+      state.ExpressStopDataList = Data || [];
+      state.ExpressStopDataNumber = DataNumber || 0;
     },
     setSpecialDayItemRemove(state, ItemID) { // 删除运输特殊情况项目
-      const i = state.SpecialDayDataList.findIndex(it => it.ItemID === ItemID);
+      const i = state.ExpressStopDataList.findIndex(it => it.ItemID === ItemID);
       if (i > -1) {
-        state.SpecialDayDataList.splice(i, 1);
-        state.SpecialDayDataNumber -= 1;
+        state.ExpressStopDataList.splice(i, 1);
+        state.ExpressStopDataNumber -= 1;
       }
+    },
+
+    /** 新特殊情况相关
+    ---------------------------------------- */
+    clearCondition4NewSpecialList(state) {
+      state.Condition4NewSpecialList = new NewSpecialConditionClass();
+    },
+    setCondition4NewSpecialList(state, [[key1, key2], value]) {
+      if (!key2) state.Condition4NewSpecialList[key1] = value;
+      else state.Condition4NewSpecialList[key1][key2] = value;
+    },
+    setNewSpecialDataList(state, { Data, DataNumber }) { // 设置列表数据
+      state.NewSpecialDataList = Data || [];
+      state.NewSpecialDataNumber = DataNumber || 0;
+    },
+    setNewSpecialItemChange(state, [itemData, isEdit, isRemove]) { // 项目删除|编辑|添加
+      if (isRemove) {
+        const i = state.NewSpecialDataList.findIndex(it => it.ItemID === itemData.ItemID);
+        if (i > -1) {
+          state.NewSpecialDataList.splice(i, 1);
+          state.NewSpecialDataNumber -= 1;
+        }
+        return;
+      }
+      if (!isEdit) {
+        state.NewSpecialDataList.unshift(itemData);
+        state.NewSpecialDataNumber += 1;
+      } else {
+        const i = state.NewSpecialDataList.findIndex(it => it.ItemID === itemData.ItemID);
+        if (i > -1) state.NewSpecialDataList.splice(i, 1, itemData);
+      }
+    },
+    setPeriodSpecialPropertyList(state, list) {
+      state.PeriodSpecialPropertyList = list;
     },
   },
   actions: {
@@ -457,39 +482,6 @@ export default {
         messageBox.successSingle('删除成功', cb, cb);
       }
     },
-    /** 生产特殊情况相关
-    ---------------------------------------- */
-    async getProduceSpecialDayItemSave({ commit }, [data, cbFunc]) { // 保存运输特殊情况
-      const resp = await api.getProduceSpecialDaySave(data).catch(() => null);
-      if (resp && resp.data.Status === 1000) {
-        const title = data.ItemID ? '编辑成功' : '添加成功';
-        const cb = () => {
-          commit('setProduceSpecialDayItemSave', [data, resp.data.Data]);
-          if (cbFunc) cbFunc();
-        };
-        messageBox.successSingle(title, cb, cb);
-      }
-    },
-    async getProduceSpecialDayDataList({ state, commit }, page = 1) {
-      commit('setProduceSpecialDayDataList', { Data: [], DataNumber: state.SpecialDayDataNumber });
-      commit('setCondition4ProduceSpecialDayList', [['Page', ''], page]);
-      const temp = CommonClassType.filter(state.Condition4ProduceSpecialDayList);
-      commit('setLoading', true);
-      const resp = await api.getProduceSpecialDayList(temp).catch(() => null);
-      commit('setLoading', false);
-      if (resp && resp.data.Status === 1000) {
-        commit('setProduceSpecialDayDataList', resp.data);
-      }
-    },
-    async getProduceSpecialDayItemRemove({ commit }, { ItemID }) {
-      const resp = await api.getProduceSpecialDayRemove(ItemID).catch(() => null);
-      if (resp && resp.data.Status === 1000) {
-        const cb = () => {
-          commit('setProduceSpecialDayItemRemove', ItemID);
-        };
-        messageBox.successSingle('删除成功', cb, cb);
-      }
-    },
     /** 运输特殊情况相关
     ---------------------------------------- */
     async getSpecialDayItemSave({ commit }, [data, cbFunc]) { // 保存运输特殊情况
@@ -503,15 +495,15 @@ export default {
         messageBox.successSingle(title, cb, cb);
       }
     },
-    async getSpecialDayDataList({ state, commit }, page = 1) {
-      commit('setSpecialDayDataList', { Data: [], DataNumber: state.SpecialDayDataNumber });
-      commit('setCondition4SpecialDayList', [['Page', ''], page]);
-      const temp = CommonClassType.filter(state.Condition4SpecialDayList);
+    async getExpressStopDataList({ state, commit }, page = 1) {
+      commit('setExpressStopDataList', { Data: [], DataNumber: state.ExpressStopDataNumber });
+      commit('setCondition4ExpressStopList', [['Page', ''], page]);
+      const temp = CommonClassType.filter(state.Condition4ExpressStopList);
       commit('setLoading', true);
       const resp = await api.getSpecialDayList(temp).catch(() => null);
       commit('setLoading', false);
       if (resp && resp.data.Status === 1000) {
-        commit('setSpecialDayDataList', resp.data);
+        commit('setExpressStopDataList', resp.data);
       }
     },
     async getSpecialDayItemRemove({ commit }, { ItemID }) {
@@ -521,6 +513,26 @@ export default {
           commit('setSpecialDayItemRemove', ItemID);
         };
         messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+
+    /** 新特殊情况相关
+    ---------------------------------------- */
+    async getPeriodSpecialSituationList({ state, commit }, page = 1) {
+      commit('setNewSpecialDataList', { Data: [], DataNumber: state.NewSpecialDataNumber });
+      commit('setCondition4NewSpecialList', [['Page', ''], page]);
+      const temp = CommonClassType.filter(state.Condition4NewSpecialList);
+      commit('setLoading', true);
+      const resp = await api.getPeriodSpecialSituationList(temp).catch(() => null);
+      commit('setLoading', false);
+      if (resp && resp.data.Status === 1000) {
+        commit('setNewSpecialDataList', resp.data);
+      }
+    },
+    async getPeriodSpecialPropertyList({ commit }) {
+      const list = await PropertyClass.getPropertyList({ UseModule: 47 });
+      if (list) {
+        commit('setPeriodSpecialPropertyList', list);
       }
     },
   },

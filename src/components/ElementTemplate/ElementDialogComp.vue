@@ -223,7 +223,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import ElementClassType, { SelectModeEnum, TypeEnum } from '@/assets/js/TypeClass/ElementClass';
 import { checkNumberSectionList } from '@/assets/js/checker/index';
 import ElementTempSelector from './ElementTempSelector.vue';

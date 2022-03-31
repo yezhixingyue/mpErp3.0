@@ -1,12 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2020-03-12 10:09:36
- * @LastEditTime: 2020-09-08 14:26:04
+ * @LastEditTime: 2022-03-25 17:30:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/main.js
  */
 import Vue from 'vue';
+// import mpLib from 'mpzj-comp-lib';
+// import 'mpzj-comp-lib/lib/ep.css';
 import api from '@/api/index';
 import utils from '@/assets/js/utils/util';
 import validateCheck from './assets/js/validator/validateCheck';
@@ -20,11 +22,14 @@ import './assets/css/common/clientType.scss';
 import './assets/css/common/common.scss';
 import './assets/js/utils/message';
 import './assets/js/filters/filters';
+import './packages/commonFilters';
 // import 'animate.css';
 
 Vue.prototype.api = api;
 Vue.prototype.$utils = utils;
 Vue.prototype.check = validateCheck;
+
+// Vue.use(mpLib);
 
 Vue.prototype.closeGLoading = () => {
   setTimeout(() => {

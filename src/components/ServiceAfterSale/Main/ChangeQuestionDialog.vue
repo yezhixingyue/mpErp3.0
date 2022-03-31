@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import { mapState, mapGetters } from 'vuex';
 
 export default {

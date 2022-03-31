@@ -384,10 +384,9 @@ export default {
       }
     },
     onSubmitClick() {
-      const checkBool = FormulaClass.checkSubmit(this.FormulaData);
-      if (checkBool) { // 提交验证通过
-        // console.log(this.FormulaData);
-        this.submitSave(this.FormulaData);
+      const data = this.getFormulaData();
+      if (data) {
+        this.submitSave(data);
       }
     },
     onCalculateClick() {
@@ -402,7 +401,10 @@ export default {
     },
     getFormulaData() {
       const checkBool = FormulaClass.checkSubmit(this.FormulaData, this.hiddenHeader);
-      return checkBool ? this.FormulaData : null;
+      if (!checkBool) return null;
+      const temp = { ...this.FormulaData };
+      const PropertyList = [...this.haveInputElementList];
+      return { ...temp, PropertyList };
     },
     getCostSelectedText(it) {
       if (!it || !Array.isArray(it.CraftOptionList) || it.CraftOptionList.length === 0) return '';

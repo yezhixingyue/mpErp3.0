@@ -33,7 +33,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import { StaffStatusEnumObj } from '../../../assets/js/TypeClass/StaffManage/enums';
 import DetailDisplayComp from './DetailDisplayComp.vue';
 import SetJobDialog from './SetJobDialog.vue';

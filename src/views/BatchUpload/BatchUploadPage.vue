@@ -11,22 +11,27 @@
       <hr />
       <AddressChangeComp
        :customer='customer'
-       :PayInFull.sync='PayInFull'
-       :UsePrintBean.sync='UsePrintBean'
+       :UseSameAddress='UseSameAddress'
+       :switchUseSameAddDisabled='canSelectList.length > 0'
+       @changeUseSameAddress='onChangeUseSameAddress'
        @change="handleAddressChange"
        @validAddChange='handleValidAddChange'
       />
     </header>
     <main>
-      <div class="workbench">
-        <div class="l">
+      <div class="workbench" :class="{d: !showMultiple}">
+        <div class="l" v-if="showMultiple">
           <p class="tips-box">
             <i class="el-icon-warning"></i>
             <span>上传说明：多产品上传文件名必须携带产品名称。   单产品上传不需要携带产品名称，所有上传文件视同选定产品。</span>
           </p>
           <ProductFilterComp v-model="Product" :disabled='canSelectList.length > 0' @change="onProductFilterChange" />
         </div>
-        <FileSelectComp @change="handleFileChange" :disabled='!canSelectFile' :accept='accept' :selectTitle='selectTitle' ref="oFileBox" />
+        <!-- :disabled='!canSelectFile' -->
+        <div class="select-box">
+          <FileSelectComp @change="handleFileChange" v-show='canSelectFile' :accept='accept' :selectTitle='selectTitle' ref="oFileBox" />
+          <FailListComp :failed-list="failedList" width="720" :offset='122' />
+        </div>
       </div>
       <MainTableComp
        ref="oTableWrap"
@@ -36,43 +41,21 @@
        :multipleSelection='multipleSelection'
        :checkAllDisabled='canSelectList.length === 0'
        :accept='accept'
+       :UseSameAddress='UseSameAddress'
+       :subExpressList='subExpressList'
+       :ShowProductDetail='ShowProductDetail'
        @itemRemove='handleItemRemove'
        @itemUpload='handleItemUpload'
        @multipleSelect='handleMultipleSelect'
        @droped='onDroped' />
-      <QrCodeForPayDialogComp v-model="QrCodeVisible" :payInfoData="payInfoData" @success='handlePaidSuccess' payType='21'>
-      <div class="page-pay-info-box" v-if="payInfoData">
-        <div class="customer">
-          <p>
-            <span>客户：</span>
-            <span class="is-bold">{{customer.CustomerName}}<template v-if="customer.CustomerSN">（{{customer.CustomerSN}}）</template></span>
-          </p>
-          <p>
-            <span class="is-gray">[ 请使用微信或支付宝扫码支付 ]</span>
-          </p>
-        </div>
-        <div class="amount item">
-          <span class="k">扫码支付：</span>
-          <span class="v is-origin is-bold">￥{{+(+payInfoData.Amount).toFixed(2)}}元</span>
-        </div>
-        <div class="item">
-          <span class="k">已扣余额：</span>
-          <span class="v">￥{{+(+payInfoData.BalanceAmount).toFixed(2)}}元</span>
-        </div>
-        <div class="item bean" v-if="payInfoData.PaidBeanNumber">
-          <span class="k">已扣印豆：</span>
-          <span class="v">{{payInfoData.PaidBeanNumber}}个</span>
-        </div>
-        <div class="item">
-          <span class="k">货到付款：</span>
-          <span class="v">￥{{+(+payInfoData.PayOnDelivery).toFixed(2)}}元</span>
-        </div>
-        <div class="item">
-          <span class="k">订单总金额：</span>
-          <span class="v">￥{{+(+payInfoData.TotalAmount).toFixed(2)}}元</span>
-        </div>
-      </div>
-    </QrCodeForPayDialogComp>
+      <QrCodeForPayDialogComp v-model="QrCodeVisible" :payInfoData="payInfoData" @success='handlePaidSuccess' payType='21' showPayGroup showPayDescription />
+      <PreCreateDialog
+        :visible.sync="preCreateVisible"
+        :subExpressList='subExpressList'
+        :PreCreateData="PreCreateData"
+        :OriginList='preCreateOriginDataList'
+        @submit="onOrderSubmit"
+        />
     </main>
     <footer>
       <BatchUploadFooterComp
@@ -80,7 +63,6 @@
        :expressCost='expressCost'
        :allCost='allCost'
        :showPrice='successedList.length > 0'
-       :failedList='failedList'
        :canSelectList='canSelectList'
        :multipleSelection='multipleSelection'
        @uploadSelected='handleUploadSelected'
@@ -94,15 +76,18 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
 import CustomerSelectComp from '@/components/BatchUploadComps/Header/CustomerSelectComp.vue';
-import AddressChangeComp from '@/components/BatchUploadComps/Header/AddressChangeComp.vue';
 import ProductFilterComp from '@/components/BatchUploadComps/Main/ProductFilterComp.vue';
-import FileSelectComp from '@/components/BatchUploadComps/Main/FileSelectComp.vue';
+import FileSelectComp from '@/packages/FileSelectComp';
 import MainTableComp from '@/components/BatchUploadComps/Main/MainTableComp/index.vue';
-import BatchUploadFooterComp from '@/components/BatchUploadComps/Footer/BatchUploadFooterComp.vue';
 import BatchUploadClass from '@/assets/js/TypeClass/BatchUploadClass';
-import QrCodeForPayDialogComp from '@/components/common/NewComps/QrCodeForPayDialogComp';
-import { mapState } from 'vuex';
+import ShowProductDetail from '@/assets/js/TypeClass/ShowProductDetail';
+import BatchUploadFooterComp from '@/packages/BatchUploadComps/Footer/BatchUploadFooterComp.vue';
+import QrCodeForPayDialogComp from '@/packages/QrCodeForPayDialogComp';
+import AddressChangeComp from '@/packages/BatchUploadComps/Header/AddressChangeComp.vue';
+import FailListComp from '@/packages/BatchUploadComps/Main/FailListComp';
+import PreCreateDialog from '../../packages/PreCreateDialog';
 
 export default {
   name: 'OrderBatchUploadPage',
@@ -118,6 +103,8 @@ export default {
     ProductFilterComp, // 产品筛选组件
     FileSelectComp, // 文件上传选择组件
     MainTableComp, // 主体表格组件
+    PreCreateDialog,
+    FailListComp,
     /**
      * 页面底部组件
      */
@@ -138,18 +125,25 @@ export default {
       QrCodeVisible: false,
       payInfoData: null,
       IsBatchUpload: true,
-      PayInFull: false, // 是否支付全款
-      UsePrintBean: false,
+      // PayInFull: false, // 是否支付全款
+      // UsePrintBean: false,
       Product: {
         isSingle: false,
         ClassID: '',
         TypeID: '',
         ProductID: '',
       },
+      showMultiple: false, // 是否展示多产品文件上传|单产品文件  --- 后面取消该功能 所以不再显示
+      UseSameAddress: false,
+      preCreateVisible: false,
+      preCreateOriginDataList: [], // 预下单原始列表数据，预下单确认后使用该列表数据生成订单
+      PreCreateData: null, // 预下单数据（服务器返回数据）
+      ShowProductDetail,
     };
   },
   computed: {
     ...mapState('common', ['RiskWarningTipsTypes']),
+    ...mapGetters('common', ['subExpressList']),
     canSelectFile() { // 是否允许选择产品（）
       if (!this.Product.ProductID && this.Product.isSingle) return false;
       if (!this.customer || !this.customer.CustomerID || !this.address || !this.address.Address) return false;
@@ -174,7 +168,8 @@ export default {
       return this.getPrice('CurrentCost', this.successedList);
     },
     expressCost() { // 运费总费用
-      return this.getPrice('ExpressCost', this.successedList);
+      // return this.getPrice('ExpressCost', this.successedList);
+      return 0;
     },
     allCost() { // 全部总费用
       return +((+this.productCost + +this.expressCost).toFixed(2));
@@ -185,12 +180,13 @@ export default {
         Address: BatchUploadClass.getAddress4SubmitFromEditObj(this.address),
         Terminal: this.Terminal,
         ProductID: this.Product.ProductID && this.Product.isSingle ? this.Product.ProductID : '',
-        PayInFull: this.PayInFull,
-        UsePrintBean: this.UsePrintBean,
+        // PayInFull: this.PayInFull,
+        // UsePrintBean: this.UsePrintBean,
         OrderType: this.OrderType, // 2 是自助
         Position: this.Position, // 255 是自助上传
         IsBatchUpload: this.IsBatchUpload,
         IgnoreRiskLevel: this.RiskWarningTipsTypes.All,
+        UseSameAddress: this.UseSameAddress,
       };
       return temp;
     },
@@ -202,14 +198,19 @@ export default {
     },
   },
   methods: {
+    // 初始化数据
+    async getAccept() {
+      const accept = await BatchUploadClass.getFileSuffixList();
+      if (accept) this.accept = accept;
+    },
     /**
      * 顶部区域： 客户信息与地址相关
      */
     handleCustomerChange(data) { // 选中客户 --- 此时应清空已解析订单列表
-      if (!this.customer || !data || this.customer.CustomerID !== data.CustomerID) {
-        this.PayInFull = false;
-        this.UsePrintBean = false;
-      }
+      // if (!this.customer || !data || this.customer.CustomerID !== data.CustomerID) {
+      //   this.PayInFull = false;
+      //   this.UsePrintBean = false;
+      // }
       if (this.customer && data && this.customer.CustomerID !== data.CustomerID) {
         this.getCustomerBalance();
       }
@@ -250,9 +251,16 @@ export default {
     handleAddressChange(address) { // 设置地址信息 --- 检查是否已有解析过的文件（解析成功且待上传） 如果有根据特定改变内容去改变列表价格 -- 待定
       this.address = address;
     },
-    handleValidAddChange(onlyAddChange) {
-      if (!this.successedList || this.successedList.length === 0) return;
-      BatchUploadClass.getFreightCalculateAfterValidAddressChange(this.successedList, this.basicObj, onlyAddChange);
+    // eslint-disable-next-line no-unused-vars
+    handleValidAddChange(onlyAddChange) { // 处理当地址发生改变时运费重新计算的问题 -- 已废弃注释（添加预下单后不再在主页面显示运费）
+      // if (!this.successedList || this.successedList.length === 0) return;
+      // BatchUploadClass.getFreightCalculateAfterValidAddressChange(this.successedList, this.basicObj, onlyAddChange);
+    },
+    onChangeUseSameAddress(val) { // 切换使用相同和不同地址
+      this.handleCheckAll(false);
+      this.successedList = [];
+      this.failedList = [];
+      this.UseSameAddress = val;
     },
     /**
      * 中上部区域： 文件选择相关
@@ -298,7 +306,7 @@ export default {
     handleUploadSelected() { // 上传选中文件
       if (this.successedList.length === 0 || this.multipleSelection.length === 0) return;
       // 需要筛选掉已上传成功的文件（已失败文件待定）
-      this.handleBatchUploadFils(this.multipleSelection);
+      this.handleBatchUploadFiles(this.multipleSelection);
     },
     handleClearSuccess() { // 清除已上传订单
       const list = this.successedList.filter(it => it.orderStatus === 'success').map(it => it.key);
@@ -331,10 +339,38 @@ export default {
       }, null);
     },
     handleItemUpload(item) { // 单个文件上传 this.basicObj
-      this.handleBatchUploadFils([item]);
+      this.handleBatchUploadFiles([item]);
     },
-    handleBatchUploadFils(list) {
-      BatchUploadClass.BatchUploadFils(list, this.basicObj, this.handleSubmitSuccess);
+    // handleBatchUploadFiles(list) { // 中间添加过渡页面弹窗 - 已加
+    //   BatchUploadClass.BatchUploadFiles(list, this.basicObj, this.handleSubmitSuccess);
+    // },
+    async handleBatchUploadFiles(list) { // 执行单个文件上传或批量上传 （使用同一个方法） -- 在最终下单前 在客户界面 需进行预下单弹窗确认
+      // 预下单
+      this.preCreateOriginDataList = [];
+      const _PreData = await BatchUploadClass.getPreOrderCreate(list, this.basicObj);
+      if (!_PreData) return;
+      this.handleBalance(_PreData);
+      this.PreCreateData = _PreData;
+      this.preCreateOriginDataList = list;
+      this.preCreateVisible = true;
+    },
+    handleBalance(obj) {
+      const { FundBalance, FundBeanNumber } = obj;
+      if (typeof FundBalance === 'number') {
+        this.customer.FundInfo.Amount = FundBalance;
+      }
+      if (typeof FundBeanNumber === 'number') {
+        this.customer.FundInfo.BeanNumber = FundBeanNumber;
+      }
+    },
+    onOrderSubmit({ OriginList, PayInFull, UsePrintBean }) { // 最终确认下单
+      this.preCreateVisible = false;
+      const temp = {
+        ...this.basicObj,
+        PayInFull,
+        UsePrintBean,
+      };
+      BatchUploadClass.BatchUploadFiles(OriginList, temp, this.handleSubmitSuccess);
     },
     cbToClearSuccessItem(list) { // 上传成功后从已选列表中删除上传成功选项
       if (this.$refs.oTableWrap && this.$refs.oTableWrap.$refs.multipleTable && this.multipleSelection.length > 0) {
@@ -368,8 +404,8 @@ export default {
     },
   },
   async created() {
-    const accept = await BatchUploadClass.getFileSuffixList();
-    if (accept) this.accept = accept;
+    this.getAccept();
+    this.$store.dispatch('common/getExpressList');
   },
 };
 </script>
@@ -400,11 +436,14 @@ export default {
       border-bottom: 1px solid #eee;
     }
     .mp-pc-place-order-address-show-and-change-wrap > .content.isBatchUploadUse > ul {
-      margin-top: 13px;
+      margin-top: 10px;
       > li {
-        margin-top: 6px;
+        margin-top: 3px;
       }
     }
+    // &.s {
+    //   height: 120px;
+    // }
   }
   > main {
     flex: 1;
@@ -419,7 +458,7 @@ export default {
       align-items: center;
       justify-content: space-between;
       padding-right: 48px;
-      padding-left: 16px;
+      padding-left: 20px;
       overflow: hidden;
       width: 100%;
       box-sizing: border-box;
@@ -454,6 +493,18 @@ export default {
       > span {
         flex: none;
         margin-left: 30px;
+      }
+      &.d {
+        > span {
+          margin-left: 0px;
+        }
+      }
+      .select-box {
+        display: flex;
+        align-items: center;
+        > .upload-btn {
+          margin-right: 20px;
+        }
       }
     }
     > .table {

@@ -51,6 +51,7 @@ export default {
     optionList() {
       if (!this.Property || !Array.isArray(this.Property.OptionList)) return [];
       const _list = [...this.Property.OptionList];
+      if ([42, 43, 45].includes(this.Property.FixedType)) return _list;
       return _list.sort((a, b) => a.Second.localeCompare(b.Second));
     },
     checkList: {

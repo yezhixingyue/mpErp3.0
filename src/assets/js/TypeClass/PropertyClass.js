@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import api from '@/api/index';
-import { getValueIsOrNotNumber, getNumberValueList, getNameFromListByIDs } from '@/assets/js/utils/util';
+import { getValueIsOrNotNumber, getNumberValueList, getNameFromListByIDs, getTreeTextDisplayContent } from '@/assets/js/utils/util';
 
 export const ElementSelectTypeEnum = [
   { label: '元素', ID: 0, nickName: '类型元素' },
@@ -62,6 +62,13 @@ export const PropertyFixedType = [
   { ID: 38, Name: '拼版宽' },
   // { ID: 39, Name: '工期数据' },
   { ID: 40, Name: '拼版方式' },
+  { ID: 41, Name: '付款时间' },
+  { ID: 42, Name: '付款时间星期' },
+  { ID: 43, Name: '付款日' },
+  { ID: 44, Name: '生产工时' },
+  { ID: 45, Name: '配送方式' },
+  { ID: 46, Name: '收货地址' },
+  { ID: 47, Name: '产品' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表
@@ -93,6 +100,7 @@ export const ValueCompareType = [
   { ID: 5, Name: '工艺' },
   { ID: 6, Name: '物料' },
   { ID: 7, Name: '控制' },
+  { ID: 9, Name: '数值等于不等于对比' },
 ];
 
 // 下面3个方法主要用于已选择的物料类型在页面上的展示，会对其进行分类提交处理 使用地方：1条件关系选择为物料时 2 工厂列表物料显示文字处理 等
@@ -356,14 +364,14 @@ export default class PropertyClass {
     return text;
   }
 
-  static getPropertyConditionText(list, target) { // getNameFromListByIDs
+  static getPropertyConditionText(list, target, allAdAreaTreeList = [], allProductClassify = []) { // getNameFromListByIDs
     if (!list || !Array.isArray(list) || list.length === 0) return '';
     const _list = list.map(it => {
       const { Property, Operator, ValueList } = it;
       let _operator = getNameFromListByIDs(Operator, AllOperatorList); // 获取到关系类型名称
       // const PerfectProperty = this.getPerfectPropertyByImperfectProperty(Property, PropertyList); // 获取到完整属性
       // if (!PerfectProperty) return '';
-      const { DisplayContent, OptionList, ValueType, Module, Element, Group, Part, Type } = Property;
+      const { DisplayContent, OptionList, ValueType, Module, Element, Group, Part, Type, FixedType } = Property;
       if (ValueType === 1 || ValueType === 6) _operator += '下面任一选项时：';
       // if (ValueType === 2) _operator += '下面所有选项时：';
       if (ValueType === 3 || ValueType === 2) {
@@ -379,30 +387,42 @@ export default class PropertyClass {
       const _name = DisplayContent ? DisplayContent.replace(/\[|\]/g, '') : '';
       let _val = '';
       if (ValueList) {
-        if (ValueList.length === 1) {
-          if ((ValueList[0].Value || ValueList[0].Value === 0)) {
-            if (getValueIsOrNotNumber(ValueList[0].Value)) {
-              _val = ValueList[0].Value;
-              if (Property && Property.DisplayContent) {
-                if (Array.isArray(Property.OptionList)) {
-                  const t = Property.OptionList.find(_it => _it.First === _val);
-                  if (t) _val = it.Second;
-                }
-              }
-            } else {
-              if (ValueList[0].Value === 'True') _val = Property.FixedType === 35 ? '是' : '开';
-              if (ValueList[0].Value === 'False') _val = Property.FixedType === 35 ? '否' : '关';
+        if ([46, 47].includes(FixedType)) {
+          if (Array.isArray(ValueList) && ValueList.length > 0) {
+            const vals = ValueList.filter(_it => _it && _it.Value).map(_it => JSON.parse(_it.Value)).filter(_it => _it);
+            if (FixedType === 46) {
+              _val = getTreeTextDisplayContent(vals, allAdAreaTreeList);
+            }
+            if (FixedType === 47) {
+              _val = getTreeTextDisplayContent(vals, allProductClassify, 'product');
             }
           }
-          if (!ValueList[0].Value && ValueList[0].Property && ValueList[0].Property.DisplayContent) {
-            _val = ValueList[0].Property.DisplayContent.replace(/\[|\]/g, '');
+        } else {
+          if (ValueList.length === 1) {
+            if ((ValueList[0].Value || ValueList[0].Value === 0)) {
+              if (getValueIsOrNotNumber(ValueList[0].Value)) {
+                _val = ValueList[0].Value;
+                if (Property && Property.DisplayContent) {
+                  if (Array.isArray(Property.OptionList)) {
+                    const t = Property.OptionList.find(_it => _it.First === _val);
+                    if (t) _val = it.Second;
+                  }
+                }
+              } else {
+                if (ValueList[0].Value === 'True') _val = Property.FixedType === 35 ? '是' : '开';
+                if (ValueList[0].Value === 'False') _val = Property.FixedType === 35 ? '否' : '关';
+              }
+            }
+            if (!ValueList[0].Value && ValueList[0].Property && ValueList[0].Property.DisplayContent) {
+              _val = ValueList[0].Property.DisplayContent.replace(/\[|\]/g, '');
+            }
           }
-        }
-        if (!_val && OptionList) {
-          _val = ValueList.map(_it => OptionList.find(option => option.First === _it.Value)).filter(_it => _it).map(_it => _it.Second).join(' ');
-          if (ValueType === 6) { // 为物料类型 对物料类型数据进行组合
-            const checkList = ValueList.map(_it => _it.Value);
-            _val = this.getMaterialListShowText(checkList, OptionList, Type);
+          if (!_val && OptionList) {
+            _val = ValueList.map(_it => OptionList.find(option => option.First === _it.Value)).filter(_it => _it).map(_it => _it.Second).join(' ');
+            if (ValueType === 6) { // 为物料类型 对物料类型数据进行组合
+              const checkList = ValueList.map(_it => _it.Value);
+              _val = this.getMaterialListShowText(checkList, OptionList, Type);
+            }
           }
         }
       }
@@ -429,7 +449,7 @@ export default class PropertyClass {
     return temp;
   }
 
-  static getConstraintAndTextByImperfectConstraint(Constraint, PropertyList, RightPropertyList) {
+  static getConstraintAndTextByImperfectConstraint(Constraint, PropertyList, RightPropertyList, allAdAreaTreeList, allProductClassify) {
     let _Constraint = null;
     let _ConditionText = '无';
     // if (!Constraint) return { ...it, conditionText: '无' };
@@ -442,13 +462,13 @@ export default class PropertyClass {
         }
         return {
           ...item,
-          Property: this.getPerfectPropertyByImperfectProperty(item.Property, PropertyList),
+          Property: this.getPerfectPropertyByImperfectProperty(item.Property, PropertyList, allAdAreaTreeList, allProductClassify),
           ValueList,
         };
       }).filter(item => item.Property) : [];
 
       _Constraint = { ...Constraint, ItemList };
-      _ConditionText = this.getPropertyConditionText(ItemList, this.PropertyList);
+      _ConditionText = this.getPropertyConditionText(ItemList, this.PropertyList, allAdAreaTreeList, allProductClassify);
       _ConditionText = _ConditionText || '无';
     }
 

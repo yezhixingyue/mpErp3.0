@@ -20,7 +20,7 @@
       size="mini"
     >
     </el-date-picker>
-    <span class="d" v-if="text">{{text}}</span>
+    <span class="d" v-if="text">- {{text}}</span>
   </div>
 </template>
 
@@ -77,13 +77,6 @@ export default {
       },
       set(val) {
         const _list = val ? val.map((it, i) => (it ? `${it}.${i === 0 ? '000Z' : '997Z'}` : '')) : [];
-        if (this.maxSpan > 0 && _list.length === 2) {
-          const [start, end] = _list;
-          if (start && end && new Date(end).getTime() - new Date(start).getTime() > this.maxSpan * 24 * 60 * 60 * 1000) {
-            this.messageBox.failSingleError('日期设置失败', `时间跨度不可超过${this.maxSpan}天，请缩小时间跨度`);
-            return;
-          }
-        }
         this.$emit('input', _list);
       },
     },
@@ -100,8 +93,7 @@ export default {
           return {
             text,
             onClick: picker => {
-              if (this.text === text) return;
-              this.temp = text;
+              if (this.text === text) this.temp = text;
               picker.$emit('pick', ['', '']);
             },
           };
@@ -111,8 +103,7 @@ export default {
           return {
             text,
             onClick: picker => {
-              if (this.text === text) return;
-              this.temp = text;
+              if (this.text !== text) this.temp = text;
               const start = new Date(_date.First?.replace('Z', ''));
               const end = new Date(_date.Second?.replace('Z', ''));
               picker.$emit('pick', [start, end]);
@@ -121,14 +112,19 @@ export default {
         }
         return null;
       }).filter(it => it);
-      return { shortcuts };
+      return {
+        shortcuts,
+        firstDayOfWeek: 1,
+        onPick: this.onPick,
+        disabledDate: this.getDisabledDate,
+      };
     },
     clearable() { // 是否显示清除按钮，当menus中包含不限选项的时候可以清除
       const keys = this.menus.map(it => it.key);
       return keys.includes('all');
     },
     popperClassName() {
-      const arr = ['mp-date-range'];
+      const arr = ['mp-date-range-common-comp-wrap'];
       if (!this.clearable) arr.push('unable-clear');
       return arr.join(' ');
     },
@@ -137,12 +133,28 @@ export default {
     return {
       temp: '',
       text: '',
+      curPickDate: null, // 当前正在选择的日期范围（非选定）
     };
   },
   methods: {
     onChange() {
       this.text = this.temp;
       this.temp = '';
+    },
+    onPick(e) {
+      this.curPickDate = e;
+    },
+    getDisabledDate(e) {
+      if (new Date(new Date(e).toDateString()).getTime() > Date.now()) return true;
+      if (this.maxSpan > 0 && this.curPickDate) {
+        const { minDate, maxDate } = this.curPickDate;
+        if (!maxDate) {
+          const oneDay = 24 * 60 * 60 * 1000;
+          const diff = Math.ceil((Math.abs(new Date(new Date(minDate).toDateString()).getTime() - new Date(new Date(e).toDateString()).getTime())) / oneDay);
+          return diff >= this.maxSpan;
+        }
+      }
+      return false;
     },
   },
   watch: {
@@ -198,7 +210,7 @@ export default {
     }
   }
 }
-.el-picker-panel.mp-date-range{
+.el-picker-panel.mp-date-range-common-comp-wrap {
   .today.start-date, .today.end-date {
     > div > span {
       color: #fff !important;

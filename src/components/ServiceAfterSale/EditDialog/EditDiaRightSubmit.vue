@@ -78,7 +78,7 @@
                 <span>{{orderDetailData.ProductParams.Attributes.Unit}}</span>
               </div>
               <div class="upload-file-box">
-                <ServiceBlueBtn class="uploadFileBox" accept='*'  v-if="orderDetailData.FileCase"
+                <FileSelectBtn class="uploadFileBox" accept='*'  v-if="orderDetailData.FileCase"
                  :func="readFileUniqueName" title="上传文件" />
                 <el-tooltip v-if="orderDetailData.FileCase"
                   class="file-name-box" effect="dark" :content="fileName" placement="top-end">
@@ -179,7 +179,7 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
-import ServiceBlueBtn from '@/components/ServiceAfterSale/EditDialog/ServiceBlueBtn.vue'; // serviceSingleRadio
+import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
 import SingleRadio from '@/components/common/SingleRadio.vue';
 // import { Base64 } from 'js-base64';
 import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
@@ -189,7 +189,7 @@ import DropDown from '../../common/DropDown.vue';
 export default {
   components: {
     DropDown,
-    ServiceBlueBtn,
+    FileSelectBtn,
     SingleRadio,
     MpTextInput,
   },

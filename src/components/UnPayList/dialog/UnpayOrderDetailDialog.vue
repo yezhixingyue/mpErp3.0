@@ -2,7 +2,7 @@
   <el-dialog
   title="查看详情"
   :visible.sync="isShowDia"
-  width="800px"
+  width="880px"
   top="6.5vh"
   :modal='false'
   v-dialogDrag

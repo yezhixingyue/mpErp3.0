@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 
 export default {
   props: {

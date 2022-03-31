@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import RetractableDisplayComp from '@/components/common/RetractableDisplayComp/Index.vue';
+import RetractableDisplayComp from '@/packages/RetractableDisplayComp';
 import ProductItem from '../SmallComp/ProductItem.vue';
 
 export default {
@@ -53,6 +53,14 @@ export default {
   height: 400px;
   > header {
     padding: 0 10px;
+    background-color: #79adfa;
+    > div {
+      background-color: #79adfa;
+      color: #fff;
+    }
+    .mp-table-drag-cell:after {
+      background-color: #96bffa;
+    }
   }
   > main {
     padding: 0 10px;

@@ -10,7 +10,6 @@
       <UnpayPageFooter />
     </footer>
     <UnpayOrderDetailDialog /> <!-- 弹窗1 - 详情 -->
-    <PrePayDialogComp /> <!-- 弹窗2 - 预支付 -->
     <Dialog2Pay />
   </div>
 </template>
@@ -30,7 +29,6 @@ export default {
     UnpayOrderDetailDialog: () => import(/* webpackChunkName: "unpaylist" */ '@/components/UnPayList/dialog/UnpayOrderDetailDialog.vue'),
     UnpayPageFooter,
     UnpayHeaderComp,
-    PrePayDialogComp: () => import(/* webpackChunkName: "unpaylist" */ '@/components/UnPayList/dialog/PrePayDialogComp.vue'),
     Dialog2Pay: () => import(/* webpackChunkName: "unpaylist" */ '@/components/UnPayList/dialog/Dialog2Pay.vue'),
   },
   methods: {

@@ -51,7 +51,7 @@ export default {
   .order-list-progress-wrap {
     height: 645px;
     padding-top: 42px;
-    padding-right: 188px;
+    padding-right: 218px;
     user-select: none;
     overflow-y: auto;
   }

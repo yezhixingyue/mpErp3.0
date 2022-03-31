@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import PrintBreadth from '@/assets/js/TypeClass/PrintBreadth';
 
 export default {

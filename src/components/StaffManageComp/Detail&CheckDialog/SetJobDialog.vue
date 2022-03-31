@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';

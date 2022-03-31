@@ -51,10 +51,21 @@
           </div>
         </li>
         <li>
-          <span class="title">生产延后时长：</span>
+          <span class="title">生产开始时间：</span>
           <div class="content-item">
-            <el-input maxlength="2" v-model="payTimeForm.ProduceDelayTime" size="small"></el-input>
-            <span class="r">小时</span>
+            <!-- <el-input maxlength="2" v-model="payTimeForm.ProduceDelayTime" size="small"></el-input>
+            <span class="r">小时</span> -->
+            <el-time-picker
+              v-model="ProduceStartTime"
+              :clearable='false'
+              value-format="HH:mm"
+              format="HH:mm"
+              :picker-options="{ format: 'HH:mm' }"
+              :default-value='defaultBeginTime'
+              placeholder="20:00"
+              size="small"
+            >
+            </el-time-picker>
           </div>
         </li>
       </ul>
@@ -130,6 +141,22 @@ export default {
         const [First, Second] = val.split(':');
         this.payTimeForm.LatestPayTime.First = First;
         this.payTimeForm.LatestPayTime.Second = Second;
+      },
+    },
+    ProduceStartTime: {
+      get() {
+        if (!this.payTimeForm) return '';
+        const { First, Second } = this.payTimeForm.ProduceStartTime;
+        if ((!First && First !== 0) || (!Second && Second !== 0)) return '';
+        const _f = `0${First}`.slice(-2);
+        const _s = `0${Second}`.slice(-2);
+        return `${_f}:${_s}`;
+      },
+      set(val) {
+        if (!val) return;
+        const [First, Second] = val.split(':');
+        this.payTimeForm.ProduceStartTime.First = First;
+        this.payTimeForm.ProduceStartTime.Second = Second;
       },
     },
     defaultBeginTime() {

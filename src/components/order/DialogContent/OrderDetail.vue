@@ -10,14 +10,14 @@
         </header>
         <article class="product-content">
           <section class="product-header">
-            <DisplayItem :ShowData='ProductShowData' />
+            <OrderDetailDisplayItem :ShowData='ProductShowData' />
           </section>
           <section class="unit">  <!-- 部件信息 -->
-            <DisplayItem v-for="(it, i) in PartShowDataList" :ShowData='it' :key="it.Name" :class="{border: i > 0}" :showBorder='i > 0' />
+            <OrderDetailDisplayItem v-for="(it, i) in PartShowDataList" :ShowData='it' :key="it.Name" :class="{border: i > 0}" :showBorder='i > 0' />
           </section>
         </article>
         <footer v-if="!isCalculate">
-          <ul>
+          <!-- <ul>
             <li>
               <span>原价：</span>
               <el-tooltip :content="`原价：${showData.Funds.OriginalPrice}元`" placement="top">
@@ -30,19 +30,6 @@
                 <span class="is-origin is-bold">{{showData.Funds.FinalPrice}}元</span>
               </el-tooltip>
             </li>
-            <!-- <li v-if="(showData.Funds.DiscountPrice - showData.Funds.CouponAmount).toFixed(2) > 0">
-              <span>活动：</span>
-              <el-tooltip
-               :content="`活动：-${(showData.Funds.DiscountPrice - showData.Funds.CouponAmount).toFixed(2)}元`"
-               placement="top">
-                <span class="is-pink"
-                  >
-                  <i>-</i>{{
-                    `${+(showData.Funds.DiscountPrice - showData.Funds.CouponAmount).toFixed(2)}`
-                  }}元
-                </span>
-              </el-tooltip>
-            </li> -->
             <li v-if="showData.Funds.CouponAmount > 0">
               <span>优惠券：</span>
               <el-tooltip :content="`优惠券：-${showData.Funds.CouponAmount}元`" placement="top">
@@ -51,7 +38,6 @@
               </el-tooltip>
             </li>
             <li>
-              <!-- <i v-if="showData.Funds.CouponAmount > 0">（</i> -->
               <span>已付：</span>
               <el-tooltip :content="`已付：${showData.Funds.HavePaid}元`" placement="top">
                 <span>{{showData.Funds.HavePaid}}元</span>
@@ -71,16 +57,15 @@
               <el-tooltip :content="`退款：${showData.Funds.Refund}元`" placement="top">
                 <span>{{showData.Funds.Refund}}元</span>
               </el-tooltip>
-              <!-- <i v-if="showData.Funds.CouponAmount > 0">）</i> -->
             </li>
             <li v-if="showData.Funds.Reduced > 0">
               <span class="em4-text">售后优惠：</span>
               <el-tooltip :content="`售后优惠：${showData.Funds.Reduced}元`" placement="top">
                 <span>{{showData.Funds.Reduced}}元</span>
               </el-tooltip>
-              <!-- <i v-if="showData.Funds.CouponAmount > 0">）</i> -->
             </li>
-          </ul>
+          </ul> -->
+          <OrderDetailPriceBox :OrderData='showData' />
         </footer>
       </div>
       <ul class="orderdetail-right">
@@ -290,7 +275,8 @@ import { mapState } from 'vuex';
 import normalBtn from '@/components/common/normalBtn.vue';
 import UploadComp4BreakPoint from '@/components/common/UploadComp/UploadComp4BreakPoint.vue';
 import ShowProductDetail from '@/assets/js/TypeClass/ShowProductDetail';
-import DisplayItem from './OrderDetailComps/DisplayItem.vue';
+import OrderDetailDisplayItem from '@/packages/OrderDetailDisplayItem';
+import OrderDetailPriceBox from '@/packages/OrderDetailPriceBox';
 
 export default {
   props: {
@@ -370,7 +356,8 @@ export default {
   components: {
     normalBtn,
     UploadComp4BreakPoint,
-    DisplayItem,
+    OrderDetailDisplayItem,
+    OrderDetailPriceBox,
   },
   methods: {
     getAddress(Address) {
@@ -428,7 +415,7 @@ export default {
 @import "@/assets/css/common/var.scss";
 .order-list-dialog-orderdetail-wrap {
   margin: 0 auto;
-  width: 732px;
+  width: 805px;
   height: 650px;
   box-sizing: border-box;
   margin-top: 25px;
@@ -439,11 +426,12 @@ export default {
 
   .orderdetail-left {
     height: 100%;
-    width: 390px;
+    width: 480px;
     .product-content {
-      height: 530px;
+      height: 495px;
       padding: 20px;
       padding-bottom: 18px;
+      margin-bottom: 5px;
       box-sizing: border-box;
       overflow-y: scroll;
       .unit {
@@ -485,11 +473,12 @@ export default {
       }
     }
     > footer {
-      height: 80px;
-      padding: 0px 20px;
-      padding-top: 8px;
+      // height: 90px;
+      // padding: 0px 20px;
+      // padding-top: 8px;
+      padding: 0 18px;
       box-sizing: border-box;
-      overflow: hidden;
+      // overflow: hidden;
       > ul {
         display: flex;
         // justify-content: space-between;
@@ -526,7 +515,7 @@ export default {
   }
 
   .orderdetail-right {
-    width: 320px;
+    width: 305px;
     height: 100%;
     display: flex;
     flex-direction: column;

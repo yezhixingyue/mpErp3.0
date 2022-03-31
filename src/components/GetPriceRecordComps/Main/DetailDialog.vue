@@ -1,7 +1,7 @@
 <template>
   <CommonDialogComp
-    width="800px"
-    top='10vh'
+    width="850px"
+    top='8vh'
     title="报价详情"
     :visible.sync="visible"
     :showSubmit='false'
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import OrderDetail from '@/components/order/DialogContent/OrderDetail.vue';
 
 export default {
@@ -56,14 +56,14 @@ export default {
     > .el-dialog__body {
       padding: 0 20px;
       .order-list-dialog-orderdetail-wrap {
-        height: 560px;
+        height: 600px;
         .product-content {
           height: calc(100% - 40px);
           box-sizing: border-box;
         }
       }
       li.customer-info {
-        height: 310px;
+        height: 330px;
         .customer-content {
           height: 265px;
           > section {
@@ -74,7 +74,7 @@ export default {
         }
       }
       .order-info {
-        height: 230px;
+        height: 248px;
         .order-content {
           height: calc(100% - 40px);
         }

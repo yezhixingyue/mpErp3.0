@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 
 export default {

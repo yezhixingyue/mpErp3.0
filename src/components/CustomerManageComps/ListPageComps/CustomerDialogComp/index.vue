@@ -29,7 +29,7 @@
 <script>
 import Customer from '@/store/customerManage/Customer';
 import { mapState } from 'vuex';
-import CommonDialogComp from '../../../common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import BasicInfoComp from './DetailComps/BasicInfoComp.vue';
 import FinanceInfoComp from './DetailComps/FinanceInfoComp.vue';
 import PriceInfoComp from './DetailComps/PriceInfoComp.vue';

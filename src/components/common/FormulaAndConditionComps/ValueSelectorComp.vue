@@ -3,7 +3,15 @@
     <span class="pshow" v-if="ValProperty"
      :title="ValProperty.DisplayContent && ValProperty.DisplayContent.replace(/\[|\]/g, '')"
      >{{ValProperty.DisplayContent && ValProperty.DisplayContent.replace(/\[|\]/g, '')}}</span>
-    <template v-if="ValueType === 0 && !ValProperty">
+    <el-date-picker
+      v-if="!ValProperty && PropertyData.FixedType === 41"
+      v-model="localValue"
+      type="date"
+      format="yyyy-MM-dd"
+      value-format="yyyy-MM-ddTHH:mm:ss"
+      placeholder="选择日期"
+      size="small" />
+    <template v-else-if="ValueType === 0 && !ValProperty">
       <el-input v-model.trim="localValue" maxlength="9" size="mini"></el-input>
       <span v-if="Unit" class="unit" :title="Unit">{{Unit}}</span>
     </template>
@@ -51,6 +59,7 @@ export default {
         if (Array.isArray(this.value) && this.value.length > 0) {
           return this.isMultiple ? this.value.map(it => it.Value) : this.value[0].Value;
         }
+        if (!this.ValProperty && this.PropertyData.FixedType === 41) return '';
         return Array.isArray(this.value) ? [] : '';
       },
       set(val) {
@@ -111,6 +120,9 @@ export default {
     line-height: 30px;
     font-size: 12px;
     border-radius: 3px;
+  }
+  .el-date-editor.el-input {
+    width: 140px;
   }
   .unit {
     font-size: 13px;

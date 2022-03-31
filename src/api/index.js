@@ -803,6 +803,10 @@ const api = {
   getFreightCalculate(data) { // POST /Api/Freight/Calculate 有效地址或配送方式发生变化时重新计算解析条目的运费价格
     return instance.post('/Api/Freight/Calculate', data, { closeLoading: true, closeTip: true });
   },
+  getOrderPreCreate(data) { // POST /Api/Order/PreCreate  直接下单 - 预下单
+    const { closeTip } = data;
+    return instance.post('/Api/Order/PreCreate', data, { closeTip });
+  },
   /* 新工期管理api
   ----------------------------------------------------------------------------------- */
   // 1. 付款时间管理
@@ -896,7 +900,22 @@ const api = {
   getProduceSpecialDayDetail(id) { // GET /Api/ProduceSpecialDay/Detail  生产特殊日期详情
     return instance.get('/Api/ProduceSpecialDay/Detail', { params: { id } });
   },
-
+  // 8. 新工期特殊情况
+  getPeriodSpecialSituationSave(data) { // POST /Api/PeriodSpecialSituation/Save  工期特殊情况保存
+    return instance.post('/Api/PeriodSpecialSituation/Save', data);
+  },
+  getPeriodSpecialSituationList(data) { // POST /Api/PeriodSpecialSituation/List 工期特殊情况列表 Page PageSize
+    return instance.post('/Api/PeriodSpecialSituation/List', data);
+  },
+  getPeriodSpecialSituationLogList(data) { // POST /Api/PeriodSpecialSituationLog/List   工期特殊情况 - 操作记录列表  LogType：3为删除记录  4为操作记录  SituationID（操作记录需要传）  分页
+    return instance.post('/Api/PeriodSpecialSituationLog/List', data);
+  },
+  // getPeriodSpecialSituationDetail(id) { // GET /Api/PeriodSpecialSituation/Detail   工期特殊情况详情
+  //   return instance.get('/Api/PeriodSpecialSituation/Detail', { params: { id } });
+  // },
+  getPeriodSpecialSituationRemove(id) { // DELETE /Api/PeriodSpecialSituation/Remove   工期特殊情况删除
+    return instance.delete('/Api/PeriodSpecialSituation/Remove', { params: { id } });
+  },
   /* 企业管理api
   ----------------------------------------------------------------------------------- */
   getJobPermissionsList() { // 获取岗位管理权限数据列表

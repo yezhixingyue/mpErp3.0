@@ -2,7 +2,7 @@
   <el-dialog
     title="相关订单"
     :visible.sync="dialogVisible2UsePageOrderDetail"
-    width="800px"
+    width="850px"
     top='6vh'
     :modal='false'
     v-dialogDrag

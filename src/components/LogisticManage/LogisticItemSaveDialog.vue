@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import LogisticItem from '../../assets/js/TypeClass/LogisticTypeClass/LogisticItem';
 import { logisticTypeEnumList } from '../../assets/js/TypeClass/LogisticTypeClass/logisticEnums';
 
@@ -58,7 +58,7 @@ export default {
         Name: [
           { required: true, message: '请输入名称', trigger: 'blur' },
           { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' },
-          // 名称不能重复校验， 后面补充
+          { validator: this.uniqueNameValidator, message: '名称不能重复' },
         ],
         Type: [
           { required: true, message: '请选择分类', trigger: 'change' },
@@ -85,13 +85,13 @@ export default {
       this.$refs.ruleForm.resetFields();
       this.ruleForm = null;
     },
-    submitForm() {
-      this.$refs.ruleForm.validate((valid) => {
-        if (valid) {
-          // console.log('验证通过,可以保存', this.ruleForm);
-          this.$emit('submit', this.ruleForm);
-        }
-      });
+    uniqueNameValidator(rule, value, callback) {
+      const t = this.list.find(it => it.Name === value && it.ID !== this.ruleForm.ID);
+      callback(t ? new Error('') : undefined);
+    },
+    async submitForm() {
+      const result = await this.$refs.ruleForm.validate().catch(() => false);
+      if (result) this.$emit('submit', this.ruleForm);
     },
   },
 };

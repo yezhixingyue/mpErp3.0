@@ -32,9 +32,10 @@ export default {
   },
   computed: {
     label() {
-      if (this.isError && this.isHovering && this.itemData.result.HavePrice && this.itemData.result.HaveFreight === true) return '重新下单';
+      // if (this.isError && this.isHovering && this.itemData.result.HavePrice && this.itemData.result.HaveFreight === true) return '重新下单';
+      if (this.isError && this.isHovering && this.itemData.result.HavePrice) return '重新下单';
       if (this.itemData && this.itemData.result?.HavePrice === false) return '无报价';
-      if (this.itemData && this.itemData.result?.HaveFreight === false) return '运费计算失败';
+      // if (this.itemData && this.itemData.result?.HaveFreight === false) return '运费计算失败';
       if (this.itemData && this.itemData.isParsing === true) return this.itemData.parseStatus === 'parsing' ? '正在读取...' : '读取完成';
       let text = '';
       if (this.itemData && this.itemData.uploadStatus && this.itemData.orderStatus) {

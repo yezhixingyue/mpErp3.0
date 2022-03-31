@@ -80,7 +80,8 @@ export default {
       if (!Property) return '';
       // 1. 获取到该属性的类型： 数字 | 选择项 | 尺寸
       if (Property.ValueType === 0) { // 数字类型 需要考虑关系
-        const { Unit } = Property.Element || {};
+        let { Unit } = Property.Element || {};
+        if (!Unit && Property.Unit) Unit = Property.Unit;
         const arr = it.Value.split(' ');
         if (arr.length === 1) return Unit ? `${arr[0]}${Unit}` : arr[0];
         if (arr.length === 2) {

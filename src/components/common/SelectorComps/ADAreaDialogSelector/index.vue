@@ -3,7 +3,7 @@
     width="750px"
     top="8vh"
     :visible.sync="localVisible"
-    title="选择区域"
+    :title="`选择${treeType==='area' ? '区域' : '产品'}`"
     class="mp-erp-ad-area-dialog-selector-comp-wrap"
     submitText='确定'
     @submit="onSubmit"
@@ -11,12 +11,12 @@
     @open="onOpen"
     @cancle="localVisible = false"
   >
-    <ADAreaTreeContentComp ref="oTreeWrap" v-model="localAreaList" v-if="localVisible" />
+    <ADAreaTreeContentComp ref="oTreeWrap" v-model="localAreaList" v-if="localVisible" :treeType='treeType' :productClassifyType='productClassifyType' />
   </CommonDialogComp>
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import ADAreaTreeContentComp from './ADAreaTreeContentComp.vue';
 
 export default {
@@ -32,6 +32,14 @@ export default {
     AreaDescribe: {
       type: String,
       default: '',
+    },
+    treeType: {
+      type: String,
+      default: 'area',
+    },
+    productClassifyType: {
+      type: Number,
+      default: 6, // 代客下单分类
     },
   },
   components: {

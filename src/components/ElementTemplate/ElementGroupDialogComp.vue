@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import ElementGroup from '@/assets/js/TypeClass/ElementGroupClass';
 
 export default {

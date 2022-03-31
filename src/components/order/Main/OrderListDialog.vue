@@ -4,7 +4,7 @@
     <el-dialog
       :top="dialogTop"
       :visible="orderListDialogShow"
-      width="800px"
+      width="850px"
       custom-class="order-list-dialog-box"
       :before-close='beforeClose'
       :modal='false'

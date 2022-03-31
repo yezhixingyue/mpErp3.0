@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import draggable from 'vuedraggable';
 import { TypeEnum } from '@/assets/js/TypeClass/ElementClass';
 

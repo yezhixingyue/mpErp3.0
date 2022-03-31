@@ -41,7 +41,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import NewAreaTreeSpreadComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp';
 import RangeTemplateSelector from './RangeTemplateSelector.vue';
 

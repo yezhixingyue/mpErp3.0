@@ -49,7 +49,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import Customer from '@/store/customerManage/Customer';
-import AddMapComp from '@/components/common/NewComps/ConsigneeAddressSetpComp/AddMapComp';
+import AddMapComp from '@/packages/ConsigneeAddressSetpComp/AddMapComp';
 import Address from '@/store/customerManage/Address';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 import AreaAddressInfoSetupComp from '../../common/SelectorComps/AreaAddressInfoSetupComp.vue';

@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '../../common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 
 export default {
   props: {

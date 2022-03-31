@@ -148,7 +148,7 @@ export default {
 <style lang='scss'>
 @import "@/assets/css/common/var.scss";
 .order-list-dialog-packagelist-wrap {
-  width: 750px;
+  width: 810px;
   margin: 0 auto;
   margin-top: 25px;
   height: 660px;

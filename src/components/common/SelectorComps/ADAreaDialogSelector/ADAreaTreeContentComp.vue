@@ -1,16 +1,14 @@
 <template>
   <TreeComp
     class="mp-erp-ad-area-content-selector-comp-for-new-wrap"
-    title="行政区域"
-    :treeList="allAdAreaTreeList"
+    :class="treeType"
+    :title="`${treeType==='area' ? '行政区域' : '产品'}`"
+    :treeList="allLevelList"
     :defaultCheckedKeys="defaultCheckedKeys"
     :handleChangeFunc="handleAreaChangeFunc"
     newDataType
-    checkAllTitle="所有地区"
-    :defaultProps="{
-      children: 'children',
-      label: 'Name',
-    }"
+    :checkAllTitle="`所有${treeType==='area' ? '地区' : '产品'}`"
+    :defaultProps="defaultProps"
     ref="TreeComp"
   />
 </template>
@@ -25,68 +23,125 @@ export default {
       type: Array,
       default: () => [],
     },
+    treeType: {
+      type: String,
+      default: 'area', // area|product
+    },
+    productClassifyType: {
+      type: Number,
+      default: 6, // 代客下单分类
+    },
   },
   components: {
     TreeComp,
   },
   data() {
     return {
-      allStateItem: {
-        CountryID: 1,
-        ProvinceID: 0,
-        CityID: 0,
-        CountyID: 0,
-      },
     };
   },
   computed: {
     ...mapState('common', ['adAreaList']),
-    ...mapGetters('common', ['allAdAreaTreeList']),
+    ...mapGetters('common', ['allAdAreaTreeList', 'allProductClassify', 'allProductAndLevelList']),
+    defaultProps() {
+      if (this.treeType === 'area') {
+        return {
+          children: 'children',
+          label: 'Name',
+        };
+      }
+      return {
+        children: 'children',
+        label: 'ClassName',
+      };
+    },
+    defaultPropKeys() {
+      if (this.treeType === 'area') {
+        return {
+          rootKey: 'CountryID',
+          lv1Key: 'ProvinceID',
+          lv2Key: 'CityID',
+          lv3Key: 'CountyID',
+        };
+      }
+      return {
+        rootKey: '',
+        lv1Key: 'FirstLevelID',
+        lv2Key: 'SecondLevelID',
+        lv3Key: 'ProductID',
+      };
+    },
+    lv3KeyEmptyValue() {
+      return this.treeType === 'product' ? '00000000-0000-0000-0000-000000000000' : 0;
+    },
+    allStateItem() {
+      return this.createItem(1, 0, 0, this.lv3KeyEmptyValue);
+    },
+    spreadList() {
+      if (this.treeType === 'area') {
+        return this.adAreaList;
+      }
+      return this.allProductAndLevelList;
+    },
+    allLevelList() {
+      if (this.treeType === 'area') {
+        return this.allAdAreaTreeList;
+      }
+      return this.allProductClassify;
+    },
     defaultCheckedKeys() { // 差还原keys 还原后该组件即可使用
       const list = [];
       if (Array.isArray(this.value) && this.value.length > 0) {
         if (this.value.length === 1) {
-          const [{ CountryID, ProvinceID }] = this.value;
-          if (CountryID === 1 && ProvinceID === 0) return this.AllLevel3AreaKeysList;
+          if (this.value[0][this.defaultPropKeys.lv1Key] === 0) return this.AllLevel3AreaKeysList;
         }
         this.value.forEach(it => { // 可能为省全部、市全部 也可能为单个城区
-          const { ProvinceID, CityID, CountyID } = it;
-          if (CityID === 0) { // 全省
-            const lv1 = this.allAdAreaTreeList.find(_it => _it.ID === ProvinceID);
+          if (it[this.defaultPropKeys.lv2Key] === 0) { // 全省
+            const lv1 = this.allLevelList.find(_it => _it.ID === it[this.defaultPropKeys.lv1Key]);
             if (lv1) {
               lv1.children.forEach(lv2 => {
                 list.push(...lv2.children.map(lv3 => lv3.ID));
               });
             }
-          } else if (CountyID === 0) { // 全市
-            const lv1 = this.allAdAreaTreeList.find(_it => _it.ID === ProvinceID);
+          } else if (it[this.defaultPropKeys.lv3Key] === this.lv3KeyEmptyValue) { // 全市
+            const lv1 = this.allLevelList.find(_it => _it.ID === it[this.defaultPropKeys.lv1Key]);
             if (lv1) {
-              const lv2 = lv1.children.find(_it => _it.ID === CityID);
+              const lv2 = lv1.children.find(_it => _it.ID === it[this.defaultPropKeys.lv2Key]);
               if (lv2) {
                 list.push(...lv2.children.map(lv3 => lv3.ID));
               }
             }
           } else { // 单个城区
-            list.push(CountyID);
+            list.push(it[this.defaultPropKeys.lv3Key]);
           }
         });
       }
       return list;
     },
     Level1AreaList() {
-      if (this.adAreaList.length === 0) return [];
-      return this.adAreaList.filter((it) => it.Level === 1);
+      if (this.spreadList.length === 0) return [];
+      return this.spreadList.filter((it) => it.Level === 1);
     },
     Level2AreaList() {
-      if (this.adAreaList.length === 0) return [];
-      return this.adAreaList.filter((it) => it.Level === 2);
+      if (this.spreadList.length === 0) return [];
+      return this.spreadList.filter((it) => it.Level === 2);
     },
     AllLevel3AreaKeysList() {
-      if (this.adAreaList.length === 0) return [];
-      return this.adAreaList.filter((it) => it.Level === 3).map(it => it.ID);
+      if (this.spreadList.length === 0) return [];
+      return this.spreadList.filter((it) => it.Level === 3).map(it => it.ID);
     },
   },
   methods: {
+    createItem(rootVal, lv1Val, lv2Val, lv3Val) {
+      const temp = {
+        [this.defaultPropKeys.lv1Key]: lv1Val,
+        [this.defaultPropKeys.lv2Key]: lv2Val,
+        [this.defaultPropKeys.lv3Key]: lv3Val,
+      };
+      if (this.defaultPropKeys.rootKey) {
+        temp[this.defaultPropKeys.rootKey] = rootVal;
+      }
+      return temp;
+    },
     handleAreaChangeFunc(checkedNodes, checkedKeys, isAll) {
       if (checkedNodes.length === 0) {
         this.$emit('input', []);
@@ -101,7 +156,7 @@ export default {
       const _lv3List = [];
       const _level1List = checkedNodes.filter((it) => it.Level === 1); // 已选全部城市的省份列表
       _level1List.forEach(lv1 => {
-        _lv1List.push({ CountryID: 1, ProvinceID: lv1.ID, CityID: 0, CountyID: 0 });
+        _lv1List.push(this.createItem(1, lv1.ID, 0, this.lv3KeyEmptyValue));
       });
       if (this.Level1AreaList.length === _lv1List.length && _lv1List.length > 0) {
         this.$emit('input', [{ ...this.allStateItem }]);
@@ -111,7 +166,7 @@ export default {
       const _level2List = checkedNodes.filter((it) => it.Level === 2); // 已选全部城区的城市列表
       _level2List.forEach(lv2 => {
         if (!_level1IDList.includes(lv2.ParentID)) {
-          _lv2List.push({ CountryID: 1, ProvinceID: lv2.ParentID, CityID: lv2.ID, CountyID: 0 });
+          _lv2List.push(this.createItem(1, lv2.ParentID, lv2.ID, this.lv3KeyEmptyValue));
         }
       });
       const _level2IDList = _level2List.map(it => it.ID);
@@ -120,79 +175,14 @@ export default {
       _level3list.forEach(lv3 => {
         const t = this.Level2AreaList.find(it => it.ID === lv3.ParentID);
         if (t) {
-          _lv3List.push({ CountryID: 1, ProvinceID: t.ParentID, CityID: lv3.ParentID, CountyID: lv3.ID });
+          _lv3List.push(this.createItem(1, t.ParentID, lv3.ParentID, lv3.ID));
         }
       });
       const list = [..._lv1List, ..._lv2List, ..._lv3List];
       this.$emit('input', list);
     },
     getTextDisplayContent() { // 获取选中区域文字展示
-      const list = [];
-      if (Array.isArray(this.value) && this.value.length > 0) {
-        this.value.forEach(it => { // 可能为省全部、市全部 也可能为单个城区
-          const { ProvinceID, CityID, CountyID } = it;
-          if (ProvinceID === 0) { // 全部区域
-            list.push('全部区域');
-          } else if (CityID === 0) { // 全省
-            const lv1 = this.allAdAreaTreeList.find(_it => _it.ID === ProvinceID);
-            list.push(lv1.Name);
-          } else if (CountyID === 0) { // 全市
-            const lv1 = this.allAdAreaTreeList.find(_it => _it.ID === ProvinceID);
-            if (lv1) {
-              const lv2 = lv1.children.find(_it => _it.ID === CityID);
-              if (lv2) {
-                const item = { Name: lv2.Name, CountyList: [] };
-                const t = list.find(_item => _item.Province === lv1.Name);
-                if (t) {
-                  t.CityList.push(item);
-                } else {
-                  const temp = {
-                    Province: lv1.Name,
-                    CityList: [item],
-                  };
-                  list.push(temp);
-                }
-              }
-            }
-          } else { // 单个城区
-            const lv1 = this.allAdAreaTreeList.find(_it => _it.ID === ProvinceID);
-            if (lv1) {
-              const lv2 = lv1.children.find(_it => _it.ID === CityID);
-              if (lv2) {
-                const lv3 = lv2.children.find(_it => _it.ID === CountyID);
-                if (lv3) {
-                  const _ProvinceItem = list.find(_item => _item.Province === lv1.Name);
-                  if (_ProvinceItem) {
-                    const _CityItem = _ProvinceItem.CityList.find(city => city.Name === lv2.Name);
-                    if (_CityItem) {
-                      _CityItem.CountyList.push(lv3.Name);
-                    } else {
-                      _ProvinceItem.CityList.push({ Name: lv2.Name, CountyList: [lv3.Name] });
-                    }
-                  } else {
-                    const temp = {
-                      Province: lv1.Name,
-                      CityList: [{ Name: lv2.Name, CountyList: [lv3.Name] }],
-                    };
-                    list.push(temp);
-                  }
-                }
-              }
-            }
-          }
-        });
-      }
-      return list.map(it => {
-        if (typeof it === 'string') return it;
-        const { Province, CityList } = it;
-        return `${Province}：[${CityList.map(city => {
-          const { Name, CountyList } = city;
-          if (CountyList.length === 0) return `${Name}全部区域`;
-          const _Name = Name === Province ? '' : `${Name}：`;
-          const CountyListContent = CountyList.join('、');
-          return `${_Name}${CountyListContent}`;
-        }).join('、')}]`;
-      }).join('\r\n');
+      return this.$utils.getTreeTextDisplayContent(this.value, this.allLevelList);
     },
   },
   mounted() {
@@ -209,7 +199,7 @@ export default {
     > .el-tree-node__children
     > .el-tree-node
     > .el-tree-node__content {
-    margin-top: -4px;
+    margin-top: -1px;
   }
   &.mp-common-comps-tree-comp-wrap
     > .content
@@ -218,9 +208,19 @@ export default {
     > .el-tree-node__content
     > .el-tree-node__label
     > span.title {
-    width: 7em;
+    width: 8.3em;
     overflow: hidden;
     white-space: nowrap;
+    margin-top: 1px;
+  }
+  &.product {
+    &.mp-common-comps-tree-comp-wrap > .content > .el-tree > .el-tree-node > .el-tree-node__children > .el-tree-node > .el-tree-node__content {
+      width: 10em;
+    }
+    &.mp-common-comps-tree-comp-wrap > .content > .el-tree
+     > .el-tree-node > .el-tree-node__children > .el-tree-node .el-tree-node__children > .el-tree-node > .el-tree-node__content {
+      width: 12em;
+    }
   }
 }
 </style>

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import { checkNumberSectionList } from '@/assets/js/checker/index';
 import SingleElementComp from './SingleElementComp.vue';
 // import MaterialSizeClass from '@/assets/js/TypeClass/MaterialSizeClass';

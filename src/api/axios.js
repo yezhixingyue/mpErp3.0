@@ -108,14 +108,24 @@ axios.interceptors.response.use(
         let _func = null;
         switch (error.response.status) {
           case 401:
-            // if (process.env.NODE_ENV === 'development') {
             clearToken();
             _func = () => {
               router.replace('/login');
             };
-            // }
             if (!closeTip) {
               messageBox.failSingleError(undefined, '[ 错误 401：请重新登录! ]', _func);
+            } else {
+              router.replace('/login');
+            }
+            key = true;
+            break;
+          case 403:
+            clearToken();
+            _func = () => {
+              router.replace('/login');
+            };
+            if (!closeTip) {
+              messageBox.failSingleError(undefined, '[ 错误 403：请重新登录! ]', _func);
             } else {
               router.replace('/login');
             }

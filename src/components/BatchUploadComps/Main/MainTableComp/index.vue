@@ -2,6 +2,7 @@
   <section class="mp-c-batch-upload-page-main-table-comp-wrap">
     <el-table
       ref="multipleTable"
+      v-show="showTable"
       :data="list"
       :max-height="h"
       :height="h"
@@ -33,15 +34,30 @@
         <template slot-scope="scope">{{ scope.row.result.Content || '' }}</template>
       </el-table-column>
 
-      <el-table-column label="平台单号" width="200" show-overflow-tooltip>
-        <template slot-scope="scope">{{scope.row.result.OutPlate ? (scope.row.result.OutPlate.Second || '') : ''}}</template>
+      <el-table-column label="平台单号" width="200" show-overflow-tooltip v-if="!UseSameAddress">
+        <template slot-scope="scope">{{scope.row.result | formatOutPlateNo}}</template>
+      </el-table-column>
+
+      <el-table-column label="配送地址" width="200" show-overflow-tooltip v-if="!UseSameAddress">
+        <template slot-scope="scope">{{scope.row.result | formatAddress}}</template>
       </el-table-column>
 
       <el-table-column label="价格" width="140" show-overflow-tooltip>
         <template slot-scope="scope">{{ scope.row.result.CurrentCost | formatCurrentCost }}</template>
       </el-table-column>
 
-      <el-table-column label="操作" min-width="280">
+      <el-table-column label="配送方式" width="140" show-overflow-tooltip v-if="!UseSameAddress">
+          <el-select :value="scope.row.Express.Second" @change="e => onExpressChange(e, scope.row)" placeholder="请选择" slot-scope="scope" size="mini">
+            <el-option
+              v-for="item in getExpressOptions(scope.row.result.ExpressList, subExpressList, scope.row)"
+              :key="item.ID"
+              :label="item.Name"
+              :value="item.ID">
+            </el-option>
+          </el-select>
+      </el-table-column>
+
+      <el-table-column label="操作" width="280">
         <template slot-scope="scope">
           <ItemOperationComp :itemData='scope.row' @upload='handleItemUpload' @detail='handleDetailClick' @remove='handleItemRemove' />
         </template>
@@ -54,14 +70,14 @@
         <p class="remark two is-pink">3、IE9及IE9以下版本浏览器不支持使用，请升级浏览器</p>
       </div>
     </el-table>
-    <ProductDetailDrawer v-model="drawer" :curDetailData='curDetailData' />
+    <ProductDetailDrawer v-model="drawer" :curDetailData='curDetailData' :ShowProductDetail='ShowProductDetail' />
   </section>
 </template>
 
 <script>
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
+import ProductDetailDrawer from '@/packages/BatchUploadComps/Main/ProductDetailDrawer';
 import ItemOperationComp from './ItemOperationComp.vue';
-import ProductDetailDrawer from './ProductDetailDrawer.vue';
 
 export default {
   props: {
@@ -80,6 +96,17 @@ export default {
     accept: {
       type: String,
       default: '',
+    },
+    UseSameAddress: {
+      type: Boolean,
+      default: false,
+    },
+    subExpressList: {
+      type: Array,
+      default: () => [],
+    },
+    ShowProductDetail: {
+      type: Function,
     },
   },
   mixins: [tableMixin],
@@ -156,12 +183,28 @@ export default {
       }
       return '';
     },
+    formatOutPlateNo(result) {
+      if (result && result.Address && result.Address.OutPlateSN) {
+        return result.Address.OutPlateSN;
+      }
+      return '';
+    },
+    formatAddress(result) {
+      if (result && result.Address) {
+        const { AddressDetail, ExpressArea } = result.Address;
+        if (!ExpressArea) return AddressDetail || '';
+        const { RegionalName, CityName, CountyName } = ExpressArea;
+        return `${RegionalName || ''}${CityName || ''}${CountyName || ''}${AddressDetail || ''}`;
+      }
+      return '';
+    },
   },
   data() {
     return {
       drawer: false,
       curDetailData: null,
       dragover: false,
+      showTable: true,
     };
   },
   methods: {
@@ -221,12 +264,39 @@ export default {
       this.dragover = false;
       this.$emit('droped', e);
     },
+    getExpressOptions(validExpressIds, subExpressList, item) {
+      const list = subExpressList.filter(it => validExpressIds.includes(it.ID));
+      if (list.length > 0 && item?.Express && !item.Express.Second && item.Express.Second !== 0) {
+        const First = list[0]._Type;
+        const Second = list[0].ID;
+        const _item = item;
+        _item.Express.First = First;
+        _item.Express.Second = Second;
+      }
+      return list;
+    },
+    onExpressChange(e, item) {
+      const t = this.subExpressList.find(it => it.ID === e);
+      if (t) {
+        const _item = item;
+        _item.Express.First = t._Type;
+        _item.Express.Second = t.ID;
+      }
+    },
+  },
+  watch: {
+    UseSameAddress() {
+      this.showTable = false;
+      setTimeout(() => {
+        this.showTable = true;
+      }, 100);
+    },
   },
 };
 </script>
 <style lang='scss'>
 .mp-c-batch-upload-page-main-table-comp-wrap {
-  padding: 0px 16px;
+  padding: 0px 20px;
   > .el-table {
     &::before {
       display: none;

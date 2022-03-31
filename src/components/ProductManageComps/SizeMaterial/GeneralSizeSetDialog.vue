@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import SizeAddPanelComp from './SizeAddPanelComp.vue';
 
 export default {

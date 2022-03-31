@@ -28,7 +28,7 @@
         </header>
         <main>
           <div class="submit-img-box">
-            <ServiceBlueBtn multiple @click.native="onuploadclick" :func="uploadImg" ref="oUpImgEl" />
+            <FileSelectBtn multiple @click.native="onuploadclick" :func="uploadImg" ref="oUpImgEl" />
             <span class="explain">最多上传4张照片，支持.jpg .png .bmp</span>
           </div>
           <DisplayPictrue :delFunc='handleDel' :imgList='serviceImgList' />
@@ -83,7 +83,7 @@ import EditDiaLeftTable from '@/components/ServiceAfterSale/EditDialog/EditDiaLe
 import EditDiaRightSubmit from '@/components/ServiceAfterSale/EditDialog/EditDiaRightSubmit.vue';
 import normalBtn from '@/components/common/normalBtn.vue';
 import normalBtnFull from '@/components/common/normalBtnFull.vue';
-import ServiceBlueBtn from '@/components/ServiceAfterSale/EditDialog/ServiceBlueBtn.vue';
+import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
 import DisplayPictrue from '@/components/ServiceAfterSale/EditDialog/DisplayPictrue.vue';
 import LoadingComp from '@/components/common/LoadingComp.vue';
 
@@ -96,7 +96,7 @@ export default {
     VTypeTitle,
     EditDiaLeftTable,
     EditDiaRightSubmit,
-    ServiceBlueBtn,
+    FileSelectBtn,
     DisplayPictrue,
     LoadingComp,
   },

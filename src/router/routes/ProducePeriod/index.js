@@ -145,68 +145,104 @@ const routes = { // 基本设置
     },
     /*  节假日管理
     ------------------------------------------ */
-    {
-      path: '/holidayManage',
-      name: 'holidayManage',
-      meta: {
-        title: '节假日管理',
-        icon: 'iconfont icon-jiejiariguanli',
-        pageName: 'HolidayManagePage',
-        // PermissionInfo: ['Developing', 'HavePomission'],
-        PermissionInfo: ['PermissionProducePeriod', 'Obj', 'HolidayQuery'],
-        requiresAuth: true,
-      },
-      component: () => import('../../../views/ProducePeriodPage/HolidayPage.vue'),
-    },
+    // {
+    //   path: '/holidayManage',
+    //   name: 'holidayManage',
+    //   meta: {
+    //     title: '节假日管理',
+    //     icon: 'iconfont icon-jiejiariguanli',
+    //     pageName: 'HolidayManagePage',
+    //     // PermissionInfo: ['Developing', 'HavePomission'],
+    //     PermissionInfo: ['PermissionProducePeriod', 'Obj', 'HolidayQuery'],
+    //     requiresAuth: true,
+    //   },
+    //   component: () => import('../../../views/ProducePeriodPage/HolidayPage.vue'),
+    // },
     /*  生产特殊情况管理
     ------------------------------------------ */
+    // {
+    //   path: '/ProduceSpecialDayList',
+    //   name: 'ProduceSpecialDayList',
+    //   meta: {
+    //     title: '生产特殊情况',
+    //     requiresAuth: true,
+    //     icon: 'iconfont icon-shengchanteshuqingkuang_2',
+    //     pageName: 'ProduceSpecialDayListPage',
+    //     PermissionInfo: ['PermissionProducePeriod', 'Obj', 'ProduceSpecialQuery'],
+    //   },
+    //   component: () => import('../../../views/ProducePeriodPage/ProduceSpecialDayManagePage/ProduceSpecialDayListPage.vue'),
+    // },
+    // {
+    //   path: '/ProduceSpecialDaySetup/:ItemID',
+    //   name: 'ProduceSpecialDaySetup',
+    //   meta: {
+    //     title: '生产特殊情况设置',
+    //     requiresAuth: true,
+    //     pageName: 'SpecialDaySetupPage',
+    //     PermissionInfo: ['PermissionProducePeriod', 'Obj', 'ProducePeriodSetup'],
+    //   },
+    //   component: () => import('../../../views/ProducePeriodPage/ProduceSpecialDayManagePage/ProduceSpecialDaySetupPage.vue'),
+    // },
+    /*  特殊情况管理
+    ------------------------------------------ */
     {
-      path: '/ProduceSpecialDayList',
-      name: 'ProduceSpecialDayList',
+      path: '/SpecialList',
+      name: 'SpecialList',
       meta: {
-        title: '生产特殊情况',
+        title: '特殊情况',
         requiresAuth: true,
         icon: 'iconfont icon-shengchanteshuqingkuang_2',
-        pageName: 'ProduceSpecialDayListPage',
+        pageName: 'SpecialListPage',
         PermissionInfo: ['PermissionProducePeriod', 'Obj', 'ProduceSpecialQuery'],
       },
-      component: () => import('../../../views/ProducePeriodPage/ProduceSpecialDayManagePage/ProduceSpecialDayListPage.vue'),
+      component: () => import('../../../views/ProducePeriodPage/Special/SpecialListPage.vue'),
     },
     {
-      path: '/ProduceSpecialDaySetup/:ItemID',
-      name: 'ProduceSpecialDaySetup',
+      path: '/SpecialSetup/:ItemID',
+      name: 'SpecialSetup',
       meta: {
-        title: '生产特殊情况设置',
+        title: '特殊情况设置',
         requiresAuth: true,
-        pageName: 'SpecialDaySetupPage',
+        pageName: 'SpecialSetupPage',
         PermissionInfo: ['PermissionProducePeriod', 'Obj', 'ProducePeriodSetup'],
       },
-      component: () => import('../../../views/ProducePeriodPage/ProduceSpecialDayManagePage/ProduceSpecialDaySetupPage.vue'),
+      component: () => import('../../../views/ProducePeriodPage/Special/SpecialSetupPage.vue'),
+    },
+    {
+      path: '/SpecialLogList/:SituationID/:LogType',
+      name: 'SpecialLogList',
+      meta: {
+        title: '特殊情况操作记录',
+        requiresAuth: true,
+        pageName: 'SpecialLogListPage',
+        PermissionInfo: ['PermissionProducePeriod', 'Obj', 'ProduceSpecialQuery'],
+      },
+      component: () => import('../../../views/ProducePeriodPage/Special/SpecialLogListPage.vue'),
     },
     /*  运输配送特殊情况管理
     ------------------------------------------ */
     {
-      path: '/ExpressSpecialDayList',
-      name: 'ExpressSpecialDayList',
+      path: '/ExpressStopList',
+      name: 'ExpressStopList',
       meta: {
-        title: '运输特殊情况',
+        title: '快递停发',
         requiresAuth: true,
         icon: 'iconfont icon-yunshuteshuqingkuang_1',
-        pageName: 'ExpressSpecialDayListPage',
+        pageName: 'ExpressStopListPage',
         PermissionInfo: ['PermissionProducePeriod', 'Obj', 'DiliverySpecialQuery'],
       },
-      component: () => import('../../../views/ProducePeriodPage/ExpressSpecialDayManagePage/ExpressSpecialDayListPage.vue'),
+      component: () => import('../../../views/ProducePeriodPage/ExpressStopManagePage/ExpressStopListPage.vue'),
     },
     {
-      path: '/ExpressSpecialDaySetup/:ItemID',
-      name: 'ExpressSpecialDaySetup',
+      path: '/ExpressStopSetup/:ItemID',
+      name: 'ExpressStopSetup',
       meta: {
-        title: '运输特殊情况设置',
+        title: '快递停发设置',
         requiresAuth: true,
-        pageName: 'ExpressSpecialDaySetupPage',
+        pageName: 'ExpressStopSetupPage',
         PermissionInfo: ['PermissionProducePeriod', 'Obj', 'DiliverySpecialSetup'],
       },
-      component: () => import('../../../views/ProducePeriodPage/ExpressSpecialDayManagePage/ExpressSpecialDaySetupPage.vue'),
+      component: () => import('../../../views/ProducePeriodPage/ExpressStopManagePage/ExpressStopSetupPage.vue'),
     },
   ],
 };
@@ -259,24 +295,33 @@ const routeTree = {
     },
     /*  节假日
     ------------------------------------------ */
-    {
-      name: 'holidayManage',
-      children: [],
-    },
+    // {
+    //   name: 'holidayManage',
+    //   children: [],
+    // },
     /*  生产特殊情况管理
     ------------------------------------------ */
+    // {
+    //   name: 'ProduceSpecialDayList', // 生产特殊情况管理列表管理
+    //   children: [
+    //     { name: 'ProduceSpecialDaySetup', children: [] }, // 生产特殊情况设置页面
+    //   ],
+    // },
+    /*  特殊情况管理
+    ------------------------------------------ */
     {
-      name: 'ProduceSpecialDayList', // 生产特殊情况管理列表管理
+      name: 'SpecialList', // 特殊情况管理列表管理
       children: [
-        { name: 'ProduceSpecialDaySetup', children: [] }, // 生产特殊情况设置页面
+        { name: 'SpecialSetup', children: [] }, // 特殊情况设置页面
+        { name: 'SpecialLogList', children: [] }, // 操作与删除记录页面
       ],
     },
     /*  运输特殊情况管理
     ------------------------------------------ */
     {
-      name: 'ExpressSpecialDayList', // 运输特殊情况管理列表管理
+      name: 'ExpressStopList', // 运输特殊情况管理列表管理
       children: [
-        { name: 'ExpressSpecialDaySetup', children: [] }, // 生产特殊情况设置页面
+        { name: 'ExpressStopSetup', children: [] }, // 生产特殊情况设置页面
       ],
     },
   ],

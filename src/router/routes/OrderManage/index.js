@@ -79,18 +79,18 @@ const routes = { // 客户订单管理
     },
     /*  未付款订单
     ------------------------------------------ */
-    {
-      path: '/qutstandingpayment',
-      name: 'qutstandingpayment',
-      meta: {
-        title: '未付款订单',
-        icon: 'iconfont icon-weifukuandingdan',
-        pageName: 'QutstandingPage',
-        requiresAuth: true,
-        PermissionInfo: ['Developing', 'Obj', 'HelpSubmit'],
-      },
-      component: () => import('../../../views/QutstandingPage.vue'),
-    },
+    // {
+    //   path: '/qutstandingpayment',
+    //   name: 'qutstandingpayment',
+    //   meta: {
+    //     title: '未付款订单',
+    //     icon: 'iconfont icon-weifukuandingdan',
+    //     pageName: 'QutstandingPage',
+    //     requiresAuth: true,
+    //     PermissionInfo: ['Developing', 'Obj', 'HelpSubmit'],
+    //   },
+    //   component: () => import('../../../views/QutstandingPage.vue'),
+    // },
     /*  售后管理
     ------------------------------------------ */
     {

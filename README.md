@@ -1076,6 +1076,9 @@ UseModule枚举中加入
 
         ProduceTotalPeriodConstraint = 45,
 
+        特殊工期条件
+        SpecialPeriodConstraint = 47,
+
 PropertyFixedType枚举中加入
         工期数据
         ProducePeriodItemData = 39,

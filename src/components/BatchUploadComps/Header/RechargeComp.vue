@@ -62,8 +62,8 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
-import QrCodeForPayDialogComp from '@/components/common/NewComps/QrCodeForPayDialogComp';
+import CommonDialogComp from '@/packages/CommonDialogComp';
+import QrCodeForPayDialogComp from '@/packages/QrCodeForPayDialogComp';
 
 export default {
   props: {

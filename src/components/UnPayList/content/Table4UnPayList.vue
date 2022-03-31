@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import RetractableDisplayComp from '@/components/common/RetractableDisplayComp/Index.vue';
+import RetractableDisplayComp from '@/packages/RetractableDisplayComp';
 import { mapState, mapGetters } from 'vuex';
 import ItemListComp from './ItemListComp.vue';
 
@@ -81,6 +81,7 @@ export default {
   padding-top: 8px;
   box-sizing: border-box;
   // overflow-y: auto;
+  // overflow: hidden;
   > header {
     height: 36px;
     border-top: 1px solid $--border-color-light;
