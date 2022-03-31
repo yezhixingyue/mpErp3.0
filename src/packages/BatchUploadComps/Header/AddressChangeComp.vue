@@ -24,7 +24,7 @@
     />
     <div v-show='!localUseSameAddress && customer' class="is-gray remark">
       <span class="f">注：使用不同地址时，每个需要解析的文件中都必须携带有 <i>平台单号</i> 或 <i>地址信息</i>（平台单号优先），否则将解析失败</span>
-      <span>地址信息格式：【收货人+手机号+地址】 或 【地址+手机号+收货人】 ( 地址文字长度应大于收货人文字长度 )</span>
+      <span>地址信息格式：【收货人+手机号+地址】 或 【地址+手机号+收货人】，如：张三19903970210河南省郑州市花园路国基路花园SOHO1号楼</span>
     </div>
   </section>
 </template>

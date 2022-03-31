@@ -179,7 +179,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import AddAndDel from './addAndDelbutton';
 
 export default {

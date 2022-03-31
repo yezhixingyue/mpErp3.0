@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/components/common/NewComps/CommonDialogComp.vue';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import CustomerSetupItem from '@/assets/js/TypeClass/CustomerSetupItem';
 
 export default {
