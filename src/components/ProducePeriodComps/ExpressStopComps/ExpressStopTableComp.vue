@@ -34,8 +34,8 @@
       </span>
     </el-table-column>
     <el-table-column prop="OperatorUserName" label="操作人" width="100"></el-table-column>
-    <el-table-column label="操作" width="180">
-      <template slot-scope="scope" v-if="localPermission.DiliverySpecialSetup">
+    <el-table-column label="操作" width="180" v-if="localPermission.DiliveryStopSetup">
+      <template slot-scope="scope" >
         <CtrlMenus @edit='onSetupClick(scope.row)' @remove='onRemoveClick(scope.row)' />
       </template>
     </el-table-column>
@@ -88,7 +88,8 @@ export default {
   },
   methods: {
     setHeight() {
-      const tempHeight = this.getHeight('header', 130, '.mp-erp-period-manage-special-day-manage-list-page');
+      const d = this.localPermission.DiliveryStopSetup ? 130 : 70;
+      const tempHeight = this.getHeight('header', d, '.mp-erp-period-manage-special-day-manage-list-page');
       this.h = tempHeight;
     },
     onSetupClick(item) {

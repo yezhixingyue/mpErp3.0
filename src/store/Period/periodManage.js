@@ -63,9 +63,9 @@ export default {
       if (state.curSetupProductIndex === -1 || state.RootDataList.length === 0 || !state.RootDataList[state.curSetupProductIndex]) return null;
       return state.RootDataList[state.curSetupProductIndex];
     },
-    NewSpecialDataListByGetters(state, getters, global, root) {
-      const _allAdAreaTreeList = root['common/allAdAreaTreeList'];
-      const _allProductClassify = root['common/allProductClassify'];
+    NewSpecialDataListByGetters(state, getters, rootState, rootGetters) {
+      const _allAdAreaTreeList = rootGetters['common/allAdAreaTreeList'];
+      const _allProductClassify = rootGetters['common/allProductClassify'];
       return state.NewSpecialDataList.map(it => {
         if (!it.Constraint) return { ...it, _ConditionText: '无' };
         const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
