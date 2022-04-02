@@ -69,6 +69,8 @@ export const PropertyFixedType = [
   { ID: 45, Name: '配送方式' },
   { ID: 46, Name: '收货地址' },
   { ID: 47, Name: '产品' },
+  { ID: 48, Name: '重量' },
+  { ID: 49, Name: '客户类型' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表

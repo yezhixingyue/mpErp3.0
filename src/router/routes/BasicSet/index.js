@@ -69,7 +69,7 @@ const routes = { // 基本设置
       path: '/LogisticList',
       name: 'LogisticList',
       meta: {
-        title: '物流费用',
+        title: '物流快递',
         requiresAuth: true,
         pageName: 'LogisticManageListPage',
         icon: 'el-icon-connection',
@@ -78,10 +78,10 @@ const routes = { // 基本设置
       component: () => import('../../../views/LogisticManagePages/LogisticManageListPage.vue'),
     },
     {
-      path: '/LogisticPriceList/:id',
+      path: '/LogisticPriceList/:id/:name',
       name: 'LogisticPriceList',
       meta: {
-        title: '设置价格 - 物流费用',
+        title: '设置价格 - 物流快递',
         requiresAuth: true,
         pageName: 'LogisticPriceSettingListPage',
         PermissionInfo: ['Developing', 'None'],
@@ -89,7 +89,7 @@ const routes = { // 基本设置
       component: () => import('../../../views/LogisticManagePages/LogisticPriceSettingListPage.vue'),
     },
     {
-      path: '/LogisticPriceSetup/:type',
+      path: '/LogisticPriceSetup/:id/:name',
       name: 'LogisticPriceSetup',
       meta: {
         title: '物流价格添加与编辑',
@@ -213,8 +213,11 @@ const routeTree = {
     {
       name: 'LogisticList',
       children: [
-        { name: 'LogisticPriceList', children: [] },
-        { name: 'LogisticPriceSetup', children: [] },
+        { name: 'LogisticPriceList',
+          children: [
+            { name: 'LogisticPriceSetup', children: [] },
+          ],
+        },
       ],
     },
     /*  印刷幅面

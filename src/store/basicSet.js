@@ -46,6 +46,11 @@ export default {
     /* 物流费用列表数据相关
     -------------------------------*/
     logisticList: [],
+    ThirdPlatExpressList: [],
+    loading: false,
+    logisticItemFormulaList: [], // 工期组成列表数据 及 总工期列表数据
+    logisticItemConditionPropertyList: [], // 工期组成条件属性列表数据 及 总工期条件属性列表数据
+    curEditFormulaData: null,
   },
   getters: {
     BreadthTreeList(state) {
@@ -330,14 +335,50 @@ export default {
     setLogisticList(state, list) {
       state.logisticList = list || [];
     },
-    setLogisticItemSave(state, { data, ID }) { // 编辑|新增
-      if (!data.ID) { // 新增
-        state.logisticList.push({ ...data, ID });
-      } else { // 编辑
-        const i = state.logisticList.findIndex(it => it.ID === ID);
+    setLogisticItemChange(state, { item, ID, isRemove }) { // 编辑|新增
+      if (!item.ID && item.ID !== 0) { // 新增
+        state.logisticList.unshift({ ...item, ID });
+      } else { // 编辑|删除
+        const i = state.logisticList.findIndex(it => it.ID === item.ID);
         if (i > -1) {
-          state.logisticList.splice(i, { ...state.logisticList[i], ...data });
+          const temp = { ...state.logisticList[i], ...item };
+          if (!isRemove) state.logisticList.splice(i, 1, temp);
+          else state.logisticList.splice(i, 1);
         }
+      }
+    },
+    setLogisticsSetOrder(state, ids) {
+      const list = ids.map(id => state.logisticList.find(it => it.ID === id)).filter(it => it);
+      state.logisticList = list;
+    },
+    setThirdPlatExpressList(state, list) {
+      state.ThirdPlatExpressList = list || [];
+    },
+    setLoading(state, bool) {
+      state.loading = bool;
+    },
+    setLogisticItemFormulaList(state, [FormulaList, FormulaPropertyList]) {
+      state.logisticItemFormulaList = FormulaList || [];
+      state.logisticItemConditionPropertyList = FormulaPropertyList || [];
+    },
+    setCurEditFormulaData(state, data) { // 设置当前正在编辑的公式数据 配送方式设置价格
+      state.curEditFormulaData = data;
+    },
+    setLogisticsItemFormulaListItemRemove(state, { ID, LogisticsID }) { // 工期组成公式删除
+      state.logisticItemFormulaList = state.logisticItemFormulaList.filter(it => it.ID !== ID);
+      const t = state.logisticList.find(it => it.ID === LogisticsID);
+      if (t) t.RecordCount -= 1;
+    },
+    setLogisticsItemFormulaListItemChange(state, { isEdit, data, ID, LogisticsID }) { // 工期组成中公式的编辑与添加处理
+      if (isEdit) {
+        const i = state.logisticItemFormulaList.findIndex(it => it.ID === ID);
+        if (i > -1) {
+          state.logisticItemFormulaList.splice(i, 1, data);
+        }
+      } else {
+        state.logisticItemFormulaList.unshift({ ...data, ID });
+        const t = state.logisticList.find(it => it.ID === LogisticsID);
+        if (t) t.RecordCount += 1;
       }
     },
   },
@@ -509,20 +550,103 @@ export default {
     -------------------------------*/
     async getLogisticList({ commit }) {
       commit('setLogisticList', []);
+      commit('setLoading', true);
       const resp = await api.getLogisticsList().catch(() => null);
+      commit('setLoading', false);
       if (resp && resp.data.Status === 1000) {
         commit('setLogisticList', resp.data.Data);
       }
     },
-    async getLogisticItemSave({ commit }, { data, callback }) {
-      const resp = await api.getLogisticsSave(data).catch(() => null);
+    async getLogisticItemSave({ commit }, { item, callback }) { // 编辑与新增
+      const resp = await api.getLogisticsSave(item).catch(() => null);
       if (resp && resp.data.Status === 1000) {
-        const title = data.ID ? '编辑成功' : '添加成功';
+        const title = item.ID ? '编辑成功' : '添加成功';
         const cb = () => {
-          commit('setLogisticItemSave', { data, ID: resp.data.Data });
+          commit('setLogisticItemChange', { item, ID: resp.data.Data });
           if (callback && typeof callback === 'function') callback();
         };
         messageBox.successSingle(title, cb, cb);
+      }
+    },
+    async getLogisticItemRemove({ commit }, { item, callback }) { // 删除
+      const resp = await api.getLogisticsRemove(item.ID).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setLogisticItemChange', { item, isRemove: true });
+          if (callback && typeof callback === 'function') callback();
+        };
+        messageBox.successSingle('删除成功', cb, cb);
+      }
+    },
+    async getLogisticsSetOrder({ commit }, { ids, callback }) {
+      if (!ids) return;
+      const resp = await api.getLogisticsSetOrder(ids).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setLogisticsSetOrder', ids);
+          if (callback && typeof callback === 'function') callback();
+        };
+        messageBox.successSingle('排序成功', cb, cb);
+      }
+    },
+    async getLogisticsBindStation({ commit }, { item, callback }) { // 编辑与新增
+      const resp = await api.getLogisticsBindStation(item).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setLogisticItemChange', { item, ID: resp.data.Data });
+          if (callback && typeof callback === 'function') callback();
+        };
+        messageBox.successSingle('配送网点关联成功', cb, cb);
+      }
+    },
+    async getThirdPlatExpressList({ state, commit }) { // 获取第三方配送方式列表
+      if (state.ThirdPlatExpressList.length > 0) return;
+      const _ThirdPlatExpressList = sessionStorage.getItem('ThirdPlatExpressList');
+      if (_ThirdPlatExpressList) {
+        commit('setThirdPlatExpressList', JSON.parse(_ThirdPlatExpressList));
+        return;
+      }
+      const resp = await api.getThirdPlatExpressList().catch(() => null);
+      if (resp?.data.Status === 1000) {
+        commit('setThirdPlatExpressList', resp.data.Data);
+        sessionStorage.setItem('ThirdPlatExpressList', JSON.stringify(resp.data.Data));
+      }
+    },
+    async getLogisticsBindExpress({ commit }, { item, callback }) { // 编辑与新增
+      const resp = await api.getLogisticsBindExpress(item).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setLogisticItemChange', { item, ID: resp.data.Data });
+          if (callback && typeof callback === 'function') callback();
+        };
+        messageBox.successSingle('快递打单关联成功', cb, cb);
+      }
+    },
+    async getLogisticsItemFormulaList({ state, commit }, { LogisticsID }) { // 获取配送方式价格公式
+      commit('setLoading', true);
+      const fetchDataList = async ({ func, params, list }) => {
+        if (list && list.length > 0) return list;
+        const resp = await func(params).catch(() => {});
+        if (resp && resp.status === 200 && resp.data.Status === 1000) {
+          return resp.data.Data;
+        }
+        return [];
+      };
+      const [FormulaList, FormulaPropertyList] = await Promise.all([
+        fetchDataList({ func: api.getFormulaList, params: { UseModule: 100, LogisticsID } }),
+        fetchDataList({ func: api.getFormulaPropertyList, params: { UseModule: 48 }, list: state.logisticItemConditionPropertyList }),
+      ]);
+      commit('setLoading', false);
+      commit('setLogisticItemFormulaList', [FormulaList, FormulaPropertyList]);
+    },
+    async getLogisticItemFormulaRemove({ commit }, { ID, LogisticsID }) { // 价格条目删除
+      if (!ID) return;
+      const resp = await api.getFormulaRemove(ID).catch(() => {});
+      if (resp && resp.status === 200 && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setLogisticsItemFormulaListItemRemove', { ID, LogisticsID });
+        };
+        messageBox.successSingle('删除成功', cb, cb);
       }
     },
   },

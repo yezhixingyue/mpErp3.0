@@ -1059,8 +1059,8 @@ const api = {
    * @param {*} thirdID 第三方快递ID
    * @returns
    */
-  getLogisticsBindExpress(id, type, thirdID) { // PUT /Api//BindExpress  关联第三方快递
-    return instance.put('/Api//BindExpress', null, { params: { id, type, thirdID } });
+  getLogisticsBindExpress(data) { // POST /Api/Logistics/BindExpress  关联第三方快递
+    return instance.post('/Api/Logistics/BindExpress', data);
   },
   getLogisticsBindStation(data) { // POST /Api/Logistics/BindStation  关联网点 -- 参数同保存参数 RelationList
     return instance.post('/Api/Logistics/BindStation', data);

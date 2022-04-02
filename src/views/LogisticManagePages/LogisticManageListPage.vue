@@ -6,8 +6,26 @@
       </div>
     </header>
     <main>
-      <LogisticTableComp v-if="false" ref="SortTable" :dataList='logisticList' :sorting='sorting' />
+      <LogisticTableComp
+        ref="SortTable"
+        :dataList='logisticList'
+        :sorting='sorting'
+        :ThirdPlatExpressList='ThirdPlatExpressList'
+        :loading='loading'
+        @edit="onItemSaveClick"
+        @remove='handleRemove'
+        @setPrice='onSetPriceClick'
+        @linkRelation='onRelationLinkClick'
+        @linkStation='onStationLinkClick'
+       />
       <LogisticItemSaveDialog :visible.sync="visible" :edit-data="curEditItem" @submit="handleItemSave" :list='logisticList' />
+      <LogisticItemLinkStationDialog :visible.sync="stationLinkVisible" :edit-data="curEditItem" @submit="onStationLinkSubmit" />
+      <LogisticItemLinkRelationDialog
+        :visible.sync="relationLinkVisible"
+        :ThirdPlatExpressList='ThirdPlatExpressList'
+        :edit-data="curEditItem"
+        @submit="onRelationLinkSubmit"
+       />
     </main>
     <footer>
       <template v-if="!sorting">
@@ -15,7 +33,7 @@
       </template>
       <template v-else>
         <el-button @click="submitSort" type="primary">保存</el-button>
-        <el-button @click="cancelSort" class="cancel-blue-btn">取消</el-button>
+        <el-button @click="sorting = false" class="cancel-blue-btn">取消</el-button>
       </template>
     </footer>
   </section>
@@ -24,49 +42,86 @@
 <script>
 import { mapState } from 'vuex';
 import LogisticTableComp from '../../components/LogisticManage/LogisticTableComp.vue';
-import LogisticItemSaveDialog from '../../components/LogisticManage/LogisticItemSaveDialog';
+import LogisticItemSaveDialog from '../../components/LogisticManage/LogisticItemSaveDialog.vue';
+import LogisticItemLinkStationDialog from '../../components/LogisticManage/LogisticItemLinkStationDialog.vue';
+import LogisticItemLinkRelationDialog from '../../components/LogisticManage/LogisticItemLinkRelationDialog.vue';
 
 export default {
   name: 'LogisticManageListPage',
   components: {
     LogisticTableComp,
     LogisticItemSaveDialog,
+    LogisticItemLinkStationDialog,
+    LogisticItemLinkRelationDialog,
   },
   data() {
     return {
       visible: false,
       curEditItem: null,
       sorting: false,
+      stationLinkVisible: false,
+      relationLinkVisible: false,
     };
   },
   computed: {
-    ...mapState('basicSet', ['logisticList']),
+    ...mapState('basicSet', ['logisticList', 'ThirdPlatExpressList', 'loading']),
   },
   methods: {
-    onItemSaveClick(data) { // 添加|编辑物流快递
-      this.curEditItem = data;
+    onItemSaveClick(item) { // 添加|编辑物流快递 点击事件
+      this.curEditItem = item;
       this.visible = true;
     },
-    handleItemSave(data) { // 物流快递保存 编辑|新增
+    onSortingClick() { // 排序按钮点击事件
+      if (!this.logisticList || this.logisticList.length === 0) return;
+      this.sorting = true;
+    },
+    handleItemSave(item) { // 物流快递保存 编辑|新增
       const callback = () => {
         this.visible = false;
       };
-      this.$store.dispatch('basicSet/getLogisticItemSave', { data, callback });
+      this.$store.dispatch('basicSet/getLogisticItemSave', { item, callback });
     },
-    onSortingClick() { // 排序
-      if (!this.tableData || this.tableData.length === 0) return;
-      this.sorting = true;
+    handleRemove(item) { // 删除
+      this.$store.dispatch('basicSet/getLogisticItemRemove', { item });
     },
-    submitSort() {
-      // console.log('submitSort', this.$refs.SortTable.handleSortSubmit());
+    submitSort() { // 排序保存
+      const ids = this.$refs.SortTable?.sortDataList?.map(it => it.ID);
+      const callback = () => {
+        this.sorting = false;
+      };
+      this.$store.dispatch('basicSet/getLogisticsSetOrder', { ids, callback });
     },
-    cancelSort() {
-      // 此处执行原始表格数据还原 已不需要 只执行关闭
-      this.sorting = false;
+    onRelationLinkClick(item) { // 点击关联快递打单
+      this.curEditItem = item;
+      this.relationLinkVisible = true;
+    },
+    onRelationLinkSubmit(item) { // 关联快递打单提交
+      const callback = () => {
+        this.relationLinkVisible = false;
+      };
+      this.$store.dispatch('basicSet/getLogisticsBindExpress', { item, callback });
+    },
+    onStationLinkClick(item) { // 点击关联物流配送网点
+      this.curEditItem = item;
+      this.stationLinkVisible = true;
+    },
+    onStationLinkSubmit(item) { // 关联物流配送提交
+      const callback = () => {
+        this.stationLinkVisible = false;
+      };
+      this.$store.dispatch('basicSet/getLogisticsBindStation', { item, callback });
+    },
+    onSetPriceClick(e) { // 跳转设置价格页面
+      if (!e || (!e.ID && e.ID !== 0)) return;
+      this.$router.push({
+        name: 'LogisticPriceList',
+        params: { id: e.ID, name: e.Name },
+      });
     },
   },
   mounted() {
     this.$store.dispatch('basicSet/getLogisticList');
+    this.$store.dispatch('basicSet/getThirdPlatExpressList');
   },
 };
 </script>
@@ -98,6 +153,7 @@ export default {
   }
   > main {
     flex: 1;
+    margin-left: 8px;
   }
   > footer {
     flex: none;

@@ -15,4 +15,10 @@ export const logisticTypeEnumObj = {
   },
 };
 
+export const OutPlatTypeEnumList = [
+  { ID: 1, Name: '淘宝' },
+  { ID: 2, Name: '京东' },
+  { ID: 3, Name: '拼多多' },
+];
+
 export const logisticTypeEnumList = getEnumList(logisticTypeEnumObj);

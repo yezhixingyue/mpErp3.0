@@ -281,10 +281,24 @@
 .el-input.is-disabled .el-input__inner {
   background-color: #f6f6f6;
 }
-.el-input.line input, .el-date-editor.line input {
+.el-input.line input, .el-date-editor.line input, .el-select.line input {
   border: none;
   border-bottom: 1px solid #cbcbcb;
   border-radius: 0;
+  padding-left: 10px;
+  padding-right: 24px;
+}
+.el-select.line {
+  .el-icon-arrow-up {
+    transform: rotateZ(0deg);
+    position: relative;
+    top: -2px;
+    left: 2px;
+    color: #929292;
+    &:before {
+      content: "";
+    }
+  }
 }
 
 .cancel-blue-btn {
