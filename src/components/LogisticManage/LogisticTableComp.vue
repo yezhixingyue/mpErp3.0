@@ -23,13 +23,13 @@
     <el-table-column prop="_RelationContent" label="关联快递" min-width="180" show-overflow-tooltip></el-table-column>
     <el-table-column prop="_StationContent" label="关联网点" width="150" show-overflow-tooltip></el-table-column>
     <el-table-column label="" min-width="50"></el-table-column>
-    <el-table-column label="" width="185">
+    <el-table-column label="" width="185" v-if="localPermission.Setup">
       <div slot-scope="scope" class="menus">
         <span class="blue-span" @click="onRelationLinkClick(scope.row)">关联快递打单</span>
         <span class="blue-span" @click="onStationLinkClick(scope.row)">关联物流配送</span>
       </div>
     </el-table-column>
-    <el-table-column label="操作" width="280">
+    <el-table-column label="操作" width="280" v-if="localPermission.Setup">
       <div slot-scope="scope">
         <CtrlMenus
           @setup='onSetupPriceClick(scope.row)'
@@ -71,6 +71,7 @@
 
 <script>
 import sortable from 'sortablejs';
+import { mapState } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
@@ -107,6 +108,10 @@ export default {
     };
   },
   computed: {
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      return this.Permission?.PermissionList?.PermissionManageLogistics?.Obj || {};
+    },
     _dataList() {
       return this.dataList.map(it => ({
         ...it,
@@ -127,7 +132,8 @@ export default {
   },
   methods: {
     setHeight() {
-      const tempHeight = this.getHeight('', 175);
+      const d = this.localPermission.Setup ? 175 : 20;
+      const tempHeight = this.getHeight('', d);
       this.h = tempHeight;
     },
     getTypeContent({ Type }) {

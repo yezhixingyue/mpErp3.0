@@ -137,6 +137,8 @@ export default {
         const { First, Second } = TimeChange;
         if (First || Second) {
           arr.push(`时间延长${First ? ` ${First} 天` : ''}${Second ? ` ${Second} 小时` : ''}`);
+        } else {
+          arr.push('时间延长0天0小时');
         }
       } else if (TimeType === SpecialTimeTypeEnumObj.dateRange.ID) {
         if (StartTime && EndTime) {

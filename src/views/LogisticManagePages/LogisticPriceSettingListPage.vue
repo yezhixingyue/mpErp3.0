@@ -1,11 +1,11 @@
 <template>
   <section class="mp-erp-logistic-price-setting-list-page-wrap">
     <header>
-      <el-button type="primary" size="small">+添加价格</el-button>
+      <el-button type="primary" size="small" @click="onFormulaSetupClick(null)">+添加价格</el-button>
     </header>
     <main>
       <ResultFormulaTableCom
-        :title="`配送方式：${name}价格列表`"
+        :title="`${name}价格列表`"
         :operationTitle='`${name}价格`'
         hiddenTip
         usePropList
@@ -50,7 +50,6 @@ export default {
       this.name = name;
     },
     onFormulaSetupClick(item) {
-      console.log(item);
       this.$store.commit('basicSet/setCurEditFormulaData', item);
       this.$router.push({ name: 'LogisticPriceSetup', params: { id: this.LogisticsID, name: this.name } });
     },

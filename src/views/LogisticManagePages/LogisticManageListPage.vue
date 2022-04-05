@@ -1,6 +1,6 @@
 <template>
   <section class="mp-erp-logistic-manage-list-page-wrap">
-    <header>
+    <header v-if="localPermission.Setup">
       <div>
         <el-button type="primary" @click="onItemSaveClick(null)">+添加物流快递</el-button>
       </div>
@@ -27,7 +27,7 @@
         @submit="onRelationLinkSubmit"
        />
     </main>
-    <footer>
+    <footer v-if="localPermission.Setup">
       <template v-if="!sorting">
         <el-button @click="onSortingClick" class="cancel-blue-btn">排序</el-button>
       </template>
@@ -65,6 +65,10 @@ export default {
   },
   computed: {
     ...mapState('basicSet', ['logisticList', 'ThirdPlatExpressList', 'loading']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      return this.Permission?.PermissionList?.PermissionManageLogistics?.Obj || {};
+    },
   },
   methods: {
     onItemSaveClick(item) { // 添加|编辑物流快递 点击事件
@@ -132,7 +136,7 @@ export default {
   height: 100%;
   > header {
     background-color: #f5f5f5;
-    height: 90px;
+    height: 80px;
     width: 100%;
     flex: none;
     > div {
@@ -141,7 +145,7 @@ export default {
       background-color: #fff;
       display: flex;
       align-items: center;
-      padding-left: 26px;
+      padding-left: 20px;
       box-sizing: border-box;
       > button {
         border-radius: 2px;
@@ -153,7 +157,8 @@ export default {
   }
   > main {
     flex: 1;
-    margin-left: 8px;
+    margin-left: 20px;
+    padding-top: 10px;
   }
   > footer {
     flex: none;

@@ -57,16 +57,16 @@ export default class NewSpecialPanelClass {
       // 必填的值：Tips
       if (this.TimeType === SpecialTimeTypeEnumObj.fixedTime.ID) { // 选择固定时长 - TimeChange中First Second必填
         const { First, Second } = this.TimeChange;
-        if (First === 0 && Second === 0) {
-          messageBox.failSingleError('保存失败', '延长时间中天和小时不能同时为0');
-          return false;
-        }
-        if (!First && !Second) {
+        if ((!First && First !== 0) && (!Second && Second !== 0)) {
           messageBox.failSingleError('保存失败', '延长时间未设置');
           return false;
         }
         if ((First && !getValueIsOrNotNumber(First, true)) || (Second && !getValueIsOrNotNumber(Second, true))) {
           messageBox.failSingleError('保存失败', '延长时间设置不正确');
+          return false;
+        }
+        if (!this.Tips && (First === 0 || First === '') && (Second === 0 || Second === '')) {
+          messageBox.failSingleError('保存失败', '提示为空时，延长时间中天和小时不能同时为0');
           return false;
         }
         temp.TimeChange = this.TimeChange;
@@ -78,10 +78,10 @@ export default class NewSpecialPanelClass {
         temp.StartTime = this.StartTime;
         temp.EndTime = this.EndTime;
       }
-      if (!this.Tips) {
-        messageBox.failSingleError('保存失败', '提示未设置');
-        return false;
-      }
+      // if (!this.Tips) {
+      //   messageBox.failSingleError('保存失败', '提示未设置');
+      //   return false;
+      // }
       temp.Tips = this.Tips;
       temp.TimeType = this.TimeType;
       temp.IsUpdateOrder = this.IsUpdateOrder;
