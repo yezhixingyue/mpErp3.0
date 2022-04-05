@@ -31,6 +31,10 @@
     <el-form-item label="功能分类：" size="small">
       <el-select v-model="ruleForm.Feature.First" placeholder="请选择" @change="onFeatureChange" :disabled='!PermissionObj.EditType && isEdit'>
         <el-option
+          label="无"
+          :value="-777">
+        </el-option>
+        <el-option
           v-for="item in userfunctionClassEmpty"
           :key="item.CategoryID"
           :label="item.CategoryName"
@@ -164,13 +168,13 @@ export default {
         this.ruleForm.Grade.Second = this.userRankListNoneEmpty[0].CategoryName;
       }
       if (!this.ruleForm.Feature.First && this.ruleForm.Feature.First !== 0 && this.userfunctionClassEmpty.length > 0) {
-        this.ruleForm.Feature.First = this.userfunctionClassEmpty[0].CategoryID;
-        this.ruleForm.Feature.Second = this.userfunctionClassEmpty[0].CategoryName;
+        this.ruleForm.Feature.First = -777;
+        this.ruleForm.Feature.Second = '无';
       }
       // 如果有且等于 1
       if (this.ruleForm.Feature.First === 1 && this.userfunctionClassEmpty.length > 0) {
-        this.ruleForm.Feature.First = this.userfunctionClassEmpty[0].CategoryID;
-        this.ruleForm.Feature.Second = this.userfunctionClassEmpty[0].CategoryName;
+        this.ruleForm.Feature.First = -777;
+        this.ruleForm.Feature.Second = '无';
       }
     },
     onScopeArraySetupClick() {

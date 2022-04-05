@@ -120,7 +120,7 @@ export default {
       return (id) => {
         const temp = this.userfunctionClassEmpty.filter(it => Number(it.CategoryID) === Number(id));
         if (temp.length) return temp[0].CategoryName;
-        return '';
+        return '无';
       };
     },
     localDataList() {
