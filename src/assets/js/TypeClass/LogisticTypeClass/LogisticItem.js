@@ -20,10 +20,13 @@ export default class LogisticItem {
 
   DistrictName = ''
 
+  RecordCount = 0
+
   // 关联快递打单列表
   RelationList = []
 
   constructor(data) {
     restoreInitDataByOrigin(this, data);
+    this.RelationList = this.RelationList.map(it => ({ ...it, key: Math.random().toString(16).slice(-10) }));
   }
 }

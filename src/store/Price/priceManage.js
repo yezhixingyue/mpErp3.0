@@ -11,7 +11,7 @@ const initConditon = {
     Second: '',
   },
   Page: 1,
-  PageSize: 24,
+  PageSize: 20,
   KeyWords: '',
   ClassType: '',
   FieldType: 4,

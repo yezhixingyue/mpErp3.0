@@ -69,6 +69,8 @@ export const PropertyFixedType = [
   { ID: 45, Name: '配送方式' },
   { ID: 46, Name: '收货地址' },
   { ID: 47, Name: '产品' },
+  { ID: 48, Name: '重量' },
+  { ID: 49, Name: '客户类型' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表
@@ -387,8 +389,10 @@ export default class PropertyClass {
       const _name = DisplayContent ? DisplayContent.replace(/\[|\]/g, '') : '';
       let _val = '';
       if (ValueList) {
-        if ([46, 47].includes(FixedType)) {
-          if (Array.isArray(ValueList) && ValueList.length > 0) {
+        if ([41, 46, 47].includes(FixedType)) {
+          if (FixedType === 41) {
+            _val = ValueList[0].Value ? ValueList[0].Value.split('T')[0] : '';
+          } else if (Array.isArray(ValueList) && ValueList.length > 0) {
             const vals = ValueList.filter(_it => _it && _it.Value).map(_it => JSON.parse(_it.Value)).filter(_it => _it);
             if (FixedType === 46) {
               _val = getTreeTextDisplayContent(vals, allAdAreaTreeList);

@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-period-manage-special-day-manage-list-page">
-    <header>
-      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.DiliverySpecialSetup">添加快递停发</el-button>
+    <header  v-if="localPermission.DiliveryStopSetup">
+      <el-button type="primary" sizi='small' @click="onItemSetupClick(null)">添加快递停发</el-button>
     </header>
     <main>
       <ExpressStopTableComp :loading='loading' :dataList='ExpressStopDataList' @edit="onItemSetupClick" @remove="onRemoveClick" />

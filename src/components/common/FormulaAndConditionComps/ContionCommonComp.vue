@@ -3,12 +3,18 @@
     <template v-slot:left>
       <slot name="leftHeader"></slot>
       <section class="left-content" v-if="ruleForm">
-        <header v-if="showPriority">
-          <span class="label">优先级：</span>
-          <el-input v-model.trim.number="ruleForm.Priority" maxlength="9" size="small"></el-input>
-          <span class="tips-box">
-            <i class="el-icon-warning"></i> 注：数字越小优先级越高
-          </span>
+        <header v-if="showName || showPriority">
+          <div v-if="showName" class="name">
+            <span class="label">名称：</span>
+            <el-input v-model.trim="ruleForm.Name" maxlength="15" size="small" show-word-limit></el-input>
+          </div>
+          <template v-if="showPriority">
+            <span class="label">优先级：</span>
+            <el-input v-model.trim.number="ruleForm.Priority" maxlength="9" size="small"></el-input>
+            <span class="tips-box">
+              <i class="el-icon-warning"></i> 注：数字越小优先级越高
+            </span>
+          </template>
         </header>
         <main>
           <p class="section-title">
@@ -48,7 +54,7 @@
             <el-radio-button :label="1">满足所有条件</el-radio-button>
             <el-radio-button :label="2">满足任一条件</el-radio-button>
           </el-radio-group>
-          <FormulaPanelElementSelectDialog  useType='condition' :fixedPartName='fixedPartName' :DialogTitle='DialogTitle'
+          <FormulaPanelElementSelectDialog  useType='condition' :fixedPartName='fixedPartName' :DialogTitle='DialogTitle' title="属性选择"
            :visible.sync='visible' :list='PropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs' />
           <FormulaPanelElementSelectDialog  useType='condition' v-if="ComparePropertyList && ComparePropertyList.length > 0"
              showConstant :curTargetID='curTargetID' :fixedPartName='fixedPartName' :DialogTitle='DialogTitle'
@@ -102,6 +108,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    showName: {
+      type: Boolean,
+      default: false,
+    },
     curTargetID: {
       type: String,
       default: '',
@@ -140,6 +150,7 @@ export default {
       ruleForm: {
         ID: '',
         Priority: '', // 优先级
+        Name: '',
         Constraint: {
           ConstraintID: '',
           FilterType: 1, // 满足所有 1   满足任一 2
@@ -269,7 +280,11 @@ export default {
       return true;
     },
     validateRuleForm() { // 信息校验
-      const { Priority, Constraint } = this.ruleForm;
+      const { Priority, Constraint, Name } = this.ruleForm;
+      if (this.showName && !Name) {
+        this.alertError('请设置名称');
+        return false;
+      }
       if (!this.PriorityChecker(Priority)) return false; // 优先级校验
 
       const { ItemList } = Constraint;
@@ -306,9 +321,10 @@ export default {
   mounted() {
     if (!this.curEditData) return;
     // 还原编辑数据 ↓
-    const { Priority, ID, Constraint } = this.curEditData;
+    const { Priority, ID, Constraint, Name } = this.curEditData;
     if (ID) this.ruleForm.ID = ID;
     if (Priority || Priority === 0) this.ruleForm.Priority = Priority;
+    if (this.showName && Name) this.ruleForm.Name = Name;
     if (Constraint) {
       const ItemList = Constraint.ItemList.map(it => {
         const Property = PropertyClass.getPerfectPropertyByImperfectProperty(it.Property, this.PropertyList);
@@ -346,6 +362,12 @@ export default {
           min-width: 220px;
           width: calc(100% - 195px);
           max-width: 400px;
+        }
+        > .name {
+          padding-bottom: 10px;
+          .el-input {
+            width: 360px;
+          }
         }
       }
       > main {
@@ -485,6 +507,9 @@ export default {
   span.label {
     font-size: 14px;
     color: #888E99;
+    min-width: 4em;
+    display: inline-block;
+    text-align: right;
   }
 }
 </style>

@@ -26,7 +26,7 @@
           v-model="dateRange"
           format="yyyy-MM-dd HH:mm"
           value-format="yyyy-MM-ddTHH:mm:ss"
-          :default-time="['00:00:00', '23:59:59']"
+          :default-time="['00:00:00', '23:59:00']"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期" size="small">

@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-period-manage-new-special-manage-list-page">
     <header>
-      <el-button type="primary" sizi='small' @click="onItemSaveClick(null)">添加特殊情况</el-button>
+      <el-button type="primary" sizi='small' @click="onItemSaveClick(null)" v-if="localPermission.ProduceSpecialSetup">添加特殊情况</el-button>
       <span class="blue-span" @click="onToLogClick(null)">删除记录</span>
     </header>
     <main>

@@ -4,7 +4,7 @@
       <slot name="header"></slot> <!-- h2 span -->
     </header>
     <main>
-      <ContionCommonComp ref="oLeftComp" :ComparePropertyList='FormulaConditionPropertyList' :PropertyList='FormulaConditionPropertyList'
+      <ContionCommonComp ref="oLeftComp" :showName='showName' :ComparePropertyList='ComparePropertyList' :PropertyList='FormulaConditionPropertyList'
        leftWidth='45%' :curEditData='curEditItemData' rightTitle="使用此公式">
         <!-- 右侧公式设置 -->
         <FormulaPanelComp
@@ -43,6 +43,14 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    showName: {
+      type: Boolean,
+      default: false,
+    },
+    showCompareProp: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {
     ContionCommonComp,
@@ -57,6 +65,9 @@ export default {
   },
   computed: {
     ...mapState('priceManage', ['curPriceItem', 'curPriceTableItemData']),
+    ComparePropertyList() {
+      return this.showCompareProp ? this.FormulaConditionPropertyList : undefined;
+    },
   },
   methods: {
     onGoBackClick() { // 返回上一页
@@ -67,9 +78,10 @@ export default {
       if (!condition) return;
       const formulaData = this.$refs.oRightFormulaPanel.getFormulaData();
       if (!formulaData) return;
-      const { Constraint, Priority, ID } = condition;
+      const { Constraint, Priority, ID, Name } = condition;
       const { Content, PropertyList, Remark } = formulaData;
       const temp = { ID, Constraint, Priority, Content, PropertyList, Remark, ...this.Condition4getProperty, CraftPriceID: this.CraftPriceID };
+      if (this.showName) temp.Name = Name;
       this.submitSave(temp);
     },
     async submitSave(data) {

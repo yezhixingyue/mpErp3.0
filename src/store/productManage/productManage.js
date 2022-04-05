@@ -12,7 +12,7 @@ const initConditon = {
   },
   ClassType: '',
   Page: 1,
-  PageSize: 24,
+  PageSize: 20,
   KeyWords: '',
   FieldType: 3,
 };

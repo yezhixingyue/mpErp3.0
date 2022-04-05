@@ -1083,6 +1083,28 @@ PropertyFixedType枚举中加入
         工期数据
         ProducePeriodItemData = 39,
 
+
+PropertyFixedType 增加
+        /// <summary>
+        /// 重量
+        /// </summary>
+        [Description("重量")]
+        Weight = 48,
+UseModule增加
+        /// <summary>
+        /// 快递价格条件
+        /// </summary>
+        [Description("快递价格条件")]
+        [Category(ConstriantModules.UseModuleConstraintCategory)]
+        LogisticsConstraint = 48,
+
+        /// <summary>
+        /// 快递价格公式
+        /// </summary>
+        [Description("快递价格公式")]
+        [Category(ConstriantModules.UseModuleFormulaCategory)]
+        LogisticsFormula = 100,
+
 ## 注册方式  RegType ----------- 客户管理使用
 
         客户端

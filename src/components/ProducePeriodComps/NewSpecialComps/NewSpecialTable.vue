@@ -57,13 +57,13 @@
     </el-table-column>
     <el-table-column label="优先级" width="100" prop="Priority"></el-table-column>
     <el-table-column prop="AreaDescribe" label="操作" width="260">
-      <template slot-scope="scope" v-if="localPermission.PayTimeSetup">
+      <template slot-scope="scope" v-if="localPermission.ProduceSpecialSetup || localPermission.ProduceSpecialQuery">
         <div class="ctrl">
-          <div class="log" @click="onLogClick(scope.row)">
+          <div class="log" @click="onLogClick(scope.row)" v-if="localPermission.ProduceSpecialQuery">
             <i class="el-icon-tickets"></i>
             <span>操作记录</span>
           </div>
-          <CtrlMenus @edit='onSetupClick(scope.row)' @remove='onRemoveClick(scope.row)' />
+          <CtrlMenus @edit='onSetupClick(scope.row)' @remove='onRemoveClick(scope.row)' v-if="localPermission.ProduceSpecialSetup" />
         </div>
       </template>
     </el-table-column>
@@ -137,6 +137,8 @@ export default {
         const { First, Second } = TimeChange;
         if (First || Second) {
           arr.push(`时间延长${First ? ` ${First} 天` : ''}${Second ? ` ${Second} 小时` : ''}`);
+        } else {
+          arr.push('时间延长0天0小时');
         }
       } else if (TimeType === SpecialTimeTypeEnumObj.dateRange.ID) {
         if (StartTime && EndTime) {

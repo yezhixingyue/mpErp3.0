@@ -5,10 +5,10 @@
     </div>
     <div class="r">
       <template v-if="showPrice">
-        <label>产品费用：</label>
+        <!-- <label>产品费用：</label>
         <span class="ml-35">￥{{productCost || productCost === 0 ? productCost : '--'}}元</span>
         <label>运费：</label>
-        <span class="ml-35">￥{{expressCost || expressCost === 0 ? expressCost : '--'}}元</span>
+        <span class="ml-35">￥{{expressCost || expressCost === 0 ? expressCost : '--'}}元</span> -->
         <label>共计：</label>
         <span class="ml-50 is-bold is-pink">￥{{allCost || allCost === 0 ? allCost : '--'}}元</span>
       </template>
