@@ -211,6 +211,10 @@ export default {
       //   this.PayInFull = false;
       //   this.UsePrintBean = false;
       // }
+      if (data?.PermissionInfo?.BatchUpload === false) {
+        this.messageBox.failSingleError('客户选择失败', '该客户无批量上传权限');
+        return;
+      }
       if (this.customer && data && this.customer.CustomerID !== data.CustomerID) {
         this.getCustomerBalance();
       }

@@ -51,6 +51,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    nameList: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     ContionCommonComp,
@@ -81,7 +85,13 @@ export default {
       const { Constraint, Priority, ID, Name } = condition;
       const { Content, PropertyList, Remark } = formulaData;
       const temp = { ID, Constraint, Priority, Content, PropertyList, Remark, ...this.Condition4getProperty, CraftPriceID: this.CraftPriceID };
-      if (this.showName) temp.Name = Name;
+      if (this.showName) {
+        if (this.nameList.length > 0 && this.nameList.some(it => it === Name)) {
+          this.messageBox.failSingleError('保存失败', '名称出现重复');
+          return;
+        }
+        temp.Name = Name; // nameList
+      }
       this.submitSave(temp);
     },
     async submitSave(data) {

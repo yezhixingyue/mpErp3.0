@@ -32,7 +32,14 @@
             :value="item.First">
           </el-option>
         </el-select>
-        <CtrlMenus :showList="['add', 'del']" @add="addOneRelationItem" @remove="onRemoveClick(i)" />
+        <CtrlMenus
+         :showList="['add', 'del']"
+         :canAdd="ruleForm.RelationList.length < OutPlatTypeEnumList.length"
+         :canRemove="ruleForm.RelationList.length > 1"
+         @add="addOneRelationItem"
+         @remove="onRemoveClick(i)"
+         addText='添加'
+         />
       </li>
     </ul>
   </CommonDialogComp>
@@ -40,7 +47,7 @@
 
 <script>
 import CommonDialogComp from '@/packages/CommonDialogComp';
-import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
+import CtrlMenus from '../common/NewComps/CtrlMenus/index.vue';
 import LogisticItem from '../../assets/js/TypeClass/LogisticTypeClass/LogisticItem';
 import { OutPlatTypeEnumList } from '../../assets/js/TypeClass/LogisticTypeClass/logisticEnums';
 
@@ -148,7 +155,7 @@ export default {
           width: 110px;
           position: relative;
           top: -1px;
-          margin-right: 25px;
+          margin-right: 28px;
           .el-input__inner {
             height: 30px;
             font-size: 13px;
@@ -165,6 +172,9 @@ export default {
         }
         .tips-box {
           margin-bottom: 20px;
+        }
+        > .ctrl-menus-container {
+          margin-left: 12px;
         }
       }
     }

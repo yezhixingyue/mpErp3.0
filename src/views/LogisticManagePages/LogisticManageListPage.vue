@@ -2,7 +2,7 @@
   <section class="mp-erp-logistic-manage-list-page-wrap">
     <header v-if="localPermission.Setup">
       <div>
-        <el-button type="primary" @click="onItemSaveClick(null)">+添加物流快递</el-button>
+        <el-button type="primary" @click="onItemSaveClick(null)" :disabled="sorting">+添加物流快递</el-button>
       </div>
     </header>
     <main>
@@ -158,6 +158,7 @@ export default {
   > main {
     flex: 1;
     margin-left: 20px;
+    margin-right: 20px;
     padding-top: 10px;
   }
   > footer {
