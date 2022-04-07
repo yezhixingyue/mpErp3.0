@@ -1,5 +1,5 @@
 // import store from '@/store';
-import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
+// import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 
 export default class FundBillClassType {
     SellArea = {
@@ -30,17 +30,19 @@ export default class FundBillClassType {
 
     PageSize= 30
 
-    initDateText= ''
+    DateType = ''
+
+    // initDateText= ''
 
     constructor(DateType) {
-      // if (DateType) this.DateType = DateType;
-      // else this.DateType = 'all';
-      if (DateType) {
-        const stringDate = ConvertTimeFormat(new Date());
-        this.Date.First = `${stringDate}T00:00:00.000Z`;
-        this.Date.Second = `${stringDate}T23:59:59.997Z`;
-        this.initDateText = '今天';
-      }
+      if (DateType) this.DateType = DateType;
+      else this.DateType = 'all';
+      // if (DateType) {
+      //   const stringDate = ConvertTimeFormat(new Date());
+      //   this.Date.First = `${stringDate}T00:00:00.000Z`;
+      //   this.Date.Second = `${stringDate}T23:59:59.997Z`;
+      //   this.initDateText = '今天';
+      // }
     }
 
 

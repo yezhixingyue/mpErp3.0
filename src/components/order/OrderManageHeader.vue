@@ -39,7 +39,16 @@
       </li>
       <li class="row-two">
         <!-- <TimeSearchSelector /> -->
-        <ElDateRangeSelector v-model="conditionDate" :menus="dateMenus" :max-span="366" :condition="objForOrderList" initText='今天' />
+        <LineDateSelectorComp
+          :changePropsFunc='setOrderManageRequestObj'
+          :requestFunc='getDataList'
+          :typeList="[['DateType', ''], ['PlaceDate', 'First'], ['PlaceDate', 'Second']]"
+          :dateValue='objForOrderList.DateType'
+          :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+          :dateList="dateList"
+          isFull
+          label="时间筛选" />
+        <!-- <ElDateRangeSelector v-model="conditionDate" :menus="dateMenus" :max-span="366" :condition="objForOrderList" initText='今天' /> -->
         <SearchInputComp
           class="search-section"
           :typeList="[['KeyWords', '']]"
@@ -64,10 +73,11 @@ import UserSelector from '@/components/order/orderListHeader/UserSelector.vue';
 import StaffSelector from '@/components/order/orderListHeader/StaffSelector.vue';
 import ExpressSelector from '@/components/order/orderListHeader/ExpressSelector.vue';
 import OrderStatusSelector from '@/components/order/orderListHeader/OrderStatusSelector.vue';
+import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 // import DeliverStatusSelector from '@/components/order/orderListHeader/DeliverStatusSelector.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
-import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
+// import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 
 export default {
@@ -79,26 +89,33 @@ export default {
     StaffSelector,
     OrderStatusSelector,
     OrderChannelSelector,
-    ElDateRangeSelector,
+    // ElDateRangeSelector,
+    LineDateSelectorComp,
     SearchInputComp,
   },
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'selfHelpOrderTypeList']),
     ...mapState('orderModule', ['objForOrderList', 'orderListData']),
-    conditionDate: {
-      get() {
-        return [this.objForOrderList.PlaceDate.First, this.objForOrderList.PlaceDate.Second];
-      },
-      set(newVal) {
-        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
-        this.setOrderManageRequestObj([['PlaceDate', 'First'], key]);
-        this.setOrderManageRequestObj([['PlaceDate', 'Second'], value]);
-        this.getDataList();
-      },
+    // conditionDate: {
+    //   get() {
+    //     return [this.objForOrderList.PlaceDate.First, this.objForOrderList.PlaceDate.Second];
+    //   },
+    //   set(newVal) {
+    //     const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
+    //     this.setOrderManageRequestObj([['PlaceDate', 'First'], key]);
+    //     this.setOrderManageRequestObj([['PlaceDate', 'Second'], value]);
+    //     this.getDataList();
+    //   },
+    // },
+    UserDefinedTimeIsActive() {
+      return this.objForOrderList.DateType === ''
+       && !!this.objForOrderList.PlaceDate.First && !!this.objForOrderList.PlaceDate.Second;
     },
   },
   data() {
     return {
+      // eslint-disable-next-line max-len
+      dateList: [{ name: '今天下单', ID: 'today' }, { name: '昨天下单', ID: 'yesterday' }, { name: '前天下单', ID: 'beforeyesterday' }, { name: '本月下单', ID: 'curMonth' }, { name: '上月下单', ID: 'lastMonth' }],
       dateMenus: [
         { text: '今天', key: 'TodayDate' },
         { text: '昨天', key: 'YesterdayDate' },

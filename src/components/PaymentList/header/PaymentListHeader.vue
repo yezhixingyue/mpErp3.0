@@ -28,7 +28,17 @@
       <OrderMethod />
     </div>
     <div class="s">
-      <ElDateRangeSelector v-model="conditionDate" :condition="set2PaymentList" />
+      <!-- <ElDateRangeSelector v-model="conditionDate" :condition="set2PaymentList" /> -->
+      <LineDateSelectorComp
+        :changePropsFunc='setDataListRequestObj'
+        :requestFunc='getDataList'
+        :isFull="true"
+        :typeList="[['DateType', ''], ['CreateDate', 'First'], ['CreateDate', 'Second']]"
+        :dateValue='set2PaymentList.DateType'
+        :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+        label="时间筛选"
+        :dateList="dateList"
+        />
       <SearchInputComp
         class="search-section"
         :typeList="[['KeyWords', '']]"
@@ -53,7 +63,8 @@ import StaffSelector from '@/components/PaymentList/header/StaffSelector.vue';
 import OrderMethod from '@/components/PaymentList/header/OrderMethod.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
-import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
+// import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
+import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import { mapState, mapMutations } from 'vuex';
 
 export default {
@@ -64,22 +75,32 @@ export default {
     // PaymentMethod,
     OrderMethod,
     OrderChannelSelector,
-    ElDateRangeSelector,
+    // ElDateRangeSelector,
     SearchInputComp,
+    LineDateSelectorComp,
+  },
+  data() {
+    return {
+      // eslint-disable-next-line max-len
+      dateList: [{ name: '全部', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
+    };
   },
   computed: {
     ...mapState('common', ['userTypeList', 'userRankList']),
     ...mapState('paymentModule', ['set2PaymentList', 'tableData']),
-    conditionDate: {
-      get() {
-        return [this.set2PaymentList.CreateDate.First, this.set2PaymentList.CreateDate.Second];
-      },
-      set(newVal) {
-        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
-        this.setDataListRequestObj([['CreateDate', 'First'], key]);
-        this.setDataListRequestObj([['CreateDate', 'Second'], value]);
-        this.getDataList();
-      },
+    // conditionDate: {
+    //   get() {
+    //     return [this.set2PaymentList.CreateDate.First, this.set2PaymentList.CreateDate.Second];
+    //   },
+    //   set(newVal) {
+    //     const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
+    //     this.setDataListRequestObj([['CreateDate', 'First'], key]);
+    //     this.setDataListRequestObj([['CreateDate', 'Second'], value]);
+    //     this.getDataList();
+    //   },
+    // },
+    UserDefinedTimeIsActive() {
+      return this.set2PaymentList.DateType === '' && !!this.set2PaymentList.CreateDate.First && !!this.set2PaymentList.CreateDate.Second;
     },
   },
   methods: {

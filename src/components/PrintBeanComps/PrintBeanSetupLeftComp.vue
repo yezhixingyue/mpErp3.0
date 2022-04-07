@@ -323,7 +323,4 @@ export default {
     }
   }
 }
-.mp-price-tactic-list-page-header-date-selector-wrap .el-date-table td.today span {
-  color: #26bcf9 !important;
-}
 </style>

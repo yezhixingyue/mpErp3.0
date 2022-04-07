@@ -48,7 +48,17 @@
         />
     </div>
     <div class="s">
-      <ElDateRangeSelector v-model="conditionDate" :menus="dateMenus" :condition="searchCondition4Finance" initText='今天入库' />
+      <!-- <ElDateRangeSelector v-model="conditionDate" :menus="dateMenus" :condition="searchCondition4Finance" initText='今天入库' /> -->
+      <LineDateSelectorComp
+        :changePropsFunc='setFinanceRequestObj'
+        :requestFunc='getFinanceTableData'
+        :isFull="true"
+        :typeList="[['DateType', ''], ['OutstoreDate', 'First'], ['OutstoreDate', 'Second']]"
+        :dateValue='searchCondition4Finance.DateType'
+        :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+        label="时间"
+        :dateList="dateList"
+      />
       <SearchInputComp
         class="search-section"
         :typeList="[['KeyWords', '']]"
@@ -74,7 +84,8 @@ import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import { mapState, mapMutations, mapActions } from 'vuex';
 import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
-import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
+import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+// import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import AreaSelector from './AreaSelector.vue';
 // import UserSelector from './UserSelector.vue';
 // import OrderStatusSelector from './OrderStatusSelector.vue';
@@ -93,22 +104,27 @@ export default {
     // TimeSearchSelector,
     OrderChannelSelector,
     StaffSelector,
-    ElDateRangeSelector,
+    // ElDateRangeSelector,
     SearchInputComp,
+    LineDateSelectorComp,
   },
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'deliverStatus']),
     ...mapState('finance', ['searchCondition4Finance', 'PackageList']),
-    conditionDate: {
-      get() {
-        return [this.searchCondition4Finance.OutstoreDate.First, this.searchCondition4Finance.OutstoreDate.Second];
-      },
-      set(newVal) {
-        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
-        this.setFinanceRequestObj([['OutstoreDate', 'First'], key]);
-        this.setFinanceRequestObj([['OutstoreDate', 'Second'], value]);
-        this.getFinanceTableData();
-      },
+    // conditionDate: {
+    //   get() {
+    //     return [this.searchCondition4Finance.OutstoreDate.First, this.searchCondition4Finance.OutstoreDate.Second];
+    //   },
+    //   set(newVal) {
+    //     const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
+    //     this.setFinanceRequestObj([['OutstoreDate', 'First'], key]);
+    //     this.setFinanceRequestObj([['OutstoreDate', 'Second'], value]);
+    //     this.getFinanceTableData();
+    //   },
+    // },
+    UserDefinedTimeIsActive() {
+      // eslint-disable-next-line max-len
+      return this.searchCondition4Finance.DateType === '' && !!this.searchCondition4Finance.OutstoreDate.First && !!this.searchCondition4Finance.OutstoreDate.Second;
     },
   },
   data() {
@@ -118,13 +134,15 @@ export default {
         { ID: true, name: '有' },
         { ID: false, name: '无' },
       ],
-      dateMenus: [
-        { text: '今天入库', key: 'TodayDate' },
-        { text: '昨天入库', key: 'YesterdayDate' },
-        { text: '前天入库', key: 'BeforeYesterdayTimeDate' },
-        { text: '本月入库', key: 'curMonthDate' },
-        { text: '上月入库', key: 'lastMonthDate' },
-      ],
+      // dateMenus: [
+      //   { text: '今天入库', key: 'TodayDate' },
+      //   { text: '昨天入库', key: 'YesterdayDate' },
+      //   { text: '前天入库', key: 'BeforeYesterdayTimeDate' },
+      //   { text: '本月入库', key: 'curMonthDate' },
+      //   { text: '上月入库', key: 'lastMonthDate' },
+      // ],
+      // eslint-disable-next-line max-len
+      dateList: [{ name: '今天入库', ID: 'today' }, { name: '昨天入库', ID: 'yesterday' }, { name: '前天入库', ID: 'beforeyesterday' }, { name: '本月入库', ID: 'curMonth' }, { name: '上月入库', ID: 'lastMonth' }],
     };
   },
   methods: {
@@ -177,8 +195,8 @@ header.mp-finance-page-header {
       padding-bottom: 20px;
       padding-left: 20px;
     }
-    > .mp-common-comps-order-channel-selector-wrap {
-      padding-bottom: 20px;
+    > .mp-common-comps-order-channel-selector-wrap, .mp-common-comps-staff-selector-wrap {
+      padding-bottom: 18px;
     }
     display: flex;
     flex-wrap: wrap;
@@ -196,6 +214,9 @@ header.mp-finance-page-header {
     > div, > section {
       margin-bottom: 12px;
     }
+    // .mp-line-date-selector-wrap {
+    //   margin-top: 18px;
+    // }
   }
   .mp-order-time-select-box {
     .mp-head-page-title {

@@ -80,15 +80,16 @@
         </div>
       </li>
       <li class="selector-wrap-4">
-        <!-- <LineDateSelectorComp
+        <LineDateSelectorComp
           :changePropsFunc='setPromoteListRequestObj'
           :requestFunc='getPromoteList'
           :isFull="true"
           :typeList="[['DateType', ''], ['ValidTime', 'key'], ['ValidTime', 'value']]"
           :dateValue='promoteListRequestObj.DateType'
           :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
-         /> -->
-        <ElDateRangeSelector v-model="conditionDate" type="datetimerange" :menus='dateMenus' :condition="promoteListRequestObj" initText='不限' />
+          dateType="datetimerange"
+         />
+        <!-- <ElDateRangeSelector v-model="conditionDate" type="datetimerange" :menus='dateMenus' :condition="promoteListRequestObj" initText='不限' /> -->
         <search-input-comp
           class="search-section"
           :typeList="[['KeyWords', '']]"
@@ -112,9 +113,9 @@ import UserSelector from '@/components/common/SelectorComps/UserSelectorIndex.vu
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
-// import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import RadioButtonGroupComp from '@/components/common/RadioButtonGroupComp.vue';
-import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
+// import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 
 
 export default {
@@ -126,9 +127,9 @@ export default {
     OrderChannelSelector,
     StaffSelector,
     SearchInputComp,
-    // LineDateSelectorComp,
+    LineDateSelectorComp,
     RadioButtonGroupComp,
-    ElDateRangeSelector,
+    // ElDateRangeSelector,
   },
   data() {
     return {
@@ -153,9 +154,9 @@ export default {
         this.setPromoteListRequestObj([['Status', ''], newVal]);
       },
     },
-    // UserDefinedTimeIsActive() {
-    //   return this.promoteListRequestObj.DateType === '' && !!this.promoteListRequestObj.ValidTime.key && !!this.promoteListRequestObj.ValidTime.value;
-    // },
+    UserDefinedTimeIsActive() {
+      return this.promoteListRequestObj.DateType === '' && !!this.promoteListRequestObj.ValidTime.key && !!this.promoteListRequestObj.ValidTime.value;
+    },
     conditionDate: {
       get() {
         return [this.promoteListRequestObj.ValidTime.key, this.promoteListRequestObj.ValidTime.value];
@@ -253,7 +254,7 @@ export default {
             height: 30px;
             margin-top: 18px;
         }
-        .mp-common-comps-el-date-range-selector-comp-wrap {
+        .mp-line-date-selector-wrap.mp-line-date-selector-wrap-is-full {
           margin-top: 18px;
         }
       }

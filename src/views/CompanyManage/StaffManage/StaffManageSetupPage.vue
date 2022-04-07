@@ -8,7 +8,7 @@
         <template v-slot:right>
           <div class="right-content-img-upload-box">
             <p class="mp-common-title-wrap">员工照片</p>
-            <LicensePathPhotoComp v-model="staffForm.HeadPic" :options="photoOptions" @error="onImgLoadError" @change="onImgChange" />
+            <LicensePathPhotoComp v-model="staffForm.HeadPic" :options="photoOptions" @error="onImgLoadError" @change="onImgChange" cutting />
           </div>
         </template>
       </LRWidthDragAutoChangeComp>

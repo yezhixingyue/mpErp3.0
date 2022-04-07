@@ -22,10 +22,13 @@
         </p>
       </div>
     </div>
+    <ImgCropperComp :visible.sync="cropperVisible" :imgFileUrl='imgFileUrl' :imgInfo='imgInfo' @submit="onCropSubmit" />
   </div>
 </template>
 
 <script>
+import ImgCropperComp from './ImgCropperComp.vue';
+
 export default {
   model: {
     event: 'change',
@@ -48,6 +51,13 @@ export default {
       type: Boolean,
       default: true,
     },
+    cutting: { // 是否对图片进行裁切 -- 需要在options中传递limitWidth 和 limitHeight
+      type: Boolean,
+      default: false,
+    },
+  },
+  components: {
+    ImgCropperComp,
   },
   data() {
     return {
@@ -62,6 +72,9 @@ export default {
         fit: 'contain',
         title: '营业执照',
       },
+      imgFileUrl: null,
+      cropperVisible: false,
+      imgInfo: {},
     };
   },
   computed: {
@@ -78,6 +91,7 @@ export default {
   methods: {
     onChange(e) {
       const file = e.target.files[0];
+      e.target.value = '';
       if (!file) {
         return;
       }
@@ -112,12 +126,28 @@ export default {
             e.target.value = '';
             return;
           }
-          const res = await this.api.uploadImage(file).catch(() => null);
-          if (res && res.data.Status === 1000) {
-            this.$emit('change', res.data.Data.Url);
+          if (!this.cutting) {
+            const res = await this.api.uploadImage(file).catch(() => null);
+            if (res && res.data.Status === 1000) {
+              this.$emit('change', res.data.Data.Url);
+            }
+          } else {
+            this.imgInfo = {
+              width: this.finalOptions.limitWidth,
+              height: this.finalOptions.limitHeight,
+            };
+            this.imgFileUrl = base64;
+            this.cropperVisible = true;
           }
         };
       };
+    },
+    async onCropSubmit(blob) {
+      this.cropperVisible = false;
+      const res = await this.api.uploadImage(blob).catch(() => null);
+      if (res && res.data.Status === 1000) {
+        this.$emit('change', res.data.Data.Url);
+      }
     },
     onImgClick() {
       if (!this.AllowEdit) {

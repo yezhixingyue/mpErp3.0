@@ -24,9 +24,9 @@ export default {
     clearCondition4RecordList(state) {
       state.condition4RecordList = new RecordListConditonClass();
     },
-    // transformCondition4RecordListDate(state) {
-    //   CommonClassType.setDate(state.condition4RecordList, 'CalculateDate');
-    // },
+    transformCondition4RecordListDate(state) {
+      CommonClassType.setDate(state.condition4RecordList, 'CalculateDate');
+    },
     setRecordDataList(state, { Data, DataNumber }) {
       state.RecordDataList = Data;
       if (DataNumber || DataNumber === 0) state.RecordDataNumber = DataNumber;
@@ -38,7 +38,7 @@ export default {
   actions: {
     async getRecordList({ state, commit }, page = 1) {
       commit('setCondition4RecordList', [['Page', ''], page]);
-      // commit('transformCondition4RecordListDate');
+      commit('transformCondition4RecordListDate');
       const temp = CommonClassType.filter(state.condition4RecordList, true);
       commit('setRecordDataList', { Data: [], DataNumber: undefined });
       commit('setLoading', true);

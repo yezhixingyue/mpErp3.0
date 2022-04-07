@@ -46,6 +46,7 @@ const routes = [
     meta: {
       title: '没有访问权限',
       hideMenu: true,
+      requiresAuth: true,
     },
     component: () => import('../../views/NoAuthPage.vue'),
   },

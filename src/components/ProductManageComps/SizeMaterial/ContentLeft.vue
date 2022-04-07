@@ -15,8 +15,8 @@
       </template>
     </header>
     <main>
-      <MaterialSelectDialog :visible.sync='MaterialSaveVisible' v-model="MaterialSelectDialogSetData"
-         :MaterialLocalList='MaterialLocalList' :dataList="MaterialAllList" :typeList='MaterialTypeList' />
+      <LocalMaterialSelectDialog :visible.sync='MaterialSaveVisible' v-model="MaterialSelectDialogSetData"
+         :MaterialLocalList='MaterialLocalList' :typeList='MaterialTypeList' />
       <ul class="material-list">
         <li v-for="it in MaterialLocalList" :key="it.ID">
           <p>{{it.Name}}</p>
@@ -54,7 +54,7 @@
 import { normalNameReg } from '@/assets/js/utils/regexp';
 import { getFirstOptionName } from '@/assets/js/TypeClass/MaterialSizeClass';
 import { mapState } from 'vuex';
-import MaterialSelectDialog from './MaterialSelectDialog.vue';
+import LocalMaterialSelectDialog from './LocalMaterialSelectDialog.vue';
 import MaterialSortDialog from './MaterialSortDialog.vue';
 import MaterialHiddenDrawer from './MaterialHiddenDrawer.vue';
 
@@ -74,7 +74,7 @@ export default {
     },
   },
   components: {
-    MaterialSelectDialog,
+    LocalMaterialSelectDialog,
     MaterialSortDialog,
     MaterialHiddenDrawer,
   },
@@ -174,7 +174,7 @@ export default {
       //   this.$store.dispatch('basicSet/getMaterialTypeList');
       // }
       this.$store.dispatch('basicSet/getMaterialTypeList');
-      this.$store.dispatch('common/getMaterialAllList');
+      // this.$store.dispatch('common/getMaterialAllList');
     },
     onTitleEditClick() { // 点击编辑物料提示名称
       this.title = this.MaterialDisplayName;

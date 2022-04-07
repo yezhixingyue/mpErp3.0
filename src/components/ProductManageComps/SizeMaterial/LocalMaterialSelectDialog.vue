@@ -62,10 +62,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    dataList: {
-      type: Array,
-      default: () => [],
-    },
     MaterialLocalList: {
       type: Array,
       default: () => [],
@@ -87,26 +83,11 @@ export default {
       activeType: '',
       list: [],
       isEdit: false,
+      curTypeDataList: [],
+      MaterialDataObj: {},
     };
   },
   computed: {
-    curTypeDataList() {
-      if (!this.activeType || !this.dataList || this.dataList.length === 0) return [];
-      // const list = this.dataList.filter(it => it.Type && it.Type.ID === this.activeType).sort((a, b) => a.DisplayName.localeCompare(b.DisplayName));
-      const list = this.dataList.filter(it => it.Type && it.Type.ID === this.activeType);
-      const _temp = {};
-      list.forEach(it => {
-        const { UnionShowList, ElementList } = it.Type;
-        const { lv1Title, itemContent } = getFirstOptionName(UnionShowList, ElementList); // 获取右侧第一级分类标题.
-        if (!_temp[lv1Title]) _temp[lv1Title] = [];
-        _temp[lv1Title].push({ ...it, itemContent });
-      });
-      const _list = Object.keys(_temp).map(key => ({
-        Name: key,
-        List: _temp[key],
-      }));
-      return _list;
-    },
     curTypeItemList() {
       if (!this.curTypeDataList || this.curTypeDataList.length === 0) return [];
       return this.curTypeDataList.map(it => it.List).reduce((a, b) => [...a, ...b]);
@@ -196,6 +177,42 @@ export default {
     onLabelClick({ ID }) {
       if (!this.canSelectTypeIDList.includes(ID)) return;
       this.activeType = ID;
+    },
+    async getCurTypeDataList(type) {
+      if (!type && type !== 0) {
+        this.curTypeDataList = [];
+        return;
+      }
+      let list = [];
+      if (this.MaterialDataObj[type]) {
+        list = this.MaterialDataObj[type];
+      } else {
+        const resp = await this.api.getMaterialList(type, 1, 1000000).catch(() => {});
+        if (resp && resp.data && resp.data.Status === 1000) {
+          this.MaterialDataObj[type] = resp.data.Data;
+          list = resp.data.Data;
+        }
+      }
+      const _temp = {};
+      list.forEach(it => {
+        const { UnionShowList, ElementList } = it.Type;
+        const { lv1Title, itemContent } = getFirstOptionName(UnionShowList, ElementList); // 获取右侧第一级分类标题.
+        if (!_temp[lv1Title]) _temp[lv1Title] = [];
+        _temp[lv1Title].push({ ...it, itemContent });
+      });
+      const _list = Object.keys(_temp).map(key => ({
+        Name: key,
+        List: _temp[key],
+      }));
+      this.curTypeDataList = _list;
+    },
+  },
+  watch: {
+    activeType: {
+      handler(val) {
+        this.getCurTypeDataList(val);
+      },
+      immediate: true,
     },
   },
 };

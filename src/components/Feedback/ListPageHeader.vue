@@ -52,18 +52,17 @@
         </div>
       </li>
       <li>
-        <!-- <LineDateSelectorComp
-        :changePropsFunc='setCondition4DataList'
-        :requestFunc='getDataList'
-        :isFull="true"
-        :typeList="[['DateType', ''], ['Date', 'First'], ['Date', 'Second']]"
-        :dateValue='condition.DateType'
-        :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
-        label="时间"
-        :dateList="dateList"
-        dateType="date"
-        /> -->
-        <ElDateRangeSelector v-model="conditionDate"  title="时间" :watchVal="condition" />
+        <LineDateSelectorComp
+          :changePropsFunc='setCondition4DataList'
+          :requestFunc='getDataList'
+          :isFull="true"
+          :typeList="[['DateType', ''], ['Date', 'First'], ['Date', 'Second']]"
+          :dateValue='condition.DateType'
+          :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+          label="时间"
+          :dateList="dateList"
+        />
+        <!-- <ElDateRangeSelector v-model="conditionDate"  title="时间" :watchVal="condition" /> -->
         <SearchInputComp
         class="search-section"
         :typeList="[['KeyWords', '']]"
@@ -82,10 +81,10 @@
 
 <script>
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
-// import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
-import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
+// import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState } from 'vuex';
 
 export default {
@@ -102,17 +101,16 @@ export default {
 
   components: {
     OrderChannelSelector,
-    // LineDateSelectorComp,
+    LineDateSelectorComp,
     SearchInputComp,
     AreaSelector,
-    ElDateRangeSelector,
+    // ElDateRangeSelector,
   },
   computed: {
     ...mapState('common', ['FeedbackProgress', 'FeedbackQuestionList', 'userTypeList', 'userRankList']),
-    // UserDefinedTimeIsActive() {
-    //   // eslint-disable-next-line max-len
-    //   return this.condition.DateType === '' && !!this.condition.Date.First && !!this.condition.Date.Second;
-    // },
+    UserDefinedTimeIsActive() {
+      return this.condition.DateType === '' && !!this.condition.Date.First && !!this.condition.Date.Second;
+    },
     progressList() {
       if (!this.FeedbackProgress || this.FeedbackProgress.length === 0) return [];
       return [{ name: '不限', ID: '' }, ...this.FeedbackProgress];
@@ -137,7 +135,7 @@ export default {
   data() {
     return {
       // eslint-disable-next-line max-len
-      // dateList: [{ name: '不限', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
+      dateList: [{ name: '不限', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
       dateMenus: [
         { text: '不限', key: 'all' },
         { text: '今天', key: 'TodayDate' },

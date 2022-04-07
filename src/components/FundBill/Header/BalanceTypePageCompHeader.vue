@@ -57,7 +57,7 @@
       </div>
     </li>
     <li>
-      <!-- <LineDateSelectorComp
+      <LineDateSelectorComp
         :changePropsFunc='setCondition4BalanceType'
         :requestFunc='getCustomerBill'
         :isFull="true"
@@ -66,9 +66,8 @@
         :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
         label="时间"
         :dateList="dateList"
-        dateType="date"
-        /> -->
-      <ElDateRangeSelector v-model="conditionDate"  :menus='dateMenus' title="时间" :condition="condition4BalanceType" />
+        />
+      <!-- <ElDateRangeSelector v-model="conditionDate"  :menus='dateMenus' title="时间" :condition="condition4BalanceType" /> -->
       <search-input-comp
         class="search-section"
         :typeList="[['KeyWords', '']]"
@@ -87,42 +86,41 @@
 <script>
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
-// import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
-import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
+// import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState, mapMutations, mapActions } from 'vuex';
 
 export default {
   components: {
     AreaSelector,
     OrderChannelSelector,
-    // LineDateSelectorComp,
+    LineDateSelectorComp,
     SearchInputComp,
-    ElDateRangeSelector,
+    // ElDateRangeSelector,
   },
   computed: {
     ...mapState('fundBill', ['condition4BalanceType', 'balanceTypeDataList']),
     ...mapState('common', ['FundBillBalanceTypeList', 'FundBillBalanceCurrencyList', 'userTypeList', 'userRankList', 'FundBillMonetyTypeList']),
-    // UserDefinedTimeIsActive() {
-    //   // eslint-disable-next-line max-len
-    //   return this.condition4BalanceType.DateType === '' && !!this.condition4BalanceType.Date.First && !!this.condition4BalanceType.Date.Second;
-    // },
-    conditionDate: {
-      get() {
-        return [this.condition4BalanceType.Date.First, this.condition4BalanceType.Date.Second];
-      },
-      set(newVal) {
-        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
-        this.setCondition4BalanceType([['Date', 'First'], key]);
-        this.setCondition4BalanceType([['Date', 'Second'], value]);
-        this.getCustomerBill();
-      },
+    UserDefinedTimeIsActive() {
+      return this.condition4BalanceType.DateType === '' && !!this.condition4BalanceType.Date.First && !!this.condition4BalanceType.Date.Second;
     },
+    // conditionDate: {
+    //   get() {
+    //     return [this.condition4BalanceType.Date.First, this.condition4BalanceType.Date.Second];
+    //   },
+    //   set(newVal) {
+    //     const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
+    //     this.setCondition4BalanceType([['Date', 'First'], key]);
+    //     this.setCondition4BalanceType([['Date', 'Second'], value]);
+    //     this.getCustomerBill();
+    //   },
+    // },
   },
   data() {
     return {
       // eslint-disable-next-line max-len
-      // dateList: [{ name: '不限', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
+      dateList: [{ name: '不限', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
       dateMenus: [
         { text: '不限', key: 'all' },
         { text: '今天', key: 'TodayDate' },
