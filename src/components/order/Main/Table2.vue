@@ -337,8 +337,9 @@ export default {
 <style lang="scss">
 @import "@/assets/css/common/var.scss";
 .mp-table-wrap {
-  border: none;
   height: 100%;
+  border-color: #e5e5e5;
+  border-bottom: 1px solid #e5e5e5 !important;
   &.el-table::before{
     display: none;
   }

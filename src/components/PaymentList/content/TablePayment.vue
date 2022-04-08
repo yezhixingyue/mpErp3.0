@@ -32,7 +32,7 @@
         {{scope.row.PaidBeanNumber}}个
       </template>
     </el-table-column>
-    <el-table-column class-name='md-font-item' label="在线支付" minWidth="92">
+    <el-table-column class-name='md-font-item' label="在线支付" minWidth="80">
       <template slot-scope="scope">
         {{scope.row.PayOnlineAmount}}元
       </template>
@@ -237,7 +237,8 @@ export default {
 .mp-payment-module-table {
   width: 100%;
   // user-select: none;
-  border: none;
+  border-color: #e5e5e5;
+  border-bottom: 1px solid #e5e5e5 !important;
   .el-table__header-wrapper{
     thead {
       tr {

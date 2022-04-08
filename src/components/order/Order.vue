@@ -40,11 +40,12 @@ export default {
   box-sizing: border-box;
   flex-direction: column;
   display: flex;
+  padding-left: 8px;
   .order-manage-content {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    border: 1px solid $--border-color-base;
+    // border: 1px solid $--border-color-base;
     background-color: rgb(255, 255, 255);
     .mp-table-box{
         flex: 1;

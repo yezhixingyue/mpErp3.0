@@ -83,7 +83,7 @@ export default {
 <style lang='scss'>
 @import "@/assets/css/common/var.scss";
   .mp-paymentlist-page-content{
-    border: 1px solid $--border-color-base;
+    // border: 1px solid $--border-color-base;
     height: 100%;
     width: 100%;
     box-sizing: border-box;

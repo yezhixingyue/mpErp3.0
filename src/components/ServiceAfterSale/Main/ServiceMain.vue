@@ -102,7 +102,7 @@ export default {
 <style lang='scss'>
 @import "@/assets/css/common/var.scss";
 .mp-service-page-main-wrap{
-  border: 1px solid #e6e6e6;
+  // border: 1px solid #e6e6e6;
   box-sizing: border-box;
   > .count-wrap {
     > .is-blue {
