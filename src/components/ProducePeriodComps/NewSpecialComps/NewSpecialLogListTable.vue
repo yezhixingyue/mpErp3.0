@@ -59,7 +59,7 @@ export default {
       font-size: 14px;
       &.left-title-cow {
         text-align: left;
-        padding-left: 60px !important;
+        padding-left: 30px !important;
       }
     }
     &.menu-column {

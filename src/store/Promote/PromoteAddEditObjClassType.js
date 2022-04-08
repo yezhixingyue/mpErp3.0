@@ -57,8 +57,8 @@ export default class PromoteAddObj {
       if (!obj.Title || obj.Title.length > 20) return '活动标题不能为空且不能超过20个字符!';
       if (!obj.ValidStartTime) return '请输入活动开始时间';
       if (!obj.ValidEndTime) return '请输入活动结束时间';
-      let _ValidStartTime = obj.ValidStartTime;
-      let _ValidEndTime = obj.ValidEndTime;
+      const _ValidStartTime = obj.ValidStartTime;
+      const _ValidEndTime = obj.ValidEndTime;
       if (obj.PeriodType === 0) {
         const t = obj.PeriodList.find(it => it.Value === '');
         if (t) {
@@ -66,13 +66,13 @@ export default class PromoteAddObj {
           if (!StartTime || !EndTime) {
             return '时间段时间未设置';
           }
-          _ValidStartTime = `${_ValidStartTime.split('T')[0]}T${StartTime}:00.000`;
-          _ValidEndTime = `${_ValidEndTime.split('T')[0]}T${EndTime}:59.997`;
+          // _ValidStartTime = `${_ValidStartTime.split('T')[0]}T${StartTime}:00.000`;
+          // _ValidEndTime = `${_ValidEndTime.split('T')[0]}T${EndTime}:59.997`;
         }
       }
-      if (new Date(_ValidStartTime.replace('Z', '')) - Date.now() <= 0) return '活动开始时间不能早于当前时间';
+      if (new Date(_ValidStartTime.replace('Z', '')) - new Date(new Date().toDateString()).getTime() < 0) return '活动开始时间不能早于今天';
       if (new Date(_ValidEndTime) <= new Date(_ValidStartTime)) return '活动结束时间不能早于活动开始时间';
-      if (new Date(_ValidEndTime.replace('Z', '')) - Date.now() <= 0) return '活动结束时间不能早于当前时间';
+      // if (new Date(_ValidEndTime.replace('Z', '')) - Date.now() <= 0) return '活动结束时间不能早于当前时间';
       const _PeriodList = obj.PeriodList.filter(it => (it.Value && obj.PeriodType === 1 && it.isChecked) || (!it.Value && obj.PeriodType === 0));
       if (_PeriodList.length === 0) return '请设置周期';
       let t = _PeriodList.find(it => !it.StartTime || !it.EndTime);
