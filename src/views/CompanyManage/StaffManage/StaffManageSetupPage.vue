@@ -3,7 +3,7 @@
     <main>
       <LRWidthDragAutoChangeComp leftWidth='450px'>
         <template v-slot:left>
-          <StaffSetupLeftComp :staffForm='staffForm' @change="changeFormItem" ref="oLeft" />
+          <StaffSetupLeftComp :staffForm='staffForm' :RosterDataList='RosterDataList' @change="changeFormItem" ref="oLeft" />
         </template>
         <template v-slot:right>
           <div class="right-content-img-upload-box">
@@ -36,6 +36,7 @@ export default {
   data() {
     return {
       staffForm: null,
+      RosterDataList: null,
       photoOptions: {
         width: 250,
         height: 350,
@@ -106,6 +107,11 @@ export default {
   },
   mounted() {
     this.init();
+    this.api.getRosterDataList().then(res => {
+      if (res?.data?.Data) {
+        this.RosterDataList = res.data.Data;
+      }
+    });
   },
 };
 </script>

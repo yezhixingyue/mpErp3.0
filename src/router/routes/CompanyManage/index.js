@@ -74,6 +74,18 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/CompanyManage/JobPostManage/PostManageSetupPage.vue'),
     },
+    {
+      path: '/ScreenNameManage',
+      name: 'ScreenNameManage',
+      meta: {
+        title: '花名管理',
+        icon: 'el-icon-notebook-1',
+        pageName: 'ScreenNameManagePage',
+        PermissionInfo: ['PermissionManageJob', 'Obj', 'Setup'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CompanyManage/ScreenNameManage/ScreenNameManagePage.vue'),
+    },
   ],
 };
 

@@ -25,6 +25,8 @@ export default class Staff {
 
   Sex = SexEnumObj.male.ID // 根据IDCard生成
 
+  RosterID = ''
+
   LinkArea = {
     RegionalID: 1497,
     CityID: 1498,

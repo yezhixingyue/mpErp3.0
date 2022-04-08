@@ -16,6 +16,17 @@
           <el-input class="line" :value="staffForm.StaffName" @input="val => change([['StaffName'], val])" maxlength="5" placeholder='请输入员工姓名'></el-input>
         </el-form-item>
         <el-form-item
+          label="花名：" class="f">
+          <OrderChannelSelector
+            :options='RosterNameList'
+            :changePropsFunc="change"
+            :typeList="[['RosterID', '']]"
+            :value='staffForm.RosterID'
+            :defaultProps='{label: "Nickname", value: "RosterID"}'
+            :showLabel='false'
+          />
+        </el-form-item>
+        <el-form-item
           label="手机号："
           prop="Mobile"
           :rules="[
@@ -92,6 +103,9 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    RosterDataList: { // 花名列表
+      type: Array,
+    },
   },
   components: {
     CascadeSelector,
@@ -111,6 +125,10 @@ export default {
         if (val) timer = `${val}T00:00:00.000Z`;
         this.change([['TimeRecord', 'JoinDate'], timer]);
       },
+    },
+    RosterNameList() {
+      const temp = this.RosterDataList?.filter(it => !it.IsUse || it.RosterID === this.staffForm.RosterID);
+      return temp?.length ? temp : [];
     },
   },
   data() {

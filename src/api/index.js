@@ -927,6 +927,18 @@ const api = {
   getJobSave(data) { // POST /Api/Job/Save  岗位保存
     return instance.post('/Api/Job/Save', data);
   },
+  getRosterDataList() { // POST /Api/Roster/List  获取花名列表
+    return instance.post('/Api/Roster/List');
+  },
+  getRosterCanUseDataList() { // POST /Api/Roster/List  获取能用花名列表
+    return instance.post('/Api/Roster/CanUseList');
+  },
+  getRosterDataSave(data) { // POST /Api/Roster/Save  花名保存
+    return instance.post('/Api/Roster/Save', data);
+  },
+  getRosterDataRemove(id) { // POST /Api/Roster/Remove  花名删除
+    return instance.post(`/Api/Roster/Remove?id=${id}`);
+  },
   getJobPermissionSave(data) { // POST /Api/JobPermission/Save 岗位权限保存
     return instance.post('/Api/JobPermission/Save', data);
   },

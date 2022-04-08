@@ -10,6 +10,9 @@
     style="width: 100%"
   >
     <el-table-column width="100px" prop="StaffName" show-overflow-tooltip label="姓名"></el-table-column>
+    <el-table-column width="100px" prop="RosterID" show-overflow-tooltip label="花名">
+      <span slot-scope="scope">{{getCanUseName(scope.row.RosterID)}}</span>
+    </el-table-column>
     <el-table-column width="120px" prop="Mobile" show-overflow-tooltip label="手机号"></el-table-column>
     <el-table-column width="160px" prop='IDCard' show-overflow-tooltip label="身份证号"></el-table-column>
     <el-table-column width="70px" prop="_gender" show-overflow-tooltip label="性别"></el-table-column>
@@ -47,6 +50,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import api from '@/api';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import { SexEnumObj, StaffStatusEnumObj, EducationEnumList, StaffStatusEnumList } from '../../assets/js/TypeClass/StaffManage/enums';
 import CtrlMenus from '../common/NewComps/CtrlMenus/index.vue';
@@ -69,6 +73,11 @@ export default {
   mixins: [tableMixin],
   components: {
     CtrlMenus,
+  },
+  data() {
+    return {
+      RosterDataList: [],
+    };
   },
   computed: {
     ...mapState('common', ['Permission']),
@@ -103,6 +112,12 @@ export default {
       if (this.maxMenuLen === 2) return '160px';
       if (this.maxMenuLen === 1) return '120px';
       return '0px';
+    },
+    getCanUseName() {
+      return (id) => {
+        const temp = this.RosterDataList.filter(it => it.RosterID === id);
+        return temp[0]?.Nickname;
+      };
     },
   },
   methods: {
@@ -215,6 +230,13 @@ export default {
         this.$emit('remove', { item, index });
       }, null);
     },
+  },
+  mounted() {
+    api.getRosterDataList().then(res => {
+      if (res?.data?.Data) {
+        this.RosterDataList = res.data.Data;
+      }
+    });
   },
 };
 </script>
