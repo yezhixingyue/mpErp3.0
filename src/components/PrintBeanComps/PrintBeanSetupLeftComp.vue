@@ -18,11 +18,14 @@
         <label>开始日期：</label>
         <el-date-picker
           v-model="StartTime"
-          :picker-options="{disabledDate: handleDisabledStartDate}"
+          :picker-options="{disabledDate: handleDisabledStartDate, format: 'HH:mm'}"
           :disabled='isStarted'
           size="mini"
-          value-format="yyyy-MM-dd"
-          style="width:140px"
+          key="StartTime"
+          type="datetime"
+          value-format="yyyy-MM-ddTHH:mm:ss"
+          format="yyyy-MM-dd HH:mm"
+          style="width:180px"
           placeholder=" 年 / 月 / 日"
           popper-class='mp-price-tactic-list-page-header-date-selector-wrap'
         />
@@ -40,11 +43,15 @@
         <label>结束日期：</label>
         <el-date-picker
           v-model="EndTime"
-          :picker-options="{disabledDate: handleDisabledEndDate}"
+          :picker-options="{disabledDate: handleDisabledEndDate, format: 'HH:mm'}"
           :disabled='_IsActiveOnLong'
           size="mini"
-          value-format="yyyy-MM-dd"
-          style="width:140px"
+          type="datetime"
+          key="EndTime"
+          value-format="yyyy-MM-ddTHH:mm:ss"
+          format="yyyy-MM-dd HH:mm"
+          default-time="23:59:00"
+          style="width:180px"
           placeholder=" 年 / 月 / 日"
           popper-class='mp-price-tactic-list-page-header-date-selector-wrap'
         />
@@ -213,15 +220,16 @@ export default {
   methods: {
     handleDisabledStartDate(e) { // 限制开始日期
       if (this.EndTime && !this._IsActiveOnLong) {
-        return new Date(e).getTime() > new Date(new Date(this.EndTime).toLocaleDateString()).getTime() || new Date(e).getTime() < Date.now();
+        // eslint-disable-next-line max-len
+        return new Date(e).getTime() > new Date(new Date(`${this.EndTime.slice(0, 16)}:59`)).getTime() || new Date(e).getTime() < new Date(new Date().toLocaleDateString());
       }
-      return new Date(e).getTime() < Date.now();
+      return new Date(e).getTime() < new Date(new Date().toLocaleDateString());
     },
     handleDisabledEndDate(e) { // 限制结束日期
       if (this.StartTime) {
         return new Date(e).getTime() < new Date(new Date(this.StartTime).toLocaleDateString()).getTime();
       }
-      return new Date(e).getTime() < Date.now();
+      return new Date(e).getTime() < new Date(new Date().toLocaleDateString());
     },
   },
 };

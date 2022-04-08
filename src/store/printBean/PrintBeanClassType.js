@@ -63,8 +63,8 @@ export default class PrintBeanClass {
     if (data) {
       restoreInitDataByOrigin(this, data);
       const { StartTime, EndTime, ItemList } = data;
-      if (StartTime && StartTime.length >= 10) this.StartTime = StartTime.slice(0, 10);
-      if (EndTime && EndTime.length >= 10) this.EndTime = EndTime.slice(0, 10);
+      if (StartTime && StartTime.length >= 19) this.StartTime = StartTime.slice(0, 19);
+      if (EndTime && EndTime.length >= 19) this.EndTime = EndTime.slice(0, 19);
       if (!EndTime) this._IsActiveOnLong = true;
       if (Array.isArray(ItemList)) this.ItemList = ItemList.map(it => new PrintBeanTableItem(it));
     }
@@ -85,13 +85,16 @@ export default class PrintBeanClass {
       msg = '请输入描述';
     }
     else if (!this.StartTime) {
-      msg = '请设置开始日期';
+      msg = '请设置开始时间';
+    }
+    else if (new Date(this.StartTime) < new Date() && !this.ID) {
+      msg = '开始时间不能晚于当前时间';
     }
     else if (!this._IsActiveOnLong && !this.EndTime) {
-      msg = '请设置结束日期';
+      msg = '请设置结束时间';
     }
-    else if (!this._IsActiveOnLong && new Date(new Date(this.StartTime).toLocaleDateString()) > new Date(new Date(this.EndTime).toLocaleDateString())) {
-      msg = '开始日期不能晚于结束日期';
+    else if (!this._IsActiveOnLong && new Date(this.StartTime) >= new Date(`${this.EndTime.slice(0, 16)}:59`)) {
+      msg = '结束时间应晚于开始时间';
     }
     else if (this.Category === CategoryEnums.Customer.ID && (!this.Customer || !this.Customer.CustomerID)) { // 单个客户
       msg = '请选择客户';
@@ -114,8 +117,8 @@ export default class PrintBeanClass {
   transfromToSubmit() {
     const temp = {
       ...this,
-      StartTime: `${this.StartTime}T00:00:00`,
-      EndTime: this._IsActiveOnLong ? null : `${this.EndTime}T23:59:59`,
+      StartTime: `${this.StartTime.slice(0, 16)}:00`,
+      EndTime: this._IsActiveOnLong ? null : `${this.EndTime.slice(0, 16)}:59`,
     };
     delete temp._IsActiveOnLong;
     if (temp.Category === CategoryEnums.Customer.ID) {

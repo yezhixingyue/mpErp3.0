@@ -49,7 +49,7 @@ export default {
     },
     isStarted() { // 该项目是否已经开始，影响：1.不允许设置开始日期 2. 不允许删除右侧已有印豆列表项目
       if (this.isEdit) {
-        if (this.curPrintBeanData.StartTime) {
+        if (this.curPrintBeanData.StartTime && !this.curPrintBeanData.StartNow) {
           return new Date(this.curPrintBeanData.StartTime).getTime() < Date.now();
         }
         return true;
