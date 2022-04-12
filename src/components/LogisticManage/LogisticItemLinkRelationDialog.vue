@@ -2,13 +2,15 @@
   <CommonDialogComp
     width="750px"
     top="16vh"
-    title="关联快递打单"
+    :title="title"
     :visible.sync="localVisible"
     smallBtn
+    showClear
     @submit="submitForm"
     @cancle="localVisible = false"
     @open="onOpen"
     @closed="onClosed"
+    @clear="onClearClick"
     class="mp-erp-logistic-item-relation-link-dialog-comp-wrap"
   >
     <!-- 内容区 -->
@@ -46,7 +48,7 @@
 </template>
 
 <script>
-import CommonDialogComp from '@/packages/CommonDialogComp';
+import CommonDialogComp from '../../packages/CommonDialogComp';
 import CtrlMenus from '../common/NewComps/CtrlMenus/index.vue';
 import LogisticItem from '../../assets/js/TypeClass/LogisticTypeClass/LogisticItem';
 import { OutPlatTypeEnumList } from '../../assets/js/TypeClass/LogisticTypeClass/logisticEnums';
@@ -85,6 +87,10 @@ export default {
         this.$emit('update:visible', val);
       },
     },
+    title() {
+      const name = this.editData?.Name ? `${this.editData.Name}` : '';
+      return `关联${name}快递打单`;
+    },
   },
   methods: {
     onOpen() {
@@ -111,7 +117,8 @@ export default {
       this.ruleForm.RelationList.splice(i, 1);
     },
     checker() {
-      const t = this.ruleForm.RelationList.find(it => !it.ThirdID || (!it.OutPlatType && it.OutPlatType !== 0));
+      // eslint-disable-next-line max-len
+      const t = this.ruleForm.RelationList.find(it => (!it.ThirdID || (!it.OutPlatType && it.OutPlatType !== 0)) && !(!it.ThirdID && (!it.OutPlatType && it.OutPlatType !== 0)));
       if (t) {
         this.messageBox.failSingleError('保存失败', '信息不完整');
         return false;
@@ -129,6 +136,10 @@ export default {
       if (this.checker()) {
         this.$emit('submit', this.ruleForm);
       }
+    },
+    onClearClick() {
+      this.ruleForm.RelationList = [];
+      this.addOneRelationItem();
     },
   },
 };

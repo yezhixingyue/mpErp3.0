@@ -11,7 +11,14 @@
     @open="onOpen"
     @cancle="localVisible = false"
   >
-    <ADAreaTreeContentComp ref="oTreeWrap" v-model="localAreaList" v-if="localVisible" :treeType='treeType' :productClassifyType='productClassifyType' />
+    <ADAreaTreeContentComp
+      ref="oTreeWrap"
+      v-model="localAreaList"
+      v-if="localVisible"
+      :treeType='treeType'
+      :displayLevel2='displayLevel2'
+      :productClassifyType='productClassifyType'
+     />
   </CommonDialogComp>
 </template>
 
@@ -40,6 +47,10 @@ export default {
     productClassifyType: {
       type: Number,
       default: 6, // 代客下单分类
+    },
+    displayLevel2: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

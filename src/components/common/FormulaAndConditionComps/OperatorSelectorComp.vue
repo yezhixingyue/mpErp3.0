@@ -20,7 +20,7 @@
          :visible.sync='propVisibel' v-model="checkList" :list='localOptionList' width='800px'
          title="选择选项" submitText='确定' :defaultProps="{label: 'Second', value: 'First'}" class="CheckboxDialogComp" />
         <MaterialSelectDialog submitText='确定' v-else :visible.sync='materialVisible' v-model="checkList" :optionList='localMaterialOptionList' />
-        <ADAreaDialogSelector :visible.sync="areaVisible" v-model="checkList" :treeType='treeType' />
+        <ADAreaDialogSelector :visible.sync="areaVisible" v-model="checkList" :treeType='treeType' :displayLevel2='displayLevel2' />
       </div>
       <el-checkbox-group v-model="checkList" v-else>
         <el-checkbox v-for="it in localOptionList" :key="it.First" :label="it.First" :title="it.Second">{{it.Second}}</el-checkbox>
@@ -53,6 +53,14 @@ export default {
       default: false,
     },
     hasCompare: {
+      type: Boolean,
+      default: false,
+    },
+    productLevel2: { // 产品筛选使用2级分类
+      type: Boolean,
+      default: false,
+    },
+    areaLevel2: { // 地区筛选使用2级分类
       type: Boolean,
       default: false,
     },
@@ -94,6 +102,12 @@ export default {
         return 'product';
       }
       return 'area';
+    },
+    displayLevel2() {
+      if (this.PropertyData.FixedType === 47) {
+        return this.productLevel2;
+      }
+      return this.areaLevel2;
     },
     checkList: {
       get() {

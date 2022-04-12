@@ -2,7 +2,7 @@
   <CommonDialogComp
     width="650px"
     top="18vh"
-    title="关联物流配送"
+    :title="title"
     :visible.sync="localVisible"
     smallBtn
     @submit="submitForm"
@@ -74,6 +74,10 @@ export default {
       set(val) {
         this.$emit('update:visible', val);
       },
+    },
+    title() {
+      const name = this.editData?.Name ? `${this.editData.Name}` : '';
+      return `关联${name}物流配送`;
     },
   },
   methods: {

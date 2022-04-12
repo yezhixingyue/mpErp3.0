@@ -394,7 +394,7 @@ export const getTreeTextDisplayContent = (value, allAdAreaTreeList, type = 'area
       } else if (it[defaultPropKeys.lv2Key] === 0) { // 全省
         const lv1 = allAdAreaTreeList.find(_it => _it.ID === it[defaultPropKeys.lv1Key]);
         if (lv1) list.push(lv1[labelName]);
-      } else if (it[defaultPropKeys.lv3Key] === 0) { // 全市
+      } else if (it[defaultPropKeys.lv3Key] === 0 || it[defaultPropKeys.lv3Key] === '00000000-0000-0000-0000-000000000000') { // 全市
         const lv1 = allAdAreaTreeList.find(_it => _it.ID === it[defaultPropKeys.lv1Key]);
         if (lv1) {
           const lv2 = lv1.children.find(_it => _it.ID === it[defaultPropKeys.lv2Key]);

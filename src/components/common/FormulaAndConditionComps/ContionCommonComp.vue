@@ -33,6 +33,8 @@
                v-model="it.Operator"
                :valueList.sync='it.ValueList'
                :PropertyData='it.Property'
+               :productLevel2='productLevel2'
+               :areaLevel2='areaLevel2'
                :hasCompare='ComparePropertyList && ComparePropertyList.length > 0'
                :hidden='!!(it.ValueList[0] && it.ValueList[0].Property)' />
               <ValueSelectorComp v-model="it.ValueList" :PropertyData='it.Property' :ComparePropertyList='ComparePropertyList'  />
@@ -133,6 +135,14 @@ export default {
       default: '',
     },
     canNotNull: {
+      type: Boolean,
+      default: false,
+    },
+    productLevel2: { // 产品筛选使用2级分类
+      type: Boolean,
+      default: false,
+    },
+    areaLevel2: { // 地区筛选使用2级分类
       type: Boolean,
       default: false,
     },

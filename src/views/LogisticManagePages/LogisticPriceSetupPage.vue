@@ -6,12 +6,11 @@
       :showCompareProp='false'
       :curEditItemData='curEditFormulaData'
       :nameList='nameList'
+      productLevel2
       showName
       @successSubmit='handleFormulaSuccessSubmit'
     >
       <template #header>
-        <!-- <h2>当前产品：{{curSetupProduct.Name}}</h2>
-        <span>工期组成方案：{{$route.params.ProduceItemName}}</span> -->
         <p class="mp-common-title-wrap">设置{{name}}配送方式价格</p>
       </template>
     </CommonFormulaSetupPageComp>
@@ -60,6 +59,10 @@ export default {
       };
       this.$store.commit('basicSet/setLogisticsItemFormulaListItemChange', temp);
     },
+    // threeSumClosest(nums, target) {
+    //   const arr = nums.sort((a, b) => a - b);
+    //   const mid = Math.floor(arr.length / 2);
+    // },
   },
   mounted() {
     this.getInitData();
