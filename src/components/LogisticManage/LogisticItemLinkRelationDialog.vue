@@ -134,7 +134,11 @@ export default {
     },
     submitForm() {
       if (this.checker()) {
-        this.$emit('submit', this.ruleForm);
+        const temp = {
+          ...this.ruleForm,
+          RelationList: this.ruleForm.RelationList.filter(it => it.ThirdID && (it.OutPlatType || it.OutPlatType === 0)),
+        };
+        this.$emit('submit', temp);
       }
     },
     onClearClick() {
