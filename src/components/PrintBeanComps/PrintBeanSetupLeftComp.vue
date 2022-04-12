@@ -27,7 +27,7 @@
           format="yyyy-MM-dd HH:mm"
           style="width:180px"
           placeholder=" 年 / 月 / 日"
-          popper-class='mp-price-tactic-list-page-header-date-selector-wrap'
+          popper-class='mp-price-bean-list-page-header-date-selector-wrap'
         />
       </li>
       <li>
@@ -53,7 +53,7 @@
           default-time="23:59:00"
           style="width:180px"
           placeholder=" 年 / 月 / 日"
-          popper-class='mp-price-tactic-list-page-header-date-selector-wrap'
+          popper-class='mp-price-bean-list-page-header-date-selector-wrap'
         />
       </li>
       <li class="tyle-radio">
@@ -328,6 +328,13 @@ export default {
     > h2 {
       font-weight: 700;
       margin-bottom: 8px;
+    }
+  }
+}
+.mp-price-bean-list-page-header-date-selector-wrap {
+  .el-picker-panel__footer {
+    .el-picker-panel__link-btn.el-button--text {
+      display: none;
     }
   }
 }

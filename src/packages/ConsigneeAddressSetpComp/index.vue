@@ -39,12 +39,12 @@
               <!-- <span style="font-weight: bold;font-size: 12px;color: #585858;">（ 无平台单号时使用此地址 ）</span> -->
               <span>：</span>
             </label>
-            <div class="is-font-size-13">
+            <div class="is-font-size-13 is-font-13">
               <span class="address" :title="curAddressInfo && curAddressInfo.address.length>50?curAddressInfo.address:''">{{ curAddressInfo.address }}</span>
               <span class="is-bold">{{ curAddressInfo.Consignee }}</span>
               <span v-if="curAddressInfo.Mobile" class="is-gray">（ {{ curAddressInfo.Mobile }} ）</span>
             </div>
-            <span class="blue-span is-font-size-13" @click="onAddressChangeClick">更改地址</span>
+            <span class="blue-span is-font-size-13 is-font-13" @click="onAddressChangeClick">更改地址</span>
           </template>
         </li>
         <!-- 收货地址为空的处理 -->
@@ -169,7 +169,7 @@
 </template>
 
 <script>
-import { amapAppkey } from '@/assets/js/setup';
+import { amapAppkey, projectType } from '@/assets/js/setup';
 import AddMapComp from './AddMapComp.vue';
 import IdentifyFormItem from './IdentifyFormItem.vue';
 import SetupDialog from './SetupDialog.vue';
@@ -414,7 +414,9 @@ export default {
     },
     /** 内容解析相关数据
     ---------------------------------------------------- */
-    onOutPlateNoResolved({ data, OutPlateNo } = {}) {
+    async onOutPlateNoResolved({ data, OutPlateNo } = {}) {
+      this.curAddIndex = '';
+      await this.$nextTick();
       if (data && OutPlateNo) {
         this.OutPlateNo = OutPlateNo;
         this.NewAddressInfo = { ...this.NewAddressInfo, ...data };
@@ -589,8 +591,10 @@ export default {
       const resp = await this.api.getExpressUseableCompanyList({ ...data, OutPlateSN: this.OutPlateNo });
       this.ValidExpressLoading = false;
       if (resp.data.Status === 1000) {
-        this.ExpressValidList = resp.data.Data;
-        if (resp.data.Data.includes(this.Express.Second)) {
+        const result = resp.data.Data;
+        // const result = [];
+        this.ExpressValidList = result;
+        if (result.includes(this.Express.Second)) {
           let oldAddExpressArea = typeof oldIndex === 'number' ? this.customerInfo.Address[oldIndex]?.ExpressArea : null;
           if (!oldAddExpressArea && oldIndex === 'new') oldAddExpressArea = oldExpressArea; // 该情况不会出现，new只有一个不会new之间切换状态
           this.judgeValidEventEmit(data.ExpressArea, oldAddExpressArea);
@@ -601,7 +605,11 @@ export default {
   watch: {
     ExpressValidList(newVal) {
       if (newVal.length === 0) {
-        this.$message.warning('当前地址没有可用配送方式，请更换地址或留意配送信息公告');
+        if (projectType === 'pc') {
+          this.messageBox.warnSingleError({ title: '当前地址不可送达', msg: '当前地址没有可用配送方式，请更换地址或留意配送信息公告' });
+        } else {
+          this.messageBox.warnSingleError('当前地址没有可用配送方式，请更换地址或留意配送信息公告');
+        }
         this.onRadioChange('');
         this.secondExVal = '';
         this.thirdExVal = '';
@@ -788,7 +796,7 @@ export default {
     }
     &.isBatchUploadUse {
       > ul {
-        margin-top: 15px;
+        margin-top: 7px;
         > li {
             display: flex;
             align-items: center;
@@ -803,7 +811,7 @@ export default {
               display: flex;
               align-items: center;
               margin-right: 3px;
-              font-size: 14px;
+              font-size: 13px;
               line-height: 16px;
               img {
                 margin-right: 8px;
@@ -817,12 +825,17 @@ export default {
               span {
                 flex: none;
                 line-height: 16px;
+                font-size: 12px;
                 &.address {
                   flex: 1;
                   overflow: hidden;
                   text-overflow: ellipsis;
                   white-space: nowrap;
                   margin-right: 15px;
+                  color: #585858;
+                  & + span {
+                    color: #585858;
+                  }
                 }
               }
             }
@@ -830,9 +843,10 @@ export default {
               display: flex;
               line-height: 28px;
               > .title {
-                width: 96px;
+                width: 91px;
                 margin-right: 2px;
                 line-height: 25px;
+                font-size: 13px;
               }
               > div {
                 .el-radio__label, .el-input .el-input__inner {
