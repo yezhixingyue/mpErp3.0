@@ -31,9 +31,10 @@ export default {
     setJobPermissionsItemAdd(state, itemData) { // 添加一行
       state.JobPermissionsDataList.push(itemData);
     },
-    // 花名管理相关
+    /* 花名管理相关
+    -------------------------------*/
     setRosterDataList(state, list) { // 设置列表数据
-      state.RosterDataList = list || [{ a: 'a' }];
+      state.RosterDataList = list || [];
     },
     setRosterDataItemAdd(state, itemData) { // 添加一行花名
       state.RosterDataList.push(itemData);

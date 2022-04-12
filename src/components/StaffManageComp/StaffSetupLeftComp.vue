@@ -128,6 +128,12 @@ export default {
     },
     RosterNameList() {
       const temp = this.RosterDataList?.filter(it => !it.IsUse || it.RosterID === this.staffForm.RosterID);
+      if (temp) {
+        temp.unshift({
+          Nickname: '暂不设置',
+          RosterID: null,
+        });
+      }
       return temp?.length ? temp : [];
     },
   },
