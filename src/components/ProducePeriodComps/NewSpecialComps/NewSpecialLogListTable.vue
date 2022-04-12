@@ -11,12 +11,12 @@
     style="width: 100%"
    >
     <el-table-column label="操作内容" min-width="260" prop="Summary" label-class-name='left-title-cow'>
-      <span slot-scope="scope" class="ctrl-content">{{scope.row.Summary}}</span>
+      <span slot-scope="scope" class="ctrl-content" :title="getSummaryContent(scope.row.Summary)">{{scope.row.Summary}}</span>
     </el-table-column>
-    <el-table-column label="操作时间" width="260" prop="ItemName">
+    <el-table-column label="操作时间" width="200" prop="ItemName">
       <template slot-scope="scope">{{scope.row.AddTime | format2MiddleLangTypeDate}}</template>
     </el-table-column>
-    <el-table-column label="操作人" width="260" prop="OperatorUserName"></el-table-column>
+    <el-table-column label="操作人" width="200" prop="OperatorUserName"></el-table-column>
     <div slot="empty">
       <span v-show="!loading">暂无数据</span>
     </div>
@@ -46,6 +46,10 @@ export default {
       const tempHeight = this.getHeight('header', 160, '.mp-erp-period-manage-new-special-manage-log-list-page');
       this.h = tempHeight;
     },
+    getSummaryContent(Summary) {
+      if (!Summary) return '';
+      return Summary.split(',').join(',\r\n');
+    },
   },
 };
 </script>
@@ -59,7 +63,7 @@ export default {
       font-size: 14px;
       &.left-title-cow {
         text-align: left;
-        padding-left: 60px !important;
+        padding-left: 30px !important;
       }
     }
     &.menu-column {

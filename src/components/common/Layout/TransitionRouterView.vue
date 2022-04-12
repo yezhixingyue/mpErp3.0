@@ -1,5 +1,5 @@
 <template>
-  <transition name="fade-transform" mode="out-in">
+  <transition name="fade-transform" mode="out-in" @before-leave="beforeLeave" @after-enter="afterEnter">
     <keep-alive :include='[...curTabPagesNameList]'>
       <router-view :key="key" v-if="showCommonView" />
     </keep-alive>
@@ -26,9 +26,28 @@ export default {
       }
       return _name;
     },
-    keepAlive() {
-      // return this.pageName && this.curTabPagesNameList && this.curTabPagesNameList.includes(this.pageName);
-      return Math.random > 0.5;
+  },
+  data() {
+    return {
+      dom: null,
+    };
+  },
+  methods: {
+    beforeLeave() {
+      this.setThisDom();
+      this.dom.style.overflow = 'hidden';
+    },
+    afterEnter() {
+      this.setThisDom();
+      this.dom.style.overflow = 'auto';
+      this.dom.style.overflow = 'overlay';
+    },
+    setThisDom() {
+      if (!this.dom) {
+        const dom = document.querySelector('#app > section > main.page-wrap');
+        if (!dom) return;
+        this.dom = dom;
+      }
     },
   },
 };
@@ -36,9 +55,10 @@ export default {
 <style lang='scss'>
 .fade-transform-leave-active,
 .fade-transform-enter-active {
-  transition: all .3s;
+  transition: all 0.25s;
   overflow: hidden;
   user-select: none;
+  width: 100%;
 }
 
 .fade-transform-enter {

@@ -26,5 +26,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: $--bg-color-base;
+  padding-left: 8px;
+  box-sizing: border-box;
 }
 </style>

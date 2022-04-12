@@ -2,7 +2,7 @@
   <div class="mp-erp-product-module-filename-item-content-show-single-element-item-comp-wrap">
     <div class="name">
       <span :title="title">{{title}}：</span>
-      <el-checkbox v-model="AllowNameHidden" v-if="title === '名称通假字' && showHidden">允许隐藏名称</el-checkbox>
+      <el-checkbox v-model="AllowNameHidden" v-if="title === '名称通假字' && showHidden">隐藏名称</el-checkbox>
     </div>
     <el-input v-if="type !== 'SizeUnitPosition'" size="mini" v-model="InpVal" maxlength="50" :disabled="hidden"></el-input>
     <el-select v-else  v-model="InpVal" placeholder="请选择" size="mini">

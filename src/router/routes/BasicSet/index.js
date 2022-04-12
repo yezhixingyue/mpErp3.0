@@ -95,7 +95,7 @@ const routes = { // 基本设置
         title: '物流价格添加与编辑',
         requiresAuth: true,
         pageName: 'LogisticPriceSetupPage',
-        PermissionInfo: ['Developing', 'None'],
+        PermissionInfo: ['PermissionManageLogistics', 'Obj', 'Setup'],
       },
       component: () => import('../../../views/LogisticManagePages/LogisticPriceSetupPage.vue'),
     },

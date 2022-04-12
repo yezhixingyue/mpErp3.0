@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
 
@@ -128,6 +128,7 @@ export default {
   },
   computed: {
     ...mapState('priceManage', ['ResultFormulaList', 'PriceItemPropertyList']),
+    ...mapGetters('common', ['allAdAreaTreeList', 'allProductClassify']),
     localFormulaList() {
       return this.usePropList ? this.FormulaList : this.ResultFormulaList;
     },
@@ -143,7 +144,13 @@ export default {
         result: this.getShowResult(it),
       })).map(it => {
         if (!it.Constraint) return { ...it, _ConditionText: '无' };
-        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(it.Constraint, this.localPropertyList);
+        const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
+          it.Constraint,
+          this.localPropertyList,
+          [],
+          this.allAdAreaTreeList,
+          this.allProductClassify,
+        );
         return { ...it, Constraint, _ConditionText };
       });
     },

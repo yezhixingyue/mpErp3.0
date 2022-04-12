@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 // eslint-disable-next-line import/no-cycle
 import api from '@/api/index';
-import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
+import CommonClassType from '@/store/CommonClassType';
 import messageBox from '../assets/js/utils/message';
 /**
  * 该模块主要用于付款列表模块状态管理
@@ -18,8 +18,8 @@ export default {
       // payment: '',
       OrderType: '',
       CreateDate: {
-        First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
-        Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
+        First: '',
+        Second: '',
       },
       CustomerType: {
         First: '',
@@ -28,7 +28,8 @@ export default {
       KeyWords: '',
       Page: 1,
       PageSize: 30,
-      initDateText: '今天',
+      DateType: 'today',
+      // initDateText: '今天',
     },
     /* 接单员列表相关
     -------------------------------*/
@@ -139,8 +140,8 @@ export default {
         // payment: '',
         OrderType: '',
         CreateDate: {
-          First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
-          Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
+          First: '',
+          Second: '',
         },
         CustomerType: {
           First: '',
@@ -148,8 +149,9 @@ export default {
         },
         KeyWords: '',
         Page: 1,
+        DateType: 'today',
         PageSize: 30,
-        initDateText: '今天',
+        // initDateText: '今天',
       };
     },
     /* 设置想要被删除的付款单ID
@@ -234,6 +236,9 @@ export default {
       // console.log(key1);
       // if (key1 === 'OrderType') state.set2PaymentList.Terminal = '';
     },
+    setDateFormat(state) {
+      CommonClassType.setDate(state.set2PaymentList, 'CreateDate');
+    },
   },
   actions: {
     // 获取付款单列表 type值： get  add  代表是第一次获取数据 或 加载更多数据
@@ -250,7 +255,11 @@ export default {
       commit('setCanLoadingMore', false);
       commit('setSearchWatchKey');
       commit('setPaymentDataLoading', true);
-      const res = await api.getPaymentOrderList(state.set2PaymentList);
+
+      commit('setDateFormat');
+      const config = CommonClassType.filter(state.set2PaymentList);
+
+      const res = await api.getPaymentOrderList(config);
       commit('setPaymentDataLoading', false);
       if (!res || res.data.Status !== 1000 || !res.data.Data) return;
       const list = res.data.Data.map((item) => {

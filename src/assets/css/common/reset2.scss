@@ -524,11 +524,6 @@ td.is-gray .cell{
   }
 }
 
-
-// .el-tooltip__popper.is-dark{ // 文字提示框颜色
-//   // background-color: rgb(117, 117, 117);
-// }
-
 .el-select-dropdown__item:hover {
   &:not(.is-disabled) {
     color:$--color-primary !important;
@@ -541,37 +536,3 @@ td.is-gray .cell{
   padding: 5px 10px !important;
 }
 
-// --------------------------- 日期表格 兼容性 调整
-// .el-date-table td > span {
-//   height: 30px;
-//   padding: 3px 0;
-//   -webkit-box-sizing: border-box;
-//   box-sizing: border-box;
-//   display: block;
-//   width: 100%;
-//   height: 100%;
-// }
-// .el-date-table td.current:not(.disabled) > span > span {
-//   color: #fff;
-//   background-color: #409eff
-// }
-
-// .el-date-table td.today span, .el-date-table td.available:hover {
-//   color: unset !important;
-// }
-// .el-date-table td.today span, .el-date-table td.available:not(.current) > div >span:hover {
-//   color: #26bcf9;
-// }
-.el-date-table td.today span, .el-date-table td.available.today > div > span {
-  color: #26bcf9 !important;
-}
-.el-date-table td.today span, .el-date-table td.available.today.current > div > span {
-  color: #FFF !important;
-}
-
-// // --------------------------- 分页控件 兼容性 调整
-// .count-wrap .mp-pagination-wrap .el-pagination .el-pager > li > span {
-//   height: 100%;
-//   width: 100%;
-//   min-width: unset;
-// }

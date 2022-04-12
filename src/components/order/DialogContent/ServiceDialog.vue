@@ -14,6 +14,7 @@
     <template v-if="isShowServiceDia">
       <OrderServiceEditCord v-show="!isLoading" :orderData='orderDetailData' :Customer='curCustomerInfo2Service'
         :ServiceHistory='curServiceOrderHistory'
+        :class="orderDetailData && orderDetailData.FilePath ? 'd' : ''"
         :curProductInfoStringify='curProductInfoStringify' />
       <!-- 顶部信息 -->
       <div class="download-btn" v-show="!isLoading" v-if="orderDetailData && orderDetailData.FilePath">
@@ -149,6 +150,7 @@ export default {
       // });
     },
     handleDownLoad(orderDetailData) {
+      if (!(this.orderDetailData && this.orderDetailData.FilePath)) return;
       // eslint-disable-next-line max-len
       this.messageBox.warnCancelNullMsg('确定下载订单文件吗?', () => this.$store.dispatch('service/downLoadOrderFile', orderDetailData));
     },
@@ -425,8 +427,8 @@ export default {
       height: 24px;
       width: 80px;
       position: absolute;
-      top: 170px;
-      left: 676px;
+      top: 180px;
+      left: 620px;
       > button {
         margin: 0;
         height: 24px;
@@ -438,8 +440,20 @@ export default {
         border-radius: 2px;
       }
     }
-    .order-service-detail-box .text-content .address {
-      max-width: 328px;
+    .order-service-detail-box {
+      .text-content .address {
+        max-width: 360px;
+      }
+      &.d {
+        ul.left {
+          > li {
+            margin-bottom: 13px;
+          }
+        }
+        > footer {
+          padding-top: 6px;
+        }
+      }
     }
   }
 

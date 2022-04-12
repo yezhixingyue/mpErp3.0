@@ -285,8 +285,7 @@ export default {
 <style lang="scss">
 @import "@/assets/css/common/var.scss";
 .mp-promote-page-main-table {
-  border: none;
-  border-top: 1px solid $--border-color-base;
+  border-color: #e5e5e5;
   &.el-table::before {
     display: none;
   }

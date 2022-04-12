@@ -50,29 +50,28 @@
       />
     </div>
     <div class="second">
-      <!-- <LineDateSelectorComp
-        :changePropsFunc='setCondition4DataList'
-        :requestFunc='getPackageDataList'
-        :isFull="true"
-        :typeList="[['DateType', ''], ['CreateTime', 'First'], ['CreateTime', 'Second']]"
-        :dateValue='condition4DataList.DateType'
-        :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
-        label="时间筛选"
-        :dateList="dateList"
-        dateType="date"
-        /> -->
-        <ElDateRangeSelector v-model="conditionDate" :condition="condition4DataList" />
+        <LineDateSelectorComp
+          :changePropsFunc='setCondition4DataList'
+          :requestFunc='getPackageDataList'
+          :isFull="true"
+          :typeList="[['DateType', ''], ['CreateTime', 'First'], ['CreateTime', 'Second']]"
+          :dateValue='condition4DataList.DateType'
+          :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+          label="时间筛选"
+          :dateList="dateList"
+          />
+        <!-- <ElDateRangeSelector v-model="conditionDate" :condition="condition4DataList" /> -->
         <SearchInputComp
-        class="search-section"
-        :typeList="[['KeyWords', '']]"
-        title="关键词"
-        placeholder='请输入搜索关键词'
-        :requestFunc='getPackageDataList'
-        :changePropsFunc='setCondition4DataList'
-        :word='condition4DataList.KeyWords'
-        :searchWatchKey="packageDataList"
-        @reset='clearCondition4DataList'
-        />
+          class="search-section"
+          :typeList="[['KeyWords', '']]"
+          title="关键词"
+          placeholder='请输入搜索关键词'
+          :requestFunc='getPackageDataList'
+          :changePropsFunc='setCondition4DataList'
+          :word='condition4DataList.KeyWords'
+          :searchWatchKey="packageDataList"
+          @reset='clearCondition4DataList'
+          />
     </div>
   </header>
 </template>
@@ -80,8 +79,8 @@
 <script>
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
-import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
-// import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+// import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
+import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
@@ -89,17 +88,17 @@ export default {
   components: {
     AreaSelector,
     OrderChannelSelector,
-    // LineDateSelectorComp,
+    LineDateSelectorComp,
     SearchInputComp,
-    ElDateRangeSelector,
+    // ElDateRangeSelector,
   },
   computed: {
     ...mapState('packageModule', ['condition4DataList', 'packageDataList']),
     ...mapState('common', ['userTypeList', 'userRankList', 'deliverStatus']),
     ...mapGetters('common', ['expressList']),
-    // UserDefinedTimeIsActive() {
-    //   return this.condition4DataList.DateType === '' && !!this.condition4DataList.CreateTime.First && !!this.condition4DataList.CreateTime.Second;
-    // },
+    UserDefinedTimeIsActive() {
+      return this.condition4DataList.DateType === '' && !!this.condition4DataList.CreateTime.First && !!this.condition4DataList.CreateTime.Second;
+    },
     conditionDate: {
       get() {
         return [this.condition4DataList.CreateTime.First, this.condition4DataList.CreateTime.Second];

@@ -501,8 +501,8 @@ export default {
     },
     /* 物料尺寸 ↓
     -------------------------------*/
-    async getMaterialTypeList({ commit }, id) {
-      const resp = await api.getMaterialTypeList(id).catch(() => {});
+    async getMaterialTypeList({ commit }) {
+      const resp = await api.getMaterialTypeList().catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         commit('setMaterialTypeList', resp.data.Data);
         return true;

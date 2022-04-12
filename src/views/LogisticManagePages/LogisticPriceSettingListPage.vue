@@ -57,9 +57,14 @@ export default {
       this.$store.dispatch('basicSet/getLogisticItemFormulaRemove', { ID, LogisticsID: this.LogisticsID });
     },
   },
-  mounted() {
+  async mounted() {
     this.getInitData();
-    this.$store.dispatch('basicSet/getLogisticsItemFormulaList', { LogisticsID: this.LogisticsID });
+    await this.$store.dispatch('basicSet/getLogisticsItemFormulaList', { LogisticsID: this.LogisticsID });
+    if (this.logisticItemFormulaList.length > 0) {
+      this.$store.dispatch('common/fetchAdAreaList');
+      this.$store.dispatch('common/getProductClassifyData');
+      this.$store.dispatch('common/getAllProductNames');
+    }
   },
 };
 </script>

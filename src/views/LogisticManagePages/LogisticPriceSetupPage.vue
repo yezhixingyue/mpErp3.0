@@ -5,6 +5,7 @@
       :FormulaConditionPropertyList='logisticItemConditionPropertyList'
       :showCompareProp='false'
       :curEditItemData='curEditFormulaData'
+      :nameList='nameList'
       showName
       @successSubmit='handleFormulaSuccessSubmit'
     >
@@ -18,8 +19,8 @@
 </template>
 
 <script>
-import CommonFormulaSetupPageComp from '@/components/common/FormulaAndConditionComps/CommonFormulaSetupPageComp';
 import { mapState } from 'vuex';
+import CommonFormulaSetupPageComp from '../../components/common/FormulaAndConditionComps/CommonFormulaSetupPageComp.vue';
 
 export default {
   name: 'LogisticPriceSetupPage',
@@ -27,12 +28,15 @@ export default {
     CommonFormulaSetupPageComp,
   },
   computed: {
-    ...mapState('basicSet', ['curEditFormulaData', 'logisticItemConditionPropertyList']),
+    ...mapState('basicSet', ['curEditFormulaData', 'logisticItemConditionPropertyList', 'logisticItemFormulaList']),
     Condition4ProptertyList() {
       return {
         UseModule: 100,
         LogisticsID: this.$route.params.id,
       };
+    },
+    nameList() {
+      return this.logisticItemFormulaList.filter(it => it.ID !== this.curEditFormulaData?.ID).map(it => it.Name);
     },
   },
   data() {

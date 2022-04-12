@@ -72,6 +72,7 @@ export default {
       }
       > main {
         overflow: auto;
+        overflow: overlay;
         width: 100%;
         flex: 1;
         // margin-left: 5px;

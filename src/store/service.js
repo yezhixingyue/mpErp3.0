@@ -3,7 +3,6 @@
 /* eslint-disable max-len */
 import api from '@/api/index';
 import CommonClassType from '@/store/CommonClassType';
-import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 import messageBox from '../assets/js/utils/message';
 import UploadFileByBreakPoint from '../assets/js/upload/UploadFileByBreakPoint';
 
@@ -61,8 +60,8 @@ export default {
         ProductID: '',
       },
       CreateTime: { // 时间区间
-        First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
-        Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
+        First: '',
+        Second: '',
       },
       KeyWords: '', // 关键字搜索
       Page: 1,
@@ -72,6 +71,7 @@ export default {
         Second: '',
       },
       Operator: '',
+      DateType: 'today',
     },
     /* 售后单列表数据请求提交对象-最终上传版
     -------------------------------*/
@@ -252,8 +252,8 @@ export default {
           ProductID: '',
         },
         CreateTime: {
-          First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
-          Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
+          First: '',
+          Second: '',
         },
         KeyWords: '',
         Page: 1,
@@ -263,6 +263,7 @@ export default {
           Second: '',
         },
         Operator: '',
+        DateType: 'today',
       };
     },
     /* 售后提交单 -- 设置提交问题对象 submitQuestionList
@@ -476,6 +477,9 @@ export default {
     setSearchWatchKey(state) {
       state.searchWatchKey += 1;
     },
+    setDateFormat(state) {
+      CommonClassType.setDate(state.obj4RequestServiceList, 'CreateTime');
+    },
   },
   actions: {
     /* 获取售后单数据列表
@@ -494,6 +498,7 @@ export default {
       commit('setCanLoadingMore', false);
       commit('setServiceDataLoading', true);
       commit('setSearchWatchKey');
+      commit('setDateFormat');
       const temp = CommonClassType.filter(state.obj4RequestServiceList);
       const res = await api.getServiceList(temp);
       commit('setServiceDataLoading', false);

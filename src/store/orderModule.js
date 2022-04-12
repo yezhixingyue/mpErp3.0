@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 // eslint-disable-next-line import/no-cycle
 import api from '@/api/index';
+import CommonClassType from '@/store/CommonClassType';
 // import { getStatusString } from '@/assets/js/util';
-import filterOrderRequest from '@/assets/js/utils/filterOrderRequest';
+// import filterOrderRequest from '@/assets/js/utils/filterOrderRequest';
 import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 import ShowProductDetail from '@/assets/js/TypeClass/ShowProductDetail';
 import messageBox from '../assets/js/utils/message';
@@ -77,11 +78,13 @@ export default {
       OrderType: '',
       Terminal: '',
       PlaceDate: {
-        First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
-        Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
+        First: '',
+        Second: '',
       },
       OrderTaker: '',
       DeliverStatus: '',
+      DateType: 'today',
+      FieldType: 2,
     },
     /* 订单列表数据（网络请求到的）
     -------------------------------*/
@@ -277,11 +280,13 @@ export default {
         OrderType: '',
         Terminal: '',
         PlaceDate: {
-          First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
-          Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
+          First: '',
+          Second: '',
         },
         OrderTaker: '',
         DeliverStatus: '',
+        DateType: 'today',
+        FieldType: 2,
       };
       if (type === 'onKeyWordSubmit') state.objForOrderList.KeyWords = _keywordsText;
       state.largeTitle = '不限';
@@ -430,6 +435,9 @@ export default {
       state.orderProgress = [];
       state.lastOrderID4OrderProgressRequest = null;
     },
+    setDate(state) {
+      CommonClassType.setDate(state.objForOrderList, 'PlaceDate');
+    },
   },
   actions: {
     async getOrderTableData({ state, commit }, prop = { page: 1, type: 'get' }) { // 获取订单管理列表数据
@@ -445,11 +453,8 @@ export default {
         commit('setIsTableLoading', true); // 同时，设置显示出表格上的loading图标
       }
       commit('setOrderListCanLoadMore', false); // 请求数据前，设置此时是否可加载更多数据的状态为不可加载更多
-      const config = filterOrderRequest(state.objForOrderList); // 获取经过处理过的请求头配置对象
-      if (!config.PlaceDate && state.selectedTimeArr[1]) {
-        // 如果没有设置时间对象 且 当前选中时间为今天  则在请求头对象中添加今天的日期范围
-        config.PlaceDate = this.getters['timeSelectModule/TodayDate'];
-      }
+      commit('setDate');
+      const config = CommonClassType.filter(state.objForOrderList, true); // 获取经过处理过的请求头配置对象
       commit('setOrderDataLoading', true);
       commit('setSearchWatchKey');
       const res = await api.getOrderList(config); // 网络请求
@@ -529,13 +534,9 @@ export default {
     },
     /* 导出Excel表格数据
     -------------------------------*/
-    async getOrderListData2Excel({ state }, type = 'normal') { // excel文件下载
-      const config = filterOrderRequest(state.objForOrderList); // 获取经过处理过的请求头配置对象
-      if (!config.PlaceDate && state.selectedTimeArr[1]) {
-        // 如果没有设置时间对象 且 当前选中时间为今天  则在请求头对象中添加今天的日期范围
-        config.PlaceDate = this.getters['timeSelectModule/TodayDate'];
-      }
-
+    async getOrderListData2Excel({ state, commit }, type = 'normal') { // excel文件下载
+      commit('setDate');
+      const config = CommonClassType.filter(state.objForOrderList, true); // 获取经过处理过的请求头配置对象
       delete config.Page;
       delete config.PageSize;
 

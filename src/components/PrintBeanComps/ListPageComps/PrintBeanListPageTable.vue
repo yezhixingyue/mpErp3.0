@@ -14,11 +14,11 @@
     <el-table-column width="85px"  label="优先级">
       <template slot-scope="scope">{{scope.row.Priority}}级</template>
     </el-table-column>
-    <el-table-column width="180px" prop="_TimeContent" show-overflow-tooltip label="时间范围"></el-table-column>
+    <el-table-column width="240px" prop="_TimeContent" show-overflow-tooltip label="时间范围" class-name='left'></el-table-column>
     <el-table-column width="185px" prop="_CustomerContent" show-overflow-tooltip label="客户名称"></el-table-column>
     <el-table-column width="170px" prop="_CusotomerTypeContent" show-overflow-tooltip label="客户类型"></el-table-column>
     <el-table-column width="170px" prop="_CusotomerGradeContent" show-overflow-tooltip label="客户等级"></el-table-column>
-    <el-table-column width="230px" label="销售区域">
+    <el-table-column width="230px" label="销售区域" class-name='left'>
       <template slot-scope="scope">
         <TableItemShowComp :list='scope.row._AreaContent' effect='dark' />
       </template>
@@ -29,7 +29,8 @@
         <CtrlMenus
           @edit='onEditClick(scope.row)'
           @remove='onRemoveClick(scope.row, scope.$index)'
-          :canRemove='scope.row._canRemove'
+          :canRemove='scope.row._canRemove && !removeDisabledIDs.includes(scope.row.ID)'
+          :canEdit='scope.row._canEdit && !editDisabledIDs.includes(scope.row.ID)'
         />
       </template>
     </el-table-column>
@@ -81,9 +82,16 @@ export default {
         _CustomerContent: this.getCustomerContent(it),
         _CusotomerTypeContent: this.getCusotomerTypeContent(it.CustomerTypeList, this.userTypeList),
         _CusotomerGradeContent: this.getCusotomerTypeContent(it.GradeList, this.userRankList),
-        _canRemove: this.getCanRemove(it.StartTime),
+        _canRemove: this.getCanRemove(it),
+        _canEdit: this.getCanEdit(it.EndTime),
       }));
     },
+  },
+  data() {
+    return {
+      editDisabledIDs: [],
+      removeDisabledIDs: [],
+    };
   },
   methods: {
     setHeight() {
@@ -91,9 +99,23 @@ export default {
       this.h = tempHeight;
     },
     onEditClick(data) {
+      if (data.EndTime && new Date(data.EndTime).getTime() <= Date.now()) {
+        const cb = () => {
+          this.editDisabledIDs.push(data.ID);
+        };
+        this.messageBox.failSingleError('编辑失败', '该条设置已过期', cb, cb);
+        return;
+      }
       this.$emit('edit', data.ID);
     },
     onRemoveClick(data, index) {
+      if (new Date(data.StartTime).getTime() <= Date.now()) {
+        const cb = () => {
+          this.removeDisabledIDs.push(data.ID);
+        };
+        this.messageBox.failSingleError('删除失败', '该条设置已开始生效', cb, cb);
+        return;
+      }
       this.messageBox.warnCancelBox('确定删除该条设置吗 ?', `标题：${data.Title}`, () => {
         this.$emit('remove', [data, index]);
       }, null);
@@ -105,8 +127,16 @@ export default {
       return content;
     },
     getTimeContent({ StartTime, EndTime }) {
-      const start = StartTime && StartTime.length >= 10 ? StartTime.slice(0, 10) : '';
-      const end = EndTime && EndTime.length >= 10 ? EndTime.slice(0, 10) : '';
+      const func = str => {
+        if (!str) return '';
+        const [date, time] = str.split('T');
+        if (date && time) {
+          return `${date} ${time.slice(0, 5)}`;
+        }
+        return '';
+      };
+      const start = func(StartTime);
+      const end = func(EndTime);
       if (start && end) {
         return `${start}至${end}`;
       }
@@ -130,8 +160,11 @@ export default {
       }
       return '';
     },
-    getCanRemove(StartTime) {
+    getCanRemove({ StartTime }) {
       return new Date(StartTime).getTime() > Date.now();
+    },
+    getCanEdit(EndTime) {
+      return !EndTime || new Date(EndTime).getTime() > Date.now();
     },
   },
 };
@@ -166,6 +199,9 @@ export default {
       color: #585858;
       height: 24px;
       line-height: 24px;
+    }
+    &.left {
+      text-align: left;
     }
   }
 }

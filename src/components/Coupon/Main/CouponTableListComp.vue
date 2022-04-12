@@ -110,7 +110,7 @@
     <el-table-column min-width="65px" prop="ApplyUser.StaffName" label="申请人"></el-table-column>
     <el-table-column min-width="65px" prop="OperateUser.StaffName" label="操作人"></el-table-column>
 
-    <el-table-column width="356px" label="操作">
+    <el-table-column min-width="348px" label="操作">
       <ul class="handle-menus" slot-scope="scope">
         <li class="stop-box" v-if="localPermission.Generate">
           <span class="is-list-btn"
@@ -258,7 +258,7 @@ export default {
   methods: {
     ...mapActions('couponStore', ['getCouponList']),
     setHeight() {
-      const tempHeight = this.getHeight('.mp-coupon-page-header-wrap', 48);
+      const tempHeight = this.getHeight('.mp-coupon-page-header-wrap', 58);
       this.h = tempHeight;
     },
     onGenerateCoupons(rowData, index, productInfo) {
@@ -303,6 +303,8 @@ export default {
 
 <style lang="scss">
 .mp-coupon-table-list-comp-wrap.mp-common-table-styles {
+  margin-top: 10px;
+  border: 1px solid #EBEEF5;
   > .el-table__body-wrapper {
     > .el-table__body {
       > tbody > tr {

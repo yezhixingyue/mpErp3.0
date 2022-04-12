@@ -20,8 +20,8 @@ export default {
       ProductID: '',
       ExpressType: '',
       OutstoreDate: { // 时间区间
-        First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
-        Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
+        First: '',
+        Second: '',
       },
       OrderType: '',
       KeyWords: '', // 关键字搜索
@@ -31,6 +31,7 @@ export default {
       Status: '',
       WriteOffOperator: '',
       HaveUnPaid: '',
+      DateType: 'today',
     },
     /* 配送方式相关
     -------------------------------*/
@@ -81,7 +82,11 @@ export default {
       delete tempObj.ProductID;
       delete tempObj.ExpressType;
 
-      return CommonClassType.filter(tempObj);
+      const temp = JSON.parse(JSON.stringify(tempObj));
+
+      CommonClassType.setDate(temp, 'OutstoreDate');
+
+      return CommonClassType.filter(temp);
     },
   },
   mutations: {
@@ -152,8 +157,8 @@ export default {
         },
         ProductID: '',
         OutstoreDate: { // 时间区间
-          First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
-          Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
+          First: '',
+          Second: '',
         },
         HaveWriteOff: '',
         KeyWords: '', // 关键字搜索=
@@ -164,6 +169,7 @@ export default {
         Status: '',
         WriteOffOperator: '',
         HaveUnPaid: '',
+        DateType: 'today',
       };
       state.largeTitle = '不限';
       state.midTitle = '不限';

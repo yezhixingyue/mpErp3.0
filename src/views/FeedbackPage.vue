@@ -193,7 +193,7 @@ import ClassType from '@/store/CommonClassType';
 import Count from '@/components/common/Count.vue';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
-import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
+// import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 import { mapState } from 'vuex';
 
 export default {
@@ -230,10 +230,10 @@ export default {
         QuestionID: '',
         Status: '',
         Date: {
-          First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
-          Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
+          First: '',
+          Second: '',
         },
-        // DateType: 'today',
+        DateType: 'today',
         KeyWords: '',
         CustomerType: {
           First: '',
@@ -244,7 +244,7 @@ export default {
           CityID: '',
           CountyID: '',
         },
-        initDateText: '今天',
+        // initDateText: '今天',
       },
     };
   },
@@ -274,10 +274,10 @@ export default {
         QuestionID: '',
         Status: '',
         Date: {
-          First: `${ConvertTimeFormat(new Date())}T00:00:00.000Z`,
-          Second: `${ConvertTimeFormat(new Date())}T23:59:59.997Z`,
+          First: '',
+          Second: '',
         },
-        // DateType: 'today',
+        DateType: 'today',
         KeyWords: '',
         CustomerType: {
           First: '',
@@ -288,7 +288,7 @@ export default {
           CityID: '',
           CountyID: '',
         },
-        initDateText: '今天',
+        // initDateText: '今天',
       };
     },
     handlePageChange(page) {
@@ -300,7 +300,7 @@ export default {
     },
     async getDataList(page = 1) { // 获取列表数据
       this.condition.Page = page;
-      // ClassType.setDate(this.condition);
+      ClassType.setDate(this.condition);
       const _obj = ClassType.filter(this.condition, true);
       if (_obj.Date) {
         _obj.ApplyTime = _obj.Date;
@@ -422,6 +422,7 @@ export default {
 <style lang='scss'>
 @import "@/assets/css/common/var.scss";
 .mp-feedback-page-main-wrap {
+  padding-left: 8px;
   .el-table__header-wrapper thead tr th .cell {
     line-height: 36px;
     font-size: 14px;

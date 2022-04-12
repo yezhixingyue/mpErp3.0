@@ -149,7 +149,8 @@ export default {
 <style lang="scss">
 @import "@/assets/css/common/var.scss";
 .mp-service-page-main-table {
-    border: none;
+    border-color: #e5e5e5;
+    border-bottom: 1px solid #e5e5e5 !important;
     &.el-table::before{
       display: none;
     }

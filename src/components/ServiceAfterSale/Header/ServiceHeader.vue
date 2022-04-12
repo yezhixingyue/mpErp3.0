@@ -42,7 +42,16 @@
             />
         </div>
         <div class="s">
-          <ElDateRangeSelector v-model="conditionDate" :condition="obj4RequestServiceList" initText='今天' />
+          <LineDateSelectorComp
+            :changePropsFunc='setCondition4DataList'
+            :requestFunc='getDataList'
+            :isFull="true"
+            :typeList="[['DateType', ''], ['CreateTime', 'First'], ['CreateTime', 'Second']]"
+            :dateValue='obj4RequestServiceList.DateType'
+            :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+            :dateList='dateList'
+          />
+          <!-- <ElDateRangeSelector v-model="conditionDate" :condition="obj4RequestServiceList" initText='今天' /> -->
           <SearchInputComp
             class="search-section"
             :typeList="[['KeyWords', '']]"
@@ -66,7 +75,8 @@ import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannel
 import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
-import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
+import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+// import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import ServiceClassify from './ServiceClassify.vue';
 
 export default {
@@ -75,26 +85,32 @@ export default {
     ProductSelector,
     OrderChannelSelector,
     StaffSelector,
-    ElDateRangeSelector,
+    // ElDateRangeSelector,
     SearchInputComp,
+    LineDateSelectorComp,
   },
   computed: {
     ...mapState('common', ['userTypeList', 'userRankList']),
     ...mapState('service', ['obj4RequestServiceList', 'tableData']),
-    conditionDate: {
-      get() {
-        return [this.obj4RequestServiceList.CreateTime.First, this.obj4RequestServiceList.CreateTime.Second];
-      },
-      set(newVal) {
-        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
-        this.setCondition4DataList([['CreateTime', 'First'], key]);
-        this.setCondition4DataList([['CreateTime', 'Second'], value]);
-        this.getDataList();
-      },
+    // conditionDate: {
+    //   get() {
+    //     return [this.obj4RequestServiceList.CreateTime.First, this.obj4RequestServiceList.CreateTime.Second];
+    //   },
+    //   set(newVal) {
+    //     const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
+    //     this.setCondition4DataList([['CreateTime', 'First'], key]);
+    //     this.setCondition4DataList([['CreateTime', 'Second'], value]);
+    //     this.getDataList();
+    //   },
+    // },
+    UserDefinedTimeIsActive() {
+      return this.obj4RequestServiceList.DateType === '' && !!this.obj4RequestServiceList.CreateTime.First && !!this.obj4RequestServiceList.CreateTime.Second;
     },
   },
   data() {
     return {
+      // eslint-disable-next-line max-len
+      dateList: [{ name: '全部', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
     };
   },
   methods: {

@@ -165,7 +165,7 @@ export default {
   },
   actions: {
     async getPromoteList({ state, commit }, page = 1) {
-      // commit('setRequestObjDate');
+      commit('setRequestObjDate');
       commit('setPromoteListRequestObj', [['Page', ''], page]);
       commit('setPromoteListData', [[], '']);
       const _obj = PromoteListRequestObj.filter(state.promoteListRequestObj);

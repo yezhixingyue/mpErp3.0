@@ -2,64 +2,54 @@
   <div class="mp-line-date-selector-wrap" :class="isFull?'mp-line-date-selector-wrap-is-full':''">
     <span class="title">{{label}}：</span>
     <radio-button-group-comp :radioList="dateList" v-model="date" :isFull="isFull" />
-    <el-popover
-           placement="bottom" v-model="visible" popper-class="order-time-select" trigger="click">
-            <div class="select-block-wrap">
-              <div class="block">
-                <span>开始日期:</span>
-                <el-date-picker value-format='yyyy-MM-ddTHH:mm:ss.000Z' :clearable='false'
-                  :picker-options="{disabledDate: handleDisabledDate4Begin}"
-                  v-model="beginTime" :type="dateType" placeholder="选择开始日期">
-                  </el-date-picker>
-              </div>
-              <div class="totext-box">至</div>
-              <div class="block">
-                <span>结束日期:</span>
-                <el-date-picker value-format='yyyy-MM-ddTHH:mm:ss.997Z' :clearable='false'
-                  :picker-options="{disabledDate: handleDisabledDate4End}"
-                  default-time='23:59:59'
-                  v-model="endTime" :type="dateType" placeholder="选择结束日期"
-                ></el-date-picker>
-              </div>
-            </div>
-            <div class="select-btn-wrap">
-              <normalBtn title="确定"  @click.native="onSelectTimeSubmit" />
-            </div>
-            <span slot="reference">
-              <span v-if="!showText" class="manual-select-date-box">
-                自定义时间
-                <i>
-                  <img src="@/assets/images/timeselect.png" alt />
-                </i>
-              </span>
-              <span v-else :class="{'active':UserDefinedTimeIsActive, 'manual-select-date-box': 1}">
-                <template v-if="dateType === 'date'">{{ Format2DateBegin }}</template>
-                <template v-else>{{ beginTime | formatDate }}</template>
-                <span style="font-size:12px;margin:0 2px;vertical-align:0%;">至</span>
-                <!-- {{endTime | formatDate}} -->
-                <!-- {{ dateType === 'date' ? Format2DateEnd : (endTime | formatDate)}} -->
-                <template v-if="dateType === 'date'">{{ Format2DateEnd }}</template>
-                <template v-else>{{ endTime | formatDate }}</template>
-                <i><img class="date-img" src="@/assets/images/timeselect.png" alt /></i>
-              </span>
-            </span>
-          </el-popover>
+    <span @click="onDefineBtnClick" class="define-btn">
+      <span v-if="!showText" class="manual-select-date-box">
+        自定义时间
+      </span>
+      <span v-else :class="{'active':UserDefinedTimeIsActive, 'manual-select-date-box': 1}">
+        <template>{{ beginTime | formatDateContent(dateType)  }}</template>
+        <span style="font-size:12px;margin:0 2px;vertical-align:0%;">至</span>
+        <template>{{ endTime | formatDateContent(dateType) }}</template>
+      </span>
+    </span>
+    <el-date-picker
+      v-model="localValue"
+      :type="dateType"
+      align="center"
+      :visible-arrow='false'
+      unlink-panels
+      value-format="yyyy-MM-ddTHH:mm:ss"
+      :format="format"
+      :default-time='defaultTime'
+      :clearable='false'
+      @focus='onPickerFocus'
+      @blur="onPickerBlur"
+      size="mini"
+      ref="oPicker"
+      popper-class="date-selector-popper-box"
+    >
+    </el-date-picker>
   </div>
 </template>
 
 <script>
-import normalBtn from '@/components/common/normalBtn.vue';
 import RadioButtonGroupComp from '@/components/common/RadioButtonGroupComp.vue';
 
 export default {
   components: {
-    normalBtn,
     RadioButtonGroupComp,
   },
   props: {
     dateList: {
       type: Array,
-      default: () => [{ name: '不限', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }],
+      default: () => [
+        { name: '不限', ID: 'all' },
+        { name: '今天', ID: 'today' },
+        { name: '昨天', ID: 'yesterday' },
+        { name: '前天', ID: 'beforeyesterday' },
+        { name: '本月', ID: 'curMonth' },
+        { name: '上月', ID: 'lastMonth' },
+      ],
     },
     dateValue: {
       type: String,
@@ -92,7 +82,18 @@ export default {
     },
     dateType: {
       type: String,
-      default: 'datetime',
+      default: 'daterange',
+    },
+  },
+  filters: {
+    formatDateContent(str, dateType) {
+      if (str) {
+        const d = str.split('T')[0];
+        if (dateType === 'daterange') return d;
+        const h = str.split('T')[1].slice(0, 5);
+        return `${d} ${h}`;
+      }
+      return '';
     },
   },
   computed: {
@@ -107,8 +108,7 @@ export default {
     },
     showText: {
       get() {
-        if (this.key && this.beginTime && this.endTime) return true;
-        return false;
+        return !!(this.key && this.beginTime && this.endTime);
       },
     },
     Format2DateEnd() {
@@ -117,79 +117,69 @@ export default {
     Format2DateBegin() {
       return this.$utils.getDateFormat2Date(this.beginTime);
     },
+    localValue: {
+      get() {
+        if (this.beginTime && this.endTime) {
+          return [this.beginTime, this.endTime];
+        }
+        return [];
+      },
+      set(val) {
+        if (Array.isArray(val)) {
+          [this.beginTime, this.endTime] = val;
+        } else {
+          this.beginTime = '';
+          this.endTime = '';
+        }
+      },
+    },
+    defaultTime() { // 后续的特殊处理？
+      return ['00:00:00', '23:59:59'];
+    },
+    format() {
+      if (this.dateType === 'daterange') return 'yyyy-MM-dd';
+      return 'yyyy-MM-dd HH:mm';
+    },
   },
   data() {
     return {
       beginTime: '',
       endTime: '',
-      visible: false,
       key: false,
       start: '',
       end: '',
       isNotFoulCloseType: false, // 是否使用犯规方式关闭
     };
   },
-  watch: {
-    visible(newVal) {
-      if (newVal) {
-        this.start = this.beginTime;
-        this.end = this.endTime;
-        this.isNotFoulCloseType = false;
-      }
-      if (!newVal && this.UserDefinedTimeIsActive) {
-        if (!this.beginTime) this.beginTime = this.start;
-        if (!this.endTime) this.endTime = this.end;
-        if (!this.isNotFoulCloseType) {
-          if (this.start !== this.beginTime) this.beginTime = this.start;
-          if (this.end !== this.endTime) this.endTime = this.end;
-        }
-      }
-    },
-  },
   methods: {
-    onSelectTimeSubmit() {
-      if (!this.endTime || !this.beginTime) return;
-      if (this.dateType === 'date') {
-        this.endTime = `${this.Format2DateEnd}T23:59:59.997Z`;
-      }
-      const bool = new Date(this.endTime) - new Date(this.beginTime) > 0;
-      if (!bool) {
-        this.$message({
-          showClose: true,
-          message: '结束日期必须大于开始日期!',
-          type: 'error',
-        });
-      } else {
-        this.key = true;
-        this.isNotFoulCloseType = true;
-        this.visible = false;
-        // eslint-disable-next-line max-len
-        if (this.beginTime !== this.start || this.endTime !== this.end || !this.UserDefinedTimeIsActive) {
+    onDefineBtnClick() {
+      this.$refs.oPicker.focus();
+    },
+    onPickerFocus() {
+      setTimeout(() => {
+        this.clickTarget = null;
+      }, 0);
+    },
+    onPickerBlur() {
+      setTimeout(() => {
+        if (!this.clickTarget) {
           this.changePropsFunc([this.typeList[0], '']);
           this.changePropsFunc([this.typeList[1], this.beginTime]);
           this.changePropsFunc([this.typeList[2], this.endTime]);
           this.requestFunc();
+          this.key = true;
         }
-      }
+      }, 0);
     },
-    handleDisabledDate4Begin(e) {
-      if (!this.endTime) {
-        return false;
-      }
-      if (new Date(e) > new Date(this.Format2DateEnd)) {
-        return true;
-      }
-      return false;
+    onDocumentClick(e) {
+      this.clickTarget = e;
     },
-    handleDisabledDate4End(e) {
-      if (!this.beginTime) {
-        return false;
-      }
-      if (new Date(e) < new Date(new Date(this.Format2DateBegin).getTime() - 24 * 60 * 60 * 1000)) {
-        return true;
-      }
-      return false;
-    },
+  },
+  mounted() {
+    document.body.addEventListener('click', this.onDocumentClick);
+  },
+  beforeDestroy() {
+    document.body.removeEventListener('click', this.onDocumentClick);
   },
 };
 </script>
@@ -198,12 +188,10 @@ export default {
 @import "@/assets/css/common/var.scss";
 @import '@/assets/css/mixins/header/time-search-selector.scss';
 .mp-line-date-selector-wrap {
-  margin-top: 24px;
   min-width: 712px;
   display: flex;
   align-items: center;
   &.mp-line-date-selector-wrap-is-full {
-    margin-top: 18px;
     .manual-select-date-box {
       top: 0;
       margin: 0;
@@ -251,6 +239,9 @@ export default {
     position: relative;
     top: -5px;
   }
+  > .define-btn {
+    cursor: pointer;
+  }
   .manual-select-date-box {
     font-size: 13px;
     min-width: 110px;
@@ -278,6 +269,30 @@ export default {
   }
   > span {
     flex: none;
+  }
+  .el-date-editor {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    vertical-align: top;
+    padding: 0;
+    border: none;
+    position: relative;
+    top: 18px;
+    right: 95px;
+    .el-popper[x-placement^="bottom"] .popper__arrow::after {
+      display: none;
+    }
+  }
+}
+.date-selector-popper-box {
+  .el-picker-panel__link-btn.el-button--text {
+    display: none;
+  }
+  .today.start-date, .today.end-date {
+    > div > span {
+      color: #fff !important;
+    }
   }
 }
 </style>

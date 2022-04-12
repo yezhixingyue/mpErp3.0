@@ -19,11 +19,11 @@ export default {
   computed: {
     ...mapState('common', ['Permission']),
   },
-  mounted() {
-    if (!this.Permission || !this.Permission.PermissionList.PermissionCoupon.Obj.Query) {
-      this.$router.replace('/notauth');
-    }
-  },
+  // mounted() {
+  //   if (!this.Permission || !this.Permission.PermissionList.PermissionCoupon.Obj.Query) {
+  //     this.$router.replace('/notauth');
+  //   }
+  // },
 };
 </script>
 
