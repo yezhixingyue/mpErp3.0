@@ -3,6 +3,7 @@
     <ListPageHeader :dataList='dataList' :condition='condition' @getDataList='getDataList'
      @clearCondition='clearCondition' @setCondition='setCondition' />
     <div>
+      <router-link to="/feedbackInfo">aaaa</router-link>
       <el-table stripe border fit :data="dataList" style="width: 100%" class="ft-14-table" :max-height="h" :height="h">
         <el-table-column prop="Order.OrderID" label="订单号" minWidth="90" show-overflow-tooltip></el-table-column>
         <el-table-column prop="Customer.Name" label="客户名称" minWidth="100" show-overflow-tooltip></el-table-column>
@@ -349,8 +350,9 @@ export default {
       if (!this.ruleForm.cause || bool) this.resetForm('ruleForm');
     },
     onPhotoClick(itemData) {
+      this.$route.push('/feedbackInfoPage');
       this.curItemData = itemData;
-      this.feedbackDetailDialog = true;
+      // this.feedbackDetailDialog = true;
     },
     handleOpenAfterSalesDia(data) {
       this.$router.push(`?AppyCode=${data.ID}`);
@@ -471,7 +473,7 @@ export default {
   .mp-img-style-header.feedback-detail-dialog {
     .el-dialog__header {
       > span::before {
-        background: url(../assets/images/detail.png) no-repeat center;
+        background: url(../../assets/images/detail.png) no-repeat center;
       }
       border-radius: 2px 2px 0px 0
     }
@@ -583,7 +585,7 @@ export default {
   .mp-img-style-header.turn-down-dialog {
     .el-dialog__header {
       > span::before {
-        background: url(../assets/images/cancel.png) no-repeat center;
+        background: url(../../assets/images/cancel.png) no-repeat center;
       }
       border-radius: 2px 2px 0px 0
     }

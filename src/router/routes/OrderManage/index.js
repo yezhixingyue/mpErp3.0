@@ -105,6 +105,17 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../views/ServicePage.vue'),
     },
+    {
+      path: '/serviceInfo',
+      name: 'serviceInfo',
+      meta: {
+        title: '客户设置',
+        pageName: 'serviceInfoPage',
+        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/FeedbackPage/FeedbackInfoPage.vue'),
+    },
     /*  售后申请列表
     ------------------------------------------ */
     {
@@ -117,7 +128,20 @@ const routes = { // 客户订单管理
         requiresAuth: true,
         PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
       },
-      component: () => import('../../../views/FeedbackPage.vue'),
+      component: () => import('../../../views/FeedbackPage/FeedbackListPage.vue'),
+    },
+    /*  售后详情
+    ------------------------------------------ */
+    {
+      path: '/feedbackInfo',
+      name: 'feedbackInfo',
+      meta: {
+        title: '客户设置',
+        pageName: 'feedbackInfoPage',
+        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/FeedbackPage/FeedbackInfoPage.vue'),
     },
     /*  客户管理
     ------------------------------------------ */
@@ -167,13 +191,22 @@ const routeTree = {
     { name: 'paymentList', children: [] },
     /*  售后管理
     ------------------------------------------ */
-    { name: 'service', children: [] },
+    // { name: 'service', children: [] },
+    { name: 'service',
+      children: [
+        { name: 'serviceInfo', children: [] },
+      ],
+    },
     /*  未付款订单
     ------------------------------------------ */
     { name: 'qutstandingpayment', children: [] },
     /*  售后申请列表
     ------------------------------------------ */
-    { name: 'feedback', children: [] },
+    { name: 'feedback',
+      children: [
+        { name: 'feedbackInfo', children: [] },
+      ],
+    },
     /*  客户管理
     ------------------------------------------ */
     { name: 'CustomerManageList',
