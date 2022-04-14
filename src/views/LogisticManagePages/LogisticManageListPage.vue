@@ -126,6 +126,7 @@ export default {
   mounted() {
     this.$store.dispatch('basicSet/getLogisticList');
     this.$store.dispatch('basicSet/getThirdPlatExpressList');
+    // string boolean number null undefined symbol object BigInt
   },
 };
 </script>

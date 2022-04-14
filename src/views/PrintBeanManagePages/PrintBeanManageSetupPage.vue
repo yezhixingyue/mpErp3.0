@@ -6,7 +6,7 @@
     <main>
       <LRWidthDragAutoChangeComp leftWidth='780px'>
         <template v-slot:left>
-          <PrintBeanSetupLeftComp :curPrintBeanData='curPrintBeanData' @change="onChange" :isStarted='isStarted' />
+          <PrintBeanSetupLeftComp :curItemData='curPrintBeanData' @change="onChange" :isStarted='isStarted' />
         </template>
         <template v-slot:right>
           <PrintBeanSetupRightComp :curPrintBeanData='curPrintBeanData' :isStarted='isStarted' @save="handleTableItemSave" @remove="handleTableItemRemove" />

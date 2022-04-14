@@ -6,7 +6,7 @@
     <main>
       <LRWidthDragAutoChangeComp leftWidth='45%'>
         <template v-slot:left>
-          左侧区域
+          <PrintBeanSetupLeftComp :curItemData='curItemData' @change="onChange" isCashBack />
         </template>
         <template v-slot:right>
           右侧区域
@@ -14,7 +14,7 @@
       </LRWidthDragAutoChangeComp>
     </main>
     <footer>
-      <el-button type="primary">保存</el-button>
+      <el-button type="primary" @click="onSubmitClick">保存</el-button>
       <el-button @click="onGobackClick">返回</el-button>
     </footer>
   </section>
@@ -22,15 +22,19 @@
 
 <script>
 import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
+import PrintBeanSetupLeftComp from '../../components/PrintBeanComps/PrintBeanSetupLeftComp.vue';
+import CashBackItemClass from '../../store/cashback/CashBackItemClass';
 
 export default {
   name: 'CashBackSetupPage',
   components: {
     LRWidthDragAutoChangeComp,
+    PrintBeanSetupLeftComp,
   },
   data() {
     return {
-      ID: '', // 当前正在编辑的项目，如果为空则为添加
+      originData: null,
+      curItemData: null,
     };
   },
   computed: {
@@ -42,10 +46,30 @@ export default {
     onGobackClick() {
       this.$goback();
     },
+    getInitData() {
+      const ID = this.$route.params.ID && this.$route.params.ID !== 'null' ? this.$route.params.ID : '';
+      const temp = null;
+      if (ID) {
+        // 编辑 -- 对temp进行重新赋值
+      }
+      this.originData = temp;
+      this.curItemData = new CashBackItemClass(temp);
+    },
+    onChange([key, val, key2]) {
+      if (!this.curItemData) return;
+      if (!key2) {
+        this.curItemData[key] = val;
+      } else {
+        this.curItemData[key][key2] = val;
+      }
+    },
+    onSubmitClick() {
+      this.curItemData.check();
+      // console.log(this.curItemData.check());
+    },
   },
   mounted() {
-    const ID = this.$route.params.ID && this.$route.params.ID !== 'null' ? this.$route.params.ID : '';
-    this.ID = ID;
+    this.getInitData();
   },
 };
 </script>
@@ -62,6 +86,9 @@ export default {
   }
   > main {
     flex: 1;
+    font-size: 14px;
+    color: #585858;
+    overflow: hidden;
   }
   > footer {
     flex: none;

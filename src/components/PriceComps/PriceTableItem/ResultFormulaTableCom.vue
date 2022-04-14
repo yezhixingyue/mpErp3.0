@@ -57,7 +57,7 @@
           {{item.target.DisplayContent?item.target.DisplayContent.replace(/\[|\]/g, ''):'未知'}}
         </span> -->
         <span class="priority-box">优先级：{{item.Priority}}</span>
-        <span v-if="showName" class="part-name">名称：{{item.Name}}</span>
+        <span v-if="showName" class="part-name" :title='item.Name'>名称：{{item.Name}}</span>
         <CtrlMenus @edit='onSetupClick(item)' @remove='onRemoveClick(item)' />
       </div>
       <div v-if="localTableData.length === 0">

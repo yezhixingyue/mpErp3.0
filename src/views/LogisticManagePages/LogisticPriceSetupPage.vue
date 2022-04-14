@@ -11,7 +11,7 @@
       @successSubmit='handleFormulaSuccessSubmit'
     >
       <template #header>
-        <p class="mp-common-title-wrap">设置{{name}}配送方式价格</p>
+        <p class="mp-common-title-wrap">设置{{Name}}配送方式价格</p>
       </template>
     </CommonFormulaSetupPageComp>
   </section>
@@ -41,14 +41,14 @@ export default {
   data() {
     return {
       LogisticsID: '',
-      name: '',
+      Name: '',
     };
   },
   methods: {
     getInitData() {
       const { id, name } = this.$route.params;
       this.LogisticsID = id;
-      this.name = name;
+      this.Name = name;
     },
     handleFormulaSuccessSubmit([isEdit, data, ID]) {
       const temp = {
@@ -59,10 +59,6 @@ export default {
       };
       this.$store.commit('basicSet/setLogisticsItemFormulaListItemChange', temp);
     },
-    // threeSumClosest(nums, target) {
-    //   const arr = nums.sort((a, b) => a - b);
-    //   const mid = Math.floor(arr.length / 2);
-    // },
   },
   mounted() {
     this.getInitData();

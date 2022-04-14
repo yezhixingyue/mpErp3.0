@@ -20,17 +20,19 @@
       <span slot-scope="scope" :class="scope.row.IsEnabled ? 'is-success' : 'is-pink'">{{scope.row._EnableContent}}</span>
     </el-table-column>
     <el-table-column prop="_PriceRecord" label="价格记录" width="180" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="_RelationContent" label="关联快递" min-width="180" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="_StationContent" label="关联网点" width="150" show-overflow-tooltip></el-table-column>
-    <el-table-column label="" min-width="50"></el-table-column>
+    <el-table-column prop="_RelationContent" label="关联快递打单" min-width="180" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="_StationContent" label="关联物流配送" width="150" show-overflow-tooltip></el-table-column>
+    <!-- <el-table-column label="" min-width="50" class-name="blank"></el-table-column>
     <el-table-column label="" width="185" v-if="localPermission.Setup">
       <div slot-scope="scope" class="menus">
         <span class="blue-span" @click="onRelationLinkClick(scope.row)">关联快递打单</span>
         <span class="blue-span" @click="onStationLinkClick(scope.row)">关联物流配送</span>
       </div>
-    </el-table-column>
-    <el-table-column label="操作" width="280" v-if="localPermission.Setup">
-      <div slot-scope="scope">
+    </el-table-column> -->
+    <el-table-column label="操作" width="540" v-if="localPermission.Setup" class-name="ctrl">
+      <div slot-scope="scope" class='menus'>
+        <span class="blue-span" @click="onRelationLinkClick(scope.row)">关联快递打单</span>
+        <span class="blue-span" @click="onStationLinkClick(scope.row)">关联物流配送</span>
         <CtrlMenus
           @setup='onSetupPriceClick(scope.row)'
           @edit='onEditClick(scope.row)'
@@ -291,9 +293,14 @@ export default {
             }
           }
           .menus {
-            span {
+            text-align: right;
+            padding-right: 15px;
+            > span {
               margin-right: 28px;
               font-size: 12px;
+            }
+            .ctrl-menus-container {
+              width: 215px;
             }
           }
         }
@@ -313,8 +320,9 @@ export default {
   &.sorting .el-table__body-wrapper .el-table__row {
     cursor: move;
   }
-  &.el-table .has-gutter > tr > th.is-leaf::after {
-    display: none;
+  &.el-table .has-gutter > tr > th.is-leaf.ctrl {
+    text-align:right;
+    padding-right: 100px;
   }
   &.sorting {
     .menus , .ctrl-menus-container {

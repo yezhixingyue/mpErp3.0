@@ -11,6 +11,7 @@
     @open="onOpen"
     @closed="onClosed"
     @clear="onClearClick"
+    clearText="清空列表"
     class="mp-erp-logistic-item-relation-link-dialog-comp-wrap"
   >
     <!-- 内容区 -->
