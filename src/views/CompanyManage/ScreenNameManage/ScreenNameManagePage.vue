@@ -10,7 +10,7 @@
           <CtrlMenus :showList="['add']"  @add='onAddClick' v-if="localPermission.Setup" />
         </li>
         <li v-for="(it, i) in RosterDataList" :key="it.PositionID || it.key">
-          <el-input :value="it.Nickname" @input="e => onInput(e, i)" placeholder="" size="small" maxlength="10"></el-input>
+          <el-input :value="it.Nickname" @input="e => onInput(e, i)" placeholder="" size="small" maxlength="20"></el-input>
           <CtrlMenus :showList="['del', 'add']"  @remove='onRemoveClick(it, i)' @add='onAddClick' v-if="localPermission.Setup" />
         </li>
       </ul>
@@ -73,22 +73,16 @@ export default {
       const temp = {
         RosterID: '',
         Nickname: '',
-        Status: 1,
         key: Math.random().toString(16).slice(-8),
       };
       this.$store.commit('companyManage/setRosterDataItemAdd', temp);
       this.$message.success('已添加至最后一行');
     },
-    createNode(text) {
-      let _text = text.split('<br>');
-      _text = _text.map((it) => this.$createElement('p', it));
-      return this.$createElement('div', {}, _text);
-    },
     onSubmitClick() { // 校验： 1. 花名名称是否为空 2. ?
       // 处理： 花名ID为空，保存后的处理
       const t = this.RosterDataList.find(it => !it.Nickname || it.Nickname.length > 20);
       if (t) {
-        this.messageBox.failSingleError('保存失败', '职务名称不能为空且不能超过10个字');
+        this.messageBox.failSingleError('保存失败', '花名不能为空且不能超过20个字');
         return;
       }
       // 和每一项的名字对比
@@ -97,7 +91,7 @@ export default {
         this.messageBox.failSingleError('保存失败', '花名不能重复');
         return;
       }
-      this.$store.dispatch('companyManage/getRosterDataSave', this.createNode);
+      this.$store.dispatch('companyManage/getRosterDataSave');
     },
   },
   mounted() {
