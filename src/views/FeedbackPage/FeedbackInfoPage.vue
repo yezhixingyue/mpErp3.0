@@ -15,7 +15,7 @@
     <!-- 驳回 -->
     <RejectDialogComp :visible="false"></RejectDialogComp>
     <!-- 执行售后 -->
-    <ExecuteDialogComp :visible="true"></ExecuteDialogComp>
+    <ExecuteDialogComp :visible="false"></ExecuteDialogComp>
   </section>
 </template>
 

@@ -106,10 +106,12 @@ export default {
       type: String,
       default: '',
     },
+    visible: {
+      type: Boolean,
+    },
   },
   data() {
     return {
-      visible: true,
       imgInfo: [],
       imgSrc: null,
       imgRules: [

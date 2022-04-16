@@ -1,6 +1,8 @@
 <template>
   <div class="mp-service-page-main-wrap">
-      <ServiceTable @changeQuestion='handleChangeQuestion' />
+      <ServiceTable
+        @changeQuestion='handleChangeQuestion'
+        @seeEstimate='handleSeeEstimate' />
       <Count :watchPage='obj4RequestServiceList.Page'
        :handlePageChange='handlePageChange' :count='totalCount' :showLoading='isShowLoadingMore'>
         <!-- <span class="is-blue" @click="handleDownloadClick">
@@ -11,6 +13,12 @@
       </Count>
       <ServiceDetailDialog />
       <ChangeQuestionDialog :visible.sync="changeQuestionVisible" :curData="curData" />
+      <!-- 查看售后评价 -->
+      <SeeEstimateDialogComp
+      :AfterSaleCode='AfterSaleCode'
+      :visible='seeEstimateVisible'
+      @closed="seeEstimateVisible = false"
+      @submit="seeEstimateVisible = false"></SeeEstimateDialogComp>
   </div>
 </template>
 
@@ -21,6 +29,7 @@ import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.
 import ServiceTable from './ServiceTable.vue';
 import ServiceDetailDialog from './ServiceDetailDialog.vue';
 import ChangeQuestionDialog from './ChangeQuestionDialog.vue';
+import SeeEstimateDialogComp from './SeeEstimateDialogComp.vue';
 
 export default {
   components: {
@@ -29,6 +38,7 @@ export default {
     ServiceDetailDialog,
     DownLoadExcelComp,
     ChangeQuestionDialog,
+    SeeEstimateDialogComp,
   },
   computed: {
     ...mapState('service', ['isShowLoadingMore', 'totalCount', 'obj4RequestServiceList', 'tableData']),
@@ -53,6 +63,9 @@ export default {
     return {
       changeQuestionVisible: false,
       curData: null,
+
+      AfterSaleCode: 0,
+      seeEstimateVisible: false,
     };
   },
   methods: {
@@ -93,6 +106,11 @@ export default {
     },
     handleChangeQuestion(item) {
       this.changeQuestionVisible = true;
+      this.curData = item;
+    },
+    // 查看评价
+    handleSeeEstimate(item) {
+      this.seeEstimateVisible = true;
       this.curData = item;
     },
   },

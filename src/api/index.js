@@ -323,6 +323,9 @@ const api = {
   getAfterSalesDepartmentList() { // GET /Api/AfterSales/DepartmentList 获取售后责任部门列表
     return instance.get('/Api/AfterSales/DepartmentList');
   },
+  getOrderAfterSaleEvaluateDetail(afterSaleCode) { // POST /Api/OrderAfterSale/EvaluateDetail  获取售后评价
+    return instance.get(`/Api/OrderAfterSale/EvaluateDetail?afterSaleCode=${afterSaleCode}`, { closeLoading: true });
+  },
   /* 统计分析api
   ----------------------------------------------------------------------------------- */
   getStatisticConfigSave(data) { // POST /Api/StatisticConfig/Save 统计表保存

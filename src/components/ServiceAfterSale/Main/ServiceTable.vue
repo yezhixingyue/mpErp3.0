@@ -86,7 +86,7 @@
         <span @click="onChangeQuestionClick(scope.row)">
           <img src="@/assets/images/Compile.png" alt />问题修改
         </span>
-        <span @click="onChangeQuestionClick(scope.row)">
+        <span @click="onSeeEstimateClick(scope.row)">
           <img src="@/assets/images/Compile.png" alt />查看评价
         </span>
       </div>
@@ -165,6 +165,9 @@ export default {
     },
     onChangeQuestionClick(data) {
       this.$emit('changeQuestion', data);
+    },
+    onSeeEstimateClick(data) { // 查看评价
+      this.$emit('seeEstimate', data);
     },
   },
 };
