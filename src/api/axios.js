@@ -13,12 +13,12 @@ const apiListByNotNeedToken = ['/Api/Staff/Login']; // 不需要token访问的�
 const { CancelToken } = axios;
 let source = CancelToken.source();
 
+
 const clearToken = () => {
   TokenClass.removeToken();
   source.cancel(); // 跳转登录页时 清除页面其它后续请求
   source = CancelToken.source(); // 清除后赋予axios新的取消信息
 };
-
 
 let closeTip = false;
 let requestNum = 0;
@@ -48,7 +48,8 @@ const handleLoadingOpen = () => { // 打开弹窗
 };
 const handleLoadingClose = () => { // 关闭弹窗
   requestNum -= 1;
-  if (requestNum === 0) loadingInstance.close();
+  if (requestNum < 0) requestNum = 0;
+  if (requestNum === 0 && loadingInstance) loadingInstance.close();
 };
 
 axios.interceptors.request.use(

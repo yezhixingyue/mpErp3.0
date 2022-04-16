@@ -64,8 +64,10 @@ export default {
       }
     },
     onSubmitClick() {
-      this.curItemData.check();
-      // console.log(this.curItemData.check());
+      const bool = this.curItemData.check();
+      if (bool) {
+        // console.log(this.curItemData);
+      }
     },
   },
   mounted() {

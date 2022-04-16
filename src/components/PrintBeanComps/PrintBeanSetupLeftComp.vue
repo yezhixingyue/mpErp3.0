@@ -12,7 +12,7 @@
       </li>
       <li v-if="isCashBack">
         <label>描述：</label>
-        <el-input v-model="Describe" style="width:600px" size="mini" class="more-text"  maxlength="40" show-word-limit></el-input>
+        <el-input v-model="Describe" style="width:550px" size="mini" class="more-text"  maxlength="40" show-word-limit></el-input>
       </li>
       <li>
         <label>开始日期：</label>
