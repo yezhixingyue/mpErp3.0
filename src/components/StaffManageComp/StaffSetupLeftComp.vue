@@ -127,7 +127,7 @@ export default {
       },
     },
     RosterNameList() {
-      const temp = this.RosterDataList?.filter(it => !it.IsUse || it.RosterID === this.staffForm.RosterID);
+      const temp = this.RosterDataList?.filter(it => !it.IsUse || it.RosterID === this.FormRosterID);
       if (temp) {
         temp.unshift({
           Nickname: '暂不设置',
@@ -139,6 +139,7 @@ export default {
   },
   data() {
     return {
+      FormRosterID: null,
       EducationEnumList,
       cascadeList: [
         {
@@ -179,6 +180,9 @@ export default {
       const result = await this.$refs.ruleForm.validate().catch(() => false);
       return result;
     },
+  },
+  mounted() {
+    this.FormRosterID = this.staffForm.RosterID;
   },
 };
 </script>
