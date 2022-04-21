@@ -98,8 +98,8 @@ export const getSelectedContentBySelectedDataAndAllData = (item, treeData, title
   if (!item || !treeData || treeData.length === 0) return '';
   const { IsIncludeIncreased, List } = item;
   if (!List || List.length === 0) {
-    if (IsIncludeIncreased) return '只包含新加大区';
-    return '无效区域';
+    if (IsIncludeIncreased) return `只包含新加${title}`;
+    return `无效${title}`;
   }
 
   const selectedLv1Ids = item.List.map(it => it.ID);

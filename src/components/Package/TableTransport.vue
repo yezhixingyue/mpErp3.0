@@ -39,7 +39,7 @@
         {{scope.row.Status | formatTransportStatus}}
       </template>
     </el-table-column>
-    <el-table-column minWidth="165" label="揽收时间">
+    <el-table-column minWidth="165" label="发货时间">
       <template slot-scope="scope">
         <!-- {{$utils.getDateFormat(scope.row.CreateTime)}} -->
         {{ scope.row.CreateTime | formatDate }}

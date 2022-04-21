@@ -403,7 +403,7 @@ export default {
     -------------------------------*/
     deliverStatus: [
       { name: '不限', ID: '' },
-      { name: '已揽收', ID: 70 },
+      // { name: '已揽收', ID: 70 },
       { name: '已发货', ID: 80 },
       { name: '已完成', ID: 200 },
     ],

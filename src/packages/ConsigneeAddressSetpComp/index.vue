@@ -659,10 +659,10 @@ export default {
     customerInfo() {
       this.handleInfoChange();
     },
-    curProductID(newVal, oldVal) {
-      if (newVal && oldVal && oldVal !== newVal) {
-        this.handleInfoChange();
-      }
+    curProductID() {
+      // if (newVal && oldVal && oldVal !== newVal) {
+      //   this.handleInfoChange();
+      // }
     },
   },
   created() {

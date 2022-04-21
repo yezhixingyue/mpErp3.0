@@ -32,7 +32,7 @@
       </li>
       <li v-if="isCashBack">
         <label>统计周期：</label>
-        <el-radio-group v-model="_Cycle">
+        <el-radio-group v-model="PeriodType">
           <el-radio :label="it.ID" v-for="it in CycleEnumList" :key="it.ID">{{it.Name}}</el-radio>
         </el-radio-group>
       </li>
@@ -216,12 +216,12 @@ export default {
         this.$emit('change', ['Category', val]);
       },
     },
-    _Cycle: {
+    PeriodType: {
       get() {
-        return this.curItemData?._Cycle;
+        return this.curItemData?.PeriodType;
       },
       set(val) {
-        this.$emit('change', ['_Cycle', val]);
+        this.$emit('change', ['PeriodType', val]);
       },
     },
     CustomerTypeList: {

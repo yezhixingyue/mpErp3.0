@@ -131,7 +131,7 @@ const routes = { // 价格策略
         title: '消费返现',
         icon: 'iconfont icon-xiaofeifanxian',
         pageName: 'CashBackListPage',
-        PermissionInfo: ['Developing', 'HavePomission'],
+        PermissionInfo: ['PermissionConsumeReturnCash', 'HavePomission'],
       },
       component: () => import('../../../views/PrintBeanManagePages/CashBackListPage.vue'),
     },
@@ -142,9 +142,20 @@ const routes = { // 价格策略
         requiresAuth: true,
         title: '消费返现设置',
         pageName: 'CashBackSetupPage',
-        PermissionInfo: ['Developing', 'HavePomission'],
+        PermissionInfo: ['PermissionConsumeReturnCash', 'Obj', 'Setup'],
       },
       component: () => import('../../../views/PrintBeanManagePages/CashBackSetupPage.vue'),
+    },
+    {
+      path: '/cashBackConditionSetup/:level1Index/:level2Index',
+      name: 'cashBackConditionSetup',
+      meta: {
+        requiresAuth: true,
+        title: '设置条件 - 消费返现',
+        pageName: 'cashBackConditionSetupPage',
+        PermissionInfo: ['PermissionConsumeReturnCash', 'Obj', 'Setup'],
+      },
+      component: () => import('../../../views/PrintBeanManagePages/cashBackConditionSetupPage.vue'),
     },
   ],
 };
@@ -193,7 +204,12 @@ const routeTree = {
     {
       name: 'cashBackList',
       children: [
-        { name: 'cashBackSetup', children: [] },
+        {
+          name: 'cashBackSetup',
+          children: [
+            { name: 'cashBackConditionSetup', children: [] },
+          ],
+        },
       ],
     },
   ],

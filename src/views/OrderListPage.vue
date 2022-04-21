@@ -9,10 +9,11 @@
         <span class="is-gray is-font-size-12"> (不含取消和过期订单)</span>
       </div>
       <Count
-      :watchPage='objForOrderList.Page'
-      :handlePageChange='handlePageChange'
-      :showLoading='isTableLoading'
-      :count='orderTotalCount'
+        :watchPage='objForOrderList.Page'
+        :handlePageChange='handlePageChange'
+        :showLoading='isTableLoading'
+        :count='orderTotalCount'
+        :pageSize='20'
       >
         <span class="is-blue" @click="handleDownloadClick('normal')" v-if="localPermission.ExportExcel">
           导出Excel表格

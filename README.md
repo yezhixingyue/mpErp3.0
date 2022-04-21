@@ -90,6 +90,7 @@
         Permission = 83,
     }
 
+
 ## 接单员接口
 
     POST /Api/Staff/List
@@ -896,6 +897,9 @@ public enum MultiLevelClassType : byte
         价格子公式筛选 左 28
 
         价格子公式筛选 右 29
+
+
+        消费返现 UseModule传值49
 
 ## 运算符号
 

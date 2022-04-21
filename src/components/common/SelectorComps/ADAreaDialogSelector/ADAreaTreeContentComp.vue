@@ -229,9 +229,10 @@ export default {
   &.displayLevel2 {
     &.mp-common-comps-tree-comp-wrap > .content > .el-tree > .el-tree-node {
       > .el-tree-node__children {
-        display: flex;
-        padding-top: 4px;
-        padding-bottom: 10px;
+        // display: flex;
+        // flex-wrap: wrap;
+        // padding-top: 4px;
+        // padding-bottom: 10px;
         > .el-tree-node .el-tree-node__children {
           display: none;
         }

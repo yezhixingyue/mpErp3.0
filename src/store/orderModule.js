@@ -71,7 +71,7 @@ export default {
       },
       Page: 1,
       PayListPage: 1,
-      PageSize: 30,
+      PageSize: 20,
       Status: '',
       ExpressType: '',
       KeyWords: '',
@@ -276,7 +276,7 @@ export default {
         KeyWords: '',
         ExpressType: '',
         Page: 1,
-        PageSize: 30,
+        PageSize: 20,
         OrderType: '',
         Terminal: '',
         PlaceDate: {

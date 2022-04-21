@@ -55,7 +55,7 @@
     </span>
     <span @click="onEditClick" :class="canEdit ? '' : 'disabled'" v-if="showList.includes('edit')">
       <img src="@/assets/images/Compile.png" alt="">
-      <i>编辑</i>
+      <i>{{editText}}</i>
     </span>
     <span @click="onRemoveClick" :class="canRemove ? '' : 'disabled'" v-if="showList.includes('del')">
       <img src="@/assets/images/del.png" alt="">
@@ -154,6 +154,10 @@ export default {
     addText: {
       type: String,
       default: '添加一行',
+    },
+    editText: {
+      type: String,
+      default: '编辑',
     },
   },
   methods: {

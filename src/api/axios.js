@@ -6,19 +6,17 @@ import router from '@/router';
 import store from '../store';
 import messageBox from '../assets/js/utils/message';
 import TokenClass from '../assets/js/utils/tokenManage';
+import LocalCancelToken from './CancelToken';
 
 const apiListByNotNeedToken = ['/Api/Staff/Login']; // 不需要token访问的接口列表
 
-
-const { CancelToken } = axios;
-let source = CancelToken.source();
-
+const localCancelToken = new LocalCancelToken();
 
 const clearToken = () => {
   TokenClass.removeToken();
-  source.cancel(); // 跳转登录页时 清除页面其它后续请求
-  source = CancelToken.source(); // 清除后赋予axios新的取消信息
+  localCancelToken.cancelAllRequest();
 };
+
 
 let closeTip = false;
 let requestNum = 0;
@@ -55,7 +53,6 @@ const handleLoadingClose = () => { // 关闭弹窗
 axios.interceptors.request.use(
   (config) => {
     const curConfig = config;
-    curConfig.cancelToken = source.token;
     const token = TokenClass.getToken();
     if (!token && !apiListByNotNeedToken.includes(curConfig.url)) {
       clearToken();
@@ -65,6 +62,8 @@ axios.interceptors.request.use(
     closeTip = curConfig.closeTip;
     curConfig.headers.common.Authorization = `Bearer ${token}`;
     if (getShowLoading(curConfig)) handleLoadingOpen();
+
+    localCancelToken.setCancelToken(config);
 
     return curConfig;
   },
@@ -95,9 +94,11 @@ axios.interceptors.response.use(
         messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`);
       }
     }
+    localCancelToken.removeCancelToken(response.config);
     return response;
   },
   async (error) => {
+    localCancelToken.removeCancelToken(error.config || '');
     if (!store.state.common.isLoading) {
       if (getShowLoading(error.config) && loadingInstance) handleLoadingClose();
       if (error.response) {
@@ -160,7 +161,7 @@ axios.interceptors.response.use(
           message: '网络错误',
           type: 'error',
         });
-      } else if (error.message.includes('timeout')) {
+      } else if (error.message && error.message.includes('timeout')) {
         Message({
           showClose: true,
           message: '网络超时',
@@ -173,17 +174,19 @@ axios.interceptors.response.use(
           type: 'error',
         });
       } else {
-        let msg = '未知错误';
+        let msg = '';
         if (error.response && error.response.data && error.response.data.Message) {
           msg = error.response.data.Message;
         } else if (error && error.message) {
           msg = error.message;
         }
-        Message({
-          showClose: true,
-          message: msg,
-          type: 'error',
-        });
+        if (msg) {
+          Message({
+            showClose: true,
+            message: msg,
+            type: 'error',
+          });
+        }
       }
     }
     return Promise.reject(error);

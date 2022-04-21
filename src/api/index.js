@@ -1040,6 +1040,21 @@ const api = {
     return instance.delete('/Api/PrintBean/Remove', { params: { id } });
   },
 
+  /* 消费返现api
+  ----------------------------------------------------------------------------------- */
+  getConsumeReturnCashList(data) { // POST /Api/ConsumeReturnCash/List  获取消费返现列表
+    return instance.post('/Api/ConsumeReturnCash/List', data);
+  },
+  getConsumeReturnCashDetail(id) { // GET /Api/ConsumeReturnCash/Detail 消费返现详情
+    return instance.get('/Api/ConsumeReturnCash/Detail', { params: { id } });
+  },
+  getConsumeReturnCashSave(data) { // POST /Api/ConsumeReturnCash/Save  消费返现编辑保存
+    return instance.post('/Api/ConsumeReturnCash/Save', data);
+  },
+  getConsumeReturnCashRemove(id) { // DELETE /Api/ConsumeReturnCash/Remove  消费返现删除
+    return instance.delete('/Api/ConsumeReturnCash/Remove', { params: { id } });
+  },
+
   /* 物流费用api
   ----------------------------------------------------------------------------------- */
   getLogisticsList() { // GET /Api/Logistics/List   物流快递列表
