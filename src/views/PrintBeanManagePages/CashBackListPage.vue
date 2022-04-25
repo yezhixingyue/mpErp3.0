@@ -80,17 +80,18 @@ export default {
     // display: flex;
     // align-items: center;
     padding: 20px;
-    > button {
-      width: 120px;
-      height: 30px;
-      padding: 0;
-      border-radius: 2px;
-      margin-bottom: 10px;
+    > div.f {
+      > button {
+        width: 120px;
+        height: 30px;
+        padding: 0;
+        border-radius: 2px;
+        margin-bottom: 10px;
+      }
     }
-    > .list {
+    > div.list {
       display: flex;
       flex-wrap: wrap;
-      padding-left: 2px;
       .mp-common-comps-area-select-wrap {
         margin-top: 10px;
         // .text {
@@ -101,6 +102,10 @@ export default {
         margin-right: 20px;
         margin-top: 10px;
       }
+    }
+    > div.s {
+      padding-top: 12px;
+      padding-right: 20px;
     }
   }
   > main {

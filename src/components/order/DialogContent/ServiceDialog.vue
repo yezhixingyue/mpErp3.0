@@ -46,7 +46,7 @@
             <EditDiaLeftTable :tableData='OrderPackageListTableData' />
           </div>
           <div class="right-submit-wrap">
-            <EditDiaRightSubmit :status='orderDetailData && orderDetailData.Status' />
+            <EditDiaRightSubmit :status='orderDetailData && orderDetailData.Status' :Customer='orderDetailData.Customer' />
           </div>
         </main>
       </section>

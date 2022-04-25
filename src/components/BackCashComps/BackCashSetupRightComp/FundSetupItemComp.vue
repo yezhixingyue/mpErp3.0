@@ -1,7 +1,7 @@
 <template>
   <div class="mp-erp-back-cash-setup-page-right-item-fund-item-comp-wrap">
     <div class="c" :title="content">{{content}}</div>
-    <CtrlMenus @edit='edit' @remove='remove' />
+    <CtrlMenus @edit='edit' @remove='remove' :canRemove='!isStarted' :canEdit='!isStarted' />
   </div>
 </template>
 
@@ -15,6 +15,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    isStarted: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     CtrlMenus,
@@ -24,7 +28,7 @@ export default {
       const { Range, Type, Increment, ReturnValue, StartFromZero } = this.item;
       if (!Range) return '';
       const { MinValue, MaxValue } = Range;
-      let str = `${MinValue} <= 消费金额 <= ${+MaxValue === -1 ? '无穷大' : MaxValue}`;
+      let str = `${MinValue} < 消费金额 <= ${+MaxValue === -1 ? '无穷大' : MaxValue}`;
 
       if (Type === ReturnTypeEnums.fixed.ID) {
         str += ` 按固定比例${ReturnValue}%返现`;

@@ -160,7 +160,7 @@ export default {
     shippingAddress() { // 收货地址
       const { RegionalName, CityName, CountyName } = this.orderData.Address.Address.ExpressArea;
       const { AddressDetail } = this.orderData.Address.Address;
-      return RegionalName + CityName + CountyName + AddressDetail;
+      return `${RegionalName || ''}${CityName || ''}${CountyName || ''}${AddressDetail || ''}`;
     },
     CustomerID() {
       return this.Customer ? this.Customer.CustomerID : '';
@@ -188,7 +188,7 @@ export default {
       const {
         Province, City, County, AddressDetail,
       } = Customer;
-      return Province.Name + City.Name + County.Name + AddressDetail;
+      return `${Province.Name || ''}${City.Name || ''}${County.Name || ''}${AddressDetail || ''}`;
     },
   },
   methods: {

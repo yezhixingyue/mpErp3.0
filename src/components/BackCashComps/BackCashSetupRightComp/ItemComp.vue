@@ -2,13 +2,14 @@
   <div class="mp-erp-back-cash-setup-page-right-item-comp-wrap">
     <section>
       <header>
-        <span class="blue-span" @click="onProductSetupClick(null, -1)">+添加产品</span>
+        <span class="blue-span" @click="onProductSetupClick(null, -1)" :class="{disabled: isStarted}">+添加产品</span>
       </header>
       <main>
         <ProductSetupItemComp
          v-for="(it, i) in localRangeList"
          :key="it.key"
          :item="it"
+         :isStarted='isStarted'
          @filter='onProductFilterClick(it, i)'
          @edit='onProductSetupClick(it, i)'
          @remove='onProductRemoveClick(i)'
@@ -17,19 +18,20 @@
     </section>
     <section>
       <header>
-        <span class="blue-span" @click="onReturnValueSetClick(null, -1)">+添加返现比例</span>
+        <span class="blue-span" @click="onReturnValueSetClick(null, -1)" :class="{disabled: isStarted}">+添加返现比例</span>
       </header>
       <main>
         <FundSetupItemComp
          v-for="(it, i) in itemData.FundList"
          :key="it.key"
          :item='it'
+         :isStarted='isStarted'
          @edit='onReturnValueSetClick(it, i)'
          @remove='onReturnValueRemoveClick(i)'
         />
       </main>
     </section>
-    <span class="red-span" @click="onRemoveClick"><i>-</i>删除返现规则</span>
+    <span class="red-span" @click="onRemoveClick" :class="{disabled: isStarted}"><i>-</i>删除返现规则</span>
   </div>
 </template>
 
@@ -42,6 +44,10 @@ export default {
     itemData: {
       type: Object,
       default: () => ({}),
+    },
+    isStarted: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

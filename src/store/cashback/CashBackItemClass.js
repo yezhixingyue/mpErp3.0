@@ -68,41 +68,15 @@ export default class {
       restoreInitDataByOrigin(this, data);
       const { StartTime, Duration, ItemList } = data;
       if (StartTime && StartTime.length >= 19) this.StartTime = StartTime.slice(0, 19);
-      if (!Duration) this._IsActiveOnLong = true;
-      if (getValueIsOrNotNumber(Duration, true) && Duration > 0) {
+      if (!Duration && Duration !== 0) this._IsActiveOnLong = true;
+      if (getValueIsOrNotNumber(Duration, true) && Duration >= 0) {
         const y = Math.floor(Duration / 12);
         const m = Duration % 12;
-        this._ExecutionTime.First = y || '';
-        this._ExecutionTime.Second = m || '';
+        this._ExecutionTime.First = y;
+        this._ExecutionTime.Second = m;
       }
       if (Array.isArray(ItemList)) {
-        // const ids = [];
         this.ItemList = ItemList.map(it => new CashBackRightItemClass(it));
-      //   this.ItemList.forEach(lv1 => {
-      //     lv1.RangeList.forEach(lv2 => {
-      //       let id = '';
-      //       const { ProductClassList, IsIncludeIncreasedProduct } = lv2;
-      //       if (!IsIncludeIncreasedProduct && ProductClassList.length === 1) {
-      //         const [{ IsIncludeIncreased, List }] = ProductClassList;
-      //         if (!IsIncludeIncreased && List.length === 1) {
-      //           if (!List[0].IsIncludeIncreased && List[0].List.length === 1) {
-      //             id = List[0].List[0].ID;
-      //           }
-      //         }
-      //       }
-      //       if (!ids.includes(id)) ids.push(id);
-      //     });
-      //   });
-      //   if (ids.length > 0) {
-      //     ids.forEach(async id => {
-      //       const temp = { UseModule: 49 };
-      //       if (id) temp.ProductID = id;
-      //       const res = await PropertyClass.getPropertyList(temp);
-      //       if (res) {
-      //         this._allPropertyList.push({ PropertyList: res, id });
-      //       }
-      //     });
-      //   }
       }
     }
   }
@@ -132,7 +106,7 @@ export default class {
       messageBox.failSingleError('保存失败', '请设置开始时间');
       return false;
     }
-    if (new Date(this.StartTime) < new Date() && !this.ID) {
+    if (new Date(this.StartTime) < new Date(new Date().toLocaleDateString()) && !this.ID) {
       messageBox.failSingleError('保存失败', '开始时间不能晚于当前时间');
       return false;
     }

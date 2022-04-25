@@ -68,7 +68,7 @@ export default {
     CtrlMenus,
   },
   computed: {
-    ...mapGetters('common', ['subExpressList']),
+    ...mapGetters('common', ['subExpressList', 'allAdAreaTreeList']),
     ...mapState('common', ['Permission']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionProducePeriod?.Obj) {
@@ -81,6 +81,7 @@ export default {
         return this.dataList.map(it => ({
           ...it,
           DateRangeContent: this.getDateRangeContent(it),
+          AreaDescribe: this.$utils.getTreeTextDisplayContent(it.AreaList, this.allAdAreaTreeList),
         }));
       }
       return this.dataList;
@@ -106,6 +107,9 @@ export default {
       const dateContent = `${begin}${end ? ' 至 ' : ''}${end}`;
       return dateContent;
     },
+  },
+  mounted() {
+    this.$store.dispatch('common/fetchAdAreaList');
   },
 };
 </script>

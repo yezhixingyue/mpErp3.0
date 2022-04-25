@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-back-cash-setup-page-right-comp-wrap">
     <header>
-      <el-button type="primary" size="mini" @click="onAddClick">+添加返现规则</el-button>
+      <el-button type="primary" size="mini" @click="onAddClick" :disabled='isStarted'>+添加返现规则</el-button>
       <p class="tips-box" v-if="ItemList.length === 0">
         <i class="el-icon-warning"></i>
         <span>请点击左侧按钮添加返现规则吧</span>
@@ -12,6 +12,7 @@
        v-for="(it, i) in ItemList"
        :key="it.ID || it.key"
        :itemData='it'
+       :isStarted='isStarted'
        @remove='handleRemove(i)'
        @productSetup='e => handleProductSetup(e, i)'
        @productFilter='e => handleProductFilter(e, i)'
@@ -35,6 +36,10 @@ export default {
     ItemList: {
       type: Array,
       default: () => [],
+    },
+    isStarted: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

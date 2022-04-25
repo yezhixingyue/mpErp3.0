@@ -12,8 +12,6 @@ export default class SpecialDayItemClass {
 
   Tips = ''
 
-  AreaDescribe = ''
-
   AreaList = []
 
   ExpressList = []
@@ -24,9 +22,8 @@ export default class SpecialDayItemClass {
 
   constructor(data) {
     if (data) {
-      const { ItemID, AreaDescribe, AreaList, ExpressList, EndTime, Tips, AddTime, OperatorUserName } = data;
+      const { ItemID, AreaList, ExpressList, EndTime, Tips, AddTime, OperatorUserName } = data;
       if (ItemID) this.ItemID = ItemID;
-      if (AreaDescribe) this.AreaDescribe = AreaDescribe;
       if (EndTime) {
         this.EndTime.First = EndTime.split('T')[0] || '';
         this.EndTime.Second = EndTime.split('T')[1] ? (EndTime.split('T')[1].slice(0, 5) || '') : '';

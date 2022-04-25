@@ -11,6 +11,7 @@
         <div>已售份数</div>
         <div>每个客户可购买总份数</div>
         <div>每个客户每日可购买份数</div>
+        <div>描述</div>
         <div>操作</div>
       </div>
       <ul ref="oScrollWrap" class="mp-scroll-wrap">
@@ -21,6 +22,7 @@
           <div>{{it.SellNumber}}{{it.SellNumber ? '份' : ''}}</div>
           <div>{{it.BuyMaxNumber}}{{it.BuyMaxNumber ? '份' : ''}}</div>
           <div>{{it.DayBuyMaxNumber}}{{it.DayBuyMaxNumber ? '份' : ''}}</div>
+          <div :title="it.Describe">{{it.Describe}}</div>
           <div>
             <CtrlMenus @edit='onItemSaveClick(it, i)' @remove='onItemRemoveClick(it, i)' :canRemove='getCanRemove(it)' />
           </div>
@@ -101,12 +103,13 @@ export default {
 </script>
 <style lang='scss'>
 .mp-erp-print-bean-setup-page-right-comp-wrap {
-  padding-left: 40px;
+  padding-left: 20px;
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
   height: 100%;
-  width: 860px;
+  width: 950px;
+  padding-right: 10px;
   > header {
     flex: none;
     button {
@@ -134,13 +137,13 @@ export default {
         padding: 0 4px;
         box-sizing: border-box;
         &:nth-of-type(5) {
-          width: 145px;
+          width: 140px;
         }
         &:nth-of-type(6) {
-          width: 155px;
+          width: 150px;
         }
         &:last-of-type {
-          width: 125px;
+          width: 120px;
         }
       }
       &.h {
@@ -163,6 +166,10 @@ export default {
         }
         &:last-of-type {
           border-bottom: 1px solid #e5e5e5;
+        }
+        > div:nth-of-type(7) {
+          font-size: 12px;
+          color: #989898;
         }
         &.e {
           text-align: center;

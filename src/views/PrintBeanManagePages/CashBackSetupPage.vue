@@ -10,14 +10,15 @@
         </template>
         <template v-slot:right>
           <BackCashSetupRightComp
-           :ItemList='rightItemList'
-           @add='onRightItemAddClick'
-           @remove="onRightItemRemoveClick"
-           @productSetup='handleRightProductItemSetup'
-           @productRemove='handleRightProductItemRemove'
-           @productFilter='handleRightProductConditionSetup'
-           @returnValueSetup='handleRightReturnValueItemSetup'
-           @returnValueRemove='handleRightReturnValueItemRemove'
+            :isStarted='isStarted'
+            :ItemList='rightItemList'
+            @add='onRightItemAddClick'
+            @remove="onRightItemRemoveClick"
+            @productSetup='handleRightProductItemSetup'
+            @productRemove='handleRightProductItemRemove'
+            @productFilter='handleRightProductConditionSetup'
+            @returnValueSetup='handleRightReturnValueItemSetup'
+            @returnValueRemove='handleRightReturnValueItemRemove'
            />
         </template>
       </LRWidthDragAutoChangeComp>
@@ -51,8 +52,8 @@ export default {
     rightItemList() {
       return this.curItemData?.ItemList || [];
     },
-    isStarted() { // 该项目是否已经开始，影响：1.不允许设置开始日期 2. 不允许删除右侧已有印豆列表项目
-      if (this.isEdit) {
+    isStarted() { // 该项目是否已经开始，影响：1.不允许设置开始日期
+      if (this.curItemData?.ID) {
         if (this.curItemOriginData?.StartTime) {
           return new Date(this.curItemOriginData.StartTime).getTime() < Date.now();
         }

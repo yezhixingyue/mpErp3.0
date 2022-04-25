@@ -14,7 +14,7 @@
    <ul v-if="itemData" class="content">
      <li>
         <el-input v-model.trim="itemData.Range.MinValue" size="mini" maxlength="9"></el-input>
-        <span class="g">≤消费金额≤</span>
+        <span class="g">＜消费金额≤</span>
         <el-input v-model.trim="itemData.Range.MaxValue" size="mini" maxlength="9"></el-input>
         <span class="g is-font-size-12">元</span>
         <span class="tips-box"><i class="el-icon-warning"></i>-1代表无穷大</span>

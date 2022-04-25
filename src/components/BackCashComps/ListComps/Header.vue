@@ -1,9 +1,11 @@
 <template>
   <header>
-    <el-button type="primary" @click="onAddClick" v-if="localPermission.Setup">添加消费返现</el-button>
+    <div class="f">
+      <el-button type="primary" @click="onAddClick" v-if="localPermission.Setup">添加消费返现</el-button>
+    </div>
     <div class="list">
       <AreaSelector
-        title="销售区域"
+        title="区域"
         :changePropsFunc="setCondition"
         :requestFunc="getList"
         :RegionalID="conditionForDataList.SellArea.RegionalID"
@@ -48,6 +50,20 @@
         :defaultProps="{label: 'CategoryName',value: 'CategoryID'}"
       />
     </div>
+    <div class="s">
+      <SearchInputComp
+        spaceBetween
+        class="search-section"
+        :typeList="[['KeyWords', '']]"
+        :requestFunc='getList'
+        :changePropsFunc='setCondition'
+        :word='conditionForDataList.KeyWords'
+        @reset='clearCondition'
+        :searchWatchKey="DataList"
+        title='关键词'
+        placeholder='请输入搜索关键词'
+      />
+    </div>
   </header>
 </template>
 
@@ -56,6 +72,7 @@ import { mapState } from 'vuex';
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 import OrderChannelSelector from '../../common/SelectorComps/OrderChannelSelector.vue';
+import SearchInputComp from '../../common/SearchInputComp.vue';
 import { CategoryEnumsList } from '../../../store/printBean/PrintBeanClassType';
 
 export default {
@@ -63,6 +80,7 @@ export default {
     AreaSelector,
     ProductSelector,
     OrderChannelSelector,
+    SearchInputComp,
   },
   data() {
     return {
@@ -72,7 +90,7 @@ export default {
   computed: {
     ...mapState('common', ['userTypeList', 'userRankList']),
     ...mapState('common', ['Permission']),
-    ...mapState('cashback', ['conditionForDataList']),
+    ...mapState('cashback', ['conditionForDataList', 'DataList']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionConsumeReturnCash?.Obj) {
         return this.Permission.PermissionList.PermissionConsumeReturnCash.Obj;
@@ -89,6 +107,9 @@ export default {
     },
     setCondition(data) {
       this.$store.commit('cashback/setConditonForDataList', data);
+    },
+    clearCondition() {
+      this.$store.commit('cashback/clearConditonForDataList');
     },
   },
 };

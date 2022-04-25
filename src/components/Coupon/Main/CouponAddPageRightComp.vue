@@ -18,6 +18,14 @@
       :selectList='selectUserRankList'
       @change="onUserRankListChange"
       />
+    <div class="MaxReceiveNumber">
+      <span>客户领取：</span>
+      <el-checkbox v-model="IsCustomerReceive">允许</el-checkbox>
+      <template v-if="IsCustomerReceive">
+        <span>单个客户最大可领取数量：</span>
+        <el-input size="small" v-model.trim.number="MaxReceiveNumber" maxlength="9"></el-input>
+      </template>
+    </div>
     <!-- <tree-comp
       title="销售区域"
       :treeList='allAreaTreeList'
@@ -83,6 +91,22 @@ export default {
         this.setCondition2CouponSave([['AreaList', ''], List || []]);
       },
     },
+    IsCustomerReceive: {
+      get() {
+        return this.condition2CouponSave.IsCustomerReceive;
+      },
+      set(val) {
+        this.setCondition2CouponSave([['IsCustomerReceive', ''], val]);
+      },
+    },
+    MaxReceiveNumber: {
+      get() {
+        return this.condition2CouponSave.MaxReceiveNumber;
+      },
+      set(val) {
+        this.setCondition2CouponSave([['MaxReceiveNumber', ''], val]);
+      },
+    },
   },
   methods: {
     ...mapMutations('couponStore', ['setCondition2CouponSave']),
@@ -122,6 +146,31 @@ export default {
       font-weight: 700;
     }
     margin-bottom: 20px;
+    &.MaxReceiveNumber {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      > span {
+        color: #444;
+        font-size: 14px;
+        margin-right: 15px;
+        line-height: 30px;
+      }
+      > .el-checkbox {
+        margin-right: 30px;
+        .el-checkbox__label {
+          font-size: 14px;
+        }
+      }
+      > .el-input {
+        width: 120px;
+        margin-right: 6px;
+      }
+      > span:last-of-type {
+        font-weight: 700;
+        font-size: 14px;
+      }
+    }
   }
   > section {
     width: 88%;

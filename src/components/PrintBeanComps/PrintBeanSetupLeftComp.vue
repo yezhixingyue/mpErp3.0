@@ -3,16 +3,16 @@
     <ul>
       <li>
         <label>优先级：</label>
-        <el-input v-model.number="Priority" style="width:90px" size="mini" maxlength="3"></el-input>
+        <el-input v-model.number="Priority" style="width:90px" size="mini" maxlength="3" :disabled='disabledAll'></el-input>
         <span class="tips-box"><i class="el-icon-warning"></i> 注：数字越小优先级越高</span>
       </li>
       <li>
         <label>标题：</label>
-        <el-input v-model.trim="Title" style="width:400px" size="mini" maxlength="20" show-word-limit></el-input>
+        <el-input v-model.trim="Title" style="width:400px" size="mini" maxlength="20" show-word-limit :disabled='disabledAll'></el-input>
       </li>
       <li v-if="isCashBack">
         <label>描述：</label>
-        <el-input v-model="Describe" style="width:550px" size="mini" class="more-text"  maxlength="40" show-word-limit></el-input>
+        <el-input v-model="Describe" style="width:550px" size="mini" class="more-text" :disabled='disabledAll'  maxlength="40" show-word-limit></el-input>
       </li>
       <li>
         <label>开始日期：</label>
@@ -22,9 +22,9 @@
           :disabled='isStarted'
           size="mini"
           key="StartTime"
-          type="datetime"
+          :type="isCashBack ? 'date' : 'datetime'"
+          :format="isCashBack ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm'"
           value-format="yyyy-MM-ddTHH:mm:ss"
-          format="yyyy-MM-dd HH:mm"
           style="width:180px"
           placeholder=" 年 / 月 / 日"
           popper-class='mp-price-bean-list-page-header-date-selector-wrap'
@@ -32,7 +32,7 @@
       </li>
       <li v-if="isCashBack">
         <label>统计周期：</label>
-        <el-radio-group v-model="PeriodType">
+        <el-radio-group v-model="PeriodType" :disabled='disabledAll'>
           <el-radio :label="it.ID" v-for="it in CycleEnumList" :key="it.ID">{{it.Name}}</el-radio>
         </el-radio-group>
       </li>
@@ -71,13 +71,13 @@
       </li>
       <li class="tyle-radio">
         <label></label>
-        <el-radio-group v-model="Category">
+        <el-radio-group v-model="Category" :disabled='disabledAll'>
           <el-radio :label="it.ID" v-for="it in CategoryEnumsList" :key="it.ID">{{it.Name}}</el-radio>
         </el-radio-group>
       </li>
       <li class="customer" v-if="Category === CategoryEnums.Customer.ID">
         <label>客户编号：</label>
-        <CustomerRemoteSelector v-model="Customer" useEffect />
+        <CustomerRemoteSelector v-model="Customer" useEffect :disabled="disabledAll" />
       </li>
     </ul>
     <CheckboxGroupComp
@@ -85,6 +85,7 @@
       title="客户类型"
       :itemList='userTypeListNoneEmpty'
       :showTips='false'
+      :isDisabled="disabledAll"
       v-model="CustomerTypeList"
     />
     <CheckboxGroupComp
@@ -92,11 +93,12 @@
       title="客户等级"
       :itemList='userRankListNoneEmpty'
       :showTips='false'
+      :isDisabled="disabledAll"
       v-model="GradeList"
     />
     <div class="area-box" v-show="Category === CategoryEnums.CustomerType.ID">
       <h2>销售区域：</h2>
-      <NewAreaTreeSpreadComp v-model="AreaList" :list='allAreaTreeList' />
+      <NewAreaTreeSpreadComp v-model="AreaList" :list='allAreaTreeList' :disabled="disabledAll" />
     </div>
   </section>
 </template>
@@ -141,6 +143,9 @@ export default {
   computed: {
     ...mapState('common', ['userTypeListNoneEmpty', 'userRankListNoneEmpty']),
     ...mapGetters('common', ['allAreaTreeList']),
+    disabledAll() {
+      return this.isStarted && this.isCashBack;
+    },
     Priority: {
       get() {
         return this.curItemData?.Priority;
@@ -283,8 +288,8 @@ export default {
 </script>
 <style lang='scss'>
 .mp-erp-print-bean-setup-page-left-comp-wrap {
-  padding-left: 60px;
-  min-width: 700px;
+  padding-left: 50px;
+  min-width: 660px;
   > ul {
     > li {
       display: flex;

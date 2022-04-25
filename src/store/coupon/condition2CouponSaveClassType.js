@@ -79,6 +79,10 @@ export default class Condition2CouponSaveClassType {
 
     ProductClassList = [];
 
+    IsCustomerReceive = false; // 是否允许客户领取
+
+    MaxReceiveNumber = ''; // 客户最大领取数量
+
     static check(obj) {
       // 券的面值 满减金额 及 数量 校验
       const { Amount, MinPayAmount, TotalNumber } = obj.Data;
@@ -164,6 +168,33 @@ export default class Condition2CouponSaveClassType {
         showError('请选择客户等级');
         return false;
       }
+
+      const { IsCustomerReceive, MaxReceiveNumber } = obj;
+      const MaxReceiveNumberRules = [
+        {
+          strategy: 'isNotEmpty',
+          errorMsg: '请输入每个客户的最大可领取数量!',
+        },
+        {
+          strategy: 'isNotNum',
+          errorMsg: '客户最大可领取数量应当为数字类型',
+        },
+        {
+          strategy: 'Minimum:0',
+          errorMsg: '客户最大可领取数量不能小于0',
+        },
+        {
+          strategy: 'isPositiveInt',
+          errorMsg: '客户最大可领取数量应为整数',
+        },
+      ];
+      if (IsCustomerReceive && !validateCheck(MaxReceiveNumber, MaxReceiveNumberRules, showError)) return false;
+
+      if (IsCustomerReceive && MaxReceiveNumber > TotalNumber) {
+        showError('客户最大可领取数量已超出发放数量');
+        return false;
+      }
+
       if (obj.AreaList.length === 0) {
         showError('请选择销售区域');
         return false;
@@ -217,6 +248,11 @@ export default class Condition2CouponSaveClassType {
       _condition2CouponSave.IsIncludeIncreasedProduct = data.IsIncludeIncreasedProduct;
 
       _condition2CouponSave.ProductClassList = data.ProductClassList;
+
+
+      const { IsCustomerReceive, MaxReceiveNumber } = data;
+      _condition2CouponSave.IsCustomerReceive = IsCustomerReceive || false;
+      _condition2CouponSave.MaxReceiveNumber = (MaxReceiveNumber || MaxReceiveNumber === 0) ? MaxReceiveNumber : '';
 
       return _condition2CouponSave;
     }

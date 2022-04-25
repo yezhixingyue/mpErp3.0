@@ -220,6 +220,11 @@
   &:active {
     color: #ce083a !important;
   }
+  &.disabled, &:disabled {
+    color: #cbcbcb !important;
+    pointer-events: none;
+    cursor: default;
+  }
 }
 
 .el-radio__inner {

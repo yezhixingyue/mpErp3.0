@@ -38,9 +38,9 @@
       </el-tooltip>
     </div>
     <div class="menus">
-      <span class="blue-span" @click="filter">筛选条件</span>
-      <span class="blue-span" @click="edit">编辑产品</span>
-      <span class="red-span" @click="remove">删除</span>
+      <span class="blue-span" @click="filter" :class="{disabled: isStarted}">筛选条件</span>
+      <span class="blue-span" @click="edit" :class="{disabled: isStarted}">编辑产品</span>
+      <span class="red-span" @click="remove" :class="{disabled: isStarted}">删除</span>
     </div>
   </div>
 </template>
@@ -56,6 +56,10 @@ export default {
     item: {
       type: Object,
       default: () => ({}),
+    },
+    isStarted: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

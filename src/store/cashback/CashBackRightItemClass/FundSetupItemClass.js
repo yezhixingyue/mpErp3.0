@@ -55,8 +55,8 @@ export default class {
     };
     if (!checkNum(this.Range.MinValue, '消费金额最小值')) return false;
     if (!checkNum(this.Range.MaxValue, '消费金额最大值', true)) return false;
-    if (this.Range.MinValue > +this.Range.MaxValue && +this.Range.MaxValue !== -1) {
-      messageBox.failSingleError('保存失败', '消费金额中最小值不能大于最大值');
+    if (this.Range.MinValue >= +this.Range.MaxValue && +this.Range.MaxValue !== -1) {
+      messageBox.failSingleError('保存失败', '消费金额中最小值不能大于或等于最大值');
       return false;
     }
     if (this.Type === ReturnTypeEnums.fixed.ID) { // 按照固定比例
