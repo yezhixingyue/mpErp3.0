@@ -45,7 +45,7 @@
         <li>
           <span class="title">给客户的提示：</span>
           <div class="content-item">
-            <el-input maxlength="40" show-word-limit v-model="SpecialDayForm.Tips" size="small" style="width:600px"></el-input>
+            <el-input maxlength="60" show-word-limit v-model="SpecialDayForm.Tips" size="small" style="width:600px"></el-input>
           </div>
         </li>
       </ul>

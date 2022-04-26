@@ -133,7 +133,7 @@ export default {
         if (!str) return '';
         const [date, time] = str.split('T');
         if (date && time) {
-          return `${date} ${time.slice(0, 5)}`;
+          return `${date}`;
         }
         return '';
       };

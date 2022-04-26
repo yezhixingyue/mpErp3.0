@@ -185,7 +185,7 @@ export default class Condition2CouponSaveClassType {
         },
         {
           strategy: 'isPositiveInt',
-          errorMsg: '客户最大可领取数量应为整数',
+          errorMsg: '客户最大可领取数量应为正整数',
         },
       ];
       if (IsCustomerReceive && !validateCheck(MaxReceiveNumber, MaxReceiveNumberRules, showError)) return false;
