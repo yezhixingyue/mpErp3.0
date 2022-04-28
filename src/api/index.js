@@ -84,6 +84,57 @@ const api = {
   getPayPackageByOrder(orderID) { // GET /Api/PayPackage/GetByOrder  根据订单查询相关合包信息
     return instance.get(`/Api/PayPackage/GetByOrder?orderID=${orderID}`);
   },
+  getApplyQuestionApply(data) { // POST /Api/AfterSaleOrder/List  售后申请
+    return instance.post('/Api/OrderAfterSale/Apply', data);
+  },
+  getOperateStaff() { // POST /Api/AfterSaleOrder/OperateStaff  转交人列表
+    return instance.get('Api/OrderAfterSale/OperateStaff');
+  },
+  getApplyQuestionApplyList(data) { // POST /Api/OrderAfterSale/ApplyList  售后申请列表
+    return instance.post('/Api/OrderAfterSale/ApplyList', data);
+  },
+  getOrderAfterSaleManageList(data) { // POST /Api/OrderAfterSale/ManageList  售后管理列表
+    return instance.post('/Api/OrderAfterSale/ManageList', data);
+  },
+  getOrderAfterSaleDealApply(code) { // POST /Api/OrderAfterSale/DealApply  开始处理售后申请
+    return instance.put(`/Api/OrderAfterSale/DealApply?applyCode=${code}`);
+  },
+  getOrderAfterSaleHang(data) { // POST /Api/OrderAfterSale/Hang  挂起售后申请
+    return instance.post('/Api/OrderAfterSale/Hang', data);
+  },
+  getOrderAfterSaleCancelHang(data) { // POST Api/OrderAfterSale/CancelHang  解除挂起售后申请
+    return instance.post(`Api/OrderAfterSale/CancelHang?afterSaleCode=${data}`);
+  },
+  getOrderAfterSaleTransfer(data) { // POST /Api/OrderAfterSale/Transfer  转交售后申请
+    return instance.post('/Api/OrderAfterSale/Transfer', data);
+  },
+  getOrderAfterSaleReject(data) { // POST /Api/OrderAfterSale/Reject  驳回售后申请
+    return instance.post('/Api/OrderAfterSale/Reject', data);
+  },
+  getHandleDetail(data) { // POST /Api/OrderAfterSale/HandleDetail  售后申请详情
+    return instance.get(`/Api/OrderAfterSale/HandleDetail?afterSaleCode=${data}`);
+  },
+  getComplete(data) { // POST /Api/OrderAfterSale/SaveDetailAsync  获取保存的售后服务详情
+    return instance.post('/Api/OrderAfterSale/Complete', data);
+  },
+  getSaveDetailAsync(afterSaleCode) { // POST /Api/OrderAfterSale/SaveDetailAsync  获取保存的售后服务详情
+    return instance.get(`/Api/OrderAfterSale/SaveDetail?afterSaleCode=${afterSaleCode}`);
+  },
+  getResultDetail(afterSaleCode) { // POST /Api/OrderAfterSale/ResultDetail
+    return instance.get(`/Api/OrderAfterSale/ResultDetail?afterSaleCode=${afterSaleCode}`);
+  },
+  getSuccessDetail(afterSaleCode) { // POST /Api/OrderAfterSale/ResultDetail
+    return instance.get(`/Api/OrderAfterSale/SuccessDetail?afterSaleCode=${afterSaleCode}`);
+  },
+  getSaveResult(data) { // POST /Api/OrderAfterSale/SaveResult
+    return instance.post('/Api/OrderAfterSale/SaveResult', data);
+  },
+  getOrderApplyRecord(orderID) { // POST /Api/OrderAfterSale/OrderApplyRecord 订单已售后列表
+    return instance.get(`Api/OrderAfterSale/OrderApplyRecord?orderID=${orderID}`);
+  },
+  getCustomerApplyRecord(customerID) { // POST /Api/OrderAfterSale/CustomerApplyRecord 客户已售后列表
+    return instance.get(`Api/OrderAfterSale/CustomerApplyRecord?customerID=${customerID}`);
+  },
   /* 包裹列表api
    ----------------------------------------------------------------------------------- */
   getPackageListByOrderID(orderID) { // GET /Api/Order/PackageList 通过订单号获取包裹列表

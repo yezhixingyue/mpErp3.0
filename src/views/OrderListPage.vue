@@ -1,6 +1,6 @@
 <template>
   <div class="order-list-page-wrap">
-    <Table />
+    <Table @ServiceAfterSalesClick="ServiceAfterSalesClick"/>
     <div class="footer">
       <div class="is-font-size-14" v-if="localPermission.DisplayTotalAmount">
         <span class="is-primary is-bold">总金额:</span>
@@ -25,12 +25,17 @@
      </Count>
     </div>
     <OrderListDialog />
+    <!-- 申请售后弹窗 -->
+    <ServiceAfterSalesDialog :visible='ServiceAfterSalesVisible'
+    :ServiceAfterSales="ServiceAfterSales" @close='ServiceAfterSalesVisible=false'
+    @success="ServiceAfterSalesSuccess"></ServiceAfterSalesDialog>
     <ServiceDialog key="order-list-page" className='show-black' />
   </div>
 </template>
 
 <script>
 import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
+import ServiceAfterSalesDialog from '@/components/order/Main/ServiceAfterSalesDialog.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import Table from '@/components/order/Main/Table2.vue';
 import Count from '@/components/common/Count.vue';
@@ -41,6 +46,7 @@ export default {
     Table,
     Count,
     OrderListDialog,
+    ServiceAfterSalesDialog,
     ServiceDialog: () => import(/* webpackChunkName: "async" */ '@/components/order/DialogContent/ServiceDialog.vue'),
   },
   mixins: [recordScrollPositionMixin('.order-list-page-wrap .el-table__body-wrapper')],
@@ -57,10 +63,19 @@ export default {
     // ...mapGetters('layout', ['curTabPagesNameList']),
     // ...mapState
   },
+  data() {
+    return {
+      ServiceAfterSalesVisible: false,
+      ServiceAfterSales: null,
+    };
+  },
   methods: {
     ...mapActions('orderModule', ['getOrderTableData', 'getOrderListData2Excel']),
     handlePageChange(page) {
       this.getOrderTableData({ page, type: 'get' });
+    },
+    ServiceAfterSalesSuccess() {
+      this.getOrderTableData();
     },
     handleActionDownload(type) {
       this.getOrderListData2Excel(type);
@@ -74,13 +89,12 @@ export default {
       }
       this.handleActionDownload(type);
     },
+    ServiceAfterSalesClick(data) {
+      this.ServiceAfterSalesVisible = true;
+      this.ServiceAfterSales = data;
+    },
   },
   mounted() {
-    // if (!this.curTabPagesNameList.find(it => it === this.$route.path)) {
-    //   this.$store.commit('orderModule/setSelectTime', ['TodayDate', 1]);
-    //   this.getOrderTableData();
-    // }
-    // console.log('mounted order page', this.curTabPagesNameList);
     this.$store.commit('orderModule/setSelectTime', ['TodayDate', 1]);
     this.$store.commit('orderModule/clearConfigObj');
     this.getOrderTableData();

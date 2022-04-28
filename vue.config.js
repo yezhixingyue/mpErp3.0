@@ -37,6 +37,11 @@ module.exports = {
         ws: true, // 开启websockets
         changeOrigin: true, // 开启代理
       },
+      '/Image': { // 代理正式图片地址
+        target: proxyUrl,
+        ws: true, // 开启websockets
+        changeOrigin: true, // 开启代理
+      },
     },
   },
   configureWebpack: {

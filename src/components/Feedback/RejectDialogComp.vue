@@ -9,12 +9,13 @@
     @open='onOpen'
     @closed='onClosed'
     @submit="onSubmit"
-    class="mp-erp-comps-customer-setup-module-customer-detail-display-dialog-comp-wrap"
+    class="mp-erp-comps-reject-dialog-comp-wrap"
    >
+   <!-- <p slot="title"><img src="@/assets/images/reject.png" alt="">aaaaa</p> -->
    <template>
-    <el-form :model="PostponeRuleForm" status-icon ref="ruleForm" label-width="110px" class="demo-ruleForm" label-position="left">
-      <el-form-item label="处理意见：" prop="checkPass">
-        <el-input type="textarea" placeholder="请输入处理意见" autocomplete="off"></el-input>
+    <el-form :model="RejectForm" status-icon ref="ruleForm" label-width="110px" class="demo-ruleForm" label-position="left">
+      <el-form-item label="处理意见：">
+        <el-input v-model="RejectForm.Opinion" type="textarea" placeholder="请输入处理意见" autocomplete="off"></el-input>
       </el-form-item>
     </el-form>
    </template>
@@ -30,7 +31,9 @@ export default {
       type: Boolean,
       default: false,
     },
-
+    paramsData: {
+      type: Object,
+    },
   },
   components: {
     CommonDialogComp,
@@ -50,20 +53,29 @@ export default {
       a: false,
       value1: '',
       loading: false,
-      PostponeRuleForm: {},
+      RejectForm: {
+        AfterSaleCode: this.paramsData.AfterSaleCode,
+        Opinion: '',
+      },
     };
   },
   methods: {
     onCancle() { // 取消  关闭弹窗
-      this.$emit('update:visible', false);
+      this.RejectForm.Opinion = '';
+      this.$emit('cloce');
     },
     async onSubmit() { // 仅价格详情使用
-
+      if (!this.RejectForm.Opinion) {
+        this.messageBox.failSingleError('操作失败', '请输入处理意见');
+      } else {
+        this.$emit('submit', this.RejectForm);
+      }
     },
     onOpen() {
       this.getCustomerData();
     },
     onClosed() {
+      this.onCancle();
     },
     async getCustomerData() { // 获取客户数据
       this.loading = true;
@@ -75,5 +87,22 @@ export default {
 };
 </script>
 <style lang='scss'>
-
+.mp-erp-comps-reject-dialog-comp-wrap{
+  .el-dialog{
+    .el-dialog__header{
+       span::before{
+          display: inline-block;
+          background: url('../../assets/images/reject.png') no-repeat center #26BCF9;
+          background-size: 15px 15px;
+          content: "";
+          display: inline-block;
+          height: 19px;
+          width: 19px !important;
+          vertical-align: -15%;
+          margin-right: 10px;
+          border-radius: 50%;
+       }
+    }
+  }
+}
 </style>

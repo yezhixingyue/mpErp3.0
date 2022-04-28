@@ -2,7 +2,15 @@
   <ul class="mp-service-page-header">
       <li class="mp-service-page-header-first">
         <div class="f">
-            <ServiceClassify />
+            <order-channel-selector
+              :options="AfterSaleType"
+              :requestFunc="getDataList"
+              :changePropsFunc="setCondition4DataList"
+              :typeList="[['SolutionType', '']]"
+              :value="obj4RequestServiceList.SolutionType"
+              :defaultProps="{ label: 'label', value: 'value' }"
+              label="售后类型"
+            />
             <ProductSelector
             :changePropsFunc="setCondition4DataList"
             :requestFunc="getDataList"
@@ -31,14 +39,25 @@
                 label=""
               />
             </div>
-            <StaffSelector
-              title="操作人"
-              needlimit
-              class="second-section"
-              :changePropsFunc="setCondition4DataList"
+            <order-channel-selector
+              class="margin-right45"
+              :options="AfterSaleResult"
               :requestFunc="getDataList"
-              :typeList="[['Operator', '']]"
-              :value="obj4RequestServiceList.Operator"
+              :changePropsFunc="setCondition4DataList"
+              :typeList="[['Result', '']]"
+              :value="obj4RequestServiceList.SolutionType"
+              :defaultProps="{ label: 'label', value: 'value' }"
+              label="服务结果"
+            />
+            <order-channel-selector
+              class="margin-right45"
+              :options="AfterSaleScore"
+              :requestFunc="getDataList"
+              :changePropsFunc="setCondition4DataList"
+              :typeList="[['Score', '']]"
+              :value="obj4RequestServiceList.Score"
+              :defaultProps="{ label: 'label', value: 'value' }"
+              label="服务评级"
             />
         </div>
         <div class="s">
@@ -46,7 +65,7 @@
             :changePropsFunc='setCondition4DataList'
             :requestFunc='getDataList'
             :isFull="true"
-            :typeList="[['DateType', ''], ['CreateTime', 'First'], ['CreateTime', 'Second']]"
+            :typeList="[['DateType', ''], ['OperateTime', 'First'], ['OperateTime', 'Second']]"
             :dateValue='obj4RequestServiceList.DateType'
             :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
             :dateList='dateList'
@@ -73,18 +92,18 @@
 import { mapState } from 'vuex';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
-import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
+// import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
-import ServiceClassify from './ServiceClassify.vue';
+// import ServiceClassify from './ServiceClassify.vue';
 
 export default {
   components: {
-    ServiceClassify,
+    // ServiceClassify,
     ProductSelector,
     OrderChannelSelector,
-    StaffSelector,
+    // StaffSelector,
     // ElDateRangeSelector,
     SearchInputComp,
     LineDateSelectorComp,
@@ -104,13 +123,20 @@ export default {
     //   },
     // },
     UserDefinedTimeIsActive() {
-      return this.obj4RequestServiceList.DateType === '' && !!this.obj4RequestServiceList.CreateTime.First && !!this.obj4RequestServiceList.CreateTime.Second;
+      return this.obj4RequestServiceList.DateType === '' && !!this.obj4RequestServiceList.OperateTime.First && !!this.obj4RequestServiceList.OperateTime.Second;
     },
   },
   data() {
     return {
       // eslint-disable-next-line max-len
       dateList: [{ name: '全部', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
+      AfterSaleType: [{ label: '不限', value: '' }, { label: '减款', value: 1 }, { label: '补印', value: 2 }, { label: '赠送优惠券', value: 3 }],
+      AfterSaleResult: [{ label: '不限', value: '' }, { label: '问题已解决', value: 1 }, { label: '问题未解决', value: 2 }],
+      AfterSaleScore: [
+        { label: '不限', value: '' }, { label: '1星', value: 1 },
+        { label: '2星', value: 2 }, { label: '3星', value: 3 },
+        { label: '4星', value: 4 }, { label: '1星', value: 5 },
+      ],
     };
   },
   methods: {
@@ -158,6 +184,12 @@ export default {
         }
         > .mp-service-header-service-classify-wrap {
           padding-left: 0;
+        }
+        >.mp-common-comps-order-channel-selector-wrap{
+          padding-bottom: 18px;
+        }
+        >.margin-right45{
+          margin-right: 45px;
         }
       }
       &.s {

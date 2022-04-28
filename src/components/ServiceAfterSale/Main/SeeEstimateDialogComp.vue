@@ -1,73 +1,47 @@
 <template>
-  <article class="mp-pc-service-after-sales-page-wrap">
-    <section>
-      <CommonDialogComp
-        title="售后评价"
-        :visible.sync="visible"
-        @cancle="cancle"
-        @open='onOpen'
-        @closed='closed'
-        submitText='确定'
-        :showCancel='false'
-        @submit='submit'
-        width='800px'
-        >
-        <div slot="title" class="title">aaa</div>
-        <el-form label-position="left" ref="form" :model="SeeEstimate" class="see-estimate">
-          <template v-if="SeeEstimate">
-            <el-form-item label="服务评分：">
-              <el-rate disabled show-text v-model="SeeEstimate.Score" :texts="['非常差', '差', '一般', '好', '非常好',]"></el-rate>
-            </el-form-item>
-            <el-form-item label="服务结果：">
-              <div class="result">
-                <span v-if="SeeEstimate.Result === 1">问题已解决</span>
-                <!-- <span>问题已解决</span> -->
-              </div>
-            </el-form-item>
-            <el-form-item label="服务标签：">
-              <span>
-                {{SeeEstimate.LabelTitle.join()}}
-              </span>
-            </el-form-item>
-            <el-form-item label="填写评价：">
-              <span>{{SeeEstimate.EvaluateContent}}</span>
-            </el-form-item>
-            <el-form-item label="评价晒图：">
-              <div class="images">
-                <el-image v-for="item in SeeEstimate.EvaluatePicList" :key="item"
-                  src=""
-                  fit="cover"></el-image>
-                <el-image
-                  src=""
-                  fit="cover"></el-image>
-                <el-image
-                  src=""
-                  fit="cover"></el-image>
-                <el-image
-                  src=""
-                  fit="cover"></el-image>
-                <el-image
-                  src=""
-                  fit="cover"></el-image>
-                <el-image
-                  src=""
-                  fit="cover"></el-image>
-                <el-image
-                  src=""
-                  fit="cover"></el-image>
-                <el-image
-                  src=""
-                  fit="cover"></el-image>
-                <el-image
-                  src=""
-                  fit="cover"></el-image>
-              </div>
-            </el-form-item>
-          </template>
-        </el-form>
-      </CommonDialogComp>
-    </section>
-  </article>
+
+ <CommonDialogComp
+   title="售后评价"
+   :visible.sync="visible"
+   @cancle="cancle"
+   @open='onOpen'
+   @closed='closed'
+   submitText='确定'
+   :showCancel='false'
+   @submit='submit'
+   width='800px'
+   >
+   <div slot="title" class="title">aaa</div>
+   <el-form label-position="left" ref="form" :model="SeeEstimate" class="see-estimate">
+     <template v-if="SeeEstimate">
+       <el-form-item label="服务评分：">
+         <el-rate disabled show-text v-model="SeeEstimate.Score" :texts="['非常差', '差', '一般', '好', '非常好',]"></el-rate>
+       </el-form-item>
+       <el-form-item label="服务结果：">
+         <div class="result">
+           <span v-if="SeeEstimate.Result === 1">问题已解决</span>
+           <span v-else>问题未解决</span>
+         </div>
+       </el-form-item>
+       <el-form-item label="服务标签：">
+         <span>
+           {{SeeEstimate.LabelTitle.join()}}
+         </span>
+       </el-form-item>
+       <el-form-item label="售后评价：">
+         <span>{{SeeEstimate.EvaluateContent}}</span>
+       </el-form-item>
+       <el-form-item label="评价晒图：">
+         <div class="images">
+           <el-image v-for="item in SeeEstimate.EvaluatePicList" :key="item"
+             :src="item"
+             fit="cover"></el-image>
+         </div>
+       </el-form-item>
+     </template>
+   </el-form>
+ </CommonDialogComp>
+
 </template>
 
 <script>
@@ -99,11 +73,9 @@ export default {
       this.closed();
     },
     closed() {
-      console.log('closed');
       this.$emit('closed');
     },
     submit() {
-      console.log('submit');
       this.$emit('submit');
     },
   },
@@ -125,12 +97,7 @@ export default {
 </script>
 
 <style lang='scss'>
-.mp-pc-service-after-sales-page-wrap {
 
-  width: 100%;
-  // background-color: #fff;
-  margin-bottom: 17px;
-  // min-height: calc(100vh - 135px - 180px);
   .see-estimate{
     min-height: calc(400px);
     .el-rate{
@@ -153,5 +120,4 @@ export default {
       }
     }
   }
-}
 </style>

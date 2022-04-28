@@ -52,6 +52,36 @@
         </div>
       </li>
       <li>
+        <OrderChannelSelector
+        style="margin-right: 30px"
+        :options='progressList'
+        :requestFunc='getDataList'
+        :changePropsFunc='setCondition4DataList'
+        :typeList="[['Status', '']]"
+        :value='condition.Status'
+        label="服务单来源"
+       />
+        <OrderChannelSelector
+        style="margin-right: 30px"
+        :options='progressList'
+        :requestFunc='getDataList'
+        :changePropsFunc='setCondition4DataList'
+        :typeList="[['SolutionType', '']]"
+        :value='condition.SolutionType'
+        label="解决方案"
+       />
+        <OrderChannelSelector
+          :showLabel="false"
+          :options="userRankList"
+          :requestFunc="getDataList"
+          :changePropsFunc="setCondition4DataList"
+          :typeList="[['CustomerType', 'Second']]"
+          :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
+          :value="condition.CustomerType.Second"
+          label=""
+        />
+      </li>
+      <li>
         <LineDateSelectorComp
           :changePropsFunc='setCondition4DataList'
           :requestFunc='getDataList'
@@ -154,7 +184,6 @@ export default {
       this.$emit('setCondition', data);
     },
     getDataList() {
-      // console.log('getDataList', this.condition);
       this.$emit('getDataList');
     },
   },

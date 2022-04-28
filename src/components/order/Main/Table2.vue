@@ -28,9 +28,12 @@
           进度/详情/包裹</span>
         </li>
         <li v-if="localPermission.ApplyAfterSales">
-          <span  @click="jump2Service(scope.row)" v-if="scope.row.AllowAfterSales">
+          <span  @click="ServiceAfterSalesClick(scope.row)" v-if="scope.row.AllowAfterSales">
             <img src="@/assets/images/service.png" alt />售后
           </span>
+          <!-- <span  @click="jump2Service(scope.row)" v-if="scope.row.AllowAfterSales">
+            <img src="@/assets/images/service.png" alt />售后a
+          </span> -->
           <span v-else class="disbaled">
             <img src="@/assets/images/servicestop.png" alt />售后
           </span>
@@ -93,6 +96,9 @@ export default {
     },
     open(index, OrderID) {
       this.messageBox.warnCancelBox('确定取消此订单吗 ?', `订单号：[ ${OrderID} ]`, () => this.delTargetOrder(index), null);
+    },
+    ServiceAfterSalesClick(data) {
+      this.$emit('ServiceAfterSalesClick', data);
     },
     onOrderDel(data, index) {
       this.setOrderID2Del(data.OrderID);

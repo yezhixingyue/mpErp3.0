@@ -75,6 +75,15 @@ export default {
       // new
 
       SolutionType: '',
+      // Product: {
+      //   ClassID: 0,
+      //   TypeID: 0,
+      //   ProductID: '00000000-0000-0000-0000-000000000000',
+      // },
+      // CustomerType: {
+      //   First: 0,
+      //   Second: 0,
+      // },
       Score: '',
       Result: '',
       OperateTime: {
@@ -282,6 +291,15 @@ export default {
         // new
 
         SolutionType: '',
+        // Product: {
+        //   ClassID: 0,
+        //   TypeID: 0,
+        //   ProductID: '00000000-0000-0000-0000-000000000000',
+        // },
+        // CustomerType: {
+        //   First: 0,
+        //   Second: 0,
+        // },
         Score: '',
         Result: '',
         OperateTime: {
@@ -508,6 +526,7 @@ export default {
       state.searchWatchKey += 1;
     },
     setDateFormat(state) {
+      console.log(state.obj4RequestServiceList);
       CommonClassType.setDate(state.obj4RequestServiceList, 'OperateTime');
     },
   },

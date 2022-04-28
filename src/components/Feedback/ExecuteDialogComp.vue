@@ -12,16 +12,6 @@
     v-dialogDrag
   >
     <template>
-      <OrderServiceEditCord v-show="!isLoading" :orderData='orderDetailData' :Customer='curCustomerInfo2Service'
-        :ServiceHistory='curServiceOrderHistory'
-        :class="orderDetailData && orderDetailData.FilePath ? 'd' : ''"
-        :curProductInfoStringify='curProductInfoStringify' />
-      <!-- 顶部信息 -->
-      <div class="download-btn" v-show="!isLoading" v-if="orderDetailData && orderDetailData.FilePath">
-        <normalBtn @click.native="handleDownLoad(orderDetailData)" title="下载文件" />
-        <!-- <a :href="'http://192.168.3.68:8055'
-         + '/File/20200613/75dce5d550e227b764e9fed669976be19bea7936.cdr'" download="w3logo">下载文件 aaaaa</a> -->
-      </div>
       <section v-show="!isLoading" class="question-photo">
         <!-- 问题照片 -->
         <header class="right-line">
@@ -29,9 +19,23 @@
         </header>
         <main>
           <div class="submit-img-box">
-            <FileSelectBtn multiple @click.native="onuploadclick" :func="uploadImg" ref="oUpImgEl" />
-            <span class="explain">最多上传4张照片，支持.jpg .png .bmp</span>
+            <!-- <FileSelectBtn multiple @click.native="onuploadclick" :func="uploadImg" ref="oUpImgEl" /> -->
+            <el-upload
+              class="upload-demo"
+              :action="'/Api/Upload/Image?type=3'"
+              multiple
+              :limit="4"
+              :disabled ="UploadDisabled"
+              accept='.png,.jpeg,.jpg,.bmp'
+              :on-success='handllePictureUploaded'
+              :before-upload="beforeUpload"
+              :file-list="fileList">
+              <el-button size="small" type="primary">上传问题照片</el-button>
+              <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+            </el-upload>
+            <span class="explain">最多上传4张照片，支持.jpg .jpeg .png .bmp</span>
           </div>
+          <!-- {{serviceImgList}} -->
           <DisplayPictrue :delFunc='handleDel' :imgList='serviceImgList' />
         </main>
       </section>
@@ -43,30 +47,260 @@
         </header>
         <main>
           <div class="left-table">
-            <EditDiaLeftTable :tableData='OrderPackageListTableData' />
+            <EditDiaLeftTable :SelectionData="HandlingAfterSalesForm.AfterSalePackages"
+            :tableData='OrderPackageListTableData' @SelectionChange='SelectionPackageChange' />
           </div>
           <div class="right-submit-wrap">
-            <EditDiaRightSubmit :status='orderDetailData && orderDetailData.Status' />
+            <div class="questions">
+              <div class="left">
+                问题：
+              </div>
+              <div class="right">
+                <div class="row" v-for="(item, index) in HandlingAfterSalesForm.AfterSaleQuestions" :key="item.key">
+                  <el-select v-model="item.QuestionParentType"
+                  @change="changeQuestions(index)" placeholder="请选择问题类型" size="small" class="mp-common-select-comp-wrap font-12">
+                    <el-option
+                      v-for="it in FirstGradeQuestionType"
+                      :key="it.ID"
+                      :label="it.Name"
+                      :value="it.ID">
+                    </el-option>
+                  </el-select>
+                  <el-select v-model="item.QuestionType"
+                  placeholder="请选择具体问题" size="small" class="mp-common-select-comp-wrap font-12">
+                    <el-option
+                      v-for="it in SecondLevelQuestionType(index)"
+                      :key="it.ID"
+                      :label="it.Name"
+                      :value="it.ID">
+                    </el-option>
+                  </el-select>
+                  <el-input size="small" v-model="item.Remark" placeholder="在此输入备注信息" maxlength="200" show-word-limit></el-input>
+
+                  <CtrlMenus :showList="['del', 'add']"  @remove='onQuestionsRemoveClick(index)' @add='onQuestionsAddClick' />
+                </div>
+              </div>
+            </div>
+            <div class="department">
+              <div class="left">
+                责任部门：
+              </div>
+              <div class="right">
+                <div class="row" v-for="(item, i) in HandlingAfterSalesForm.AfterSaleResponsibilities" :key="item.key">
+                  <el-select v-model="item.Department"
+                  class="mp-common-select-comp-wrap font-12"
+                  placeholder="请选择">
+                    <el-option
+                      v-for="it in DepartmentList"
+                      :key="it.ID"
+                      :label="it.Title"
+                      :value="it.ID">
+                    </el-option>
+                  </el-select>
+                  <el-input-number :min="0" :max="100" :controls="false" v-model="item.Proportion" placeholder="输入责任比例" size="small">
+                  </el-input-number>
+                  <CtrlMenus :showList="['del', 'add']"  @remove='onDepartmentRemoveClick(i)' @add='onDepartmentAddClick' />
+                </div>
+              </div>
+            </div>
+            <div class="bottom">
+              <div class="left">
+                <div class="solution">
+                  <div class="left">
+                    解决方案：
+                  </div>
+                  <div class="right">
+                    <div class="row">
+                      <el-radio-group v-model="HandlingAfterSalesForm.Solution.SolutionType">
+                        <el-radio :label="2">退款</el-radio>
+                        <el-radio :label="7">补印</el-radio>
+                        <el-radio :label="8">赠送优惠劵</el-radio>
+                        <el-radio :label="255">其他</el-radio>
+                      </el-radio-group>
+                    </div>
+                  </div>
+                </div>
+                <div class="dispose">
+                  <div class="right">
+                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType === 2">
+                      <div class="form-item">
+                        <div class="label">
+                          订单退款：
+                        </div>
+                        <div class="conent">
+                          <el-input v-model="HandlingAfterSalesForm.Solution.RefundCashAmount"></el-input>元
+                        </div>
+                      </div>
+                      <div class="form-item">
+                        <div class="label">
+                          运费退款：
+                        </div>
+                        <div class="conent">
+                          <el-input v-model="HandlingAfterSalesForm.Solution.RefundFreight"></el-input>元
+                        </div>
+                      </div>
+                      <div class="form-item">
+                        <div class="label">
+                          退款方式：
+                        </div>
+                        <div class="conent">
+                          <el-select
+                          v-model="HandlingAfterSalesForm.Solution.RefundType"
+                          placeholder="请选择退款方式" size="small" class="mp-common-select-comp-wrap font-12">
+                            <el-option
+                              label="原支付方式返回"
+                              :value="0">
+                            </el-option>
+                            <el-option
+                              label="退回余额"
+                              :value="1">
+                            </el-option>
+                          </el-select>
+                          <span><i>?</i></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType === 7">
+                      <div class="form-item">
+                        <div class="label">
+                          款数：
+                        </div>
+                        <div class="conent">
+                          <el-input v-model="HandlingAfterSalesForm.Solution.KindCount"></el-input>款
+                        </div>
+                      </div>
+                      <div class="form-item">
+                        <div class="label">
+                          数量：
+                        </div>
+                        <div class="conent">
+                          <el-input v-model="HandlingAfterSalesForm.Solution.Number"></el-input>个
+                        </div>
+                      </div>
+                      <div class="form-item">
+                        <!-- <div class="label">
+                          数量：
+                        </div> -->
+                        <div class="conent">
+                          <div class="upload-file-box" v-if="!ReprintIsUpload">
+                            <FileSelectBtn class="uploadFileBox" accept='*'
+                            :func="readFileUniqueName" title="上传文件" />
+                            <el-tooltip effect="dark" :content="fileName" placement="top-end">
+                              <span class="file-name-box">{{fileName}}</span>
+                            </el-tooltip>
+                            <!-- <span class="is-font-size-12 is-gray" v-if="orderDetailData.FileCase === 1 && !fileName">文件非必传</span>
+                            <span class="is-font-size-12 is-gray" v-if="orderDetailData.FileCase === 2 && !fileName">文件必传</span> -->
+                          </div>
+                            <p v-else class="is-font-size-12 is-gray" style="line-height:20px">注：该订单不用上传文件</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType === 8">
+                      <div class="form-item">
+                        <div class="label select" @click="onCouponSelectClick">
+                          选择优惠卷
+                        </div>
+                        <div class="conent">
+                          <div v-if="selectedCouponList.length > 0">
+                            <span>已选：</span>
+                            <ul>
+                              <li v-for="it in selectedCouponList" :key="it.CouponID">
+                                  <span class="is-pink">{{it.Data.Amount}}元</span>
+                                  <span class="MinPayAmount">满{{it.Data.MinPayAmount}}元使用</span>
+                                  <span>（ <i class="is-origin">{{it.CouponNumber}}</i>张 ）</span>
+                                  <i> - </i>
+                                  <el-tooltip placement="top-start" :enterable='false' >
+                                    <div slot="content">
+                                        <p v-for="(item, i) in it.ProductListTextArray" :key="item + '---' + i">
+                                          {{ item }}
+                                        </p>
+                                    </div>
+                                    <span class="area-span">限产品：{{ it.ProductListTextArray.join(' ') }}</span>
+                                  </el-tooltip>
+                              </li>
+                            </ul>
+                          </div>
+                          <div v-else style="margin-top:0px;color:#999999;font-size:12px">暂未选择优惠券</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType !== ''">
+                      <div class="form-item">
+                        <div class="label">
+                          处理意见：
+                        </div>
+                        <div class="conent">
+                          <el-input type="textarea" v-model="HandlingAfterSalesForm.Solution.Opinion"></el-input>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="right" v-if="dataInfo">
+                <p>总金额:￥{{dataInfo.Order.PaidAmount}}元</p>
+                <p>已付:￥ <span class="red">{{dataInfo.Order.PaidAmount}}</span> 元</p>
+                <p>运单:￥{{dataInfo.Order.Freight}}元 <span class="tint">（含1个订单）</span></p>
+                <p>订单退款:￥0.0元</p>
+                <p>运费退款:￥0.0元</p>
+                <p>售后优惠:￥0.0元</p>
+              </div>
+            </div>
           </div>
         </main>
       </section>
       <span slot="footer" class="dialog-footer" v-show="!isLoading">
         <div class="loss-box">
           <span class="title">损失金额：</span>
-          <input :class="lossesFund.err ? 'is-warn' : ''"
-            v-model="lossesNum" @input="onLossInput" type="text" placeholder="请输入损失金额">
+          <input class="'is-warn'"
+            v-model="HandlingAfterSalesForm.LossAmount" type="text" placeholder="请输入损失金额">
           <span>元</span>
         </div>
-        <div class="err-wrap" v-if="serviceErrInfo">{{serviceErrInfo}}</div>
         <div class="btns">
           <normalBtn @click.native="handleClose" title="取消" />
-          <normalBtnFull @click.native="submitServiceOrder" title="提交" />
+          <normalBtn @click.native="submitServiceOrder(true)" title="保存" class="white"/>
+          <normalBtnFull @click.native="submitServiceOrder(false)" title="提交" />
         </div>
-        <div v-if="percentage" class="mask"></div>
-        <el-progress v-if="percentage" :class="percentage > 95 ? 'will-over' : ''"
-          :format='formatElementPercentage'
-          :show-text='true' text-inside :percentage="+percentage" :stroke-width=3></el-progress>
       </span>
+          <el-dialog
+            center
+            :visible.sync="dialogVisible"
+            :modal-append-to-body='false'
+            :modal='false'
+            :close-on-press-escape='false'
+            :close-on-click-modal='false'
+            @open='handleCouponDialogOpen'
+            custom-class='mp-erp-server-after-sale-solution-coupon-select-dialog'
+            top="16vh"
+            width="750px">
+            <div class="coupon-dialog-content">
+              <p v-if="couponList.length === 0" style="margin:20px 30px; letter-spacing:1px" class="is-pink is-font-size-12 tips-box">
+                <i class="el-icon-warning"></i> 暂无可用优惠券！</p>
+              <ul v-else>
+                <li v-for="it in couponList" :key="it.CouponID">
+                  <el-checkbox v-model="it.checked" class="mp-mini-checkbox">
+                    <span class="is-pink">{{it.Data.Amount}}元</span>
+                    <span class="MinPayAmount">满{{it.Data.MinPayAmount}}元使用</span>
+                    <i> - </i>
+                    <el-tooltip placement="top-start" :enterable='false' >
+                      <div slot="content">
+                          <p v-for="(item, i) in it.ProductListTextArray" :key="item + '---' + i">
+                            {{ item }}
+                          </p>
+                      </div>
+                      <span class="area-span">限产品：{{ it.ProductListTextArray.join(' ') }}</span>
+                    </el-tooltip>
+                  </el-checkbox>
+                  <el-input v-show="it.checked" v-model="it.CouponNumber" placeholder="" maxlength="5" size="mini"></el-input>
+                  <span v-show="it.checked">张</span>
+                </li>
+              </ul>
+            </div>
+            <span slot="footer" class="dialog-footer">
+              <el-button type="primary" :disabled='couponList.length === 0' @click="onSelectClick">确 定</el-button>
+              <el-button @click="dialogVisible = false">取 消</el-button>
+            </span>
+          </el-dialog>
     </template>
     <div v-if="isLoading">
       <LoadingComp class="loading-box" />
@@ -76,30 +310,28 @@
 
 <script>
 import {
-  mapState, mapGetters, mapMutations, mapActions,
+  mapState,
 } from 'vuex';
-import OrderServiceEditCord from '@/components/ServiceAfterSale/EditDialog/OrderServiceEditCord.vue';
 import VTypeTitle from '@/components/ServiceAfterSale/EditDialog/VTypeTitle.vue';
-import EditDiaLeftTable from '@/components/ServiceAfterSale/EditDialog/EditDiaLeftTable.vue';
-import EditDiaRightSubmit from '@/components/ServiceAfterSale/EditDialog/EditDiaRightSubmit.vue';
+import EditDiaLeftTable from '@/components/Feedback/DialogContent/EditDiaLeftTable.vue';
 import normalBtn from '@/components/common/normalBtn.vue';
 import normalBtnFull from '@/components/common/normalBtnFull.vue';
-import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
 import DisplayPictrue from '@/components/ServiceAfterSale/EditDialog/DisplayPictrue.vue';
 import LoadingComp from '@/components/common/LoadingComp.vue';
-
+import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
+import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
 
 export default {
   components: {
     normalBtn,
     normalBtnFull,
-    OrderServiceEditCord,
     VTypeTitle,
     EditDiaLeftTable,
-    EditDiaRightSubmit,
-    FileSelectBtn,
     DisplayPictrue,
     LoadingComp,
+    CtrlMenus,
+    FileSelectBtn,
   },
   props: {
     className: {
@@ -109,9 +341,17 @@ export default {
     visible: {
       type: Boolean,
     },
+    paramsData: {
+      type: Object,
+    },
+    dataInfo: {
+      type: Object,
+    },
   },
   data() {
     return {
+      UploadDisabled: false,
+      QuestionTypeList: null,
       imgInfo: [],
       imgSrc: null,
       imgRules: [
@@ -120,17 +360,78 @@ export default {
       ],
       lossesNum: null,
       fileList: [],
+      dialogVisible: false,
+      // 优惠卷列表
+      couponList: [],
+      // 选择的优惠卷
+      selectedCouponList: [],
+      // 需不需要上传补印文件
+      ReprintIsUpload: false,
+      HandlingAfterSalesForm: {
+        AfterSaleCode: 0,
+        QuestionPicList: [''],
+        Opinion: '',
+        LossAmount: '',
+        AfterSaleQuestions: [
+          // {
+          //   AfterSaleCode: '',
+          //   QuestionType: '',
+          //   Remark: '',
+          //   QuestionParentType: '',
+          //   key: '',
+          // },
+        ],
+        AfterSaleResponsibilities: [
+          // {
+          //   AfterSaleCode: '',
+          //   Department: '',
+          //   Proportion: '',
+          // },
+        ],
+        AfterSalePackages: [
+          // {
+          //   AfterSaleCode: '',
+          //   PackageID: '',
+          // },
+        ],
+        PackageList: '包裹列表',
+        Solution: {
+          SolutionType: '',
+          KindCount: '',
+          Number: '',
+          UniqueName: '',
+          FileName: '',
+          IsFileInLan: true,
+          FilePath: '',
+          FileSize: '',
+          Refund: '',
+          RefundCashAmount: '',
+          RefundBeanNumber: '',
+          RefundBeanAmount: '',
+          RefundFreight: '',
+          RefundFreightCashAmount: '',
+          RefundFreightBeanNumber: '',
+          RefundFreightBeanAmount: '',
+          RefundType: '',
+          LogisticsReduced: '',
+          OrderID: '',
+          CouponList: [
+            {
+              key: '',
+              value: '',
+            },
+          ],
+        },
+        IsSave: true,
+      },
+
+      serviceImgList: [],
+      serviceImgList2Upload: [],
+      OrderPackageListTableData: null,
     };
   },
   computed: {
-    // eslint-disable-next-line max-len
-    ...mapState('orderModule', ['isShowServiceDia', 'orderDetailData', 'curOrderID', 'curCustomerInfo2Service', 'curServiceOrderHistory']),
-    ...mapGetters('orderModule', ['curProductInfoStringify']),
-    ...mapGetters('common', ['expressList']),
-    // eslint-disable-next-line max-len
-    ...mapState('service', ['serviceImgList', 'serviceImgList2Upload', 'serviceErrInfo', 'SolutionType', 'replenish', 'refund', 'refundFreight', 'PayPackageData',
-      'replenishFile', 'percentage', 'OrderPackageListTableData', 'submitQuestionList', 'lossesFund', 'CouponList']),
-    ...mapState('common', ['isLoading']),
+    ...mapState('common', ['isLoading', 'DepartmentList']),
     showNumber() {
       if (this.orderDetailData?.ProductParams?.Attributes?.HaveNumber) return true;
       return false;
@@ -139,23 +440,184 @@ export default {
       if (this.orderDetailData?.ProductParams?.Attributes?.HaveKind) return true;
       return false;
     },
+    FirstGradeQuestionType() {
+      return this.QuestionTypeList?.filter(res => res.ParentID === -1);
+    },
+    SecondLevelQuestionType() {
+      return (index) => this.QuestionTypeList?.filter(res => res.ParentID === this.HandlingAfterSalesForm.AfterSaleQuestions[index].QuestionParentType);
+    },
+    fileName() {
+      return '文件名';
+    },
   },
   methods: {
-    ...mapMutations('orderModule', ['setIsShowServiceDiaFail']),
     // eslint-disable-next-line max-len
-    ...mapMutations('service', ['delServiceImgByIndex', 'setServiceImgList', 'setOptionsErrInfo', 'clearServiceFormInfo', 'setLossesFund', 'clearAllServiceErrInfo', 'setServiceErrInfo', 'handleSubmitError']),
-    ...mapActions('service', ['submitServiceForm']),
+    setFrom() {
+      this.HandlingAfterSalesForm = {
+        AfterSaleCode: this.paramsData.AfterSaleCode,
+        QuestionPicList: [],
+        Opinion: '',
+        LossAmount: '',
+        AfterSaleQuestions: [
+          // {
+          //   AfterSaleCode: '',
+          //   QuestionType: '',
+          //   Remark: '',
+          //   QuestionParentType: '',
+          //   key: '',
+          // },
+        ],
+        AfterSaleResponsibilities: [
+          // {
+          //   AfterSaleCode: '',
+          //   Department: '',
+          //   Proportion: '',
+          // },
+        ],
+        AfterSalePackages: [
+          // {
+          //   AfterSaleCode: '',
+          //   PackageID: '',
+          // },
+        ],
+        PackageList: '包裹列表',
+        Solution: {
+          SolutionType: '',
+          KindCount: '',
+          Number: '',
+          UniqueName: '',
+          FileName: '',
+          IsFileInLan: true,
+          FilePath: '',
+          FileSize: '',
+          Refund: '',
+          RefundCashAmount: '',
+          RefundBeanNumber: '',
+          RefundBeanAmount: '',
+          RefundFreight: '',
+          RefundFreightCashAmount: '',
+          RefundFreightBeanNumber: '',
+          RefundFreightBeanAmount: '',
+          RefundType: '',
+          LogisticsReduced: '',
+          OrderID: '',
+          CouponList: [
+            // {
+            //   key: '',
+            //   value: '',
+            // },
+          ],
+        },
+        IsSave: true,
+      };
+    },
+    // 上传文件
+    readFileUniqueName(file) {
+      // 上传成功后，设置文件名称, 文件唯一标识 getUniqueFileName
+      if (!file) return;
+      const CustomerID = this.orderDetailData?.Customer?.CustomerID || '';
+      const uniqueName = getUniqueFileName({ file, Terminal: 1, CustomerID });
+      this.HandlingAfterSalesForm.Solution.UniqueName = uniqueName;
+      this.HandlingAfterSalesForm.Solution.IsFileInLan = true;
+      // this.setReplenishFileUniqueName(uniqueName);
+      // this.setReplenishFile(file);
+      // this.setFileName(file.name);
+    },
+    onDepartmentRemoveClick(i) {
+      if (this.HandlingAfterSalesForm.AfterSaleResponsibilities.length === 1) {
+        return;
+      }
+      this.HandlingAfterSalesForm.AfterSaleResponsibilities.splice(i, 1);
+    },
+    onDepartmentAddClick() {
+      // 责任部门
+      this.HandlingAfterSalesForm.AfterSaleResponsibilities.push({
+        AfterSaleCode: this.paramsData.AfterSaleCode,
+        Department: '',
+        Proportion: undefined,
+        key: new Date().getTime(),
+      });
+    },
+    onCouponSelectClick() {
+      this.dialogVisible = true;
+    },
+    // 优惠劵确定
+    onSelectClick() {
+      const list = this.couponList.filter(it => it.checked); // CouponNumber
+      if (list.length === 0) {
+        this.messageBox.failSingleError('操作失败', '未选中优惠券');
+        return;
+      }
+      let t = list.find(it => !it.CouponNumber || !this.$utils.getValueIsOrNotNumber(it.CouponNumber, true) || it.CouponNumber <= 0);
+      if (t) {
+        this.messageBox.failSingleError('操作失败', '优惠券数量未输入或输入不正确');
+        return;
+      }
+      t = list.find(it => it.CouponNumber > it.Data.TotalNumber - it.Data.GenerateNumber);
+      if (t) {
+        const max = t.Data.TotalNumber - t.Data.GenerateNumber;
+        this.messageBox.failSingleError('操作失败', `满${t.Data.MinPayAmount}减${t.Data.Amount}优惠券数量已超最大可用数量：${max}`);
+        return;
+      }
+      this.selectedCouponList = list.map(it => ({ ...it }));
+      const _list = this.selectedCouponList.map(it => ({ CouponID: it.CouponID, Number: +it.CouponNumber }));
+      this.HandlingAfterSalesForm.Solution.CouponList = _list;
+      this.dialogVisible = false;
+    },
+    // 选择优惠卷的弹窗
+    async handleCouponDialogOpen(CouponList) {
+      if (this.isCouponListLoaded) {
+        this.couponList.forEach(it => {
+          const _it = it;
+          const t = this.selectedCouponList.find(_item => _item.CouponID === it.CouponID);
+          if (t) {
+            _it.checked = true;
+            _it.CouponNumber = t.CouponNumber;
+          } else {
+            _it.checked = false;
+            _it.CouponNumber = '';
+          }
+        });
+        return;
+      }
+      this.couponListLoading = true;
+      const resp = await this.api.getCouponList({ ProvideStatus: 1, FieldType: 1, ReceiveNumber: 1 }).catch(() => {});
+      this.couponListLoading = false;
+      if (resp && resp.data.Status === 1000) {
+        this.isCouponListLoaded = true;
+        this.couponList = resp.data.Data.map(it => {
+          const ProductListTextArray = it.ProductString ? it.ProductString.split('\n') : [];
+          const temp = CouponList?.filter(item => item.CouponID === it.CouponID);
+          return {
+            ...it,
+            checked: !!CouponList?.some(item => item.CouponID === it.CouponID),
+            CouponNumber: temp && temp.length ? temp[0].Number : '',
+            ProductListTextArray,
+          };
+        });
+        if (CouponList) this.onSelectClick();
+      }
+    },
+    onQuestionsAddClick() {
+      // 问题添加
+      this.HandlingAfterSalesForm.AfterSaleQuestions.push({
+        AfterSaleCode: this.paramsData.AfterSaleCode,
+        QuestionType: '',
+        Remark: '',
+        key: new Date().getTime(),
+      });
+    },
+    onQuestionsRemoveClick(i) {
+      if (this.HandlingAfterSalesForm.AfterSaleQuestions.length === 1) {
+        return;
+      }
+      this.HandlingAfterSalesForm.AfterSaleQuestions.splice(i, 1);
+    },
     handleClose() { // 弹窗关闭图标功能
       // this.messageBox.warnCancelBox('注意', '关闭当前窗口会导致已填信息丢失，确定关闭吗', () => {
-      this.clearServiceFormInfo();
-      this.setIsShowServiceDiaFail();
-      this.$router.push({ query: {} });
+      // this.$router.push({ query: {} });
       // });
-    },
-    handleDownLoad(orderDetailData) {
-      if (!(this.orderDetailData && this.orderDetailData.FilePath)) return;
-      // eslint-disable-next-line max-len
-      this.messageBox.warnCancelNullMsg('确定下载订单文件吗?', () => this.$store.dispatch('service/downLoadOrderFile', orderDetailData));
+      this.$emit('cloce');
     },
     onuploadclick(e) {
       let bool = false;
@@ -165,6 +627,18 @@ export default {
       if (e && e.preventDefault && bool) {
         e.preventDefault();
       }
+    },
+    handllePictureUploaded(e) {
+      this.serviceImgList.push(e.Data.Url);
+    },
+    beforeUpload() {
+      if (this.serviceImgList.length >= 4) {
+        // this.messageBox.failSingleError('超出数量限制');
+        this.messageBox.failSingleError('操作失败', '超出数量限制');
+        this.UploadDisabled = true;
+        return false;
+      }
+      return true;
     },
     addSingleImg(data) {
       const inputFile = data;
@@ -183,112 +657,78 @@ export default {
         return strBase64;
       };
     },
-    onLossInput(v) {
-      this.lossesNum = this.$utils.filterNumber(v.target.value);
-      this.setLossesFund(this.lossesNum);
+    setServiceImgList([strBase64]) {
+      this.serviceImgList.push(strBase64);
+      // this.serviceImgList2Upload.push(inputFile);
     },
-    writeErrInfo(optionErr, errText) {
-      if (optionErr) this.setOptionsErrInfo(optionErr);
-      if (errText) this.setServiceErrInfo(errText);
+    verifyQuestions() {
+      const temp = this.HandlingAfterSalesForm.AfterSaleQuestions.filter(item => item.Remark === '' || item.QuestionType === '');
+      if (temp.length) return true;
+      return false;
+    },
+    verifyResponsibilities() {
+      const temp = this.HandlingAfterSalesForm.AfterSaleResponsibilities.filter(item => item.Department === '' || item.Proportion === '');
+      if (temp.length) return true;
+      return false;
     },
     checkSubmitInfo() {
-      this.clearAllServiceErrInfo();
-      this.submitQuestionList.forEach((it, i) => { // 校验问题列表是否都有填写
-        if (!it.ID) this.writeErrInfo(['IDErr', i], '请选择问题类型、责任部门并输入备注信息!');
-        if (!it.Remark) this.writeErrInfo(['RemarkErr', i], '请选择问题类型、责任部门并输入备注信息!');
-        if (it.Remark.length > 200) this.writeErrInfo(['RemarkErr', i], '备注信息不能超过200个字符!');
-        if (!it.Department && it.Department !== 0) this.writeErrInfo(['DepartmentErr', i], '请选择问题类型、责任部门并输入备注信息!');
-      });
-      if (this.serviceErrInfo) {
-        this.handleSubmitError();
+      if (this.verifyQuestions()) { // 问题验证
+        // 提示问题有错误
+        this.messageBox.failSingleError('提交失败', '请选择问题并输入备注');
+        return false;
+      } if (this.verifyResponsibilities()) { // 部门验证
+        this.messageBox.failSingleError('提交失败', '请选择部门并输入责任比例');
+        // 提示责任部门有错误
         return false;
       }
-      if (this.SolutionType === 'replenish') { // 补印
-        const { KindCount, Amount } = this.replenish;
-        const data = this.replenishFile;
-        if (!KindCount && this.showKindCount) {
-          this.writeErrInfo(['KindCountErr'], '请输入补印款数!');
-          this.handleSubmitError();
-          return false;
-        }
-        if (!Amount && this.showNumber) {
-          this.writeErrInfo(['AmountErr'], '请输入补印数量!');
-          this.handleSubmitError();
-          return false;
-        }
-        // console.log(this.orderDetailData);
-        if (+KindCount > +this.orderDetailData.ProductParams.KindCount) {
-          this.setServiceErrInfo(`当前补印款数不能大于该订单总款数：${this.orderDetailData.ProductParams.KindCount} !`);
-          this.handleSubmitError();
-          return false;
-        }
-        if (!data && this.orderDetailData.FileCase && this.orderDetailData.FileCase === 2) {
-          this.setServiceErrInfo('请上传补印文件!');
-          this.handleSubmitError();
-          return false;
-        }
-      } else if (this.SolutionType === 'refund') {
-        if (!this.refund.refund) {
-          this.writeErrInfo(['refund'], '请填写订单减款金额!');
-          this.handleSubmitError();
-          return false;
-        }
-        if (this.refund.refund < 0) {
-          this.writeErrInfo(['refund'], '订单减款金额不能小于0!');
-          this.handleSubmitError();
-          return false;
-        }
-        const maxRefund = (this.orderDetailData.Funds.FinalPrice - this.orderDetailData.Funds.Refund - this.orderDetailData.Funds.Reduced).toFixed(2);
-        if (+this.refund.refund > +maxRefund) {
-          this.writeErrInfo(['refund'], `订单减款金额不能大于${maxRefund}!`);
-          this.handleSubmitError();
-          return false;
-        }
-        if (!this.refundFreight.refundFreight && this.refundFreight.refundFreight !== 0) {
-          this.writeErrInfo(['refundFreight'], '请填写运费减款金额!');
-          this.handleSubmitError();
-          return false;
-        }
-        if (this.refundFreight.refundFreight < 0) {
-          this.writeErrInfo(['refundFreight'], '运费减款金额不能小于0!');
-          this.handleSubmitError();
-          return false;
-        }
-        const maxRefundFreight = (this.PayPackageData.Freight - this.PayPackageData.RefundFreight).toFixed(2);
-        if (+this.refundFreight.refundFreight > +maxRefundFreight) {
-          this.writeErrInfo(['refundFreight'], `运费减款金额不能大于${maxRefundFreight}!`);
-          this.handleSubmitError();
-          return false;
-        }
-        // if (+this.refund.refund === 0 && +this.refundFreight.refundFreight === 0) {
-        //   this.writeErrInfo(['refund'], '订单减款和运费减款不能同时等于0!');
-        //   this.writeErrInfo(['refundFreight'], '订单减款和运费减款不能同时等于0!');
-        //   this.handleSubmitError();
-        //   return false;
-        // }
-      }
-      if (this.SolutionType === 'giveCoupons') {
-        if (this.CouponList.length === 0) {
-          this.writeErrInfo(['CouponList'], '请选择优惠券!');
-          this.handleSubmitError();
-          return false;
-        }
-      }
-      if (!this.lossesFund.lossesFund) {
-        this.writeErrInfo(['lossesFund'], '请输入损失金额!');
-        this.handleSubmitError();
+      if (this.HandlingAfterSalesForm.Solution.SolutionType === '') { // 解决方案
+        this.messageBox.failSingleError('提交失败', '请选择解决方案');
+        // 提示解决方案有错误
         return false;
       }
-      if (this.lossesFund.lossesFund < 0) {
-        this.writeErrInfo(['lossesFund'], '损失金额不能小于0!');
-        this.handleSubmitError();
+      if (this.HandlingAfterSalesForm.Solution.SolutionType === 2) { // 订单退款
+        if (!this.HandlingAfterSalesForm.Solution.RefundCashAmount) {
+          this.messageBox.failSingleError('提交失败', '请输入订单退款');
+          return false;
+        }
+        if (!this.HandlingAfterSalesForm.Solution.RefundFreight) {
+          this.messageBox.failSingleError('提交失败', '请输入运费退款');
+          return false;
+        }
+        if (!this.HandlingAfterSalesForm.Solution.RefundType) {
+          this.messageBox.failSingleError('提交失败', '请选择退款方式');
+          return false;
+        }
+      }
+      if (this.HandlingAfterSalesForm.Solution.SolutionType === 7) { // 补印
+        if (!this.HandlingAfterSalesForm.Solution.KindCount) {
+          this.messageBox.failSingleError('提交失败', '请输入补印款数');
+          return false;
+        }
+        if (!this.HandlingAfterSalesForm.Solution.Number) {
+          this.messageBox.failSingleError('提交失败', '请输入补印数量');
+          return false;
+        }
+      }
+      if (this.HandlingAfterSalesForm.Solution.SolutionType === 8) { // 优惠券
+        if (!this.HandlingAfterSalesForm.Solution.CouponList.length) {
+          this.messageBox.failSingleError('提交失败', '请选择优惠券');
+          return false;
+        }
+      }
+      if (!this.HandlingAfterSalesForm.Solution.Opinion) {
+        this.messageBox.failSingleError('提交失败', '请输入处理意见');
+        return false;
+      }
+      if (!this.HandlingAfterSalesForm.LossAmount) {
+        this.messageBox.failSingleError('提交失败', '请输入损失金额');
         return false;
       }
       return true;
     },
-    formatElementPercentage(percentage) {
-      return `${percentage.toFixed(2)}%`;
-    },
+    // formatElementPercentage(percentage) {
+    //   return `${percentage.toFixed(2)}%`;
+    // },
     async uploadImg(data) {
       if (!data || data.length < 1) return;
       const files = [];
@@ -306,29 +746,127 @@ export default {
         await this.addSingleImg(imgData);
       }));
     },
-    async submitServiceOrder() {
-      if (!this.isShowServiceDia || !this.checkSubmitInfo()) return;
-      const { AppyCode } = this.$route.query;
-      const callback = this.$route.name !== 'feedback' ? null : () => {
-        this.$emit('handleItemStatusChange', 2);
+    async submitServiceOrder(IsSave) {
+      this.HandlingAfterSalesForm.IsSave = IsSave;
+      this.HandlingAfterSalesForm.AfterSaleCode = this.paramsData.AfterSaleCode;
+      this.HandlingAfterSalesForm.QuestionPicList = this.serviceImgList;
+      const cb = () => {
+        this.api.getComplete(this.HandlingAfterSalesForm).then(resp => {
+          if (resp.data.Status === 1000) {
+            // 保存/提交成功
+            this.messageBox.successSingle(IsSave ? '保存成功' : '提交成功', () => {
+              if (IsSave) {
+                this.handleClose();
+              } else {
+                this.$emit('successSubmit');
+              }
+              // IsSave ? this.handleClose() : this.$emit('successSubmit');
+            });
+          }
+        });
       };
-      this.messageBox.warnCancelMsgSM('售后单提交之后立即执行无法更改，请谨慎操作!', () => {
-        this.submitServiceForm([this.curOrderID, AppyCode, callback]);
-        this.closeGLoading();
-      });
+      if (IsSave) {
+        // 保存
+        cb();
+      } else {
+        if (!this.checkSubmitInfo()) return;
+        this.messageBox.warnCancelMsgSM('售后单提交之后立即执行无法更改，请谨慎操作!', cb);
+      }
     },
-    handleDel(e) {
-      this.delServiceImgByIndex(e);
-      if (this.$refs.oUpImgEl) this.$refs.oUpImgEl.handleRemove();
+    handleDel(i) {
+      // const arr1 = this.serviceImgList;
+      // const arr2 = this.serviceImgList2Upload;
+      this.serviceImgList.splice(i, 1);
+      // if (arr1.length === arr2.length) {
+      //   arr2.splice(i, 1);
+      // } else { // 存在已回填的售后申请图片 （该图片已上传）
+      //   const _difference = arr1.length - arr2.length;
+      //   // console.log('i:', i, '_difference:', _difference, 'i >= _difference:', i >= _difference);
+      //   arr1.splice(i, 1);
+      //   if (i >= _difference) { // 删除的是新添加的 否则为之前回填上传的 不用再从arr2中删除
+      //     const _i = i - _difference;
+      //     arr2.splice(_i, 1);
+      //   }
+      // }
+      // if (this.$refs.oUpImgEl) this.$refs.oUpImgEl.handleRemove();
+    },
+
+    async getQuestionTypeList() {
+      // 获取所有问题
+      const res = await this.api.getQuestionList();
+      if (res.data.Status === 1000) {
+        this.QuestionTypeList = res.data.Data;
+        // // 需要用到问题父级id
+        this.getSaveDetailAsyncByAfterSaleCode(this.paramsData?.AfterSaleCode);
+      }
+    },
+    // 一级问题改变
+    changeQuestions(index) {
+      this.HandlingAfterSalesForm.AfterSaleQuestions[index].QuestionType = '';
+    },
+    // 包裹选择
+    SelectionPackageChange(val) {
+      this.HandlingAfterSalesForm.AfterSalePackages = val;
+    },
+    // 获取包裹列表
+    async getPackageListByOrderID(orderId) {
+      const res = await this.api.getPackageListByOrderID(orderId);
+      if (res.data.Status === 1000) {
+        this.OrderPackageListTableData = res.data.Data;
+      }
+    },
+    setQuestions() {
+
+    },
+    async getSaveDetailAsyncByAfterSaleCode(afterSaleCode) {
+      this.setFrom();
+      this.onQuestionsAddClick();
+      this.onDepartmentAddClick();
+      const res = await this.api.getSaveDetailAsync(afterSaleCode);
+      if (res.data.Status === 1000) {
+        if (!res.data.Data.afterSaleSuccessInfo) {
+          return;
+        }
+        const { afterSaleSuccessInfo } = res.data.Data;
+        this.HandlingAfterSalesForm = afterSaleSuccessInfo;
+        // 回显问题
+        this.HandlingAfterSalesForm.AfterSaleQuestions = afterSaleSuccessInfo.AfterSaleQuestions.map((it, i) => {
+          const _it = it;
+          const temp = this.QuestionTypeList.filter(item => item.ID === _it.QuestionType);
+          _it.QuestionParentType = temp[0].ParentID;
+          _it.key = new Date().getTime() + i;
+          return _it;
+        });
+        // 回显部门
+        this.HandlingAfterSalesForm.AfterSaleResponsibilities = afterSaleSuccessInfo.AfterSaleResponsibilities.map((it, i) => {
+          const _it = it;
+          _it.key = new Date().getTime() + i;
+          return _it;
+        });
+        // 回显优惠券
+        // 思路：把选中的标记 手动调用一下选择优惠券确定
+        if (afterSaleSuccessInfo.Solution.CouponList) this.handleCouponDialogOpen(afterSaleSuccessInfo.Solution.CouponList);
+        // 回显图片
+        this.serviceImgList = this.HandlingAfterSalesForm.QuestionPicList || [];
+        this.serviceImgList2Upload = this.HandlingAfterSalesForm.QuestionPicList;
+        // 如果为空添加一行
+        if (this.HandlingAfterSalesForm.AfterSaleQuestions.length === 0) {
+          this.onQuestionsAddClick();
+        }
+        if (this.HandlingAfterSalesForm.AfterSaleResponsibilities.length === 0) {
+          this.onDepartmentAddClick();
+        }
+      }
     },
   },
   watch: {
-    lossesFund(newVal) {
-      if (!newVal.lossesFund) this.lossesNum = '';
+    visible(newVal) {
+      if (!newVal) return;
+      this.getPackageListByOrderID(this.paramsData?.OrderID);
+      this.getQuestionTypeList();
+      // 获取部门
+      this.$store.dispatch('common/getAfterSalesDepartmentList');
     },
-  },
-  mounted() {
-  //  console.log('售后组件已挂载');
   },
   beforeDestroy() {
     this.$router.push({ query: {} });
@@ -384,6 +922,20 @@ export default {
             display: flex;
             flex-direction: column;
             margin-right: 52px;
+            .el-upload{
+              .el-button {
+                width: 100px;
+                height: 25px;
+                line-height: 25px;
+                padding: 0;
+                margin: 14px 0 16px 0;
+              }
+            }
+              .el-upload-list{
+                height: 0;
+                display: none;
+                overflow: hidden;
+              }
             .upload-btn{
               margin: 14px 0 16px 0;
             }
@@ -395,7 +947,9 @@ export default {
         }
       }
       &.service-after-sale {
-        height: 395px;
+        // height: 395px;
+        padding-bottom: 20px;
+        min-height: 570px;
         display: flex;
         margin-top: 20px;
         box-shadow: 0px 3px 10px 0px rgba(98, 98, 98, 0.2);
@@ -417,12 +971,291 @@ export default {
           flex-direction: column;
           margin-left: 20px;
           margin-top: 20px;
+          overflow: auto;
           .left-table {
             width: 835px;
           }
-          // .right-submit-wrap {
-          //   // width: 410px;
-          // }
+          .right-submit-wrap {
+            .questions{
+              display: flex;
+              .left{
+                width:81px;
+                margin-top: 20px;
+                line-height: 30px;
+                text-align: right;
+              }
+              .left::before{
+                content: '*';
+                color: #FF3769;
+                margin-right: -3px;
+              }
+              .right{
+                flex: 1;
+                max-height: 105px;
+                overflow: auto;
+                margin-top: 20px;
+                .row{
+                  display: flex;
+                  align-items: center;
+                  margin-bottom: 15px;
+                  // margin-left: 15px;
+                  >.el-select{
+                    margin-right: 20px;
+                    border: none;
+                    width: 110px;
+                    height: 25px;
+                  }
+                  >.el-input{
+                    flex: 1;
+                    height: 24px;
+                    margin-right: 20px;
+                    input{
+                      height: 100%;
+                    }
+                  }
+                }
+                .row:last-child{
+                  margin-bottom: 0;
+                }
+              }
+            }
+            .department{
+              display: flex;
+              >.left{
+                width:81px;
+                line-height: 30px;
+                text-align: right;
+                margin-top: 20px;
+              }
+              >.left::before{
+                content: '*';
+                color: #FF3769;
+                margin-right: -3px;
+              }
+              >.right{
+                flex: 1;
+                max-height: 105px;
+                overflow: auto;
+                margin-top: 20px;
+                >.row{
+                  display: flex;
+                  align-items: center;
+                  margin-bottom: 15px;
+                  // margin-left: 15px;
+                  >.el-select{
+                    border: none;
+                    width: 110px;
+                    height: 25px;
+                  }
+                  >.el-input-number{
+                    height: 24px;
+                    width: 120px;
+                    margin-right: 20px;
+                    margin-left: 15px;
+                    .el-input{
+                      height: 24px;
+                      display: flex;
+                    }
+                    input{
+                      height: 24px;
+                      line-height: 24px;
+                    }
+                  }
+                }
+                >.row:last-child{
+                  margin-bottom: 0;
+                }
+              }
+            }
+            .bottom{
+              display: flex;
+              margin-top: 20px;
+              >.left{
+                min-height: 151px;
+                min-width: 630px;
+              }
+              .solution{
+                display: flex;
+                .left{
+                  width:81px;
+                  line-height: 30px;
+                  text-align: right;
+                }
+                .left::before{
+                  content: '*';
+                  color: #FF3769;
+                  margin-right: -3px;
+                }
+                .right{
+                  flex: 1;
+                  .row{
+                    display: flex;
+                    align-items: center;
+                    min-height: 30px;
+                    .el-radio-group{
+                      // margin-left: 15px;
+                    }
+                  }
+                }
+              }
+              .dispose{
+                display: flex;
+                .left{
+                  width:81px;
+                  line-height: 24px;
+                  text-align: right;
+                }
+                .right{
+                  flex: 1;
+                  min-height: 30px;
+                  margin-left: 20px;
+                  .row{
+                    display: flex;
+                    align-items: center;
+                    margin-top: 15px;
+                    .form-item{
+                      display: flex;
+                      align-items: center;
+                      margin-right: 30px;
+                      .select{
+                        color: #26BCF9;
+                        height: 27px;
+                      }
+
+                      .select:hover{
+                        cursor:pointer;
+                      }
+                      .label{
+                        text-align: right;
+                        line-height: 24px;
+                        height: 100%;
+                        align-self: start;
+                      }
+                      .label::before{
+                        content: '*';
+                        color: #FF3769;
+                        margin-right: -3px;
+                      }
+                      >.conent{
+                        // flex: 1;
+                        display: flex;
+                        align-items: center;
+                        .upload-file-box{
+                          display: flex;
+                          .upload-btn{
+                            margin: 0;
+                            width: 70px;
+                            height: 23px;
+                            line-height: 23px;
+                            text-align: center;
+                          }
+                          .file-name-box{
+                            margin-left: 20px;
+                            line-height: 23px;
+                          }
+                        }
+                        >.el-input{
+                          height: 24px;
+                          width: 60px;
+                          margin-right: 10px;
+                          margin-left: 10px;
+                          input{
+                            height: 100%;
+                          }
+                        }
+                        .el-select{
+                          margin-top: 0;
+                        }
+                        >.el-textarea{
+                          margin-right: 20px;
+                          margin-left: 10px;
+                          width: 430px;
+                          height: 56px;
+                        }
+                        >span{
+                          display: inline-block;
+                          height: 25px;
+                          width: 25px;
+                          display: flex;
+                          align-items: center;
+                          margin-left: 10px;
+                          >i{
+                            display: inline-block;
+                            width: 15px;
+                            height: 15px;
+                            color: #F4A307;
+                            border: 1px solid #F4A307;
+                            text-align: center;
+                            line-height: 15px;
+                            border-radius: 50%;
+                          }
+                        }
+                        > div {
+                          display: flex;
+                          margin-left: 10px;
+                          margin-top: 3px;
+                          max-width: 510px;
+                          > span {
+                            width: 3em;
+                            flex: none;
+                            text-align: right;
+                            line-height: 18px;
+                            color: #999;
+                          }
+                          > ul {
+                            // width: 690px;
+                            > li {
+                              padding-bottom: 4px;
+                              width: 100%;
+                              white-space: nowrap;
+                              overflow: hidden;
+                              line-height: 18px;
+                              display: flex;
+                              align-items: center;
+                              color: #999;
+                              .area-span {
+                                flex: 1;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                              }
+                              > i {
+                                padding: 0 5px;
+                              }
+                              .is-pink {
+                                min-width: 2.5em;
+                                margin-right: 0.5em;
+                                flex: none;
+                              }
+                              .MinPayAmount {
+                                min-width: 72px;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              >.right{
+                flex: 1;
+                padding-left: 30px;
+                border-left: 1px dashed #EEEEEE;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                font-size: 12px;
+                color: #444444;
+                .red{
+                  color: #DF3963;
+                }
+                .tint{
+                  color: #989898;
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -504,6 +1337,8 @@ export default {
       .btns{
         position: relative;
         top: 5px;
+        display: flex;
+
         button {
           width: 120px;
           height: 29px;
@@ -511,7 +1346,7 @@ export default {
           &:first-of-type {
             margin-left: 30px;
           }
-          & + button {
+          &.normal-full-btn{
             margin-left: 30px;
             background: linear-gradient(
               to right,
@@ -522,6 +1357,10 @@ export default {
             position: relative;
             top: 0px;
           }
+        }
+        .white {
+          background: #fff;
+          border: 1px solid $--color-primary;
         }
       }
       .el-progress{
@@ -567,6 +1406,81 @@ export default {
       }
     }
   }
-
+.mp-erp-server-after-sale-solution-coupon-select-dialog {
+  border-radius: 5px;
+  height: 590px;
+  .el-dialog__header {
+    display: none;
+  }
+  .el-dialog__body {
+    height: 520px !important;
+    overflow-y: overlay;
+    padding-right: 20px;
+    .coupon-dialog-content {
+      > ul {
+        padding-top: 25px;
+        > li {
+          padding: 2px 40px;
+          padding-right: 20px;
+          display: flex;
+          align-items: center;
+          height: 28px;
+          > label {
+            width: 540px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            .el-checkbox__label {
+              font-size: 12px;
+              display: flex;
+              align-items: center;
+              overflow: hidden;
+              width: 520px;
+              color: #585858;
+              .area-span {
+                flex: 1;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              }
+              .is-pink {
+                min-width: 3em;
+                margin-right: 0.5em;
+                flex: none;
+              }
+              > i {
+                padding: 0 5px;
+              }
+              .MinPayAmount {
+                min-width: 76px;
+              }
+            }
+          }
+          .el-input {
+            width: 80px;
+            margin-right: 9px;
+            margin-left: 20px;
+          }
+          > span {
+            font-size: 12px;
+            color: #999;
+          }
+        }
+      }
+    }
+  }
+  .el-dialog__footer {
+    padding-bottom: 25px !important;
+    .dialog-footer {
+      justify-content: center !important;
+      > button {
+        width: 120px;
+        height: 30px;
+        padding: 0;
+        border-radius: 2px;
+      }
+    }
+  }
+}
 }
 </style>

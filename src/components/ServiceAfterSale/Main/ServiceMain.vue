@@ -71,7 +71,6 @@ export default {
   methods: {
     ...mapActions('service', ['getServiceListData', 'getServiceListData2Excel']),
     handlePageChange(page) {
-    //  console.log(page);
       this.getServiceListData({ page, type: 'get' });
     },
     handleDownloadClick() {
@@ -111,7 +110,7 @@ export default {
     // 查看评价
     handleSeeEstimate(item) {
       this.seeEstimateVisible = true;
-      this.curData = item;
+      this.AfterSaleCode = item.AfterSaleCode;
     },
   },
 };

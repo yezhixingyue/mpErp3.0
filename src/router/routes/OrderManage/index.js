@@ -94,8 +94,8 @@ const routes = { // 客户订单管理
     /*  售后管理
     ------------------------------------------ */
     {
-      path: '/service',
-      name: 'service',
+      path: '/Service',
+      name: 'Service',
       meta: {
         title: '售后管理',
         icon: 'iconfont icon-shouhouguanli',
@@ -106,8 +106,8 @@ const routes = { // 客户订单管理
       component: () => import('../../../views/ServicePage.vue'),
     },
     {
-      path: '/serviceInfo',
-      name: 'serviceInfo',
+      path: '/ServiceInfo',
+      name: 'ServiceInfo',
       meta: {
         title: '客户设置',
         pageName: 'serviceInfoPage',
@@ -119,8 +119,8 @@ const routes = { // 客户订单管理
     /*  售后申请列表
     ------------------------------------------ */
     {
-      path: '/feedback',
-      name: 'feedback',
+      path: '/Feedback',
+      name: 'Feedback',
       meta: {
         title: '售后申请列表',
         icon: 'iconfont icon-shouhoushenqingliebiao',
@@ -133,10 +133,10 @@ const routes = { // 客户订单管理
     /*  售后详情
     ------------------------------------------ */
     {
-      path: '/feedbackInfo',
-      name: 'feedbackInfo',
+      path: '/FeedbackInfo',
+      name: 'FeedbackInfo',
       meta: {
-        title: '客户设置',
+        title: '售后详情',
         pageName: 'feedbackInfoPage',
         PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
         requiresAuth: true,
@@ -192,9 +192,9 @@ const routeTree = {
     /*  售后管理
     ------------------------------------------ */
     // { name: 'service', children: [] },
-    { name: 'service',
+    { name: 'Service',
       children: [
-        { name: 'serviceInfo', children: [] },
+        { name: 'ServiceInfo', children: [] },
       ],
     },
     /*  未付款订单
@@ -202,9 +202,9 @@ const routeTree = {
     { name: 'qutstandingpayment', children: [] },
     /*  售后申请列表
     ------------------------------------------ */
-    { name: 'feedback',
+    { name: 'Feedback',
       children: [
-        { name: 'feedbackInfo', children: [] },
+        { name: 'FeedbackInfo', children: [] },
       ],
     },
     /*  客户管理

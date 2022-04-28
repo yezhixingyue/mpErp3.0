@@ -9,20 +9,20 @@
     @open='onOpen'
     @closed='onClosed'
     @submit="onSubmit"
-    class="mp-erp-comps-customer-setup-module-customer-detail-display-dialog-comp-wrap"
+    class="mp-erp-comps-deliver-to-dialog-comp-wrap"
    >
    <template>
-    <el-form :model="PostponeRuleForm" status-icon ref="ruleForm" label-width="110px" class="demo-ruleForm" label-position="left">
+    <el-form :model="DeliverToForm" status-icon ref="ruleForm" label-width="110px" class="demo-ruleForm" label-position="left">
       <el-form-item label="选择人员：" prop="pass">
-        <el-select style="width:100%;" v-model="value1" placeholder="请选择转交人">
-          <el-option
-            label="里斯"
-            :value="1">
+        <el-select style="width:100%;" filterable v-model="DeliverToForm.NextOperaterID" placeholder="请选择转交人">
+          <el-option v-for="item in staffList" :key="item.StaffID"
+            :label="item.StaffName"
+            :value="item.StaffID">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="转交原因：" prop="checkPass">
-        <el-input type="textarea" placeholder="请输入挂起原因" autocomplete="off"></el-input>
+        <el-input v-model="DeliverToForm.Reason" type="textarea" placeholder="请输入转交原因" autocomplete="off"></el-input>
       </el-form-item>
     </el-form>
    </template>
@@ -38,44 +38,48 @@ export default {
       type: Boolean,
       default: false,
     },
-
+    paramsData: {
+      type: Object,
+    },
   },
   components: {
     CommonDialogComp,
   },
-  computed: {
-    PermissionObj() {
-      if (this.Permission?.PermissionList?.PermissionManageCustomer?.Obj) {
-        return this.Permission.PermissionList.PermissionManageCustomer.Obj;
-      }
-      return {};
-    },
-
-
-  },
   data() {
     return {
-      a: false,
-      value1: '',
       loading: false,
-      PostponeRuleForm: {},
+      staffList: null,
+      DeliverToForm: {
+        AfterSaleCode: this.paramsData.AfterSaleCode,
+        NextOperaterID: '',
+        Reason: '',
+      },
     };
   },
   methods: {
     onCancle() { // 取消  关闭弹窗
-      this.$emit('update:visible', false);
+      this.$emit('cloce');
     },
-    async onSubmit() { // 仅价格详情使用
-
+    onSubmit() {
+      if (!this.DeliverToForm.NextOperaterID) {
+        this.messageBox.failSingleError('操作失败', '请选择转交人');
+      } else if (!this.DeliverToForm.Reason) {
+        this.messageBox.failSingleError('操作失败', '请输入转交原因');
+      } else {
+        this.$emit('submit', this.DeliverToForm);
+      }
     },
     onOpen() {
       this.getCustomerData();
     },
     onClosed() {
+      this.onCancle();
     },
     async getCustomerData() { // 获取客户数据
       this.loading = true;
-
+      this.api.getOperateStaff().then(res => {
+        this.staffList = res.data.Data;
+      });
       this.loading = false;
     },
 
@@ -83,5 +87,22 @@ export default {
 };
 </script>
 <style lang='scss'>
-
+.mp-erp-comps-deliver-to-dialog-comp-wrap{
+  .el-dialog{
+    .el-dialog__header{
+       span::before{
+          display: inline-block;
+          background: url('../../assets/images/haoyou.png') no-repeat center #26BCF9;
+          background-size: 14px 14px;
+          content: "";
+          display: inline-block;
+          height: 19px;
+          width: 19px !important;
+          vertical-align: -15%;
+          margin-right: 10px;
+          border-radius: 50%;
+       }
+    }
+  }
+}
 </style>
