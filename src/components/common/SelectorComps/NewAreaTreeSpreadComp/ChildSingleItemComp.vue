@@ -117,7 +117,7 @@ export default {
   display: flex;
   padding-top: 12px;
   .el-checkbox {
-    margin-bottom: 12px;
+    margin-bottom: 6px;
     .el-checkbox__label {
       font-size: 12px;
       color: #585858;

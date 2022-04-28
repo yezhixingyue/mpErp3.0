@@ -100,6 +100,14 @@ export default {
         display: none;
       }
     }
+    .mp-erp-price-module-price-table-result-formula-table-comp-container > main > div >  {
+      .part-name {
+        width: 230px;
+      }
+      .priority-box {
+        width: 100px;
+      }
+    }
   }
   > footer {
     flex: none;

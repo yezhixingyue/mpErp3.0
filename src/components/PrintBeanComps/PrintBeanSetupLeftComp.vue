@@ -1,5 +1,5 @@
 <template>
-  <section v-if="curPrintBeanData" class="mp-erp-print-bean-setup-page-left-comp-wrap">
+  <section v-if="curItemData" class="mp-erp-print-bean-setup-page-left-comp-wrap">
     <ul>
       <li>
         <label>优先级：</label>
@@ -10,9 +10,9 @@
         <label>标题：</label>
         <el-input v-model.trim="Title" style="width:400px" size="mini" maxlength="20" show-word-limit></el-input>
       </li>
-      <li>
+      <li v-if="isCashBack">
         <label>描述：</label>
-        <el-input v-model="Describe" style="width:600px" size="mini" class="more-text"  maxlength="60" show-word-limit></el-input>
+        <el-input v-model="Describe" style="width:600px" size="mini" class="more-text"  maxlength="40" show-word-limit></el-input>
       </li>
       <li>
         <label>开始日期：</label>
@@ -30,6 +30,12 @@
           popper-class='mp-price-bean-list-page-header-date-selector-wrap'
         />
       </li>
+      <li v-if="isCashBack">
+        <label>统计周期：</label>
+        <el-radio-group v-model="_Cycle">
+          <el-radio :label="it.ID" v-for="it in CycleEnumList" :key="it.ID">{{it.Name}}</el-radio>
+        </el-radio-group>
+      </li>
       <li>
         <label></label>
         <el-switch
@@ -39,7 +45,14 @@
           inactive-color="#DCDFE6">
         </el-switch>
       </li>
-      <li>
+      <li v-if="isCashBack">
+        <label>执行时长：</label>
+        <el-input v-model.number="_Year" style="width:90px" size="mini" maxlength="3" :disabled='_IsActiveOnLong'></el-input>
+        <span class='unit'>年</span>
+        <el-input v-model.number="_Month" style="width:90px" size="mini" maxlength="3" :disabled='_IsActiveOnLong'></el-input>
+        <span class='unit'>月</span>
+      </li>
+      <li v-if="!isCashBack">
         <label>结束日期：</label>
         <el-date-picker
           v-model="EndTime"
@@ -91,17 +104,24 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { CategoryEnums, CategoryEnumsList } from '../../store/printBean/PrintBeanClassType';
+import { CycleEnumList } from '../../store/cashback/CashBackItemClass';
 import CheckboxGroupComp from '../common/CheckboxGroupComp.vue';
 import NewAreaTreeSpreadComp from '../common/SelectorComps/NewAreaTreeSpreadComp/index.vue';
 import CustomerRemoteSelector from '../common/SelectorComps/CustomerRemoteSelector.vue';
 
+// 该组件和消费返现设置页面左侧组件共用
+
 export default {
   props: {
-    curPrintBeanData: {
+    curItemData: {
       type: Object,
       default: null,
     },
     isStarted: {
+      type: Boolean,
+      default: false,
+    },
+    isCashBack: { // 消费返现页面在使用该组件
       type: Boolean,
       default: false,
     },
@@ -115,6 +135,7 @@ export default {
     return {
       CategoryEnums, // 类别枚举对象
       CategoryEnumsList, // 类别枚举列表
+      CycleEnumList, // 统计周期
     };
   },
   computed: {
@@ -122,7 +143,7 @@ export default {
     ...mapGetters('common', ['allAreaTreeList']),
     Priority: {
       get() {
-        return this.curPrintBeanData?.Priority;
+        return this.curItemData?.Priority;
       },
       set(val) {
         this.$emit('change', ['Priority', val]);
@@ -130,7 +151,7 @@ export default {
     },
     Title: {
       get() {
-        return this.curPrintBeanData?.Title;
+        return this.curItemData?.Title;
       },
       set(val) {
         this.$emit('change', ['Title', val]);
@@ -138,7 +159,7 @@ export default {
     },
     Describe: {
       get() {
-        return this.curPrintBeanData?.Describe;
+        return this.curItemData?.Describe;
       },
       set(val) {
         this.$emit('change', ['Describe', val]);
@@ -146,7 +167,7 @@ export default {
     },
     StartTime: {
       get() {
-        return this.curPrintBeanData?.StartTime;
+        return this.curItemData?.StartTime;
       },
       set(val) {
         this.$emit('change', ['StartTime', val]);
@@ -154,8 +175,8 @@ export default {
     },
     EndTime: {
       get() {
-        if (this.curPrintBeanData?._IsActiveOnLong) return '';
-        return this.curPrintBeanData?.EndTime;
+        if (this.curItemData?._IsActiveOnLong) return '';
+        return this.curItemData?.EndTime;
       },
       set(val) {
         this.$emit('change', ['EndTime', val]);
@@ -163,23 +184,49 @@ export default {
     },
     _IsActiveOnLong: {
       get() {
-        return this.curPrintBeanData?._IsActiveOnLong;
+        return this.curItemData?._IsActiveOnLong;
       },
       set(val) {
         this.$emit('change', ['_IsActiveOnLong', val]);
       },
     },
+    _Year: {
+      get() {
+        if (this.curItemData?._IsActiveOnLong) return '';
+        return this.curItemData?._ExecutionTime.First;
+      },
+      set(val) {
+        this.$emit('change', ['_ExecutionTime', val, 'First']);
+      },
+    },
+    _Month: {
+      get() {
+        if (this.curItemData?._IsActiveOnLong) return '';
+        return this.curItemData?._ExecutionTime.Second;
+      },
+      set(val) {
+        this.$emit('change', ['_ExecutionTime', val, 'Second']);
+      },
+    },
     Category: {
       get() {
-        return this.curPrintBeanData?.Category;
+        return this.curItemData?.Category;
       },
       set(val) {
         this.$emit('change', ['Category', val]);
       },
     },
+    _Cycle: {
+      get() {
+        return this.curItemData?._Cycle;
+      },
+      set(val) {
+        this.$emit('change', ['_Cycle', val]);
+      },
+    },
     CustomerTypeList: {
       get() {
-        return this.curPrintBeanData?.CustomerTypeList.map(it => ({ CategoryID: it.ID })) || [];
+        return this.curItemData?.CustomerTypeList.map(it => ({ CategoryID: it.ID })) || [];
       },
       set(list) {
         const _list = list.map(it => ({ ID: it.CategoryID }));
@@ -188,7 +235,7 @@ export default {
     },
     GradeList: {
       get() {
-        return this.curPrintBeanData?.GradeList.map(it => ({ CategoryID: it.ID })) || [];
+        return this.curItemData?.GradeList.map(it => ({ CategoryID: it.ID })) || [];
       },
       set(list) {
         const _list = list.map(it => ({ ID: it.CategoryID }));
@@ -198,8 +245,8 @@ export default {
     AreaList: {
       get() {
         return {
-          IsIncludeIncreased: this.curPrintBeanData?.IsIncludeIncreasedArea || false,
-          List: this.curPrintBeanData?.AreaList || [],
+          IsIncludeIncreased: this.curItemData?.IsIncludeIncreasedArea || false,
+          List: this.curItemData?.AreaList || [],
         };
       },
       set(val) {
@@ -210,7 +257,7 @@ export default {
     },
     Customer: {
       get() {
-        return this.curPrintBeanData?.Customer || {};
+        return this.curItemData?.Customer || {};
       },
       set(customer) {
         this.$emit('change', ['Customer', customer]);
@@ -296,6 +343,12 @@ export default {
         > div {
           width: 200px;
         }
+      }
+      > .unit {
+        font-size: 12px;
+        color: #989898;
+        margin-left: 8px;
+        margin-right: 15px;
       }
     }
     padding-bottom: 3px;

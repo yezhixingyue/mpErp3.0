@@ -5,7 +5,7 @@
     </header>
     <main>
       <ContionCommonComp ref="oLeftComp" :showName='showName' :ComparePropertyList='ComparePropertyList' :PropertyList='FormulaConditionPropertyList'
-       leftWidth='45%' :curEditData='curEditItemData' rightTitle="使用此公式">
+       leftWidth='45%' :curEditData='curEditItemData' :productLevel2='productLevel2' :areaLevel2='areaLevel2' rightTitle="使用此公式">
         <!-- 右侧公式设置 -->
         <FormulaPanelComp
           ref="oRightFormulaPanel"
@@ -54,6 +54,14 @@ export default {
     nameList: {
       type: Array,
       default: () => [],
+    },
+    productLevel2: { // 产品筛选使用2级分类
+      type: Boolean,
+      default: false,
+    },
+    areaLevel2: { // 地区筛选使用2级分类
+      type: Boolean,
+      default: false,
     },
   },
   components: {

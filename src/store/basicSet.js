@@ -337,7 +337,7 @@ export default {
     },
     setLogisticItemChange(state, { item, ID, isRemove }) { // 编辑|新增
       if (!item.ID && item.ID !== 0) { // 新增
-        state.logisticList.unshift({ ...item, ID });
+        state.logisticList.push({ ...item, ID });
       } else { // 编辑|删除
         const i = state.logisticList.findIndex(it => it.ID === item.ID);
         if (i > -1) {

@@ -28,6 +28,10 @@ export default {
       });
     },
   },
+  mounted() {
+    this.$store.dispatch('common/getUserClassify');
+    this.$store.dispatch('common/getAreaList'); // 使用筛选组件后 注释该方法的使用
+  },
 };
 </script>
 <style lang='scss'>

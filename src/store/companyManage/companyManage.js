@@ -1,4 +1,3 @@
-import { MessageBox } from 'element-ui';
 import api from '../../api';
 import messageBox from '../../assets/js/utils/message';
 
@@ -75,7 +74,7 @@ export default {
         commit('setRosterDataList', resp.data.Data);
       }
     },
-    async getRosterDataSave({ state, dispatch }, createNode) { // 保存花名 createNode: 由组件创建VNode作为弹出内容 字段直接放到这不会自动换行 只能自行处理
+    async getRosterDataSave({ state, dispatch }) { // 保存花名 createNode: 由组件创建VNode作为弹出内容 字段直接放到这不会自动换行 只能自行处理
       const resp = await api.getRosterDataSave(state.RosterDataList).catch(() => null);
       const cb = () => {
         dispatch('getRosterDataList');
@@ -87,14 +86,7 @@ export default {
         dispatch('getRosterDataList');
       }
       if (resp && resp.data.Status === 1100) {
-        MessageBox({
-          showClose: true,
-          message: createNode(resp.data.Message),
-          type: 'warning',
-          confirmButtonText: '关闭',
-          title: '提示',
-          customClass: 'mp-order-del-pop-reverse-warn message-box-left',
-        }).then(() => cb() && cb()).catch(() => cb && cb());
+        messageBox.failSingleError('操作失败', `[ ${resp.data.Message} ]`, cb, cb);
       }
     },
     async getRosterDataItemRemove({ dispatch }, index) { // 删除花名

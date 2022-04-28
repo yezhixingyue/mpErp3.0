@@ -20,6 +20,7 @@
       <slot name="foot-tip"></slot>
     </div>
     <p>
+      <span class="clear" v-if="showClear" @click="onClearClick">{{clearText}}</span>
       <el-button type="primary" :loading='loading' @click="onSubmitClick" v-if="showSubmit" :disabled='disabled'>{{loading?'加载中':submitText}}</el-button>
       <el-button type="danger"  @click="onDangerClick" v-if="showDanger">{{dangerText}}</el-button>
       <el-button :type="cancelBlue ? 'primary' : 'default'" @click="onCancleClick" v-if="showCancel">{{cancelText}}</el-button>
@@ -96,6 +97,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    showClear: {
+      type: Boolean,
+      default: false,
+    },
+    clearText: {
+      type: String,
+      default: '清除',
+    },
   },
   computed: {
     dialogVisible: {
@@ -124,6 +133,9 @@ export default {
     },
     onDangerClick() {
       this.$emit('danger');
+    },
+    onClearClick() {
+      this.$emit('clear');
     },
     onOpen() {
       this.$emit('open');
@@ -227,6 +239,20 @@ export default {
           &.is-disabled {
             background: #cbcbcb !important;
             opacity: 1 !important;
+          }
+        }
+        > span.clear {
+          font-size: 12px;
+          margin-right: 28px;
+          display: inline-block;
+          color: #ff3769 !important;
+          cursor: pointer;
+          user-select: none;
+          &:hover {
+            color: #f87394 !important;
+          }
+          &:active {
+            color: #e01649 !important;
           }
         }
       }

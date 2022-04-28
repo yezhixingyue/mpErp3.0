@@ -6,13 +6,12 @@
       :showCompareProp='false'
       :curEditItemData='curEditFormulaData'
       :nameList='nameList'
+      productLevel2
       showName
       @successSubmit='handleFormulaSuccessSubmit'
     >
       <template #header>
-        <!-- <h2>当前产品：{{curSetupProduct.Name}}</h2>
-        <span>工期组成方案：{{$route.params.ProduceItemName}}</span> -->
-        <p class="mp-common-title-wrap">设置{{name}}配送方式价格</p>
+        <p class="mp-common-title-wrap">设置{{Name}}配送方式价格</p>
       </template>
     </CommonFormulaSetupPageComp>
   </section>
@@ -42,14 +41,14 @@ export default {
   data() {
     return {
       LogisticsID: '',
-      name: '',
+      Name: '',
     };
   },
   methods: {
     getInitData() {
       const { id, name } = this.$route.params;
       this.LogisticsID = id;
-      this.name = name;
+      this.Name = name;
     },
     handleFormulaSuccessSubmit([isEdit, data, ID]) {
       const temp = {

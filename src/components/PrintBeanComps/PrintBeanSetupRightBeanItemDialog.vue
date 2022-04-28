@@ -19,7 +19,7 @@
         :rules="rules"
         @submit.native.prevent
         ref="ruleForm"
-        label-width="275px"
+        label-width="230px"
         class="recharge-ruleForm"
         size="small"
       >
@@ -44,8 +44,11 @@
           <el-input v-model.trim.number="ruleForm.DayBuyMaxNumber" maxlength="9"></el-input>
           <span class="unit">份（ 选填 ）</span>
         </el-form-item>
+        <el-form-item label="描述：" prop="Describe">
+          <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 4}" v-model.trim="ruleForm.Describe" maxlength="40" show-word-limit></el-input>
+        </el-form-item>
         <el-form-item>
-          <span class="remark">( 总份数不填则表示不限 )</span>
+          <span class="remark">注：1.总份数不填则表示不限， 2.描述将显示到前台界面。</span>
         </el-form-item>
       </el-form>
     </CommonDialogComp>
@@ -137,6 +140,9 @@ export default {
         TotalNumber: createRuleArray('总份数'),
         BuyMaxNumber: createRuleArray('可购买总份数'),
         DayBuyMaxNumber: createRuleArray('每日可购买份数'),
+        Describe: [
+          { required: true, message: '描述不能为空' },
+        ],
       },
     };
   },
@@ -181,7 +187,7 @@ export default {
     font-size: 15px;
   }
   .el-dialog__body {
-    padding-top: 56px;
+    padding-top: 40px;
     padding-bottom: 5px;
     .recharge-ruleForm {
       > .el-form-item {
@@ -199,6 +205,9 @@ export default {
                 color: #a2a2a2;
               }
             }
+          }
+          .el-textarea {
+            width: 380px;
           }
           .remark, .unit {
             font-size: 12px;
@@ -218,6 +227,10 @@ export default {
         }
         &.price {
           margin-bottom: 35px;
+        }
+        &.remark-box {
+          margin-bottom: 0;
+          margin-top: -4px;
         }
       }
     }

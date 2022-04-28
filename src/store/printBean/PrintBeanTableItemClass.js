@@ -21,6 +21,8 @@ export default class PrintBeanTableItem {
 
   DayBuyMaxNumber = ''
 
+  Describe = ''
+
   key = ''
 
   constructor(data) {

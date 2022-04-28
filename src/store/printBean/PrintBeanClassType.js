@@ -30,7 +30,7 @@ export default class PrintBeanClass {
 
   Title = ''
 
-  Describe = ''
+  // Describe = ''
 
   Priority = ''
 
@@ -81,9 +81,9 @@ export default class PrintBeanClass {
     else if (Array.isArray(DataList) && DataList.some(it => it.Title === this.Title && it.ID !== this.ID)) {
       msg = '标题不能重复';
     }
-    else if (!this.Describe) {
-      msg = '请输入描述';
-    }
+    // else if (!this.Describe) {
+    //   msg = '请输入描述';
+    // }
     else if (!this.StartTime) {
       msg = '请设置开始时间';
     }

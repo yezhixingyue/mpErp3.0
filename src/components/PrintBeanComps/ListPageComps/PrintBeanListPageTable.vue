@@ -9,16 +9,16 @@
     border
     style="width: 100%"
   >
-    <el-table-column min-width="160px" prop="Title" show-overflow-tooltip label="标题"></el-table-column>
-    <el-table-column min-width="180px" prop="Describe" show-overflow-tooltip label="描述"></el-table-column>
+    <el-table-column min-width="170px" prop="Title" show-overflow-tooltip label="标题"></el-table-column>
+    <!-- <el-table-column min-width="180px" prop="Describe" show-overflow-tooltip label="描述"></el-table-column> -->
     <el-table-column width="85px"  label="优先级">
       <template slot-scope="scope">{{scope.row.Priority}}级</template>
     </el-table-column>
     <el-table-column width="240px" prop="_TimeContent" show-overflow-tooltip label="时间范围" class-name='left'></el-table-column>
     <el-table-column width="185px" prop="_CustomerContent" show-overflow-tooltip label="客户名称"></el-table-column>
-    <el-table-column width="170px" prop="_CusotomerTypeContent" show-overflow-tooltip label="客户类型"></el-table-column>
-    <el-table-column width="170px" prop="_CusotomerGradeContent" show-overflow-tooltip label="客户等级"></el-table-column>
-    <el-table-column width="230px" label="销售区域" class-name='left'>
+    <el-table-column min-width="170px" prop="_CusotomerTypeContent" show-overflow-tooltip label="客户类型"></el-table-column>
+    <el-table-column min-width="170px" prop="_CusotomerGradeContent" show-overflow-tooltip label="客户等级"></el-table-column>
+    <el-table-column min-width="220px" label="销售区域" class-name='left'>
       <template slot-scope="scope">
         <TableItemShowComp :list='scope.row._AreaContent' effect='dark' />
       </template>
@@ -44,8 +44,8 @@
 import { mapState, mapGetters } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import { getSelectedContentBySelectedDataAndAllData } from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/utils';
-import TableItemShowComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
+import TableItemShowComp from '../../common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp.vue';
 
 export default {
   props: {

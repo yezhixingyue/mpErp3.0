@@ -34,20 +34,21 @@ export default {
   },
   methods: {
     beforeLeave() {
-      this.setThisDom();
+      if (!this.setThisDom()) return;
       this.dom.style.overflow = 'hidden';
     },
     afterEnter() {
-      this.setThisDom();
+      if (!this.setThisDom()) return;
       this.dom.style.overflow = 'auto';
       this.dom.style.overflow = 'overlay';
     },
     setThisDom() {
       if (!this.dom) {
         const dom = document.querySelector('#app > section > main.page-wrap');
-        if (!dom) return;
+        if (!dom) return false;
         this.dom = dom;
       }
+      return true;
     },
   },
 };
@@ -55,7 +56,7 @@ export default {
 <style lang='scss'>
 .fade-transform-leave-active,
 .fade-transform-enter-active {
-  transition: all 0.25s;
+  transition: all 0.23s ease-in-out;
   overflow: hidden;
   user-select: none;
   width: 100%;

@@ -1,7 +1,7 @@
 <template>
   <TreeComp
     class="mp-erp-ad-area-content-selector-comp-for-new-wrap"
-    :class="treeType"
+    :class="`${treeType} ${displayLevel2?'displayLevel2':''}`"
     :title="`${treeType==='area' ? '行政区域' : '产品'}`"
     :treeList="allLevelList"
     :defaultCheckedKeys="defaultCheckedKeys"
@@ -30,6 +30,10 @@ export default {
     productClassifyType: {
       type: Number,
       default: 6, // 代客下单分类
+    },
+    displayLevel2: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {
@@ -220,6 +224,18 @@ export default {
     &.mp-common-comps-tree-comp-wrap > .content > .el-tree
      > .el-tree-node > .el-tree-node__children > .el-tree-node .el-tree-node__children > .el-tree-node > .el-tree-node__content {
       width: 12em;
+    }
+  }
+  &.displayLevel2 {
+    &.mp-common-comps-tree-comp-wrap > .content > .el-tree > .el-tree-node {
+      > .el-tree-node__children {
+        display: flex;
+        padding-top: 4px;
+        padding-bottom: 10px;
+        > .el-tree-node .el-tree-node__children {
+          display: none;
+        }
+      }
     }
   }
 }
