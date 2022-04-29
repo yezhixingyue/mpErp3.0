@@ -76,8 +76,15 @@
                     </el-option>
                   </el-select>
                   <el-input size="small" v-model="item.Remark" placeholder="在此输入备注信息" maxlength="200" show-word-limit></el-input>
-
-                  <CtrlMenus :showList="['del', 'add']"  @remove='onQuestionsRemoveClick(index)' @add='onQuestionsAddClick' />
+                  <div class="menus">
+                    <span @click="onQuestionsAddClick">
+                      <img src="@/assets/images/add.png" alt />添加</span>
+                    <span @click="onQuestionsRemoveClick(index)" v-if="true">
+                      <img src="@/assets/images/del.png" alt />删除</span>
+                    <span v-else class="disabled">
+                      <img src="@/assets/images/del-disabled.png" alt />删除</span>
+                  </div>
+                  <!-- <CtrlMenus :showList="['del', 'add']"  @remove='onQuestionsRemoveClick(index)' @add='onQuestionsAddClick' /> -->
                 </div>
               </div>
             </div>
@@ -99,7 +106,15 @@
                   </el-select>
                   <el-input-number :min="0" :max="100" :controls="false" v-model="item.Proportion" placeholder="输入责任比例" size="small">
                   </el-input-number>
-                  <CtrlMenus :showList="['del', 'add']"  @remove='onDepartmentRemoveClick(i)' @add='onDepartmentAddClick' />
+                  <div class="menus">
+                    <span @click="onDepartmentAddClick">
+                      <img src="@/assets/images/add.png" alt />添加</span>
+                    <span @click="onDepartmentRemoveClick(i)" v-if="true">
+                      <img src="@/assets/images/del.png" alt />删除</span>
+                    <span v-else class="disabled">
+                      <img src="@/assets/images/del-disabled.png" alt />删除</span>
+                  </div>
+                  <!-- <CtrlMenus :showList="['del', 'add']"  @remove='onDepartmentRemoveClick(i)' @add='onDepartmentAddClick' /> -->
                 </div>
               </div>
             </div>
@@ -156,7 +171,12 @@
                               :value="1">
                             </el-option>
                           </el-select>
-                          <span><i>?</i></span>
+                          <el-tooltip class="item" effect="dark" content="退款优先从客户未支付款项中扣除，\n不足部分从已付款款项中退回" placement="top">
+                            <template slot="content">
+                              <p>退款优先从客户未支付款项中扣除</p><p>不足部分从已付款款项中退回</p>
+                            </template>
+                            <span><i>?</i></span>
+                          </el-tooltip>
                         </div>
                       </div>
                     </div>
@@ -237,7 +257,7 @@
                   </div>
                 </div>
               </div>
-              <div class="right" v-if="dataInfo">
+              <div class="right" v-if="dataInfo && HandlingAfterSalesForm.Solution.SolutionType === 2">
                 <p>总金额:￥{{dataInfo.Order.PaidAmount}}元</p>
                 <p>已付:￥ <span class="red">{{dataInfo.Order.PaidAmount}}</span> 元</p>
                 <p>运单:￥{{dataInfo.Order.Freight}}元 <span class="tint">（含1个订单）</span></p>
@@ -280,7 +300,7 @@
                 <li v-for="it in couponList" :key="it.CouponID">
                   <el-checkbox v-model="it.checked" class="mp-mini-checkbox">
                     <span class="is-pink">{{it.Data.Amount}}元</span>
-                    <span class="MinPayAmount">满{{it.Data.MinPayAmount}}元使用</span>
+                    <span class="MinPayAmount"> 满{{it.Data.MinPayAmount}}元使用</span>
                     <i> - </i>
                     <el-tooltip placement="top-start" :enterable='false' >
                       <div slot="content">
@@ -318,7 +338,7 @@ import normalBtn from '@/components/common/normalBtn.vue';
 import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import DisplayPictrue from '@/components/ServiceAfterSale/EditDialog/DisplayPictrue.vue';
 import LoadingComp from '@/components/common/LoadingComp.vue';
-import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
+// import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
 
@@ -330,7 +350,7 @@ export default {
     EditDiaLeftTable,
     DisplayPictrue,
     LoadingComp,
-    CtrlMenus,
+    // CtrlMenus,
     FileSelectBtn,
   },
   props: {
@@ -640,27 +660,27 @@ export default {
       }
       return true;
     },
-    addSingleImg(data) {
-      const inputFile = data;
-      const { name, size } = inputFile;
-      const lastModifiedDate = inputFile.lastModifiedDate.toLocaleString(84);
-      this.imgInfo.push({
-        name,
-        size,
-        lastModifiedDate,
-      });
-      const reader = new FileReader();
-      reader.readAsDataURL(inputFile);
-      reader.onloadend = () => {
-        const strBase64 = reader.result.substring(0);
-        this.setServiceImgList([strBase64, inputFile]); // 添加到数据仓库图片列表中
-        return strBase64;
-      };
-    },
-    setServiceImgList([strBase64]) {
-      this.serviceImgList.push(strBase64);
-      // this.serviceImgList2Upload.push(inputFile);
-    },
+    // addSingleImg(data) {
+    //   const inputFile = data;
+    //   const { name, size } = inputFile;
+    //   const lastModifiedDate = inputFile.lastModifiedDate.toLocaleString(84);
+    //   this.imgInfo.push({
+    //     name,
+    //     size,
+    //     lastModifiedDate,
+    //   });
+    //   const reader = new FileReader();
+    //   reader.readAsDataURL(inputFile);
+    //   reader.onloadend = () => {
+    //     const strBase64 = reader.result.substring(0);
+    //     this.setServiceImgList([strBase64, inputFile]); // 添加到数据仓库图片列表中
+    //     return strBase64;
+    //   };
+    // },
+    // setServiceImgList([strBase64]) {
+    //   this.serviceImgList.push(strBase64);
+    //   // this.serviceImgList2Upload.push(inputFile);
+    // },
     verifyQuestions() {
       const temp = this.HandlingAfterSalesForm.AfterSaleQuestions.filter(item => item.Remark === '' || item.QuestionType === '');
       if (temp.length) return true;
@@ -729,23 +749,23 @@ export default {
     // formatElementPercentage(percentage) {
     //   return `${percentage.toFixed(2)}%`;
     // },
-    async uploadImg(data) {
-      if (!data || data.length < 1) return;
-      const files = [];
-      const imgExpectType = ['image/jpeg', 'image/png', 'image/bmp'];
-      data.forEach((file) => {
-        if (imgExpectType.includes(file.type)) files.push(file);
-      });
-      const len = 4 - this.serviceImgList.length || 0;
-      // 获取到目前还可以添加的照片数量
-      let list;
-      if (files.length <= len) list = files;
-      else list = files.slice(0, len);
-      await Promise.all(list.map(async (imgData) => {
-        // 耗时操作
-        await this.addSingleImg(imgData);
-      }));
-    },
+    // async uploadImg(data) {
+    //   if (!data || data.length < 1) return;
+    //   const files = [];
+    //   const imgExpectType = ['image/jpeg', 'image/png', 'image/bmp'];
+    //   data.forEach((file) => {
+    //     if (imgExpectType.includes(file.type)) files.push(file);
+    //   });
+    //   const len = 4 - this.serviceImgList.length || 0;
+    //   // 获取到目前还可以添加的照片数量
+    //   let list;
+    //   if (files.length <= len) list = files;
+    //   else list = files.slice(0, len);
+    //   await Promise.all(list.map(async (imgData) => {
+    //     // 耗时操作
+    //     await this.addSingleImg(imgData);
+    //   }));
+    // },
     async submitServiceOrder(IsSave) {
       this.HandlingAfterSalesForm.IsSave = IsSave;
       this.HandlingAfterSalesForm.AfterSaleCode = this.paramsData.AfterSaleCode;
@@ -815,9 +835,7 @@ export default {
         this.OrderPackageListTableData = res.data.Data;
       }
     },
-    setQuestions() {
 
-    },
     async getSaveDetailAsyncByAfterSaleCode(afterSaleCode) {
       this.setFrom();
       this.onQuestionsAddClick();
@@ -918,6 +936,7 @@ export default {
           margin-bottom: 20px;
           padding-left: 20px;
           display: flex;
+          padding-bottom: 20px;
           .submit-img-box{
             display: flex;
             flex-direction: column;
@@ -936,9 +955,9 @@ export default {
                 display: none;
                 overflow: hidden;
               }
-            .upload-btn{
-              margin: 14px 0 16px 0;
-            }
+            // .upload-btn{
+            //   margin: 14px 0 16px 0;
+            // }
             .explain {
               font-size: 12px;
               color: $--color-text-table-time;
@@ -948,7 +967,6 @@ export default {
       }
       &.service-after-sale {
         // height: 395px;
-        padding-bottom: 20px;
         min-height: 570px;
         display: flex;
         margin-top: 20px;
@@ -974,6 +992,13 @@ export default {
           overflow: auto;
           .left-table {
             width: 835px;
+            >.edit-dia-left-table-wrap{
+              .has-gutter{
+                >tr{
+                  height: 36px;
+                }
+              }
+            }
           }
           .right-submit-wrap {
             .questions{
@@ -983,6 +1008,8 @@ export default {
                 margin-top: 20px;
                 line-height: 30px;
                 text-align: right;
+                font-size: 14px;
+                font-weight: 700;
               }
               .left::before{
                 content: '*';
@@ -994,6 +1021,7 @@ export default {
                 max-height: 105px;
                 overflow: auto;
                 margin-top: 20px;
+                font-size: 12px;
                 .row{
                   display: flex;
                   align-items: center;
@@ -1013,6 +1041,26 @@ export default {
                       height: 100%;
                     }
                   }
+                  > .menus {
+                    padding-left: 2px;
+                    > span {
+                      font-size: 12px;
+                      color: #999;
+                      margin: 0 13px;
+                      transition: color 0.1s ease-in-out;
+                      user-select: none;
+                      &:not(.disabled){
+                        cursor: pointer;
+                        &:hover {
+                          color: #444;
+                        }
+                      }
+                      > img {
+                        vertical-align: bottom;
+                        margin-right: 6px;
+                      }
+                    }
+                  }
                 }
                 .row:last-child{
                   margin-bottom: 0;
@@ -1026,6 +1074,8 @@ export default {
                 line-height: 30px;
                 text-align: right;
                 margin-top: 20px;
+                font-size: 14px;
+                font-weight: 700;
               }
               >.left::before{
                 content: '*';
@@ -1036,6 +1086,7 @@ export default {
                 flex: 1;
                 max-height: 105px;
                 overflow: auto;
+                font-size: 12px;
                 margin-top: 20px;
                 >.row{
                   display: flex;
@@ -1061,6 +1112,26 @@ export default {
                       line-height: 24px;
                     }
                   }
+                  > .menus {
+                    padding-left: 2px;
+                    > span {
+                      font-size: 12px;
+                      color: #999;
+                      margin: 0 13px;
+                      transition: color 0.1s ease-in-out;
+                      user-select: none;
+                      &:not(.disabled){
+                        cursor: pointer;
+                        &:hover {
+                          color: #444;
+                        }
+                      }
+                      > img {
+                        vertical-align: bottom;
+                        margin-right: 6px;
+                      }
+                    }
+                  }
                 }
                 >.row:last-child{
                   margin-bottom: 0;
@@ -1080,6 +1151,8 @@ export default {
                   width:81px;
                   line-height: 30px;
                   text-align: right;
+                  font-size: 14px;
+                  font-weight: 700;
                 }
                 .left::before{
                   content: '*';
@@ -1088,18 +1161,25 @@ export default {
                 }
                 .right{
                   flex: 1;
+                  font-size: 12px;
                   .row{
                     display: flex;
                     align-items: center;
                     min-height: 30px;
                     .el-radio-group{
-                      // margin-left: 15px;
+                      .el-radio{
+                        font-size: 12px;
+                        .el-radio__label{
+                          font-size: 12px;
+                        }
+                      }
                     }
                   }
                 }
               }
               .dispose{
                 display: flex;
+                font-size: 12px;
                 .left{
                   width:81px;
                   line-height: 24px;
@@ -1120,6 +1200,7 @@ export default {
                       .select{
                         color: #26BCF9;
                         height: 27px;
+                        margin-right: 10px;
                       }
 
                       .select:hover{
@@ -1158,7 +1239,6 @@ export default {
                           height: 24px;
                           width: 60px;
                           margin-right: 10px;
-                          margin-left: 10px;
                           input{
                             height: 100%;
                           }
@@ -1168,7 +1248,6 @@ export default {
                         }
                         >.el-textarea{
                           margin-right: 20px;
-                          margin-left: 10px;
                           width: 430px;
                           height: 56px;
                         }
@@ -1192,7 +1271,7 @@ export default {
                         }
                         > div {
                           display: flex;
-                          margin-left: 10px;
+                          // margin-left: 10px;
                           margin-top: 3px;
                           max-width: 510px;
                           > span {
@@ -1227,9 +1306,6 @@ export default {
                                 margin-right: 0.5em;
                                 flex: none;
                               }
-                              .MinPayAmount {
-                                min-width: 72px;
-                              }
                             }
                           }
                         }
@@ -1242,6 +1318,7 @@ export default {
                 flex: 1;
                 padding-left: 30px;
                 border-left: 1px dashed #EEEEEE;
+                margin-top: 10px;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -1256,38 +1333,6 @@ export default {
               }
             }
           }
-        }
-      }
-    }
-    > .download-btn {
-      height: 24px;
-      width: 80px;
-      position: absolute;
-      top: 180px;
-      left: 620px;
-      > button {
-        margin: 0;
-        height: 24px;
-        width: 80px;
-        line-height: 20px;
-        color: #fff;
-        background-color: #26bcf9;
-        font-size: 12px;
-        border-radius: 2px;
-      }
-    }
-    .order-service-detail-box {
-      .text-content .address {
-        max-width: 360px;
-      }
-      &.d {
-        ul.left {
-          > li {
-            margin-bottom: 13px;
-          }
-        }
-        > footer {
-          padding-top: 6px;
         }
       }
     }
@@ -1323,17 +1368,6 @@ export default {
           color: $--color-text-table-time;
         }
       }
-      .err-wrap{
-        color: $--color-text-table-pending;
-        font-size: 12px;
-        position: relative;
-        top:  5px;
-        right: -30px;
-        height: 30px;
-        line-height: 30px;
-        width: 260px;
-        text-align: right;
-      }
       .btns{
         position: relative;
         top: 5px;
@@ -1361,39 +1395,6 @@ export default {
         .white {
           background: #fff;
           border: 1px solid $--color-primary;
-        }
-      }
-      .el-progress{
-        position: absolute;
-        width: 1000px;
-        left: 0;
-        bottom: 0;
-        height: 3px;
-        .el-progress-bar__outer {
-          overflow: visible;
-          top: -6px;
-          .el-progress-bar__inner{
-            background: linear-gradient(
-              to right,
-              $--color-primary,
-              $--color-primary-light
-            );
-            transition: width .3s linear;
-            top: 0;
-          }
-          .el-progress-bar__innerText{
-            position: relative;
-            top: -17px;
-            font-size: 12px;
-            color: #f4a307;
-            z-index: 999;
-            left: 47px;
-          }
-        }
-        &.will-over{
-          .el-progress-bar__outer .el-progress-bar__inner .el-progress-bar__innerText{
-            left: 0;
-          }
         }
       }
       .mask{

@@ -88,7 +88,7 @@ const api = {
     return instance.post('/Api/OrderAfterSale/Apply', data);
   },
   getOperateStaff() { // POST /Api/AfterSaleOrder/OperateStaff  转交人列表
-    return instance.get('Api/OrderAfterSale/OperateStaff');
+    return instance.get('/Api/OrderAfterSale/OperateStaff');
   },
   getApplyQuestionApplyList(data) { // POST /Api/OrderAfterSale/ApplyList  售后申请列表
     return instance.post('/Api/OrderAfterSale/ApplyList', data);
@@ -103,7 +103,7 @@ const api = {
     return instance.post('/Api/OrderAfterSale/Hang', data);
   },
   getOrderAfterSaleCancelHang(data) { // POST Api/OrderAfterSale/CancelHang  解除挂起售后申请
-    return instance.post(`Api/OrderAfterSale/CancelHang?afterSaleCode=${data}`);
+    return instance.post(`/Api/OrderAfterSale/CancelHang?afterSaleCode=${data}`);
   },
   getOrderAfterSaleTransfer(data) { // POST /Api/OrderAfterSale/Transfer  转交售后申请
     return instance.post('/Api/OrderAfterSale/Transfer', data);
@@ -130,10 +130,10 @@ const api = {
     return instance.post('/Api/OrderAfterSale/SaveResult', data);
   },
   getOrderApplyRecord(orderID) { // POST /Api/OrderAfterSale/OrderApplyRecord 订单已售后列表
-    return instance.get(`Api/OrderAfterSale/OrderApplyRecord?orderID=${orderID}`);
+    return instance.get(`/Api/OrderAfterSale/OrderApplyRecord?orderID=${orderID}`);
   },
   getCustomerApplyRecord(customerID) { // POST /Api/OrderAfterSale/CustomerApplyRecord 客户已售后列表
-    return instance.get(`Api/OrderAfterSale/CustomerApplyRecord?customerID=${customerID}`);
+    return instance.get(`/Api/OrderAfterSale/CustomerApplyRecord?customerID=${customerID}`);
   },
   /* 包裹列表api
    ----------------------------------------------------------------------------------- */

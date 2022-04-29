@@ -405,7 +405,7 @@ export default {
       }
     }
     header{
-      padding: 20px 0;
+      padding: 20px 0 15px 0;
     }
     .table{
       width: 800px;

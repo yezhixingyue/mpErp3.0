@@ -4,30 +4,54 @@
      @clearCondition='clearCondition' @setCondition='setCondition' />
     <div>
       <el-table stripe border fit :data="dataList" style="width: 100%" class="ft-14-table" :max-height="h" :height="h">
+        <el-table-column prop="AfterSaleCode" label="售后服务单号" minWidth="110" show-overflow-tooltip></el-table-column>
         <el-table-column prop="OrderID" label="订单号" minWidth="90" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="CustomerName" label="客户名称" minWidth="100" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="CustomerType" label="客户类型" minWidth="85" show-overflow-tooltip></el-table-column>
-        <el-table-column label="产品名称" prop="ProductName" minWidth="150" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.ProductName}}</template>
-        </el-table-column>
-        <el-table-column prop="Content" label="订单备注" minWidth="150" show-overflow-tooltip>
+        <el-table-column prop="OrderID" label="数量" minWidth="90" show-overflow-tooltip>
           <span class="is-gray" slot-scope="scope">{{scope.row.Content}}</span>
         </el-table-column>
-        <el-table-column label="售后原因" minWidth="130" show-overflow-tooltip>
+        <el-table-column label="产品名称" prop="ProductName" minWidth="115" show-overflow-tooltip>
+          <template slot-scope="scope">{{scope.row.ProductName}}</template>
+        </el-table-column>
+        <el-table-column label="售后原因" minWidth="115" show-overflow-tooltip>
           <template slot-scope="scope">{{getApplyText(scope.row.QuestionTypeTitleList)}}</template>
+        </el-table-column>
+        <el-table-column prop="Remark" label="问题描述" minWidth="130" show-overflow-tooltip>
+          <span slot-scope="scope">{{scope.row.QuestionRemark}}</span>
+        </el-table-column>
+        <el-table-column label="申请时间" show-overflow-tooltip minWidth="125">
+          <span class="is-gray" slot-scope="scope">{{ scope.row.CreateTime | format2MiddleLangTypeDate }}</span>
+        </el-table-column>
+        <el-table-column label="最迟响应时间" show-overflow-tooltip minWidth="125">
+          <span :class="{'is-pink': OverTime(scope.row.LatestRespondTime)}" slot-scope="scope">
+            {{ scope.row.LatestRespondTime | format2MiddleLangTypeDate }}
+          </span>
+        </el-table-column>
+        <el-table-column label="下次处理时间" show-overflow-tooltip minWidth="125">
+          <span slot-scope="scope">{{ scope.row.NextOperateTime | format2MiddleLangTypeDate }}</span>
+        </el-table-column>
+        <el-table-column label="服务单来源" show-overflow-tooltip minWidth="100">
+          <span slot-scope="scope">{{ scope.row.Source === 2 ? '自助下单' : '代客下单' }}</span>
+        </el-table-column>
+        <el-table-column label="响应时间" show-overflow-tooltip minWidth="125">
+          <span slot-scope="scope">{{ scope.row.RespondTime | format2MiddleLangTypeDate }}</span>
+        </el-table-column>
+        <el-table-column label="操作时间" show-overflow-tooltip minWidth="125">
+          <span slot-scope="scope">{{ scope.row.OperateTime | format2MiddleLangTypeDate }}</span>
+        </el-table-column>
+        <el-table-column label="处理人" show-overflow-tooltip minWidth="90">
+          <span slot-scope="scope">{{ scope.row.OperaterUserName }}</span>
+        </el-table-column>
+        <!-- <el-table-column prop="CustomerName" label="客户名称" minWidth="100" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="CustomerType" label="客户类型" minWidth="85" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="Content" label="订单备注" minWidth="150" show-overflow-tooltip>
+          <span class="is-gray" slot-scope="scope">{{scope.row.Content}}</span>
         </el-table-column>
         <el-table-column label="诉求意向" minWidth="80" show-overflow-tooltip>
           <template slot-scope="scope">{{ scope.row.AppealType | formatAppealType }}</template>
         </el-table-column>
-        <el-table-column prop="Remark" label="问题备注" minWidth="240" show-overflow-tooltip>
-          <span class="is-gray" slot-scope="scope">{{scope.row.QuestionRemark}}</span>
-        </el-table-column>
         <el-table-column prop="SellArea" label="销售区域" minWidth="145" show-overflow-tooltip></el-table-column>
         <el-table-column prop="Mobile" label="联系方式" minWidth="100" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="QQ" label="QQ号码" minWidth="100" show-overflow-tooltip></el-table-column>
-        <el-table-column label="申请时间" show-overflow-tooltip minWidth="125">
-          <span class="is-gray" slot-scope="scope">{{ scope.row.CreateTime | format2MiddleLangTypeDate }}</span>
-        </el-table-column>
+        <el-table-column prop="QQ" label="QQ号码" minWidth="100" show-overflow-tooltip></el-table-column> -->
         <el-table-column prop="Content" label="进度" show-overflow-tooltip minWidth="90">
           <div slot-scope="scope">
             <span :class="getStatusClass(scope.row.Status)">{{ getStatusText(scope.row.Status) }}
@@ -72,6 +96,7 @@ export default {
   mixins: [mixin, tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   data() {
     return {
+      nowDate: null,
       dataList: [],
       dataNumber: 0,
       curItemData: null,
@@ -107,6 +132,9 @@ export default {
         return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;
       }
       return {};
+    },
+    OverTime() {
+      return (date) => new Date(date).getTime() <= new Date().getTime();
     },
   },
   methods: {

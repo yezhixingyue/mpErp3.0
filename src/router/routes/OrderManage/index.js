@@ -110,7 +110,7 @@ const routes = { // 客户订单管理
       name: 'ServiceInfo',
       meta: {
         title: '客户设置',
-        pageName: 'serviceInfoPage',
+        pageName: 'feedbackInfoPage',
         PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
         requiresAuth: true,
       },

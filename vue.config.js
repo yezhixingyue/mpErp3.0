@@ -8,7 +8,8 @@
  */
 const TerserPlugin = require('terser-webpack-plugin');
 
-const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web/';
+const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web2/';
+
 
 let proxyUrl = 'http://192.168.3.68:8050';
 // let proxyUrl = 'http://192.168.3.253';
