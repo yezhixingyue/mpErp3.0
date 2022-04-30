@@ -131,6 +131,7 @@ export default {
           ...it,
           key: Math.random().toString(36).slice(-8),
           ID: idTransformer(it.ID),
+          Department: it.Department || { ID: '', Name: '' },
         }));
       }
     },

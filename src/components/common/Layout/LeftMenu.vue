@@ -409,5 +409,6 @@ export default {
   }
   .el-menu--vertical > .el-menu .el-menu-item > i.el-icon {
     text-align: left;
+    margin-left: 5px;
   }
 </style>

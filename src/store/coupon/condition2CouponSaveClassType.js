@@ -83,6 +83,12 @@ export default class Condition2CouponSaveClassType {
 
     MaxReceiveNumber = ''; // 客户最大领取数量
 
+    constructor(data) {
+      if (data) {
+        this.backfill(data);
+      }
+    }
+
     static check(obj) {
       // 券的面值 满减金额 及 数量 校验
       const { Amount, MinPayAmount, TotalNumber } = obj.Data;
@@ -214,46 +220,42 @@ export default class Condition2CouponSaveClassType {
       return _obj;
     }
 
-    static backfill(data) {
-      const _condition2CouponSave = {};
+    backfill(data) {
+      this.ApplyUser = {};
+      this.ApplyUser = data.ApplyUser;
+      this.CouponID = data.CouponID;
 
-      _condition2CouponSave.ApplyUser = {};
-      _condition2CouponSave.ApplyUser = data.ApplyUser;
-      _condition2CouponSave.CouponID = data.CouponID;
-
-      _condition2CouponSave.GradeList = data.GradeList.map(it => ({ ID: it.ID }));
-      _condition2CouponSave.CustomerTypeList = data.CustomerTypeList.map(it => ({ ID: it.ID }));
-      _condition2CouponSave.OrderTypeList = data.OrderTypeList.map(it => ({ ID: it.ID }));
+      this.GradeList = data.GradeList.map(it => ({ ID: it.ID }));
+      this.CustomerTypeList = data.CustomerTypeList.map(it => ({ ID: it.ID }));
+      this.OrderTypeList = data.OrderTypeList.map(it => ({ ID: it.ID }));
 
       const { Amount, MinPayAmount, TotalNumber } = data.Data;
-      _condition2CouponSave.Data = {};
-      _condition2CouponSave.Data.Amount = Amount;
-      _condition2CouponSave.Data.MinPayAmount = MinPayAmount;
-      _condition2CouponSave.Data.TotalNumber = TotalNumber;
+      this.Data = {};
+      this.Data.Amount = Amount;
+      this.Data.MinPayAmount = MinPayAmount;
+      this.Data.TotalNumber = TotalNumber;
 
-      _condition2CouponSave.ProductList = data.ProductList;
+      this.ProductList = data.ProductList;
 
       const { ProvideStartTime, ProvideEndTime, ValidStartTime, ValidEndTime } = data;
-      _condition2CouponSave.ProvideStartTime = ProvideStartTime;
-      _condition2CouponSave.ProvideEndTime = ProvideEndTime;
-      _condition2CouponSave.ValidStartTime = ValidStartTime;
-      _condition2CouponSave.ValidEndTime = ValidEndTime;
+      this.ProvideStartTime = ProvideStartTime;
+      this.ProvideEndTime = ProvideEndTime;
+      this.ValidStartTime = ValidStartTime;
+      this.ValidEndTime = ValidEndTime;
 
-      // _condition2CouponSave.SellAreaArray = data.SellAreaArray;
+      // this.SellAreaArray = data.SellAreaArray;
 
-      _condition2CouponSave.AreaList = data.AreaList;
+      this.AreaList = data.AreaList;
 
-      _condition2CouponSave.IsIncludeIncreasedArea = data.IsIncludeIncreasedArea;
+      this.IsIncludeIncreasedArea = data.IsIncludeIncreasedArea;
 
-      _condition2CouponSave.IsIncludeIncreasedProduct = data.IsIncludeIncreasedProduct;
+      this.IsIncludeIncreasedProduct = data.IsIncludeIncreasedProduct;
 
-      _condition2CouponSave.ProductClassList = data.ProductClassList;
+      this.ProductClassList = data.ProductClassList;
 
 
       const { IsCustomerReceive, MaxReceiveNumber } = data;
-      _condition2CouponSave.IsCustomerReceive = IsCustomerReceive || false;
-      _condition2CouponSave.MaxReceiveNumber = (MaxReceiveNumber || MaxReceiveNumber === 0) ? MaxReceiveNumber : '';
-
-      return _condition2CouponSave;
+      this.IsCustomerReceive = IsCustomerReceive || false;
+      this.MaxReceiveNumber = (MaxReceiveNumber || MaxReceiveNumber === 0) ? MaxReceiveNumber : '';
     }
 }
