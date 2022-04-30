@@ -8,15 +8,17 @@
 
         <el-table v-if="dataInfo" stripe border fit :data="[dataInfo.Order.Product]" style="width: 800px" class="ft-14-table">
           <el-table-column prop="ProductName" label="商品名称" minWidth="192" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="Content" label="文件内容" minWidth="194" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="Content" label="文件内容" minWidth="194" show-overflow-tooltip>
+            <template slot-scope="scope">{{scope.row.Content || '--'}}</template>
+          </el-table-column>
           <el-table-column prop="CustomerType" label="数量" minWidth="108" show-overflow-tooltip>
             <template slot-scope="scope">{{scope.row.ProductAmount}}{{scope.row.Unit}}/{{scope.row.KindCount}}款</template>
           </el-table-column>
           <el-table-column label="尺寸" prop="ProductName" minWidth="103" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.SizeList.join('，')}}</template>
+            <template slot-scope="scope">{{scope.row.SizeList.join('，')||'--'}}</template>
           </el-table-column>
           <el-table-column prop="Order" label="工艺" minWidth="103" show-overflow-tooltip>
-            <span class="is-gray" slot-scope="scope">{{scope.row.CraftList.join('，')}}</span>
+            <span class="is-gray" slot-scope="scope">{{scope.row.CraftList.join('，') || '--'}}</span>
           </el-table-column>
           <el-table-column label="价格合计" minWidth="90" show-overflow-tooltip>
             <template><span class="is-pink">￥{{dataInfo.Order.FinalPrice}}</span></template>
@@ -38,7 +40,7 @@
           </tr>
           <tr>
             <td>订单状态</td>
-            <td>{{dataInfo.Order.Status}}</td>
+            <td>{{dataInfo.Order.Status | formatStatus}}</td>
             <td>配送方式</td>
             <td>{{dataInfo.Order.DistrictName}}</td>
           </tr>
@@ -52,7 +54,7 @@
           </tr>
           <tr>
             <td>客户编号</td>
-            <td>{{dataInfo.Order.CustomerAfterSaleNumber}}</td>
+            <td>{{dataInfo.Order.CustomerNo}}</td>
             <td>客户名称</td>
             <td>{{dataInfo.Order.CustomerName}}
               已售后 <span class="number">{{dataInfo.Order.CustomerAfterSaleNumber}} </span> 次
@@ -78,7 +80,7 @@
             <td>运费</td>
             <td>￥{{dataInfo.Order.Freight}}元（含{{'==='}}个订单）</td>
             <td>订单备注</td>
-            <td> <p class="textarea">{{dataInfo.Order.Product.Content}}</p></td>
+            <td> <p class="textarea">{{dataInfo.Order.Product.Content || '--'}}</p></td>
           </tr>
         </table>
 
@@ -91,7 +93,7 @@
             <td>服务单号</td>
             <td>{{dataInfo.AfterSale.AfterSaleCode}}</td>
             <td>处理进度</td>
-            <td>{{dataInfo.AfterSale.Status}}</td>
+            <td>{{getStatusText(dataInfo.AfterSale.Status)}}</td>
           </tr>
           <tr>
             <td>申请时间</td>
@@ -104,9 +106,11 @@
             <td>{{dataInfo.AfterSale.Mobile}}</td>
             <td>QQ号</td>
             <td>
-              <a :href="`tencent://message/?uin=${dataInfo.AfterSale.QQ}&Site=SuperNic&Menu=yes`" class="details" style="padding:0">
+              <a v-if="dataInfo.AfterSale.QQ"
+              :href="`tencent://message/?uin=${dataInfo.AfterSale.QQ}&Site=SuperNic&Menu=yes`" class="details" style="padding:0">
                 {{dataInfo.AfterSale.QQ}}
               </a>
+              <span v-else>--</span>
             </td>
           </tr>
           <tr>
@@ -312,6 +316,32 @@ export default {
     },
   },
   methods: {
+    getStatusText(status) {
+      let str = '';
+      switch (status) {
+        case 0:
+          str = '已提交';
+          break;
+        case 10:
+          str = '处理中';
+          break;
+        case 20:
+          str = '退款中';
+          break;
+        case 30:
+          str = '处理成功';
+          break;
+        case 40:
+          str = '已驳回';
+          break;
+        case 255:
+          str = '已取消';
+          break;
+        default:
+          break;
+      }
+      return str;
+    },
     OrderInfo() {
       this.orderListDialogData.orderListDialogShow = true;
       this.orderListDialogData.OrderID = this.dataInfo.Order.OrderID;

@@ -1,33 +1,61 @@
 <template>
-  <section class="FeedbackInfoPage">
-    <div class="FeedbackInfoPage-main">
+  <section class="FeedbackInfoPage" >
+    <div class="FeedbackInfoPage-main" id="feedbackinfopage" >
       <Tables :dataInfo="DetailData" :paramsData="paramsData"></Tables>
       <footer v-if="DetailData">
-        <el-button  class="cancel-blue-btn" @click="onGrelievePostponeClick"
+        <el-button  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
         v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
         >解除挂起</el-button>
         <template v-else>
-        <el-button  class="cancel-blue-btn" @click="onGetDownToClick"
+        <el-button  class="cancel-blue-btn" @click="onGetDownToClick" key="开始处理"
         v-if="DetailData.AfterSale.Status === 0"
         >开始处理</el-button>
-        <el-button  class="cancel-blue-btn" @click="onExecuteClick"
+        <el-button  class="cancel-blue-btn" @click="onExecuteClick" key="执行售后"
         v-if="DetailData.AfterSale.Status === 10"
         >执行售后</el-button>
-        <el-button  class="cancel-blue-btn" @click="onPostponeClick"
+        <el-button  class="cancel-blue-btn" @click="onPostponeClick" key="挂起"
         v-if="DetailData.AfterSale.Status === 10 && !DetailData.AfterSale.IsHang"
         >挂起</el-button>
-        <el-button  class="cancel-blue-btn" @click="onDisposeDetailsClick"
+        <el-button  class="cancel-blue-btn" @click="onDisposeDetailsClick" key="查看处理详情"
         v-if="DetailData.AfterSale.Status === 30"
         >查看处理详情</el-button>
-        <el-button  class="cancel-blue-btn" @click="onDeliverToClick"
+        <el-button  class="cancel-blue-btn" @click="onDeliverToClick" key="转他人处理"
         v-if="DetailData.AfterSale.Status === 10"
         >转他人处理</el-button>
-        <el-button  class="cancel-blue-btn" @click="onRejectClick"
+        <el-button  class="cancel-blue-btn" @click="onRejectClick" key="驳回"
         v-if="DetailData.AfterSale.Status === 10"
         >驳回</el-button>
         </template>
         <el-button class="cancel-blue-btn" @click="onGoBackClick"><i></i> 返回</el-button>
       </footer>
+      <transition name="el-fade-in-linear">
+      <footer v-if="DetailData" v-show="isFootFixed" class="FootFixed" :style="`width:${clientWidth?clientWidth : '800'}px`">
+        <el-button  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
+        v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
+        >解除挂起</el-button>
+        <template v-else>
+        <el-button  class="cancel-blue-btn" @click="onGetDownToClick" key="开始处理"
+        v-if="DetailData.AfterSale.Status === 0"
+        >开始处理</el-button>
+        <el-button  class="cancel-blue-btn" @click="onExecuteClick" key="执行售后"
+        v-if="DetailData.AfterSale.Status === 10"
+        >执行售后</el-button>
+        <el-button  class="cancel-blue-btn" @click="onPostponeClick" key="挂起"
+        v-if="DetailData.AfterSale.Status === 10 && !DetailData.AfterSale.IsHang"
+        >挂起</el-button>
+        <el-button  class="cancel-blue-btn" @click="onDisposeDetailsClick" key="查看处理详情"
+        v-if="DetailData.AfterSale.Status === 30"
+        >查看处理详情</el-button>
+        <el-button  class="cancel-blue-btn" @click="onDeliverToClick" key="转他人处理"
+        v-if="DetailData.AfterSale.Status === 10"
+        >转他人处理</el-button>
+        <el-button  class="cancel-blue-btn" @click="onRejectClick" key="驳回"
+        v-if="DetailData.AfterSale.Status === 10"
+        >驳回</el-button>
+        </template>
+        <el-button class="cancel-blue-btn" @click="onGoBackClick"><i></i> 返回</el-button>
+      </footer>
+      </transition>
     </div>
     <template v-if="paramsData">
       <!-- 挂起 -->
@@ -79,7 +107,20 @@ export default {
       DisposeDetailsVisible: false,
       DetailData: null,
       paramsData: null,
+      ScrollInfo: {
+        scrollTop: 0,
+        scrollHeight: 0,
+        offsetHeight: 0,
+      },
+      isFootFixed: false,
+      // 定位元素的宽度
+      clientWidth: null,
     };
+  },
+  computed: {
+    scrollChange() {
+      return this.ScrollInfo.scrollTop + this.ScrollInfo.scrollHeight + this.ScrollInfo.offsetHeight;
+    },
   },
   methods: {
     async getInitData() {
@@ -170,10 +211,46 @@ export default {
     onDisposeDetailsClick() {
       this.DisposeDetailsVisible = true;
     },
+    // getScroll(e) {
+    //   console.log(e);
+    // },
+
+    handleScroll(oEl) {
+      if (!oEl) return;
+      const { scrollTop, scrollHeight, offsetHeight } = oEl;
+      this.ScrollInfo = { scrollTop, scrollHeight, offsetHeight };
+    },
+    cScroll() {
+      this.$nextTick(() => {
+        this.handleScroll(this.oPage[0]);
+      });
+    },
+  },
+  watch: {
+    scrollChange() {
+      const { scrollTop, scrollHeight, offsetHeight } = this.ScrollInfo;
+      const difference = scrollHeight - offsetHeight;
+      if (difference - scrollTop > 60) this.isFootFixed = true;
+      else this.isFootFixed = false;
+    },
+    DetailData() {
+      this.$nextTick(() => {
+        this.handleScroll(this.oPage[0]);
+      });
+    },
   },
   mounted() {
     this.paramsData = this.$route.params.paramsData;
     this.getInitData();
+    // console.log(document.getElementsByClassName('page-wrap')[0]);
+    this.oBottomWidth = document.getElementById('feedbackinfopage');
+    const { clientWidth } = this.oBottomWidth;
+    this.clientWidth = clientWidth;
+    this.oPage = document.getElementsByClassName('page-wrap');
+    this.oPage[0].addEventListener('scroll', this.cScroll);
+    this.$nextTick(() => {
+      this.handleScroll(this.oPage[0]);
+    });
   },
 };
 </script>
@@ -188,12 +265,28 @@ export default {
     background-color: #fff;
     // overflow: auto;
     // height: 100%;
+    width: 100%;
+    position: relative;
     > footer {
       flex: none;
       height: 65px;
       text-align: left;
       padding-top: 40px;
       padding-left: 40px;
+      &.FootFixed{
+        position: fixed;
+        bottom: 0;
+        // right: 0;
+        // left: 0;
+        background-color: #fff;
+        box-shadow: 0px 0px 14px 0px rgba(136, 136, 136, 0.3);
+        width: 100%;
+        // height: 45px;
+        padding-top: 20px;
+        padding-right: 40px;
+        box-sizing: border-box;
+        margin-right: 45px;
+      }
       .cancel-blue-btn {
         width: 120px;
         height: 35px;

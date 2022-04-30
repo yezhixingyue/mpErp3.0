@@ -80,6 +80,17 @@
           :value="condition.CustomerType.Second"
           label=""
         />
+        <OrderChannelSelector
+        style="margin-right: 30px"
+        :filterable='true'
+        :options='staffList'
+        :requestFunc='getDataList'
+        :changePropsFunc='setCondition4DataList'
+        :typeList="[['OperaterID', '']]"
+        :defaultProps="{ label: 'StaffName', value: 'StaffID' }"
+        :value='condition.OperaterID'
+        label="操作人"
+       />
       </li>
       <li>
         <LineDateSelectorComp
@@ -174,6 +185,7 @@ export default {
         { text: '本月', key: 'curMonthDate' },
         { text: '上月', key: 'lastMonthDate' },
       ],
+      staffList: null,
     };
   },
   methods: {
@@ -186,10 +198,16 @@ export default {
     getDataList() {
       this.$emit('getDataList');
     },
+    async getCustomerData() { // 获取客户数据
+      this.api.getOperateStaff().then(res => {
+        this.staffList = res.data.Data;
+      });
+    },
   },
   mounted() {
     this.$store.dispatch('common/getFeedbackQuestionList');
     this.$store.dispatch('common/getUserClassify');
+    this.getCustomerData();
   },
 };
 </script>

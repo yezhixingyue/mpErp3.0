@@ -12,6 +12,7 @@
         :defaultProps='defaultProps'
         :title='title'
         @handleChange='handleChange'
+        :filterable="filterable"
        />
       <el-radio-group v-model="radio" v-else>
         <el-radio :label="it[defaultProps.value]" :key="it[defaultProps.value]" v-for="it in localOptions">{{it[defaultProps.label]}}</el-radio>
@@ -64,6 +65,10 @@ export default {
       default: true,
     },
     isRadio: {
+      type: Boolean,
+      default: false,
+    },
+    filterable: {
       type: Boolean,
       default: false,
     },

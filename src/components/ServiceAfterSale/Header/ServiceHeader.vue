@@ -59,6 +59,17 @@
               :defaultProps="{ label: 'label', value: 'value' }"
               label="服务评级"
             />
+            <OrderChannelSelector
+            style="margin-right: 30px"
+            :filterable='true'
+            :options='staffList'
+            :requestFunc='getDataList'
+            :changePropsFunc='setCondition4DataList'
+            :typeList="[['OperaterID', '']]"
+            :defaultProps="{ label: 'StaffName', value: 'StaffID' }"
+            :value='obj4RequestServiceList.OperaterID'
+            label="操作人"
+          />
         </div>
         <div class="s">
           <LineDateSelectorComp
@@ -137,6 +148,7 @@ export default {
         { label: '2星', value: 2 }, { label: '3星', value: 3 },
         { label: '4星', value: 4 }, { label: '1星', value: 5 },
       ],
+      staffList: null,
     };
   },
   methods: {
@@ -149,9 +161,15 @@ export default {
     clearCondition() {
       this.$store.commit('service/clearConfigObj');
     },
+    async getCustomerData() { // 获取客户数据
+      this.api.getOperateStaff().then(res => {
+        this.staffList = res.data.Data;
+      });
+    },
   },
   mounted() {
     this.$store.dispatch('common/getUserClassify');
+    this.getCustomerData();
   },
 };
 </script>

@@ -73,7 +73,7 @@ export default {
       Operator: '',
       DateType: 'today',
       // new
-
+      OperaterID: '',
       SolutionType: '',
       Score: '',
       Result: '',
@@ -280,7 +280,7 @@ export default {
         Operator: '',
         DateType: 'today',
         // new
-
+        OperaterID: '',
         SolutionType: '',
         Score: '',
         Result: '',

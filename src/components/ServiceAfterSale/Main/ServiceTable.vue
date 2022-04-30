@@ -15,7 +15,7 @@
     </el-table-column>
     <el-table-column show-overflow-tooltip
       prop="Order.Content" class-name='is-gray' minWidth="110" label="文件内容">
-      <template slot-scope="scope">{{scope.row.Content}}
+      <template slot-scope="scope">{{scope.row.Content || '--'}}
       </template>
     </el-table-column>
     <el-table-column show-overflow-tooltip prop="ProductName"
@@ -27,10 +27,19 @@
     </el-table-column>
     <el-table-column minWidth="70" label="售后类型">
       <template slot-scope="scope">
-        {{scope.row.SolutionType}}
+        <!-- {{scope.row.SolutionType}} -->
+        <span v-if="scope.row.SolutionType === 2">退款</span>
+        <span v-else-if="scope.row.SolutionType === 7">补印</span>
+        <span v-else-if="scope.row.SolutionType === 8">赠送优惠券</span>
+        <span v-else-if="scope.row.SolutionType === 255">其他</span>
+        <span v-else>--</span>
       </template>
     </el-table-column>
-    <el-table-column prop="ReprintOrderID" minWidth="80" label="补印单号"></el-table-column>
+    <el-table-column prop="ReprintOrderID" minWidth="80" label="补印单号">
+      <template slot-scope="scope">
+        {{scope.row.ReprintOrderID || "--"}}
+      </template>
+    </el-table-column>
     <el-table-column minWidth="72" label="订单减款">
       <template slot-scope="scope">
         {{scope.row.RefundAmount}}元
@@ -41,9 +50,25 @@
         {{scope.row.RefundFreightAmount}}元
       </template>
     </el-table-column>
-    <el-table-column minWidth="100" label="优惠券" show-overflow-tooltip>
+    <el-table-column minWidth="100" label="优惠券">
       <template slot-scope="scope" >
-        {{scope.row.Solution}}
+        <span v-if="scope.row.CouponList.length">
+          <el-tooltip class="item" effect="dark" content="Top Center 提示文字" placement="top">
+            <div slot="content">
+              <p v-for="(it,i) in scope.row.CouponList" :key="i" >
+                  <span class="is-pink">{{it.Amount}}</span>元
+                  满<span class="MinPayAmount">{{it.MinPayAmount}}</span>元使用
+                  （ <i class="is-origin">{{it.Number}}</i>张 ）
+              </p>
+            </div>
+            <template v-for="(it,i) in scope.row.CouponList" >
+              <span :key="i">
+                {{it.Amount}}元-满{{it.MinPayAmount}}元使用-（ <i class="is-origin">{{it.Number}}</i>张 ）
+              </span>
+            </template>
+          </el-tooltip>
+        </span>
+        <span v-else>--</span>
       </template>
     </el-table-column>
     <el-table-column class-name='lossfund' prop="LossAmount" minWidth="72" label="损失金额" show-overflow-tooltip>
@@ -59,11 +84,16 @@
     <el-table-column
       class-name='sm-font' prop="CustomerName" minWidth="75" label="下单人"></el-table-column>
     <el-table-column class-name='sm-font is-gray' minWidth="115" label="处理时间">
-      <template slot-scope="scope">
+      <template slot-scope="scope" v-if="scope.row.CreateTime">
         {{scope.row.CreateTime | formatDate}}
       </template>
+      <span v-else>--</span>
     </el-table-column>
-    <el-table-column prop="OperaterUserName" minWidth="75" label="处理人"></el-table-column>
+    <el-table-column prop="OperaterUserName" minWidth="75" label="处理人">
+      <template slot-scope="scope">
+        {{scope.row.OperaterUserName || '--'}}
+      </template>
+    </el-table-column>
     <el-table-column label-class-name='menu-header' prop="handle" width="260" label="操作">
       <div class="handle-menus-wrap"  slot-scope="scope">
         <span @click="jump2ServiceDetail(scope.row)">

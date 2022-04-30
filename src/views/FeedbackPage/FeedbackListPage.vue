@@ -22,24 +22,28 @@
           <span class="is-gray" slot-scope="scope">{{ scope.row.CreateTime | format2MiddleLangTypeDate }}</span>
         </el-table-column>
         <el-table-column label="最迟响应时间" show-overflow-tooltip minWidth="125">
-          <span :class="{'is-pink': OverTime(scope.row.LatestRespondTime)}" slot-scope="scope">
-            {{ scope.row.LatestRespondTime | format2MiddleLangTypeDate }}
+          <span v-if="scope.row.LatestRespondTime" :class="{'is-pink': OverTime(scope.row.LatestRespondTime)}" slot-scope="scope">
+            {{ scope.row.LatestRespondTime | format2MiddleLangTypeDate}}
           </span>
+          <span v-else>--</span>
         </el-table-column>
         <el-table-column label="下次处理时间" show-overflow-tooltip minWidth="125">
-          <span slot-scope="scope">{{ scope.row.NextOperateTime | format2MiddleLangTypeDate }}</span>
+          <span v-if="scope.row.NextOperateTime" slot-scope="scope">{{ scope.row.NextOperateTime | format2MiddleLangTypeDate }}</span>
+          <span v-else>--</span>
         </el-table-column>
         <el-table-column label="服务单来源" show-overflow-tooltip minWidth="100">
           <span slot-scope="scope">{{ scope.row.Source === 2 ? '自助下单' : '代客下单' }}</span>
         </el-table-column>
         <el-table-column label="响应时间" show-overflow-tooltip minWidth="125">
-          <span slot-scope="scope">{{ scope.row.RespondTime | format2MiddleLangTypeDate }}</span>
+          <span v-if="scope.row.RespondTime" slot-scope="scope">{{ scope.row.RespondTime | format2MiddleLangTypeDate }}</span>
+          <span v-else>--</span>
         </el-table-column>
         <el-table-column label="操作时间" show-overflow-tooltip minWidth="125">
-          <span slot-scope="scope">{{ scope.row.OperateTime | format2MiddleLangTypeDate }}</span>
+          <span v-if="scope.row.OperateTime" slot-scope="scope">{{ scope.row.OperateTime | format2MiddleLangTypeDate }}</span>
+          <span v-else>--</span>
         </el-table-column>
         <el-table-column label="处理人" show-overflow-tooltip minWidth="90">
-          <span slot-scope="scope">{{ scope.row.OperaterUserName }}</span>
+          <span slot-scope="scope">{{ scope.row.OperaterUserName || '--' }}</span>
         </el-table-column>
         <!-- <el-table-column prop="CustomerName" label="客户名称" minWidth="100" show-overflow-tooltip></el-table-column>
         <el-table-column prop="CustomerType" label="客户类型" minWidth="85" show-overflow-tooltip></el-table-column>
@@ -105,6 +109,7 @@ export default {
         Page: 1,
         PageSize: 20,
         QuestionID: '',
+        OperaterID: '',
         Status: '',
         Date: {
           First: '',
@@ -147,6 +152,7 @@ export default {
         Page: 1,
         PageSize: 20,
         QuestionID: '',
+        OperaterID: '',
         Status: '',
         Date: {
           First: '',
