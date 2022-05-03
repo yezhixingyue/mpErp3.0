@@ -281,7 +281,7 @@ export default {
         },
         {
           label: '预计工期',
-          minWidth: '140px',
+          minWidth: '120px',
           showOverflowTooltip: true,
           scope: (scope) => [254, 255].indexOf(scope.row.Status) === -1 && <span class={this.getTimeClass(scope.row.ProducePeriod, scope.row.Status)}>
             { this.$options.filters.formatProducePeriod(scope.row.ProducePeriod)}

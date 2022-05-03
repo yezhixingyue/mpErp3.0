@@ -15,7 +15,17 @@
         <UserSelector />
         <StaffSelector />
         <ExpressSelector />
-        <OrderStatusSelector />
+        <!-- <OrderStatusSelector /> -->
+        <OrderChannelSelector
+          :options='OrderStatusList'
+          :requestFunc='getDataList'
+          :changePropsFunc='setOrderManageRequestObj'
+          :typeList="[['Status', '']]"
+          :value='objForOrderList.Status'
+          label='订单状态'
+          class="status"
+          key='order-Status'
+         />
         <OrderChannelSelector
           :options='orderCreateTypeList'
           :requestFunc='getDataList'
@@ -23,11 +33,12 @@
           :typeList="[['OrderType', '']]"
           :value='objForOrderList.OrderType'
           label='下单方式'
+          class="OrderType"
           key='order-OrderType'
          />
         <OrderChannelSelector
           class="terminal-select"
-          :options='selfHelpOrderTypeList'
+          :options='localSelfHelpOrderTypeList'
           :requestFunc='getDataList'
           :changePropsFunc='setOrderManageRequestObj'
           :typeList="[['Terminal', '']]"
@@ -72,7 +83,7 @@ import AreaSelector from '@/components/order/orderListHeader/AreaSelector.vue';
 import UserSelector from '@/components/order/orderListHeader/UserSelector.vue';
 import StaffSelector from '@/components/order/orderListHeader/StaffSelector.vue';
 import ExpressSelector from '@/components/order/orderListHeader/ExpressSelector.vue';
-import OrderStatusSelector from '@/components/order/orderListHeader/OrderStatusSelector.vue';
+// import OrderStatusSelector from '@/components/order/orderListHeader/OrderStatusSelector.vue';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 // import DeliverStatusSelector from '@/components/order/orderListHeader/DeliverStatusSelector.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
@@ -87,7 +98,7 @@ export default {
     ProductSelector,
     UserSelector,
     StaffSelector,
-    OrderStatusSelector,
+    // OrderStatusSelector,
     OrderChannelSelector,
     // ElDateRangeSelector,
     LineDateSelectorComp,
@@ -95,7 +106,7 @@ export default {
   },
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'selfHelpOrderTypeList']),
-    ...mapState('orderModule', ['objForOrderList', 'orderListData']),
+    ...mapState('orderModule', ['objForOrderList', 'orderListData', 'OrderStatusList']),
     // conditionDate: {
     //   get() {
     //     return [this.objForOrderList.PlaceDate.First, this.objForOrderList.PlaceDate.Second];
@@ -110,6 +121,9 @@ export default {
     UserDefinedTimeIsActive() {
       return this.objForOrderList.DateType === ''
        && !!this.objForOrderList.PlaceDate.First && !!this.objForOrderList.PlaceDate.Second;
+    },
+    localSelfHelpOrderTypeList() {
+      return this.selfHelpOrderTypeList?.filter(it => it.name !== '移动端') || [];
     },
   },
   data() {
@@ -178,16 +192,19 @@ export default {
           margin-right: 20px;
         }
         &:nth-of-type(5) {
-          margin-right: 65px;
+          margin-right: 59px;
         }
       }
       > .mp-common-comps-order-channel-selector-wrap {
-        margin-left: -128px;
         margin-top: -4px;
+        margin-bottom: 22px;
         > main {
           > .mp-common-select-comp-wrap > div > input {
             width: 114px;
           }
+        }
+        &.status {
+          margin-right: 33px;
         }
       }
       > .terminal-select {

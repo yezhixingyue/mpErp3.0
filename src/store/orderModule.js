@@ -30,7 +30,7 @@ export default {
     /* 订单状态相关
     -------------------------------*/
     OrderStatusList: [
-      { name: '不限', ID: 0 },
+      { name: '不限', ID: '' },
       { name: '待分发', ID: 20 },
       { name: '已分发', ID: 30 },
       { name: '已审稿', ID: 40 },
