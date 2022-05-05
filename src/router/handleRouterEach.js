@@ -7,9 +7,9 @@ import store from '../store';
 import TokenClass from '../assets/js/utils/tokenManage';
 import { getLastRouteInfoByName } from './getLastRouteInfoByName';
 
-if (window.location.protocol.includes('https')) {
-  window.location = window.location.href.replace('https', 'http');
-}
+// if (window.location.protocol.includes('https')) {
+//   window.location = window.location.href.replace('https', 'http');
+// }
 
 /*  页面进度条
 ------------------------------------------ */
