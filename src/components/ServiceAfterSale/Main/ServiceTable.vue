@@ -11,7 +11,7 @@
     <el-table-column prop="AfterSaleCode" minWidth="72" label="售后单号"></el-table-column>
     <el-table-column prop="OrderID" minWidth="80" label="订单号"></el-table-column>
     <el-table-column prop="CustomerNo" minWidth="90" label="客户编号"></el-table-column>
-    <el-table-column show-overflow-tooltip prop="CustomerName" minWidth="122" label="客户">
+    <el-table-column show-overflow-tooltip prop="CustomerName" minWidth="80" label="客户">
     </el-table-column>
     <el-table-column show-overflow-tooltip
       prop="Order.Content" class-name='is-gray' minWidth="110" label="文件内容">
@@ -52,7 +52,7 @@
     </el-table-column>
     <el-table-column minWidth="100" label="优惠券">
       <template slot-scope="scope" >
-        <span v-if="scope.row.CouponList.length">
+        <span v-if="scope.row.CouponList && scope.row.CouponList.length">
           <el-tooltip class="item" effect="dark" content="Top Center 提示文字" placement="top">
             <div slot="content">
               <p v-for="(it,i) in scope.row.CouponList" :key="i" >
@@ -94,7 +94,7 @@
         {{scope.row.OperaterUserName || '--'}}
       </template>
     </el-table-column>
-    <el-table-column label-class-name='menu-header' prop="handle" width="260" label="操作">
+    <el-table-column label-class-name='menu-header' prop="handle" width="220" label="操作">
       <div class="handle-menus-wrap"  slot-scope="scope">
         <span @click="jump2ServiceDetail(scope.row)">
           <img src="@/assets/images/detail.png" alt />查看详情
@@ -224,7 +224,7 @@ export default {
       > span {
         color: $--color-text-table-time;
         font-size: 12px;
-        margin: 0 8px;
+        margin: 0 2px;
         > img {
           vertical-align: middle;
           width: 14px;

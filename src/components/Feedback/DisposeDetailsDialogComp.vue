@@ -107,13 +107,20 @@
                     </p>
                   </div>
                 </div>
-                <div class="row line" v-if="DisposeDetailsData.Solution.SolutionType === 1">
+                <div class="row line" v-if="DisposeDetailsData.Solution.SolutionType === 2">
                   <div class="item">
                     <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
                     <p><span>解决方案：</span>
                     <!-- 退款： -->
-                    <span v-if="DisposeDetailsData.Solution.SolutionType === 1">
-                      退款：
+                    <span v-if="DisposeDetailsData.Solution.SolutionType === 2">
+                      退款：订单退款：￥{{DisposeDetailsData.Solution.RefundAmount}}&nbsp;&nbsp;&nbsp;
+                      运费退款：￥{{DisposeDetailsData.Solution.RefundFreightAmount}}&nbsp;&nbsp;&nbsp;
+                      共计：￥<span class="color-red">
+                        {{DisposeDetailsData.Solution.RefundFreightAmount + DisposeDetailsData.Solution.RefundAmount}}
+                      </span>&nbsp;&nbsp;&nbsp;
+                      退回余额：￥<span class="color-red">
+                        {{DisposeDetailsData.Solution.RefundFreightAmount + DisposeDetailsData.Solution.RefundAmount}}
+                      </span>&nbsp;&nbsp;&nbsp;
                     </span>
                     </p>
                   </div>
@@ -224,7 +231,7 @@ export default {
           return {
             ...it,
             checked: !!CouponList?.some(item => item.CouponID === it.CouponID),
-            CouponNumber: temp.length ? temp[0].Number : '',
+            CouponNumber: temp && temp.length ? temp[0].Number : '',
             ProductListTextArray,
           };
         });
@@ -343,7 +350,7 @@ export default {
         }
         > main {
           padding-top: 8px;
-          margin-bottom: 20px;
+          margin-bottom: 0px;
           padding-left: 20px;
           display: flex;
           .submit-img-box{
@@ -447,38 +454,6 @@ export default {
         }
       }
     }
-    > .download-btn {
-      height: 24px;
-      width: 80px;
-      position: absolute;
-      top: 180px;
-      left: 620px;
-      > button {
-        margin: 0;
-        height: 24px;
-        width: 80px;
-        line-height: 20px;
-        color: #fff;
-        background-color: #26bcf9;
-        font-size: 12px;
-        border-radius: 2px;
-      }
-    }
-    .order-service-detail-box {
-      .text-content .address {
-        max-width: 360px;
-      }
-      &.d {
-        ul.left {
-          > li {
-            margin-bottom: 13px;
-          }
-        }
-        > footer {
-          padding-top: 6px;
-        }
-      }
-    }
   }
 
   .el-dialog__footer {
@@ -493,34 +468,9 @@ export default {
         > .title{
           font-weight: 600;
         }
-        > input{
-            width: 130px;
-            height: 24px;
-            box-sizing: border-box;
-            border:1px solid $--border-color-base;
-            margin-right: 8px;
-            outline: none;
-            padding:0 5px;
-            &::-webkit-input-placeholder{
-              color: $--color-text-secondary;
-              font-size: 12px;
-              text-align: left;
-            }
-        }
         > span:last-of-type{
           color: $--color-text-table-time;
         }
-      }
-      .err-wrap{
-        color: $--color-text-table-pending;
-        font-size: 12px;
-        position: relative;
-        top:  5px;
-        right: -30px;
-        height: 30px;
-        line-height: 30px;
-        width: 260px;
-        text-align: right;
       }
       .btns{
         position: relative;
@@ -545,47 +495,7 @@ export default {
           }
         }
       }
-      .el-progress{
-        position: absolute;
-        width: 1000px;
-        left: 0;
-        bottom: 0;
-        height: 3px;
-        .el-progress-bar__outer {
-          overflow: visible;
-          top: -6px;
-          .el-progress-bar__inner{
-            background: linear-gradient(
-              to right,
-              $--color-primary,
-              $--color-primary-light
-            );
-            transition: width .3s linear;
-            top: 0;
-          }
-          .el-progress-bar__innerText{
-            position: relative;
-            top: -17px;
-            font-size: 12px;
-            color: #f4a307;
-            z-index: 999;
-            left: 47px;
-          }
-        }
-        &.will-over{
-          .el-progress-bar__outer .el-progress-bar__inner .el-progress-bar__innerText{
-            left: 0;
-          }
-        }
-      }
-      .mask{
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: rgba(255, 255, 255, 0.1);
-      }
+
     }
   }
 

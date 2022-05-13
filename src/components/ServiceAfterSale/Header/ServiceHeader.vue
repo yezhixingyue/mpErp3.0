@@ -45,7 +45,7 @@
               :requestFunc="getDataList"
               :changePropsFunc="setCondition4DataList"
               :typeList="[['Result', '']]"
-              :value="obj4RequestServiceList.SolutionType"
+              :value="obj4RequestServiceList.Result"
               :defaultProps="{ label: 'label', value: 'value' }"
               label="服务结果"
             />
@@ -146,7 +146,7 @@ export default {
       AfterSaleScore: [
         { label: '不限', value: '' }, { label: '1星', value: 1 },
         { label: '2星', value: 2 }, { label: '3星', value: 3 },
-        { label: '4星', value: 4 }, { label: '1星', value: 5 },
+        { label: '4星', value: 4 }, { label: '5星', value: 5 },
       ],
       staffList: null,
     };
@@ -163,7 +163,7 @@ export default {
     },
     async getCustomerData() { // 获取客户数据
       this.api.getOperateStaff().then(res => {
-        this.staffList = res.data.Data;
+        this.staffList = [{ StaffName: '不限', StaffID: '' }, ...res.data.Data];
       });
     },
   },

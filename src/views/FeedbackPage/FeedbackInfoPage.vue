@@ -29,7 +29,7 @@
         <el-button class="cancel-blue-btn" @click="onGoBackClick"><i></i> 返回</el-button>
       </footer>
       <transition name="el-fade-in-linear">
-      <footer v-if="DetailData" v-show="isFootFixed" class="FootFixed" :style="`width:${clientWidth?clientWidth : '800'}px`">
+      <footer v-if="DetailData" v-show="isFootFixed" class="FootFixed">
         <el-button  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
         v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
         >解除挂起</el-button>
@@ -113,8 +113,6 @@ export default {
         offsetHeight: 0,
       },
       isFootFixed: false,
-      // 定位元素的宽度
-      clientWidth: null,
     };
   },
   computed: {
@@ -205,7 +203,9 @@ export default {
     },
     ExecuteSuccessSubmit() {
       this.ExecuteVisible = false;
-      this.getInitData();
+      sessionStorage.setItem('FeedbackList', true);
+      this.onGoBackClick();
+      // this.getInitData();
     },
     // 查看处理详情
     onDisposeDetailsClick() {
@@ -244,8 +244,6 @@ export default {
     this.getInitData();
     // console.log(document.getElementsByClassName('page-wrap')[0]);
     this.oBottomWidth = document.getElementById('feedbackinfopage');
-    const { clientWidth } = this.oBottomWidth;
-    this.clientWidth = clientWidth;
     this.oPage = document.getElementsByClassName('page-wrap');
     this.oPage[0].addEventListener('scroll', this.cScroll);
     this.$nextTick(() => {
@@ -261,6 +259,7 @@ export default {
   box-sizing: border-box;
   padding: 30px 45px;
   background-color: #F8F8F8;
+  min-height: 100%;
   >.FeedbackInfoPage-main{
     background-color: #fff;
     // overflow: auto;
@@ -277,15 +276,18 @@ export default {
         position: fixed;
         bottom: 0;
         // right: 0;
-        // left: 0;
+        left: 231px;
         background-color: #fff;
         box-shadow: 0px 0px 14px 0px rgba(136, 136, 136, 0.3);
-        width: 100%;
+        // width: calc(100vw - 186px -80px);
+        width: calc(100vw - 186px - 90px);
+        min-width: 900px;
         // height: 45px;
         padding-top: 20px;
         padding-right: 40px;
         box-sizing: border-box;
         margin-right: 45px;
+        z-index: 2;
       }
       .cancel-blue-btn {
         width: 120px;

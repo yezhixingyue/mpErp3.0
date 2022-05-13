@@ -72,13 +72,13 @@
           </tr> -->
           <tr>
             <td>总金额</td>
-            <td>￥{{dataInfo.Order.PaidAmount}}元</td>
+            <td>￥{{dataInfo.Order.FinalPrice}}元</td>
             <td>已付</td>
-            <td>￥{{dataInfo.Order.PaidAmount}}元（印豆抵扣{{'==='}}元）</td>
+            <td>￥{{dataInfo.Order.PaidAmount}}元（印豆抵扣{{dataInfo.Order.PaidPrintBeanCash}}元）</td>
           </tr>
           <tr>
             <td>运费</td>
-            <td>￥{{dataInfo.Order.Freight}}元（含{{'==='}}个订单）</td>
+            <td>￥{{dataInfo.Order.Freight}}元（含{{dataInfo.Order.FreightOrderNumber}}个订单）</td>
             <td>订单备注</td>
             <td> <p class="textarea">{{dataInfo.Order.Product.Content || '--'}}</p></td>
           </tr>
@@ -115,7 +115,7 @@
           </tr>
           <tr>
             <td>问题类型</td>
-            <td>{{dataInfo.AfterSale.QuestionTypeTitleList.join(',')}}</td>
+            <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.join(',')}}</p></td>
             <td>问题描述</td>
             <td><p class="textarea">{{dataInfo.AfterSale.QuestionRemark}}</p></td>
           </tr>
@@ -490,6 +490,7 @@ export default {
                 width: 50px;
                 height: 50px;
                 margin: 10px 0;
+                margin-right: 16px;
               }
             }
           }

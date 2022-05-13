@@ -5,7 +5,7 @@
     <div>
       <el-table stripe border fit :data="dataList" style="width: 100%" class="ft-14-table" :max-height="h" :height="h">
         <el-table-column prop="AfterSaleCode" label="售后服务单号" minWidth="110" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="OrderID" label="订单号" minWidth="90" show-overflow-tooltip></el-table-column>
+        <!-- <el-table-column prop="OrderID" label="订单号" minWidth="90" show-overflow-tooltip></el-table-column>
         <el-table-column prop="OrderID" label="数量" minWidth="90" show-overflow-tooltip>
           <span class="is-gray" slot-scope="scope">{{scope.row.Content}}</span>
         </el-table-column>
@@ -17,7 +17,7 @@
         </el-table-column>
         <el-table-column prop="Remark" label="问题描述" minWidth="130" show-overflow-tooltip>
           <span slot-scope="scope">{{scope.row.QuestionRemark}}</span>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="申请时间" show-overflow-tooltip minWidth="125">
           <span class="is-gray" slot-scope="scope">{{ scope.row.CreateTime | format2MiddleLangTypeDate }}</span>
         </el-table-column>
@@ -62,10 +62,13 @@
             </span>
           </div>
         </el-table-column>
-        <el-table-column label="操作" width="115" fixed="right">
+        <el-table-column label="操作" width="120" fixed="right">
           <div class="is-font-12 btn-wrap" slot-scope="scope">
             <span @click="onPhotoClick(scope.row)" v-if="localPermission.Operate">
-              <img src="@/assets/images/detail.png" alt />详情/处理
+              <img src="@/assets/images/detail.png" alt />
+              <span v-if="scope.row.Status === 0">详情/处理</span>
+              <span v-else-if="scope.row.IsHang">详情/解除挂起</span>
+              <span v-else>查看详情</span>
             </span>
           </div>
         </el-table-column>
@@ -170,18 +173,18 @@ export default {
           CountyID: '',
         },
         // initDateText: '今天',
-        SellRegionalID: 0,
-        SellCityID: 0,
-        SellCountyID: 0,
-        Source: 1,
-        SolutionType: 2,
+        SellRegionalID: '',
+        SellCityID: '',
+        SellCountyID: '',
+        Source: '',
+        SolutionType: '',
         RefundPayType: '',
         ApplyTime: {
           First: '',
           Second: '',
         },
         ID: '',
-        FieldType: 1,
+        FieldType: '',
         Order: {
           First: '',
           Second: '',
@@ -241,7 +244,7 @@ export default {
       let str = '';
       switch (status) {
         case 0:
-          str = '已提交';
+          str = '待处理';
           break;
         case 10:
           str = '处理中';
@@ -274,10 +277,17 @@ export default {
 
   },
   mounted() {
+    sessionStorage.removeItem('FeedbackList');
     this.getDataList();
     if (this.$route.query.AppyCode) this.$router.push({ query: {} });
     this.$nextTick(() => this.setHeight());
     window.onresize = () => this.setHeight();
+  },
+  async activated() { // 当从设置页面返回且保存员工设置的时候可以完整执行此处内部代码
+    const bool = sessionStorage.getItem('FeedbackList') === 'true';
+    if (!bool) return;
+    sessionStorage.removeItem('FeedbackList');
+    this.getDataList();
   },
   beforeDestroy() {
     window.onresize = null;
@@ -336,8 +346,10 @@ export default {
   .btn-wrap {
     display: flex;
     justify-content: space-around;
-    padding: 0 10px;
+    // padding: 0 10px;
     > span {
+      width: 100px;
+      text-align: left;
       > img {
         margin-right: 5px;
         vertical-align: -3px;

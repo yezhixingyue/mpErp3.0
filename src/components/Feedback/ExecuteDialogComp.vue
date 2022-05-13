@@ -47,7 +47,7 @@
         </header>
         <main>
           <div class="left-table">
-            <EditDiaLeftTable :SelectionData="HandlingAfterSalesForm.AfterSalePackages"
+            <EditDiaLeftTable :SelectionData="AfterSalePackages"
             :tableData='OrderPackageListTableData' @SelectionChange='SelectionPackageChange' />
           </div>
           <div class="right-submit-wrap">
@@ -143,7 +143,7 @@
                           订单退款：
                         </div>
                         <div class="conent">
-                          <el-input v-model="HandlingAfterSalesForm.Solution.RefundCashAmount"></el-input>元
+                          <el-input v-model="HandlingAfterSalesForm.Solution.RefundAmount"></el-input>元
                         </div>
                       </div>
                       <div class="form-item">
@@ -151,7 +151,7 @@
                           运费退款：
                         </div>
                         <div class="conent">
-                          <el-input v-model="HandlingAfterSalesForm.Solution.RefundFreight"></el-input>元
+                          <el-input v-model="HandlingAfterSalesForm.Solution.RefundFreightAmount"></el-input>元
                         </div>
                       </div>
                       <div class="form-item">
@@ -205,9 +205,9 @@
                           <div class="upload-file-box" v-if="!ReprintIsUpload">
                             <FileSelectBtn class="uploadFileBox" accept='*'
                             :func="readFileUniqueName" title="上传文件" />
-                            <el-tooltip effect="dark" :content="fileName" placement="top-end">
-                              <span class="file-name-box">{{fileName}}</span>
-                            </el-tooltip>
+                            <span class="file-name-box">{{fileName}}</span>
+                            <!-- <el-tooltip effect="dark" :content="fileName" placement="top-end">
+                            </el-tooltip> -->
                             <!-- <span class="is-font-size-12 is-gray" v-if="orderDetailData.FileCase === 1 && !fileName">文件非必传</span>
                             <span class="is-font-size-12 is-gray" v-if="orderDetailData.FileCase === 2 && !fileName">文件必传</span> -->
                           </div>
@@ -258,12 +258,12 @@
                 </div>
               </div>
               <div class="right" v-if="dataInfo && HandlingAfterSalesForm.Solution.SolutionType === 2">
-                <p>总金额:￥{{dataInfo.Order.PaidAmount}}元</p>
+                <p>总金额:￥{{dataInfo.Order.FinalPrice}}元</p>
                 <p>已付:￥ <span class="red">{{dataInfo.Order.PaidAmount}}</span> 元</p>
-                <p>运单:￥{{dataInfo.Order.Freight}}元 <span class="tint">（含1个订单）</span></p>
-                <p>订单退款:￥0.0元</p>
-                <p>运费退款:￥0.0元</p>
-                <p>售后优惠:￥0.0元</p>
+                <p>运单:￥{{dataInfo.Order.Freight}}元 <span class="tint">（含{{dataInfo.Order.FreightOrderNumber}}个订单）</span></p>
+                <p>订单退款:￥{{dataInfo.Order.RefundAmount}}元</p>
+                <p>运费退款:￥{{dataInfo.Order.RefundFreightAmount}}元</p>
+                <p>售后优惠:￥{{dataInfo.Order.ReducedAmount}}元</p>
               </div>
             </div>
           </div>
@@ -339,8 +339,11 @@ import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import DisplayPictrue from '@/components/ServiceAfterSale/EditDialog/DisplayPictrue.vue';
 import LoadingComp from '@/components/common/LoadingComp.vue';
 // import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
+// eslint-disable-next-line import/no-named-default
+// import { default as UploadFileByBreakPoint, getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
+// import UploadFileByBreakPoint from '@/assets/js/upload/UploadFileByBreakPoint';
 
 export default {
   components: {
@@ -387,6 +390,8 @@ export default {
       selectedCouponList: [],
       // 需不需要上传补印文件
       ReprintIsUpload: false,
+      // 包裹列表
+      AfterSalePackages: [],
       HandlingAfterSalesForm: {
         AfterSaleCode: 0,
         QuestionPicList: [''],
@@ -425,10 +430,10 @@ export default {
           FilePath: '',
           FileSize: '',
           Refund: '',
-          RefundCashAmount: '',
+          RefundAmount: '',
           RefundBeanNumber: '',
           RefundBeanAmount: '',
-          RefundFreight: '',
+          RefundFreightAmount: '',
           RefundFreightCashAmount: '',
           RefundFreightBeanNumber: '',
           RefundFreightBeanAmount: '',
@@ -467,7 +472,8 @@ export default {
       return (index) => this.QuestionTypeList?.filter(res => res.ParentID === this.HandlingAfterSalesForm.AfterSaleQuestions[index].QuestionParentType);
     },
     fileName() {
-      return '文件名';
+      // this.HandlingAfterSalesForm.Solution.FileName
+      return this.HandlingAfterSalesForm.Solution.FileName ? this.HandlingAfterSalesForm.Solution.FileName : '文件名';
     },
   },
   methods: {
@@ -511,10 +517,10 @@ export default {
           FilePath: '',
           FileSize: '',
           Refund: '',
-          RefundCashAmount: '',
+          RefundAmount: '',
           RefundBeanNumber: '',
           RefundBeanAmount: '',
-          RefundFreight: '',
+          RefundFreightAmount: '',
           RefundFreightCashAmount: '',
           RefundFreightBeanNumber: '',
           RefundFreightBeanAmount: '',
@@ -537,8 +543,18 @@ export default {
       if (!file) return;
       const CustomerID = this.orderDetailData?.Customer?.CustomerID || '';
       const uniqueName = getUniqueFileName({ file, Terminal: 1, CustomerID });
-      this.HandlingAfterSalesForm.Solution.UniqueName = uniqueName;
-      this.HandlingAfterSalesForm.Solution.IsFileInLan = true;
+      // const onUploadProgressFunc = (res) => {
+      //   console.log(res);
+      // };
+      // console.log('uplod');
+      this.api.UploadBigImgNormal(file, uniqueName).then(res => {
+        if (res.data.Status !== 1000) return;
+        this.HandlingAfterSalesForm.Solution.UniqueName = uniqueName;
+        this.HandlingAfterSalesForm.Solution.FileName = file.name;
+      });
+      // UploadFileByBreakPoint(file, uniqueName, onUploadProgressFunc).then(res => {
+      //   console.log(res);
+      // });
       // this.setReplenishFileUniqueName(uniqueName);
       // this.setReplenishFile(file);
       // this.setFileName(file.name);
@@ -707,15 +723,15 @@ export default {
         return false;
       }
       if (this.HandlingAfterSalesForm.Solution.SolutionType === 2) { // 订单退款
-        if (!this.HandlingAfterSalesForm.Solution.RefundCashAmount) {
+        if (!this.HandlingAfterSalesForm.Solution.RefundAmount) {
           this.messageBox.failSingleError('提交失败', '请输入订单退款');
           return false;
         }
-        if (!this.HandlingAfterSalesForm.Solution.RefundFreight) {
-          this.messageBox.failSingleError('提交失败', '请输入运费退款');
-          return false;
-        }
-        if (!this.HandlingAfterSalesForm.Solution.RefundType) {
+        // if (!this.HandlingAfterSalesForm.Solution.RefundFreightAmount) {
+        //   this.messageBox.failSingleError('提交失败', '请输入运费退款');
+        //   return false;
+        // }
+        if (!this.HandlingAfterSalesForm.Solution.RefundType === '') {
           this.messageBox.failSingleError('提交失败', '请选择退款方式');
           return false;
         }
@@ -816,8 +832,6 @@ export default {
       const res = await this.api.getQuestionList();
       if (res.data.Status === 1000) {
         this.QuestionTypeList = res.data.Data;
-        // // 需要用到问题父级id
-        this.getSaveDetailAsyncByAfterSaleCode(this.paramsData?.AfterSaleCode);
       }
     },
     // 一级问题改变
@@ -826,7 +840,10 @@ export default {
     },
     // 包裹选择
     SelectionPackageChange(val) {
-      this.HandlingAfterSalesForm.AfterSalePackages = val;
+      this.HandlingAfterSalesForm.AfterSalePackages = val.map(res => ({
+        AfterSaleCode: this.paramsData?.AfterSaleCode,
+        PackageID: res.ID,
+      }));
     },
     // 获取包裹列表
     async getPackageListByOrderID(orderId) {
@@ -846,7 +863,14 @@ export default {
           return;
         }
         const { afterSaleSuccessInfo } = res.data.Data;
+        // afterSaleSuccessInfo.Solution = Object.assign(this.HandlingAfterSalesForm.Solution, afterSaleSuccessInfo.Solution);
+        // Object.assign(this.HandlingAfterSalesForm, afterSaleSuccessInfo);
         this.HandlingAfterSalesForm = afterSaleSuccessInfo;
+        // 回显包裹
+        // 过滤出保存的包裹id对应的包裹数据
+        this.AfterSalePackages = this.OrderPackageListTableData
+          .filter(TableDataItem => this.HandlingAfterSalesForm.AfterSalePackages
+            .some(Packages => TableDataItem.ID === Packages.PackageID));
         // 回显问题
         this.HandlingAfterSalesForm.AfterSaleQuestions = afterSaleSuccessInfo.AfterSaleQuestions.map((it, i) => {
           const _it = it;
@@ -880,8 +904,12 @@ export default {
   watch: {
     visible(newVal) {
       if (!newVal) return;
-      this.getPackageListByOrderID(this.paramsData?.OrderID);
-      this.getQuestionTypeList();
+      Promise.all([this.getPackageListByOrderID(this.paramsData?.OrderID), this.getQuestionTypeList()]).then(() => {
+        // 需要用到问题父级id
+        this.getSaveDetailAsyncByAfterSaleCode(this.paramsData?.AfterSaleCode);
+      });
+      // this.getPackageListByOrderID(this.paramsData?.OrderID);
+      // this.getQuestionTypeList();
       // 获取部门
       this.$store.dispatch('common/getAfterSalesDepartmentList');
     },
@@ -933,7 +961,7 @@ export default {
         }
         > main {
           padding-top: 8px;
-          margin-bottom: 20px;
+          margin-bottom: 0px;
           padding-left: 20px;
           display: flex;
           padding-bottom: 20px;
@@ -1233,6 +1261,12 @@ export default {
                           .file-name-box{
                             margin-left: 20px;
                             line-height: 23px;
+                            height: 23px;
+                            width: 150px;
+                            text-align: left;
+                            overflow: hidden;
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
                           }
                         }
                         >.el-input{
@@ -1397,14 +1431,14 @@ export default {
           border: 1px solid $--color-primary;
         }
       }
-      .mask{
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: rgba(255, 255, 255, 0.1);
-      }
+      // .mask{
+      //   position: absolute;
+      //   top: 0;
+      //   bottom: 0;
+      //   left: 0;
+      //   right: 0;
+      //   background-color: rgba(255, 255, 255, 0.1);
+      // }
     }
   }
 .mp-erp-server-after-sale-solution-coupon-select-dialog {
