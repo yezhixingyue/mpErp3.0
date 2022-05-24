@@ -574,7 +574,17 @@ export default {
     subExpressList(state) {
       if (state.ExpressList.length === 0) return [];
       const _list = [];
-      state.ExpressList.forEach(level1 => {
+      let l = state.ExpressList.map(it => {
+        let i = it.Type;
+        if (it.Type === 3) i = 2;
+        if (it.Type === 2) i = 3;
+        return {
+          ...it,
+          i,
+        };
+      });
+      l = l.sort((a, b) => a.i - b.i);
+      l.forEach(level1 => {
         level1.List.forEach(level2 => {
           const _obj = { ...level2 };
           _obj.name = level2.Name;
@@ -791,7 +801,7 @@ export default {
       }
       return false;
     },
-    async getProductClassifyData({ state, commit }, { bool = false, key = 6 } = {}) { // 获取产品二级分类数据1  -      ---- !
+    async getProductClassifyData({ state, commit }, { bool = false, key = 6 } = {}) { // 获取产品二级分类数据1  -   2为客户 6为代课下单   ---- !
       const t = state.ProductMultipleClassifyList.find(it => it.ID === key);
       if (t && t.List.length > 0 && !bool) return true;
       // { type: key, List: resp.data.Data }

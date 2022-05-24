@@ -306,21 +306,24 @@ export default {
     },
     ProductShowData() {
       let Name = this.showData?.ProductParams?.Attributes?.DisplayName || '产品名称';
+      const FactoryName = this.showData?.ProductParams?.Attributes?.FactoryName || '';
       if (Array.isArray(this.showData?.ProductParams?.Attributes?.ClassList)) {
         const t = this.showData.ProductParams.Attributes.ClassList.find(it => it.Type === 1);
-        if (t && t.FirstLevel?.Name) {
-          Name = `${t.FirstLevel.Name}-${Name}`;
+        if (t && t.SecondLevel?.Name) {
+          Name = `${t.SecondLevel.Name}-${Name}`;
         }
       }
       if (this.showData?.ProductParams?.Attributes?.DisplayOrderList && this.showData.ProductParams.Attributes.DisplayOrderList.length > 0) {
         return {
           Name,
+          FactoryName,
           ContentList: this.getPartShowList(this.showData.ProductParams.Attributes.DisplayOrderList, this.showData.ProductParams),
           Type: 'product',
         };
       }
       return {
         Name,
+        FactoryName,
         ContentList: [],
         Type: 'product',
       };

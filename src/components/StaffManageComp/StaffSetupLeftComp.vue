@@ -85,6 +85,9 @@
         >
           <el-date-picker class="line" v-model="localDate" value-format="yyyy-MM-dd" placeholder="入职日期"></el-date-picker>
         </el-form-item>
+        <el-form-item label="网络限制：" prop="UseWhiteList">
+          <el-checkbox v-model="localUseWhiteList">白名单</el-checkbox>
+        </el-form-item>
       </el-form>
     </main>
   </section>
@@ -124,6 +127,14 @@ export default {
         let timer = '';
         if (val) timer = `${val}T00:00:00.000Z`;
         this.change([['TimeRecord', 'JoinDate'], timer]);
+      },
+    },
+    localUseWhiteList: {
+      get() {
+        return this.staffForm.UseWhiteList;
+      },
+      set(val) {
+        this.change([['UseWhiteList'], val]);
       },
     },
     RosterNameList() {

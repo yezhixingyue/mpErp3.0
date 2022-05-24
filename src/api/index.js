@@ -541,8 +541,8 @@ const api = {
   getPartChildConditionRemove(id) { // DELETE /Api/ChildCondition/Remove 子条件删除
     return instance.delete('/Api/ChildCondition/Remove', { params: { id } });
   },
-  getMakeupControlSolutionSetup(priceID, type, solutionID) { // PUT /Api/MakeupControl/Setup  拼版方案设置
-    return instance.put('/Api/MakeupControl/Setup', '', { params: { priceID, type, solutionID } });
+  getMakeupControlSolutionSetup(params) { // PUT /Api/MakeupControl/Setup  拼版方案设置
+    return instance.put('/Api/MakeupControl/Setup', '', { params });
   },
   getPriceSolutionSave(data) { // POST /Api/PriceSolution/Save  价格方案保存
     return instance.post('/Api/PriceSolution/Save', data);
@@ -965,6 +965,12 @@ const api = {
   },
   getDepartmentOrder(data) { //  部门排序保存
     return instance.post('/Api/Department/Order', data);
+  },
+  getWhiteListContent() { // /Api/WhiteList  获取白名单
+    return instance.get('/Api/WhiteList');
+  },
+  getWhiteListSetup(data) { // /Api/WhiteList/Setup  设置网络访问IP白名单 { Content: '' }
+    return instance.post('/Api/WhiteList/Setup', data);
   },
 
   /* 客户管理api

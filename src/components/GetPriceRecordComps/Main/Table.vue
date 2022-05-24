@@ -42,7 +42,7 @@
     </el-table-column>
     <el-table-column label="数量" width="120" show-overflow-tooltip>
       <template slot-scope="scope">{{
-        scope.row.ProductParams.Attributes | getProductCount
+        scope.row.ProductParams.Attributes | formarProductAmount
       }}</template>
     </el-table-column>
     <el-table-column label="尺寸" prop="ProductParams.Size.DisplayContent" width="110" show-overflow-tooltip>
@@ -115,11 +115,6 @@ export default {
         return `${FirstLevel.Name}-${SecondLevel.Name}-${DisplayName}`;
       }
       return DisplayName;
-    },
-    getProductCount(Attributes) {
-      if (!Attributes) return '';
-      const { ProductAmount, Unit, KindCount } = Attributes;
-      return `${ProductAmount}${Unit || '个'}${KindCount}款`;
     },
     getCraftTextList(craftList) {
       if (craftList.length === 0) return '';

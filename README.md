@@ -1223,3 +1223,36 @@ UseModule增加
 
         大于50
         MoreThanFifty 4
+
+
+ /// <summary>
+    /// 站点类型
+    /// </summary>
+    public enum SiteType : byte
+    {
+        /// <summary>
+        /// 下单
+        /// </summary>
+        [Description("下单")]
+        PlaceOrder = 0,
+        /// <summary>
+        /// Erp后台管理
+        /// </summary>
+        [Description("Erp后台管理")]
+        ManageErp = 1,
+        /// <summary>
+        /// 包裹打印
+        /// </summary>
+        [Description("包裹打印")]
+        PackagePrint = 2,
+        /// <summary>
+        /// 快递打单
+        /// </summary>
+        [Description("快递打单")]
+        ExpressPrint = 3,
+        /// <summary>
+        /// 网站后台
+        /// </summary>
+        [Description("网站后台")]
+        ManageSite =4
+    }

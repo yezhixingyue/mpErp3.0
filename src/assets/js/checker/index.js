@@ -3,6 +3,21 @@ import { getValueIsOrNotNumber, getNumberValueList } from '../utils/util';
 export const checkNumberSectionList = (value, SectionList, valueList) => {
   let isInSection = false;
   const msgArr = [];
+  const getMaxTimes = numArr => {
+    if (!Array.isArray(numArr) || numArr.length === 0) return 1;
+    const getPointDigits = num => {
+      const _numText = typeof num === 'number' ? num.toString() : num;
+      let T = _numText.indexOf('.');
+      T = T === -1 ? 0 : _numText.length - T - 1;
+      return T;
+    };
+    const _nums = numArr.map(getPointDigits);
+    let len = Math.max(..._nums);
+    const arr = new Array(len);
+    arr.fill('0');
+    len = `1${arr.join('')}`;
+    return +len;
+  };
   for (let i = 0; i < SectionList.length; i += 1) {
     const section = SectionList[i];
     const { MinValue, MaxValue, IsGeneralValue, Increment } = section;
@@ -10,12 +25,8 @@ export const checkNumberSectionList = (value, SectionList, valueList) => {
       isInSection = true;
       let msg = '';
       if (!IsGeneralValue) {
-        let T = Increment.toString().indexOf('.');
-        T = T === -1 ? 0 : Increment.toString().length - T - 1;
-        const arr = new Array(T);
-        arr.fill('0');
-        T = `1${arr.join('')}`;
-        if ((+value * T - MinValue * T) % (Increment * T) !== 0) {
+        const times = getMaxTimes([value, MinValue, Increment]);
+        if (Math.round(+value * times - MinValue * times) % Math.round((Increment * times)) !== 0) {
           msg = `[${MinValue}, ${MaxValue}]区间内应符合增量为${Increment}`;
         }
       }

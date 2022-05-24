@@ -29,9 +29,7 @@
            >
               <span :style="widthStyleObj[0]">{{item.OrderID}}</span>
               <span :style="widthStyleObj[1]">{{item.ProductName}}</span>
-              <span :style="widthStyleObj[2]">
-              {{item.ProductAmount}}{{item.Unit?item.Unit:'个'}}{{data.KindCount?data.KindCount:1}}款
-              </span>
+              <span :style="widthStyleObj[2]">{{item | formarProductAmount }}</span>
               <span :style="widthStyleObj[3]">{{item.Funds.FinalPrice}}元</span>
               <span :style="widthStyleObj[4]">{{item.Funds.Deposit}}元</span>
               <span class="product-item-ontent-text-box" :style="widthStyleObj[5]">

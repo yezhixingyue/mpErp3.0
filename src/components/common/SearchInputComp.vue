@@ -2,7 +2,7 @@
   <section class="mp-common-comps-search-box">
     <span class="text" v-if="title">{{title}}：</span>
     <el-input
-      @keydown.enter="onKeyWordSubmit"
+      @keyup.enter.native="onKeyWordSubmit"
       v-model.trim='inpVal'
       spellcheck="false"
       :placeholder="placeholder"
@@ -70,7 +70,7 @@ export default {
     };
   },
   methods: {
-    onKeyWordSubmit() {
+    onKeyWordSubmit(e) {
       const _keywords = this.inpVal;
       this.changePropsFunc([this.typeList[0], _keywords]);
       // if (this.inpVal) {
@@ -80,6 +80,7 @@ export default {
       // } else {
       //   this.onResetBtn();
       // }
+      e.target.blur();
     },
     onResetBtn() {
       this.$emit('reset');

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-25 17:58:20
- * @LastEditTime: 2022-01-05 10:25:43
+ * @LastEditTime: 2022-05-09 17:00:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/components/PaymentList/content/PaymentListContent.vue
@@ -69,7 +69,7 @@ export default {
         } else {
           _second = Second;
         }
-        const t2 = _second ? ConvertTimeFormat(new Date(new Date(_second).getTime() - 24 * 60 * 60 * 1000)) : '';
+        const t2 = _second ? ConvertTimeFormat(new Date(new Date(_second.replace('Z', '')).getTime())) : '';
         if (f) fileName = `付款单列表(${f}至${t2}).xls`;
       } else {
         fileName = '付款单列表(全部).xls';

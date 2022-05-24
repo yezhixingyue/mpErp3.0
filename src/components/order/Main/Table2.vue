@@ -62,6 +62,7 @@ import TableInfoDefindHeaderColumnScope from '@/components/common/Table/TableInf
 import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import { formatListItemSize, formatListItemCraft } from '@/assets/js/filters/filters';
+import { formarProductAmountFunc } from '@/packages/commonFilters';
 
 export default {
   computed: {
@@ -157,7 +158,7 @@ export default {
           label: '数量',
           minWidth: '68px',
           showOverflowTooltip: true,
-          scope: (scope) => <span>{scope.row.ProductAmount}{scope.row.Unit}{scope.row.KindCount}款</span>,
+          scope: (scope) => <span>{formarProductAmountFunc(scope.row)}</span>,
           show: true,
         },
         {

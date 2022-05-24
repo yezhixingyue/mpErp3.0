@@ -62,6 +62,7 @@ export default {
         Password: '',
         Mobile: '',
         Terminal: 1,
+        Site: 1,
       },
     };
   },

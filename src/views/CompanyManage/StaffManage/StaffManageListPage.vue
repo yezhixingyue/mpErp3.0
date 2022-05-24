@@ -9,6 +9,7 @@
       @fetch="getStaffManageList"
       @clear='clearCondition'
       @add='onJumpToSetupClick(null)'
+      @setWhiteList="onSetWhiteListClick"
      />
     <main>
       <StaffManageListTable
@@ -30,6 +31,7 @@
         @remove='handleRemove'
         @submit="checkOrSetJobSubmit"
       />
+      <WhiteListDialogVue v-model="whiteListVisible" />
     </main>
     <footer>
       <CountComp
@@ -51,6 +53,7 @@ import StaffManageListHeader from '../../../components/StaffManageComp/StaffMana
 import StaffManageListTable from '../../../components/StaffManageComp/StaffManageListTable.vue';
 import DetailAndCheckDialog from '../../../components/StaffManageComp/Detail&CheckDialog/index.vue';
 import CountComp from '../../../components/common/Count.vue';
+import WhiteListDialogVue from '../../../components/StaffManageComp/WhiteListDialog.vue';
 
 export default {
   name: 'StaffManageListPage',
@@ -60,6 +63,7 @@ export default {
     StaffManageListTable,
     DetailAndCheckDialog,
     CountComp,
+    WhiteListDialogVue,
   },
   data() {
     return {
@@ -70,6 +74,7 @@ export default {
       visible: false,
       curStaffData: null,
       curIndex: -1,
+      whiteListVisible: false,
     };
   },
   computed: {
@@ -140,6 +145,9 @@ export default {
         if (this.visible) this.visible = false;
       };
       this.StaffManageData.checkOrSetJobSubmit(data, this.curIndex, this.Permission, cb);
+    },
+    onSetWhiteListClick() { // 设置白名单
+      this.whiteListVisible = true;
     },
   },
   mounted() {

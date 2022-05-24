@@ -91,6 +91,7 @@ export default {
         ...it,
         _gender: it.Sex === SexEnumObj.male.ID ? '男' : '女',
         _EducationText: this.formatEnumName(it.Education, EducationEnumList),
+        _WhiteListContent: it.UseWhiteList ? '使用白名单' : '无',
         _address: this.getAddressContent(it.LinkArea, this.allAdAreaTreeList),
         _Birthday: this.formatDate(it.TimeRecord?.Birthday),
         _JoinDate: this.formatDate(it.TimeRecord?.JoinDate),

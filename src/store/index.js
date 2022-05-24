@@ -26,6 +26,7 @@ import customerManage from './customerManage/customerManage';
 import printBean from './printBean/printBeanStore';
 import department from './department';
 import cashback from './cashback/cashback';
+import invoice from './invoice/invoiceStore';
 
 
 Vue.use(Vuex);
@@ -58,5 +59,6 @@ export default new Vuex.Store({
     printBean,
     department,
     cashback,
+    invoice,
   },
 });

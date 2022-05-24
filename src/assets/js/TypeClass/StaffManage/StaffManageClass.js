@@ -120,7 +120,8 @@ export default class StaffManageClass {
         if (callback) callback();
         if (index >= 0) this.dataList.splice(index, 1, temp);
       };
-      messageBox.successSingle('删除成功', cb, cb);
+      const title = item.Status === StaffStatusEnumObj.pending.ID ? '审核成功' : '设置成功';
+      messageBox.successSingle(title, cb, cb);
     }
   }
 

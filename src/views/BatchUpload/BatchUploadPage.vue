@@ -62,9 +62,9 @@
        :productCost='productCost'
        :expressCost='expressCost'
        :allCost='allCost'
-       :showPrice='successedList.length > 0'
        :canSelectList='canSelectList'
        :multipleSelection='multipleSelection'
+       :count="successedList.length"
        @uploadSelected='handleUploadSelected'
        @removeSelected='handleRemoveSelected'
        @checkAll='handleCheckAll'
@@ -274,18 +274,27 @@ export default {
       this.handleFileParing(fileList);
     },
     async handleFileParing(fileList) { // 处理文件解析 并生成处理成功列表 及 处理失败列表
-      const result = await BatchUploadClass.getFileParingResult(fileList, this.basicObj);
+      const temp = {
+        successedList: this.successedList,
+        failedList: this.failedList,
+      };
+      const result = await BatchUploadClass.getFileParingResult(fileList, this.basicObj, temp);
       if (!result) {
-        this.failedList = [];
-        this.successedList = [];
+        // this.failedList = [];
+        // this.successedList = [];
         return;
       }
       const { failedList, successedList } = result;
-      this.failedList = failedList;
-      this.successedList = successedList;
       if (failedList.length > 0) {
-        this.messageBox.failSingle(`共有${failedList.length}个文件报价失败`);
+        if (successedList.length === 0 && failedList.length === 1) {
+          this.messageBox.failSingleError('解析失败', failedList[0].error);
+        } else {
+          const text = temp.failedList.length > 0 || temp.successedList.length > 0 ? '本次' : '';
+          this.messageBox.failSingle(`${text}共有${failedList.length}个文件报价失败`);
+        }
       }
+      this.failedList.push(...failedList);
+      this.successedList.push(...successedList);
     },
     /**
      * 下部区域： 文件上传、删除、选择等操作
@@ -323,6 +332,7 @@ export default {
         });
         // this.$message.success('已清除');
       }
+      this.failedList = [];
     },
     handleRemoveSelected() { // 删除选中文件
       if (this.successedList.length === 0 || this.multipleSelection.length === 0) return;
@@ -429,7 +439,7 @@ export default {
   position: relative;
   > header {
     flex: none;
-    height: 198px;
+    height: 218px;
     background-color: #fff;
     padding: 0px 20px;
     padding-top: 30px;
@@ -441,8 +451,14 @@ export default {
     }
     .mp-pc-place-order-address-show-and-change-wrap > .content.isBatchUploadUse > ul {
       margin-top: 10px;
+      margin: 0;
+      margin-top: 7px;
       > li {
-        margin-top: 3px;
+        margin-top: 0px;
+        margin-bottom: 1px;
+        input {
+          border-radius: 4px;
+        }
       }
     }
     // &.s {

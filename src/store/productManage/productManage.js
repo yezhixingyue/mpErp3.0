@@ -385,11 +385,30 @@ export default {
       const t = state.ProductManageList.find(it => it.ID === productID);
       if (t) {
         let changeRequstFunc = null;
-        if (type === 'ValetOrderStatus') changeRequstFunc = api.getValetOrderStatusChange;
-        if (type === 'CustomOrderStatus') changeRequstFunc = api.getCustomOrderStatusChange;
+        let typeText = '';
+        let actionText = '';
+        if (type === 'ValetOrderStatus') {
+          typeText = ' 可代客下单 ';
+          changeRequstFunc = api.getValetOrderStatusChange;
+          actionText = t.AllowValetOrder ? '取消' : '设置';
+        }
+        if (type === 'CustomOrderStatus') {
+          typeText = ' 可自助上传 ';
+          changeRequstFunc = api.getCustomOrderStatusChange;
+          actionText = t.AllowCustomOrder ? '取消' : '设置';
+        }
         if (!changeRequstFunc) return;
         const res = await changeRequstFunc(productID).catch(() => {});
-        if (res && res.status === 200 && res.data.Status === 1000) commit('setTableDataOrderStatusChange', [type, productID]);
+        if (res && res.status === 200 && res.data.Status === 1000) {
+          const title = `${actionText}${typeText}成功`;
+          let c = t.ClassifyList.find(_it => _it.Type === 1);
+          c = c ? c.SecondLevel.Name : '';
+          const msg = `${c}${c ? '-' : ''}${t.Name}`;
+          const callback = () => {
+            commit('setTableDataOrderStatusChange', [type, productID]);
+          };
+          messageBox.successSingle(title, callback, callback, true, msg);
+        }
       }
     },
     async getProductBaseInfoSave({ commit }, [data, cb]) { // 产品添加 | 编辑

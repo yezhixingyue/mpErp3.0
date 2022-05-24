@@ -57,6 +57,8 @@ export default class Staff {
     Second: '', // IP
   }
 
+  UseWhiteList = false
+
   constructor(data) {
     restoreInitDataByOrigin(this, data);
   }

@@ -1,7 +1,7 @@
 <template>
   <CommonDialogComp
     width="650px"
-    top="13vh"
+    top="10vh"
     title="图片裁切"
     :visible.sync="localVisible"
     @submit="submitForm"
@@ -93,6 +93,8 @@ export default {
   .el-dialog__body {
     > div.content {
       min-height: 460px;
+      height: 560px;
+      max-height: calc(100vh - 350px);
     }
   }
 }

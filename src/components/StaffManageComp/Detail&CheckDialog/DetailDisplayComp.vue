@@ -40,7 +40,7 @@ export default {
     rightDetailList() { // 右侧展示列表
       if (!this.detailData) return [];
       const {
-        StaffName, _gender, Mobile, _Birthday, IDCard, _EducationText, TimeRecord, _JoinDate, _address, DetailAddress, LastLoginRecord,
+        StaffName, _gender, Mobile, _Birthday, IDCard, _EducationText, _WhiteListContent, TimeRecord, _JoinDate, _address, DetailAddress, LastLoginRecord,
       } = this.detailData;
       const _RegTime = TimeRecord?.RegTime ? this.$utils.getDateFormat(TimeRecord.RegTime) : '';
       const _CheckTime = TimeRecord?.CheckTime ? this.$utils.getDateFormat(TimeRecord.CheckTime) : '';
@@ -60,6 +60,7 @@ export default {
         { label: '出生日期', content: _Birthday },
         { label: '身份证号', content: IDCard },
         { label: '学历', content: _EducationText },
+        { label: '网络限制', content: _WhiteListContent },
         { label: '注册(添加)时间', content: _RegTime },
         { label: '审核时间', content: _CheckTime },
         { label: '入职日期', content: _JoinDate },
