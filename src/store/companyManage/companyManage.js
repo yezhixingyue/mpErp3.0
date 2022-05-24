@@ -38,9 +38,9 @@ export default {
     setRosterDataItemAdd(state, itemData) { // 添加一行花名
       state.RosterDataList.push(itemData);
     },
-    setRosterDataItemNameChange(state, [value, index]) { // 修改花名
+    setRosterDataItemNameChange(state, [key, value, index]) { // 修改花名
       if (state.RosterDataList[index]) {
-        state.RosterDataList[index].Nickname = value;
+        state.RosterDataList[index][key] = value;
       }
     },
     setRosterDataItemRemove(state, index) { // 从列表中删除花名

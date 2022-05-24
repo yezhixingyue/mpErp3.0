@@ -15,7 +15,7 @@
       <ChangeQuestionDialog :visible.sync="changeQuestionVisible" :curData="curData" />
       <!-- 查看售后评价 -->
       <SeeEstimateDialogComp
-      :AfterSaleCode='AfterSaleCode'
+      :AfterSaleData='AfterSaleData'
       :visible='seeEstimateVisible'
       @closed="seeEstimateVisible = false"
       @submit="seeEstimateVisible = false"></SeeEstimateDialogComp>
@@ -54,8 +54,8 @@ export default {
         condition: this.obj4RequestServiceList,
         count: this.totalCount,
         fileDefaultName: '售后单列表',
-        fileDate: this.obj4RequestServiceList.CreateTime,
-        downFunc: data => this.api.getServiceListData2Excel(data),
+        fileDate: this.obj4RequestServiceList.OperateTime,
+        downFunc: data => this.api.getServicesListData2Excel(data),
       };
     },
   },
@@ -64,7 +64,7 @@ export default {
       changeQuestionVisible: false,
       curData: null,
 
-      AfterSaleCode: 0,
+      AfterSaleData: null,
       seeEstimateVisible: false,
     };
   },
@@ -108,9 +108,9 @@ export default {
       this.curData = item;
     },
     // 查看评价
-    handleSeeEstimate(item) {
+    handleSeeEstimate(AfterSaleData) {
       this.seeEstimateVisible = true;
-      this.AfterSaleCode = item.AfterSaleCode;
+      this.AfterSaleData = AfterSaleData;
     },
   },
 };

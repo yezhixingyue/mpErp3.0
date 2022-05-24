@@ -42,18 +42,18 @@
     </el-table-column>
     <el-table-column minWidth="72" label="订单减款">
       <template slot-scope="scope">
-        {{scope.row.RefundAmount}}元
+        {{scope.row.RefundAmount  === null ? '--' : scope.row.RefundAmount + '元'}}
       </template>
     </el-table-column>
     <el-table-column minWidth="70" label="运费减款">
       <template slot-scope="scope" >
-        {{scope.row.RefundFreightAmount}}元
+        {{scope.row.RefundFreightAmount === null ? '--' : scope.row.RefundFreightAmount + '元'}}
       </template>
     </el-table-column>
     <el-table-column minWidth="100" label="优惠券">
       <template slot-scope="scope" >
         <span v-if="scope.row.CouponList && scope.row.CouponList.length">
-          <el-tooltip class="item" effect="dark" content="Top Center 提示文字" placement="top">
+          <el-tooltip class="item" effect="dark" placement="top">
             <div slot="content">
               <p v-for="(it,i) in scope.row.CouponList" :key="i" >
                   <span class="is-pink">{{it.Amount}}</span>元
@@ -73,7 +73,7 @@
     </el-table-column>
     <el-table-column class-name='lossfund' prop="LossAmount" minWidth="72" label="损失金额" show-overflow-tooltip>
       <template slot-scope="scope">
-        {{scope.row.LossAmount}}元
+        {{scope.row.LossAmount === null ? '--' : scope.row.LossAmount + '元'}}
       </template>
     </el-table-column>
     <el-table-column class-name='sm-font' show-overflow-tooltip minWidth="132" label="销售区域">
@@ -84,8 +84,8 @@
     <el-table-column
       class-name='sm-font' prop="CustomerName" minWidth="75" label="下单人"></el-table-column>
     <el-table-column class-name='sm-font is-gray' minWidth="115" label="处理时间">
-      <template slot-scope="scope" v-if="scope.row.CreateTime">
-        {{scope.row.CreateTime | formatDate}}
+      <template slot-scope="scope" v-if="scope.row.OperateTime">
+        {{scope.row.OperateTime | formatDate}}
       </template>
       <span v-else>--</span>
     </el-table-column>

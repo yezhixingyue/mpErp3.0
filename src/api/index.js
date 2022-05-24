@@ -12,7 +12,10 @@ const api = {
     return instance.get('/Api/Express/List', data);
   },
   getOrderList(data) { // 获取客户订单列表（后台）
-    return instance.post('/Api/Order/List', data); // /Api/Customer/OrderList
+    return instance.post('/Api/Order/List2', data); // /Api/Customer/OrderList
+  },
+  getCustomerInfo(customerID) { // 获取客户信息
+    return instance.get(`/Api/OrderAfterSale/CustomerInfo?customerID=${customerID}`);
   },
   selectOrderProgress(data) { // 查询订单进度
     return instance.get(`/Api/Order/Progress?orderID=${data}`);
@@ -59,6 +62,9 @@ const api = {
   },
   getServiceListData2Excel(data) { // POST /Api/AfterSales/Excel
     return instance.post('/Api/AfterSales/Excel', data, { responseType: 'arraybuffer' });
+  },
+  getServicesListData2Excel(data) { // POST /Api/AfterSale/Excel
+    return instance.post('/Api/AfterSale/Excel', data, { responseType: 'arraybuffer' });
   },
 
   /* 订单售后api

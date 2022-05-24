@@ -6,7 +6,6 @@
     :visible.sync="visible"
     cancelText='取消'
     @cancle="onCancle"
-    @open='onOpen'
     @closed='onClosed'
     @submit="onSubmit"
     class="mp-erp-comps-reject-dialog-comp-wrap"
@@ -14,8 +13,9 @@
    <!-- <p slot="title"><img src="@/assets/images/reject.png" alt="">aaaaa</p> -->
    <template>
     <el-form :model="RejectForm" status-icon ref="ruleForm" label-width="110px" class="demo-ruleForm" label-position="left">
-      <el-form-item label="处理意见：">
-        <el-input v-model="RejectForm.Opinion" type="textarea" placeholder="请输入处理意见" autocomplete="off"></el-input>
+      <el-form-item label="处理意见：" required>
+        <TextareaInput v-model="RejectForm.Opinion" :showWordLimit='true' :maxlength="300" placeholder="请输入处理意见" autocomplete="off">
+        </TextareaInput>
       </el-form-item>
     </el-form>
    </template>
@@ -24,6 +24,7 @@
 
 <script>
 import CommonDialogComp from '@/packages/CommonDialogComp';
+import TextareaInput from '@/components/common/TextareaInput';
 
 export default {
   props: {
@@ -37,6 +38,7 @@ export default {
   },
   components: {
     CommonDialogComp,
+    TextareaInput,
   },
   computed: {
     PermissionObj() {
@@ -71,18 +73,9 @@ export default {
         this.$emit('submit', this.RejectForm);
       }
     },
-    onOpen() {
-      this.getCustomerData();
-    },
     onClosed() {
       this.onCancle();
     },
-    async getCustomerData() { // 获取客户数据
-      this.loading = true;
-
-      this.loading = false;
-    },
-
   },
 };
 </script>

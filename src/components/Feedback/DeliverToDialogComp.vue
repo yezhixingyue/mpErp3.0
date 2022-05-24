@@ -13,7 +13,7 @@
    >
    <template>
     <el-form :model="DeliverToForm" status-icon ref="ruleForm" label-width="110px" class="demo-ruleForm" label-position="left">
-      <el-form-item label="选择人员：" prop="pass">
+      <el-form-item label="选择人员：" required>
         <el-select style="width:100%;" filterable v-model="DeliverToForm.NextOperaterID" placeholder="请选择转交人">
           <el-option v-for="item in staffList" :key="item.StaffID"
             :label="item.StaffName"
@@ -21,8 +21,9 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="转交原因：" prop="checkPass">
-        <el-input v-model="DeliverToForm.Reason" type="textarea" placeholder="请输入转交原因" autocomplete="off"></el-input>
+      <el-form-item label="转交原因：" required>
+        <TextareaInput
+        v-model="DeliverToForm.Reason" show-word-limit :maxlength="300" placeholder="请输入转交原因" autocomplete="off"></TextareaInput>
       </el-form-item>
     </el-form>
    </template>
@@ -31,6 +32,7 @@
 
 <script>
 import CommonDialogComp from '@/packages/CommonDialogComp';
+import TextareaInput from '@/components/common/TextareaInput';
 
 export default {
   props: {
@@ -44,6 +46,7 @@ export default {
   },
   components: {
     CommonDialogComp,
+    TextareaInput,
   },
   data() {
     return {
@@ -58,6 +61,11 @@ export default {
   },
   methods: {
     onCancle() { // 取消  关闭弹窗
+      this.DeliverToForm = {
+        AfterSaleCode: this.paramsData.AfterSaleCode,
+        NextOperaterID: '',
+        Reason: '',
+      };
       this.$emit('cloce');
     },
     onSubmit() {

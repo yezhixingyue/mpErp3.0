@@ -57,7 +57,7 @@
       </footer>
       </transition>
     </div>
-    <template v-if="paramsData">
+    <div class="dialogs" v-if="paramsData">
       <!-- 挂起 -->
       <PostponeDialogComp  :paramsData='paramsData' :visible="PostponeVisible"
       @submit="PostponeSubmit" @cloce="PostponeVisible = false"></PostponeDialogComp>
@@ -73,8 +73,8 @@
       @cloce="ExecuteVisible = false"></ExecuteDialogComp>
       <!-- 查看处理详情 -->
       <DisposeDetailsDialogComp
-      :paramsData='paramsData' :visible="DisposeDetailsVisible" @cloce="DisposeDetailsVisible = false"></DisposeDetailsDialogComp>
-    </template>
+      :paramsData='paramsData' :dataInfo="DetailData" :visible="DisposeDetailsVisible" @cloce="DisposeDetailsVisible = false"></DisposeDetailsDialogComp>
+    </div>
   </section>
 </template>
 
@@ -125,14 +125,22 @@ export default {
       this.loading = true;
       this.api.getHandleDetail(this.paramsData.AfterSaleCode).then(res => {
         this.DetailData = res.data.Data;
+        function compare(_a, _b) {
+          const a = new Date(_a.CreateTime).getTime();
+          const b = new Date(_b.CreateTime).getTime();
+          if (a < b) {
+            return 1;
+          } if (a > b) {
+            return -1;
+          }
+          return 0;
+        }
+        this.DetailData.AfterSaleLog = this.DetailData.AfterSaleLog.sort(compare);
       });
       this.loading = false;
     },
     onGoBackClick() {
       this.$goback();
-    },
-    async onSubmitClick() {
-      // 需要先校验
     },
     // 挂起
     onPostponeClick() {
@@ -144,6 +152,7 @@ export default {
           // 挂起成功
           this.PostponeVisible = false;
           this.getInitData();
+          sessionStorage.setItem('FeedbackList', true);
         }
       });
     },
@@ -168,6 +177,7 @@ export default {
           // 驳回成功
           this.RejectVisible = false;
           this.getInitData();
+          sessionStorage.setItem('FeedbackList', true);
         }
       });
     },
@@ -182,6 +192,14 @@ export default {
           if (res.data.Status === 1000) {
             // 开始处理成功
             this.getInitData();
+            sessionStorage.setItem('FeedbackList', true);
+          }
+          // 有超时的数据
+          if (res.data.Status === 1100) {
+            sessionStorage.setItem('FeedbackList', true);
+            this.messageBox.failSingleError('操作失败', res.data.Message, () => {
+              this.onGoBackClick();
+            });
           }
         });
       };
@@ -195,6 +213,7 @@ export default {
           if (res.data.Status === 1000) {
             // 解除挂起
             this.getInitData();
+            sessionStorage.setItem('FeedbackList', true);
           }
         });
       };
@@ -211,9 +230,6 @@ export default {
     onDisposeDetailsClick() {
       this.DisposeDetailsVisible = true;
     },
-    // getScroll(e) {
-    //   console.log(e);
-    // },
 
     handleScroll(oEl) {
       if (!oEl) return;
@@ -242,7 +258,6 @@ export default {
   mounted() {
     this.paramsData = this.$route.params.paramsData;
     this.getInitData();
-    // console.log(document.getElementsByClassName('page-wrap')[0]);
     this.oBottomWidth = document.getElementById('feedbackinfopage');
     this.oPage = document.getElementsByClassName('page-wrap');
     this.oPage[0].addEventListener('scroll', this.cScroll);
@@ -262,10 +277,9 @@ export default {
   min-height: 100%;
   >.FeedbackInfoPage-main{
     background-color: #fff;
-    // overflow: auto;
-    // height: 100%;
     width: 100%;
     position: relative;
+    min-width: 900px;
     > footer {
       flex: none;
       height: 65px;
@@ -275,14 +289,11 @@ export default {
       &.FootFixed{
         position: fixed;
         bottom: 0;
-        // right: 0;
         left: 231px;
         background-color: #fff;
         box-shadow: 0px 0px 14px 0px rgba(136, 136, 136, 0.3);
-        // width: calc(100vw - 186px -80px);
         width: calc(100vw - 186px - 90px);
         min-width: 900px;
-        // height: 45px;
         padding-top: 20px;
         padding-right: 40px;
         box-sizing: border-box;
@@ -306,6 +317,23 @@ export default {
         background: linear-gradient(to right, #26bcf9, #35dff9);
         border: none;
         color: #fff;
+      }
+    }
+  }
+  .dialogs{
+    .el-textarea{
+      textarea{
+        padding-bottom: 13px;
+      }
+      .el-input__count{
+        width: calc(100% - 22px);
+        background: #fff;
+        height: 12px;
+        line-height: 12px;
+        bottom: 1px;
+        text-align: right;
+        right: 20px;
+        padding-bottom: 3px;
       }
     }
   }

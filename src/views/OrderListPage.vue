@@ -27,7 +27,7 @@
     <OrderListDialog />
     <!-- 申请售后弹窗 -->
     <ServiceAfterSalesDialog :visible='ServiceAfterSalesVisible'
-    :ServiceAfterSales="ServiceAfterSales" @close='ServiceAfterSalesVisible=false'
+    :ServiceAfterSales="ServiceAfterSales" @close='ServiceAfterSalesVisible=false; ServiceAfterSales = null;'
     @success="ServiceAfterSalesSuccess"></ServiceAfterSalesDialog>
     <ServiceDialog key="order-list-page" className='show-black' />
   </div>
@@ -76,6 +76,8 @@ export default {
     },
     ServiceAfterSalesSuccess() {
       this.getOrderTableData();
+      this.ServiceAfterSalesVisible = false;
+      this.ServiceAfterSales = null;
     },
     handleActionDownload(type) {
       this.getOrderListData2Excel(type);

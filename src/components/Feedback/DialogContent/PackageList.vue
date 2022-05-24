@@ -39,11 +39,9 @@
           </template>
         </el-table-column>
         <el-table-column prop="handle" label="操作">
-          <div class="handle-menus" slot-scope="scope">
+          <div class="handle-menus">
           <template v-if="Permission.PermissionList.PermissionManageOrder.Obj.ApplyAfterSales">
-            <ImgBtn v-if="scope.row.AllowAfterSales && showCrtl"
-              @handleClick="jump2Service(scope.row.Order)" :url='img1' />
-            <ImgBtn v-else disabled :url='img2' />
+            <ImgBtn :url='img2' />
           </template>
           </div>
         </el-table-column>
@@ -77,6 +75,11 @@ const img1 = require('@/assets/images/service.png');
 const img2 = require('@/assets/images/servicestop.png');
 
 export default {
+  props: {
+    dialogPackageData: {
+      type: Array,
+    },
+  },
   components: {
     ImgBtn,
   },
@@ -87,7 +90,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('orderModule', ['dialogPackageData', 'OrderStatusList', 'curOrderProductName']),
+    ...mapState('orderModule', ['curOrderProductName']),
     ...mapState('common', ['Permission']),
     showCrtl() {
       return this.$route.name !== 'feedback';

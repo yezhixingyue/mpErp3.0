@@ -10,7 +10,9 @@
           <CtrlMenus :showList="['add']"  @add='onAddClick' v-if="localPermission.Setup" />
         </li>
         <li v-for="(it, i) in RosterDataList" :key="it.PositionID || it.key">
-          <el-input :value="it.Nickname" @input="e => onInput(e, i)" placeholder="" size="small" maxlength="20"></el-input>
+          <el-input :value="it.Nickname" @input="e => onInput('Nickname', e, i)" placeholder="请输入花名" size="small" maxlength="20"></el-input>
+          <el-input :value="it.ContactWay" @input="e => onInput('ContactWay', e, i)" placeholder="请输入工作电话" size="small" maxlength="15"></el-input>
+          <el-input :value="it.QQ " @input="e => onInput('QQ', e, i)" placeholder="请输入工作QQ" size="small" maxlength="11"></el-input>
           <CtrlMenus :showList="['del', 'add']"  @remove='onRemoveClick(it, i)' @add='onAddClick' v-if="localPermission.Setup" />
         </li>
       </ul>
@@ -56,8 +58,8 @@ export default {
     },
   },
   methods: {
-    onInput(value, index) { // 花名修改
-      this.$store.commit('companyManage/setRosterDataItemNameChange', [value, index]);
+    onInput(key, value, index) { // 花名修改
+      this.$store.commit('companyManage/setRosterDataItemNameChange', [key, value, index]);
     },
     onRemoveClick(item, index) { // 花名删除
       if (!item.RosterID && !item.Nickname) {
@@ -73,6 +75,8 @@ export default {
       const temp = {
         RosterID: '',
         Nickname: '',
+        ContactWay: '',
+        QQ: '',
         key: Math.random().toString(16).slice(-8),
       };
       this.$store.commit('companyManage/setRosterDataItemAdd', temp);
@@ -113,6 +117,7 @@ export default {
   flex-direction: column;
   overflow-y: hidden;
   padding-right: 4px;
+  min-width: 900px;
   > header {
     flex: none;
     padding: 25px 35px;
@@ -122,7 +127,6 @@ export default {
     padding: 0 35px;
     overflow-y: auto;
     box-sizing: border-box;
-    min-width: 800px;
     > ul {
       > li {
         font-size: 14px;

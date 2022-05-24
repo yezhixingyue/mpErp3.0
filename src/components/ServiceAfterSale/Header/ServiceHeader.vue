@@ -68,7 +68,7 @@
             :typeList="[['OperaterID', '']]"
             :defaultProps="{ label: 'StaffName', value: 'StaffID' }"
             :value='obj4RequestServiceList.OperaterID'
-            label="操作人"
+            label="处理人"
           />
         </div>
         <div class="s">
@@ -80,6 +80,7 @@
             :dateValue='obj4RequestServiceList.DateType'
             :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
             :dateList='dateList'
+            label="处理时间"
           />
           <!-- <ElDateRangeSelector v-model="conditionDate" :condition="obj4RequestServiceList" initText='今天' /> -->
           <SearchInputComp
@@ -141,7 +142,13 @@ export default {
     return {
       // eslint-disable-next-line max-len
       dateList: [{ name: '全部', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
-      AfterSaleType: [{ label: '不限', value: '' }, { label: '减款', value: 1 }, { label: '补印', value: 2 }, { label: '赠送优惠券', value: 3 }],
+      AfterSaleType: [
+        { label: '不限', value: '' },
+        { label: '减款', value: 2 },
+        { label: '补印', value: 7 },
+        { label: '赠送优惠券', value: 8 },
+        { label: '其他', value: 255 },
+      ],
       AfterSaleResult: [{ label: '不限', value: '' }, { label: '问题已解决', value: 1 }, { label: '问题未解决', value: 2 }],
       AfterSaleScore: [
         { label: '不限', value: '' }, { label: '1星', value: 1 },

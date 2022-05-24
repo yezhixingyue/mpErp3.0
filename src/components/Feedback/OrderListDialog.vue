@@ -24,11 +24,11 @@
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane v-if="true" label="订单详情" name="first">
-          <OrderDetail v-if="!isLoading" :detailData = "detailData"/>
+          <OrderDetail v-if="!isLoading" :detailData="detailData"/>
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane  v-if="canShowExpressList" label="包裹列表" name="second">
-          <PackageList v-if="!isLoading" />
+          <PackageList v-if="!isLoading" :dialogPackageData='packageListData'/>
           <LoadingComp v-else />
         </el-tab-pane>
       </el-tabs>
@@ -62,6 +62,7 @@ export default {
 
       orderProgress: [],
       detailData: null,
+      packageListData: [],
     };
   },
   components: {
@@ -99,18 +100,20 @@ export default {
       this.$emit('DialogHide');
     },
     async open() {
+      this.handleClick();
       this.setIsLoading(true);
-      await this.api.getOrderDetail(this.orderListDialogData.OrderID).then(res => {
-        if (res.data.Status === 1000) {
-          this.detailData = res.data.Data;
-          this.setIsLoading(false);
-        }
-      }).catch((error) => {
-        this.handleCatchError(error);
-      });
+      // await this.api.getOrderDetail(this.orderListDialogData.OrderID).then(res => {
+      //   if (res.data.Status === 1000) {
+      //     this.detailData = res.data.Data;
+      //     this.setIsLoading(false);
+      //   }
+      // }).catch((error) => {
+      //   this.handleCatchError(error);
+      // });
     },
-    async handleClick(tab) {
-      const { name } = tab;
+    async handleClick() {
+      // const { name } = tab;
+      const name = this.activeName;
       const { OrderID } = this.orderListDialogData;
       let key = true;
       this.setIsLoading(true);
@@ -136,7 +139,11 @@ export default {
           });
           break;
         case 'second': // 包裹列表 - 双页
-          await this.api.getPackageListByOrderID(OrderID).catch((error) => {
+          await this.api.getPackageListByOrderID(OrderID).then(res => {
+            if (res.data.Status === 1000) {
+              this.packageListData = res.data.Data;
+            }
+          }).catch((error) => {
             key = false;
             this.handleCatchError(error);
           });

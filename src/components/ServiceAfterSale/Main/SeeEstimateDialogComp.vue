@@ -1,7 +1,7 @@
 <template>
 
  <CommonDialogComp
-   title="售后评价"
+   title="评价详情"
    :visible.sync="visible"
    @cancle="cancle"
    @open='onOpen'
@@ -10,36 +10,52 @@
    :showCancel='false'
    @submit='submit'
    width='800px'
+   top='5vh'
+   class="see-estimate-dialog"
    >
-   <div slot="title" class="title">aaa</div>
-   <el-form label-position="left" ref="form" :model="SeeEstimate" class="see-estimate">
-     <template v-if="SeeEstimate">
-       <el-form-item label="服务评分：">
-         <el-rate disabled show-text v-model="SeeEstimate.Score" :texts="['非常差', '差', '一般', '好', '非常好',]"></el-rate>
-       </el-form-item>
-       <el-form-item label="服务结果：">
-         <div class="result">
-           <span v-if="SeeEstimate.Result === 1">问题已解决</span>
-           <span v-else>问题未解决</span>
-         </div>
-       </el-form-item>
-       <el-form-item label="服务标签：">
-         <span>
-           {{SeeEstimate.LabelTitle.join()}}
-         </span>
-       </el-form-item>
-       <el-form-item label="售后评价：">
-         <span>{{SeeEstimate.EvaluateContent}}</span>
-       </el-form-item>
-       <el-form-item label="评价晒图：">
-         <div class="images">
-           <el-image v-for="item in SeeEstimate.EvaluatePicList" :key="item"
-             :src="item"
-             fit="cover"></el-image>
-         </div>
-       </el-form-item>
-     </template>
-   </el-form>
+   <div class="see-estimate">
+    <el-form label-position="left" ref="form" :model="SeeEstimate" >
+      <template v-if="SeeEstimate">
+        <el-form-item label="服务评分：">
+          <el-rate disabled show-text v-model="SeeEstimate.Score" :texts="['非常差', '差', '一般', '好', '非常好',]"></el-rate>
+        </el-form-item>
+        <el-form-item label="服务结果：">
+          <div class="result">
+            <span v-if="SeeEstimate.Result === 1">问题已解决</span>
+            <span v-else>问题未解决</span>
+          </div>
+        </el-form-item>
+        <el-form-item label="服务标签：">
+          <span>
+            {{SeeEstimate.LabelTitle.join('，')}}
+          </span>
+        </el-form-item>
+        <el-form-item label="评价内容：">
+          <div style="display:flex;line-height:34px;margin-top:3px">{{SeeEstimate.EvaluateContent}}</div>
+        </el-form-item>
+        <el-form-item label="评价晒图：">
+          <div class="images">
+            <el-image v-for="item in SeeEstimate.EvaluatePicList" :key="item"
+              :src="item"
+              fit="cover"></el-image>
+          </div>
+        </el-form-item>
+        <el-form-item label="评价时间：" style="padding-top:30px">
+          <span>{{SeeEstimate.EvaluateTime | formatDate}}</span>
+        </el-form-item>
+      </template>
+    </el-form>
+    <div class="contact-info" v-if="AfterSaleData">
+      <span>联系人：{{AfterSaleData.ContactName}}</span>
+      <span>手机：{{AfterSaleData.Mobile}}</span>
+      <span v-if="AfterSaleData.QQ">QQ：
+        <a
+        :href="`tencent://message/?uin=${AfterSaleData.QQ}&amp;Site=${AfterSaleData.ContactName}&amp;Menu=yes`" class="details" style="padding:0">
+          {{AfterSaleData.QQ}}
+        </a>
+      </span>
+    </div>
+   </div>
  </CommonDialogComp>
 
 </template>
@@ -57,8 +73,8 @@ export default {
       type: Boolean,
       default: false,
     },
-    AfterSaleCode: {
-      type: Number,
+    AfterSaleData: {
+      type: Object,
     },
   },
 
@@ -82,7 +98,7 @@ export default {
   watch: {
     visible(n) {
       if (n) {
-        this.api.getOrderAfterSaleEvaluateDetail(this.AfterSaleCode).then(res => {
+        this.api.getOrderAfterSaleEvaluateDetail(this.AfterSaleData.AfterSaleCode).then(res => {
           if (res.data.Status === 1000) {
             this.SeeEstimate = res.data.Data;
           }
@@ -97,16 +113,28 @@ export default {
 </script>
 
 <style lang='scss'>
-
+.see-estimate-dialog{
+  .el-dialog__header{
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  .el-dialog__header::after{
+    width: calc(100% - 60px);
+    left: 30px;
+  }
+  .el-dialog__body{
+    padding: 30px;
+  }
   .see-estimate{
     min-height: calc(400px);
+    .el-form-item{
+      margin: 0;
+      .el-form-item__label{
+        width: 82px;
+      }
+    }
     .el-rate{
       margin-top: 10px;
-    }
-    .result{
-      span{
-        font-weight: 700;
-      }
     }
     .images{
       display: flex;
@@ -119,5 +147,23 @@ export default {
         margin-bottom: 20px;
       }
     }
+    .contact-info{
+      border-top: 1px solid #eee;
+      // color: #444;
+      padding-top: 22px;
+      margin-top: 9px;
+      >span{
+        margin-right: 18px;
+        .details{
+          color: #26BCF9;
+          padding: 0 10px;
+          text-decoration:none
+        }
+        .details:hover{
+          cursor: pointer;
+        }
+      }
+    }
   }
+}
 </style>

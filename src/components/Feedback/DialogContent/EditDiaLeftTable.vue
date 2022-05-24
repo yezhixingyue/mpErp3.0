@@ -14,13 +14,13 @@
     <el-table-column label="包裹号" show-overflow-tooltip width="160">
       <template slot-scope="scope">{{ scope.row.ID }}</template>
     </el-table-column>
-    <el-table-column prop="Logistics.BillNo" show-overflow-tooltip label="运单号" width="200">
+    <el-table-column prop="Logistics.BillNo" show-overflow-tooltip label="运单号" width="196">
     </el-table-column>
-    <el-table-column prop="ProductAmount" label="产品数量" sortable width="113"></el-table-column>
+    <el-table-column prop="ProductAmount" label="产品数量" sortable min-width="108"></el-table-column>
     <el-table-column
-      prop="TotalAmount" label="金额" sortable class-name='is-origin' width="150"></el-table-column>
+      prop="TotalAmount" label="金额" sortable class-name='is-origin' width="146"></el-table-column>
     <el-table-column
-      prop="UnPaidAmount" label="代收金额" sortable class-name='is-origin' width="150"></el-table-column>
+      prop="UnPaidAmount" label="代收金额" sortable class-name='is-origin' width="146"></el-table-column>
   </el-table>
 </template>
 

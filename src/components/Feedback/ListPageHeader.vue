@@ -6,10 +6,10 @@
           style="margin-right: 40px"
           :changePropsFunc="setCondition4DataList"
           :requestFunc="getDataList"
-          :RegionalID="condition.SellArea.RegionalID"
-          :CityID="condition.SellArea.CityID"
-          :CountyID="condition.SellArea.CountyID"
-          :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+          :RegionalID="condition.SellRegionalID"
+          :CityID="condition.SellCityID"
+          :CountyID="condition.SellCountyID"
+          :typeList="[['SellRegionalID', ''],['SellCityID', ''],['SellCountyID', '']]"
         />
         <OrderChannelSelector
         style="margin-right: 50px"
@@ -54,32 +54,33 @@
       <li>
         <OrderChannelSelector
         style="margin-right: 30px"
-        :options='progressList'
+        :options='orderCreateTypeList'
         :requestFunc='getDataList'
         :changePropsFunc='setCondition4DataList'
-        :typeList="[['Status', '']]"
-        :value='condition.Status'
+        :typeList="[['Source', '']]"
+        :value='condition.Source'
         label="服务单来源"
        />
         <OrderChannelSelector
         style="margin-right: 30px"
-        :options='progressList'
+        :options='AppealType'
         :requestFunc='getDataList'
         :changePropsFunc='setCondition4DataList'
-        :typeList="[['SolutionType', '']]"
-        :value='condition.SolutionType'
-        label="解决方案"
+        :typeList="[['AppealType', '']]"
+        :value='condition.AppealType'
+        label="诉求意向"
        />
-        <OrderChannelSelector
+          <!-- :disabled='condition.SolutionType !== 2' -->
+        <!-- <OrderChannelSelector
+          class="refund-pay-type"
           :showLabel="false"
-          :options="userRankList"
+          :options="RefundPayTypeList"
           :requestFunc="getDataList"
           :changePropsFunc="setCondition4DataList"
-          :typeList="[['CustomerType', 'Second']]"
-          :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
-          :value="condition.CustomerType.Second"
+          :typeList="[['RefundPayType', '']]"
+          :value="condition.RefundPayType"
           label=""
-        />
+        /> -->
         <OrderChannelSelector
         style="margin-right: 30px"
         :filterable='true'
@@ -89,7 +90,7 @@
         :typeList="[['OperaterID', '']]"
         :defaultProps="{ label: 'StaffName', value: 'StaffID' }"
         :value='condition.OperaterID'
-        label="操作人"
+        label="处理人"
        />
       </li>
       <li>
@@ -100,7 +101,7 @@
           :typeList="[['DateType', ''], ['Date', 'First'], ['Date', 'Second']]"
           :dateValue='condition.DateType'
           :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
-          label="时间"
+          label="申请时间"
           :dateList="dateList"
         />
         <!-- <ElDateRangeSelector v-model="conditionDate"  title="时间" :watchVal="condition" /> -->
@@ -148,18 +149,43 @@ export default {
     // ElDateRangeSelector,
   },
   computed: {
-    ...mapState('common', ['FeedbackProgress', 'FeedbackQuestionList', 'userTypeList', 'userRankList']),
+    ...mapState('common', ['FeedbackProgress', 'FeedbackQuestionList', 'userTypeList', 'userRankList', 'orderCreateTypeList']),
     UserDefinedTimeIsActive() {
       return this.condition.DateType === '' && !!this.condition.Date.First && !!this.condition.Date.Second;
     },
     progressList() {
-      if (!this.FeedbackProgress || this.FeedbackProgress.length === 0) return [];
-      return [{ name: '不限', ID: '' }, ...this.FeedbackProgress];
+      // if (!this.FeedbackProgress || this.FeedbackProgress.length === 0) return [];
+      const arr = [
+        { name: '不限', ID: '' },
+        { name: '待处理', ID: 0 },
+        { name: '处理中', ID: 10 },
+        { name: '已挂起', ID: 25 },
+        { name: '退款中', ID: 20 },
+        { name: '处理完成', ID: 30 },
+        { name: '已驳回', ID: 40 },
+        { name: '已取消', ID: 255 },
+      ];
+      return arr;
     },
     questionList() {
       if (!this.FeedbackQuestionList || this.FeedbackQuestionList.length === 0) return [];
       const arr = this.FeedbackQuestionList.map(({ ID, Title }) => ({ name: Title, ID }));
       return [{ name: '不限', ID: '' }, ...arr];
+    },
+    AppealType() {
+      return [
+        { name: '不限', ID: '' },
+        { name: '退款', ID: 0 },
+        { name: '补印', ID: 1 },
+        { name: '其他', ID: 255 },
+      ];
+    },
+    RefundPayTypeList() {
+      return [
+        { name: '不限', ID: '' },
+        { name: '原支付方式返还', ID: '0' },
+        { name: '退回余额', ID: 1 },
+      ];
     },
     conditionDate: {
       get() {
@@ -200,7 +226,7 @@ export default {
     },
     async getCustomerData() { // 获取客户数据
       this.api.getOperateStaff().then(res => {
-        this.staffList = res.data.Data;
+        this.staffList = [{ StaffName: '不限', StaffID: '' }, ...res.data.Data];
       });
     },
   },
@@ -208,6 +234,15 @@ export default {
     this.$store.dispatch('common/getFeedbackQuestionList');
     this.$store.dispatch('common/getUserClassify');
     this.getCustomerData();
+  },
+  watch: {
+    'condition.SolutionType': {
+      handler(newVal) {
+        if (newVal !== 2) {
+          this.setCondition4DataList([['RefundPayType', ''], '']);
+        }
+      },
+    },
   },
 };
 </script>
@@ -240,6 +275,11 @@ export default {
       > .user-selector {
         display: flex;
         // margin-left: 60px;
+      }
+      .refund-pay-type{
+        .el-input>input{
+          width: 120px;
+        }
       }
     }
   }

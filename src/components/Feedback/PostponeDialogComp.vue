@@ -12,26 +12,29 @@
     class="mp-erp-comps-postpone-dialog-comp-wrap"
    >
    <template>
-    <el-form :model="PostponeRuleForm" status-icon ref="ruleForm" label-width="110px" class="demo-ruleForm" label-position="left">
-      <el-form-item style="margin:0" label="挂起原因：" prop="pass">
-        <el-input v-model="PostponeRuleForm.Reason" type="textarea" placeholder="请输入挂起原因" autocomplete="off"></el-input>
+    <el-form :model="PostponeRuleForm" status-icon ref="ruleForm"  label-width="125px" class="demo-ruleForm" label-position="right">
+      <el-form-item style="margin:0" label="挂起原因：" required>
+        <TextareaInput
+         v-model="PostponeRuleForm.Reason" type="textarea" show-word-limit :maxlength="300" placeholder="请输入挂起原因"></TextareaInput>
         <el-checkbox v-model="PostponeRuleForm.ApplyIsShow">挂起原因前台客户可见</el-checkbox>
       </el-form-item>
-      <el-form-item style="margin:0" label="下次处理时间：" prop="checkPass">
+      <el-form-item style="margin:0" label="下次处理时间：" required>
         <div>
           <el-date-picker
             style="width:180px;margin-right:15px"
             v-model="PostponeRuleForm.NextOperateTime"
-            :disabled="this.PostponeRuleForm.NextOperateType !== 0"
-            type="date"
-            placeholder="选择日期">
+            :disabled="this.PostponeRuleForm.NextOperateType === 0"
+            type="datetime"
+            :picker-options="pickerOptions"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd HH:mm:ss">
           </el-date-picker>
           <el-switch
             v-model="PostponeRuleForm.NextOperateType"
             active-color="#26BCF9"
             inactive-color="#DCDFE6"
-            :active-value="1"
-            :inactive-value="0">
+            :active-value="0"
+            :inactive-value="1">
           </el-switch>
           不确定
         </div>
@@ -43,6 +46,7 @@
 
 <script>
 import CommonDialogComp from '@/packages/CommonDialogComp';
+import TextareaInput from '@/components/common/TextareaInput';
 
 export default {
   props: {
@@ -57,6 +61,7 @@ export default {
   },
   components: {
     CommonDialogComp,
+    TextareaInput,
   },
   computed: {
   },
@@ -69,8 +74,13 @@ export default {
         AfterSaleCode: this.paramsData.AfterSaleCode,
         ApplyIsShow: true,
         Reason: '',
-        NextOperateType: 0,
+        NextOperateType: 1,
         NextOperateTime: '',
+      },
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7; // 如果没有后⾯的-8.64e7就是不可以选择今天的
+        },
       },
     };
   },
@@ -80,7 +90,7 @@ export default {
         AfterSaleCode: this.paramsData.AfterSaleCode,
         ApplyIsShow: true,
         Reason: '',
-        NextOperateType: 0,
+        NextOperateType: 1,
         NextOperateTime: '',
       };
       this.$emit('cloce');
@@ -88,7 +98,7 @@ export default {
     async onSubmit() { // 仅价格详情使用
       if (!this.PostponeRuleForm.Reason) {
         this.messageBox.failSingleError('操作失败', '请输入挂起原因');
-      } else if (this.PostponeRuleForm.NextOperateType === 0 && !this.PostponeRuleForm.NextOperateTime) {
+      } else if (this.PostponeRuleForm.NextOperateType === 1 && !this.PostponeRuleForm.NextOperateTime) {
         this.messageBox.failSingleError('操作失败', '请选择下次处理时间');
       } else {
         this.$emit('submit', this.PostponeRuleForm);
@@ -106,6 +116,15 @@ export default {
       this.loading = false;
     },
 
+  },
+  watch: {
+    'PostponeRuleForm.NextOperateType': {
+      handler(val) {
+        if (val === 0) {
+          this.PostponeRuleForm.NextOperateTime = '';
+        }
+      },
+    },
   },
 };
 </script>

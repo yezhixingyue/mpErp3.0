@@ -28,7 +28,7 @@
           进度/详情/包裹</span>
         </li>
         <li v-if="localPermission.ApplyAfterSales">
-          <span  @click="ServiceAfterSalesClick(scope.row)" v-if="scope.row.AllowAfterSales">
+          <span  @click="ServiceAfterSalesClick(scope.row)" v-if="scope.row.AllowAfterSale">
             <img src="@/assets/images/service.png" alt />售后
           </span>
           <!-- <span  @click="jump2Service(scope.row)" v-if="scope.row.AllowAfterSales">

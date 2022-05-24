@@ -18,7 +18,7 @@
         <header class="right-line">
           <VTypeTitle :imgSrc="require('@/assets/images/photo.png')" title="问题照片" />
         </header>
-        <main v-if="DisposeDetailsData && DisposeDetailsData.QuestionPicList">
+        <main v-if="DisposeDetailsData.QuestionPicList && DisposeDetailsData.QuestionPicList.length">
           <!-- {{DisposeDetailsData.QuestionPicList}} -->
           <DisplayPictrue :imgList='DisposeDetailsData.QuestionPicList' :isEditMode="false" />
         </main>
@@ -34,16 +34,28 @@
           <div class="left-table">
             <EditDiaLeftTable :tableData='OrderPackageListTableData' />
           </div>
-          <div class="right-submit-wrap">
+          <div class="right-submit-wrap" v-if="DisposeDetailsData">
             <div class="tab-row">
               <div class="left"><div class="piece"></div></div>
               <div class="right">
                 <div class="row" v-for="(item,index) in DisposeDetailsData.AfterSaleQuestions" :key="index">
                   <div class="item">
-                    <p><span :class="{'hide': index !==0}">问题：</span> {{QuestionName(item.QuestionType)}}</p>
+                    <div><span v-if="index ===0">问题：</span>
+                      <i style="width:8em;" :style="`margin-left:${index === 0 ? 0 : 3.3}em`">{{QuestionName(item.FirstQuestionType)}}</i>
+                      <i style="text-indent:0em">{{QuestionName(item.SecondQuestionType)}}</i>
+                    </div>
                   </div>
                   <div class="item">
-                    <p><span :class="{'hide': index !==0}">备注：</span> {{item.Remark}}</p>
+                    <div :style="`text-indent:${index === 0 ? 0 : 3.3}em`"><span v-if="index ===0">备注：</span>
+                      <el-tooltip
+                      effect="dark"
+                      :disabled="item.Remark.length<25"
+                      :content="item.Remark"
+                      placement="top">
+                        <i class="i">{{item.Remark}}</i>
+                      </el-tooltip>
+                    <!-- <i>{{item.Remark}}</i> -->
+                    </div>
                   </div>
                 </div>
               </div>
@@ -54,33 +66,33 @@
               <div class="right">
                 <div class="row" v-for="(item,index) in DisposeDetailsData.AfterSaleResponsibilities" :key="index">
                   <div class="item">
-                    <p><span :class="{'hide': index !==0}">责任部门：</span> {{DepartmentName(item.Department)}}</p>
+                    <div :style="`text-indent:${index === 0 ? 0 : 5.3}em`"><span v-if="index ===0">责任部门：</span> {{DepartmentName(item.Department)}}</div>
                   </div>
                   <div class="item">
-                    <p><span :class="{'hide': index !==0}">责任比例：</span> {{item.Proportion}}%</p>
+                    <div :style="`text-indent:${index === 0 ? 0 : 5.3}em`"><span v-if="index ===0">责任比例：</span> {{item.Proportion}}%</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="tab-row" v-if="DisposeDetailsData.Solution">
+            <div class="tab-row" v-if="DisposeDetailsData.Solution && selectedCouponList">
               <div class="left"><div class="piece"></div></div>
               <div class="right">
                 <div class="row line" v-if="DisposeDetailsData.Solution.SolutionType === 255">
                   <div class="item">
-                    <p><span>解决方案：</span>
+                    <div><span>解决方案：</span>
                     <!-- 其他 -->
                       其他
-                    </p>
+                    </div>
                   </div>
                 </div>
                 <template v-if="DisposeDetailsData.Solution && DisposeDetailsData.Solution.SolutionType === 8">
                   <div class="row line" v-for="(it,index) in selectedCouponList" :key="it.CouponID">
                     <div class="item" >
-                      <p><span :class="{'hide': index !==0}">解决方案：</span>
+                      <div class="discount-coupon" :style="`text-indent:${index === 0 ? 0 : 5.05}em`"><span>{{index ===0?'解决方案：':''}}</span>
                       <!-- 赠送优惠券 -->
                         赠送优惠券：
-                        <span class="is-pink">{{it.Data.Amount}}元</span>
-                        <span class="MinPayAmount">满{{it.Data.MinPayAmount}}元使用</span>
+                        <span class="is-pink">{{it.Data.Amount}}元</span><i> - </i>
+                        <span class="MinPayAmount"> 满{{it.Data.MinPayAmount}}元使用</span>
                         <span>（ <i class="is-origin">{{it.CouponNumber}}</i>张 ）</span>
                         <i> - </i>
                         <el-tooltip placement="top-start" :enterable='false' >
@@ -92,37 +104,72 @@
                           <span class="area-span">限产品：{{ it.ProductListTextArray.join(' ') }}</span>
                         </el-tooltip>
 
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </template>
                 <div class="row line" v-if="DisposeDetailsData.Solution.SolutionType === 7">
                   <div class="item">
-                    <p><span>解决方案：</span>
+                    <div><span>解决方案：</span>
 
                     <!-- 补印 -->
                     <span v-if="DisposeDetailsData.Solution.SolutionType === 7">
-                      补印：
+                      补印：款数：<span class="color-red">{{DisposeDetailsData.Solution.KindCount}} &nbsp;</span>款，
+                      数量：<span class="color-red">{{DisposeDetailsData.Solution.Number}}</span>{{dataInfo.Order.Product.Unit}}
                     </span>
-                    </p>
+                    </div>
                   </div>
                 </div>
-                <div class="row line" v-if="DisposeDetailsData.Solution.SolutionType === 2">
+                <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
                   <div class="item">
                     <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
-                    <p><span>解决方案：</span>
+                    <div><span>解决方案：</span>
                     <!-- 退款： -->
                     <span v-if="DisposeDetailsData.Solution.SolutionType === 2">
-                      退款：订单退款：￥{{DisposeDetailsData.Solution.RefundAmount}}&nbsp;&nbsp;&nbsp;
-                      运费退款：￥{{DisposeDetailsData.Solution.RefundFreightAmount}}&nbsp;&nbsp;&nbsp;
-                      共计：￥<span class="color-red">
-                        {{DisposeDetailsData.Solution.RefundFreightAmount + DisposeDetailsData.Solution.RefundAmount}}
-                      </span>&nbsp;&nbsp;&nbsp;
-                      退回余额：￥<span class="color-red">
-                        {{DisposeDetailsData.Solution.RefundFreightAmount + DisposeDetailsData.Solution.RefundAmount}}
-                      </span>&nbsp;&nbsp;&nbsp;
+                      退款：订单退款：￥
+                      <span class="marginright">
+                      {{DisposeDetailsData.Solution.RefundAmount}}
+                      </span>
+                      运费退款：￥
+                      <span class="marginright">
+                      {{DisposeDetailsData.Solution.RefundFreightAmount}}
+                      </span>
+                      共计：￥<span class="color-red marginright">
+                        {{DisposeDetailsData.Solution.SuccessRefundTotalAmount }}
+                      </span>
                     </span>
-                    </p>
+                    <span class="is-origin refund">退款成功</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
+                  <div class="item">
+                    <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
+                    <div style="text-indent: 5.3em"><span style="margin:0"></span>
+                      <!-- 退款： -->
+                      <span v-if="DisposeDetailsData.Solution.SolutionType === 2">
+                        {{DisposeDetailsData.Solution.RefundType === 1 ? '退回余额' : '退回原支付账户' }}：￥<span class="color-red marginright">
+                          {{DisposeDetailsData.Solution.RefundFreightAmount + DisposeDetailsData.Solution.RefundAmount}}
+                        </span>
+                        从未支付款项中减款：￥<span class="color-red marginright">
+                          {{DisposeDetailsData.Solution.UnpaidReducedAmount}}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row line">
+                  <div class="item">
+                    <div style="text-indent: 5.3em">
+                      处理意见：
+                      <el-tooltip
+                      effect="dark"
+                      :disabled="DisposeDetailsData.Solution.Opinion.length<50"
+                      :content="DisposeDetailsData.Solution.Opinion"
+                      placement="top">
+                        <i class="i" style="text-indent: 0em">{{DisposeDetailsData.Solution.Opinion}}</i>
+                      </el-tooltip>
+                    </div>
                   </div>
                 </div>
 
@@ -154,7 +201,7 @@ import {
 } from 'vuex';
 // import OrderServiceEditCord from '@/components/ServiceAfterSale/EditDialog/OrderServiceEditCord.vue';
 import VTypeTitle from '@/components/ServiceAfterSale/EditDialog/VTypeTitle.vue';
-import EditDiaLeftTable from '@/components/ServiceAfterSale/EditDialog/EditDiaLeftTable.vue';
+import EditDiaLeftTable from '@/components/Feedback/DialogContent/EditDiaLeftTable.vue';
 // import EditDiaRightSubmit from '@/components/ServiceAfterSale/EditDialog/EditDiaRightSubmit.vue';
 import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import DisplayPictrue from '@/components/ServiceAfterSale/EditDialog/DisplayPictrue.vue';
@@ -179,6 +226,9 @@ export default {
       type: Boolean,
     },
     paramsData: {
+      type: Object,
+    },
+    dataInfo: {
       type: Object,
     },
   },
@@ -374,6 +424,9 @@ export default {
         box-shadow: 0px 3px 10px 0px rgba(98, 98, 98, 0.2);
         border-radius: 5px;
         border: solid 1px $--border-color-light;
+        .marginright {
+          margin-right: 1em;
+        }
         > header {
           height: 100%;
           width: 85px;
@@ -388,13 +441,14 @@ export default {
         > main {
           display: flex;
           flex-direction: column;
-          margin-left: 20px;
-          margin-top: 20px;
-          .left-table {
-            width: 835px;
-          }
+          // margin: 20px;
+          margin-bottom: 20px;
+          width: 835px;
           .right-submit-wrap {
+            width: calc(100% - 2px);
+            box-sizing: border-box;
             .tab-row{
+              width: 100%;
               display: flex;
               border-left: 1px solid #eeeeee;
               border-right: 1px solid #eeeeee;
@@ -409,26 +463,54 @@ export default {
                 }
               }
               .right{
-                flex: 1;
+                // flex: 1;
+                width: calc(100% - 50px);
                 font-size: 13px;
                 .row{
                   border-bottom: 1px dashed #eeeeee;
+                  width: 100%;
                   &.row:last-child{
                     border-bottom: none;
                   }
                   display: flex;
                   .item{
                     width: 50%;
-                    p{
+                    >div{
                       line-height: 40px;
                       color: #888888;
-                      span:first-child{
+                      -webkit-line-clamp: 1;
+                      display: -webkit-box;
+                      -webkit-box-orient: vertical;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                      display: flex;
+                      justify-content: flex-start;
+                      .refund {
+                        flex: 1;
+                        text-align: right;
+                        padding-right: 2em;
+                      }
+                      > .i {
+                        -webkit-line-clamp: 1;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        flex: 1;
+                      }
+                      &.discount-coupon {
+                        span, >i{
+                          text-indent: 0;
+                        }
+                      }
+                      >span:first-child{
                         color: #444444;
                         margin-right: 3px;
                         font-weight: 700;
                       }
                       .hide:first-child{
-                        color: #fff;
+                        // color: #fff;
+                        text-indent: 3em;
                       }
                       .color-red{
                         color: #FF3769;

@@ -42,7 +42,7 @@
             <td>订单状态</td>
             <td>{{dataInfo.Order.Status | formatStatus}}</td>
             <td>配送方式</td>
-            <td>{{dataInfo.Order.DistrictName}}</td>
+            <td>{{dataInfo.Order.ExpressText || '--'}}</td>
           </tr>
           <tr>
             <td>收件人</td>
@@ -80,7 +80,15 @@
             <td>运费</td>
             <td>￥{{dataInfo.Order.Freight}}元（含{{dataInfo.Order.FreightOrderNumber}}个订单）</td>
             <td>订单备注</td>
-            <td> <p class="textarea">{{dataInfo.Order.Product.Content || '--'}}</p></td>
+            <td>
+              <!-- <p class="textarea">{{dataInfo.Order.Remark || '--'}}</p> -->
+              <p ref="OrderRemarkCopy" style="position:absolute;overflow: hidden;height:0px;padding:0;">{{dataInfo.Order.Remark}}</p>
+              <p ref="OrderRemark" class="textarea" style="overflow: hidden;height:0px;padding:0;">{{dataInfo.Order.Remark}}</p>
+              <el-tooltip v-show="showOrderRemarkTool" class="item" effect="dark" :content="dataInfo.Order.Remark" placement="top">
+                <p class="textarea">{{dataInfo.Order.Remark}}</p>
+              </el-tooltip>
+              <p v-show="!showOrderRemarkTool" class="textarea">{{dataInfo.Order.Remark || '--'}}</p>
+            </td>
           </tr>
         </table>
 
@@ -107,7 +115,7 @@
             <td>QQ号</td>
             <td>
               <a v-if="dataInfo.AfterSale.QQ"
-              :href="`tencent://message/?uin=${dataInfo.AfterSale.QQ}&Site=SuperNic&Menu=yes`" class="details" style="padding:0">
+              :href="`tencent://message/?uin=${dataInfo.AfterSale.QQ}&amp;Site=名片之家&amp;Menu=yes`" class="details" style="padding:0">
                 {{dataInfo.AfterSale.QQ}}
               </a>
               <span v-else>--</span>
@@ -115,9 +123,16 @@
           </tr>
           <tr>
             <td>问题类型</td>
-            <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.join(',')}}</p></td>
+            <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.join('，')}}</p></td>
             <td>问题描述</td>
-            <td><p class="textarea">{{dataInfo.AfterSale.QuestionRemark}}</p></td>
+            <td>
+              <p ref="QuestionRemarkCopy" style="position:absolute;overflow: hidden;height:0px;padding:0;">{{dataInfo.AfterSale.QuestionRemark}}</p>
+              <p ref="QuestionRemark" class="textarea" style="overflow: hidden;height:0px;padding:0;">{{dataInfo.AfterSale.QuestionRemark}}</p>
+              <el-tooltip v-show="showQuestionRemarkTool" class="item" effect="dark" :content="dataInfo.AfterSale.QuestionRemark" placement="top">
+                <p class="textarea">{{dataInfo.AfterSale.QuestionRemark}}</p>
+              </el-tooltip>
+              <p v-show="!showQuestionRemarkTool" class="textarea">{{dataInfo.AfterSale.QuestionRemark || '--'}}</p>
+            </td>
           </tr>
           <tr>
             <td>诉求意向</td>
@@ -139,7 +154,8 @@
             <td>上传照片</td>
             <td colspan="3">
               <div class="img">
-                <el-image v-for="item in dataInfo.AfterSale.QuestionPicList" :key="item" :src="item" fit="cover" ></el-image>
+                <el-image :preview-src-list="dataInfo.AfterSale.QuestionPicList" :mpCloseViewer='closeViewer'
+                v-for="item in dataInfo.AfterSale.QuestionPicList" :key="item" :src="item" fit="cover" ></el-image>
               </div>
             </td>
           </tr>
@@ -224,6 +240,7 @@
           <el-table-column prop="QuestionRemark" label="备注" width="115" show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="SolutionResultRemark" label="解决方案" width="160" show-overflow-tooltip>
+            <span class='is-gray' slot-scope="scope">{{ getSolution(scope.row) || '其他' }}</span>
           </el-table-column>
           <el-table-column prop="date" label="处理时间" width="130">
             <template slot-scope="scope">
@@ -280,6 +297,8 @@ export default {
       dialogTableData: [],
       CustomerServerCount: 0,
       CustomerServerAmount: 0,
+      showQuestionRemarkTool: false,
+      showOrderRemarkTool: false,
     };
   },
   computed: {
@@ -364,6 +383,9 @@ export default {
         }
       }
     },
+    closeViewer() {
+      // console.log();
+    },
     handleClose() {
       this.dialogVisible = false;
       this.dialogTableData = [];
@@ -380,21 +402,20 @@ export default {
     },
     getSolution(solution) {
       const arr = [];
-      if (solution.Type === 2) {
-        arr.push(`订单减款${solution.Refund}元`);
-        arr.push(`运费减款${solution.RefundFreight}元`);
-      } else if (solution.Type === 7) {
+      if (solution.SolutionType === 2) {
+        arr.push(`订单减款${solution.RefundAmount}元`);
+        arr.push(`运费减款${solution.RefundFreightAmount}元`);
+      } else if (solution.SolutionType === 7) {
         arr.push('补印');
         arr.push(`${solution.KindCount}款`);
-        arr.push(`${solution.Number}${this.dataInfo.Order.Product.Unit}`);
-      } else if (solution.Type === 8) {
+        arr.push(`${solution.Number}${solution.Unit}`);
+      } else if (solution.SolutionType === 8) {
         arr.push('赠送优惠券');
         const { CouponList } = solution;
         if (CouponList && CouponList.length > 0) {
           CouponList.forEach(it => {
-            const { Number, CouponInfo } = it;
-            if (Number && CouponInfo.Data) {
-              const { MinPayAmount, Amount } = CouponInfo.Data;
+            const { Number, Amount, MinPayAmount } = it;
+            if (Number && Amount && MinPayAmount) {
               if (Amount && MinPayAmount) {
                 const text = `满${MinPayAmount}减${Amount}券${Number}张`;
                 arr.push(text);
@@ -405,6 +426,35 @@ export default {
       }
       return arr.join('--');
     },
+    // getSolution(solution) {
+    //   const arr = [];
+    //   if (solution.Type === 2) {
+    //     arr.push(`订单减款${solution.Refund}元`);
+    //     arr.push(`运费减款${solution.RefundFreight}元`);
+    //   } else if (solution.Type === 7) {
+    //     arr.push('补印');
+    //     arr.push(`${solution.KindCount}款`);
+    //     arr.push(`${solution.Number}${this.orderData.ProductParams.Attributes.Unit}`);
+    //   } else if (solution.Type === 8) {
+    //     arr.push('赠送优惠券');
+    //     const { CouponList } = solution;
+    //     if (CouponList && CouponList.length > 0) {
+    //       CouponList.forEach(it => {
+    //         const { Number, CouponInfo } = it;
+    //         if (Number && CouponInfo.Data) {
+    //           const { MinPayAmount, Amount } = CouponInfo.Data;
+    //           if (Amount && MinPayAmount) {
+    //             const text = `满${MinPayAmount}减${Amount}券${Number}张`;
+    //             arr.push(text);
+    //           }
+    //         }
+    //       });
+    //     }
+    //     // arr.push(`${solution.KindCount}款`);
+    //     // arr.push(`${solution.Number}${this.orderData.ProductParams.Attributes.Unit}`);
+    //   }
+    //   return arr.join('--');
+    // },
     getLossAmount(LossAmount) {
       if (LossAmount > 0) {
         return `-${LossAmount}元`;
@@ -414,7 +464,25 @@ export default {
       return '';
     },
   },
-  mounted() {
+  watch: {
+    'dataInfo.AfterSale.QuestionRemark': {
+      handler() {
+        this.$nextTick(() => {
+          const el = this.$refs.QuestionRemark;
+          const elCopy = this.$refs.QuestionRemarkCopy;
+          this.showQuestionRemarkTool = el?.clientWidth < elCopy?.clientWidth;
+        });
+      },
+    },
+    'dataInfo.Order.Remark': {
+      handler() {
+        this.$nextTick(() => {
+          const el = this.$refs.OrderRemark;
+          const elCopy = this.$refs.OrderRemarkCopy;
+          this.showOrderRemarkTool = el?.clientWidth < elCopy?.clientWidth;
+        });
+      },
+    },
   },
 };
 </script>

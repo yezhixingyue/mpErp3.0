@@ -18,24 +18,27 @@
           <VTypeTitle :imgSrc="require('@/assets/images/photo.png')" title="问题照片" />
         </header>
         <main>
-          <div class="submit-img-box">
-            <!-- <FileSelectBtn multiple @click.native="onuploadclick" :func="uploadImg" ref="oUpImgEl" /> -->
+          <div class="submit-img-box" v-show='serviceImgList.length >= 4'>
+            <div class="el-upload" style="text-align: left;">
+              <el-button size="small" type="primary" @click="beforeUpload">上传问题照片</el-button>
+            </div>
+            <span class="explain">最多上传4张照片，支持.jpg .jpeg .png .bmp</span>
+          </div>
+          <div class="submit-img-box" v-show='serviceImgList.length < 4'>
             <el-upload
               class="upload-demo"
               :action="'/Api/Upload/Image?type=3'"
               multiple
-              :limit="4"
-              :disabled ="UploadDisabled"
+              :disabled ="serviceImgList.length >= 4"
               accept='.png,.jpeg,.jpg,.bmp'
               :on-success='handllePictureUploaded'
               :before-upload="beforeUpload"
               :file-list="fileList">
-              <el-button size="small" type="primary">上传问题照片</el-button>
+              <el-button size="small" type="primary" :disabled ="serviceImgList.length >= 4">上传问题照片</el-button>
               <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
             </el-upload>
             <span class="explain">最多上传4张照片，支持.jpg .jpeg .png .bmp</span>
           </div>
-          <!-- {{serviceImgList}} -->
           <DisplayPictrue :delFunc='handleDel' :imgList='serviceImgList' />
         </main>
       </section>
@@ -57,7 +60,7 @@
               </div>
               <div class="right">
                 <div class="row" v-for="(item, index) in HandlingAfterSalesForm.AfterSaleQuestions" :key="item.key">
-                  <el-select v-model="item.QuestionParentType"
+                  <el-select v-model="item.FirstQuestionType"
                   @change="changeQuestions(index)" placeholder="请选择问题类型" size="small" class="mp-common-select-comp-wrap font-12">
                     <el-option
                       v-for="it in FirstGradeQuestionType"
@@ -66,7 +69,7 @@
                       :value="it.ID">
                     </el-option>
                   </el-select>
-                  <el-select v-model="item.QuestionType"
+                  <el-select v-model="item.SecondQuestionType"
                   placeholder="请选择具体问题" size="small" class="mp-common-select-comp-wrap font-12">
                     <el-option
                       v-for="it in SecondLevelQuestionType(index)"
@@ -75,7 +78,7 @@
                       :value="it.ID">
                     </el-option>
                   </el-select>
-                  <el-input size="small" v-model="item.Remark" placeholder="在此输入备注信息" maxlength="200" show-word-limit></el-input>
+                  <el-input size="small" v-model="item.Remark" placeholder="在此输入备注信息" maxlength="300" show-word-limit></el-input>
                   <div class="menus">
                     <span @click="onQuestionsAddClick">
                       <img src="@/assets/images/add.png" alt />添加</span>
@@ -84,7 +87,6 @@
                     <span v-else class="disabled">
                       <img src="@/assets/images/del-disabled.png" alt />删除</span>
                   </div>
-                  <!-- <CtrlMenus :showList="['del', 'add']"  @remove='onQuestionsRemoveClick(index)' @add='onQuestionsAddClick' /> -->
                 </div>
               </div>
             </div>
@@ -104,8 +106,9 @@
                       :value="it.ID">
                     </el-option>
                   </el-select>
-                  <el-input-number :min="0" :max="100" :controls="false" v-model="item.Proportion" placeholder="输入责任比例" size="small">
-                  </el-input-number>
+                  <el-input @blur="item.Proportion>100? item.Proportion = 100 : item.Proportion"
+                    v-model.number="item.Proportion" placeholder="输入责任比例" size="small">
+                  </el-input>
                   <div class="menus">
                     <span @click="onDepartmentAddClick">
                       <img src="@/assets/images/add.png" alt />添加</span>
@@ -114,7 +117,6 @@
                     <span v-else class="disabled">
                       <img src="@/assets/images/del-disabled.png" alt />删除</span>
                   </div>
-                  <!-- <CtrlMenus :showList="['del', 'add']"  @remove='onDepartmentRemoveClick(i)' @add='onDepartmentAddClick' /> -->
                 </div>
               </div>
             </div>
@@ -163,7 +165,7 @@
                           v-model="HandlingAfterSalesForm.Solution.RefundType"
                           placeholder="请选择退款方式" size="small" class="mp-common-select-comp-wrap font-12">
                             <el-option
-                              label="原支付方式返回"
+                              label="原支付方式退回"
                               :value="0">
                             </el-option>
                             <el-option
@@ -194,20 +196,18 @@
                           数量：
                         </div>
                         <div class="conent">
-                          <el-input v-model="HandlingAfterSalesForm.Solution.Number"></el-input>个
+                          <el-input v-model="HandlingAfterSalesForm.Solution.Number"></el-input>{{dataInfo.Order.Product.Unit}}
                         </div>
                       </div>
                       <div class="form-item">
-                        <!-- <div class="label">
-                          数量：
-                        </div> -->
                         <div class="conent">
-                          <div class="upload-file-box" v-if="!ReprintIsUpload">
+                          <div class="upload-file-box" v-if="ReprintIsUpload">
                             <FileSelectBtn class="uploadFileBox" accept='*'
                             :func="readFileUniqueName" title="上传文件" />
-                            <span class="file-name-box">{{fileName}}</span>
-                            <!-- <el-tooltip effect="dark" :content="fileName" placement="top-end">
-                            </el-tooltip> -->
+                            <span v-if="this.HandlingAfterSalesForm.Solution.FileName" class="file-name-box">
+                              {{fileName}}<i @click="clearFile" class="el-icon-circle-close"></i>
+                            </span>
+                            <span v-else class="file-name-box">{{fileName}}</span>
                             <!-- <span class="is-font-size-12 is-gray" v-if="orderDetailData.FileCase === 1 && !fileName">文件非必传</span>
                             <span class="is-font-size-12 is-gray" v-if="orderDetailData.FileCase === 2 && !fileName">文件必传</span> -->
                           </div>
@@ -218,7 +218,7 @@
                     <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType === 8">
                       <div class="form-item">
                         <div class="label select" @click="onCouponSelectClick">
-                          选择优惠卷
+                          选择优惠券
                         </div>
                         <div class="conent">
                           <div v-if="selectedCouponList.length > 0">
@@ -244,13 +244,15 @@
                         </div>
                       </div>
                     </div>
-                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType !== ''">
-                      <div class="form-item">
+                    <div class="row" v-if="!!HandlingAfterSalesForm.Solution.SolutionType">
+                      <div class="form-item opinion">
                         <div class="label">
                           处理意见：
                         </div>
                         <div class="conent">
-                          <el-input type="textarea" v-model="HandlingAfterSalesForm.Solution.Opinion"></el-input>
+                          <TextareaInput type="textarea"
+                          style="width: 430px;"
+                          show-word-limit :maxlength="300" v-model="HandlingAfterSalesForm.Solution.Opinion"></TextareaInput>
                         </div>
                       </div>
                     </div>
@@ -260,7 +262,7 @@
               <div class="right" v-if="dataInfo && HandlingAfterSalesForm.Solution.SolutionType === 2">
                 <p>总金额:￥{{dataInfo.Order.FinalPrice}}元</p>
                 <p>已付:￥ <span class="red">{{dataInfo.Order.PaidAmount}}</span> 元</p>
-                <p>运单:￥{{dataInfo.Order.Freight}}元 <span class="tint">（含{{dataInfo.Order.FreightOrderNumber}}个订单）</span></p>
+                <p>运费:￥{{dataInfo.Order.Freight}}元 <span class="tint">（含{{dataInfo.Order.FreightOrderNumber}}个订单）</span></p>
                 <p>订单退款:￥{{dataInfo.Order.RefundAmount}}元</p>
                 <p>运费退款:￥{{dataInfo.Order.RefundFreightAmount}}元</p>
                 <p>售后优惠:￥{{dataInfo.Order.ReducedAmount}}元</p>
@@ -273,13 +275,13 @@
         <div class="loss-box">
           <span class="title">损失金额：</span>
           <input class="'is-warn'"
-            v-model="HandlingAfterSalesForm.LossAmount" type="text" placeholder="请输入损失金额">
+            v-model.number="HandlingAfterSalesForm.LossAmount" type="text" placeholder="请输入损失金额">
           <span>元</span>
         </div>
         <div class="btns">
           <normalBtn @click.native="handleClose" title="取消" />
           <normalBtn @click.native="submitServiceOrder(true)" title="保存" class="white"/>
-          <normalBtnFull @click.native="submitServiceOrder(false)" title="提交" />
+          <normalBtnFull @click.native="submitServiceOrder(false)" title="处理完成" />
         </div>
       </span>
           <el-dialog
@@ -317,7 +319,7 @@
               </ul>
             </div>
             <span slot="footer" class="dialog-footer">
-              <el-button type="primary" :disabled='couponList.length === 0' @click="onSelectClick">确 定</el-button>
+              <el-button type="primary" :disabled='couponList.length === 0' @click="onSelectClick(false)">确 定</el-button>
               <el-button @click="dialogVisible = false">取 消</el-button>
             </span>
           </el-dialog>
@@ -329,21 +331,18 @@
 </template>
 
 <script>
-import {
-  mapState,
-} from 'vuex';
+import { mapState } from 'vuex';
 import VTypeTitle from '@/components/ServiceAfterSale/EditDialog/VTypeTitle.vue';
 import EditDiaLeftTable from '@/components/Feedback/DialogContent/EditDiaLeftTable.vue';
 import normalBtn from '@/components/common/normalBtn.vue';
 import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import DisplayPictrue from '@/components/ServiceAfterSale/EditDialog/DisplayPictrue.vue';
 import LoadingComp from '@/components/common/LoadingComp.vue';
-// import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 // eslint-disable-next-line import/no-named-default
 // import { default as UploadFileByBreakPoint, getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
-// import UploadFileByBreakPoint from '@/assets/js/upload/UploadFileByBreakPoint';
+import TextareaInput from '@/components/common/TextareaInput';
 
 export default {
   components: {
@@ -353,8 +352,8 @@ export default {
     EditDiaLeftTable,
     DisplayPictrue,
     LoadingComp,
-    // CtrlMenus,
     FileSelectBtn,
+    TextareaInput,
   },
   props: {
     className: {
@@ -400,9 +399,9 @@ export default {
         AfterSaleQuestions: [
           // {
           //   AfterSaleCode: '',
-          //   QuestionType: '',
+          //   SecondQuestionType: '',
           //   Remark: '',
-          //   QuestionParentType: '',
+          //   FirstQuestionType: '',
           //   key: '',
           // },
         ],
@@ -440,12 +439,7 @@ export default {
           RefundType: '',
           LogisticsReduced: '',
           OrderID: '',
-          CouponList: [
-            {
-              key: '',
-              value: '',
-            },
-          ],
+          CouponList: [],
         },
         IsSave: true,
       },
@@ -469,11 +463,11 @@ export default {
       return this.QuestionTypeList?.filter(res => res.ParentID === -1);
     },
     SecondLevelQuestionType() {
-      return (index) => this.QuestionTypeList?.filter(res => res.ParentID === this.HandlingAfterSalesForm.AfterSaleQuestions[index].QuestionParentType);
+      return (index) => this.QuestionTypeList?.filter(res => res.ParentID === this.HandlingAfterSalesForm.AfterSaleQuestions[index].FirstQuestionType);
     },
     fileName() {
       // this.HandlingAfterSalesForm.Solution.FileName
-      return this.HandlingAfterSalesForm.Solution.FileName ? this.HandlingAfterSalesForm.Solution.FileName : '文件名';
+      return this.HandlingAfterSalesForm.Solution.FileName ? this.HandlingAfterSalesForm.Solution.FileName : '请上传文件';
     },
   },
   methods: {
@@ -487,9 +481,9 @@ export default {
         AfterSaleQuestions: [
           // {
           //   AfterSaleCode: '',
-          //   QuestionType: '',
+          //   SecondQuestionType: '',
           //   Remark: '',
-          //   QuestionParentType: '',
+          //   FirstQuestionType: '',
           //   key: '',
           // },
         ],
@@ -514,6 +508,7 @@ export default {
           UniqueName: '',
           FileName: '',
           IsFileInLan: true,
+          IsNewUpFile: false,
           FilePath: '',
           FileSize: '',
           Refund: '',
@@ -543,21 +538,18 @@ export default {
       if (!file) return;
       const CustomerID = this.orderDetailData?.Customer?.CustomerID || '';
       const uniqueName = getUniqueFileName({ file, Terminal: 1, CustomerID });
-      // const onUploadProgressFunc = (res) => {
-      //   console.log(res);
-      // };
-      // console.log('uplod');
       this.api.UploadBigImgNormal(file, uniqueName).then(res => {
         if (res.data.Status !== 1000) return;
         this.HandlingAfterSalesForm.Solution.UniqueName = uniqueName;
         this.HandlingAfterSalesForm.Solution.FileName = file.name;
+        this.HandlingAfterSalesForm.Solution.IsNewUpFile = true;
       });
-      // UploadFileByBreakPoint(file, uniqueName, onUploadProgressFunc).then(res => {
-      //   console.log(res);
-      // });
-      // this.setReplenishFileUniqueName(uniqueName);
-      // this.setReplenishFile(file);
-      // this.setFileName(file.name);
+    },
+    // 清除文件
+    clearFile() {
+      this.HandlingAfterSalesForm.Solution.UniqueName = '';
+      this.HandlingAfterSalesForm.Solution.FileName = '';
+      this.HandlingAfterSalesForm.Solution.IsNewUpFile = null;
     },
     onDepartmentRemoveClick(i) {
       if (this.HandlingAfterSalesForm.AfterSaleResponsibilities.length === 1) {
@@ -578,9 +570,9 @@ export default {
       this.dialogVisible = true;
     },
     // 优惠劵确定
-    onSelectClick() {
+    onSelectClick(bool) {
       const list = this.couponList.filter(it => it.checked); // CouponNumber
-      if (list.length === 0) {
+      if (list.length === 0 && !bool) {
         this.messageBox.failSingleError('操作失败', '未选中优惠券');
         return;
       }
@@ -631,14 +623,15 @@ export default {
             ProductListTextArray,
           };
         });
-        if (CouponList) this.onSelectClick();
+        if (CouponList) this.onSelectClick(true);
       }
     },
     onQuestionsAddClick() {
       // 问题添加
       this.HandlingAfterSalesForm.AfterSaleQuestions.push({
         AfterSaleCode: this.paramsData.AfterSaleCode,
-        QuestionType: '',
+        SecondQuestionType: '',
+        FirstQuestionType: '',
         Remark: '',
         key: new Date().getTime(),
       });
@@ -649,71 +642,62 @@ export default {
       }
       this.HandlingAfterSalesForm.AfterSaleQuestions.splice(i, 1);
     },
-    handleClose() { // 弹窗关闭图标功能
-      // this.messageBox.warnCancelBox('注意', '关闭当前窗口会导致已填信息丢失，确定关闭吗', () => {
-      // this.$router.push({ query: {} });
-      // });
+    handleClose() {
       this.$emit('cloce');
+      this.selectedCouponList = [];
+      this.isCouponListLoaded = false;
     },
-    onuploadclick(e) {
-      let bool = false;
-      if (!this.check(this.serviceImgList, this.imgRules, (msg) => {
-        this.messageBox.failSingle(msg);
-      })) bool = true;
-      if (e && e.preventDefault && bool) {
-        e.preventDefault();
-      }
-    },
+    // onuploadclick(e) {
+    //   let bool = false;
+    //   if (!this.check(this.serviceImgList, this.imgRules, (msg) => {
+    //     this.messageBox.failSingle(msg);
+    //   })) bool = true;
+    //   if (e && e.preventDefault && bool) {
+    //     e.preventDefault();
+    //   }
+    // },
     handllePictureUploaded(e) {
+      if (this.serviceImgList.length >= 4) return;
       this.serviceImgList.push(e.Data.Url);
     },
     beforeUpload() {
       if (this.serviceImgList.length >= 4) {
-        // this.messageBox.failSingleError('超出数量限制');
-        this.messageBox.failSingleError('操作失败', '超出数量限制');
+        this.messageBox.failSingle('最多上传4张照片');
         this.UploadDisabled = true;
         return false;
       }
       return true;
     },
-    // addSingleImg(data) {
-    //   const inputFile = data;
-    //   const { name, size } = inputFile;
-    //   const lastModifiedDate = inputFile.lastModifiedDate.toLocaleString(84);
-    //   this.imgInfo.push({
-    //     name,
-    //     size,
-    //     lastModifiedDate,
-    //   });
-    //   const reader = new FileReader();
-    //   reader.readAsDataURL(inputFile);
-    //   reader.onloadend = () => {
-    //     const strBase64 = reader.result.substring(0);
-    //     this.setServiceImgList([strBase64, inputFile]); // 添加到数据仓库图片列表中
-    //     return strBase64;
-    //   };
-    // },
-    // setServiceImgList([strBase64]) {
-    //   this.serviceImgList.push(strBase64);
-    //   // this.serviceImgList2Upload.push(inputFile);
-    // },
     verifyQuestions() {
-      const temp = this.HandlingAfterSalesForm.AfterSaleQuestions.filter(item => item.Remark === '' || item.QuestionType === '');
+      const temp = this.HandlingAfterSalesForm.AfterSaleQuestions.filter(item => item.Remark === '' || item.SecondQuestionType === '');
       if (temp.length) return true;
       return false;
     },
     verifyResponsibilities() {
-      const temp = this.HandlingAfterSalesForm.AfterSaleResponsibilities.filter(item => item.Department === '' || item.Proportion === '');
+      const temp = this.HandlingAfterSalesForm.AfterSaleResponsibilities.filter(item => item.Department === '' || !item.Proportion);
       if (temp.length) return true;
       return false;
+    },
+    responsibilityRatio() {
+      let num = 0;
+      this.HandlingAfterSalesForm.AfterSaleResponsibilities.forEach(item => {
+        num += Number(item.Proportion);
+      });
+      return num !== 100;
     },
     checkSubmitInfo() {
       if (this.verifyQuestions()) { // 问题验证
         // 提示问题有错误
         this.messageBox.failSingleError('提交失败', '请选择问题并输入备注');
         return false;
-      } if (this.verifyResponsibilities()) { // 部门验证
+      }
+      if (this.verifyResponsibilities()) { // 部门验证
         this.messageBox.failSingleError('提交失败', '请选择部门并输入责任比例');
+        // 提示责任部门有错误
+        return false;
+      }
+      if (this.responsibilityRatio()) { // 责任比例
+        this.messageBox.failSingleError('提交失败', '所有责任部门的责任比例求和应为100%');
         // 提示责任部门有错误
         return false;
       }
@@ -727,11 +711,13 @@ export default {
           this.messageBox.failSingleError('提交失败', '请输入订单退款');
           return false;
         }
-        // if (!this.HandlingAfterSalesForm.Solution.RefundFreightAmount) {
-        //   this.messageBox.failSingleError('提交失败', '请输入运费退款');
-        //   return false;
-        // }
-        if (!this.HandlingAfterSalesForm.Solution.RefundType === '') {
+        if (this.HandlingAfterSalesForm.Solution.RefundFreightAmount === ''
+          || this.HandlingAfterSalesForm.Solution.RefundFreightAmount === undefined
+          || this.HandlingAfterSalesForm.Solution.RefundFreightAmount === null) {
+          this.messageBox.failSingleError('提交失败', '请输入运费退款');
+          return false;
+        }
+        if (this.HandlingAfterSalesForm.Solution.RefundType === '') {
           this.messageBox.failSingleError('提交失败', '请选择退款方式');
           return false;
         }
@@ -745,9 +731,13 @@ export default {
           this.messageBox.failSingleError('提交失败', '请输入补印数量');
           return false;
         }
+        if (this.ReprintIsUpload && !this.HandlingAfterSalesForm.Solution.UniqueName) {
+          this.messageBox.failSingleError('提交失败', '请上传补印文件');
+          return false;
+        }
       }
       if (this.HandlingAfterSalesForm.Solution.SolutionType === 8) { // 优惠券
-        if (!this.HandlingAfterSalesForm.Solution.CouponList.length) {
+        if (!this.HandlingAfterSalesForm.Solution.CouponList || !this.HandlingAfterSalesForm.Solution.CouponList.length) {
           this.messageBox.failSingleError('提交失败', '请选择优惠券');
           return false;
         }
@@ -756,39 +746,22 @@ export default {
         this.messageBox.failSingleError('提交失败', '请输入处理意见');
         return false;
       }
-      if (!this.HandlingAfterSalesForm.LossAmount) {
+      if (this.HandlingAfterSalesForm.LossAmount === '') {
         this.messageBox.failSingleError('提交失败', '请输入损失金额');
         return false;
       }
       return true;
     },
-    // formatElementPercentage(percentage) {
-    //   return `${percentage.toFixed(2)}%`;
-    // },
-    // async uploadImg(data) {
-    //   if (!data || data.length < 1) return;
-    //   const files = [];
-    //   const imgExpectType = ['image/jpeg', 'image/png', 'image/bmp'];
-    //   data.forEach((file) => {
-    //     if (imgExpectType.includes(file.type)) files.push(file);
-    //   });
-    //   const len = 4 - this.serviceImgList.length || 0;
-    //   // 获取到目前还可以添加的照片数量
-    //   let list;
-    //   if (files.length <= len) list = files;
-    //   else list = files.slice(0, len);
-    //   await Promise.all(list.map(async (imgData) => {
-    //     // 耗时操作
-    //     await this.addSingleImg(imgData);
-    //   }));
-    // },
     async submitServiceOrder(IsSave) {
       this.HandlingAfterSalesForm.IsSave = IsSave;
       this.HandlingAfterSalesForm.AfterSaleCode = this.paramsData.AfterSaleCode;
       this.HandlingAfterSalesForm.QuestionPicList = this.serviceImgList;
+      const temp = JSON.parse(JSON.stringify(this.HandlingAfterSalesForm));
+      temp.AfterSaleQuestions = temp.AfterSaleQuestions.filter(it => it.FirstQuestionType || it.SecondQuestionType || it.Remark);
+      temp.AfterSaleResponsibilities = temp.AfterSaleResponsibilities.filter(it => it.Department || (it.Proportion === 0 || !!it.Proportion));
       const cb = () => {
-        this.api.getComplete(this.HandlingAfterSalesForm).then(resp => {
-          if (resp.data.Status === 1000) {
+        this.api.getComplete(temp).then(resp => {
+          if (resp.data.Status === 1000 || resp.data.Status === 1100) {
             // 保存/提交成功
             this.messageBox.successSingle(IsSave ? '保存成功' : '提交成功', () => {
               if (IsSave) {
@@ -796,7 +769,6 @@ export default {
               } else {
                 this.$emit('successSubmit');
               }
-              // IsSave ? this.handleClose() : this.$emit('successSubmit');
             });
           }
         });
@@ -810,21 +782,7 @@ export default {
       }
     },
     handleDel(i) {
-      // const arr1 = this.serviceImgList;
-      // const arr2 = this.serviceImgList2Upload;
       this.serviceImgList.splice(i, 1);
-      // if (arr1.length === arr2.length) {
-      //   arr2.splice(i, 1);
-      // } else { // 存在已回填的售后申请图片 （该图片已上传）
-      //   const _difference = arr1.length - arr2.length;
-      //   // console.log('i:', i, '_difference:', _difference, 'i >= _difference:', i >= _difference);
-      //   arr1.splice(i, 1);
-      //   if (i >= _difference) { // 删除的是新添加的 否则为之前回填上传的 不用再从arr2中删除
-      //     const _i = i - _difference;
-      //     arr2.splice(_i, 1);
-      //   }
-      // }
-      // if (this.$refs.oUpImgEl) this.$refs.oUpImgEl.handleRemove();
     },
 
     async getQuestionTypeList() {
@@ -836,7 +794,7 @@ export default {
     },
     // 一级问题改变
     changeQuestions(index) {
-      this.HandlingAfterSalesForm.AfterSaleQuestions[index].QuestionType = '';
+      this.HandlingAfterSalesForm.AfterSaleQuestions[index].SecondQuestionType = '';
     },
     // 包裹选择
     SelectionPackageChange(val) {
@@ -863,22 +821,23 @@ export default {
           return;
         }
         const { afterSaleSuccessInfo } = res.data.Data;
-        // afterSaleSuccessInfo.Solution = Object.assign(this.HandlingAfterSalesForm.Solution, afterSaleSuccessInfo.Solution);
+        afterSaleSuccessInfo.Solution = Object.assign(this.HandlingAfterSalesForm.Solution, afterSaleSuccessInfo.Solution);
         // Object.assign(this.HandlingAfterSalesForm, afterSaleSuccessInfo);
-        this.HandlingAfterSalesForm = afterSaleSuccessInfo;
+        this.HandlingAfterSalesForm = JSON.parse(JSON.stringify(afterSaleSuccessInfo));
+        this.ReprintIsUpload = res.data.Data.ReprintIsUpload;
         // 回显包裹
         // 过滤出保存的包裹id对应的包裹数据
         this.AfterSalePackages = this.OrderPackageListTableData
           .filter(TableDataItem => this.HandlingAfterSalesForm.AfterSalePackages
             .some(Packages => TableDataItem.ID === Packages.PackageID));
         // 回显问题
-        this.HandlingAfterSalesForm.AfterSaleQuestions = afterSaleSuccessInfo.AfterSaleQuestions.map((it, i) => {
-          const _it = it;
-          const temp = this.QuestionTypeList.filter(item => item.ID === _it.QuestionType);
-          _it.QuestionParentType = temp[0].ParentID;
-          _it.key = new Date().getTime() + i;
-          return _it;
-        });
+        // this.HandlingAfterSalesForm.AfterSaleQuestions = afterSaleSuccessInfo.AfterSaleQuestions.map((it, i) => {
+        //   const _it = it;
+        //   const temp = this.QuestionTypeList.filter(item => item.ID === _it.SecondQuestionType);
+        //   _it.FirstQuestionType = temp[0]?.ParentID;
+        //   _it.key = new Date().getTime() + i;
+        //   return _it;
+        // });
         // 回显部门
         this.HandlingAfterSalesForm.AfterSaleResponsibilities = afterSaleSuccessInfo.AfterSaleResponsibilities.map((it, i) => {
           const _it = it;
@@ -887,7 +846,9 @@ export default {
         });
         // 回显优惠券
         // 思路：把选中的标记 手动调用一下选择优惠券确定
-        if (afterSaleSuccessInfo.Solution.CouponList) this.handleCouponDialogOpen(afterSaleSuccessInfo.Solution.CouponList);
+        if (afterSaleSuccessInfo.Solution.CouponList && afterSaleSuccessInfo.Solution.CouponList.length) {
+          this.handleCouponDialogOpen(afterSaleSuccessInfo.Solution.CouponList);
+        }
         // 回显图片
         this.serviceImgList = this.HandlingAfterSalesForm.QuestionPicList || [];
         this.serviceImgList2Upload = this.HandlingAfterSalesForm.QuestionPicList;
@@ -908,8 +869,6 @@ export default {
         // 需要用到问题父级id
         this.getSaveDetailAsyncByAfterSaleCode(this.paramsData?.AfterSaleCode);
       });
-      // this.getPackageListByOrderID(this.paramsData?.OrderID);
-      // this.getQuestionTypeList();
       // 获取部门
       this.$store.dispatch('common/getAfterSalesDepartmentList');
     },
@@ -1019,7 +978,6 @@ export default {
           margin-top: 20px;
           overflow: auto;
           .left-table {
-            width: 835px;
             >.edit-dia-left-table-wrap{
               .has-gutter{
                 >tr{
@@ -1066,6 +1024,7 @@ export default {
                     height: 24px;
                     margin-right: 20px;
                     input{
+                      padding-right: 63px;
                       height: 100%;
                     }
                   }
@@ -1126,7 +1085,7 @@ export default {
                     width: 110px;
                     height: 25px;
                   }
-                  >.el-input-number{
+                  >.el-input{
                     height: 24px;
                     width: 120px;
                     margin-right: 20px;
@@ -1251,6 +1210,7 @@ export default {
                         align-items: center;
                         .upload-file-box{
                           display: flex;
+                          width: 300px;
                           .upload-btn{
                             margin: 0;
                             width: 70px;
@@ -1260,13 +1220,35 @@ export default {
                           }
                           .file-name-box{
                             margin-left: 20px;
+                            padding-right: 20px;
                             line-height: 23px;
                             height: 23px;
-                            width: 150px;
+                            width: auto;
+                            max-width: 150px;
                             text-align: left;
                             overflow: hidden;
                             white-space: nowrap;
                             text-overflow: ellipsis;
+                            position: relative;
+                            i{
+                              display: none;
+                              position: absolute;
+                              right: 0;
+                              line-height: 23px;
+                              font-size: 14px;
+                              img{
+                                margin-top: 3px;
+                              }
+                            }
+                            i:hover{
+                              cursor: pointer;
+                            }
+                          }
+                          .file-name-box:hover{
+                            // color: red;
+                            i{
+                              display: inline-block;
+                            }
                           }
                         }
                         >.el-input{
@@ -1283,7 +1265,7 @@ export default {
                         >.el-textarea{
                           margin-right: 20px;
                           width: 430px;
-                          height: 56px;
+                          // height: 56px;
                         }
                         >span{
                           display: inline-block;
@@ -1341,6 +1323,23 @@ export default {
                                 flex: none;
                               }
                             }
+                          }
+                        }
+                      }
+                      &.opinion{
+                        .el-textarea{
+                          textarea{
+                            padding-bottom: 13px;
+                          }
+                          .el-input__count{
+                            width: calc(100% - 22px);
+                            background: #fff;
+                            height: 12px;
+                            line-height: 12px;
+                            bottom: 1px;
+                            text-align: right;
+                            right: 20px;
+                            padding-bottom: 3px;
                           }
                         }
                       }

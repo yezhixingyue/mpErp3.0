@@ -15,7 +15,7 @@
         <span class="title">问题：</span>
         <div class="conent" >
           <div class="row" v-for="(item,index) in from.AfterSaleQuestions" :key="item.key">
-            <el-select v-model="item.QuestionParentType" @change="changeQuestions(index)" placeholder="请选择问题类型" size="small">
+            <el-select v-model="item.FirstQuestionType" @change="changeQuestions(index)" placeholder="请选择问题类型" size="small">
               <el-option
                 v-for="it in FirstGradeQuestionType"
                 :key="it.ID"
@@ -23,7 +23,7 @@
                 :value="it.ID">
               </el-option>
             </el-select>
-            <el-select v-model="item.QuestionType" placeholder="请选择具体问题" size="small">
+            <el-select v-model="item.SecondQuestionType" placeholder="请选择具体问题" size="small">
               <el-option
                 v-for="it in SecondLevelQuestionType(index)"
                 :key="it.ID"
@@ -97,7 +97,7 @@ export default {
       return this.QuestionTypeList?.filter(res => res.ParentID === -1);
     },
     SecondLevelQuestionType() {
-      return (index) => this.QuestionTypeList?.filter(res => res.ParentID === this.from?.AfterSaleQuestions[index].QuestionParentType);
+      return (index) => this.QuestionTypeList?.filter(res => res.ParentID === this.from?.AfterSaleQuestions[index].FirstQuestionType);
     },
   },
   data() {
@@ -105,14 +105,14 @@ export default {
       title: '问题修改',
       QuestionList: [],
       QuestionTypeList: null,
-      QuestionType: '',
+      SecondQuestionType: '',
       from: {
         AfterSaleCode: '',
         AfterSaleQuestions: [
           {
             AfterSaleCode: '',
-            QuestionType: '',
-            QuestionParentType: '',
+            SecondQuestionType: '',
+            FirstQuestionType: '',
             Remark: '',
           },
         ],
@@ -143,7 +143,7 @@ export default {
       this.QuestionList = [];
     },
     changeQuestions(index) {
-      this.from.AfterSaleQuestions[index].QuestionType = '';
+      this.from.AfterSaleQuestions[index].SecondQuestionType = '';
     },
     async initEditData() { // 数据初始化方法
       if (this.curData) {
@@ -170,8 +170,8 @@ export default {
         if (res.data.Data.AfterSaleQuestions.length) {
           this.from.AfterSaleQuestions = res.data.Data.AfterSaleQuestions.map(it => {
             const _it = it;
-            const temp = this.QuestionTypeList.filter(item => item.ID === _it.QuestionType);
-            _it.QuestionParentType = temp.length ? temp[0].ParentID : -1;
+            const temp = this.QuestionTypeList.filter(item => item.ID === _it.SecondQuestionType);
+            _it.FirstQuestionType = temp.length ? temp[0].ParentID : -1;
             return _it;
           });
         } else {
@@ -186,7 +186,8 @@ export default {
     onQuestionsAddClick() {
       const item = {
         AfterSaleCode: this.curData.AfterSaleCode,
-        QuestionType: '',
+        SecondQuestionType: '',
+        FirstQuestionType: '',
         Remark: '',
         key: Math.random().toString(36).slice(-8),
       };
@@ -198,8 +199,8 @@ export default {
     onDepartmentAddClick() {
       const item = {
         AfterSaleCode: this.curData.AfterSaleCode,
-        QuestionType: '',
-        Remark: '',
+        Department: '',
+        Proportion: undefined,
         key: Math.random().toString(36).slice(-8),
       };
       this.from.AfterSaleResponsibilities.push(item);
@@ -208,6 +209,12 @@ export default {
       this.from.AfterSaleResponsibilities.splice(i, 1);
     },
     async getServiceQuestionChange() {
+      const AfterSaleResponsibilitiesIsNull = this.from.AfterSaleResponsibilities.some(res => !res.Department || !res.Proportion);
+      const AfterSaleQuestionsIsNull = this.from.AfterSaleQuestions.some(res => !res.SecondQuestionType || !res.FirstQuestionType || !res.Remark);
+      if (AfterSaleResponsibilitiesIsNull || AfterSaleQuestionsIsNull) {
+        this.messageBox.failSingleError('保存失败', AfterSaleQuestionsIsNull ? '请选择问题数据并输入备注' : '请选择责任部门并输入责任比例');
+        return;
+      }
       this.from.AfterSaleCode = this.curData.AfterSaleCode;
       const resp = await this.api.getSaveResult(this.from).catch(() => {});
       if (resp && resp.data && resp.data.Status === 1000) {
@@ -244,6 +251,7 @@ export default {
     margin-top:30px;
     overflow-y: overlay;
     > .list {
+      max-height: 520px;
       > .item {
         display: flex;
         // align-items: center;
@@ -258,6 +266,7 @@ export default {
           text-align: right;
         }
         .conent{
+          flex: 1;
           .row{
             display: flex;
             align-items: center;
@@ -282,7 +291,7 @@ export default {
               }
             }
             > .el-select{
-              width: 120px;
+              width: 130px;
               flex: none;
               margin-right: 18px;
               .el-input__inner {
@@ -305,7 +314,7 @@ export default {
             }
             > .el-input {
               margin-right: 18px;
-              width: 320px;
+              flex: 1;
               .el-input__inner {
                 font-size: 12px;
                 color: #989898;

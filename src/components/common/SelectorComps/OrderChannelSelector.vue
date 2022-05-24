@@ -13,6 +13,7 @@
         :title='title'
         @handleChange='handleChange'
         :filterable="filterable"
+        :disabled="disabled"
        />
       <el-radio-group v-model="radio" v-else>
         <el-radio :label="it[defaultProps.value]" :key="it[defaultProps.value]" v-for="it in localOptions">{{it[defaultProps.label]}}</el-radio>
@@ -77,6 +78,10 @@ export default {
       default: false,
     },
     initSelect: { // 是否初始选中选项
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },
