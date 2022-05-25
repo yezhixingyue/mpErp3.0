@@ -27,7 +27,7 @@ export default {
   methods: {
     onClick() {
       if (this.configObj.condition.Page === 1 && this.configObj.count === 0) {
-        this.messageBox.warnSingleError('[ 当前条件没有可导出的列表数据! ]');
+        this.messageBox.warnSingleError('[ 当前条件没有可导出的列表数据! ]', null, null, '导出失败');
         return;
       }
       // this.messageBox.warnCancelNullMsg('确定导出表格数据吗?', () => this.handleDownFunc());

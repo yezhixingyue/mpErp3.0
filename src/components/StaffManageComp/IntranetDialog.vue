@@ -2,7 +2,7 @@
   <CommonDialogComp
     width="560px"
     top="18vh"
-    title="设置白名单"
+    title="设置内部网络IP"
     :visible.sync="visible"
     @submit="onSubmit"
     @cancle="visible = false"
@@ -56,13 +56,13 @@ export default {
   },
   methods: {
     onOpen() {
-      this.getWhiteListContent();
+      this.getIntranetContent();
     },
     onClosed() {
     },
     async onSubmit() {
       const temp = { Content: this.Content };
-      const resp = await this.api.getWhiteListSetup(temp).catch(() => null);
+      const resp = await this.api.getIntranetSetup(temp).catch(() => null);
       if (resp?.data.Status === 1000) {
         const cb = () => {
           this.visible = false;
@@ -70,8 +70,8 @@ export default {
         this.messageBox.successSingle('设置成功', cb, cb);
       }
     },
-    async getWhiteListContent() {
-      const resp = await this.api.getWhiteListContent().catch(() => null);
+    async getIntranetContent() {
+      const resp = await this.api.getIntranetContent().catch(() => null);
       if (resp && resp.data.Status === 1000) {
         this.Content = resp.data.Data || '';
       } else {

@@ -35,6 +35,9 @@ const api = {
   getCalculatePriceRecordList(data) { // POST /Api/CalculatePrice/RecordList  获取报价记录
     return instance.post('/Api/CalculatePrice/RecordList', data);
   },
+  getCalculatePriceRecordListExcel(data) { // POST /Api/CalculatePrice/Excel 导出报价记录Excel
+    return instance.post('/Api/CalculatePrice/Excel', data, { responseType: 'arraybuffer' });
+  },
 
   /* 付款列表部分api
    ----------------------------------------------------------------------------------- */
@@ -966,11 +969,11 @@ const api = {
   getDepartmentOrder(data) { //  部门排序保存
     return instance.post('/Api/Department/Order', data);
   },
-  getWhiteListContent() { // /Api/WhiteList  获取白名单
-    return instance.get('/Api/WhiteList');
+  getIntranetContent() { // /Api/Intranet  获取当前内网IP数据
+    return instance.get('/Api/Intranet');
   },
-  getWhiteListSetup(data) { // /Api/WhiteList/Setup  设置网络访问IP白名单 { Content: '' }
-    return instance.post('/Api/WhiteList/Setup', data);
+  getIntranetSetup(data) { // /Api/Intranet/Setup  设置网络访问IP { Content: '' }
+    return instance.post('/Api/Intranet/Setup', data);
   },
 
   /* 客户管理api

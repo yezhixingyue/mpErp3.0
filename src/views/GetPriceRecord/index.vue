@@ -11,7 +11,9 @@
        :handlePageChange='handlePageChange'
        :count='RecordDataNumber'
        :pageSize='30'
-       />
+       >
+       <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
+      </Count>
     </footer>
   </section>
 </template>
@@ -21,18 +23,40 @@ import Header from '@/components/GetPriceRecordComps/Header';
 import Table from '@/components/GetPriceRecordComps/Main/Table';
 import Count from '@/components/common/Count.vue';
 import DetailDialog from '@/components/GetPriceRecordComps/Main/DetailDialog';
+import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
+import CommonClassType from '@/store/CommonClassType';
 import { mapState } from 'vuex';
 
 export default {
   name: 'GetPriceRecordListPage',
   computed: {
     ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataNumber']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
+        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
+      }
+      return {};
+    },
+    condition() {
+      return CommonClassType.filter(this.condition4RecordList, true);
+    },
+    configObj() {
+      return {
+        condition: this.condition,
+        count: this.RecordDataNumber,
+        fileDefaultName: '报价记录',
+        fileDate: this.condition4RecordList.CalculateDate,
+        downFunc: data => this.api.getCalculatePriceRecordListExcel(data),
+      };
+    },
   },
   components: {
     Header,
     Table,
     Count,
     DetailDialog,
+    DownLoadExcelComp,
   },
   data() {
     return {

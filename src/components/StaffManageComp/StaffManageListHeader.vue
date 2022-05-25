@@ -2,7 +2,7 @@
   <header class="mp-erp-staff-manage-list-page-header-comp-wrap">
     <p>
       <el-button type="primary" @click="onAddClick" v-if="localPermission.Add">+添加员工</el-button>
-      <el-button type="text" @click="onWhiteListSetClick" v-if="localPermission.WhiteListSetup">设置白名单</el-button>
+      <el-button type="text" @click="onIntranetSetClick" v-if="localPermission.IntranetSetup">设置内部网络IP</el-button>
     </p>
     <div class="s">
       <div class="bundle">
@@ -161,8 +161,8 @@ export default {
     onAddClick() {
       this.$emit('add');
     },
-    onWhiteListSetClick() {
-      this.$emit('setWhiteList');
+    onIntranetSetClick() {
+      this.$emit('setIntranet');
     },
   },
   mounted() {

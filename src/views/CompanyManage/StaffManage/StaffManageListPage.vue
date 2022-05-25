@@ -9,7 +9,7 @@
       @fetch="getStaffManageList"
       @clear='clearCondition'
       @add='onJumpToSetupClick(null)'
-      @setWhiteList="onSetWhiteListClick"
+      @setIntranet="onSetIntranetClick"
      />
     <main>
       <StaffManageListTable
@@ -31,7 +31,7 @@
         @remove='handleRemove'
         @submit="checkOrSetJobSubmit"
       />
-      <WhiteListDialogVue v-model="whiteListVisible" />
+      <IntranetDialog v-model="whiteListVisible" />
     </main>
     <footer>
       <CountComp
@@ -53,7 +53,7 @@ import StaffManageListHeader from '../../../components/StaffManageComp/StaffMana
 import StaffManageListTable from '../../../components/StaffManageComp/StaffManageListTable.vue';
 import DetailAndCheckDialog from '../../../components/StaffManageComp/Detail&CheckDialog/index.vue';
 import CountComp from '../../../components/common/Count.vue';
-import WhiteListDialogVue from '../../../components/StaffManageComp/WhiteListDialog.vue';
+import IntranetDialog from '../../../components/StaffManageComp/IntranetDialog.vue';
 
 export default {
   name: 'StaffManageListPage',
@@ -63,7 +63,7 @@ export default {
     StaffManageListTable,
     DetailAndCheckDialog,
     CountComp,
-    WhiteListDialogVue,
+    IntranetDialog,
   },
   data() {
     return {
@@ -146,7 +146,7 @@ export default {
       };
       this.StaffManageData.checkOrSetJobSubmit(data, this.curIndex, this.Permission, cb);
     },
-    onSetWhiteListClick() { // 设置白名单
+    onSetIntranetClick() { // 设置白名单
       this.whiteListVisible = true;
     },
   },
