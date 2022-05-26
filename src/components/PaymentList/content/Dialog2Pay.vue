@@ -190,7 +190,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .dialog-to-pay-box {
   height: 500px;
   box-sizing: border-box;

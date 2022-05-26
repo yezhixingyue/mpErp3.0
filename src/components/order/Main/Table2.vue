@@ -336,7 +336,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-table-wrap {
   height: 100%;
   border-color: #e5e5e5;

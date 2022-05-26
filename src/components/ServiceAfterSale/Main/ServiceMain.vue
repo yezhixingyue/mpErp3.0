@@ -100,7 +100,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-service-page-main-wrap{
   // border: 1px solid #e6e6e6;
   box-sizing: border-box;

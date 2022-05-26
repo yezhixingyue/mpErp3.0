@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-promote-list-page-wrap {
   width: 100%;
   height: 100%;

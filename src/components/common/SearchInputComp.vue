@@ -100,7 +100,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-common-comps-search-box {
   padding-top: 2px;
   text-align: right;

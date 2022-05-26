@@ -64,7 +64,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-single-radio-wrap{
   color: $--color-text-regular;
   .el-radio__input.is-checked+.el-radio__label{

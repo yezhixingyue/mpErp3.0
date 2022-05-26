@@ -202,7 +202,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .unpay-list-item-wrap {
   margin-top: 10px;
   font-size: 12px;

@@ -141,7 +141,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .dialog-to-servicelist-detail {
   height: 800px;
   .el-dialog--center .el-dialog__body{

@@ -23,7 +23,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-vertical-type-title{
   width: 60px;
   text-align: center;

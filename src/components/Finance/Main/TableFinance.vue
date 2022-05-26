@@ -129,7 +129,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-finance-page-main-table {
     border: none;
     border-top: 1px solid $--border-color-base;

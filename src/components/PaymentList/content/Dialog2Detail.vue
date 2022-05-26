@@ -190,7 +190,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-dialog-to-detail-box {
   height: 725px;
   border-radius: 5px;

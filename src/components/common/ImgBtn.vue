@@ -28,7 +28,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .order-img-btn-wrap {
   cursor: pointer;
   > span {

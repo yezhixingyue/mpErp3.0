@@ -131,7 +131,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-service-page-header{
   background-color: $--color-white;
   margin-bottom: 10px;

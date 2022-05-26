@@ -28,7 +28,7 @@
             :key='item.OrderID'
            >
               <span :style="widthStyleObj[0]">
-                <el-tooltip  class="item" effect="dark" :content="item.OrderID" placement="top-start">
+                <el-tooltip  class="item" effect="dark" :content="`${item.OrderID || ''}`" placement="top-start">
                   <i>{{item.OrderID}}</i>
                 </el-tooltip>
               </span>
@@ -128,7 +128,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .product-item{
   margin-top: 10px;
   font-size: 12px;

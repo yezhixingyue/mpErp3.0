@@ -77,7 +77,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-promote-comps-result-list-comp-wrap {
   margin: 0 auto;
   margin-top: 30px;

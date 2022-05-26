@@ -334,7 +334,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .dialog-to-order-service-box {
   height: 800px;
   position: relative;

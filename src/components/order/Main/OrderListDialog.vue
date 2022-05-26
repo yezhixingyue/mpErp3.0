@@ -188,7 +188,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
   .order-list-dialog-box {
     height: 820px;
     position: relative;

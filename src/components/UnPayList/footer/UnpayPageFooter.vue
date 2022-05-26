@@ -69,7 +69,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-unpay-page-footer-wrap {
   height: 100%;
   display: flex;

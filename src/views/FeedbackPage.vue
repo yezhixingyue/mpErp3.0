@@ -420,7 +420,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-feedback-page-main-wrap {
   padding-left: 8px;
   .el-table__header-wrapper thead tr th .cell {

@@ -51,7 +51,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-paylist-detail-dia-table {
   height: 400px;
   > header {

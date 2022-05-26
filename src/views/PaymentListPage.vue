@@ -36,7 +36,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-payment-list-wrap {
   padding: 10px;
   background-color: $--bg-color-base;

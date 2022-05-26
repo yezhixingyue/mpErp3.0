@@ -88,7 +88,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-common-download-to-excel-comp-wrap {
   border: none;
   background-color: #fff;

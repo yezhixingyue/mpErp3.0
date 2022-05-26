@@ -283,7 +283,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .order-service-detail-box {
   width: 960px;
   height: 150px;

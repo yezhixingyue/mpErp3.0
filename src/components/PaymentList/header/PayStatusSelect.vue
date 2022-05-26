@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-payment-type-select-wrap {
   margin-right: 10%;
   font-size: 14px;

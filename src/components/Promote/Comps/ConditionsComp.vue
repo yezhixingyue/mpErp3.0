@@ -76,7 +76,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-promote-comps-condition-list-comp-wrap {
   > .condition-list {
     height: 280px;

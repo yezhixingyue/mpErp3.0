@@ -89,7 +89,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-img-swiper-box {
   .el-carousel__item {
     width: 500px;

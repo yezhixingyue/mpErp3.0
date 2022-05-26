@@ -153,7 +153,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 header.mp-finance-page-header {
   font-size: 14px;
   width: 100%;

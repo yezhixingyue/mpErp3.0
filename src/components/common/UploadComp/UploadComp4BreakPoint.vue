@@ -139,7 +139,7 @@ export default { // 上传图片按钮
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-phone-upload-comp-break-point-type-wrap {
   width: 100px;
   height: 25px;

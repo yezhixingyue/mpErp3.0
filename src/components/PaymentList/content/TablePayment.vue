@@ -1,113 +1,118 @@
 <template>
-  <el-table
-    :max-height="h" :height="h" :data="tableData" stripe class="mp-payment-module-table"
-    :cell-class-name="initStyle" border>
-    <el-table-column prop="PayCode" label="付款单号" minWidth="130"></el-table-column>
-    <el-table-column prop="Customer.SN" label="客户编号" minWidth="90"></el-table-column>
-    <el-table-column
-     show-overflow-tooltip prop="Customer.Name" label="客户" minWidth="140"></el-table-column>
-     <el-table-column
-     show-overflow-tooltip prop="Customer.Type.Second" label="客户类型" minWidth="80"></el-table-column>
-     <el-table-column
-     show-overflow-tooltip prop="Customer.Grade.Second" label="客户等级" minWidth="80"></el-table-column>
-    <el-table-column
-      class-name='md-font-item' prop="OrderCount" label="订单数量" minWidth="75"></el-table-column>
-    <el-table-column class-name='md-font-item' label="总金额(含运费)" minWidth="109">
-      <template slot-scope="scope">
-        {{scope.row.FullPayout}}元
-      </template>
-    </el-table-column>
-    <el-table-column class-name='md-font-item' label="运费" minWidth="60">
-      <template slot-scope="scope">
-        {{scope.row.Freight}}元
-      </template>
-    </el-table-column>
-    <el-table-column class-name='md-font-item' label="使用余额" minWidth="87">
-      <template slot-scope="scope">
-        {{scope.row.BalanceAmount}}元
-      </template>
-    </el-table-column>
-    <el-table-column class-name='md-font-item' label="使用印豆" minWidth="87">
-      <template slot-scope="scope">
-        {{scope.row.PaidBeanNumber}}个
-      </template>
-    </el-table-column>
-    <el-table-column class-name='md-font-item' label="在线支付" minWidth="80">
-      <template slot-scope="scope">
-        {{scope.row.PayOnlineAmount}}元
-      </template>
-    </el-table-column>
-    <el-table-column class-name='md-font-item' label="状态" minWidth="63">
-      <template slot-scope="scope">
-        {{$utils.getPaymentStatus(scope.row.Status, PayStatusList)}}
-      </template>
-    </el-table-column>
-    <!-- <el-table-column prop="Payment" class-name='md-font-item' label="支付方式" minWidth="100">
-      <template slot-scope="scope">
-        {{getPayType(scope.row.Payment)}}
-      </template>
-    </el-table-column> -->
-    <el-table-column class-name='md-font-item' prop="OrderCreateType" label="下单方式" minWidth="70">
-      <template slot-scope="scope">
-        {{getOrderType(scope.row.OrderType)}}
-      </template>
-    </el-table-column>
-    <el-table-column prop="OrderTaker.Value" label="创建人" minWidth="80" show-overflow-tooltip></el-table-column>
-    <el-table-column
-      prop="OrderCreateTime" class-name='time-item' label="创建时间" minWidth="125"></el-table-column>
-    <el-table-column
-      prop="OrderFinishTime" class-name='time-item' label="支付时间" minWidth="125"></el-table-column>
-    <el-table-column  width="215" label="操作">
-      <ul class="payment-table-handle-menu-wrap" slot-scope="scope">
-        <li class="handle-menu-item">
-          <span @click="onMenuClick(scope.row, 0)">
-            <img src="@/assets/images/detail.png" class="detail" alt="">详情</span>
-        </li>
-        <li
-          v-if="localPermission.Pay"
-          class="handle-menu-item"
-        >
-          <span
-            v-if="scope.row.Status !== 2 && scope.row.Status !== 255
-             && curTime < new Date(scope.row.ValidTime).getTime()"
-            @click="onMenuClick(scope.row, 1)">
-            <img src="@/assets/images/pay.png" alt="">付款
-          </span>
-          <span v-else class="is-cancel"><img src="@/assets/images/unpay.png" alt="">付款</span>
-        </li>
-        <li class="handle-menu-item" v-if="localPermission.Pay">
-          <span
-            v-if="scope.row.Status !== 255 && scope.row.Status !== 2"
-            @click="onMenuClick(scope.row, 2)">
-            <img src="@/assets/images/cancel.png" alt="">取消
-          </span>
-          <span v-else class="is-cancel"><img src="@/assets/images/cancelstop.png" alt="">取消</span>
-        </li>
-        <!-- <li class="handle-menu-item" style="width: 80px;">
-          <div v-show="scope.row.Status === 255" >
-            <span @click="onMenuClick(scope.row, 3)"
-             v-if="!scope.row.HaveBackOrderPrepare && makeTrue(scope.row.CreateTime)">
-              <img src="@/assets/images/pending.png" alt="">加入待下单
+  <div>
+    <el-table
+      :max-height="h" :height="h" :data="tableData" stripe class="mp-payment-module-table"
+      :cell-class-name="initStyle" border>
+      <el-table-column prop="PayCode" label="付款单号" minWidth="130"></el-table-column>
+      <el-table-column prop="Customer.SN" label="客户编号" minWidth="90"></el-table-column>
+      <el-table-column
+      show-overflow-tooltip prop="Customer.Name" label="客户" minWidth="140"></el-table-column>
+      <el-table-column
+      show-overflow-tooltip prop="Customer.Type.Second" label="客户类型" minWidth="80"></el-table-column>
+      <el-table-column
+      show-overflow-tooltip prop="Customer.Grade.Second" label="客户等级" minWidth="80"></el-table-column>
+      <el-table-column
+        class-name='md-font-item' prop="OrderCount" label="订单数量" minWidth="75"></el-table-column>
+      <el-table-column class-name='md-font-item' label="总金额(含运费)" minWidth="109">
+        <template slot-scope="scope">
+          {{scope.row.FullPayout}}元
+        </template>
+      </el-table-column>
+      <el-table-column class-name='md-font-item' label="运费" minWidth="60">
+        <template slot-scope="scope">
+          {{scope.row.Freight}}元
+        </template>
+      </el-table-column>
+      <el-table-column class-name='md-font-item' label="使用余额" minWidth="87">
+        <template slot-scope="scope">
+          {{scope.row.BalanceAmount}}元
+        </template>
+      </el-table-column>
+      <el-table-column class-name='md-font-item' label="使用印豆" minWidth="87">
+        <template slot-scope="scope">
+          {{scope.row.PaidBeanNumber}}个
+        </template>
+      </el-table-column>
+      <el-table-column class-name='md-font-item' label="在线支付" minWidth="80">
+        <template slot-scope="scope">
+          {{scope.row.PayOnlineAmount}}元
+        </template>
+      </el-table-column>
+      <el-table-column class-name='md-font-item' label="状态" minWidth="63">
+        <template slot-scope="scope">
+          {{$utils.getPaymentStatus(scope.row.Status, PayStatusList)}}
+        </template>
+      </el-table-column>
+      <!-- <el-table-column prop="Payment" class-name='md-font-item' label="支付方式" minWidth="100">
+        <template slot-scope="scope">
+          {{getPayType(scope.row.Payment)}}
+        </template>
+      </el-table-column> -->
+      <el-table-column class-name='md-font-item' prop="OrderCreateType" label="下单方式" minWidth="70">
+        <template slot-scope="scope">
+          {{getOrderType(scope.row.OrderType)}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="OrderTaker.Value" label="创建人" minWidth="80" show-overflow-tooltip></el-table-column>
+      <el-table-column
+        prop="OrderCreateTime" class-name='time-item' label="创建时间" minWidth="125"></el-table-column>
+      <el-table-column
+        prop="OrderFinishTime" class-name='time-item' label="支付时间" minWidth="125"></el-table-column>
+      <el-table-column  width="215" label="操作">
+        <ul class="payment-table-handle-menu-wrap" slot-scope="scope">
+          <li class="handle-menu-item">
+            <span @click="onMenuClick(scope.row, 0)">
+              <img src="@/assets/images/detail.png" class="detail" alt="">详情</span>
+          </li>
+          <li
+            v-if="localPermission.Pay"
+            class="handle-menu-item"
+          >
+            <span
+              v-if="scope.row.Status !== 2 && scope.row.Status !== 255
+              && curTime < new Date(scope.row.ValidTime).getTime()"
+              @click="onMenuClick(scope.row, 1)">
+              <img src="@/assets/images/pay.png" alt="">付款
             </span>
-            <span v-if="scope.row.HaveBackOrderPrepare">已加入待下单</span>
-          </div>
-        </li> -->
-      </ul>
-    </el-table-column>
-    <div slot="empty">
-      <span v-show="!paymentDataLoading">暂无数据</span>
-    </div>
-  </el-table>
+            <span v-else class="is-cancel"><img src="@/assets/images/unpay.png" alt="">付款</span>
+          </li>
+          <li class="handle-menu-item" v-if="localPermission.Pay">
+            <span
+              v-if="scope.row.Status !== 255 && scope.row.Status !== 2"
+              @click="onMenuClick(scope.row, 2)">
+              <img src="@/assets/images/cancel.png" alt="">取消
+            </span>
+            <span v-else class="is-cancel"><img src="@/assets/images/cancelstop.png" alt="">取消</span>
+          </li>
+          <!-- <li class="handle-menu-item" style="width: 80px;">
+            <div v-show="scope.row.Status === 255" >
+              <span @click="onMenuClick(scope.row, 3)"
+              v-if="!scope.row.HaveBackOrderPrepare && makeTrue(scope.row.CreateTime)">
+                <img src="@/assets/images/pending.png" alt="">加入待下单
+              </span>
+              <span v-if="scope.row.HaveBackOrderPrepare">已加入待下单</span>
+            </div>
+          </li> -->
+        </ul>
+      </el-table-column>
+      <div slot="empty">
+        <span v-show="!paymentDataLoading">暂无数据</span>
+      </div>
+    </el-table>
+    <CancelDialogBox :visible.sync='cancelVisivle' v-model="cancelObj" @submit="delTargetOrder" />
+  </div>
 </template>
 
 <script>
-/* eslint-disable max-len */
 import { mapState, mapMutations, mapActions } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
-// import { getPaymentStatus } from '@/assets/js/util';
+import CancelDialogBox from '../../../packages/PaymentListComps/CancelDialogBox.vue';
 
 export default {
   mixins: [tableMixin],
+  components: {
+    CancelDialogBox,
+  },
   computed: {
     ...mapState('paymentModule', ['tableData', 'PayDetailOrderList', 'PayDetailData', 'orderCreateTypeList', 'canLoadingMore', 'paymentDataLoading']),
     ...mapState('common', ['PayTypeList', 'PayStatusList', 'Permission', 'curTime']),
@@ -118,10 +123,20 @@ export default {
       return {};
     },
   },
+  data() {
+    return {
+      cancelVisivle: false,
+      cancelObj: null,
+    };
+  },
   methods: {
-    ...mapMutations('paymentModule', ['setID2Del', 'setIsShow2PayDialog', 'setIsShow2DetailDialog', 'setPayAmount', 'setPayImgSrc', 'setPayDetailData', 'setCurPayCode']),
+    ...mapMutations('paymentModule', [
+      'setIsShow2PayDialog', 'setIsShow2DetailDialog', 'setPayAmount', 'setPayImgSrc', 'setPayDetailData', 'setCurPayCode',
+    ]),
     ...mapMutations('common', ['setPayOrderCreateTime', 'setValidTime', 'setIsLoading']),
-    ...mapActions('paymentModule', ['getPaymentListTableData', 'cancelPaymentOrder', 'transferToPrepareOrder', 'getPaymentOrderDetail', 'getPaymentOrderDetailByPayCode']),
+    ...mapActions('paymentModule', [
+      'getPaymentListTableData', 'cancelPaymentOrder', 'transferToPrepareOrder', 'getPaymentOrderDetail', 'getPaymentOrderDetailByPayCode',
+    ]),
     setHeight() {
       const tempHeight = this.getHeight('.mp-payment-list-header', 60);
       this.h = tempHeight;
@@ -130,7 +145,7 @@ export default {
       if (rowData.columnIndex === 11) {
         const data = rowData.row;
         if (data.Status === 255) return 'canc-gray';
-        if (data.Status === 1) return 'pend-red';
+        if (data.Status === 1) return 'is-pink';
         if (data.Status === 2) return 'paid-green';
       }
       return '';
@@ -196,14 +211,17 @@ export default {
       this.setIsShow2PayDialog(true);
     },
     cancelOrder(row) { // 取消付款单弹窗
-      this.setID2Del(row.PayCode); // 数据可以移入到then中，此步可以取消
-      this.messageBox.warnCancelBox('确定取消此付款单吗 ?', `客户名称：${row.Customer.Name}`, () => this.delTargetOrder(row.PayCode));
+      this.cancelObj = {
+        PayCode: row.PayCode,
+        isAddPrepare: false,
+      };
+      this.cancelVisivle = true;
+      // this.messageBox.warnCancelBox('确定取消此付款单吗 ?', `客户名称：${row.Customer.Name}`, () => this.delTargetOrder(row.PayCode));
     },
-    delTargetOrder(PayCode) { // 确定取消付款单
-      this.cancelPaymentOrder(PayCode);
+    delTargetOrder() { // 确定取消付款单
+      this.cancelPaymentOrder(this.cancelObj);
     },
     moveOrder2PendingList(row) { // 是否移入待下单弹窗提示
-      // this.setID2Del(row.PayCode); // 数据可以移入到then中，此步可以取消
       this.messageBox.warnCancelBox('确定将此单加入待下单吗 ?', `客户名称：${row.Customer.Name}`, () => this.moving(row));
     },
     moving(row) { // 进行移入待下单操作
@@ -233,7 +251,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-payment-module-table {
   width: 100%;
   // user-select: none;

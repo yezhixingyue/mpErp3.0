@@ -85,7 +85,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-erp-common-select-comps-two-level-select-comp-wrap{
   display: flex;
   > li {

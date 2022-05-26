@@ -243,7 +243,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-erp-staff-manage-list-page-main-table-comp-wrap {
   margin-right: 2px;
   border: 1px solid $--border-color-base;

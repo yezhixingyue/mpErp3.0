@@ -156,7 +156,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .order-manage-header {
   background-color: #fff;
   margin-bottom: 10px;
