@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :visible.sync="isShow2DetailDialog"
-    width="800px"
+    width="960px"
     custom-class="mp-dialog-to-detail-box"
     :close-on-click-modal='false'
     title="详情"
@@ -223,8 +223,8 @@ export default {
     }
   }
   .el-dialog__body {
-    width: 780px;
-    margin: 0 auto;
+    // width: 780px;
+    margin: 0 10px;
     padding-bottom: 15px;
     padding-left: 10px;
     padding-right: 10px;

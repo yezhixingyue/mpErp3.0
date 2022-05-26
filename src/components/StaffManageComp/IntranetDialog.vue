@@ -14,11 +14,12 @@
     <el-input
       type="textarea"
       :rows="8"
-      maxlength="750"
-      v-model.trim="Content"
+      maxlength="1000"
+      show-word-limit
+      v-model="Content"
       placeholder="请输入IP地址">
     </el-input>
-    <p class="tips-box">请输入允许访问的IP地址，多个地址以逗号进行间隔，最多可设置50个IP。</p>
+    <p class="tips-box">请输入允许访问的IP地址，多个地址以中英文逗号、分号、反斜杠、空格、回车进行间隔，最多可设置50个IP。</p>
   </CommonDialogComp>
 </template>
 
@@ -87,9 +88,11 @@ export default {
     padding: 30px 25px;
     .tips-box {
       width: 510px;
-      letter-spacing: 0.5px;
+      height: 60px;
+      // letter-spacing: 0.5px;
       margin-top: 10px;
       padding-left: 14px;
+      margin-bottom: -10px;
     }
     .el-textarea__inner {
       font-size: 13px;
