@@ -58,7 +58,7 @@ const routes = { // 基本设置
         title: '岗位管理',
         icon: 'el-icon-monitor',
         pageName: 'PostManageListPage',
-        PermissionInfo: ['PermissionManageJob', 'Obj', 'Setup'],
+        PermissionInfo: ['PermissionManageJob', 'HavePomission'],
         requiresAuth: true,
       },
       component: () => import('../../../views/CompanyManage/JobPostManage/PostManageListPage.vue'),
