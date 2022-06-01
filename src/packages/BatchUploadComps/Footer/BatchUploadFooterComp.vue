@@ -1,5 +1,5 @@
 <template>
-  <div class="mp-c-batch-upload-page-footer-comp-wrap">
+  <div class="mp-c-batch-upload-page-footer-comp-wrap" :class="{[projectType]:projectType}">
     <div class="l" >
       <el-checkbox v-model="checked" :disabled='checkDisabled' :indeterminate="isIndeterminate">全选</el-checkbox>
     </div>
@@ -82,6 +82,11 @@ export default {
        || (!this.address.Address.Express.First && this.address.Address.Express.First !== 0)
        || (!this.address.Address.Express.Second && this.address.Address.Express.Second !== 0));
     },
+  },
+  data() {
+    return {
+      projectType,
+    };
   },
   methods: {
     onUploadClick() {
@@ -175,6 +180,9 @@ export default {
         }
       }
     }
+  }
+  &.erp {
+    padding-left: 40px;
   }
 }
 </style>

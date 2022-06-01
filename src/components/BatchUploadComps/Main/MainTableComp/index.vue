@@ -57,7 +57,13 @@
           </el-select>
       </el-table-column>
 
-      <el-table-column label="操作" width="280">
+      <el-table-column label="状态" width="105">
+        <template slot-scope="scope">
+          <StatusColumn :itemData='scope.row' />
+        </template>
+      </el-table-column>
+
+      <el-table-column label="操作" width="220">
         <template slot-scope="scope">
           <ItemOperationComp :itemData='scope.row' @upload='handleItemUpload' @detail='handleDetailClick' @remove='handleItemRemove' />
         </template>
@@ -77,6 +83,7 @@
 <script>
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import ProductDetailDrawer from '@/packages/BatchUploadComps/Main/ProductDetailDrawer';
+import StatusColumn from '@/packages/BatchUploadComps/Main/Table/StatusColumn';
 import { formarProductAmountFunc } from '@/packages/commonFilters';
 import ItemOperationComp from './ItemOperationComp.vue';
 
@@ -112,6 +119,7 @@ export default {
   },
   mixins: [tableMixin],
   components: {
+    StatusColumn,
     ItemOperationComp,
     ProductDetailDrawer,
   },

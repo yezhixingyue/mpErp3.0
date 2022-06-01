@@ -35,8 +35,8 @@
       <span>你好，</span>
       <span>欢迎使用名片之家后台管理系统</span>
       <span v-if="dateString">，今天是{{ dateString }}，{{ weekString }}</span>
-      <span>，祝你工作愉快</span>
-      <i>!</i>
+      <span>，开始今天的工作吧！</span>
+      <!-- <i>!</i> -->
     </div>
     <div class="list" @contextmenu="onContextmenuclick" ref="oList">
       <div class="collapse-ctrl-box">

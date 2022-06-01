@@ -8,20 +8,20 @@
     border
     style="width: 100%"
   >
-    <el-table-column prop="ID" minWidth="72" label="售后单号"></el-table-column>
-    <el-table-column prop="Order.OrderID" minWidth="80" label="订单号"></el-table-column>
-    <el-table-column prop="Order.CustomerNo" minWidth="90" label="客户编号"></el-table-column>
+    <el-table-column prop="ID" minWidth="67" label="售后单号"></el-table-column>
+    <el-table-column prop="Order.OrderID" minWidth="75" label="订单号"></el-table-column>
+    <el-table-column prop="Order.CustomerNo" minWidth="84" label="客户编号"></el-table-column>
     <el-table-column show-overflow-tooltip prop="Order.CustomerName" minWidth="122" label="客户">
     </el-table-column>
     <el-table-column show-overflow-tooltip
-      prop="Order.Content" class-name='is-gray' minWidth="110" label="文件内容">
+      prop="Order.Content" class-name='is-gray' minWidth="105" label="文件内容">
       <template slot-scope="scope">
         {{scope.row.Order && scope.row.Order.Content ? scope.row.Order.Content : '无'}}
       </template>
     </el-table-column>
     <el-table-column show-overflow-tooltip prop="Order.ProductName"
-      minWidth="108" label="产品名称"></el-table-column>
-    <el-table-column minWidth="85" label="金额">
+      minWidth="105" label="产品名称"></el-table-column>
+    <el-table-column minWidth="80" label="金额">
       <template slot-scope="scope">
         {{scope.row.Order.Funds.FinalPrice}}元
       </template>
@@ -32,12 +32,12 @@
       </template>
     </el-table-column>
     <el-table-column prop="RePrintOrderID" minWidth="80" label="补印单号"></el-table-column>
-    <el-table-column minWidth="72" label="订单减款">
+    <el-table-column minWidth="70" label="订单减款">
       <template slot-scope="scope"  v-if="scope.row.Solution.Refund > 0">
         {{scope.row.Solution.Refund}}元
       </template>
     </el-table-column>
-    <el-table-column minWidth="70" label="运费减款">
+    <el-table-column minWidth="65" label="运费减款">
       <template slot-scope="scope"  v-if="scope.row.Solution.RefundFreight > 0">
         {{scope.row.Solution.RefundFreight}}元
       </template>
@@ -57,16 +57,20 @@
         {{scope.row.Order.SellArea}}
       </template>
     </el-table-column>
-    <el-table-column
-      class-name='sm-font' prop="Order.Taker" minWidth="75" label="下单人"></el-table-column>
-    <el-table-column class-name='sm-font is-gray' minWidth="115" label="处理时间">
+    <el-table-column class-name='sm-font' prop="Order.Taker" minWidth="70" label="下单方式">
       <template slot-scope="scope">
-        <!-- {{$utils.getDateFormat(scope.row.CreateTime)}} -->
+        {{scope.row.Order.OrderType === 1
+              ? $options.filters.formatOrderTypeToText(scope.row.Order.OrderType) : $options.filters.formatTerminalType(scope.row.Order.Terminal)}}
+      </template>
+    </el-table-column>
+    <el-table-column class-name='sm-font' prop="Order.Taker" minWidth="73" label="下单人"></el-table-column>
+    <el-table-column class-name='sm-font is-gray' width="112" label="处理时间">
+      <template slot-scope="scope">
         {{scope.row.CreateTime | formatDate}}
       </template>
     </el-table-column>
-    <el-table-column prop="Operator.Name" minWidth="75" label="处理人"></el-table-column>
-    <el-table-column label-class-name='menu-header' prop="handle" width="180" label="操作">
+    <el-table-column prop="Operator.Name" minWidth="70" label="处理人"></el-table-column>
+    <el-table-column label-class-name='menu-header' prop="handle" width="156" label="操作">
       <div class="handle-menus-wrap"  slot-scope="scope">
         <span @click="jump2ServiceDetail(scope)">
           <img src="@/assets/images/detail.png" alt />查看详情
@@ -209,7 +213,7 @@ export default {
       > span {
         color: $--color-text-table-time;
         font-size: 12px;
-        margin: 0 8px;
+        margin: 0 5px;
         > img {
           vertical-align: middle;
           width: 14px;
