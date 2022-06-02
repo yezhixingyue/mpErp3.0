@@ -28,7 +28,7 @@
           <template v-if="ruleForm.AppealType!==null">
             <!--  -->
 
-            <el-form-item v-if="ruleForm.AppealType===1" key='AppealType===1'>
+            <el-form-item v-if="ruleForm.AppealType===1 && ServiceAfterSales" key='AppealType===1'>
               <div class="make-up-for">
                 <div class="item">款数：
                   <el-form-item prop="KindCount">
@@ -358,6 +358,7 @@ export default {
     },
     resetForm() {
       this.$refs.ruleForm1.resetFields();
+      this.uploadDisabled = false;
       if (!this.$refs.ruleForm2) return;
       this.$refs.ruleForm2.resetFields();
     },

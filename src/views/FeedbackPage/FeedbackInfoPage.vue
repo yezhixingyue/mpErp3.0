@@ -3,56 +3,60 @@
     <div class="FeedbackInfoPage-main" id="feedbackinfopage" >
       <Tables :dataInfo="DetailData" :paramsData="paramsData"></Tables>
       <footer v-if="DetailData">
-        <el-button  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
-        v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
-        >解除挂起</el-button>
-        <template v-else>
-        <el-button  class="cancel-blue-btn" @click="onGetDownToClick" key="开始处理"
-        v-if="DetailData.AfterSale.Status === 0"
-        >开始处理</el-button>
-        <el-button  class="cancel-blue-btn" @click="onExecuteClick" key="执行售后"
-        v-if="DetailData.AfterSale.Status === 10"
-        >执行售后</el-button>
-        <el-button  class="cancel-blue-btn" @click="onPostponeClick" key="挂起"
-        v-if="DetailData.AfterSale.Status === 10 && !DetailData.AfterSale.IsHang"
-        >挂起</el-button>
+        <template v-if="localPermission.Operate">
+          <el-button  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
+          v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
+          >解除挂起</el-button>
+          <template v-else>
+            <el-button  class="cancel-blue-btn" @click="onGetDownToClick" key="开始处理"
+            v-if="DetailData.AfterSale.Status === 0"
+            >开始处理</el-button>
+            <el-button  class="cancel-blue-btn" @click="onExecuteClick" key="执行售后"
+            v-if="DetailData.AfterSale.Status === 10"
+            >执行售后</el-button>
+            <el-button  class="cancel-blue-btn" @click="onPostponeClick" key="挂起"
+            v-if="DetailData.AfterSale.Status === 10 && !DetailData.AfterSale.IsHang"
+            >挂起</el-button>
+            <el-button  class="cancel-blue-btn" @click="onDeliverToClick" key="转他人处理"
+            v-if="DetailData.AfterSale.Status === 10"
+            >转他人处理</el-button>
+            <el-button  class="cancel-blue-btn" @click="onRejectClick" key="驳回"
+            v-if="DetailData.AfterSale.Status === 10"
+            >驳回</el-button>
+          </template>
+        </template>
         <el-button  class="cancel-blue-btn" @click="onDisposeDetailsClick" key="查看处理详情"
         v-if="DetailData.AfterSale.Status === 30"
         >查看处理详情</el-button>
-        <el-button  class="cancel-blue-btn" @click="onDeliverToClick" key="转他人处理"
-        v-if="DetailData.AfterSale.Status === 10"
-        >转他人处理</el-button>
-        <el-button  class="cancel-blue-btn" @click="onRejectClick" key="驳回"
-        v-if="DetailData.AfterSale.Status === 10"
-        >驳回</el-button>
-        </template>
         <el-button class="cancel-blue-btn" @click="onGoBackClick"><i></i> 返回</el-button>
       </footer>
       <transition name="el-fade-in-linear">
       <footer v-if="DetailData" v-show="isFootFixed" class="FootFixed">
-        <el-button  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
-        v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
-        >解除挂起</el-button>
-        <template v-else>
-        <el-button  class="cancel-blue-btn" @click="onGetDownToClick" key="开始处理"
-        v-if="DetailData.AfterSale.Status === 0"
-        >开始处理</el-button>
-        <el-button  class="cancel-blue-btn" @click="onExecuteClick" key="执行售后"
-        v-if="DetailData.AfterSale.Status === 10"
-        >执行售后</el-button>
-        <el-button  class="cancel-blue-btn" @click="onPostponeClick" key="挂起"
-        v-if="DetailData.AfterSale.Status === 10 && !DetailData.AfterSale.IsHang"
-        >挂起</el-button>
+        <template v-if="localPermission.Operate">
+          <el-button  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
+          v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
+          >解除挂起</el-button>
+          <template v-else>
+            <el-button  class="cancel-blue-btn" @click="onGetDownToClick" key="开始处理"
+            v-if="DetailData.AfterSale.Status === 0"
+            >开始处理</el-button>
+            <el-button  class="cancel-blue-btn" @click="onExecuteClick" key="执行售后"
+            v-if="DetailData.AfterSale.Status === 10"
+            >执行售后</el-button>
+            <el-button  class="cancel-blue-btn" @click="onPostponeClick" key="挂起"
+            v-if="DetailData.AfterSale.Status === 10 && !DetailData.AfterSale.IsHang"
+            >挂起</el-button>
+            <el-button  class="cancel-blue-btn" @click="onDeliverToClick" key="转他人处理"
+            v-if="DetailData.AfterSale.Status === 10"
+            >转他人处理</el-button>
+            <el-button  class="cancel-blue-btn" @click="onRejectClick" key="驳回"
+            v-if="DetailData.AfterSale.Status === 10"
+            >驳回</el-button>
+          </template>
+        </template>
         <el-button  class="cancel-blue-btn" @click="onDisposeDetailsClick" key="查看处理详情"
         v-if="DetailData.AfterSale.Status === 30"
         >查看处理详情</el-button>
-        <el-button  class="cancel-blue-btn" @click="onDeliverToClick" key="转他人处理"
-        v-if="DetailData.AfterSale.Status === 10"
-        >转他人处理</el-button>
-        <el-button  class="cancel-blue-btn" @click="onRejectClick" key="驳回"
-        v-if="DetailData.AfterSale.Status === 10"
-        >驳回</el-button>
-        </template>
         <el-button class="cancel-blue-btn" @click="onGoBackClick"><i></i> 返回</el-button>
       </footer>
       </transition>
@@ -85,6 +89,7 @@ import DeliverToDialogComp from '@/components/Feedback/DeliverToDialogComp.vue';
 import RejectDialogComp from '@/components/Feedback/RejectDialogComp.vue';
 import ExecuteDialogComp from '@/components/Feedback/ExecuteDialogComp.vue';
 import DisposeDetailsDialogComp from '@/components/Feedback/DisposeDetailsDialogComp.vue';
+import { mapState } from 'vuex';
 
 export default {
   name: 'feedbackInfoPage',
@@ -116,6 +121,13 @@ export default {
     };
   },
   computed: {
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionAfterSalesApply?.Obj) {
+        return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;
+      }
+      return {};
+    },
     scrollChange() {
       return this.ScrollInfo.scrollTop + this.ScrollInfo.scrollHeight + this.ScrollInfo.offsetHeight;
     },
@@ -198,6 +210,7 @@ export default {
           if (res.data.Status === 1100) {
             sessionStorage.setItem('FeedbackList', true);
             this.messageBox.failSingleError('操作失败', res.data.Message, () => {
+              sessionStorage.setItem('setCondition', JSON.stringify([['DateType', ''], 'all']));
               this.onGoBackClick();
             });
           }

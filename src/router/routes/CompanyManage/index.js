@@ -81,7 +81,7 @@ const routes = { // 基本设置
         title: '花名管理',
         icon: 'el-icon-notebook-1',
         pageName: 'ScreenNameManagePage',
-        PermissionInfo: ['PermissionManageJob', 'Obj', 'Setup'],
+        PermissionInfo: ['PermissionManageRoster', 'HavePomission'],
         requiresAuth: true,
       },
       component: () => import('../../../views/CompanyManage/ScreenNameManage/ScreenNameManagePage.vue'),
@@ -108,6 +108,12 @@ const routeTree = {
       children: [
         { name: 'StaffManageSetup', children: [] },
       ],
+    },
+    /*  花名管理
+    ------------------------------------------ */
+    {
+      name: 'ScreenNameManage',
+      children: [],
     },
   ],
 };

@@ -121,7 +121,7 @@ export default {
         case 'third': // 订单进度
           await this.api.selectOrderProgress(OrderID).then(res => {
             if (res.data.Status === 1000) {
-              this.orderProgress = res.data.Data;
+              this.orderProgress = res.data.Data.reverse();
             }
           }).catch((error) => {
             key = false;

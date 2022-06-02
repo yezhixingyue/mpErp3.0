@@ -6,11 +6,12 @@
     tooltip-effect="dark"
     style="width: 100%"
     class="edit-dia-left-table-wrap"
-    :max-height="h"
     @selection-change="handleSelectionChange"
   >
-    <el-table-column type="selection"
-      class-name='select-column' label-class-name='select-wrap' width="60"></el-table-column>
+    <template v-if="select">
+      <el-table-column type="selection"
+        class-name='select-column' label-class-name='select-wrap' width="60"></el-table-column>
+    </template>
     <el-table-column label="包裹号" show-overflow-tooltip width="160">
       <template slot-scope="scope">{{ scope.row.ID }}</template>
     </el-table-column>
@@ -39,6 +40,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    select: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -51,12 +56,12 @@ export default {
       this.$emit('SelectionChange', val); // 使用了这个组件但是没有用vuex
       this.multipleSelection = val;
     },
-    getH() {
-      setTimeout(() => {
-        const h1 = document.getElementsByClassName('right-submit-wrap')[0];
-        if (h1 && h1.offsetHeight) this.h = 362 - h1.offsetHeight;
-      }, 0);
-    },
+    // getH() {
+    //   setTimeout(() => {
+    //     const h1 = document.getElementsByClassName('right-submit-wrap')[0];
+    //     if (h1 && h1.offsetHeight) this.h = 362 - h1.offsetHeight;
+    //   }, 0);
+    // },
   },
   watch: {
     SelectionData(nVal) {

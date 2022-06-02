@@ -32,7 +32,7 @@
         </header>
         <main>
           <div class="left-table">
-            <EditDiaLeftTable :tableData='OrderPackageListTableData' />
+            <EditDiaLeftTable :tableData='OrderPackageListTableData' :select='false' />
           </div>
           <div class="right-submit-wrap" v-if="DisposeDetailsData">
             <div class="tab-row">
@@ -88,9 +88,11 @@
                 <template v-if="DisposeDetailsData.Solution && DisposeDetailsData.Solution.SolutionType === 8">
                   <div class="row line" v-for="(it,index) in selectedCouponList" :key="it.CouponID">
                     <div class="item" >
-                      <div class="discount-coupon" :style="`text-indent:${index === 0 ? 0 : 5.05}em`"><span>{{index ===0?'解决方案：':''}}</span>
+                      <div class="discount-coupon" ><span>{{index ===0?'解决方案：':''}}</span>
                       <!-- 赠送优惠券 -->
-                        赠送优惠券：
+                        <span v-if="index === 0" :style="`text-indent:${index === 0 ? 0 : 5.05}em`">赠送优惠券：</span>
+                        <span v-else style="margin-right:11.05em"></span>
+
                         <span class="is-pink">{{it.Data.Amount}}元</span><i> - </i>
                         <span class="MinPayAmount"> 满{{it.Data.MinPayAmount}}元使用</span>
                         <span>（ <i class="is-origin">{{it.CouponNumber}}</i>张 ）</span>
@@ -123,41 +125,81 @@
                 <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
                   <div class="item">
                     <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
-                    <div><span>解决方案：</span>
-                    <!-- 退款： -->
-                    <span v-if="DisposeDetailsData.Solution.SolutionType === 2">
-                      退款：订单退款：￥
-                      <span class="marginright">
-                      {{DisposeDetailsData.Solution.RefundAmount}}
+                    <div>
+                      <span>解决方案：</span>
+                      <span>
+                        退款：
                       </span>
-                      运费退款：￥
-                      <span class="marginright">
-                      {{DisposeDetailsData.Solution.RefundFreightAmount}}
-                      </span>
-                      共计：￥<span class="color-red marginright">
-                        {{DisposeDetailsData.Solution.SuccessRefundTotalAmount }}
-                      </span>
-                    </span>
-                    <span class="is-origin refund">退款成功</span>
+                      <div class="refund" >
+                        <div class="row line" style="border-bottom:none">
+                          <div class="item">
+                            <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
+                            <div>
+                              <span style="margin:0"></span>
+                              <!-- 退款： -->
+                              <span style="width:20em; text-indent:0em;">
+                                退到余额：
+                                <span class="color-red">
+                                {{DisposeDetailsData.Solution.RefundBalance}}
+                                </span>元
+                              </span>
+                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 1">
+                                含运费<span class="color-red">
+                                  {{DisposeDetailsData.Solution.RefundFreightAmount}}
+                                </span>元
+                              </span>
+                              <span class="is-origin refund-sess">退款成功</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
+                          <div class="item">
+                            <div><span style="margin:0"></span>
+                              <span style="width:20em;">
+                                退印豆：<span class="color-red">
+                                  {{DisposeDetailsData.Solution.RefundPrintBean}}
+                                </span>个
+                              </span>
+                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 3">
+                                含运费<span class="color-red">
+                                  {{DisposeDetailsData.Solution.RefundFreightAmount}}
+                                </span>个
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
+                          <div class="item">
+                            <div><span style="margin:0"></span>
+                              <span style="width:20em;">
+                                退到扫码账户：<span class="color-red">
+                                  {{DisposeDetailsData.Solution.RefundThirdParty}}
+                                </span>元
+                              </span>
+                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 2">
+                                含运费<span class="color-red">
+                                  {{DisposeDetailsData.Solution.RefundFreightAmount}}
+                                </span>元
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
+                          <div class="item">
+                            <div><span style="margin:0"></span>
+                              <span style="width:20em;">
+                                售后优惠：<span class="color-red">
+                                  {{DisposeDetailsData.Solution.UnpaidReducedAmount}}
+                                </span>元
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
-                  <div class="item">
-                    <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
-                    <div style="text-indent: 5.3em"><span style="margin:0"></span>
-                      <!-- 退款： -->
-                      <span v-if="DisposeDetailsData.Solution.SolutionType === 2">
-                        {{DisposeDetailsData.Solution.RefundType === 1 ? '退回余额' : '退回原支付账户' }}：￥<span class="color-red marginright">
-                          {{DisposeDetailsData.Solution.RefundFreightAmount + DisposeDetailsData.Solution.RefundAmount}}
-                        </span>
-                        从未支付款项中减款：￥<span class="color-red marginright">
-                          {{DisposeDetailsData.Solution.UnpaidReducedAmount}}
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
+
                 <div class="row line">
                   <div class="item">
                     <div style="text-indent: 5.3em">
@@ -268,6 +310,7 @@ export default {
           this.DisposeDetailsData = res.data.Data;
           this.getQuestionTypeList();
           this.getCoupon(res.data.Data.Solution.CouponList);
+          this.getPackageListByOrderID(this.paramsData.OrderID);
         }
       });
       this.$store.dispatch('common/getAfterSalesDepartmentList');
@@ -302,56 +345,57 @@ export default {
     onClosed() {
       this.onCancle();
     },
-    addSingleImg(data) {
-      const inputFile = data;
-      const { name, size } = inputFile;
-      const lastModifiedDate = inputFile.lastModifiedDate.toLocaleString(84);
-      this.imgInfo.push({
-        name,
-        size,
-        lastModifiedDate,
-      });
-      const reader = new FileReader();
-      reader.readAsDataURL(inputFile);
-      reader.onloadend = () => {
-        const strBase64 = reader.result.substring(0);
-        this.setServiceImgList([strBase64, inputFile]); // 添加到数据仓库图片列表中
-        return strBase64;
-      };
-    },
-    setServiceImgList(state, [strBase64, inputFile]) {
-      this.serviceImgList.push(strBase64);
-      this.serviceImgList2Upload.push(inputFile);
-    },
-    async uploadImg(data) {
-      if (!data || data.length < 1) return;
-      const files = [];
-      const imgExpectType = ['image/jpeg', 'image/png', 'image/bmp'];
-      data.forEach((file) => {
-        if (imgExpectType.includes(file.type)) files.push(file);
-      });
-      const len = 4 - this.serviceImgList.length || 0;
-      // 获取到目前还可以添加的照片数量
-      let list;
-      if (files.length <= len) list = files;
-      else list = files.slice(0, len);
-      await Promise.all(list.map(async (imgData) => {
-        // 耗时操作
-        await this.addSingleImg(imgData);
-      }));
-    },
+    // addSingleImg(data) {
+    //   const inputFile = data;
+    //   const { name, size } = inputFile;
+    //   const lastModifiedDate = inputFile.lastModifiedDate.toLocaleString(84);
+    //   this.imgInfo.push({
+    //     name,
+    //     size,
+    //     lastModifiedDate,
+    //   });
+    //   const reader = new FileReader();
+    //   reader.readAsDataURL(inputFile);
+    //   reader.onloadend = () => {
+    //     const strBase64 = reader.result.substring(0);
+    //     this.setServiceImgList([strBase64, inputFile]); // 添加到数据仓库图片列表中
+    //     return strBase64;
+    //   };
+    // },
+    // setServiceImgList(state, [strBase64, inputFile]) {
+    //   this.serviceImgList.push(strBase64);
+    //   this.serviceImgList2Upload.push(inputFile);
+    // },
+    // async uploadImg(data) {
+    //   if (!data || data.length < 1) return;
+    //   const files = [];
+    //   const imgExpectType = ['image/jpeg', 'image/png', 'image/bmp'];
+    //   data.forEach((file) => {
+    //     if (imgExpectType.includes(file.type)) files.push(file);
+    //   });
+    //   const len = 4 - this.serviceImgList.length || 0;
+    //   // 获取到目前还可以添加的照片数量
+    //   let list;
+    //   if (files.length <= len) list = files;
+    //   else list = files.slice(0, len);
+    //   await Promise.all(list.map(async (imgData) => {
+    //     // 耗时操作
+    //     await this.addSingleImg(imgData);
+    //   }));
+    // },
     submitServiceOrder() {
     },
     async getPackageListByOrderID(orderId) {
       const res = await this.api.getPackageListByOrderID(orderId);
       if (res.data.Status === 1000) {
-        this.OrderPackageListTableData = res.data.Data;
+        const temp = res.data.Data.filter(item => this.DisposeDetailsData.AfterSalePackages.some(packItem => packItem.PackageID === item.ID));
+        this.OrderPackageListTableData = temp;
       }
     },
   },
 
   mounted() {
-    this.getPackageListByOrderID(this.paramsData.OrderID);
+    // this.getPackageListByOrderID(this.paramsData.OrderID);
   },
   beforeDestroy() {
     this.$router.push({ query: {} });
@@ -418,7 +462,7 @@ export default {
         }
       }
       &.service-after-sale {
-        height: 395px;
+        height: 565px;
         display: flex;
         margin-top: 20px;
         box-shadow: 0px 3px 10px 0px rgba(98, 98, 98, 0.2);
@@ -441,9 +485,15 @@ export default {
         > main {
           display: flex;
           flex-direction: column;
-          // margin: 20px;
+          margin-left: 20px;
+          margin-top: 20px;
           margin-bottom: 20px;
           width: 835px;
+          max-height: 820px;
+                  overflow: auto;
+          .left-table{
+            width: 100%;
+          }
           .right-submit-wrap {
             width: calc(100% - 2px);
             box-sizing: border-box;
@@ -485,7 +535,10 @@ export default {
                       text-overflow: ellipsis;
                       display: flex;
                       justify-content: flex-start;
-                      .refund {
+                      >.refund{
+                        flex: 1;
+                      }
+                      .refund-sess {
                         flex: 1;
                         text-align: right;
                         padding-right: 2em;
@@ -499,6 +552,11 @@ export default {
                         flex: 1;
                       }
                       &.discount-coupon {
+                        -webkit-line-clamp: 1;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                         span, >i{
                           text-indent: 0;
                         }

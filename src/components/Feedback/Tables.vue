@@ -12,7 +12,7 @@
             <template slot-scope="scope">{{scope.row.Content || '--'}}</template>
           </el-table-column>
           <el-table-column prop="CustomerType" label="数量" minWidth="108" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.ProductAmount}}{{scope.row.Unit}}/{{scope.row.KindCount}}款</template>
+            <template slot-scope="scope">{{scope.row.ProductAmount}}{{scope.row.Unit}}{{scope.row.KindCount}}款</template>
           </el-table-column>
           <el-table-column label="尺寸" prop="ProductName" minWidth="103" show-overflow-tooltip>
             <template slot-scope="scope">{{scope.row.SizeList.join('，')||'--'}}</template>
@@ -48,9 +48,12 @@
             <td>收件人</td>
             <td>{{dataInfo.Order.Consignee}} &nbsp; &nbsp; {{dataInfo.Order.ConsigneeMobile}}</td>
             <td>收件地址</td>
-            <td><p class="textarea">
-              {{dataInfo.Order.ProvinceName}}{{dataInfo.Order.CityName}}{{dataInfo.Order.CountyName}}{{dataInfo.Order.AddressDetail}}
-              </p></td>
+            <td>
+              <el-tooltip class="item" effect="dark"
+                :content="dataInfo.Order.ProvinceName+dataInfo.Order.CityName+dataInfo.Order.CountyName+dataInfo.Order.AddressDetail" placement="top">
+                <p class="textarea">{{dataInfo.Order.ProvinceName}}{{dataInfo.Order.CityName}}{{dataInfo.Order.CountyName}}{{dataInfo.Order.AddressDetail}}</p>
+              </el-tooltip>
+            </td>
           </tr>
           <tr>
             <td>客户编号</td>
@@ -78,7 +81,7 @@
           </tr>
           <tr>
             <td>运费</td>
-            <td>￥{{dataInfo.Order.Freight}}元（含{{dataInfo.Order.FreightOrderNumber}}个订单）</td>
+            <td>￥{{dataInfo.Order.FreightAmount}}元（含{{dataInfo.Order.FreightOrderNumber}}个订单）</td>
             <td>订单备注</td>
             <td>
               <!-- <p class="textarea">{{dataInfo.Order.Remark || '--'}}</p> -->

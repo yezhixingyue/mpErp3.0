@@ -31,16 +31,19 @@
           </span>
         </el-form-item>
         <el-form-item label="评价内容：">
-          <div style="display:flex;line-height:34px;margin-top:3px">{{SeeEstimate.EvaluateContent}}</div>
+          <div style="display:flex;line-height:34px;margin-top:3px">{{SeeEstimate.EvaluateContent || '未填写评价'}}</div>
         </el-form-item>
         <el-form-item label="评价晒图：">
           <div class="images">
-            <el-image v-for="item in SeeEstimate.EvaluatePicList" :key="item"
+            <el-image
+            :preview-src-list="SeeEstimate.EvaluatePicList" :mpCloseViewer='closeViewer'
+            v-for="item in SeeEstimate.EvaluatePicList" :key="item"
               :src="item"
               fit="cover"></el-image>
+            <span v-if="SeeEstimate.EvaluatePicList.length === 0">未上传图片</span>
           </div>
         </el-form-item>
-        <el-form-item label="评价时间：" style="padding-top:30px">
+        <el-form-item label="评价时间：" :style="`padding-top:${SeeEstimate.EvaluatePicList.length>5?30:0}px`">
           <span>{{SeeEstimate.EvaluateTime | formatDate}}</span>
         </el-form-item>
       </template>
@@ -88,6 +91,7 @@ export default {
     cancle() {
       this.closed();
     },
+    closeViewer() {},
     closed() {
       this.$emit('closed');
     },

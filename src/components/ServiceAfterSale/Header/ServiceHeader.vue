@@ -144,7 +144,7 @@ export default {
       dateList: [{ name: '全部', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
       AfterSaleType: [
         { label: '不限', value: '' },
-        { label: '减款', value: 2 },
+        { label: '退款', value: 2 },
         { label: '补印', value: 7 },
         { label: '赠送优惠券', value: 8 },
         { label: '其他', value: 255 },

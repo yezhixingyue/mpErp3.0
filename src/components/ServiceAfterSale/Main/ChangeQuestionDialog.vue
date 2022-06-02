@@ -31,11 +31,11 @@
                 :value="it.ID">
               </el-option>
             </el-select>
-            <el-input size="small" v-model="item.Remark" placeholder="在此输入备注信息" maxlength="200" show-word-limit></el-input>
+            <el-input size="small" v-model="item.Remark" placeholder="在此输入备注信息" maxlength="300" show-word-limit></el-input>
             <div class="menus">
               <span @click="onQuestionsAddClick">
                 <img src="@/assets/images/add.png" alt />添加</span>
-              <span @click="onQuestionsRemoveClick(index)" v-if="true">
+              <span @click="onQuestionsRemoveClick(index)" v-if="from.AfterSaleQuestions.length > 1">
                 <img src="@/assets/images/del.png" alt />删除</span>
               <span v-else class="disabled">
                 <img src="@/assets/images/del-disabled.png" alt />删除</span>
@@ -55,13 +55,14 @@
                 :value="it.ID">
               </el-option>
             </el-select>
-            <el-input-number :min="0" :max="100" :controls="false" v-model="item.Proportion" placeholder="输入责任比例" size="small">
-            </el-input-number>
+            <el-input class="afters-sale-responsibilities-roportion" :min="0" :max="100" :controls="false"
+            oninput="value=value.replace(/[^\d]/g,'')" v-model.number="item.Proportion" placeholder="输入责任比例" size="small">
+            </el-input>
             %
             <div class="menus">
               <span @click="onDepartmentAddClick">
                 <img src="@/assets/images/add.png" alt />添加</span>
-              <span @click="onDepartmentRemoveClick(index)" v-if="true">
+              <span @click="onDepartmentRemoveClick(index)" v-if="from.AfterSaleResponsibilities.length > 1">
                 <img src="@/assets/images/del.png" alt />删除</span>
               <span v-else class="disabled">
                 <img src="@/assets/images/del-disabled.png" alt />删除</span>
@@ -212,7 +213,7 @@ export default {
       const AfterSaleResponsibilitiesIsNull = this.from.AfterSaleResponsibilities.some(res => !res.Department || !res.Proportion);
       const AfterSaleQuestionsIsNull = this.from.AfterSaleQuestions.some(res => !res.SecondQuestionType || !res.FirstQuestionType || !res.Remark);
       if (AfterSaleResponsibilitiesIsNull || AfterSaleQuestionsIsNull) {
-        this.messageBox.failSingleError('保存失败', AfterSaleQuestionsIsNull ? '请选择问题数据并输入备注' : '请选择责任部门并输入责任比例');
+        this.messageBox.failSingleError('保存失败', AfterSaleQuestionsIsNull ? '请选择问题类型并输入备注' : '请选择责任部门并输入责任比例');
         return;
       }
       this.from.AfterSaleCode = this.curData.AfterSaleCode;
@@ -271,25 +272,6 @@ export default {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
-            > .el-cascader {
-              width: 140px;
-              flex: none;
-              margin-right: 10px;
-              > .el-input {
-                display: flex;
-                align-items: center;
-                .el-input__inner {
-                  border: none;
-                  border-bottom: 1px solid #eee;
-                  font-size: 12px;
-                  color: #585858;
-                  border-radius: 0;
-                  &::placeholder {
-                    color: #ccc;
-                  }
-                }
-              }
-            }
             > .el-select{
               width: 130px;
               flex: none;
@@ -324,8 +306,14 @@ export default {
                 }
               }
             }
-            .el-input-number{
+            .afters-sale-responsibilities-roportion{
               margin-right: 15px;
+              width: 120px;
+              flex: none;
+              >.el-input__inner{
+                width: 120px;
+                padding: 0 15px;
+              }
             }
             > .menus {
               padding-left: 2px;
@@ -353,7 +341,5 @@ export default {
     }
   }
 }
-.el-cascader-menu__wrap {
-  height: 360px;
-}
+
 </style>

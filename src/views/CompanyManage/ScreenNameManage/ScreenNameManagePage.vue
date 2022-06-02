@@ -5,15 +5,21 @@
     </header>
     <main>
       <ul>
-        <li v-if="!RosterDataList.length">
-          <span style="display: inline-block;width:300px"></span>
-          <CtrlMenus :showList="['add']"  @add='onAddClick' v-if="localPermission.Setup" />
+        <li>
+          <div class="title">花名</div>
+          <div class="title">工作电话</div>
+          <div class="title">工作QQ</div>
+          <div class="title" v-if="localPermission.Setup">操作</div>
         </li>
         <li v-for="(it, i) in RosterDataList" :key="it.PositionID || it.key">
           <el-input :value="it.Nickname" @input="e => onInput('Nickname', e, i)" placeholder="请输入花名" size="small" maxlength="20"></el-input>
           <el-input :value="it.ContactWay" @input="e => onInput('ContactWay', e, i)" placeholder="请输入工作电话" size="small" maxlength="15"></el-input>
           <el-input :value="it.QQ " @input="e => onInput('QQ', e, i)" placeholder="请输入工作QQ" size="small" maxlength="11"></el-input>
-          <CtrlMenus :showList="['del', 'add']"  @remove='onRemoveClick(it, i)' @add='onAddClick' v-if="localPermission.Setup" />
+          <CtrlMenus :showList="['del', 'add']" :canRemove='RosterDataList.length > 1'
+          @remove='onRemoveClick(it, i)' @add='onAddClick' v-if="localPermission.Setup" />
+        </li>
+        <li v-if="!RosterDataList.length">
+          <p>暂无数据</p>
         </li>
       </ul>
     </main>
@@ -51,8 +57,8 @@ export default {
     ...mapState('companyManage', ['RosterDataList']),
     ...mapState('common', ['Permission']),
     localPermission() {
-      if (this.Permission?.PermissionList?.PermissionManageJob?.Obj) {
-        return this.Permission.PermissionList.PermissionManageJob.Obj;
+      if (this.Permission?.PermissionList?.PermissionManageRoster?.Obj) {
+        return this.Permission.PermissionList.PermissionManageRoster.Obj;
       }
       return {};
     },
@@ -102,6 +108,14 @@ export default {
     this.$store.dispatch('companyManage/getRosterDataList');
     this.removeIds = [];
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.localPermission.Query) {
+      this.$store.dispatch('companyManage/getRosterDataList');
+      next();
+    } else {
+      next();
+    }
+  },
 };
 </script>
 <style lang='scss'>
@@ -127,10 +141,22 @@ export default {
     padding: 0 35px;
     overflow-y: auto;
     box-sizing: border-box;
+    min-width: 937px;
     > ul {
       > li {
         font-size: 14px;
         margin-bottom: 12px;
+        min-width: 900px;
+        .title{
+          margin-right: 65px;
+          display: inline-block;
+          width: 160px;
+          text-align: center;
+        }
+        >p{
+          text-indent: 28em;
+          margin-top: 20px;
+        }
         > .el-input {
           width: 160px;
           input {

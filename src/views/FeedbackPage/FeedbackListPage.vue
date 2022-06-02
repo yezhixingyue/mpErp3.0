@@ -7,7 +7,9 @@
         <el-table-column prop="AfterSaleCode" label="售后服务单号" minWidth="110" show-overflow-tooltip></el-table-column>
         <el-table-column prop="OrderID" label="订单号" minWidth="90" show-overflow-tooltip></el-table-column>
         <el-table-column prop="CustomerName" label="客户名称" minWidth="100" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="CustomerType" label="客户类型" minWidth="85" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="CustomerType" label="客户类型" minWidth="125" show-overflow-tooltip>
+          <template slot-scope="scope">{{scope.row.CustomerType}}{{scope.row.CustomerGrade}}</template>
+        </el-table-column>
         <el-table-column label="产品名称" prop="ProductName" minWidth="115" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.ProductName}}</template>
         </el-table-column>
@@ -81,6 +83,10 @@
               <span v-if="scope.row.Status === 0">详情/处理</span>
               <span v-else-if="scope.row.IsHang">详情/解除挂起</span>
               <span v-else>查看详情</span>
+            </span>
+            <span @click="onPhotoClick(scope.row)" v-else>
+              <img src="@/assets/images/detail.png" alt />
+              <span>查看详情</span>
             </span>
           </div>
         </el-table-column>
@@ -299,6 +305,7 @@ export default {
   },
   mounted() {
     sessionStorage.removeItem('FeedbackList');
+    sessionStorage.removeItem('setCondition');
     this.getDataList();
     if (this.$route.query.AppyCode) this.$router.push({ query: {} });
     this.$nextTick(() => this.setHeight());
@@ -308,6 +315,10 @@ export default {
     const bool = sessionStorage.getItem('FeedbackList') === 'true';
     if (!bool) return;
     sessionStorage.removeItem('FeedbackList');
+    if (sessionStorage.getItem('setCondition')) {
+      this.setCondition(JSON.parse(sessionStorage.getItem('setCondition')));
+    }
+    sessionStorage.removeItem('setCondition');
     this.getDataList();
   },
   beforeDestroy() {

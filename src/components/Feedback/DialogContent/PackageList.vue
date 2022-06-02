@@ -11,13 +11,13 @@
       >
         <el-table-column width="112px" prop="ID" label="包裹号"></el-table-column>
         <el-table-column width="155px" prop="Logistics.BillNo" label="运单号"></el-table-column>
-        <el-table-column width="102px" label="产品">
+        <el-table-column width="102px" label="产品" show-overflow-tooltip>
           <!-- {{curOrderProductName}} -->
           <template  slot-scope="scope">
             {{scope.row.Order.ProductName || curOrderProductName}}
           </template>
         </el-table-column>
-        <el-table-column width="67" label="产品数量">
+        <el-table-column width="67" label="产品数量" show-overflow-tooltip>
           <template  slot-scope="scope">
             {{scope.row.ProductAmount}}{{scope.row.Order.Unit}}
           </template>

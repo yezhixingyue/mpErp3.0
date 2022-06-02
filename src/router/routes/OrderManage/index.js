@@ -109,9 +109,9 @@ const routes = { // 客户订单管理
       path: '/ServiceInfo',
       name: 'ServiceInfo',
       meta: {
-        title: '客户设置',
+        title: '售后详情',
         pageName: 'feedbackInfoPage',
-        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
         requiresAuth: true,
       },
       component: () => import('../../../views/FeedbackPage/FeedbackInfoPage.vue'),

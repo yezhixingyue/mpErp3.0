@@ -99,12 +99,14 @@
         <span @click="jump2ServiceDetail(scope.row)">
           <img src="@/assets/images/detail.png" alt />查看详情
         </span>
-        <span v-if="scope.row.AfterSaleStatus === 30" @click="onChangeQuestionClick(scope.row)">
-          <img src="@/assets/images/Compile.png" alt />问题修改
-        </span>
-        <span v-else class="not-allowed">
-          <img src="@/assets/images/Compile-disabled.png" alt />问题修改
-        </span>
+        <template v-if="localPermission.UpdateQuestion">
+          <span v-if="scope.row.AfterSaleStatus === 30" @click="onChangeQuestionClick(scope.row)">
+            <img src="@/assets/images/Compile.png" alt />问题修改
+          </span>
+          <span v-else class="not-allowed">
+            <img src="@/assets/images/Compile-disabled.png" alt />问题修改
+          </span>
+        </template>
         <span v-if="scope.row.IsEvaluate" @click="onSeeEstimateClick(scope.row)">
           <img src="@/assets/images/seeEvaluation.png" alt />查看评价
         </span>

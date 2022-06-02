@@ -71,6 +71,15 @@ export default {
       commit('setRosterDataList', []);
       const resp = await api.getRosterDataList().catch(() => null);
       if (resp && resp.data.Status === 1000) {
+        if (!resp.data.Data.length) {
+          resp.data.Data = {
+            RosterID: '',
+            Nickname: '',
+            ContactWay: '',
+            QQ: '',
+            key: Math.random().toString(16).slice(-8),
+          };
+        }
         commit('setRosterDataList', resp.data.Data);
       }
     },

@@ -5,11 +5,15 @@
     :modal-append-to-body='false'
     width="1000px"
     :modal='false'
-    custom-class="dialog-to-order-service-box mp-img-style-header"
+    custom-class="dialog-to-order-service-box dialogexecutedialogcomp mp-img-style-header"
     top="6vh"
     center :close-on-press-escape='false'
     :before-close="handleClose" :close-on-click-modal='false'
     v-dialogDrag
+    v-loading="ReprintFilePercentageVisible"
+    :element-loading-text="`文件上传中，${ReprintFilePercentage}%`"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
   >
     <template>
       <section v-show="!isLoading" class="question-photo">
@@ -106,9 +110,10 @@
                       :value="it.ID">
                     </el-option>
                   </el-select>
-                  <el-input @blur="item.Proportion>100? item.Proportion = 100 : item.Proportion"
+                  <el-input oninput="value=value.replace(/[^\d]/g,'')"
                     v-model.number="item.Proportion" placeholder="输入责任比例" size="small">
                   </el-input>
+                  %
                   <div class="menus">
                     <span @click="onDepartmentAddClick">
                       <img src="@/assets/images/add.png" alt />添加</span>
@@ -129,7 +134,8 @@
                   <div class="right">
                     <div class="row">
                       <el-radio-group v-model="HandlingAfterSalesForm.Solution.SolutionType">
-                        <el-radio :label="2">退款</el-radio>
+                        <el-radio :label="2"
+                        :disabled='!RefundBalanceShow && !RefundPrintBeanShow && !RefundThirdPartyShow && !UnpaidReducedAmountShow'>退款</el-radio>
                         <el-radio :label="7">补印</el-radio>
                         <el-radio :label="8">赠送优惠劵</el-radio>
                         <el-radio :label="255">其他</el-radio>
@@ -139,56 +145,94 @@
                 </div>
                 <div class="dispose">
                   <div class="right">
-                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType === 2">
-                      <div class="form-item">
-                        <div class="label">
-                          订单退款：
+                    <template v-if="HandlingAfterSalesForm.Solution.SolutionType === 2">
+                      <div class="row solution-type2" v-if="RefundBalanceShow">
+                        <div class="form-item">
+                          <div class="label">
+                            退到余额：
+                          </div>
+                          <div class="conent">
+                            <el-input @change="RefundBalanceChange()"
+                              v-model="HandlingAfterSalesForm.Solution.RefundBalance" placeholder="输入余额退款"
+                            oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"></el-input>元
+                          </div>
                         </div>
-                        <div class="conent">
-                          <el-input v-model="HandlingAfterSalesForm.Solution.RefundAmount"></el-input>元
-                        </div>
-                      </div>
-                      <div class="form-item">
-                        <div class="label">
-                          运费退款：
-                        </div>
-                        <div class="conent">
-                          <el-input v-model="HandlingAfterSalesForm.Solution.RefundFreightAmount"></el-input>元
-                        </div>
-                      </div>
-                      <div class="form-item">
-                        <div class="label">
-                          退款方式：
-                        </div>
-                        <div class="conent">
-                          <el-select
-                          v-model="HandlingAfterSalesForm.Solution.RefundType"
-                          placeholder="请选择退款方式" size="small" class="mp-common-select-comp-wrap font-12">
-                            <el-option
-                              label="原支付方式退回"
-                              :value="0">
-                            </el-option>
-                            <el-option
-                              label="退回余额"
-                              :value="1">
-                            </el-option>
-                          </el-select>
-                          <el-tooltip class="item" effect="dark" content="退款优先从客户未支付款项中扣除，\n不足部分从已付款款项中退回" placement="top">
-                            <template slot="content">
-                              <p>退款优先从客户未支付款项中扣除</p><p>不足部分从已付款款项中退回</p>
-                            </template>
-                            <span><i>?</i></span>
-                          </el-tooltip>
+                        <el-radio v-model="HandlingAfterSalesForm.Solution.RefundFreightType" :label="1">含运费</el-radio>
+                        <div class="form-item" v-if="HandlingAfterSalesForm.Solution.RefundFreightType === 1">
+                          <div class="conent">
+                            <el-input @change="RefundFreightAmountChange()" placeholder="输入运费退款"
+                              v-model="HandlingAfterSalesForm.Solution.RefundFreightAmount"
+                              oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"></el-input>元
+                          </div>
                         </div>
                       </div>
-                    </div>
+                      <div class="row solution-type2" v-if="RefundPrintBeanShow">
+                        <div class="form-item">
+                          <div class="label">
+                            退印豆：
+                          </div>
+                          <div class="conent">
+                            <el-input @change="RefundPrintBeanChange()" placeholder="输入印豆退款"
+                              v-model="HandlingAfterSalesForm.Solution.RefundPrintBean"
+                              oninput="value=value.replace(/[^\d]/g,'')"></el-input>个
+                          </div>
+                        </div>
+                        <el-radio v-model="HandlingAfterSalesForm.Solution.RefundFreightType" :label="3">含运费</el-radio>
+                        <div class="form-item" v-if="HandlingAfterSalesForm.Solution.RefundFreightType === 3">
+                          <div class="conent">
+                            <el-input @change="RefundFreightAmountChange()" placeholder="输入运费退款"
+                              v-model="HandlingAfterSalesForm.Solution.RefundFreightAmount"
+                              oninput="value=value.replace(/[^\d]/g,'')"></el-input>个
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row solution-type2" v-if="RefundThirdPartyShow">
+                        <div class="form-item">
+                          <div class="label">
+                            退到扫码账户：
+                          </div>
+                          <div class="conent">
+                            <el-input @change="HandlingAfterSalesForm.Solution.RefundThirdParty > dataInfo.Order.SurplusOrderThirdParty ?
+                              HandlingAfterSalesForm.Solution.RefundThirdParty = dataInfo.Order.SurplusOrderThirdParty :
+                              HandlingAfterSalesForm.Solution.RefundThirdParty" placeholder="输入扫码退款"
+                              v-model="HandlingAfterSalesForm.Solution.RefundThirdParty"
+                            oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"></el-input>元
+                          </div>
+                        </div>
+                        <el-radio v-model="HandlingAfterSalesForm.Solution.RefundFreightType" :label="2">含运费</el-radio>
+                        <div class="form-item" v-if="HandlingAfterSalesForm.Solution.RefundFreightType === 2">
+                          <div class="conent">
+                            <el-input @change="HandlingAfterSalesForm.Solution.RefundFreightAmount > dataInfo.Order.SurplusOrderThirdParty ?
+                              HandlingAfterSalesForm.Solution.RefundFreightAmount = dataInfo.Order.SurplusOrderThirdParty :
+                              HandlingAfterSalesForm.Solution.RefundFreightAmount" placeholder="输入运费退款"
+                              v-model="HandlingAfterSalesForm.Solution.RefundFreightAmount"
+                              oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"></el-input>元
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row solution-type2" v-if="UnpaidReducedAmountShow">
+                        <div class="form-item">
+                          <div class="label">
+                            售后优惠：
+                          </div>
+                          <div class="conent">
+                            <el-input @change="HandlingAfterSalesForm.Solution.UnpaidReducedAmount > dataInfo.Order.UnPaidAmount ?
+                              HandlingAfterSalesForm.Solution.UnpaidReducedAmount = dataInfo.Order.UnPaidAmount :
+                              HandlingAfterSalesForm.Solution.UnpaidReducedAmount" placeholder="输入售后优惠"
+                              v-model="HandlingAfterSalesForm.Solution.UnpaidReducedAmount"
+                            oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"></el-input>元
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+
                     <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType === 7">
                       <div class="form-item">
-                        <div class="label">
+                        <div class="label" style="width: 5.8em;">
                           款数：
                         </div>
                         <div class="conent">
-                          <el-input v-model="HandlingAfterSalesForm.Solution.KindCount"></el-input>款
+                          <el-input v-model="HandlingAfterSalesForm.Solution.KindCount" oninput="value=value.replace(/[^\d]/g,'')" ></el-input>款
                         </div>
                       </div>
                       <div class="form-item">
@@ -196,7 +240,8 @@
                           数量：
                         </div>
                         <div class="conent">
-                          <el-input v-model="HandlingAfterSalesForm.Solution.Number"></el-input>{{dataInfo.Order.Product.Unit}}
+                          <el-input v-model="HandlingAfterSalesForm.Solution.Number"
+                          oninput="value=value.replace(/[^\d]/g,'')" ></el-input>{{dataInfo.Order.Product.Unit}}
                         </div>
                       </div>
                       <div class="form-item">
@@ -204,10 +249,10 @@
                           <div class="upload-file-box" v-if="ReprintIsUpload">
                             <FileSelectBtn class="uploadFileBox" accept='*'
                             :func="readFileUniqueName" title="上传文件" />
-                            <span v-if="this.HandlingAfterSalesForm.Solution.FileName" class="file-name-box">
-                              {{fileName}}<i @click="clearFile" class="el-icon-circle-close"></i>
+                            <span class="file-name-box">
+                              {{fileName}}
+                              <!-- <i v-if="this.HandlingAfterSalesForm.Solution.FileName" @click="clearFile" class="el-icon-circle-close"></i> -->
                             </span>
-                            <span v-else class="file-name-box">{{fileName}}</span>
                             <!-- <span class="is-font-size-12 is-gray" v-if="orderDetailData.FileCase === 1 && !fileName">文件非必传</span>
                             <span class="is-font-size-12 is-gray" v-if="orderDetailData.FileCase === 2 && !fileName">文件必传</span> -->
                           </div>
@@ -252,6 +297,7 @@
                         <div class="conent">
                           <TextareaInput type="textarea"
                           style="width: 430px;"
+                          placeholder="请输入处理意见"
                           show-word-limit :maxlength="300" v-model="HandlingAfterSalesForm.Solution.Opinion"></TextareaInput>
                         </div>
                       </div>
@@ -260,12 +306,17 @@
                 </div>
               </div>
               <div class="right" v-if="dataInfo && HandlingAfterSalesForm.Solution.SolutionType === 2">
-                <p>总金额:￥{{dataInfo.Order.FinalPrice}}元</p>
-                <p>已付:￥ <span class="red">{{dataInfo.Order.PaidAmount}}</span> 元</p>
-                <p>运费:￥{{dataInfo.Order.Freight}}元 <span class="tint">（含{{dataInfo.Order.FreightOrderNumber}}个订单）</span></p>
-                <p>订单退款:￥{{dataInfo.Order.RefundAmount}}元</p>
-                <p>运费退款:￥{{dataInfo.Order.RefundFreightAmount}}元</p>
-                <p>售后优惠:￥{{dataInfo.Order.ReducedAmount}}元</p>
+                <p><span class="label">成交价：</span>       {{dataInfo.Order.FinalPrice}}元</p>
+                <p><span class="label">已付金额：</span>     {{dataInfo.Order.PaidAmount}}元（含{{dataInfo.Order.PaidPrintBean}}个印豆）</p>
+                <p><span class="label">退款：</span>         {{dataInfo.Order.RefundOrderAmount}}元（含{{dataInfo.Order.RefundOrderPrintBean}}个印豆）</p>
+                <p><span class="label">未收金额：</span>     {{dataInfo.Order.UnPaidAmount}}元</p>
+                <p><span class="label">售后优惠：</span>     {{dataInfo.Order.ReducedAmount}}元</p>
+                <p><span class="label">运费：
+                  </span> {{dataInfo.Order.FreightAmount}}元（含{{dataInfo.Order.FreightPrintBean}}个印豆，含{{dataInfo.Order.FreightOrderNumber}}个订单）
+                </p>
+                <p><span class="label">已退运费：</span>     {{dataInfo.Order.RefundFreightAmount}}元（含{{dataInfo.Order.RefundFreightPrintBean}}个印豆）</p>
+                <p><span class="label">扫码支付：</span>     {{dataInfo.Order.OrderThirdPartyAmount}}元</p>
+                <p><span class="label">已退扫码金额：</span> {{dataInfo.Order.RefundOrderThirdPartyAmount}}元</p>
               </div>
             </div>
           </div>
@@ -273,9 +324,11 @@
       </section>
       <span slot="footer" class="dialog-footer" v-show="!isLoading">
         <div class="loss-box">
-          <span class="title">损失金额：</span>
+          <span class="title"><i>*</i>损失金额：</span>
           <input class="'is-warn'"
-            v-model.number="HandlingAfterSalesForm.LossAmount" type="text" placeholder="请输入损失金额">
+            v-model="HandlingAfterSalesForm.LossAmount"
+            oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"
+            type="text" placeholder="请输入损失金额">
           <span>元</span>
         </div>
         <div class="btns">
@@ -339,8 +392,8 @@ import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import DisplayPictrue from '@/components/ServiceAfterSale/EditDialog/DisplayPictrue.vue';
 import LoadingComp from '@/components/common/LoadingComp.vue';
 // eslint-disable-next-line import/no-named-default
-// import { default as UploadFileByBreakPoint, getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
-import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+import { default as breakPointUpload, getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+// import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
 import TextareaInput from '@/components/common/TextareaInput';
 
@@ -372,6 +425,7 @@ export default {
   },
   data() {
     return {
+      radio: '',
       UploadDisabled: false,
       QuestionTypeList: null,
       imgInfo: [],
@@ -382,6 +436,10 @@ export default {
       ],
       lossesNum: null,
       fileList: [],
+      // 补印文件
+      ReprintFile: null,
+      // 上传进度
+      ReprintFilePercentage: 0,
       dialogVisible: false,
       // 优惠卷列表
       couponList: [],
@@ -432,10 +490,17 @@ export default {
           RefundAmount: '',
           RefundBeanNumber: '',
           RefundBeanAmount: '',
-          RefundFreightAmount: '',
           RefundFreightCashAmount: '',
           RefundFreightBeanNumber: '',
           RefundFreightBeanAmount: '',
+          RefundFreightAmount: '', // 运费退款
+
+          RefundFreightType: '', // 运费退款方式
+          RefundBalance: '', // 订单余额退款
+          RefundThirdParty: '', // 订单扫码退款
+          RefundPrintBean: '', // 订单印豆退款
+          UnpaidReducedAmount: '', // 售后优惠
+
           RefundType: '',
           LogisticsReduced: '',
           OrderID: '',
@@ -451,14 +516,6 @@ export default {
   },
   computed: {
     ...mapState('common', ['isLoading', 'DepartmentList']),
-    showNumber() {
-      if (this.orderDetailData?.ProductParams?.Attributes?.HaveNumber) return true;
-      return false;
-    },
-    showKindCount() {
-      if (this.orderDetailData?.ProductParams?.Attributes?.HaveKind) return true;
-      return false;
-    },
     FirstGradeQuestionType() {
       return this.QuestionTypeList?.filter(res => res.ParentID === -1);
     },
@@ -468,6 +525,25 @@ export default {
     fileName() {
       // this.HandlingAfterSalesForm.Solution.FileName
       return this.HandlingAfterSalesForm.Solution.FileName ? this.HandlingAfterSalesForm.Solution.FileName : '请上传文件';
+    },
+    ReprintFilePercentageVisible() {
+      return this.ReprintFilePercentage > 0 && this.ReprintFilePercentage < 100;
+    },
+    // 余额退款
+    RefundBalanceShow() {
+      return (this.dataInfo?.Order.SurplusOrderBalance + this.dataInfo?.Order.SurplusFreightAmount) || this.dataInfo?.Order.SurplusOrderThirdParty;
+    },
+    // 剩余印豆
+    RefundPrintBeanShow() {
+      // dataInfo.Order.SurplusOrderPrintBean + dataInfo.Order.SurplusFreightPrintBean
+      return this.dataInfo?.Order.SurplusOrderPrintBean + this.dataInfo?.Order.SurplusFreightPrintBean;
+    },
+    // 剩余扫码
+    RefundThirdPartyShow() {
+      return this.dataInfo?.Order.SurplusOrderThirdParty;
+    },
+    UnpaidReducedAmountShow() {
+      return this.dataInfo?.Order.UnPaidAmount;
     },
   },
   methods: {
@@ -515,10 +591,17 @@ export default {
           RefundAmount: '',
           RefundBeanNumber: '',
           RefundBeanAmount: '',
-          RefundFreightAmount: '',
           RefundFreightCashAmount: '',
           RefundFreightBeanNumber: '',
           RefundFreightBeanAmount: '',
+          RefundFreightAmount: '', // 运费退款
+
+          RefundFreightType: '', // 运费退款方式
+          RefundBalance: '', // 订单余额退款
+          RefundThirdParty: '', // 订单扫码退款
+          RefundPrintBean: '', // 订单印豆退款
+          UnpaidReducedAmount: '', // 售后优惠
+
           RefundType: '',
           LogisticsReduced: '',
           OrderID: '',
@@ -532,24 +615,24 @@ export default {
         IsSave: true,
       };
     },
-    // 上传文件
+    // 选择上传的文件
     readFileUniqueName(file) {
       // 上传成功后，设置文件名称, 文件唯一标识 getUniqueFileName
       if (!file) return;
-      const CustomerID = this.orderDetailData?.Customer?.CustomerID || '';
+      const CustomerID = this.dataInfo?.Order?.CustomerID || '';
       const uniqueName = getUniqueFileName({ file, Terminal: 1, CustomerID });
-      this.api.UploadBigImgNormal(file, uniqueName).then(res => {
-        if (res.data.Status !== 1000) return;
-        this.HandlingAfterSalesForm.Solution.UniqueName = uniqueName;
-        this.HandlingAfterSalesForm.Solution.FileName = file.name;
-        this.HandlingAfterSalesForm.Solution.IsNewUpFile = true;
-      });
+      // breakPointUpload()
+      this.ReprintFile = { file, uniqueName };
+      this.HandlingAfterSalesForm.Solution.UniqueName = uniqueName;
+      this.HandlingAfterSalesForm.Solution.FileName = file.name;
+      this.HandlingAfterSalesForm.Solution.IsNewUpFile = true;
     },
     // 清除文件
     clearFile() {
       this.HandlingAfterSalesForm.Solution.UniqueName = '';
       this.HandlingAfterSalesForm.Solution.FileName = '';
-      this.HandlingAfterSalesForm.Solution.IsNewUpFile = null;
+      this.HandlingAfterSalesForm.Solution.IsNewUpFile = false;
+      this.ReprintFile = null;
     },
     onDepartmentRemoveClick(i) {
       if (this.HandlingAfterSalesForm.AfterSaleResponsibilities.length === 1) {
@@ -685,6 +768,37 @@ export default {
       });
       return num !== 100;
     },
+    // 余额退款的最大值限制
+    RefundBalanceChange() {
+      const maxNum = this.dataInfo.Order.SurplusOrderBalance
+      + (this.HandlingAfterSalesForm.Solution.RefundFreightType === 1 ? this.dataInfo.Order.SurplusFreightAmount : 0);
+      if (this.HandlingAfterSalesForm.Solution.RefundBalance > maxNum) {
+        this.HandlingAfterSalesForm.Solution.RefundBalance = maxNum;
+      }
+      this.RefundFreightAmountChange();
+    },
+    // 印豆退款的最大值限制
+    RefundPrintBeanChange() {
+      const maxNum = this.dataInfo.Order.SurplusOrderPrintBean
+      + (this.HandlingAfterSalesForm.Solution.RefundFreightType === 3 ? this.dataInfo.Order.SurplusFreightPrintBean : 0);
+      if (this.HandlingAfterSalesForm.Solution.RefundPrintBean > maxNum) {
+        this.HandlingAfterSalesForm.Solution.RefundPrintBean = maxNum;
+      }
+      this.RefundFreightAmountChange();
+    },
+    // 运费改变
+    RefundFreightAmountChange() {
+      if (this.HandlingAfterSalesForm.Solution.RefundFreightType === 1) {
+        if (this.HandlingAfterSalesForm.Solution.RefundFreightAmount > this.dataInfo.Order.SurplusFreightAmount) {
+          this.HandlingAfterSalesForm.Solution.RefundFreightAmount = this.dataInfo.Order.SurplusFreightAmount;
+        }
+      }
+      if (this.HandlingAfterSalesForm.Solution.RefundFreightType === 3) {
+        if (this.HandlingAfterSalesForm.Solution.RefundFreightAmount > this.dataInfo.Order.SurplusFreightPrintBean) {
+          this.HandlingAfterSalesForm.Solution.RefundFreightAmount = this.dataInfo.Order.SurplusFreightPrintBean;
+        }
+      }
+    },
     checkSubmitInfo() {
       if (this.verifyQuestions()) { // 问题验证
         // 提示问题有错误
@@ -707,18 +821,69 @@ export default {
         return false;
       }
       if (this.HandlingAfterSalesForm.Solution.SolutionType === 2) { // 订单退款
-        if (!this.HandlingAfterSalesForm.Solution.RefundAmount) {
-          this.messageBox.failSingleError('提交失败', '请输入订单退款');
+        const { Solution } = this.HandlingAfterSalesForm;
+
+        if (this.RefundBalanceShow || this.RefundPrintBeanShow || this.RefundThirdPartyShow || this.UnpaidReducedAmountShow) {
+          let num = 0;
+          if (this.RefundBalanceShow) {
+            num += Number(Solution.RefundBalance);
+          }
+          if (this.RefundPrintBeanShow) {
+            num += Number(Solution.RefundPrintBean);
+          }
+          if (this.RefundThirdPartyShow) {
+            num += Number(Solution.RefundThirdParty);
+          }
+          if (this.UnpaidReducedAmountShow) {
+            num += Number(Solution.UnpaidReducedAmount);
+          }
+          if (num === 0) {
+            this.messageBox.failSingleError('提交失败', '请输入退款金额');
+            return false;
+          }
+        }
+
+        // console.log(String(Solution.RefundFreightAmount));
+        // if (!Solution.RefundFreightAmount && Solution.RefundFreightAmount !== 0) {
+        //   this.messageBox.failSingleError('提交失败', '请输入运费退款');
+        //   return false;
+        // }
+
+        // 退余额
+        if (Solution.RefundFreightType === 1
+          && (Number(Solution.RefundBalance) - Number(Solution.RefundFreightAmount)) > this.dataInfo.Order.SurplusOrderBalance
+        ) {
+          this.messageBox.failSingleError('提交失败', '余额退款金额不能超过支付金额');
           return false;
         }
-        if (this.HandlingAfterSalesForm.Solution.RefundFreightAmount === ''
-          || this.HandlingAfterSalesForm.Solution.RefundFreightAmount === undefined
-          || this.HandlingAfterSalesForm.Solution.RefundFreightAmount === null) {
-          this.messageBox.failSingleError('提交失败', '请输入运费退款');
+        if (Solution.RefundFreightType === 1 && Number(Solution.RefundFreightAmount) > Number(Solution.RefundBalance)
+        ) {
+          this.messageBox.failSingleError('提交失败', '运费退款金额不能超过余额退款金额');
           return false;
         }
-        if (this.HandlingAfterSalesForm.Solution.RefundType === '') {
-          this.messageBox.failSingleError('提交失败', '请选择退款方式');
+        // 退印豆
+        if (Solution.RefundFreightType === 3
+          && (Number(Solution.RefundPrintBean) - Number(Solution.RefundFreightAmount)) > this.dataInfo.Order.SurplusOrderPrintBean
+        ) {
+          this.messageBox.failSingleError('提交失败', '印豆退款数量不能超过支付印豆数量');
+          return false;
+        }
+        if (Solution.RefundFreightType === 3
+          && Number(Solution.RefundFreightAmount) > Number(Solution.RefundPrintBean)
+        ) {
+          this.messageBox.failSingleError('提交失败', '运费退款金额不能超过印豆退款数量');
+          return false;
+        }
+        // 退扫码
+        if (Solution.RefundFreightType === 2 && Solution.RefundThirdParty > this.dataInfo.Order.SurplusOrderThirdParty
+        ) {
+          this.messageBox.failSingleError('提交失败', '退到扫码账户金额不能超过扫码支付金额');
+          return false;
+        }
+        if (Solution.RefundFreightType === 2
+          && Number(Solution.RefundFreightAmount) > Number(Solution.RefundThirdParty)
+        ) {
+          this.messageBox.failSingleError('提交失败', '运费退款金额不能超过退到扫码账户金额');
           return false;
         }
       }
@@ -731,7 +896,7 @@ export default {
           this.messageBox.failSingleError('提交失败', '请输入补印数量');
           return false;
         }
-        if (this.ReprintIsUpload && !this.HandlingAfterSalesForm.Solution.UniqueName) {
+        if (this.ReprintIsUpload && !this.HandlingAfterSalesForm.Solution.FileName) {
           this.messageBox.failSingleError('提交失败', '请上传补印文件');
           return false;
         }
@@ -746,11 +911,25 @@ export default {
         this.messageBox.failSingleError('提交失败', '请输入处理意见');
         return false;
       }
-      if (this.HandlingAfterSalesForm.LossAmount === '') {
+      if (!this.HandlingAfterSalesForm.LossAmount) {
         this.messageBox.failSingleError('提交失败', '请输入损失金额');
         return false;
       }
       return true;
+    },
+    CompleteSave(temp, IsSave) {
+      this.api.getComplete(temp).then(resp => {
+        if (resp.data.Status === 1000 || resp.data.Status === 1100) {
+          // 保存/提交成功
+          this.messageBox.successSingle(IsSave ? '保存成功' : '提交成功', () => {
+            if (IsSave) {
+              this.handleClose();
+            } else {
+              this.$emit('successSubmit');
+            }
+          });
+        }
+      });
     },
     async submitServiceOrder(IsSave) {
       this.HandlingAfterSalesForm.IsSave = IsSave;
@@ -760,18 +939,19 @@ export default {
       temp.AfterSaleQuestions = temp.AfterSaleQuestions.filter(it => it.FirstQuestionType || it.SecondQuestionType || it.Remark);
       temp.AfterSaleResponsibilities = temp.AfterSaleResponsibilities.filter(it => it.Department || (it.Proportion === 0 || !!it.Proportion));
       const cb = () => {
-        this.api.getComplete(temp).then(resp => {
-          if (resp.data.Status === 1000 || resp.data.Status === 1100) {
-            // 保存/提交成功
-            this.messageBox.successSingle(IsSave ? '保存成功' : '提交成功', () => {
-              if (IsSave) {
-                this.handleClose();
-              } else {
-                this.$emit('successSubmit');
-              }
-            });
-          }
-        });
+        if (!this.ReprintFile || !this.HandlingAfterSalesForm.Solution.IsNewUpFile) {
+          this.CompleteSave(temp, IsSave);
+        } else {
+          const { file, uniqueName } = this.ReprintFile;
+          // 先上传文件
+          breakPointUpload(file, uniqueName, (res) => {
+            this.ReprintFilePercentage = Math.round(res);
+          }).then(res => {
+            if (!res) return;
+            // 文件上传成功
+            this.CompleteSave(temp, IsSave);
+          });
+        }
       };
       if (IsSave) {
         // 保存
@@ -859,6 +1039,15 @@ export default {
         if (this.HandlingAfterSalesForm.AfterSaleResponsibilities.length === 0) {
           this.onDepartmentAddClick();
         }
+        if (!this.HandlingAfterSalesForm.Solution.RefundFreightType) {
+          if (this.RefundBalanceShow) {
+            this.HandlingAfterSalesForm.Solution.RefundFreightType = 1;
+          } else if (this.RefundPrintBeanShow) {
+            this.HandlingAfterSalesForm.Solution.RefundFreightType = 3;
+          } else if (this.RefundThirdPartyShow) {
+            this.HandlingAfterSalesForm.Solution.RefundFreightType = 2;
+          }
+        }
       }
     },
   },
@@ -872,6 +1061,16 @@ export default {
       // 获取部门
       this.$store.dispatch('common/getAfterSalesDepartmentList');
     },
+    'HandlingAfterSalesForm.Solution.RefundFreightType': {
+      handler(newVal) {
+        if (newVal !== 1) {
+          this.RefundBalanceChange();
+        }
+        if (newVal !== 3) {
+          this.RefundPrintBeanChange();
+        }
+      },
+    },
   },
   beforeDestroy() {
     this.$router.push({ query: {} });
@@ -881,7 +1080,7 @@ export default {
 
 <style lang='scss'>
 @import "@/assets/css/common/var.scss";
-.dialog-to-order-service-box {
+.dialogexecutedialogcomp {
   height: 800px;
   position: relative;
   .el-dialog--center .el-dialog__body{
@@ -1004,14 +1203,13 @@ export default {
               }
               .right{
                 flex: 1;
-                max-height: 105px;
                 overflow: auto;
                 margin-top: 20px;
                 font-size: 12px;
                 .row{
                   display: flex;
                   align-items: center;
-                  margin-bottom: 15px;
+                  margin-bottom: 10px;
                   // margin-left: 15px;
                   >.el-select{
                     margin-right: 20px;
@@ -1071,7 +1269,6 @@ export default {
               }
               >.right{
                 flex: 1;
-                max-height: 105px;
                 overflow: auto;
                 font-size: 12px;
                 margin-top: 20px;
@@ -1127,10 +1324,10 @@ export default {
             }
             .bottom{
               display: flex;
-              margin-top: 20px;
+              margin-top: 15px;
               >.left{
                 min-height: 151px;
-                min-width: 630px;
+                // min-width: 630px;
               }
               .solution{
                 display: flex;
@@ -1179,7 +1376,7 @@ export default {
                   .row{
                     display: flex;
                     align-items: center;
-                    margin-top: 15px;
+                    margin-top: 10px;
                     .form-item{
                       display: flex;
                       align-items: center;
@@ -1253,7 +1450,7 @@ export default {
                         }
                         >.el-input{
                           height: 24px;
-                          width: 60px;
+                          width: 120px;
                           margin-right: 10px;
                           input{
                             height: 100%;
@@ -1345,6 +1542,19 @@ export default {
                       }
                     }
                   }
+                  .solution-type2{
+                    margin-left: -1.8em;
+                    .form-item{
+                      .label{
+                        width: 7.6em;
+                      }
+                      .label::before{
+                        content: '';
+                        color: #FF3769;
+                        margin-right: -3px;
+                      }
+                    }
+                  }
                 }
               }
               >.right{
@@ -1354,9 +1564,16 @@ export default {
                 margin-top: 10px;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
+                // justify-content: space-between;
                 font-size: 12px;
                 color: #444444;
+                >p {
+                  margin-bottom: 15px;
+                  display: flex;
+                  // .label{
+                  //   width: 7em;
+                  // }
+                };
                 .red{
                   color: #DF3963;
                 }
@@ -1382,6 +1599,9 @@ export default {
         font-size: 12px;
         > .title{
           font-weight: 600;
+          >i{
+            color: #FF3769;
+          }
         }
         > input{
             width: 130px;
