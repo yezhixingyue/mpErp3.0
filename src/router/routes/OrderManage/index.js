@@ -110,11 +110,11 @@ const routes = { // 客户订单管理
       name: 'ServiceInfo',
       meta: {
         title: '售后详情',
-        pageName: 'feedbackInfoPage',
+        pageName: 'ServiceAfterSaleInfoPage',
         PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
         requiresAuth: true,
       },
-      component: () => import('../../../views/FeedbackPage/FeedbackInfoPage.vue'),
+      component: () => import('../../../components/ServiceAfterSale/Main/ServiceAfterSaleInfoPage.vue'),
     },
     /*  售后申请列表
     ------------------------------------------ */

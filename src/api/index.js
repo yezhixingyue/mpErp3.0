@@ -12,7 +12,7 @@ const api = {
     return instance.get('/Api/Express/List', data);
   },
   getOrderList(data) { // 获取客户订单列表（后台）
-    return instance.post('/Api/Order/List2', data); // /Api/Customer/OrderList
+    return instance.post('/Api/Order/List', data); // /Api/Customer/OrderList
   },
   getCustomerInfo(customerID) { // 获取客户信息
     return instance.get(`/Api/OrderAfterSale/CustomerInfo?customerID=${customerID}`);

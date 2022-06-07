@@ -454,28 +454,9 @@ export default {
         QuestionPicList: [''],
         Opinion: '',
         LossAmount: '',
-        AfterSaleQuestions: [
-          // {
-          //   AfterSaleCode: '',
-          //   SecondQuestionType: '',
-          //   Remark: '',
-          //   FirstQuestionType: '',
-          //   key: '',
-          // },
-        ],
-        AfterSaleResponsibilities: [
-          // {
-          //   AfterSaleCode: '',
-          //   Department: '',
-          //   Proportion: '',
-          // },
-        ],
-        AfterSalePackages: [
-          // {
-          //   AfterSaleCode: '',
-          //   PackageID: '',
-          // },
-        ],
+        AfterSaleQuestions: [],
+        AfterSaleResponsibilities: [],
+        AfterSalePackages: [],
         PackageList: '包裹列表',
         Solution: {
           SolutionType: '',
@@ -554,28 +535,9 @@ export default {
         QuestionPicList: [],
         Opinion: '',
         LossAmount: '',
-        AfterSaleQuestions: [
-          // {
-          //   AfterSaleCode: '',
-          //   SecondQuestionType: '',
-          //   Remark: '',
-          //   FirstQuestionType: '',
-          //   key: '',
-          // },
-        ],
-        AfterSaleResponsibilities: [
-          // {
-          //   AfterSaleCode: '',
-          //   Department: '',
-          //   Proportion: '',
-          // },
-        ],
-        AfterSalePackages: [
-          // {
-          //   AfterSaleCode: '',
-          //   PackageID: '',
-          // },
-        ],
+        AfterSaleQuestions: [],
+        AfterSaleResponsibilities: [],
+        AfterSalePackages: [],
         PackageList: '包裹列表',
         Solution: {
           SolutionType: '',
@@ -605,12 +567,7 @@ export default {
           RefundType: '',
           LogisticsReduced: '',
           OrderID: '',
-          CouponList: [
-            // {
-            //   key: '',
-            //   value: '',
-            // },
-          ],
+          CouponList: [],
         },
         IsSave: true,
       };
@@ -730,15 +687,6 @@ export default {
       this.selectedCouponList = [];
       this.isCouponListLoaded = false;
     },
-    // onuploadclick(e) {
-    //   let bool = false;
-    //   if (!this.check(this.serviceImgList, this.imgRules, (msg) => {
-    //     this.messageBox.failSingle(msg);
-    //   })) bool = true;
-    //   if (e && e.preventDefault && bool) {
-    //     e.preventDefault();
-    //   }
-    // },
     handllePictureUploaded(e) {
       if (this.serviceImgList.length >= 4) return;
       this.serviceImgList.push(e.Data.Url);
@@ -1119,10 +1067,9 @@ export default {
         }
         > main {
           padding-top: 8px;
-          margin-bottom: 0px;
+          margin-bottom: 20px;
           padding-left: 20px;
           display: flex;
-          padding-bottom: 20px;
           .submit-img-box{
             display: flex;
             flex-direction: column;
@@ -1152,15 +1099,15 @@ export default {
         }
       }
       &.service-after-sale {
-        // height: 395px;
         min-height: 570px;
+        max-height: 570px;
         display: flex;
         margin-top: 20px;
         box-shadow: 0px 3px 10px 0px rgba(98, 98, 98, 0.2);
         border-radius: 5px;
         border: solid 1px $--border-color-light;
         > header {
-          height: 100%;
+          // height: 100%;
           width: 85px;
           flex: none;
           > div {
@@ -1630,6 +1577,7 @@ export default {
           width: 120px;
           height: 29px;
           border-radius: 2px;
+          margin-left: 30px;
           &:first-of-type {
             margin-left: 30px;
           }

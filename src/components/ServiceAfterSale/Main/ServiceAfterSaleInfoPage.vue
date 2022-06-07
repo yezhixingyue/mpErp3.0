@@ -6,7 +6,7 @@
 import AfterTheDetails from '@/components/common/AfterTheDetails.vue';
 
 export default {
-  name: 'feedbackInfoPage',
+  name: 'ServiceAfterSaleInfoPage',
   components: {
     AfterTheDetails,
   },

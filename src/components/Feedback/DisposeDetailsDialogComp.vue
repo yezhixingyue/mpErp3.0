@@ -5,7 +5,7 @@
     :modal-append-to-body='false'
     width="1000px"
     :modal='false'
-    custom-class="dialog-to-order-service-box mp-img-style-header"
+    custom-class="dialogdisposedetailsdialogcomp mp-img-style-header"
     top="6vh"
     @open="Open"
     center :close-on-press-escape='false'
@@ -405,7 +405,7 @@ export default {
 
 <style lang='scss'>
 @import "@/assets/css/common/var.scss";
-.dialog-to-order-service-box {
+.dialogdisposedetailsdialogcomp {
   height: 800px;
   position: relative;
   .el-dialog--center .el-dialog__body{
@@ -447,6 +447,7 @@ export default {
           margin-bottom: 0px;
           padding-left: 20px;
           display: flex;
+          margin-top: -15px;
           .submit-img-box{
             display: flex;
             flex-direction: column;
@@ -462,7 +463,8 @@ export default {
         }
       }
       &.service-after-sale {
-        height: 565px;
+        min-height: 565px;
+        max-height: 565px;
         display: flex;
         margin-top: 20px;
         box-shadow: 0px 3px 10px 0px rgba(98, 98, 98, 0.2);
@@ -472,7 +474,7 @@ export default {
           margin-right: 1em;
         }
         > header {
-          height: 100%;
+          // height: 100%;
           width: 85px;
           flex: none;
           > div {
@@ -490,7 +492,7 @@ export default {
           margin-bottom: 20px;
           width: 835px;
           max-height: 820px;
-                  overflow: auto;
+          overflow: auto;
           .left-table{
             width: 100%;
           }
