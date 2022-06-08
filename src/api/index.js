@@ -1101,6 +1101,12 @@ const api = {
   getLogisticsBindStation(data) { // POST /Api/Logistics/BindStation  关联网点 -- 参数同保存参数 RelationList
     return instance.post('/Api/Logistics/BindStation', data);
   },
+
+  /* 发票管理 api
+  ----------------------------------------------------------------------------------- */
+  getInvoiceCategoryList(condition) { // POST /Api/InvoiceCategory/List   获取发票分类列表
+    return instance.post('/Api/InvoiceCategory/List', condition);
+  },
 };
 
 export default api;

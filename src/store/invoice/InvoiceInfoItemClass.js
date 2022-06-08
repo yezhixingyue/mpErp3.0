@@ -4,7 +4,7 @@ import messageBox from '../../assets/js/utils/message';
 export default class InvoiceInfoItemClass {
   ID = ''
 
-  Name = ''
+  CategoryName = ''
 
   Unit = ''
 
@@ -18,12 +18,12 @@ export default class InvoiceInfoItemClass {
   }
 
   checker(InvoiceInfoList) {
-    if (!this.Name) {
+    if (!this.CategoryName) {
       messageBox.failSingleError('提交失败', '请填写开票类别名称');
       return false;
     }
 
-    if (InvoiceInfoList.some(it => it.Name === this.Name && it.ID !== this.ID)) {
+    if (InvoiceInfoList.some(it => it.CategoryName === this.CategoryName && it.ID !== this.ID)) {
       messageBox.failSingleError('提交失败', '开票类别名称重复');
       return false;
     }

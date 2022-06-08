@@ -9,7 +9,7 @@
     border
     style="width: 100%"
   >
-    <el-table-column width="350px" prop="Name" show-overflow-tooltip label="开票类别名称"></el-table-column>
+    <el-table-column width="350px" prop="CategoryName" show-overflow-tooltip label="开票类别名称"></el-table-column>
     <el-table-column width="160px" prop="Unit" show-overflow-tooltip label="单位"></el-table-column>
     <el-table-column min-width="220px" label="产品种类" class-name='left'>
       <template slot-scope="scope">
@@ -75,7 +75,7 @@ export default {
       this.$emit('edit', data.ID);
     },
     onRemoveClick(data) {
-      this.messageBox.warnCancelBox('确定删除该开票类别吗', `类别名称：[ ${data.Name} ]`, () => {
+      this.messageBox.warnCancelBox('确定删除该开票类别吗', `类别名称：[ ${data.CategoryName} ]`, () => {
         this.$emit('remove', data);
       });
     },

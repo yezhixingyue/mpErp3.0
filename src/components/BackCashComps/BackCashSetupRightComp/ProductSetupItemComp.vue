@@ -2,40 +2,7 @@
   <div class="mp-erp-back-cash-setup-page-right-item-product-range-item-comp-wrap">
     <TableItemShowComp :list='content'  class="products" title='产品' />
     <div class="condition">
-      <el-tooltip v-if="conditionObj" effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
-        <div slot="content">
-          <p class="if-box"><span class="is-origin">当</span> {{conditionObj.FilterTypeText}}：</p>
-          <template v-if="Array.isArray(conditionObj.conditionText)">
-            <p v-for="(it, i) in conditionObj.conditionText" :key="it.name + 'tips' + i">
-              <span v-if="i > 0" class="type">{{conditionObj.Constraint.FilterType === 1 ? '且' : '或'}}</span>
-              <span class="name">{{it.name}}</span>
-              <span class="is-origin">{{it.operator}}</span>
-              <span class="val">{{it.val}}</span>
-              <span v-if="i === conditionObj.conditionText.length - 1" style="margin-left:2px"> 。</span>
-              <span v-else style="margin-left:2px">；</span>
-            </p>
-          </template>
-          <p v-else>{{conditionObj.conditionText}}</p>
-          <p class="if-box" style="margin-right:5px">
-            <span class="is-origin">时 生效。</span>
-          </p>
-        </div>
-        <div class="common-property-condition-text-content-box">
-          <p class="if-box"><span class="is-origin">当</span> {{conditionObj.FilterTypeText}}</p>
-          <template v-if="Array.isArray(conditionObj.conditionText)">
-            <p v-for="(it, i) in conditionObj.conditionText" :key="it.name + 'content' + i">
-              <span v-if="i > 0" class="type">{{conditionObj.Constraint.FilterType === 1 ? '且' : '或'}}</span>
-              <span>{{it.name}}</span>
-              <span>{{it.operator}}</span>
-              <span>{{it.val}}</span>
-            </p>
-          </template>
-          <p v-else>{{conditionObj.conditionText}}</p>
-          <p class="if-box" style="margin-left:10px;margin-right:5px">
-            <span class="is-origin">时 生效。</span>
-          </p>
-        </div>
-      </el-tooltip>
+      <ConditionTextDisplayComp :conditionObj="conditionObj" />
     </div>
     <div class="menus">
       <span class="blue-span" @click="filter" :class="{disabled: isStarted}">筛选条件</span>
@@ -48,8 +15,9 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
-import TableItemShowComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp';
 import { getSelectedContentBySelectedDataAndAllData } from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/utils';
+import TableItemShowComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp';
+import ConditionTextDisplayComp from '../../common/FormulaAndConditionComps/ConditionTextDisplayComp.vue';
 
 export default {
   props: {
@@ -64,6 +32,7 @@ export default {
   },
   components: {
     TableItemShowComp,
+    ConditionTextDisplayComp,
   },
   computed: {
     ...mapState('cashback', ['curItemData']),

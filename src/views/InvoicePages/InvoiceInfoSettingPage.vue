@@ -9,7 +9,7 @@
           <ul class="invoice-info-setting-left-content" v-if="itemData">
             <li>
               <label for="">开票类别名称：</label>
-              <el-input maxlength="20" size="small" v-model.trim="itemData.Name" class="n" show-word-limit></el-input>
+              <el-input maxlength="20" size="small" v-model.trim="itemData.CategoryName" class="n" show-word-limit></el-input>
             </li>
             <li>
               <label for="">类别单位：</label>

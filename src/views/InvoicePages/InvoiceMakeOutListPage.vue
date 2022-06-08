@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'InvoiceMakeOutListPage ',
+  name: 'InvoiceMakeOutListPage',
 };
 </script>
 <style lang='scss'>

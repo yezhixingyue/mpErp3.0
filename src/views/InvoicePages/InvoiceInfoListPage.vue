@@ -45,6 +45,7 @@ export default {
   mounted() {
     this.$store.dispatch('common/getProductClassifyData');
     this.$store.dispatch('common/getAllProductNames');
+    this.$store.dispatch('invoice/getInvoiceInfoList');
   },
 };
 </script>

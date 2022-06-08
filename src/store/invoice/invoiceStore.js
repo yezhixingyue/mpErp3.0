@@ -71,7 +71,7 @@ export default {
       const temp = CommonClassType.filter(state.condition4InvoiceMakeUpList, true);
       commit('setInvoiceMakeUpList', { Data: [], DataNumber: undefined });
       commit('setLoading', true);
-      const resp = await api.getCalculatePriceRecordList(temp).catch(() => {}); // 需要改接口
+      const resp = await api.getCalculatePriceRecordList(temp).catch(() => null); // 需要改接口
       if (resp && resp.data.Status === 1000) {
         commit('setInvoiceMakeUpList', resp.data);
       }
@@ -83,7 +83,7 @@ export default {
       // 获取发票类别列表数据
       commit('setInvoiceInfoList', { Data: [], DataNumber: undefined });
       commit('setLoading', true);
-      const resp = await api.getCalculatePriceRecordList().catch(() => {}); // 需要改接口
+      const resp = await api.getInvoiceCategoryList().catch(() => null); // 需要改接口
       if (resp && resp.data.Status === 1000) {
         commit('setInvoiceInfoList', resp.data);
       }
