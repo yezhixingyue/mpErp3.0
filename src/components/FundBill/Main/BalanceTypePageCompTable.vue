@@ -20,13 +20,13 @@
      show-overflow-tooltip prop="Customer.Type.Second" label="客户类型" min-width="76"></el-table-column>
      <el-table-column
      show-overflow-tooltip prop="Customer.Grade.Second" label="客户等级" min-width="76"></el-table-column>
-    <el-table-column label="类型" min-width="60">
+    <el-table-column label="类型" min-width="70">
      <span
       slot-scope="scope"
       :class="{ 'is-red': scope.row.Type === 21, 'is-success': scope.row.Type === 11 }"
      >{{ scope.row.Type | formatFundBillBalanceType }}</span>
     </el-table-column>
-    <el-table-column label="方式" min-width="75">
+    <el-table-column label="方式" min-width="70">
       <template slot-scope="scope">{{scope.row.Currency | formatFundBillBalanceCurrency}}</template>
     </el-table-column>
     <el-table-column label="时间" min-width="125">
@@ -45,7 +45,7 @@
     <el-table-column  :label="isBeanType ? '印豆余额' : '账户余额'"  min-width="122">
       <template slot-scope="scope">{{ scope.row.NewAmount}}{{isBeanType ? '个' : '元'}}</template>
     </el-table-column>
-    <el-table-column prop="Remark" label="备注" min-width="130">
+    <el-table-column prop="Remark" label="备注" min-width="125">
         <span class="is-gray" slot-scope="scope">{{scope.row.Remark}}</span>
     </el-table-column>
     <el-table-column label="销售区域" min-width="160" show-overflow-tooltip>

@@ -194,6 +194,7 @@ export default {
       { name: '不限', ID: '' },
       { name: '充值', ID: 11 },
       { name: '支出', ID: 21 },
+      { name: '扫码减款', ID: 31 },
     ],
     FundBillMonetyTypeList: [
       { name: '印豆', ID: 0 },
