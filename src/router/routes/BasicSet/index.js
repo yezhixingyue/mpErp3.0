@@ -166,6 +166,17 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/BasicSetup/FactoryManagePage.vue'),
     },
+    {
+      path: '/factoryManagSetup/:ID',
+      name: 'factoryManagSetup',
+      meta: {
+        title: '生产工厂a',
+        pageName: 'FactoryManagSetupPage',
+        PermissionInfo: ['PermissionSetupFactoryBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/BasicSetup/FactoryManagSetupPage.vue'),
+    },
     /*  停机维护
     ------------------------------------------ */
     {
@@ -244,7 +255,12 @@ const routeTree = {
     ------------------------------------------ */
     {
       name: 'factoryManage',
-      children: [],
+      children: [
+        {
+          name: 'factoryManagSetup',
+          children: [],
+        },
+      ],
     },
     /*  停机维护
     ------------------------------------------ */

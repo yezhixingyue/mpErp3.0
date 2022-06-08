@@ -617,6 +617,9 @@ const api = {
   getFactoryRemove(factoryID) { // 工厂删除
     return instance.delete(`/Api/Factory/Remove?factoryID=${factoryID}`);
   },
+  getFactoryProductPriceList(factoryID) { // GET /Api/Factory/ProductPrice/List 获取工厂产品价格列表
+    return instance.get(`/Api/Factory/ProductPrice/List?factoryID=${factoryID}`);
+  },
   getElementSave(data) { // POST /Api/Element/Save  保存界面元素
     return instance.post('/Api/Element/Save', data);
   },

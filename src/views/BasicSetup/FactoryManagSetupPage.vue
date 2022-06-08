@@ -1,64 +1,62 @@
 <template>
-  <section class="mp-erp-factory-manage-page-wrap">
-    <FactoryManageHeader @onFactoryAddClick='onFactoryAddClick' @onFilterClick='onFilterClick' :filterWords='filterWords' />
+  <section class="mp-erp-factory-manage-setup-page-wrap">
+    <header>
+      <div class="factory-manag-setup-header">
+        <p class="mp-common-title-wrap">当前工厂：翰威帆布袋</p> <br>
+        <el-button type="primary" v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.Setup"
+         @click="onFactoryAddClick" class="blue-full-color-btn-styles is-blue-button">添加生产工厂</el-button>
+      </div>
+    </header>
     <main>
-      <FactoryManageTable
+      <FactoryManageSetupTable
         :dataList='filterDataList'
-        :filterWords='filterWords'
-        :getAddName='getItemAddressName'
         @handleAddressItemEdit='handleAddressItemEdit'
-        @handleAddressItemSetting='handleAddressItemSetting'
         @handleAddressItemRemove='handleAddressItemRemove'
        />
+       <div class="go-back-box">
+       </div>
       <FactoryManageDialog :visible.sync='dialogVisible' :areaList='allAdAreaTreeList' :itemData='curItemData' @submit="onSubmit" />
     </main>
     <footer>
-      <span>共检索出 <i>{{factoryList.length}}</i> 条数据</span>
-      <span v-show="filterWords" style="margin-left: 5px">，筛选出 <i>{{filterDataList.length}}</i> 条</span>
+      <el-button class="cancel-blue-btn" @click="onGoBackClick"><i>＜＜</i> 返回</el-button>
     </footer>
   </section>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import FactoryManageHeader from '../../components/FactoryManage/FactoryManageHeader.vue';
-import FactoryManageTable from '../../components/FactoryManage/FactoryManageTable.vue';
+import FactoryManageSetupTable from '../../components/FactoryManage/FactoryManageSetupTable.vue';
 import FactoryManageDialog from '../../components/FactoryManage/FactoryManageDialog.vue';
 import recordScrollPositionMixin from '../../assets/js/mixins/recordScrollPositionMixin';
 
 export default {
-  name: 'FactoryManagePage',
-  mixins: [recordScrollPositionMixin('.mp-erp-factory-manage-page-wrap .el-table__body-wrapper')],
+  name: 'FactoryManagSetupPage',
+  mixins: [recordScrollPositionMixin('.mp-erp-factory-manage-setup-page-wrap .el-table__body-wrapper')],
   components: {
-    FactoryManageHeader,
-    FactoryManageTable,
+    FactoryManageSetupTable,
     FactoryManageDialog,
   },
+
   computed: {
-    ...mapState('common', ['factoryList']),
+    ...mapState('common', ['factoryList', 'Permission']),
     ...mapGetters('common', ['allAdAreaTreeList']),
     filterDataList() {
-      if (!this.filterWords) return this.factoryList;
-      return this.factoryList.filter(it => it.FactoryName.includes(this.filterWords)
-       || it.Address.includes(this.filterWords)
-       || it.LinkMan.includes(this.filterWords)
-       || it.Mobile.includes(this.filterWords));
+      return [];
     },
   },
   data() {
     return {
       dialogVisible: false,
       curItemData: null,
-      filterWords: '',
     };
   },
   methods: {
+    onGoBackClick() {
+      this.$goback();
+    },
     onFactoryAddClick() {
       this.curItemData = null;
       this.dialogVisible = true;
-    },
-    onFilterClick(keywords) {
-      this.filterWords = keywords;
     },
     getItemAddressName(itemData) {
       if (!itemData || !this.allAdAreaTreeList || this.allAdAreaTreeList.length === 0) return '';
@@ -69,9 +67,6 @@ export default {
         return `${Province.Name}${itemData.Address}`;
       }
       return `${itemData.Address}`;
-    },
-    handleAddressItemSetting(itemData) {
-      this.$router.push({ name: 'factoryManagSetup', params: { ID: itemData.FactoryID } });
     },
     handleAddressItemEdit(itemData) {
       this.curItemData = itemData;
@@ -96,25 +91,31 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('common/getFactoryList');
-    this.$store.dispatch('common/fetchAdAreaList');
+    // this.$route.params.ID && this.$route.params.ID !== 'null'
+    this.api.getFactoryProductPriceList(this.$route.params.ID).then(res => {
+      console.log(res);
+    });
   },
 };
 </script>
 <style lang='scss'>
-.mp-erp-factory-manage-page-wrap {
+.mp-erp-factory-manage-setup-page-wrap {
   background-color: #f5f5f5;
   display: flex;
   flex-direction: column;
   height: 100%;
   padding-left: 6px;
   > header {
-    height: 60px;
+    // height: 60px;
+    padding: 20px 0;
     background-color: #fff;
     display: flex;
     align-items: center;
     padding-left: 20px;
     justify-content: space-between;
+    p {
+      margin-bottom: 15px;
+    }
     > .input-box {
       display: flex;
       height: 30px;
@@ -156,17 +157,18 @@ export default {
         padding-bottom: 50px;
       }
     }
+    .go-back-box{
+      position:sticky;
+      bottom: 36px;
+    }
   }
   > footer {
     flex: none;
-    height: 16px;
+    height: 70px;
     background-color: #fff;
     font-size: 13px;
-    padding: 10px 20px;
-    padding-right: 65px;
-    line-height: 16px;
-    color: #585858;
-    text-align: right;
+    padding-top: 30px;
+    text-align: center;
     i {
       color: #26bcf9;
       font-weight: 600;
