@@ -167,10 +167,10 @@ const routes = { // 基本设置
       component: () => import('../../../views/BasicSetup/FactoryManagePage.vue'),
     },
     {
-      path: '/factoryManagSetup/:ID',
+      path: '/factoryManagSetup/:ID/:factoryName',
       name: 'factoryManagSetup',
       meta: {
-        title: '生产工厂a',
+        title: '外发价格',
         pageName: 'FactoryManagSetupPage',
         PermissionInfo: ['PermissionSetupFactoryBase', 'HavePomission'],
         requiresAuth: true,

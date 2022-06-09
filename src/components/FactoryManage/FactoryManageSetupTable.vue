@@ -9,13 +9,16 @@
     fit
     style="width: 100%"
    >
-    <el-table-column prop="FactoryName" label="工厂名称" min-width="160">
+    <el-table-column prop="Product.ProductName" label="产品名称" min-width="160">
+      <span slot-scope="scope">
+        {{getClassName(scope.row.Product.FirstLevelID)}}-{{getClassName(scope.row.Product.SecondLevelID)}}-{{scope.row.Product.ProductName}}
+      </span>
     </el-table-column>
-    <el-table-column prop="Address" label="工厂地址" min-width="360">
-      <span class="is-gray">aaaa</span>
+    <el-table-column prop="Price.Name" label="价格名称" min-width="360">
+      <!-- <span class="is-gray">aaaa</span> -->
     </el-table-column>
     <el-table-column label="操作" width="320">
-      <div class="menu-list" slot-scope="scope" v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.Setup">
+      <div class="menu-list" slot-scope="scope">
         <span @click="onEditClick(scope.row)"><i></i>编辑</span>
         <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
       </div>
@@ -25,13 +28,16 @@
 
 <script>
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
-import { mapState } from 'vuex';
 
 export default {
   props: {
     dataList: {
       default: () => [],
       type: Array,
+    },
+    ProductList: {
+      type: Array,
+      default: null,
     },
   },
   mixins: [tableMixin],
@@ -41,7 +47,12 @@ export default {
     };
   },
   computed: {
-    ...mapState('common', ['Permission']),
+    getClassName() {
+      return (ID) => {
+        const resp = this.ProductList.filter(res => res.ID === ID);
+        return resp && resp.length ? resp[0].ClassName : '';
+      };
+    },
   },
   methods: {
     setHeight() {
@@ -98,11 +109,6 @@ export default {
                 width: 12px;
                 height: 16px;
                 background: url(../../assets/images/del.png) no-repeat center center/12px 16px;
-              }
-              &:first-of-type > i {
-                width: 12px;
-                height: 16px;
-                background: url(../../assets/images/setup.png) no-repeat center center/14px 14px;
               }
             }
           }

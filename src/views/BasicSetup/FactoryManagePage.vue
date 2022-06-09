@@ -71,7 +71,7 @@ export default {
       return `${itemData.Address}`;
     },
     handleAddressItemSetting(itemData) {
-      this.$router.push({ name: 'factoryManagSetup', params: { ID: itemData.FactoryID } });
+      this.$router.push({ path: `/factoryManagSetup/${itemData.FactoryID}/${itemData.FactoryName}` });
     },
     handleAddressItemEdit(itemData) {
       this.curItemData = itemData;
@@ -96,8 +96,17 @@ export default {
     },
   },
   mounted() {
+    sessionStorage.removeItem('FactoryList');
     this.$store.dispatch('common/getFactoryList');
     this.$store.dispatch('common/fetchAdAreaList');
+  },
+  async activated() { // 当从设置页面返回且保存员工设置的时候可以完整执行此处内部代码
+    const bool = sessionStorage.getItem('FactoryList') === 'true';
+    if (!bool) return;
+    sessionStorage.removeItem('FactoryList');
+    this.$store.commit('common/setFactoryList', []);
+    this.$store.dispatch('common/getFactoryList');
+    await this.$nextTick();
   },
 };
 </script>

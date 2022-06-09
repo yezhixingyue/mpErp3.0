@@ -8,21 +8,42 @@
     @open='onOpen'
     @closed='onClosed'
   >
+  <div class="">
     <ThreeLevelSelectComp
-    :title='"添加外发价格"'
-    v-model="classify"
+    :title='"产品"'
+    v-model="locationIDs"
+    :showLine='false'
+    width1='150px'
+    width2='150px'
+    width3='150px'
     :level1Options='level1Options'
     :level2Options='level2Options'
-    :level3Options='level2Options'
-    :defaultProps='defaultProps'
-    :lv1DefaultProps="{ label: 'Name', value: 'ID' }"
+    :level3Options='level3Options'
+    :defaultProps="{ label: 'ClassName', value: 'ID' }"
     />
+    <ul class="mp-erp-common-select-comps-three-level-select-comp-wrap" style="margin-top:30px">
+      <li class="text">价格：</li>
+      <li>
+        <el-select v-model="ruleForm.Price.ID" placeholder="请选择" size="small"
+        style="width:150px"
+        class="mp-erp-new-common-select-comp-wrap el-select--small">
+          <el-option
+            v-for="item in PriceList" :key="item.ID"
+            :label="item.Name"
+            :value="item.ID">
+          </el-option>
+        </el-select>
+      </li>
+    </ul>
+  </div>
   </CommonDialogComp>
 </template>
 
 <script>
 import CommonDialogComp from '@/packages/CommonDialogComp';
+import messageBox from '@/assets/js/utils/message';
 import ThreeLevelSelectComp from '@/components/common/SelectorComps/ThreeLevelSelectComp.vue';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   props: {
@@ -30,12 +51,16 @@ export default {
       type: Boolean,
       default: false,
     },
-    areaList: {
-      type: Array,
-      default: () => [],
-    },
     itemData: {
       type: Object,
+      default: null,
+    },
+    FactoryID: {
+      type: Number,
+      default: null,
+    },
+    ProductList: {
+      type: Array,
       default: null,
     },
   },
@@ -44,97 +69,132 @@ export default {
     ThreeLevelSelectComp,
   },
   computed: {
+    ...mapState('common', ['productNames']),
     locationIDs: {
       get() {
         return {
-          level1Val: this.ruleForm.ProvinceID,
-          level2Val: this.ruleForm.CityID,
+          level1Val: this.ruleForm.Product.FirstLevelID,
+          level2Val: this.ruleForm.Product.SecondLevelID,
+          level3Val: this.ruleForm.Product.ProductID,
         };
       },
-      set({ level1Val, level2Val }) {
-        this.ruleForm.ProvinceID = level1Val;
-        this.ruleForm.CityID = level2Val;
+      set({ level1Val, level2Val, level3Val }) {
+        this.ruleForm.Product.FirstLevelID = level1Val;
+        this.ruleForm.Product.SecondLevelID = level2Val;
+        this.ruleForm.Product.ProductID = level3Val;
       },
     },
     level1Options() {
-      if (!this.areaList || this.areaList.length === 0) return [];
-      return this.areaList.map(it => ({ Name: it.Name, ID: it.ID }));
+      if (!this.ProductList || this.ProductList.length === 0) return [];
+      return this.ProductList.filter(it => it.ParentID === -1);
     },
     level2Options() {
-      if (!this.areaList || this.areaList.length === 0 || !this.ruleForm.ProvinceID) return [];
-      const t = this.areaList.find(it => it.ID === this.ruleForm.ProvinceID);
-      if (t) return t.children.map(it => ({ Name: it.Name, ID: it.ID }));
-      return [];
+      if (!this.ProductList || this.ProductList.length === 0 || !this.ruleForm.Product.FirstLevelID) return [];
+      return this.ProductList.filter(it => it.ParentID === this.ruleForm.Product.FirstLevelID);
+    },
+    level3Options() {
+      const _arr = this.productNames.filter(it => {
+        const Type = 1;
+        const t = it.ClassifyList.find(_it => _it.Type === Type);
+        if (!t) return false;
+        const { FirstLevel, SecondLevel } = t;
+        return FirstLevel.ID === this.ruleForm.Product.FirstLevelID && SecondLevel.ID === this.ruleForm.Product.SecondLevelID;
+      }).map(it => ({ ID: it.ID, ClassName: it.Name }));
+      return [..._arr];
     },
     title() {
-      if (this.ruleForm.FactoryID) return '编辑生产工厂';
-      return '添加生产工厂';
+      if (this.ruleForm.ID !== 0) return '编辑外发价格';
+      return '添加外发价格';
     },
   },
   data() {
     return {
       ruleForm: {
-        FactoryName: '',
-        ProvinceID: '',
-        CityID: '',
-        Address: '',
-        LinkMan: '',
-        Mobile: '',
-        FactoryID: 0,
+        ID: 0,
+        FactoryID: this.FactoryID,
+        Product: {
+          FirstLevelID: '',
+          SecondLevelID: '',
+          ProductID: '',
+          ProductName: '',
+        },
+        Price: {
+          ID: '',
+          Name: '',
+        },
+        CreateTime: '',
       },
-      rules: {
-        FactoryName: [
-          { required: true, message: '请输入工厂名称', trigger: 'blur' },
-          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' },
-        ],
-        CityID: [
-          { required: true, message: '请选择工厂地址', trigger: 'change' },
-        ],
-        Address: [
-          { required: true, message: '请输入详细地址', trigger: 'blur' },
-          { min: 1, max: 60, message: '长度在 1 到 60 个字符', trigger: 'blur' },
-        ],
-        LinkMan: [
-          { required: true, message: '请输入联系人', trigger: 'blur' },
-          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' },
-        ],
-        Mobile: [
-          { required: true, message: '请输入联系电话', trigger: 'blur' },
-          { pattern: /^1[3456789]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur' },
-        ],
-      },
+      PriceList: [],
     };
   },
   methods: {
+    ...mapActions('common', ['getProductClassifyData', 'getAllProductNames']),
     onDialogSubmit() {
-      this.$refs.ruleForm.validate((valid) => {
-        if (valid) {
-          this.$emit('submit', this.ruleForm);
-        }
-      });
+      if (!this.ruleForm.Product.ProductID) {
+        messageBox.failSingleError('保存失败', '请选择产品');
+        // 请选择产品
+        return;
+      }
+      if (!this.ruleForm.Price.ID) {
+        messageBox.failSingleError('保存失败', '请选择价格');
+        // 请选择价格
+        return;
+      }
+      this.$emit('submit', this.ruleForm);
     },
     onDialogCancle() {
       this.$emit('update:visible', false);
     },
     initEditData() {
-      if (!this.itemData) {
-        Object.keys(this.ruleForm).forEach(key => {
-          this.ruleForm[key] = '';
-        });
-        this.ruleForm.FactoryID = 0;
-        if (this.level1Options.length > 0) this.ruleForm.ProvinceID = this.level1Options[0].ID;
-        if (this.level2Options.length > 0) this.ruleForm.CityID = this.level2Options[0].ID;
-      } else {
-        Object.keys(this.ruleForm).forEach(key => {
-          if (this.itemData[key] || this.itemData[key] === 0) this.ruleForm[key] = this.itemData[key];
-        });
+      if (this.itemData) {
+        this.ruleForm = JSON.parse(JSON.stringify(this.itemData));
+        setTimeout(() => {
+          this.ruleForm.Price.ID = this.itemData.Price.ID;
+        }, 0);
       }
     },
     onOpen() {
       this.$nextTick(this.initEditData);
     },
     onClosed() {
-      this.$refs.ruleForm.resetFields();
+      this.PriceList = [];
+      this.ruleForm = {
+        ID: 0,
+        FactoryID: this.FactoryID,
+        Product: {
+          FirstLevelID: '',
+          SecondLevelID: '',
+          ProductID: '',
+          ProductName: '',
+        },
+        Price: {
+          ID: '',
+          Name: '',
+        },
+        CreateTime: '',
+      };
+    },
+    getPrice() {
+      this.api.getProductPriceList(this.ruleForm.Product.ProductID).then(res => {
+        if (res.data.Status === 1000) {
+          this.PriceList = res.data.Data;
+        }
+      });
+      //
+    },
+  },
+  async mounted() {
+    this.getProductClassifyData({ key: 6 });
+    this.getAllProductNames();
+  },
+  watch: {
+    'ruleForm.Product.ProductID': {
+      handler(n) {
+        this.ruleForm.Price.ID = '';
+        this.ruleForm.Price.Name = '';
+        this.PriceList = [];
+        if (n) this.getPrice();
+      },
     },
   },
 };

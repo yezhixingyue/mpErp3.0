@@ -18,14 +18,16 @@
     <el-table-column prop="Mobile" label="联系电话" min-width="130"> </el-table-column>
     <el-table-column prop="Mobile" label="外发产品" min-width="130">
       <template slot-scope="scope">
-          {{scope.row.Mobile}}个
+          {{scope.row.ProductNumber}}个
       </template>
     </el-table-column>
     <el-table-column label="操作" width="320">
-      <div class="menu-list" slot-scope="scope" v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.Setup">
-        <span @click="onSettingClick(scope.row)"><i></i>外发设置</span>
-        <span @click="onEditClick(scope.row)"><i></i>编辑</span>
-        <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
+      <div class="menu-list" slot-scope="scope" >
+        <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupPrice" @click="onSettingClick(scope.row)"><i></i>外发设置</span>
+        <template v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.Setup">
+          <span @click="onEditClick(scope.row)"><i></i>编辑</span>
+          <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
+        </template>
       </div>
     </el-table-column>
     <div slot="empty">

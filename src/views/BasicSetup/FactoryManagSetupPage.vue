@@ -2,20 +2,22 @@
   <section class="mp-erp-factory-manage-setup-page-wrap">
     <header>
       <div class="factory-manag-setup-header">
-        <p class="mp-common-title-wrap">当前工厂：翰威帆布袋</p> <br>
-        <el-button type="primary" v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.Setup"
-         @click="onFactoryAddClick" class="blue-full-color-btn-styles is-blue-button">添加生产工厂</el-button>
+        <p class="mp-common-title-wrap">当前工厂：{{FactoryName}}</p> <br>
+        <el-button type="primary"
+         @click="onFactoryAddClick" class="blue-full-color-btn-styles is-blue-button">添加外发价格</el-button>
       </div>
     </header>
     <main>
       <FactoryManageSetupTable
+        :ProductList='ProductList'
         :dataList='filterDataList'
         @handleAddressItemEdit='handleAddressItemEdit'
         @handleAddressItemRemove='handleAddressItemRemove'
        />
-       <div class="go-back-box">
-       </div>
-      <FactoryManageDialog :visible.sync='dialogVisible' :areaList='allAdAreaTreeList' :itemData='curItemData' @submit="onSubmit" />
+      <FactoryManageSetupDialog v-if="FactoryID"
+      :visible.sync='dialogVisible'
+      :itemData='curItemData' :FactoryID='FactoryID' :ProductList='ProductList'
+      @submit="onSubmit" />
     </main>
     <footer>
       <el-button class="cancel-blue-btn" @click="onGoBackClick"><i>＜＜</i> 返回</el-button>
@@ -24,9 +26,9 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import FactoryManageSetupTable from '../../components/FactoryManage/FactoryManageSetupTable.vue';
-import FactoryManageDialog from '../../components/FactoryManage/FactoryManageDialog.vue';
+import FactoryManageSetupDialog from '../../components/FactoryManage/FactoryManageSetupDialog.vue';
 import recordScrollPositionMixin from '../../assets/js/mixins/recordScrollPositionMixin';
 
 export default {
@@ -34,20 +36,22 @@ export default {
   mixins: [recordScrollPositionMixin('.mp-erp-factory-manage-setup-page-wrap .el-table__body-wrapper')],
   components: {
     FactoryManageSetupTable,
-    FactoryManageDialog,
+    FactoryManageSetupDialog,
   },
 
   computed: {
-    ...mapState('common', ['factoryList', 'Permission']),
-    ...mapGetters('common', ['allAdAreaTreeList']),
-    filterDataList() {
-      return [];
+    ...mapState('common', ['factoryList', 'ProductMultipleClassifyList']),
+    ProductList() {
+      return this.ProductMultipleClassifyList[0] ? this.ProductMultipleClassifyList[0].List : [];
     },
   },
   data() {
     return {
+      FactoryID: null,
+      FactoryName: '',
       dialogVisible: false,
       curItemData: null,
+      filterDataList: [],
     };
   },
   methods: {
@@ -58,43 +62,49 @@ export default {
       this.curItemData = null;
       this.dialogVisible = true;
     },
-    getItemAddressName(itemData) {
-      if (!itemData || !this.allAdAreaTreeList || this.allAdAreaTreeList.length === 0) return '';
-      const Province = this.allAdAreaTreeList.find(it => it.ID === itemData.ProvinceID);
-      if (Province) {
-        const City = Province.children.find(it => it.ID === itemData.CityID);
-        if (City) return `${Province.Name}${City.Name}${itemData.Address}`;
-        return `${Province.Name}${itemData.Address}`;
-      }
-      return `${itemData.Address}`;
-    },
     handleAddressItemEdit(itemData) {
       this.curItemData = itemData;
       this.dialogVisible = true;
     },
     async onSubmit(editData) {
       if (!editData) return;
-      const keyword = editData.FactoryID === 0 ? '添加' : '编辑';
-      const resp = await this.$store.dispatch('common/getFactorySave', editData);
-      if (resp) { //  保存成功
+      const keyword = editData.ID === 0 ? '添加' : '编辑';
+      const resp = await this.api.getFactoryProductPriceSave(editData);
+      if (resp && resp.data.Status === 1000) { //  保存成功
+        if (keyword === '添加') this.setStorage();
         const func = () => {
           this.dialogVisible = false;
-          this.$store.commit('common/setFactoryChange', { type: editData.FactoryID === 0 ? 'add' : 'edit', data: resp });
+          this.getPiceList();
         };
         this.messageBox.successSingle(`${keyword}成功!`, func, func);
       }
     },
     handleAddressItemRemove(itemData) {
-      this.messageBox.warnCancelBox('确定删除该工厂吗 ?', `工厂名称：[ ${itemData.FactoryName} ]`, () => {
-        this.$store.dispatch('common/getFactoryRemove', itemData);
+      this.messageBox.warnCancelBox('确定删除该外发价格吗 ?', `价格名称：[ ${itemData.Price.Name} ]`, () => {
+        this.api.getFactoryProductPriceRemove(itemData.ID).then(res => {
+          if (res.data.Status === 1000) {
+            this.getPiceList();
+            this.setStorage();
+          }
+        });
+      });
+    },
+    setStorage() {
+      sessionStorage.setItem('FactoryList', true);
+    },
+    getPiceList() {
+      this.FactoryID = Number(this.$route.params.ID);
+      this.FactoryName = this.$route.params.factoryName;
+      this.api.getFactoryProductPriceList(this.$route.params.ID).then(res => {
+        if (res.data.Status === 1000) {
+          this.filterDataList = res.data.Data;
+        }
       });
     },
   },
   mounted() {
     // this.$route.params.ID && this.$route.params.ID !== 'null'
-    this.api.getFactoryProductPriceList(this.$route.params.ID).then(res => {
-      console.log(res);
-    });
+    this.getPiceList();
   },
 };
 </script>
@@ -157,10 +167,11 @@ export default {
         padding-bottom: 50px;
       }
     }
-    .go-back-box{
-      position:sticky;
-      bottom: 36px;
-    }
+    // .mp-erp-common-select-comps-three-level-select-comp-wrap{
+    //   >li.text{
+    //     width: 8em;
+    //   }
+    // }
   }
   > footer {
     flex: none;
