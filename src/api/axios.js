@@ -120,6 +120,7 @@ axios.interceptors.response.use(
         let buffterRes;
         let buffterErr = '文件导出数据过大，请缩小导出时间区间或精确筛选条件';
         let _func = null;
+        let _msg = '系统暂无响应，请重试';
         switch (error.response.status) {
           case 401:
             clearToken();
@@ -161,7 +162,14 @@ axios.interceptors.response.use(
             key = true;
             break;
           default:
-            messageBox.failSingleError('操作失败', `${error.response.data && error.response.data.Message ? error.response.data.Message : error.response.statusText}`);
+            if (error.response.data) {
+              if (error.response.data.Message) {
+                _msg = error.response.data.Message;
+              } else {
+                _msg = `系统出错，错误码：${error.response.data.Status || 505}`;
+              }
+            }
+            messageBox.failSingleError('操作失败', _msg);
             key = true;
             break;
         }
