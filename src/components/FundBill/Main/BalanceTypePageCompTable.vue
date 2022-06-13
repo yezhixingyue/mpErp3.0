@@ -49,7 +49,7 @@
         <span class="is-gray" slot-scope="scope">{{scope.row.Remark}}</span>
     </el-table-column>
     <el-table-column label="销售区域" min-width="160" show-overflow-tooltip>
-      <span slot-scope="scope">{{ getAdd(scope.row.Customer.Location) }}</span>
+      <span slot-scope="scope" v-if="scope.row.Customer">{{ getAdd(scope.row.Customer.Location) }}</span>
     </el-table-column>
     <el-table-column label="操作人" min-width="80">
       <template slot-scope="scope">{{

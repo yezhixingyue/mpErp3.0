@@ -512,7 +512,11 @@ export default {
     },
     // 余额退款
     RefundBalanceShow() {
-      return (this.dataInfo?.Order.SurplusOrderBalance + this.dataInfo?.Order.SurplusFreightAmount) || this.dataInfo?.Order.SurplusOrderThirdParty;
+    // 余额为0的时候看有没有运费
+      if (this.dataInfo?.Order.SurplusOrderBalance === 0) {
+        return this.dataInfo?.Order.SurplusFreightAmount;
+      }
+      return this.dataInfo?.Order.SurplusOrderBalance;
     },
     // 剩余印豆
     RefundPrintBeanShow() {
@@ -521,7 +525,9 @@ export default {
     },
     // 剩余扫码
     RefundThirdPartyShow() {
-      return this.dataInfo?.Order.SurplusOrderThirdParty;
+      // return this.dataInfo?.Order.SurplusOrderThirdParty;
+      // SurplusOrderBalance 为已支付金额 如果 SurplusOrderBalance 为0，则不能退扫码（扫码支付可能为多个订单组合支付，分不清当前订单的实际金额）
+      return this.dataInfo?.Order.SurplusOrderBalance ? this.dataInfo?.Order.SurplusOrderThirdParty : 0;
     },
     UnpaidReducedAmountShow() {
       return this.dataInfo?.Order.UnPaidAmount;

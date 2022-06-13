@@ -373,7 +373,8 @@
                 margin-right: 58px;
               }
               &::after {
-                content: '注意:';
+                // content中使用中文可能出现乱码 \6ce8\610f 为 注意 二字的Unicode编码
+                content: '\6ce8\610f:';
                 color: $--color-text-table-pending;
                 vertical-align: -27%;
                 position: absolute;
