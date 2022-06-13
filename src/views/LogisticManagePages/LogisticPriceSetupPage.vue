@@ -8,6 +8,7 @@
       :nameList='nameList'
       productLevel2
       showName
+      :showNameMaxLength='40'
       @successSubmit='handleFormulaSuccessSubmit'
     >
       <template #header>

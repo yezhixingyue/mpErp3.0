@@ -77,7 +77,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-radio-group-full-box.el-radio-group {
   height: 28px;
   white-space: nowrap;

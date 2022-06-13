@@ -47,7 +47,7 @@ export default {
 </script>
 
 <style lang='scss'>
-  @import "@/assets/css/common/var.scss";
+  @import "@/assets/css/var.scss";
   .order-list-progress-wrap {
     height: 645px;
     padding-top: 42px;

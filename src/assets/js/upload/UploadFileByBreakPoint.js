@@ -105,12 +105,17 @@ async function checkIsTrue(data, uniqueName, baseURL) {
 export default async function breakPointUpload(data, uniqueName, onUploadProgressFunc, finalPercentage = 100) {
   // 1. 获取服务器上传地址
   const domainResp = await api.getFileServer(config.Position).catch(() => null);
-  if (!domainResp || domainResp.data.Status !== 1000 || !domainResp.data.Data) return false;
+  if (!domainResp || domainResp.data.Status !== 1000 || !domainResp.data.Data) return { status: false, error: '获取服务器上传地址失败' };
   const baseURL = domainResp.data.Data;
 
   // 2. 获取文件已上传进度
   const hasUploadedInfo = await api.getUploadedProgress(uniqueName, baseURL).catch(() => null);
-  if (!hasUploadedInfo || hasUploadedInfo.data.Status !== 1000) return false; // 获取已上传信息
+  if (!hasUploadedInfo || hasUploadedInfo.data.Status !== 1000) return { status: false, error: '查询上传进度失败' }; // 获取已上传信息
+
+  // 2.1 判断文件是否已被修改 然后从而导致文件找不到
+  if (+hasUploadedInfo.data.Data === +data.size && +hasUploadedInfo.data.Data === 0) {
+    return { status: false, error: '文件找不到' };
+  }
 
   // 3. 当文件未上传完成时，开始文件上传
   if (+hasUploadedInfo.data.Data < +data.size) {
@@ -122,12 +127,12 @@ export default async function breakPointUpload(data, uniqueName, onUploadProgres
     }).catch(() => {
       key = false;
     }); // 上传
-    if (!key) return false;
-    if (await checkIsTrue(data, uniqueName, baseURL)) return true;
-    return false;
+    if (!key) return { status: false, error: '文件上传失败' };
+    if (await checkIsTrue(data, uniqueName, baseURL)) return { status: true, error: '' };
+    return { status: false, error: '文件上传失败' };
   }
 
   // 4. 如果文件已上传完成，则直接设置进度条100%，并返回结果
   onUploadProgressFunc(+finalPercentage);
-  return true;
+  return { status: true, error: '' };
 }

@@ -57,6 +57,8 @@ export default class Staff {
     Second: '', // IP
   }
 
+  UseIntranet = true
+
   constructor(data) {
     restoreInitDataByOrigin(this, data);
   }

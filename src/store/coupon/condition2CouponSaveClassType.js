@@ -79,6 +79,16 @@ export default class Condition2CouponSaveClassType {
 
     ProductClassList = [];
 
+    IsCustomerReceive = false; // 是否允许客户领取
+
+    MaxReceiveNumber = ''; // 客户最大领取数量
+
+    constructor(data) {
+      if (data) {
+        this.backfill(data);
+      }
+    }
+
     static check(obj) {
       // 券的面值 满减金额 及 数量 校验
       const { Amount, MinPayAmount, TotalNumber } = obj.Data;
@@ -164,6 +174,33 @@ export default class Condition2CouponSaveClassType {
         showError('请选择客户等级');
         return false;
       }
+
+      const { IsCustomerReceive, MaxReceiveNumber } = obj;
+      const MaxReceiveNumberRules = [
+        {
+          strategy: 'isNotEmpty',
+          errorMsg: '请输入每个客户的最大可领取数量!',
+        },
+        {
+          strategy: 'isNotNum',
+          errorMsg: '客户最大可领取数量应当为数字类型',
+        },
+        {
+          strategy: 'Minimum:0',
+          errorMsg: '客户最大可领取数量不能小于0',
+        },
+        {
+          strategy: 'isPositiveInt',
+          errorMsg: '客户最大可领取数量应为正整数',
+        },
+      ];
+      if (IsCustomerReceive && !validateCheck(MaxReceiveNumber, MaxReceiveNumberRules, showError)) return false;
+
+      if (IsCustomerReceive && MaxReceiveNumber > TotalNumber) {
+        showError('客户最大可领取数量已超出发放数量');
+        return false;
+      }
+
       if (obj.AreaList.length === 0) {
         showError('请选择销售区域');
         return false;
@@ -183,41 +220,42 @@ export default class Condition2CouponSaveClassType {
       return _obj;
     }
 
-    static backfill(data) {
-      const _condition2CouponSave = {};
+    backfill(data) {
+      this.ApplyUser = {};
+      this.ApplyUser = data.ApplyUser;
+      this.CouponID = data.CouponID;
 
-      _condition2CouponSave.ApplyUser = {};
-      _condition2CouponSave.ApplyUser = data.ApplyUser;
-      _condition2CouponSave.CouponID = data.CouponID;
-
-      _condition2CouponSave.GradeList = data.GradeList.map(it => ({ ID: it.ID }));
-      _condition2CouponSave.CustomerTypeList = data.CustomerTypeList.map(it => ({ ID: it.ID }));
-      _condition2CouponSave.OrderTypeList = data.OrderTypeList.map(it => ({ ID: it.ID }));
+      this.GradeList = data.GradeList.map(it => ({ ID: it.ID }));
+      this.CustomerTypeList = data.CustomerTypeList.map(it => ({ ID: it.ID }));
+      this.OrderTypeList = data.OrderTypeList.map(it => ({ ID: it.ID }));
 
       const { Amount, MinPayAmount, TotalNumber } = data.Data;
-      _condition2CouponSave.Data = {};
-      _condition2CouponSave.Data.Amount = Amount;
-      _condition2CouponSave.Data.MinPayAmount = MinPayAmount;
-      _condition2CouponSave.Data.TotalNumber = TotalNumber;
+      this.Data = {};
+      this.Data.Amount = Amount;
+      this.Data.MinPayAmount = MinPayAmount;
+      this.Data.TotalNumber = TotalNumber;
 
-      _condition2CouponSave.ProductList = data.ProductList;
+      this.ProductList = data.ProductList;
 
       const { ProvideStartTime, ProvideEndTime, ValidStartTime, ValidEndTime } = data;
-      _condition2CouponSave.ProvideStartTime = ProvideStartTime;
-      _condition2CouponSave.ProvideEndTime = ProvideEndTime;
-      _condition2CouponSave.ValidStartTime = ValidStartTime;
-      _condition2CouponSave.ValidEndTime = ValidEndTime;
+      this.ProvideStartTime = ProvideStartTime;
+      this.ProvideEndTime = ProvideEndTime;
+      this.ValidStartTime = ValidStartTime;
+      this.ValidEndTime = ValidEndTime;
 
-      // _condition2CouponSave.SellAreaArray = data.SellAreaArray;
+      // this.SellAreaArray = data.SellAreaArray;
 
-      _condition2CouponSave.AreaList = data.AreaList;
+      this.AreaList = data.AreaList;
 
-      _condition2CouponSave.IsIncludeIncreasedArea = data.IsIncludeIncreasedArea;
+      this.IsIncludeIncreasedArea = data.IsIncludeIncreasedArea;
 
-      _condition2CouponSave.IsIncludeIncreasedProduct = data.IsIncludeIncreasedProduct;
+      this.IsIncludeIncreasedProduct = data.IsIncludeIncreasedProduct;
 
-      _condition2CouponSave.ProductClassList = data.ProductClassList;
+      this.ProductClassList = data.ProductClassList;
 
-      return _condition2CouponSave;
+
+      const { IsCustomerReceive, MaxReceiveNumber } = data;
+      this.IsCustomerReceive = IsCustomerReceive || false;
+      this.MaxReceiveNumber = (MaxReceiveNumber || MaxReceiveNumber === 0) ? MaxReceiveNumber : '';
     }
 }

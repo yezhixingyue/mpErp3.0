@@ -107,13 +107,15 @@ function warnCancelNullMsg(title, successFunc, failFunc) {
  * @param {boolean} [canCloseOnPressEscape=true]
  */
 function successSingle(title, successFunc, failFunc, canCloseOnPressEscape = true, msg = '') {
+  let customClass = 'mp-order-del-pop-success';
+  if (!msg) customClass = `${customClass} none-msg`;
   MessageBox({
     showClose: true,
     confirmButtonText: '确定',
     title,
     message: msg,
     closeOnPressEscape: canCloseOnPressEscape,
-    customClass: 'mp-order-del-pop-success',
+    customClass,
   }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
 }
 

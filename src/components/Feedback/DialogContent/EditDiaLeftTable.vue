@@ -79,7 +79,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .edit-dia-left-table-wrap{
   border: 1px solid $--border-color-light;
   border-bottom: none;

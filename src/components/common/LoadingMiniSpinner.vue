@@ -23,7 +23,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 section.spinner-loading-mini-wrap {
   display: inline-block;
   height: 30px;

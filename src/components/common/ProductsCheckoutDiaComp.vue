@@ -155,7 +155,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-common-comps-product-checkout-dia-comp-wrap {
   > .normal-full-btn {
     margin: 0;

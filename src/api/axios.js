@@ -6,17 +6,15 @@ import router from '@/router';
 import store from '../store';
 import messageBox from '../assets/js/utils/message';
 import TokenClass from '../assets/js/utils/tokenManage';
+import LocalCancelToken from './CancelToken';
 
 const apiListByNotNeedToken = ['/Api/Staff/Login']; // 不需要token访问的接口列表
 
-
-const { CancelToken } = axios;
-let source = CancelToken.source();
+const localCancelToken = new LocalCancelToken();
 
 const clearToken = () => {
   TokenClass.removeToken();
-  source.cancel(); // 跳转登录页时 清除页面其它后续请求
-  source = CancelToken.source(); // 清除后赋予axios新的取消信息
+  localCancelToken.cancelAllRequest();
 };
 
 
@@ -48,13 +46,13 @@ const handleLoadingOpen = () => { // 打开弹窗
 };
 const handleLoadingClose = () => { // 关闭弹窗
   requestNum -= 1;
-  if (requestNum === 0) loadingInstance.close();
+  if (requestNum < 0) requestNum = 0;
+  if (requestNum === 0 && loadingInstance) loadingInstance.close();
 };
 
 axios.interceptors.request.use(
   (config) => {
     const curConfig = config;
-    curConfig.cancelToken = source.token;
     const token = TokenClass.getToken();
     if (!token && !apiListByNotNeedToken.includes(curConfig.url)) {
       clearToken();
@@ -64,6 +62,8 @@ axios.interceptors.request.use(
     closeTip = curConfig.closeTip;
     curConfig.headers.common.Authorization = `Bearer ${token}`;
     if (getShowLoading(curConfig)) handleLoadingOpen();
+
+    localCancelToken.setCancelToken(config);
 
     return curConfig;
   },
@@ -77,7 +77,20 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (response) => {
     if (getShowLoading(response.config) && loadingInstance) handleLoadingClose();
-    const _list2NotNeed2Toast = ['/Api/AccountReceivable/Excel', '/Api/PaymentOrder/Excel', '/Api/CustomerList/Excel', '/Api/OrderList/Excel', '/Api/Coupon/DownLoad', '/Api/AfterSales/Excel', '/Api/AfterSale/Excel', '/Api/PackageList/Excel', '/Api/CustomerBill/Excel', '/Api/OrderBill/Excel', '/Api/PriceTable/Export'];
+    const _list2NotNeed2Toast = [
+      '/Api/AccountReceivable/Excel',
+      '/Api/PaymentOrder/Excel',
+      '/Api/CustomerList/Excel',
+      '/Api/OrderList/Excel',
+      '/Api/Coupon/DownLoad',
+      '/Api/AfterSales/Excel',
+      '/Api/AfterSale/Excel',
+      '/Api/PackageList/Excel',
+      '/Api/CustomerBill/Excel',
+      '/Api/OrderBill/Excel',
+      '/Api/PriceTable/Export',
+      '/Api/CalculatePrice/Excel',
+    ];
     const _statusList2NotNeed2Toast = [1000, 9062, 8044, 1100];
     // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
 
@@ -94,9 +107,11 @@ axios.interceptors.response.use(
         messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`);
       }
     }
+    localCancelToken.removeCancelToken(response.config);
     return response;
   },
   async (error) => {
+    localCancelToken.removeCancelToken(error.config || '');
     if (!store.state.common.isLoading) {
       if (getShowLoading(error.config) && loadingInstance) handleLoadingClose();
       if (error.response) {
@@ -159,7 +174,7 @@ axios.interceptors.response.use(
           message: '网络错误',
           type: 'error',
         });
-      } else if (error.message.includes('timeout')) {
+      } else if (error.message && error.message.includes('timeout')) {
         Message({
           showClose: true,
           message: '网络超时',
@@ -172,17 +187,19 @@ axios.interceptors.response.use(
           type: 'error',
         });
       } else {
-        let msg = '未知错误';
+        let msg = '';
         if (error.response && error.response.data && error.response.data.Message) {
           msg = error.response.data.Message;
         } else if (error && error.message) {
           msg = error.message;
         }
-        Message({
-          showClose: true,
-          message: msg,
-          type: 'error',
-        });
+        if (msg) {
+          Message({
+            showClose: true,
+            message: msg,
+            type: 'error',
+          });
+        }
       }
     }
     return Promise.reject(error);

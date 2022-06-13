@@ -68,7 +68,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-service-detail-table-wrap{
   border: 1px solid $--border-color-light;
   border-bottom: none;

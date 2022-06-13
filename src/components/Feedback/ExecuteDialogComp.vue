@@ -1033,7 +1033,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .dialogexecutedialogcomp {
   height: 800px;
   position: relative;

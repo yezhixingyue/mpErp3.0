@@ -29,14 +29,17 @@ export default {
   data() {
     return {
       widthObj: {
-        w1: 98,
+        w1: 85,
         w2: 122,
-        w3: 90,
-        w4: 70,
-        w5: 70,
-        w6: 300,
+        w3: 80,
+        w4: 80,
+        w5: 80,
+        w6: 80,
+        w7: 70,
+        w8: 70,
+        w9: 240,
       },
-      titleList: ['订单号', '产品', '数量', '成交价', '定金', '文件内容'],
+      titleList: ['订单号', '产品', '尺寸', '物料', '工艺', '数量', '成交价', '定金', '文件内容'],
     };
   },
   methods: {
@@ -48,7 +51,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-paylist-detail-dia-table {
   height: 400px;
   > header {

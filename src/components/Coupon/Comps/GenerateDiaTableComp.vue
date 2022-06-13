@@ -66,7 +66,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-coupon-generate-dialog-table-comp-wrap {
   width: 700px;
   border: 1px solid $--border-color-base;

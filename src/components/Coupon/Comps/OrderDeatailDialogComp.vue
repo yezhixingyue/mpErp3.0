@@ -49,7 +49,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-coupon-use-list-page-dialog-order-detail-comp-wrap {
   > .el-dialog{
     > .el-dialog__header {

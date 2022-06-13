@@ -131,7 +131,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-common-remote-select-comp-wrapper {
   position: relative;
   .mp-common-remote-select-comp-wrap {

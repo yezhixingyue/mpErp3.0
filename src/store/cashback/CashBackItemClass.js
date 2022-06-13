@@ -3,6 +3,9 @@ import restoreInitDataByOrigin from '../../assets/js/utils/reduction';
 import getEnumList from '../../assets/js/utils/getEnumList';
 import messageBox from '../../assets/js/utils/message';
 import { getValueIsOrNotNumber } from '../../assets/js/utils/util';
+import CashBackRightItemClass from './CashBackRightItemClass';
+import ProductSetupItemClass from './CashBackRightItemClass/ProductSetupItemClass';
+import PropertyClass from '../../assets/js/TypeClass/PropertyClass';
 
 export const CycleEnums = {
   Month: {
@@ -35,7 +38,7 @@ export default class {
     Second: '',
   }
 
-  _Cycle = CycleEnums.Month.ID
+  PeriodType = CycleEnums.Month.ID
 
   Category = CategoryEnums.CustomerType.ID
 
@@ -52,19 +55,29 @@ export default class {
 
   IsIncludeIncreasedArea = false
 
+  Duration = ''
+
   AreaList = [] // 格式依照3.0格式含新增区域格式传递
 
-  // ItemList = []
+  ItemList = []
+
+  _allPropertyList = []
 
   constructor(data) {
     if (data) {
       restoreInitDataByOrigin(this, data);
-      // eslint-disable-next-line no-unused-vars
-      const { StartTime, EndTime, ItemList } = data;
+      const { StartTime, Duration, ItemList } = data;
       if (StartTime && StartTime.length >= 19) this.StartTime = StartTime.slice(0, 19);
-      // if (EndTime && EndTime.length >= 19) this.EndTime = EndTime.slice(0, 19);
-      // if (!EndTime) this._IsActiveOnLong = true;
-      // if (Array.isArray(ItemList)) this.ItemList = ItemList.map(it => new PrintBeanTableItem(it));
+      if (!Duration && Duration !== 0) this._IsActiveOnLong = true;
+      if (getValueIsOrNotNumber(Duration, true) && Duration >= 0) {
+        const y = Math.floor(Duration / 12);
+        const m = Duration % 12;
+        this._ExecutionTime.First = y;
+        this._ExecutionTime.Second = m;
+      }
+      if (Array.isArray(ItemList)) {
+        this.ItemList = ItemList.map(it => new CashBackRightItemClass(it));
+      }
     }
   }
 
@@ -93,7 +106,7 @@ export default class {
       messageBox.failSingleError('保存失败', '请设置开始时间');
       return false;
     }
-    if (new Date(this.StartTime) < new Date() && !this.ID) {
+    if (new Date(this.StartTime) < new Date(new Date().toLocaleDateString()) && !this.ID) {
       messageBox.failSingleError('保存失败', '开始时间不能晚于当前时间');
       return false;
     }
@@ -110,11 +123,11 @@ export default class {
         messageBox.failSingleError('保存失败', '执行时长[月]设置不正确');
         return false;
       }
-      if (!this._ExecutionTime.First && !this._ExecutionTime.Second) {
-        messageBox.failSingleError('保存失败', '执行时长必须大于0');
-        return false;
-      }
-      // if (this._Cycle === CycleEnums.Year.ID) { // 需要这样判断吗？  -- 先注释
+      // if (!this._ExecutionTime.First && !this._ExecutionTime.Second) {
+      //   messageBox.failSingleError('保存失败', '执行时长必须大于0');
+      //   return false;
+      // }
+      // if (this.PeriodType === CycleEnums.Year.ID) { // 需要这样判断吗？  -- 先注释
       //   const num = +this._ExecutionTime.First * 12 + +this._ExecutionTime.Second;
       //   if (num < 12) {
       //     messageBox.failSingleError('保存失败', '统计周期按年时，执行时长应至少为1年或12个月');
@@ -138,6 +151,14 @@ export default class {
         return false;
       }
     }
+    if (this.ItemList.length === 0) {
+      messageBox.failSingleError('保存失败', '请添加返现规则');
+      return false;
+    }
+    if (this.ItemList.some(it => it.RangeList.length === 0 || it.FundList.length === 0)) {
+      messageBox.failSingleError('保存失败', '返现规则设置不完整，请检查');
+      return false;
+    }
 
     return true;
   }
@@ -148,9 +169,20 @@ export default class {
       StartTime: `${this.StartTime.slice(0, 16)}:00`,
     };
     if (this._IsActiveOnLong) {
-      this._ExecutionTime = null;
+      temp.Duration = '';
+    } else {
+      const { First, Second } = temp._ExecutionTime;
+      let num = 0;
+      if (getValueIsOrNotNumber(First, true) && First > 0) {
+        num += +First * 12;
+      }
+      if (getValueIsOrNotNumber(Second, true) && Second > 0) {
+        num += +Second;
+      }
+      temp.Duration = num;
     }
     delete temp._IsActiveOnLong;
+    delete temp._ExecutionTime;
     if (temp.Category === CategoryEnums.Customer.ID) {
       delete temp.CustomerTypeList;
       delete temp.GradeList;
@@ -159,6 +191,85 @@ export default class {
     } else if (temp.Category === CategoryEnums.CustomerType.ID) {
       delete temp.Customer;
     }
+
+    delete temp._allPropertyList;
+
     return temp;
+  }
+
+  addNewRightItem() {
+    this.ItemList.push(new CashBackRightItemClass());
+  }
+
+  setProductRangeItemForRightItem(productRangeItem, index, level2Index) { // 设置右侧产品
+    if (level2Index === -1) {
+      // 添加
+      this.ItemList[index].RangeList.push(new ProductSetupItemClass(productRangeItem));
+    } else if (this.ItemList[index].RangeList[level2Index]) {
+      // 编辑
+      const { ProductClassList, IsIncludeIncreasedProduct } = productRangeItem;
+      this.ItemList[index].RangeList[level2Index].ProductClassList = ProductClassList;
+      this.ItemList[index].RangeList[level2Index].IsIncludeIncreasedProduct = IsIncludeIncreasedProduct;
+      this.ItemList[index].RangeList[level2Index].Constraint = null; // 编辑产品时清空筛选条件
+    }
+  }
+
+  removeProductRangeItemForRightItem(index, level2Index) {
+    this.ItemList[index].RangeList.splice(level2Index, 1);
+  }
+
+  setFundItemForRightItem(fundItemData, index, level2Index) { // 设置右侧返现
+    if (level2Index === -1) {
+      // 添加
+      this.ItemList[index].FundList.push(fundItemData);
+    } else if (this.ItemList[index].FundList[level2Index]) {
+      // 编辑
+      this.ItemList[index].FundList.splice(level2Index, 1, fundItemData);
+    }
+  }
+
+  removeFundItemForRightItem(index, level2Index) {
+    this.ItemList[index].FundList.splice(level2Index, 1);
+  }
+
+  setConstraintForRightItem(Constraint, i, level2Index) {
+    this.ItemList[i].RangeList[level2Index].Constraint = Constraint;
+  }
+
+  async getAllPropertyList() {
+    const arr = [];
+    if (Array.isArray(this.ItemList)) {
+      const ids = [];
+      this.ItemList.forEach(lv1 => {
+        lv1.RangeList.forEach(lv2 => {
+          let id = '';
+          const { ProductClassList, IsIncludeIncreasedProduct, Constraint } = lv2;
+          if (!IsIncludeIncreasedProduct && ProductClassList.length === 1) {
+            const [{ IsIncludeIncreased, List }] = ProductClassList;
+            if (!IsIncludeIncreased && List.length === 1) {
+              if (!List[0].IsIncludeIncreased && List[0].List.length === 1) {
+                id = List[0].List[0].ID;
+              }
+            }
+          }
+          if (!ids.includes(id) && Constraint) ids.push(id);
+        });
+      });
+      if (ids.length > 0) {
+        await Promise.all(ids.map(async id => {
+          const temp = { UseModule: 49 };
+          if (id) temp.ProductID = id;
+          const res = await PropertyClass.getPropertyList(temp);
+          if (res) {
+            arr.push({ PropertyList: res, id });
+          }
+        }));
+      }
+    }
+    return arr;
+  }
+
+  addItemToAllPropertyList(item) {
+    this._allPropertyList.push(item);
   }
 }

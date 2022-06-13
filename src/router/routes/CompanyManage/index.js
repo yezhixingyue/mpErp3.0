@@ -58,7 +58,7 @@ const routes = { // 基本设置
         title: '岗位管理',
         icon: 'el-icon-monitor',
         pageName: 'PostManageListPage',
-        PermissionInfo: ['PermissionManageJob', 'Obj', 'Setup'],
+        PermissionInfo: ['PermissionManageJob', 'HavePomission'],
         requiresAuth: true,
       },
       component: () => import('../../../views/CompanyManage/JobPostManage/PostManageListPage.vue'),
@@ -74,6 +74,8 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/CompanyManage/JobPostManage/PostManageSetupPage.vue'),
     },
+    /*  花名管理
+    ------------------------------------------ */
     {
       path: '/ScreenNameManage',
       name: 'ScreenNameManage',
@@ -108,6 +110,12 @@ const routeTree = {
       children: [
         { name: 'StaffManageSetup', children: [] },
       ],
+    },
+    /*  部门管理
+    ------------------------------------------ */
+    {
+      name: 'departmentManage',
+      children: [],
     },
     /*  花名管理
     ------------------------------------------ */

@@ -91,6 +91,7 @@ export default {
         ...it,
         _gender: it.Sex === SexEnumObj.male.ID ? '男' : '女',
         _EducationText: this.formatEnumName(it.Education, EducationEnumList),
+        _IntranetContent: it.UseIntranet ? '仅限内部网络' : '不限',
         _address: this.getAddressContent(it.LinkArea, this.allAdAreaTreeList),
         _Birthday: this.formatDate(it.TimeRecord?.Birthday),
         _JoinDate: this.formatDate(it.TimeRecord?.JoinDate),
@@ -242,7 +243,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-erp-staff-manage-list-page-main-table-comp-wrap {
   margin-right: 2px;
   border: 1px solid $--border-color-base;

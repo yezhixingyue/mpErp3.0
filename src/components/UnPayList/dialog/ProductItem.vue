@@ -102,7 +102,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .product-item{
   margin-top: 10px;
   font-size: 12px;

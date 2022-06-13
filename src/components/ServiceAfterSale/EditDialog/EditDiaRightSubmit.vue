@@ -201,6 +201,13 @@ export default {
       type: Number,
       default: -1,
     },
+    /**
+     * 客户信息(非收货人)
+     */
+    Customer: {
+      type: Object,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -347,7 +354,7 @@ export default {
       this.dialogVisible = true;
     },
     async handleCouponDialogOpen() {
-      if (this.isCouponListLoaded) {
+      if (this.isCouponListLoaded && this.couponList.length > 0) {
         this.couponList.forEach(it => {
           const _it = it;
           const t = this.selectedCouponList.find(_item => _item.CouponID === it.CouponID);
@@ -362,7 +369,12 @@ export default {
         return;
       }
       this.couponListLoading = true;
-      const resp = await this.api.getCouponList({ ProvideStatus: 1, FieldType: 1, ReceiveNumber: 1 }).catch(() => {});
+      const { SellArea, Type, Grade } = this.Customer;
+      const CustomerType = {};
+      if (Type && Type.First) CustomerType.First = Type.First;
+      if (Grade && Grade.First) CustomerType.Second = Grade.First;
+      const temp = { ProvideStatus: 1, FieldType: 1, ReceiveNumber: 1, SellArea, CustomerType };
+      const resp = await this.api.getCouponList(temp).catch(() => {});
       this.couponListLoading = false;
       if (resp && resp.data.Status === 1000) {
         this.isCouponListLoaded = true;
@@ -416,7 +428,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-edit-dia-right-submit-wrap{
   font-size: 12px;
   text-align: left;

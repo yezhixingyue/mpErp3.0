@@ -65,6 +65,7 @@ import TableInfoDefindHeaderColumnScope from '@/components/common/Table/TableInf
 import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import { formatListItemSize, formatListItemCraft } from '@/assets/js/filters/filters';
+import { formarProductAmountFunc } from '@/packages/commonFilters';
 
 export default {
   computed: {
@@ -163,7 +164,7 @@ export default {
           label: '数量',
           minWidth: '68px',
           showOverflowTooltip: true,
-          scope: (scope) => <span>{scope.row.ProductAmount}{scope.row.Unit}{scope.row.KindCount}款</span>,
+          scope: (scope) => <span>{formarProductAmountFunc(scope.row)}</span>,
           show: true,
         },
         {
@@ -287,7 +288,7 @@ export default {
         },
         {
           label: '预计工期',
-          minWidth: '140px',
+          minWidth: '120px',
           showOverflowTooltip: true,
           scope: (scope) => [254, 255].indexOf(scope.row.Status) === -1 && <span class={this.getTimeClass(scope.row.ProducePeriod, scope.row.Status)}>
             { this.$options.filters.formatProducePeriod(scope.row.ProducePeriod)}
@@ -341,7 +342,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-table-wrap {
   height: 100%;
   border-color: #e5e5e5;

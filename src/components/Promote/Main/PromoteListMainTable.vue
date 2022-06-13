@@ -283,7 +283,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-promote-page-main-table {
   border-color: #e5e5e5;
   &.el-table::before {

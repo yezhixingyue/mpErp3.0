@@ -99,7 +99,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .count-wrap{
   text-align: right;
   font-size: 12px;

@@ -47,9 +47,6 @@ export default {
     /* 订单状态相关
     -------------------------------*/
     selectedItemArr: [1, 0, 0, 0],
-    /* 想要被删除的付款单ID
-    -------------------------------*/
-    ID2Del: '',
     /* 控制列表中 -付款弹窗- 的显示与隐藏
     -------------------------------*/
     isShow2PayDialog: false,
@@ -153,11 +150,6 @@ export default {
         PageSize: 30,
         // initDateText: '今天',
       };
-    },
-    /* 设置想要被删除的付款单ID
-    -------------------------------*/
-    setID2Del(state, value) {
-      state.ID2Del = value;
     },
     /* 控制列表中付款弹窗的显示与隐藏
     -------------------------------*/
@@ -277,8 +269,8 @@ export default {
       if (count > state.tableData.length) commit('setCanLoadingMore', true);
     },
     // 付款单取消
-    async cancelPaymentOrder({ state, dispatch }, payCode) {
-      const res = await api.cancelCustomerPay(payCode);
+    async cancelPaymentOrder({ state, dispatch }, data) {
+      const res = await api.cancelCustomerPay(data).catch(() => null);
       if (!res) return;
       if (res.data.Status === 1000) {
         messageBox.successSingle('已取消', () => dispatch('getPaymentListTableData', { page: state.set2PaymentList.Page, type: 'get' }), () => dispatch('getPaymentListTableData', { page: state.set2PaymentList.Page, type: 'get' }));

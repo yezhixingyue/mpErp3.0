@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
     button.normal-full-btn {
         width: 98px;
         height: 28px;

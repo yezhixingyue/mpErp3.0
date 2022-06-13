@@ -106,7 +106,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-dorp-down-wrap {
   height: 25px;
   width: 114px;

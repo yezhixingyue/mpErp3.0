@@ -336,7 +336,7 @@ export default {
 </script>
 
 <style lang='scss'>
-// @import "@/assets/css/common/var.scss";
+// @import "@/assets/css/var.scss";
 .mp-erp-time-limit-set-page-content-schema-list-comp-wrap {
   font-size: 14px;
   > header {

@@ -364,7 +364,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .order-list-dialog-orderdetail-wrap {
   margin: 0 auto;
   width: 805px;

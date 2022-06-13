@@ -209,7 +209,7 @@ export default {
         const targetPrice = t.PriceList.find(it => it.ID === PriceID);
         if (targetPrice) {
           const targetType = targetPrice.MakeupList.find(it => it.Type === Type);
-          if (targetType) targetType.Solution = { ID: SolutionID };
+          if (targetType) targetType.Solution = SolutionID !== '' ? { ID: SolutionID } : null;
         }
       }
     },

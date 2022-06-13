@@ -62,6 +62,10 @@
             <span class="is-pink">¥{{dialogData2UsePage.FundInfo.Amount.toFixed(2)}}</span>
           </li>
           <li>
+            <span class="is-gray">印豆数量：</span>
+            <span class="is-pink"> {{dialogData2UsePage.FundInfo.BeanNumber}} 个</span>
+          </li>
+          <li>
             <span class="is-gray">信用额度：</span>
             <span class="is-pink">¥{{dialogData2UsePage.FundInfo.TotalCredit.toFixed(2)}}</span>
           </li>
@@ -75,7 +79,10 @@
         </ul>
       </section>
     </div>
-    <loading-comp v-else />
+    <div v-else-if="!isLoading && !dialogData2UsePage" class="em">
+      暂无数据
+    </div>
+    <loading-comp v-if="isLoading" />
     <span slot="footer" class="dialog-footer">
       <normal-btn @click.native="handleClose()" title="关闭" />
     </span>
@@ -117,7 +124,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-coupon-use-list-page-dialog-comp-wrap {
   > .el-dialog{
     > .el-dialog__header {
@@ -130,12 +137,12 @@ export default {
       }
     }
     > .el-dialog__body {
-      min-height: 200px;
+      min-height: 276px;
       box-sizing: border-box;
       padding: 0;
       color: $--color-text-primary;
       > .content-wrap {
-        padding: 30px;
+        padding: 25px;
         display: flex;
         justify-content: space-between;
         box-sizing: border-box;
@@ -161,7 +168,7 @@ export default {
             }
           }
           &.left {
-            width: 440px;
+            width: 445px;
             > ul {
               padding: 20px;
               > li {
@@ -206,6 +213,7 @@ export default {
             width: 280px;
             > ul {
               padding: 20px;
+              padding-bottom: 25px;
               > li {
                 margin-bottom: 16px;
                 &:last-of-type {
@@ -224,10 +232,16 @@ export default {
       > .mp-common-loading-wrap > .loading-box {
         height: 200px;
       }
+      > .em {
+        text-align: center;
+        padding-top: 100px;
+        color: #a2a2a2;
+      }
     }
     > .el-dialog__footer {
       padding: 0;
       padding-bottom: 30px;
+      padding-top: 10px;
       text-align: center;
       > .dialog-footer {
         display: inline-block;

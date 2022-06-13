@@ -52,10 +52,15 @@
               </p>
             </div>
           </el-tooltip>
+          <el-tooltip effect="light" v-if="item.Remark" :content='item.Remark' placement="bottom-start" :visible-arrow='false'>
+            <i class="el-icon-info"></i>
+          </el-tooltip>
         </div>
         <!-- <span class="part-name" v-if="item.target" :title="item.target.DisplayContent?item.target.DisplayContent.replace(/\[|\]/g, ''):'未知'">
           {{item.target.DisplayContent?item.target.DisplayContent.replace(/\[|\]/g, ''):'未知'}}
         </span> -->
+        <span>
+        </span>
         <span class="priority-box">优先级：{{item.Priority}}</span>
         <span v-if="showName" class="part-name" :title='item.Name'>名称：{{item.Name}}</span>
         <CtrlMenus @edit='onSetupClick(item)' @remove='onRemoveClick(item)' />
@@ -147,7 +152,7 @@ export default {
         const [Constraint, _ConditionText] = PropertyClass.getConstraintAndTextByImperfectConstraint(
           it.Constraint,
           this.localPropertyList,
-          [],
+          this.localPropertyList,
           this.allAdAreaTreeList,
           this.allProductClassify,
         );
@@ -247,6 +252,18 @@ export default {
           height: 36px;
           line-height: 36px;
         }
+        padding-right: 30px;
+        position: relative;
+        > .el-icon-info {
+          position: absolute;
+          right: 10px;
+          top: 12px;
+          font-size: 13px;
+          cursor: pointer;
+          &:hover {
+            color: #26bcf9;
+          }
+        }
       }
       > .priority-box, > .part-name {
         width: 165px;
@@ -256,6 +273,9 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         line-height: 20px;
+      }
+      > .priority-box {
+        min-width: 80px;
       }
       > .ctrl-menus-container {
         width: 230px;

@@ -46,7 +46,7 @@
             <EditDiaLeftTable :tableData='OrderPackageListTableData' />
           </div>
           <div class="right-submit-wrap">
-            <EditDiaRightSubmit :status='orderDetailData && orderDetailData.Status' />
+            <EditDiaRightSubmit :status='orderDetailData && orderDetailData.Status' :Customer='orderDetailData.Customer' />
           </div>
         </main>
       </section>
@@ -334,7 +334,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .dialog-to-order-service-box {
   height: 800px;
   position: relative;

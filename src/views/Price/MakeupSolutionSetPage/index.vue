@@ -40,8 +40,8 @@ export default {
         let SolutionName = '';
         let unSetup = true;
         if (!this.isSolutionListLoading) {
-          SolutionName = '未设置';
-          if (it.Solution) {
+          SolutionName = '无';
+          if (it.Solution && it.Solution.ID !== '') {
             unSetup = false;
             SolutionName = '未知方案（获取名称失败）';
             if (Array.isArray(this.solutionList)) {
@@ -58,7 +58,7 @@ export default {
     selectList() {
       if (!this.curSelectItem || !Array.isArray(this.solutionList)) return [];
       const list = this.solutionList.filter(it => it.Type === this.curSelectItem.Type);
-      return [...list];
+      return [...list, { ID: '', Name: '无' }];
     },
   },
   data() {
@@ -93,7 +93,8 @@ export default {
       this.getMakeupControlSolutionSetup(PriceID, Type, solutionID);
     },
     async getMakeupControlSolutionSetup(PriceID, Type, solutionID) {
-      const resp = await this.api.getMakeupControlSolutionSetup(PriceID, Type, solutionID).catch(() => {});
+      const temp = { PriceID, Type, solutionID };
+      const resp = await this.api.getMakeupControlSolutionSetup(temp).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
           // 设置数据修改： 当前页 及 列表页

@@ -131,7 +131,7 @@ export default class objForListDataClassType {
     static backfill(data) {
       const _obj = {
         CustomerTypeList: data.CustomerTypeList,
-        GradeList: data.GradeList,
+        GradeList: data.GradeList || [],
         ID: data.ID,
         IsChargeFreight: data.IsChargeFreight,
         LogisticsList: data.LogisticsList,
@@ -142,7 +142,6 @@ export default class objForListDataClassType {
         IsIncludeIncreasedProduct: data.IsIncludeIncreasedProduct,
         ProductClassList: data.ProductClassList,
       };
-      if (!_obj.GradeList) _obj.GradeList = [];
       return _obj;
     }
 }

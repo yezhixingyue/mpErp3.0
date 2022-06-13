@@ -4,7 +4,7 @@
     top='15vh'
     :title="title"
     :visible.sync="visible"
-    :disabled='!radio && radio !== 0'
+    :disabled='!radio && radio !== 0 && radio !== ""'
     @submit="onSubmit"
     @cancle="onCancle"
     @open='onOpen'

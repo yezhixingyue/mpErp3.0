@@ -38,7 +38,7 @@
     <el-table-column label="状态" width="60" show-overflow-tooltip>
       <span :class="scope.row._ClassName" slot-scope="scope" >{{scope.row.Status | formatStatus}}</span>
     </el-table-column>
-    <el-table-column label="注册/添加时间" prop="RegTimeContent" width="100" show-overflow-tooltip></el-table-column>
+    <el-table-column label="注册/添加时间" prop="RegTimeContent" width="120" show-overflow-tooltip></el-table-column>
     <el-table-column label="注册方式" width="72" show-overflow-tooltip>
       <template slot-scope="scope" >{{scope.row.RegType | formatRegType}}</template>
     </el-table-column>
@@ -202,7 +202,11 @@ export default {
     },
     getRegTimeContent({ RegTime }) {
       if (RegTime) {
-        return RegTime.split('T')[0] || '';
+        const str = RegTime.slice(0, 16);
+        if (str.length === 16) {
+          return str.replace('T', ' ');
+        }
+        return str.split('T')[0] || '';
       }
       return '';
     },
@@ -248,7 +252,6 @@ export default {
 .mp-erp-customer-manage-list-page-main-table-comp-wrap {
   border-top-color: rgb(230, 230, 230);
   border-left: 1px solid rgb(230, 230, 230);
-  // height: 100%;
   .el-table__header-wrapper thead tr th {
     .cell {
       line-height: 36px;

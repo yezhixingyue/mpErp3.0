@@ -65,7 +65,7 @@ export default {
   },
   computed: {
     ...mapState('basicSet', ['logisticList', 'ThirdPlatExpressList', 'loading']),
-    ...mapState('common', ['Permission']),
+    ...mapState('common', ['Permission', 'ExpressList']),
     localPermission() {
       return this.Permission?.PermissionList?.PermissionManageLogistics?.Obj || {};
     },
@@ -82,11 +82,20 @@ export default {
     handleItemSave(item) { // 物流快递保存 编辑|新增
       const callback = () => {
         this.visible = false;
+        this.getExpressList();
       };
       this.$store.dispatch('basicSet/getLogisticItemSave', { item, callback });
     },
     handleRemove(item) { // 删除
-      this.$store.dispatch('basicSet/getLogisticItemRemove', { item });
+      const callback = () => {
+        this.getExpressList();
+      };
+      this.$store.dispatch('basicSet/getLogisticItemRemove', { item, callback });
+    },
+    getExpressList() { // 在物流快递列表重新修改后 重新获取下修改后的列表（用于本地中其它模块中使用）
+      if (this.ExpressList.length === 0) return;
+      this.$store.commit('common/setExpressList', []);
+      this.$store.dispatch('common/getExpressList');
     },
     submitSort() { // 排序保存
       const ids = this.$refs.SortTable?.sortDataList?.map(it => it.ID);

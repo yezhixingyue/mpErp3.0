@@ -139,7 +139,7 @@ export default {
   > footer {
     flex: none;
     background-color: #fff;
-    height: 70px;
+    height: 50px;
   }
 }
 </style>

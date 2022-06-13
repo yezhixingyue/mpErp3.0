@@ -5,6 +5,7 @@ import api from '@/api/index';
 import CommonClassType from '@/store/CommonClassType';
 import messageBox from '../assets/js/utils/message';
 import UploadFileByBreakPoint from '../assets/js/upload/UploadFileByBreakPoint';
+// import { extname } from '../assets/js/utils/util';
 
 // import { MessageBox } from 'element-ui';
 
@@ -606,31 +607,21 @@ export default {
         throw new Error(res.data.Message);
       }
     },
-    async downLoadOrderFile({ rootState }) {
-      const orderID = rootState.orderModule.curOrderID;
+    async downLoadOrderFile({ rootState }, detailData) {
+      const orderID = detailData.OrderID || rootState.orderModule.curOrderID;
       const res = await api.getOrderFilePath2DownLoad(orderID);
-      if (res.data.Status === 1000) {
-        const url = res.data.Data;
-        const link = document.createElement('a');
-        link.style.display = 'none';
-        link.href = url;
-        const _arr = url.split('/');
-        let _fileName = _arr[_arr.length - 1];
-        const _t = _fileName.split(' ');
-        // eslint-disable-next-line prefer-destructuring
-        if (_t.length === 2) _fileName = _t[1];
-        else if (_t.length > 2) {
-          const _t2 = _t.slice(1).join(' ');
-          _fileName = _t2;
-        }
-        link.setAttribute('download', _fileName);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        link.onload = () => {
-          window.URL.revokeObjectURL(url);
-        };
+      if (res.data.Status === 1000 && res.data.Data) {
+        const list = document.body.querySelectorAll('iframe');
+        list.forEach(it => {
+          if (it.name === 'mpDownload') {
+            document.body.removeChild(it);
+          }
+        });
+        const oIframe = document.createElement('iframe');
+        oIframe.src = res.data.Data;
+        oIframe.name = 'mpDownload';
+        oIframe.style.display = 'none';
+        document.body.appendChild(oIframe);
       }
     },
     async getPayPackageByOrder({ commit }, orderId) {

@@ -156,7 +156,7 @@ export default {
     /** 回填编辑信息
     ---------------------------------------- */
     backfillCondition2CouponSave(state, data) {
-      state.condition2CouponSave = Condition2CouponSaveClassType.backfill(data);
+      state.condition2CouponSave = new Condition2CouponSaveClassType(data);
     },
     /** 清除编辑信息
     ---------------------------------------- */

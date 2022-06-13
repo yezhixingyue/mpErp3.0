@@ -43,7 +43,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-service-header-service-classify-wrap{
   padding-left: 20px;
   padding-top: 25px;

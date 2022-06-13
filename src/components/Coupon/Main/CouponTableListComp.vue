@@ -9,8 +9,8 @@
     border
     style="width: 100%"
   >
-    <el-table-column min-width="75px" prop="InternalSN" label="内部代号"></el-table-column>
-    <el-table-column show-overflow-tooltip min-width="70px" label="金额">
+    <el-table-column min-width="60px" prop="InternalSN" label="内部代号"></el-table-column>
+    <el-table-column show-overflow-tooltip min-width="60px" label="金额">
       <template slot-scope="scope">
         <span class="is-origin is-thick-line is-font-size-14">{{scope.row.Data.Amount}}元</span>
       </template>
@@ -57,6 +57,12 @@
       <template slot-scope="scope">{{scope.row.OrderTypeList | formatPromoteOrderType}}
       </template>
     </el-table-column>
+
+    <el-table-column show-overflow-tooltip min-width="70px" label="客户领取">
+      <template slot-scope="scope">{{scope.row.IsCustomerReceive ? `允许${scope.row.MaxReceiveNumber}份` : '不允许'}}
+      </template>
+    </el-table-column>
+
     <el-table-column min-width="65px" class-name='two-layers-wrap left' label="状态">
       <template slot-scope="scope">
         <div>
@@ -110,12 +116,15 @@
     <el-table-column min-width="65px" prop="ApplyUser.StaffName" label="申请人"></el-table-column>
     <el-table-column min-width="65px" prop="OperateUser.StaffName" label="操作人"></el-table-column>
 
-    <el-table-column min-width="348px" label="操作">
+    <el-table-column width="300px" label="操作">
       <ul class="handle-menus" slot-scope="scope">
         <li class="stop-box" v-if="localPermission.Generate">
-          <span class="is-list-btn"
+          <span class="is-list-btn" v-if="!scope.row.IsCustomerReceive"
            @click="onGenerateCoupons(scope.row, scope.$index, scope.row.ProductString ? scope.row.ProductString.split('\n') : [])">
             <img src="@/assets/images/edit-icon.png" alt />手动生成
+          </span>
+          <span class="is-disabled" v-else >
+            <img style="filter: grayscale(1); opacity: 0.8" src="@/assets/images/edit-icon.png" alt />手动生成
           </span>
         </li>
         <li v-if="localPermission.Query">

@@ -233,7 +233,7 @@ const routes = [
       pageName: 'CraftPriceTableConditionSet',
       PermissionInfo: ['PermissionProductPrice', 'Obj', 'SetupAll'],
     },
-    component: () => import('../../../views/Price/CraftPriceSetPage/ConditionSetupPage'),
+    component: () => import('../../../views/Price/CraftPriceSetPage/ConditionSetupPage.vue'),
   },
   {
     path: '/QuotationPriceResultFormulaSet/:name/:id/:isQuotation',

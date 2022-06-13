@@ -96,7 +96,7 @@ export default {
       }
     },
     handleFillCurrentPrice() { // 填充当前价格
-      this.messageBox.warnCancelBox('确定填充当前执行价吗', '这将会覆盖当前价格表中所以输入框内的价格', async () => {
+      this.messageBox.warnCancelBox('确定填充当前执行价吗', '这将会覆盖当前价格表中所有输入框内的价格', async () => {
         const PolicyData = await this.getCustomerPricePolicy(this.curPriceTactic.CustomerGradeID, DefaultPriceEmuns.OnSellPrice.ID).catch(() => null);
         if (PolicyData) this.curPriceTactic.setPolicyTableList(PolicyData.PolicyList, this.twoLevelsProductClassify4Sort);
       });

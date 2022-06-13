@@ -68,7 +68,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-service-imglist-display-wrap {
   $h: 150px;
   .img-list {

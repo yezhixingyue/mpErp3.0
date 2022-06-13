@@ -59,8 +59,8 @@ export default {
       const condition = this.$refs.oLeftComp.getConditonResult();
       if (!condition) return;
       const temp = {
-        Name: this.Name,
         ...condition,
+        Name: this.Name,
         PartID: this.$route.params.PartID,
       };
       delete temp.Priority;

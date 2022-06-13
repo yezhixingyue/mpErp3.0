@@ -70,7 +70,7 @@ export default {
 </script>
 
 <style lang='scss'>
-  @import "@/assets/css/common/var.scss";
+  @import "@/assets/css/var.scss";
   .mp-text-input-wrap{
     display: inline-block;
     position: relative;

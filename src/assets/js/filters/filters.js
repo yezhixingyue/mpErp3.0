@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-26 09:16:49
- * @LastEditTime: 2022-01-10 18:09:45
+ * @LastEditTime: 2022-05-03 11:15:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit 过滤器
  * @FilePath: /src/assets/js/filters/filters.js
@@ -275,6 +275,7 @@ Vue.filter('formatProducePeriod', ProducePeriod => {
 
   let hour = TotalTime.split('T')[1].split('+')[0].slice(0, 5);
   if (dayTimeStr && dayTimeStr.length === 10) hour = ` ${hour}`;
+  hour = '';
   return `${dayTimeStr}${hour}${str}`;
 });
 

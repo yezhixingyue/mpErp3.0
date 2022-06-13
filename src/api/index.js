@@ -38,14 +38,17 @@ const api = {
   getCalculatePriceRecordList(data) { // POST /Api/CalculatePrice/RecordList  获取报价记录
     return instance.post('/Api/CalculatePrice/RecordList', data);
   },
+  getCalculatePriceRecordListExcel(data) { // POST /Api/CalculatePrice/Excel 导出报价记录Excel
+    return instance.post('/Api/CalculatePrice/Excel', data, { responseType: 'arraybuffer' });
+  },
 
   /* 付款列表部分api
    ----------------------------------------------------------------------------------- */
   getPaymentOrderList(data) { // 获取付款单列表
     return instance.post('/Api/PaymentOrder/List', data);
   },
-  cancelCustomerPay(payCode) { // 取消付款单 /Api/PaymentOrder/Cancle
-    return instance.put(`/Api/PaymentOrder/Cancle?payCode=${payCode}&isAddPrepare=false`);
+  cancelCustomerPay({ PayCode, isAddPrepare }) { // 取消付款单 /Api/PaymentOrder/Cancle
+    return instance.put(`/Api/PaymentOrder/Cancle?payCode=${PayCode}&isAddPrepare=${isAddPrepare}`);
   },
   transferToPrepareOrder(payCode) { // 付款单转待下单
     return instance.put(`/Api/PaymentOrder/TransferToPrepareOrder?payCode=${payCode}`);
@@ -601,8 +604,8 @@ const api = {
   getPartChildConditionRemove(id) { // DELETE /Api/ChildCondition/Remove 子条件删除
     return instance.delete('/Api/ChildCondition/Remove', { params: { id } });
   },
-  getMakeupControlSolutionSetup(priceID, type, solutionID) { // PUT /Api/MakeupControl/Setup  拼版方案设置
-    return instance.put('/Api/MakeupControl/Setup', '', { params: { priceID, type, solutionID } });
+  getMakeupControlSolutionSetup(params) { // PUT /Api/MakeupControl/Setup  拼版方案设置
+    return instance.put('/Api/MakeupControl/Setup', '', { params });
   },
   getPriceSolutionSave(data) { // POST /Api/PriceSolution/Save  价格方案保存
     return instance.post('/Api/PriceSolution/Save', data);
@@ -1026,6 +1029,12 @@ const api = {
   getDepartmentOrder(data) { //  部门排序保存
     return instance.post('/Api/Department/Order', data);
   },
+  getIntranetContent() { // /Api/Intranet  获取当前内网IP数据
+    return instance.get('/Api/Intranet');
+  },
+  getIntranetSetup(data) { // /Api/Intranet/Setup  设置网络访问IP { Content: '' }
+    return instance.post('/Api/Intranet/Setup', data);
+  },
 
   /* 客户管理api
   ----------------------------------------------------------------------------------- */
@@ -1100,6 +1109,21 @@ const api = {
     return instance.delete('/Api/PrintBean/Remove', { params: { id } });
   },
 
+  /* 消费返现api
+  ----------------------------------------------------------------------------------- */
+  getConsumeReturnCashList(data) { // POST /Api/ConsumeReturnCash/List  获取消费返现列表
+    return instance.post('/Api/ConsumeReturnCash/List', data);
+  },
+  getConsumeReturnCashDetail(id) { // GET /Api/ConsumeReturnCash/Detail 消费返现详情
+    return instance.get('/Api/ConsumeReturnCash/Detail', { params: { id } });
+  },
+  getConsumeReturnCashSave(data) { // POST /Api/ConsumeReturnCash/Save  消费返现编辑保存
+    return instance.post('/Api/ConsumeReturnCash/Save', data);
+  },
+  getConsumeReturnCashRemove(id) { // DELETE /Api/ConsumeReturnCash/Remove  消费返现删除
+    return instance.delete('/Api/ConsumeReturnCash/Remove', { params: { id } });
+  },
+
   /* 物流费用api
   ----------------------------------------------------------------------------------- */
   getLogisticsList() { // GET /Api/Logistics/List   物流快递列表
@@ -1136,6 +1160,12 @@ const api = {
   },
   getLogisticsBindStation(data) { // POST /Api/Logistics/BindStation  关联网点 -- 参数同保存参数 RelationList
     return instance.post('/Api/Logistics/BindStation', data);
+  },
+
+  /* 发票管理 api
+  ----------------------------------------------------------------------------------- */
+  getInvoiceCategoryList(condition) { // POST /Api/InvoiceCategory/List   获取发票分类列表
+    return instance.post('/Api/InvoiceCategory/List', condition);
   },
 };
 

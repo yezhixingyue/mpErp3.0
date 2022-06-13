@@ -98,8 +98,8 @@ export const getSelectedContentBySelectedDataAndAllData = (item, treeData, title
   if (!item || !treeData || treeData.length === 0) return '';
   const { IsIncludeIncreased, List } = item;
   if (!List || List.length === 0) {
-    if (IsIncludeIncreased) return '只包含新加大区';
-    return '无效区域';
+    if (IsIncludeIncreased) return `只包含新加${title}`;
+    return `无效${title}`;
   }
 
   const selectedLv1Ids = item.List.map(it => it.ID);
@@ -131,7 +131,7 @@ export const getSelectedContentBySelectedDataAndAllData = (item, treeData, title
             temp2.content = `${temp2.content}：全部${title}`;
           } else {
             let _content = temp2.children.map(it => it.ClassName).join('、');
-            _content = _content ? `：[${_content}]` : '';
+            _content = _content ? `：[${_content}]` : '：无';
             temp2.content = `${temp2.content}${_content}`;
           }
         }
@@ -157,12 +157,12 @@ export const getSelectedContentBySelectedDataAndAllData = (item, treeData, title
     content: '',
   };
   // const aside = `${IsIncludeIncreased ? `包含新加${title}` : `不含新加${title}`}`;
-  const aside = `${IsIncludeIncreased ? `（包含新加${title}）` : ''}`;
+  const aside = `${IsIncludeIncreased ? `包含新加${title}` : ''}`;
   _temp.content = treeList.map(it => it.content);
   const partial = treeList.find(it => !it.isCheckAll || !it.IsIncludeIncreased);
   if (!partial && treeList.length === originLen) {
     _temp.isCheckAll = true;
-    _temp.content = `全部${title}${aside}`;
+    _temp.content = `全部${title}${aside ? `(${aside})` : ''}`;
   } else {
     _temp.content = treeList.map(it => it.content).filter(it => it);
     if (aside) _temp.content.unshift(aside);

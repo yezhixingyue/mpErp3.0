@@ -241,8 +241,8 @@ export default class ProductDetailTypeShowClass {
       if (orderDetailData.ProductParams.Attributes.ClassList?.length > 0) {
         const t = orderDetailData.ProductParams.Attributes.ClassList.find(it => it.Type === 1);
         if (t) {
-          const { FirstLevel } = t;
-          if (FirstLevel && FirstLevel.Name) str += `${FirstLevel.Name}-`;
+          const { SecondLevel } = t;
+          if (SecondLevel && SecondLevel.Name) str += `${SecondLevel.Name}-`;
         }
       }
       str += orderDetailData.ProductParams.Attributes.DisplayName;

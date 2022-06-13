@@ -98,6 +98,7 @@
 
 <script>
 import CommonDialogComp from '@/packages/CommonDialogComp';
+import { projectType } from '../../../assets/js/setup';
 
 export default {
   name: 'QrCodeForPayDialogComp',
@@ -214,6 +215,10 @@ export default {
     onImgLoadError(e) { // 图片下载出错
       this.loadError = true;
       if (e.type === 'error') {
+        if (projectType === 'erp') {
+          this.messageBox.failSingleError('二维码获取失败！', '[ 获取不到图片，请检查网络或稍后再试 ]');
+          return;
+        }
         this.messageBox.failSingleError({
           title: '二维码获取失败！',
           msg: '[ 获取不到图片，请检查网络或稍后再试 ]',

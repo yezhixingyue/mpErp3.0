@@ -167,7 +167,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-service-page-main-table {
     border-color: #e5e5e5;
     border-bottom: 1px solid #e5e5e5 !important;

@@ -355,7 +355,7 @@ export const isDarkMode = () => window.matchMedia && window.matchMedia('(prefers
 export const scrollToTop = element => element.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 /**
- * 滚动到顶部
+ * 滚动到底部
  *
  * @param {*} element
  */

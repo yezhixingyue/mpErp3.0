@@ -198,7 +198,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-coupon-generate-comp-wrap.mp-img-style-header {
   > .el-dialog{
     > .el-dialog__header {

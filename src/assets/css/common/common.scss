@@ -1,4 +1,4 @@
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 
 .el-loading-spinner {
   .circular {
@@ -219,6 +219,11 @@
   }
   &:active {
     color: #ce083a !important;
+  }
+  &.disabled, &:disabled {
+    color: #cbcbcb !important;
+    pointer-events: none;
+    cursor: default;
   }
 }
 
@@ -562,4 +567,34 @@ button.border-blue-btn {
 .el-radio__inner::after {
   width: 7px;
   height: 7px;
+}
+
+@for $num from 0 through 100 {
+  .ml-#{$num} {
+    margin-left: #{$num}px
+  };
+  .mr-#{$num} {
+    margin-right: #{$num}px
+  };
+  .mt-#{$num} {
+    margin-top: #{$num}px
+  };
+  .mb-#{$num} {
+    margin-bottom: #{$num}px
+  };
+  .pl-#{$num} {
+    padding-left: #{$num}px
+  };
+  .pr-#{$num} {
+    padding-right: #{$num}px
+  };
+  .pt-#{$num} {
+    padding-top: #{$num}px
+  };
+  .pb-#{$num} {
+    padding-bottom: #{$num}px
+  };
+  .ft-#{$num} {
+    font-size: #{$num}px;
+  }
 }

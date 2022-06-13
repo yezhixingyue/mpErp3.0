@@ -153,14 +153,14 @@ export default {
         this.messageBox.failSingleError('保存失败', '价格比例不能为空且必须为数字');
         return false;
       }
-      t = this.ruleForm.ReferencePriceList.find(it => it.Percent < 0);
+      t = this.ruleForm.ReferencePriceList.find(it => it.Percent <= 0);
       if (t) {
-        this.messageBox.failSingleError('保存失败', '价格比例不能小于0');
+        this.messageBox.failSingleError('保存失败', '价格比例不能小于等于0');
         return false;
       }
-      t = this.ruleForm.ReferencePriceList.find(it => it.Percent > 100);
+      t = this.ruleForm.ReferencePriceList.find(it => it.Percent > 10000);
       if (t) {
-        this.messageBox.failSingleError('保存失败', '价格比例不能大于100%');
+        this.messageBox.failSingleError('保存失败', '价格比例不能大于10000%');
         return false;
       }
       return true;

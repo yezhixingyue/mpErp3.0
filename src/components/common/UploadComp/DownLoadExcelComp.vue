@@ -27,7 +27,7 @@ export default {
   methods: {
     onClick() {
       if (this.configObj.condition.Page === 1 && this.configObj.count === 0) {
-        this.messageBox.warnSingleError('[ 当前条件没有可导出的列表数据! ]');
+        this.messageBox.warnSingleError('[ 当前条件没有可导出的列表数据! ]', null, null, '导出失败');
         return;
       }
       // this.messageBox.warnCancelNullMsg('确定导出表格数据吗?', () => this.handleDownFunc());
@@ -61,7 +61,7 @@ export default {
           } else {
             _second = Second;
           }
-          const t2 = _second ? ConvertTimeFormat(new Date(new Date(_second).getTime() - 24 * 60 * 60 * 1000)) : '';
+          const t2 = _second ? ConvertTimeFormat(new Date(new Date(_second.replace('Z', '')).getTime())) : '';
           if (f) fileName = `${this.configObj.fileDefaultName}(${f}至${t2}).xls`;
         }
       }
@@ -88,7 +88,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-common-download-to-excel-comp-wrap {
   border: none;
   background-color: #fff;

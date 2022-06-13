@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .order-manage {
   width: calc(100% - 180px);
   color: rgb(88, 88, 88);

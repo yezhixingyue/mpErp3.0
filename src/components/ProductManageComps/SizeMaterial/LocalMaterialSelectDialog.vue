@@ -189,8 +189,9 @@ export default {
       } else {
         const resp = await this.api.getMaterialList(type, 1, 1000000).catch(() => {});
         if (resp && resp.data && resp.data.Status === 1000) {
-          this.MaterialDataObj[type] = resp.data.Data;
-          list = resp.data.Data;
+          const _list = resp.data.Data.map((it, i) => ({ ...it, _originIndex: i })).sort((a, b) => a.DisplayName.localeCompare(b.DisplayName));
+          this.MaterialDataObj[type] = _list;
+          list = _list;
         }
       }
       const _temp = {};

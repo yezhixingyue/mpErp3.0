@@ -76,7 +76,7 @@
             </i>
             <span>客户信息</span>
           </header>
-          <article class="customer-content">
+          <article class="customer-content mp-scroll-wrap">
             <section>
               <ul>
                 <li>
@@ -191,8 +191,7 @@
                   </li>
                   <li
                   class="right-flex-wrap download-box"
-                  v-if="$route.name === 'orderManage'
-                    && showData.FilePath && !showData.ProductParams.Attributes.IsSpotGoods && localPermission.DownloadFile">
+                  v-if="showDownload && showData.FilePath && !showData.ProductParams.Attributes.IsSpotGoods && localPermission.DownloadFile">
                     <span class="text-title">文件下载：</span>
                     <normalBtn @click.native="handleDownLoad(showData)" title="下载订单文件" />
                   </li>
@@ -231,11 +230,10 @@
                     <span class="text is-pink">{{getMiDate(showData.ProducePeriod.LatestPayTime)}}</span>
                   </li>
                   <template v-if="[254, 255].indexOf(showData.Status) === -1">
-                    <li v-if="showData.ProducePeriod && showData.ProducePeriod.TotalTime
-                      && showData.ProducePeriod.IncludeDiliveryTime">
-                      <span class="text-title">{{showData.ProducePeriod.IncludeDiliveryTime ? '预计送达：' : '预计出货：'}}</span>
+                    <li v-if="showData.ProducePeriod && showData.ProducePeriod.TotalTime">
+                      <span class="text-title">{{showData.ProducePeriod.IncludeDiliveryTime ? '预计送达：' : '预计发货：'}}</span>
                       <span class="text is-gray">{{getDayDate(showData.ProducePeriod.TotalTime)}}</span>
-                      <span class="text is-gray">{{getMiDate(showData.ProducePeriod.TotalTime)}}</span>
+                      <!-- <span class="text is-gray">{{getMiDate(showData.ProducePeriod.TotalTime)}}</span> -->
                     </li>
                   </template>
                 </template>
@@ -288,6 +286,10 @@ export default {
       default: false,
       type: Boolean,
     },
+    showDownload: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapState('orderModule', ['orderDetailData']),
@@ -303,15 +305,25 @@ export default {
       return this.orderDetailData;
     },
     ProductShowData() {
+      let Name = this.showData?.ProductParams?.Attributes?.DisplayName || '产品名称';
+      const FactoryName = this.showData?.ProductParams?.Attributes?.FactoryName || '';
+      if (Array.isArray(this.showData?.ProductParams?.Attributes?.ClassList)) {
+        const t = this.showData.ProductParams.Attributes.ClassList.find(it => it.Type === 1);
+        if (t && t.SecondLevel?.Name) {
+          Name = `${t.SecondLevel.Name}-${Name}`;
+        }
+      }
       if (this.showData?.ProductParams?.Attributes?.DisplayOrderList && this.showData.ProductParams.Attributes.DisplayOrderList.length > 0) {
         return {
-          Name: this.showData.ProductParams.Attributes.DisplayName,
+          Name,
+          FactoryName,
           ContentList: this.getPartShowList(this.showData.ProductParams.Attributes.DisplayOrderList, this.showData.ProductParams),
           Type: 'product',
         };
       }
       return {
-        Name: this.showData?.ProductParams?.Attributes?.DisplayName || '产品名称',
+        Name,
+        FactoryName,
         ContentList: [],
         Type: 'product',
       };
@@ -395,7 +407,7 @@ export default {
       return list.filter((item) => item.Value.length > 0);
     },
     handleDownLoad(orderDetailData) {
-      this.$store.dispatch('service/downLoadOrderFile', orderDetailData);
+      this.messageBox.warnCancelNullMsg('确定下载订单文件吗?', () => this.$store.dispatch('service/downLoadOrderFile', orderDetailData));
     },
     handleReview() { // 不传文件重新提交审稿
       this.messageBox.warnCancelBox('确认文件没问题吗?', '[ 文件未更改，审稿人员将重新审核当前文件 ]',
@@ -412,7 +424,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .order-list-dialog-orderdetail-wrap {
   margin: 0 auto;
   width: 805px;
@@ -534,7 +546,9 @@ export default {
       padding: 20px;
       height: 230px;
       box-sizing: border-box;
-      overflow: hidden;
+      overflow: auto;
+      overflow: overlay;
+      padding-bottom: 0px;
       section {
         &:first-of-type {
           margin-bottom: 26px;
@@ -555,6 +569,7 @@ export default {
       padding: 20px;
       height: 320px;
       overflow: auto;
+      overflow: overlay;
       box-sizing: border-box;
       section {
         > ul > li {
@@ -801,7 +816,7 @@ export default {
       position: relative;
       padding-bottom: 1px;
       .text.is-bold {
-        font-size: 15px;
+        font-size: 14px;
       }
     }
     &.unit > ul > li {

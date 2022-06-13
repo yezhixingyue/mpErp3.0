@@ -10,7 +10,7 @@
           <div>
             <span class="blue-span" @click="onAreaSelectClick">选择区域</span>
             <!-- 区域展示文字 -->
-            <span class="remark" :title="SpecialDayForm.AreaDescribe">{{SpecialDayForm.AreaDescribe.replaceAll('\r\n', '、')}}</span>
+            <span class="remark" :title="localAreaDescribe">{{localAreaDescribe.replaceAll('\r\n', '、')}}</span>
           </div>
         </li>
         <li>
@@ -45,11 +45,11 @@
         <li>
           <span class="title">给客户的提示：</span>
           <div class="content-item">
-            <el-input maxlength="40" show-word-limit v-model="SpecialDayForm.Tips" size="small" style="width:600px"></el-input>
+            <el-input maxlength="60" show-word-limit v-model="SpecialDayForm.Tips" size="small" style="width:600px"></el-input>
           </div>
         </li>
       </ul>
-      <ADAreaDialogSelector :visible.sync="visible" v-model="SpecialDayForm.AreaList" :AreaDescribe.sync='SpecialDayForm.AreaDescribe' />
+      <ADAreaDialogSelector :visible.sync="visible" v-model="SpecialDayForm.AreaList" />
     </main>
     <footer>
       <el-button type='primary' class="is-blue-button" :disabled='hasError' @click="onSubmitClick">保存</el-button>
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import SpecialDayItemClass from '@/store/Period/ItemClass/SpecialDayItemClass';
 import ADAreaDialogSelector from '@/components/common/SelectorComps/ADAreaDialogSelector/index.vue';
 
@@ -77,8 +77,11 @@ export default {
     };
   },
   computed: {
-    // ...mapState('periodManage', ['curPayTimeEditData']),
-    ...mapGetters('common', ['subExpressList']),
+    ...mapState('periodManage', ['ExpressStopDataList']),
+    ...mapGetters('common', ['subExpressList', 'allAdAreaTreeList']),
+    localAreaDescribe() {
+      return this.$utils.getTreeTextDisplayContent(this.SpecialDayForm.AreaList, this.allAdAreaTreeList);
+    },
     ExpressCheckAll: {
       get() {
         return (
@@ -141,9 +144,16 @@ export default {
       const { ItemID } = this.$route.params;
       if (ItemID !== 'null') {
         this.hasError = false;
-        const resp = await this.api.getSpecialDayDetail(ItemID).catch(() => null);
-        if (resp && resp.data.Status === 1000) temp = resp.data.Data;
-        else this.hasError = true;
+        const t = this.ExpressStopDataList.find(it => it.ItemID === ItemID);
+        if (t) {
+          temp = t;
+        } else {
+          this.hasError = true;
+        }
+        // this.hasError = false;
+        // const resp = await this.api.getSpecialDayDetail(ItemID).catch(() => null);
+        // if (resp && resp.data.Status === 1000) temp = resp.data.Data;
+        // else this.hasError = true;
       }
       this.SpecialDayForm = new SpecialDayItemClass(temp);
       this.filterEditDataExpressList();

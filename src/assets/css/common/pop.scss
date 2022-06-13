@@ -1,4 +1,4 @@
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 
 // 用于调整element弹框样式
 .el-message-box__wrapper::after {
@@ -332,8 +332,13 @@
 .el-message-box.mp-order-del-pop-success {
     @include normal-success;
     .el-message-box__content{
+        padding-bottom: 25px;
+        padding-top: 13px;
+    }
+    &.none-msg .el-message-box__content{
         display: none;
     }
+    
     .el-message-box__header{
         height: 46px;
         .el-message-box__title{

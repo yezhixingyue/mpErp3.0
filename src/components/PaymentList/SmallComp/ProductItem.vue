@@ -27,14 +27,47 @@
             v-show="isActive"
             :key='item.OrderID'
            >
-              <span :style="widthStyleObj[0]">{{item.OrderID}}</span>
-              <span :style="widthStyleObj[1]">{{item.ProductName}}</span>
-              <span :style="widthStyleObj[2]">
-              {{item.ProductAmount}}{{item.Unit?item.Unit:'个'}}{{data.KindCount?data.KindCount:1}}款
+              <span :style="widthStyleObj[0]">
+                <el-tooltip  class="item" effect="dark" :content="`${item.OrderID || ''}`" placement="top-start">
+                  <i>{{item.OrderID}}</i>
+                </el-tooltip>
               </span>
-              <span :style="widthStyleObj[3]">{{item.Funds.FinalPrice}}元</span>
-              <span :style="widthStyleObj[4]">{{item.Funds.Deposit}}元</span>
-              <span class="product-item-ontent-text-box" :style="widthStyleObj[5]">
+              <span :style="widthStyleObj[1]">
+                <el-tooltip  class="item" effect="dark" :content="item | getFullName" placement="top-start">
+                  <i>{{item | getFullName}}</i>
+                </el-tooltip>
+              </span>
+              <span :style="widthStyleObj[2]">
+                <el-tooltip  class="item" effect="dark" :content="item.SizeList | formatListItemSize" placement="top-start">
+                  <i>{{item.SizeList | formatListItemSize }}</i>
+                </el-tooltip>
+              </span>
+              <span :style="widthStyleObj[3]">
+                <el-tooltip  class="item" effect="dark" :content="item.MaterialList | formatListItemMaterial" placement="top-start">
+                  <i>{{item.MaterialList | formatListItemMaterial }}</i>
+                </el-tooltip>
+              </span>
+              <span :style="widthStyleObj[4]">
+                <el-tooltip  class="item" effect="dark" :content="item.CraftList | formatListItemCraft" placement="top-start">
+                  <i>{{item.CraftList | formatListItemCraft }}</i>
+                </el-tooltip>
+              </span>
+              <span :style="widthStyleObj[5]">
+                <el-tooltip  class="item" effect="dark" :content="item | formarProductAmount" placement="top-start">
+                  <i>{{item | formarProductAmount }}</i>
+                </el-tooltip>
+              </span>
+              <span :style="widthStyleObj[6]">
+                <el-tooltip  class="item" effect="dark" :content="`${item.Funds.FinalPrice}元`" placement="top-start">
+                  <i>{{item.Funds.FinalPrice}}元</i>
+                </el-tooltip>
+              </span>
+              <span :style="widthStyleObj[7]">
+                <el-tooltip  class="item" effect="dark" :content="`${item.Funds.Deposit}元`" placement="top-start">
+                  <i>{{item.Funds.Deposit}}元</i>
+                </el-tooltip>
+              </span>
+              <span class="product-item-ontent-text-box" :style="widthStyleObj[8]">
                 <el-tooltip v-if="item.Content" class="item" effect="dark" :content="item.Content" placement="top-start">
                   <i>{{item.Content}}</i>
                 </el-tooltip>
@@ -95,7 +128,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .product-item{
   margin-top: 10px;
   font-size: 12px;

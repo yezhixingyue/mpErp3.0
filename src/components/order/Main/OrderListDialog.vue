@@ -23,7 +23,7 @@
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane v-if="showDetail" label="订单详情" name="first">
-          <OrderDetail v-if="!isLoading" />
+          <OrderDetail v-if="!isLoading" showDownload />
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane  v-if="canShowExpressList" label="包裹列表" name="second">
@@ -188,7 +188,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
   .order-list-dialog-box {
     height: 820px;
     position: relative;

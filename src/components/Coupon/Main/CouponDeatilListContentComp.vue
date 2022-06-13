@@ -53,7 +53,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-coupon-deatail-list-content-comp-wrap {
   padding-top: 10px;
   background-color: $--bg-color-base;

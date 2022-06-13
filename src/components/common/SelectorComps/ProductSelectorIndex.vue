@@ -197,7 +197,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
  .mp-order-product-select-wrap{
    display: flex;
    > li {

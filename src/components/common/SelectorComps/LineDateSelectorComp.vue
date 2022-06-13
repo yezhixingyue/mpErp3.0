@@ -185,7 +185,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 @import '@/assets/css/mixins/header/time-search-selector.scss';
 .mp-line-date-selector-wrap {
   min-width: 712px;

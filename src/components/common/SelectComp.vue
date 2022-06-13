@@ -71,7 +71,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-common-select-comp-wrap {
   height: 25px;
 

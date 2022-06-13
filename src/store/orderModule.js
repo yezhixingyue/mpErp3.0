@@ -30,7 +30,7 @@ export default {
     /* 订单状态相关
     -------------------------------*/
     OrderStatusList: [
-      { name: '不限', ID: 0 },
+      { name: '不限', ID: '' },
       { name: '待分发', ID: 20 },
       { name: '已分发', ID: 30 },
       { name: '已审稿', ID: 40 },
@@ -71,7 +71,7 @@ export default {
       },
       Page: 1,
       PayListPage: 1,
-      PageSize: 30,
+      PageSize: 20,
       Status: '',
       ExpressType: '',
       KeyWords: '',
@@ -276,7 +276,7 @@ export default {
         KeyWords: '',
         ExpressType: '',
         Page: 1,
-        PageSize: 30,
+        PageSize: 20,
         OrderType: '',
         Terminal: '',
         PlaceDate: {
@@ -565,7 +565,7 @@ export default {
           } else {
             _second = Second;
           }
-          const t2 = _second ? ConvertTimeFormat(new Date(new Date(_second).getTime() - 24 * 60 * 60 * 1000)) : '';
+          const t2 = _second ? ConvertTimeFormat(new Date(new Date(_second.replace('Z', '')).getTime())) : '';
           if (f) fileName = `${_str}(${f}至${t2}).xls`;
         } else {
           fileName = `${_str}(全部).xls`;

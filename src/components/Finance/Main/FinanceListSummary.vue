@@ -105,7 +105,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-finance-list-summary{
   box-shadow: 0px 3px 7px rgba(196, 196, 196, 1);
   height: 58px;

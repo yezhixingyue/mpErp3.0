@@ -4,7 +4,7 @@
       <p class="mp-common-title-wrap">{{field}}印豆设置</p>
     </header>
     <main>
-      <LRWidthDragAutoChangeComp leftWidth='780px'>
+      <LRWidthDragAutoChangeComp leftWidth='740px'>
         <template v-slot:left>
           <PrintBeanSetupLeftComp :curItemData='curPrintBeanData' @change="onChange" :isStarted='isStarted' />
         </template>

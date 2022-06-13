@@ -470,7 +470,7 @@ export default {
       if (this.disabled) return;
       const bool = this.tableSubmitChecker();
       if (!bool) return;
-      const list = this.PriceTableData.PriceList.filter(it => it.List.map(_it => _it.Second).filter(_it => _it).length > 0); // 筛选掉为空的价格列表数据
+      const list = this.PriceTableData.PriceList.filter(it => it.List.map(_it => _it.Second || _it.Second === 0).filter(_it => _it).length > 0); // 筛选掉为空的价格列表数据
       const { ID, PriceID, SolutionID, XAxis, YAxis, DataList, Unit } = this.PriceTableData;
       const temp = { ID, PriceID, SolutionID, XAxis, YAxis, DataList, Unit, PriceList: list };
       const resp = await this.api.getPriceTableSave(temp).catch(() => {});

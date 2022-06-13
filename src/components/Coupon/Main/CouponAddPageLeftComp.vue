@@ -152,7 +152,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-coupon-add-page-left-comp-wrap {
   box-sizing: border-box;
   padding-left: 45px;

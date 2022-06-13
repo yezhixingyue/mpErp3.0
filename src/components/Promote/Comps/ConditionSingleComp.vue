@@ -249,7 +249,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-promote-single-condition-comp-wrap {
   display: flex;
   margin-top: 20px;

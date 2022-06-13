@@ -4,7 +4,8 @@
       <slot name="header"></slot> <!-- h2 span -->
     </header>
     <main>
-      <ContionCommonComp ref="oLeftComp" :showName='showName' :ComparePropertyList='ComparePropertyList' :PropertyList='FormulaConditionPropertyList'
+      <ContionCommonComp ref="oLeftComp" :showName='showName' :showNameMaxLength='showNameMaxLength' :ComparePropertyList='ComparePropertyList'
+       :PropertyList='FormulaConditionPropertyList'
        leftWidth='45%' :curEditData='curEditItemData' :productLevel2='productLevel2' :areaLevel2='areaLevel2' rightTitle="使用此公式">
         <!-- 右侧公式设置 -->
         <FormulaPanelComp
@@ -46,6 +47,10 @@ export default {
     showName: {
       type: Boolean,
       default: false,
+    },
+    showNameMaxLength: {
+      type: Number,
+      default: 15,
     },
     showCompareProp: {
       type: Boolean,

@@ -1,36 +1,65 @@
 <template>
   <section class="mp-erp-cash-back-list-page-wrap">
-    <header>
-      <el-button type="primary" @click="onAddClick">添加消费返现</el-button>
-    </header>
+    <Header @setup='onSetupClick' />
     <main>
-      主体区域
+      <Table :list='DataList' :loading='loading' @edit='onSetupClick' @remove='handleItemRemove' />
     </main>
     <footer>
-      底部分页区域
+      <CountComp
+        :count='DataNumber'
+        :watchPage='conditionForDataList.Page'
+        :handlePageChange='handlePageChange'
+        :pageSize='conditionForDataList.PageSize'
+      />
     </footer>
   </section>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+import Header from '../../components/BackCashComps/ListComps/Header.vue';
+import Table from '../../components/BackCashComps/ListComps/Table.vue';
+import CountComp from '../../components/common/Count.vue';
 
 export default {
   name: 'CashBackListPage',
-  mixins: [recordScrollPositionMixin('.mp-erp-print-bean-list-page-wrap .el-table__body-wrapper')],
+  mixins: [recordScrollPositionMixin('.mp-erp-cash-back-list-page-wrap .el-table__body-wrapper')],
+  components: {
+    Header,
+    Table,
+    CountComp,
+  },
+  computed: {
+    ...mapState('cashback', ['conditionForDataList', 'DataList', 'DataNumber', 'loading']),
+  },
   methods: {
-    onAddClick() {
+    onSetupClick(id) {
       this.$router.push({
         name: 'cashBackSetup',
         params: {
-          ID: 'null',
+          ID: id || 'null',
         },
       });
+    },
+    handlePageChange(page) {
+      this.$store.dispatch('cashback/getConsumeReturnCashList', page);
+    },
+    async handleItemRemove([itemData, i]) {
+      const resp = await this.api.getConsumeReturnCashRemove(itemData.ID).catch(() => null);
+      if (resp?.data.Status === 1000) {
+        const cb = () => {
+          this.$store.commit('cashback/setListItemRemove', i);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
+      }
     },
   },
   mounted() {
     this.$store.dispatch('common/getUserClassify');
-    this.$store.dispatch('common/getAreaList'); // 使用筛选组件后 注释该方法的使用
+    // this.$store.dispatch('common/getAreaList'); // 使用筛选组件后 注释该方法的使用
+    this.$store.commit('cashback/clearConditonForDataList');
+    this.$store.dispatch('cashback/getConsumeReturnCashList');
   },
 };
 </script>
@@ -46,16 +75,37 @@ export default {
   overflow: hidden;
   > header {
     flex: none;
-    height: 60px;
+    // height: 60px;
     background-color: #fff;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    > button {
-      width: 120px;
-      height: 30px;
-      padding: 0;
-      border-radius: 2px;
+    // display: flex;
+    // align-items: center;
+    padding: 20px;
+    > div.f {
+      > button {
+        width: 120px;
+        height: 30px;
+        padding: 0;
+        border-radius: 2px;
+        margin-bottom: 10px;
+      }
+    }
+    > div.list {
+      display: flex;
+      flex-wrap: wrap;
+      .mp-common-comps-area-select-wrap {
+        margin-top: 10px;
+        // .text {
+        //   width: 3em;
+        // }
+      }
+      .mp-common-comps-order-channel-selector-wrap, .mp-order-product-select-wrap {
+        margin-right: 20px;
+        margin-top: 10px;
+      }
+    }
+    > div.s {
+      padding-top: 12px;
+      padding-right: 20px;
     }
   }
   > main {
@@ -66,7 +116,8 @@ export default {
   > footer {
     flex: none;
     background-color: #fff;
-    height: 70px;
+    height: 45px;
+    // padding-top: 5px;
   }
 }
 </style>

@@ -7,7 +7,7 @@
       <el-input v-model.trim="ruleForm.Mobile" maxlength="11" :disabled='!PermissionObj.EditMobile && isEdit' placeholder="手机号将作为客户的登录账号"></el-input>
     </el-form-item>
     <el-form-item label="QQ号：" prop="QQ" size="small">
-      <el-input v-model.trim="ruleForm.QQ" maxlength="12" placeholder="客户传单的常用QQ号" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
+      <el-input v-model.trim="ruleForm.QQ" maxlength="11" placeholder="客户传单的常用QQ号" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
     </el-form-item>
 
     <el-form-item label="客户等级分类：" size="small">
@@ -135,7 +135,7 @@ export default {
           { pattern: MobileReg, message: '手机号码格式不正确', trigger: 'blur' },
         ],
         QQ: [
-          { min: 5, max: 12, message: 'QQ长度应在5 - 12位之间', trigger: 'blur' },
+          { min: 5, max: 11, message: 'QQ长度应在5 - 11位之间', trigger: 'blur' },
           { pattern: /^\d+$/, message: 'QQ应为纯数字组成', trigger: 'blur' },
         ],
         AuthenInfo: {

@@ -240,7 +240,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/common/var.scss";
+@import "@/assets/css/var.scss";
 .mp-promote-comp-add-product-ltem-wrap {
   width: 95%;
   padding-top: 40px;
