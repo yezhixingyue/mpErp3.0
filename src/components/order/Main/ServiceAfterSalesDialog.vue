@@ -249,7 +249,7 @@ export default {
         ],
         QuestionPicList: [
           { validator: QuestionPicList, trigger: 'change' },
-          { required: true, message: '请上传问题图片q', trigger: 'change' },
+          { required: true, message: '请上传问题图片', trigger: 'change' },
         ],
         RefundAmount: [
           { validator: validateRefundAmount, trigger: 'blur' },

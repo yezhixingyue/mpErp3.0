@@ -13,7 +13,7 @@
         <el-table-column label="产品名称" prop="ProductName" minWidth="115" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.ProductName}}</template>
         </el-table-column>
-        <el-table-column prop="Content" label="订单备注" minWidth="150" show-overflow-tooltip>
+        <el-table-column prop="Content" label="文件内容" minWidth="150" show-overflow-tooltip>
           <span slot-scope="scope">{{scope.row.OrderRemark || '--'}}</span>
         </el-table-column>
         <el-table-column label="售后原因" minWidth="115" show-overflow-tooltip>
@@ -70,7 +70,7 @@
         <el-table-column label="处理人" show-overflow-tooltip minWidth="90">
           <span slot-scope="scope">{{ scope.row.OperaterUserName || '--' }}</span>
         </el-table-column>
-        <el-table-column prop="Content" label="进度" show-overflow-tooltip minWidth="90">
+        <el-table-column prop="Content" label="进度" show-overflow-tooltip minWidth="90" fixed="right">
           <div slot-scope="scope">
             <span :class="getStatusClass(scope.row.Status)">{{ scope.row.IsHang ? '已挂起' : getStatusText(scope.row.Status) }}
             </span>

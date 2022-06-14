@@ -56,16 +56,18 @@
           <el-tooltip class="item" effect="dark" placement="top">
             <div slot="content">
               <p v-for="(it,i) in scope.row.CouponList" :key="i" >
-                  <span class="is-pink">{{it.Amount}}</span>元
+                  <!-- <span class="is-pink">{{it.Amount}}</span>元
                   满<span class="MinPayAmount">{{it.MinPayAmount}}</span>元使用
-                  （ <i class="is-origin">{{it.Number}}</i>张 ）
+                  （ <i class="is-origin">{{it.Number}}</i>张 ） -->
+                  满{{it.MinPayAmount}}减{{it.Amount}}券{{it.Number}}张、
               </p>
             </div>
-            <template v-for="(it,i) in scope.row.CouponList" >
-              <span :key="i">
-                {{it.Amount}}元-满{{it.MinPayAmount}}元使用-（ <i class="is-origin">{{it.Number}}</i>张 ）
+            <p class="CouponList">
+              <span v-for="(it,i) in scope.row.CouponList" :key="i">
+                满{{it.MinPayAmount}}减{{it.Amount}}券{{it.Number}}张、
+                <!-- {{it.Amount}}元-满{{it.MinPayAmount}}元使用-（ <i class="is-origin">{{it.Number}}</i>张 ）、 -->
               </span>
-            </template>
+            </p>
           </el-tooltip>
         </span>
         <span v-else>--</span>
@@ -79,6 +81,13 @@
     <el-table-column class-name='sm-font' show-overflow-tooltip minWidth="132" label="销售区域">
       <template slot-scope="scope">
         {{scope.row.SellArea}}
+      </template>
+    </el-table-column>
+    <el-table-column class-name='sm-font' prop="CustomerName" minWidth="75" label="下单方式">
+      <template slot-scope="scope">
+        <span v-if="scope.row.Terminal === 0">客户端</span>
+        <span v-if="scope.row.Terminal === 1">网页版</span>
+        <span v-if="scope.row.Terminal === 2">手机端</span>
       </template>
     </el-table-column>
     <el-table-column
@@ -173,6 +182,11 @@ export default {
     border-bottom: 1px solid #e5e5e5 !important;
     &.el-table::before{
       display: none;
+    }
+    .CouponList{
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     .el-table__header-wrapper{
       .el-table__header{

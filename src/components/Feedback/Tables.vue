@@ -110,11 +110,11 @@
             <td>申请时间</td>
             <td>{{dataInfo.AfterSale.CreateTime | formatDate}}</td>
             <td>联系人名称</td>
-            <td>{{dataInfo.AfterSale.ContactName}}</td>
+            <td>{{dataInfo.AfterSale.ContactName || '--'}}</td>
           </tr>
           <tr>
             <td>联系电话</td>
-            <td>{{dataInfo.AfterSale.Mobile}}</td>
+            <td>{{dataInfo.AfterSale.Mobile || '--'}}</td>
             <td>QQ号</td>
             <td>
               <a v-if="dataInfo.AfterSale.QQ"
@@ -126,7 +126,7 @@
           </tr>
           <tr>
             <td>问题类型</td>
-            <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.join('，')}}</p></td>
+            <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.length?dataInfo.AfterSale.QuestionTypeTitleList.join('，'):'--'}}</p></td>
             <td>问题描述</td>
             <td>
               <p ref="QuestionRemarkCopy" style="position:absolute;overflow: hidden;height:0px;padding:0;">{{dataInfo.AfterSale.QuestionRemark}}</p>
@@ -141,14 +141,22 @@
             <td>诉求意向</td>
             <td>
               <span v-if="dataInfo.AfterSale.AppealType === 0">退款</span>
-              <span v-if="dataInfo.AfterSale.AppealType === 1">补印</span>
-              <span v-if="dataInfo.AfterSale.AppealType === 255">其它</span>
+              <span v-else-if="dataInfo.AfterSale.AppealType === 1">补印</span>
+              <span v-else-if="dataInfo.AfterSale.AppealType === 255">其它</span>
+              <span v-else>--</span>
             </td>
             <td>{{dataInfo.AfterSale.AppealType === 0 ? '退款金额' : dataInfo.AfterSale.AppealType === 1 ? '补印数量' : ''}}</td>
             <td>
-              <span v-if="dataInfo.AfterSale.AppealType === 0">￥{{dataInfo.AfterSale.AppealRefundAmount}}元</span>
+              <span v-if="dataInfo.AfterSale.AppealType === 0">
+                {{dataInfo.AfterSale.AppealRefundAmount===null ? '--' : `￥${dataInfo.AfterSale.AppealRefundAmount}元`}}
+              </span>
               <span v-if="dataInfo.AfterSale.AppealType === 1">
-                {{dataInfo.AfterSale.AppealNumber}}{{dataInfo.Order.Product.Unit}}/{{dataInfo.AfterSale.AppealKindCount}}款
+                <template v-if="dataInfo.AfterSale.AppealNumber === null && dataInfo.AfterSale.AppealKindCount === null">
+                  --
+                </template>
+                <template v-else>
+                  {{dataInfo.AfterSale.AppealNumber}}{{dataInfo.Order.Product.Unit}}/{{dataInfo.AfterSale.AppealKindCount}}款
+                </template>
               </span>
               <span v-if="dataInfo.AfterSale.AppealType === 255"></span>
             </td>
@@ -159,6 +167,7 @@
               <div class="img">
                 <el-image :preview-src-list="dataInfo.AfterSale.QuestionPicList" :mpCloseViewer='closeViewer'
                 v-for="item in dataInfo.AfterSale.QuestionPicList" :key="item" :src="item" fit="cover" ></el-image>
+                <span v-if="dataInfo.AfterSale.QuestionPicList.length === 0">暂无图片</span>
               </div>
             </td>
           </tr>
@@ -339,7 +348,7 @@ export default {
   },
   methods: {
     getStatusText(status) {
-      let str = '';
+      let str = '--';
       switch (status) {
         case 0:
           str = '已提交';
