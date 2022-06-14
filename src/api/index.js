@@ -677,6 +677,18 @@ const api = {
   getFactoryRemove(factoryID) { // 工厂删除
     return instance.delete(`/Api/Factory/Remove?factoryID=${factoryID}`);
   },
+  getFactoryProductPriceList(factoryID) { // GET /Api/Factory/ProductPrice/List 获取工厂产品价格列表
+    return instance.get(`/Api/Factory/ProductPrice/List?factoryID=${factoryID}`);
+  },
+  getProductPriceList(productID) { // GET /Api/ProductPrice/List
+    return instance.get(`/Api/ProductPrice/List?productID=${productID}`);
+  },
+  getFactoryProductPriceSave(data) { // POST /Api/Factory/ProductPrice/Save 工厂产品价格保存
+    return instance.post('/Api/Factory/ProductPrice/Save', data);
+  },
+  getFactoryProductPriceRemove(ID) { // POST /Api/Factory/ProductPrice/Remove 工厂产品价格删除
+    return instance.delete(`/Api/Factory/ProductPrice/Remove?id=${ID}`);
+  },
   getElementSave(data) { // POST /Api/Element/Save  保存界面元素
     return instance.post('/Api/Element/Save', data);
   },
