@@ -9,7 +9,7 @@
     :maxlength='maxlength'
   >
   </el-input>
-  <span v-if="showWordLimit" id="mp-textarea-const">{{value.length}}/{{maxlength}}</span>
+  <span v-if="showWordLimit" id="mp-textarea-const">{{value?value.length:0}}/{{maxlength}}</span>
 </div>
 </template>
 
