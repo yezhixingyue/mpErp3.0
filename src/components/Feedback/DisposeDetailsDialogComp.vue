@@ -41,7 +41,7 @@
                 <div class="row" v-for="(item,index) in DisposeDetailsData.AfterSaleQuestions" :key="index">
                   <div class="item">
                     <div><span v-if="index ===0">问题：</span>
-                      <i style="width:8em;" :style="`margin-left:${index === 0 ? 0 : 3.3}em`">{{QuestionName(item.FirstQuestionType)}}</i>
+                      <i style="width:8em;" :style="`margin-left:${index === 0 ? 0 : 3.3}em`">{{QuestionFirstName(item.SecondQuestionType)}}</i>
                       <i style="text-indent:0em">{{QuestionName(item.SecondQuestionType)}}</i>
                     </div>
                   </div>
@@ -294,6 +294,14 @@ export default {
       return (id) => {
         const temp = this.QuestionTypeList.filter(it => it.ID === id);
         return temp[0]?.Name;
+      };
+    },
+    // 根据二级问题找一级问题
+    QuestionFirstName() {
+      return (id) => {
+        const temp = this.QuestionTypeList.filter(it => it.ID === id);
+        const FirstTemp = this.QuestionTypeList.filter(it => it.ID === temp[0]?.ParentID);
+        return FirstTemp[0]?.Name;
       };
     },
     DepartmentName() {
