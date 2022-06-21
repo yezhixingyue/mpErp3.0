@@ -19,14 +19,17 @@
         </template>
         <template v-slot:right>
           <p class="title">选择对应的产品种类：</p>
-          <NewAreaTreeSpreadComp
-           :DisabledList="shouldDisabledList"
-           v-if="itemData" v-model="ProductRange" :list='allProductClassify' title="产品" leftWidth='7em' rightItemWidth='10em' />
+          <ADAreaTreeContentComp ref="oTreeWrap" v-if="itemData" treeType="product" :defaultLabels="{
+            rootKey: '',
+            lv1Key: 'ClassID',
+            lv2Key: 'TypeID',
+            lv3Key: 'ProductID',
+          }" :shouldDisabledList="shouldDisabledList" v-model="itemData.ProductList" showDisabled useSpreadDataType />
         </template>
       </LRWidthDragAutoChangeComp>
     </div>
     <footer>
-      <el-button type="primary" @click="onSubmitClick">提交</el-button>
+      <el-button type="primary" @click="onSubmitClick">保存</el-button>
       <el-button class="cancel-blue-btn" @click="onResetClick">重置</el-button>
       <el-button class="cancel-blue-btn" @click="onGobackClick">返回</el-button>
     </footer>
@@ -36,59 +39,28 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
-import NewAreaTreeSpreadComp from '@/components/common/SelectorComps/NewAreaTreeSpreadComp';
 import InvoiceInfoItemClass from '@/store/invoice/InvoiceInfoItemClass';
+import ADAreaTreeContentComp from '@/components/common/SelectorComps/ADAreaDialogSelector/ADAreaTreeContentComp.vue';
 
 export default {
   name: 'InvoiceInfoSettingPage',
   components: {
     LRWidthDragAutoChangeComp,
-    NewAreaTreeSpreadComp,
+    ADAreaTreeContentComp,
   },
   data() {
     return {
       curEditOriginItem: null,
       itemData: null,
       isEdit: false,
+      shouldDisabledList: [],
     };
   },
   computed: {
     ...mapState('invoice', ['InvoiceInfoList']),
     ...mapGetters('common', ['allProductClassify']),
-    ProductRange: {
-      get() {
-        return {
-          IsIncludeIncreased: this.itemData ? this.itemData.IsIncludeIncreasedProduct : false,
-          List: this.itemData ? this.itemData.ProductClassList : [],
-        };
-      },
-      set(val) {
-        if (!this.itemData) return;
-        const { IsIncludeIncreased, List } = val;
-        this.itemData.ProductClassList = List;
-        this.itemData.IsIncludeIncreasedProduct = IsIncludeIncreased;
-      },
-    },
     ctrlText() {
       return this.isEdit ? '编辑' : '添加';
-    },
-    shouldDisabledList() {
-      const _list = [];
-      this.InvoiceInfoList.forEach((level1) => {
-        if (level1.ID !== this.itemData.ID) {
-          if (level1.IsIncludeIncreasedProduct) _list.push('rootIncreased');
-          level1.ProductClassList.forEach(level2 => {
-            if (level2.IsIncludeIncreased) _list.push(`${level2.ID}Increased`);
-            level2.List.forEach(lv3 => {
-              if (lv3.IsIncludeIncreased) _list.push(`${lv3.ID}Increased`);
-              lv3.List.forEach(it => {
-                _list.push(it.ID);
-              });
-            });
-          });
-        }
-      });
-      return _list;
     },
   },
   methods: {
@@ -99,7 +71,7 @@ export default {
         this.curEditOriginItem = null;
       } else {
         this.isEdit = true;
-        const t = this.InvoiceInfoList.find(it => it.ID === _id);
+        const t = this.InvoiceInfoList.find(it => it.InvoiceCategoryID === _id);
         this.curEditOriginItem = t; // 在列表数据中找到该项，对其进行赋值
       }
     },
@@ -113,13 +85,13 @@ export default {
       if (!this.itemData.checker(this.InvoiceInfoList)) return;
       this.submit();
     },
-    submit() {
-      // const resp = await this.api.request(this.itemData).catch(() => null)
-      // if (!resp || resp.data.Status !== 1000) return;
+    async submit() {
+      const resp = await this.api.getInvoiceCategorySave(this.itemData).catch(() => null);
+      if (!resp || resp.data.Status !== 1000) return;
       const cb = () => {
         const itemData = {
           ...this.itemData,
-          // ID: this.itemData.ID || resp.data.Data,
+          InvoiceCategoryID: this.itemData.InvoiceCategoryID || resp.data.Data,
         };
         const temp = {
           itemData,
@@ -130,10 +102,31 @@ export default {
       };
       this.messageBox.successSingle(`${this.ctrlText}成功`, cb, cb);
     },
+    getShouldDisabledList() {
+      const oTree = this.$refs.oTreeWrap;
+      if (!this.itemData || !oTree) {
+        this.shouldDisabledList = [];
+        return;
+      }
+      const _list = [];
+      this.InvoiceInfoList.forEach((it) => {
+        if (it.InvoiceCategoryID !== this.itemData.InvoiceCategoryID) {
+          // const tempArr = oTree.getDefaultCheckedKeys(it.ProductList);
+          const tempArr = it.ProductList.map(_it => _it.ProductID);
+          if (Array.isArray(tempArr)) {
+            _list.push(...tempArr);
+          }
+        }
+      });
+      this.shouldDisabledList = _list;
+    },
   },
   mounted() {
     this.setCurEditItem();
     this.onResetClick();
+    this.$nextTick(() => {
+      this.getShouldDisabledList();
+    });
   },
 };
 </script>

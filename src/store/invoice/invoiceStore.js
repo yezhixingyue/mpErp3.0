@@ -31,11 +31,17 @@ export default {
       state.condition4InvoiceMakeUpList = new Condition4InvoiceMakeUpList();
     },
     transformCondition4InvoiceMakeUpList(state) {
-      CommonClassType.setDate(state.condition4InvoiceMakeUpList, 'CalculateDate'); // 需要改key值
+      CommonClassType.setDate(state.condition4InvoiceMakeUpList, 'InvoiceApplyTime');
     },
     setInvoiceMakeUpList(state, { Data, DataNumber }) {
       state.InvoiceMakeUpList = Data;
       if (DataNumber || DataNumber === 0) state.InvoiceMakeUpListNumber = DataNumber;
+    },
+    setItemStatusChange(state, temp) {
+      const i = state.InvoiceMakeUpList.findIndex(it => it.InvoiceID === temp.InvoiceID);
+      if (i > -1) {
+        state.InvoiceMakeUpList.splice(i, 1, { ...state.InvoiceMakeUpList[i], ...temp });
+      }
     },
     /** 发票类别相关
      ---------------------------------------- */
@@ -45,7 +51,7 @@ export default {
     },
     setInvoiceInfoItemChange(state, { itemData, isEdit, isRemove }) {
       if (isEdit || isRemove) { // 编辑 | 删除
-        const i = state.InvoiceInfoList.findIndex(it => it.ID === itemData.ID);
+        const i = state.InvoiceInfoList.findIndex(it => it.InvoiceCategoryID === itemData.InvoiceCategoryID);
         if (i > -1) {
           if (isEdit) {
             state.InvoiceInfoList.splice(i, 1, itemData);
@@ -71,7 +77,8 @@ export default {
       const temp = CommonClassType.filter(state.condition4InvoiceMakeUpList, true);
       commit('setInvoiceMakeUpList', { Data: [], DataNumber: undefined });
       commit('setLoading', true);
-      const resp = await api.getCalculatePriceRecordList(temp).catch(() => null); // 需要改接口
+      const resp = await api.getInvoiceManageList(temp).catch(() => null); // 需要改接口
+      // console.log('获取发票开具列表数据', resp);
       if (resp && resp.data.Status === 1000) {
         commit('setInvoiceMakeUpList', resp.data);
       }

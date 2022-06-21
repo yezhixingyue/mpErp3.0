@@ -109,7 +109,7 @@ export default class CommonClassType {
           _textArr.push(_text);
         }
       });
-      return _textArr.join('\n');
+      return _textArr.join('\r\n');
     } catch (error) {
       return '';
     }

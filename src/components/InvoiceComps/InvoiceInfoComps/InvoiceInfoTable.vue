@@ -12,12 +12,10 @@
     <el-table-column width="350px" prop="CategoryName" show-overflow-tooltip label="开票类别名称"></el-table-column>
     <el-table-column width="160px" prop="Unit" show-overflow-tooltip label="单位"></el-table-column>
     <el-table-column min-width="220px" label="产品种类" class-name='left'>
-      <template slot-scope="scope">
-        <TableItemShowComp :list='scope.row._ProductsContent' effect='dark' title='产品' />
-      </template>
+      <span slot-scope="scope" :title="scope.row._ProductsContent">{{scope.row._ProductsContent.replaceAll('\r\n', '、')}}</span>
     </el-table-column>
 
-    <el-table-column width="300px" label="操作">
+    <el-table-column width="300px" label="操作" v-if="localPermission.Operate">
       <template slot-scope="scope">
         <CtrlMenus @edit='onEditClick(scope.row)' @remove='onRemoveClick(scope.row)' />
       </template>
@@ -31,9 +29,8 @@
 <script>
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
-import { getSelectedContentBySelectedDataAndAllData } from '@/components/common/SelectorComps/NewAreaTreeSpreadComp/utils';
-import { mapGetters } from 'vuex';
-import TableItemShowComp from '../../common/SelectorComps/NewAreaTreeSpreadComp/TableItemShowComp.vue';
+import { mapState, mapGetters } from 'vuex';
+import CommonClassType from '../../../store/CommonClassType';
 
 export default {
   props: {
@@ -49,15 +46,25 @@ export default {
   mixins: [tableMixin],
   components: {
     CtrlMenus,
-    TableItemShowComp,
   },
   computed: {
     ...mapGetters('common', ['allProductClassify']),
+    ...mapState('common', ['Permission']),
     localInvoiceInfoList() {
       return this.InvoiceInfoList.map(it => ({
         ...it,
-        _ProductsContent: this.getProductsContent(it),
+        _ProductsContent: CommonClassType.generateProductString(it.ProductList, this.allProductClassify, {
+          FirstLevelID: 'ClassID',
+          SecondLevelID: 'TypeID',
+          ProductID: 'ProductID',
+        }),
       }));
+    },
+    localPermission() { // 后面需要更改为发票的权限
+      if (this.Permission?.PermissionList?.PermissionInvoiceCategory?.Obj) {
+        return this.Permission.PermissionList.PermissionInvoiceCategory.Obj;
+      }
+      return {};
     },
   },
   methods: {
@@ -65,14 +72,8 @@ export default {
       const tempHeight = this.getHeight('.mp-erp-invoice-info-manage-list-page-wrap > header', 60);
       this.h = tempHeight;
     },
-    getProductsContent(item) {
-      if ((!item.ProductClassList || item.ProductClassList.length === 0) && !item.IsIncludeIncreasedProduct) return '';
-      const temp = { List: item.ProductClassList, IsIncludeIncreased: item.IsIncludeIncreasedProduct };
-      const content = getSelectedContentBySelectedDataAndAllData(temp, this.allProductClassify, '产品');
-      return content;
-    },
     onEditClick(data) {
-      this.$emit('edit', data.ID);
+      this.$emit('edit', data.InvoiceCategoryID);
     },
     onRemoveClick(data) {
       this.messageBox.warnCancelBox('确定删除该开票类别吗', `类别名称：[ ${data.CategoryName} ]`, () => {
@@ -98,6 +99,10 @@ export default {
           line-height: 34px;
           color: #444;
         }
+        &.left {
+          text-align: left;
+          padding-left: 35px;
+        }
       }
     }
   }
@@ -113,6 +118,7 @@ export default {
     }
     &.left {
       text-align: left;
+      padding-left: 25px;
     }
   }
 }

@@ -27,7 +27,7 @@
           ]"
         >
           <el-input
-           :readonly='readonly'
+           v-banAutoComplete
            maxlength="16"
            type="password"
            @click.native="onFocusClick"
@@ -46,7 +46,7 @@
           ]"
         >
           <el-input
-           :readonly='readonly'
+           v-banAutoComplete
            maxlength="16"
            type="password"
            @click.native="onFocusClick"
@@ -65,7 +65,7 @@
           ]"
         >
           <el-input
-           :readonly='readonly'
+           v-banAutoComplete
            maxlength="16"
            type="password"
            @click.native="onFocusClick"
