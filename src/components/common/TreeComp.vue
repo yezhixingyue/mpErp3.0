@@ -85,10 +85,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    newDataType: { // 是否返回新数据格式 3.0新数据格式
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     defaultExpandedKeys() {

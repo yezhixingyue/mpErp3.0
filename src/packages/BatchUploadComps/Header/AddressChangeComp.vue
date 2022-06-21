@@ -179,8 +179,14 @@ export default {
         }
       }
       &.b {
+        // color: #585858;
         font-size: 12px;
         margin-bottom: 1px;
+        // i {
+          // font-size: 13px;
+          // color: #999;
+          // font-weight: 700;
+        // }
       }
     }
     &.same {

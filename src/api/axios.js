@@ -89,6 +89,7 @@ axios.interceptors.response.use(
       '/Api/OrderBill/Excel',
       '/Api/PriceTable/Export',
       '/Api/CalculatePrice/Excel',
+      '/Api/InvoiceManage/ExportExcel',
     ];
     const _statusList2NotNeed2Toast = [1000, 9062, 8044, 1100];
     // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来

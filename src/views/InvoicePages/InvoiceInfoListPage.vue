@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-invoice-info-manage-list-page-wrap">
-    <header>
-      <el-button type="primary" @click="setupInvoiceItem('new')">+新增开票类别</el-button>
+    <header v-if="localPermission.Operate">
+      <el-button type="primary" @click="setupInvoiceItem('new')" :disabled="InvoiceInfoList.length > 8">+新增开票类别</el-button>
     </header>
     <div class="content">
       <InvoiceInfoTable :InvoiceInfoList="InvoiceInfoList" :loading="loading" @edit="setupInvoiceItem" @remove="removeInvoiceItem" />
@@ -14,15 +14,24 @@
 
 <script>
 import { mapState } from 'vuex';
+import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import InvoiceInfoTable from '../../components/InvoiceComps/InvoiceInfoComps/InvoiceInfoTable.vue';
 
 export default {
   name: 'InvoiceInfoListPage',
+  mixins: [recordScrollPositionMixin('.mp-erp-invoice-info-manage-list-page-wrap .el-table__body-wrapper')],
   components: {
     InvoiceInfoTable,
   },
   computed: {
     ...mapState('invoice', ['InvoiceInfoList', 'InvoiceInfoListNumber', 'loading']),
+    ...mapState('common', ['Permission']),
+    localPermission() { // 后面需要更改为发票的权限
+      if (this.Permission?.PermissionList?.PermissionInvoiceCategory?.Obj) {
+        return this.Permission.PermissionList.PermissionInvoiceCategory.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     setupInvoiceItem(id) {
@@ -31,15 +40,16 @@ export default {
         params: { id },
       });
     },
-    removeInvoiceItem(itemData) {
+    async removeInvoiceItem(itemData) {
       // 接口处理删除
-      // if (删除成功) {
-      const cb = () => {
-        const temp = { itemData, isRemove: true };
-        this.$store.commit('invoice/setInvoiceInfoItemChange', temp);
-      };
-      this.messageBox.successSingle('删除成功', cb, cb);
-      // }
+      const resp = await this.api.getInvoiceCategoryRemove(itemData.InvoiceCategoryID).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          const temp = { itemData, isRemove: true };
+          this.$store.commit('invoice/setInvoiceInfoItemChange', temp);
+        };
+        this.messageBox.successSingle('删除成功', cb, cb);
+      }
     },
   },
   mounted() {

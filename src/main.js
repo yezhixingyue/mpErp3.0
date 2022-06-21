@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-12 10:09:36
- * @LastEditTime: 2022-04-30 11:01:52
+ * @LastEditTime: 2022-06-17 14:13:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /src/main.js
@@ -23,7 +23,9 @@ import './assets/css/common/common.scss';
 import './assets/js/utils/message';
 import './assets/js/filters/filters';
 import './packages/commonFilters';
+import './packages/directive';
 // import 'animate.css';
+import './api/mock';
 
 Vue.prototype.api = api;
 Vue.prototype.$utils = utils;

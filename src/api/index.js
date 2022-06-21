@@ -1116,8 +1116,47 @@ const api = {
 
   /* 发票管理 api
   ----------------------------------------------------------------------------------- */
+  // ----- 发票类别管理 ↓
   getInvoiceCategoryList(condition) { // POST /Api/InvoiceCategory/List   获取发票分类列表
     return instance.post('/Api/InvoiceCategory/List', condition);
+  },
+  getInvoiceCategorySave(data) { // POST /Api/InvoiceCategory/Save   发票分类保存
+    return instance.post('/Api/InvoiceCategory/Save', data);
+  },
+  getInvoiceCategoryRemove(categoryID) { // DELETE /Api/InvoiceCategory/Remove  发票分类删除
+    return instance.delete('/Api/InvoiceCategory/Remove', { params: { categoryID } });
+  },
+  // ----- 发票资质管理 ↓
+  getInvoiceEnterpriseList(condition) { // POST /Api/InvoiceEnterprise/List    获取发票资质列表
+    return instance.post('/Api/InvoiceEnterprise/List', condition);
+  },
+  getInvoiceEnterpriseSave(data) { // POST /Api/InvoiceEnterprise/Save    发票资质保存
+    return instance.post('/Api/InvoiceEnterprise/Save', data);
+  },
+  // ----- 发票开具管理 ↓
+  getInvoiceManageList(condition) { // POST /Api/InvoiceManage/List    发票开具管理列表
+    return instance.post('/Api/InvoiceManage/List', condition);
+  },
+  getInvoiceManageExportExcel(condition) { // POST /Api/InvoiceManage/ExportExcel   发票开具列表导出Excel
+    return instance.post('/Api/InvoiceManage/ExportExcel', condition, { responseType: 'arraybuffer' });
+  },
+  getInvoiceManageMakeUpInfo(invoiceID) { // GET /Api/InvoiceManage/MakeUpInfo  获取发票开票信息
+    return instance.get('/Api/InvoiceManage/MakeUpInfo', { params: { invoiceID } });
+  },
+  getInvoiceManageHandleDetail(invoiceID) { // GET /Api/InvoiceManage/HandleDetail  获取发票开具详情  GET /Api/InvoiceManage/InvoiceInfo
+    return instance.get('/Api/InvoiceManage/InvoiceInfo', { params: { invoiceID } });
+  },
+  getInvoiceManagePass(invoiceID) { // GET /Api/InvoiceManage/Pass  审核通过
+    return instance.get('/Api/InvoiceManage/Pass', { params: { invoiceID } });
+  },
+  getInvoiceManageReject(data) { // POST /Api/InvoiceManage/Reject  驳回
+    return instance.post('/Api/InvoiceManage/Reject', data);
+  },
+  getInvoiceManageComplete(invoiceID) { // GET /Api/InvoiceManage/Complete  开具完成
+    return instance.get('/Api/InvoiceManage/Complete', { params: { invoiceID } });
+  },
+  getInvoiceManagePost(data) { // POST /Api/InvoiceManage/Post  邮寄
+    return instance.post('/Api/InvoiceManage/Post', data);
   },
 };
 
