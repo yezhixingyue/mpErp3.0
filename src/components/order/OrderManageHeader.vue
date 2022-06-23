@@ -47,6 +47,7 @@
           key='order-Terminal'
           label=''
         />
+        <EpCascader />
       </li>
       <li class="row-two">
         <!-- <TimeSearchSelector /> -->
@@ -90,6 +91,7 @@ import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannel
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
+import EpCascader from '../../packages/EpCascader/index.vue';
 
 export default {
   components: {
@@ -103,6 +105,7 @@ export default {
     // ElDateRangeSelector,
     LineDateSelectorComp,
     SearchInputComp,
+    EpCascader,
   },
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'selfHelpOrderTypeList']),
@@ -128,8 +131,13 @@ export default {
   },
   data() {
     return {
-      // eslint-disable-next-line max-len
-      dateList: [{ name: '今天下单', ID: 'today' }, { name: '昨天下单', ID: 'yesterday' }, { name: '前天下单', ID: 'beforeyesterday' }, { name: '本月下单', ID: 'curMonth' }, { name: '上月下单', ID: 'lastMonth' }],
+      dateList: [
+        { name: '今天下单', ID: 'today' },
+        { name: '昨天下单', ID: 'yesterday' },
+        { name: '前天下单', ID: 'beforeyesterday' },
+        { name: '本月下单', ID: 'curMonth' },
+        { name: '上月下单', ID: 'lastMonth' },
+      ],
       dateMenus: [
         { text: '今天', key: 'TodayDate' },
         { text: '昨天', key: 'YesterdayDate' },
