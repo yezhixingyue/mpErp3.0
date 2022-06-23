@@ -74,42 +74,48 @@ axios.interceptors.request.use(
   },
 );
 
-axios.interceptors.response.use(
-  (response) => {
-    if (getShowLoading(response.config) && loadingInstance) handleLoadingClose();
-    const _list2NotNeed2Toast = [
-      '/Api/AccountReceivable/Excel',
-      '/Api/PaymentOrder/Excel',
-      '/Api/CustomerList/Excel',
-      '/Api/OrderList/Excel',
-      '/Api/Coupon/DownLoad',
-      '/Api/AfterSales/Excel',
-      '/Api/PackageList/Excel',
-      '/Api/CustomerBill/Excel',
-      '/Api/OrderBill/Excel',
-      '/Api/PriceTable/Export',
-      '/Api/CalculatePrice/Excel',
-    ];
-    const _statusList2NotNeed2Toast = [1000, 9062, 8044, 1100];
-    // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
+const handleResponse = (response) => {
+  if (getShowLoading(response.config) && loadingInstance) handleLoadingClose();
+  const _list2NotNeed2Toast = [
+    '/Api/AccountReceivable/Excel',
+    '/Api/PaymentOrder/Excel',
+    '/Api/CustomerList/Excel',
+    '/Api/OrderList/Excel',
+    '/Api/Coupon/DownLoad',
+    '/Api/AfterSales/Excel',
+    '/Api/PackageList/Excel',
+    '/Api/CustomerBill/Excel',
+    '/Api/OrderBill/Excel',
+    '/Api/PriceTable/Export',
+    '/Api/CalculatePrice/Excel',
+  ];
+  const _statusList2NotNeed2Toast = [1000, 9062, 8044, 1100];
+  // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
 
-    if (!_statusList2NotNeed2Toast.includes(response.data.Status) && !_list2NotNeed2Toast.includes(response.config.url.split('?')[0])) {
-      if ([7025, 8037].includes(response.data.Status)) {
-        clearToken();
-        if (!closeTip) {
-          const cb = () => {
-            router.replace('/login');
-          };
-          messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`, cb, cb);
-        } else router.replace('/login');
-      } else if (!closeTip) {
-        messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`);
-      }
+  if (!_statusList2NotNeed2Toast.includes(response.data.Status) && !_list2NotNeed2Toast.includes(response.config.url.split('?')[0])) {
+    if ([7025, 8037].includes(response.data.Status)) {
+      clearToken();
+      if (!closeTip) {
+        const cb = () => {
+          router.replace('/login');
+        };
+        messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`, cb, cb);
+      } else router.replace('/login');
+    } else if (!closeTip) {
+      messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`);
     }
-    localCancelToken.removeCancelToken(response.config);
-    return response;
-  },
+  }
+  localCancelToken.removeCancelToken(response.config);
+  return response;
+};
+
+axios.interceptors.response.use(
+  handleResponse,
   async (error) => {
+    if (error.response && error.response.status === 200) {
+      return handleResponse(error.response);
+    }
+
     localCancelToken.removeCancelToken(error.config || '');
     if (!store.state.common.isLoading) {
       if (getShowLoading(error.config) && loadingInstance) handleLoadingClose();
