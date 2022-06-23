@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 09:37:02
- * @LastEditTime: 2022-06-21 10:24:23
+ * @LastEditTime: 2022-06-23 13:55:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue.config.js
@@ -10,8 +10,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web3/';
 
-let proxyUrl = 'http://192.168.3.68:8050';
-// let proxyUrl = 'http://192.168.3.253';
+// let proxyUrl = 'http://192.168.3.68:8050';
+let proxyUrl = 'http://192.168.3.253';
 // let proxyUrl = 'http://erp.ybz888.com/';
 if (process.env.VUE_APP_BASE_URL && process.env.VUE_APP_BASE_URL === 'test-development-8520') proxyUrl = 'http://192.168.1.92:8050';
 

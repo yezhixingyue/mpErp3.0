@@ -8,6 +8,8 @@ export default class InvoiceInfoItemClass {
 
   Unit = ''
 
+  IsDefault = false
+
   ProductList = []
 
   constructor(data) {
@@ -15,13 +17,14 @@ export default class InvoiceInfoItemClass {
     if (!data) this.key = Math.random().toString(16).slice(-10);
   }
 
-  checker(InvoiceInfoList) {
+  checker(InvoiceInfoList, defaultItemInfo) {
     if (!this.CategoryName) {
       messageBox.failSingleError('保存失败', '请填写开票类别名称');
       return false;
     }
 
-    if (InvoiceInfoList.some(it => it.CategoryName === this.CategoryName && it.InvoiceCategoryID !== this.InvoiceCategoryID)) {
+    if (InvoiceInfoList.some(it => it.CategoryName === this.CategoryName && it.InvoiceCategoryID !== this.InvoiceCategoryID)
+     || (defaultItemInfo && defaultItemInfo.CategoryName === this.CategoryName)) {
       messageBox.failSingleError('保存失败', '开票类别名称重复');
       return false;
     }

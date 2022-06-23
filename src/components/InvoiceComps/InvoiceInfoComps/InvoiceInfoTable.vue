@@ -30,7 +30,8 @@
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 import { mapState, mapGetters } from 'vuex';
-import CommonClassType from '../../../store/CommonClassType';
+// import CommonClassType from '../../../store/CommonClassType';
+import getDisplayContent from '../../common/SelectorComps/MultipleLevel2Selector/getDisplayContent';
 
 export default {
   props: {
@@ -53,7 +54,7 @@ export default {
     localInvoiceInfoList() {
       return this.InvoiceInfoList.map(it => ({
         ...it,
-        _ProductsContent: CommonClassType.generateProductString(it.ProductList, this.allProductClassify, {
+        _ProductsContent: getDisplayContent(it.ProductList, this.allProductClassify, {
           FirstLevelID: 'ClassID',
           SecondLevelID: 'TypeID',
           ProductID: 'ProductID',

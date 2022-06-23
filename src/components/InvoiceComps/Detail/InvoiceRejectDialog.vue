@@ -6,7 +6,7 @@
       :visible.sync="localVisible"
       @closed="onClosed"
       @open="onOpen"
-      @submit="localVisible = false"
+      @cancel="localVisible = false"
       submitText="确定"
       :showCancel="false"
       :showSubmit="false"
@@ -15,7 +15,7 @@
       <!-- 内容区 -->
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="88px" class="demo-ruleForm" @submit.native.prevent>
         <el-form-item label="驳回原因:" prop="Opinion">
-          <el-input type="textarea" v-model="ruleForm.Opinion" maxlength="200" show-word-limit :rows="6"></el-input>
+          <el-input type="textarea" v-model="ruleForm.Opinion" maxlength="300" show-word-limit :rows="6"></el-input>
         </el-form-item>
         <el-form-item class="btn-box">
           <el-button type="danger" @click="submitForm">提交</el-button>

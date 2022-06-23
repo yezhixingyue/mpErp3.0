@@ -12,20 +12,19 @@
     <el-table-column width="80px" prop="InvoiceID" show-overflow-tooltip label="申请单号"></el-table-column>
     <el-table-column width="90px" prop="CustomerNo" show-overflow-tooltip label="客户编号"></el-table-column>
     <el-table-column width="120px" prop="CustomerName" show-overflow-tooltip label="客户"></el-table-column>
-    <el-table-column width="120px" prop="EnterpriseName" show-overflow-tooltip label="企业名称"></el-table-column>
+    <el-table-column width="120px" prop="_TitleName" show-overflow-tooltip label="抬头名称"></el-table-column>
     <el-table-column width="150px" prop="CreditCode" show-overflow-tooltip label="统一社会信用代码"></el-table-column>
     <el-table-column width="125px" prop="RegisteredAddress" show-overflow-tooltip label="注册地址"></el-table-column>
     <el-table-column width="120px" prop="RegisteredTelephone" show-overflow-tooltip label="注册电话"></el-table-column>
     <el-table-column width="100px" prop="OpeningBank" show-overflow-tooltip label="开户银行"></el-table-column>
     <el-table-column width="150px" prop="BankAccount" show-overflow-tooltip label="银行账号"></el-table-column>
-    <el-table-column width="120px" prop="PersonalName" show-overflow-tooltip label="个人名称"></el-table-column>
     <el-table-column width="85px" prop="ReceiverName" show-overflow-tooltip label="收票人"></el-table-column>
     <el-table-column width="135px" prop="_ReceiverAddress" show-overflow-tooltip label="收票人地址"></el-table-column>
     <el-table-column width="110px" prop="ReceiverContactWay" show-overflow-tooltip label="收票人电话"></el-table-column>
     <el-table-column width="75px"  label="开票信息">
       <span slot-scope="scope" class="blue-span" @click="onInvoiceDetailClick(scope.row)">查看</span>
     </el-table-column>
-    <el-table-column width="105px" prop="_InvoiceTypeText" show-overflow-tooltip label="发票类型"></el-table-column>
+    <el-table-column width="130px" prop="_InvoiceTypeText" show-overflow-tooltip label="发票类型"></el-table-column>
     <el-table-column width="120px" show-overflow-tooltip label="申请开票时间">
       <template slot-scope="scope" >{{scope.row.CreateTime | format2MiddleLangTypeDate}}</template>
     </el-table-column>
@@ -61,7 +60,7 @@
 <script>
 import { mapState } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
-import { InvoiceStatusEnumList, InvoiceTypeEnumList, InvoiceStatusEnums, InvoiceTypeEnums } from '../../../packages/InvoiceComps/enums';
+import { InvoiceStatusEnumList, InvoiceTypeEnumList, InvoiceStatusEnums, InvoiceTypeEnums, InvoiceTitleEnums } from '../../../packages/InvoiceComps/enums';
 import CtrlMenus from '../../common/NewComps/CtrlMenus/index.vue';
 
 export default {
@@ -95,6 +94,7 @@ export default {
         _InvoiceTypeText: this.getInvoiceTypeText(it),
         _InvoiceStatusText: this.getInvoiceStatusText(it),
         _DetailText: this.getDetailText(it),
+        _TitleName: this.getTitleName(it),
       }));
     },
   },
@@ -118,6 +118,12 @@ export default {
     getInvoiceStatusText({ InvoiceStatus }) {
       const t = InvoiceStatusEnumList.find(it => it.ID === InvoiceStatus);
       return t ? t.Name : '';
+    },
+    getTitleName({ InvoiceType, EnterpriseName, PersonalName, InvoiceMainBody }) {
+      if (InvoiceType === InvoiceTypeEnums.normal.ID && InvoiceMainBody === InvoiceTitleEnums.personal.ID) {
+        return PersonalName;
+      }
+      return EnterpriseName;
     },
     getDetailText({ InvoiceStatus, InvoiceType }) {
       let label = '详情';

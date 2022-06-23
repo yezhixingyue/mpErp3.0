@@ -15,6 +15,7 @@ export default {
      ---------------------------------------- */
     InvoiceInfoList: [],
     InvoiceInfoListNumber: 0,
+    defaultItemInfo: null,
   },
   getters: {
   },
@@ -66,6 +67,9 @@ export default {
       state.InvoiceInfoList.unshift(itemData);
       state.InvoiceInfoListNumber += 1;
     },
+    setDefaultItemInfo(state, data) {
+      state.defaultItemInfo = data || null;
+    },
   },
   actions: {
     /** 发票开具相关
@@ -89,10 +93,15 @@ export default {
     async getInvoiceInfoList({ commit }) {
       // 获取发票类别列表数据
       commit('setInvoiceInfoList', { Data: [], DataNumber: undefined });
+      commit('setDefaultItemInfo', null);
       commit('setLoading', true);
-      const resp = await api.getInvoiceCategoryList().catch(() => null); // 需要改接口
+      const resp = await api.getInvoiceCategoryList().catch(() => null); // 包含默认和非默认 分开保存
       if (resp && resp.data.Status === 1000) {
-        commit('setInvoiceInfoList', resp.data);
+        const list = resp.data.Data || [];
+        const defaultItem = list.find(it => it.IsDefault);
+        const others = list.filter(it => !it.IsDefault);
+        commit('setInvoiceInfoList', { Data: others, DataNumber: defaultItem ? resp.data.DataNumber - 1 : resp.data.DataNumber });
+        commit('setDefaultItemInfo', defaultItem);
       }
       commit('setLoading', false);
     },

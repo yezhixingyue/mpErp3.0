@@ -167,7 +167,7 @@ axios.interceptors.response.use(
               if (error.response.data.Message) {
                 _msg = error.response.data.Message;
               } else {
-                _msg = `系统出错，错误码：${error.response.data.Status || 505}`;
+                _msg = `系统出错，错误码：${error.response.data.Status}`;
               }
             }
             messageBox.failSingleError('操作失败', _msg);

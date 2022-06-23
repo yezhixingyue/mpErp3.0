@@ -7,6 +7,7 @@
       @closed="onClosed"
       @open="onOpen"
       @submit="localVisible = false"
+      @cancel="localVisible = false"
       submitText="确定"
       :showCancel="false"
       class="mp-erp-invoice-makeout-info-display-comp-dialog-comp-wrap"

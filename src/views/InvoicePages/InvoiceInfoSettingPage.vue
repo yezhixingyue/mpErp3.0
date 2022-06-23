@@ -9,22 +9,17 @@
           <ul class="invoice-info-setting-left-content" v-if="itemData">
             <li>
               <label for="">开票类别名称：</label>
-              <el-input maxlength="20" size="small" v-model.trim="itemData.CategoryName" class="n" show-word-limit></el-input>
+              <el-input maxlength="30" size="small" v-model.trim="itemData.CategoryName" class="n" show-word-limit></el-input>
             </li>
             <li>
               <label for="">类别单位：</label>
-              <el-input maxlength="5" size="small" v-model.trim="itemData.Unit" class="u" show-word-limit></el-input>
+              <el-input maxlength="6" size="small" v-model.trim="itemData.Unit" class="u" show-word-limit></el-input>
             </li>
           </ul>
         </template>
         <template v-slot:right>
           <p class="title">选择对应的产品种类：</p>
-          <ADAreaTreeContentComp ref="oTreeWrap" v-if="itemData" treeType="product" :defaultLabels="{
-            rootKey: '',
-            lv1Key: 'ClassID',
-            lv2Key: 'TypeID',
-            lv3Key: 'ProductID',
-          }" :shouldDisabledList="shouldDisabledList" v-model="itemData.ProductList" showDisabled useSpreadDataType />
+          <MultipleLevel2Selector v-if="itemData" v-model="itemData.ProductList" :disabledIds="shouldDisabledList" />
         </template>
       </LRWidthDragAutoChangeComp>
     </div>
@@ -40,13 +35,13 @@
 import { mapState, mapGetters } from 'vuex';
 import LRWidthDragAutoChangeComp from '@/components/common/NewComps/LRWidthDragAutoChangeComp.vue';
 import InvoiceInfoItemClass from '@/store/invoice/InvoiceInfoItemClass';
-import ADAreaTreeContentComp from '@/components/common/SelectorComps/ADAreaDialogSelector/ADAreaTreeContentComp.vue';
+import MultipleLevel2Selector from '@/components/common/SelectorComps/MultipleLevel2Selector/index.vue';
 
 export default {
   name: 'InvoiceInfoSettingPage',
   components: {
     LRWidthDragAutoChangeComp,
-    ADAreaTreeContentComp,
+    MultipleLevel2Selector,
   },
   data() {
     return {
@@ -57,7 +52,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('invoice', ['InvoiceInfoList']),
+    ...mapState('invoice', ['InvoiceInfoList', 'defaultItemInfo']),
     ...mapGetters('common', ['allProductClassify']),
     ctrlText() {
       return this.isEdit ? '编辑' : '添加';
@@ -82,16 +77,20 @@ export default {
       this.itemData = new InvoiceInfoItemClass(this.curEditOriginItem);
     },
     onSubmitClick() {
-      if (!this.itemData.checker(this.InvoiceInfoList)) return;
+      if (!this.itemData.checker(this.InvoiceInfoList, this.defaultItemInfo)) return;
       this.submit();
     },
     async submit() {
+      if (this.isEdit && JSON.stringify(this.itemData) === JSON.stringify(new InvoiceInfoItemClass(this.curEditOriginItem))) {
+        this.messageBox.failSingleError('操作失败', '信息未改动');
+        return;
+      }
       const resp = await this.api.getInvoiceCategorySave(this.itemData).catch(() => null);
       if (!resp || resp.data.Status !== 1000) return;
       const cb = () => {
         const itemData = {
           ...this.itemData,
-          InvoiceCategoryID: this.itemData.InvoiceCategoryID || resp.data.Data,
+          InvoiceCategoryID: this.itemData.InvoiceCategoryID || +resp.data.Data,
         };
         const temp = {
           itemData,
@@ -103,8 +102,7 @@ export default {
       this.messageBox.successSingle(`${this.ctrlText}成功`, cb, cb);
     },
     getShouldDisabledList() {
-      const oTree = this.$refs.oTreeWrap;
-      if (!this.itemData || !oTree) {
+      if (!this.itemData) {
         this.shouldDisabledList = [];
         return;
       }
@@ -112,7 +110,7 @@ export default {
       this.InvoiceInfoList.forEach((it) => {
         if (it.InvoiceCategoryID !== this.itemData.InvoiceCategoryID) {
           // const tempArr = oTree.getDefaultCheckedKeys(it.ProductList);
-          const tempArr = it.ProductList.map(_it => _it.ProductID);
+          const tempArr = it.ProductList.map(_it => _it.TypeID);
           if (Array.isArray(tempArr)) {
             _list.push(...tempArr);
           }
@@ -165,9 +163,12 @@ export default {
             > .el-input {
               &.n {
                 width: 420px;
+                input {
+                  padding-right: 52px;
+                }
               }
               &.u {
-                width: 120px;
+                width: 140px;
               }
             }
           }

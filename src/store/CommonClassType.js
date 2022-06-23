@@ -95,14 +95,19 @@ export default class CommonClassType {
             if (reg.test(l2.children[0])) {
               _text += `全部${l2.ClassName}产品 `;
             } else {
-              _text += `${l2.ClassName}: `;
+              _text += `${l2.ClassName}`;
+              let str = '';
               l2.children.forEach((l3, i) => {
                 if (i === 0) {
-                  _text += `${l3.ClassName}`;
+                  str += `${l3.ClassName}`;
                 } else {
-                  _text += `、${l3.ClassName}`;
+                  str += `、${l3.ClassName}`;
                 }
               });
+              if (str) {
+                _text += ': ';
+                _text += str;
+              }
             }
           });
           _text += ']';

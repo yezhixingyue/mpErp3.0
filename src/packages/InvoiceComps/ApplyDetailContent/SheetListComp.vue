@@ -2,7 +2,7 @@
   <div class="mp-invoice-item-detail-sheet-list-comp-wrap" v-if="localList.length > 0">
     <p class="blue-v-line is-bold is-black">{{item.title}}</p>
     <div>
-      <dl v-for="([f, s], i) in localList" :key="i" :class="{l: i === localList.length - 1}">
+      <dl v-for="([f, s], i) in localList" :key="i">
         <dt>{{f.label || ''}}</dt>
         <dd :style="`color:${f.color}`">{{f | formatValue}}</dd>
         <dt>{{s.label || ''}}</dt>
