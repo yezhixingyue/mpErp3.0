@@ -1,7 +1,8 @@
 <template>
   <section class="mp-erp-invoice-info-manage-list-page-wrap">
-    <header v-if="localPermission.Operate">
-      <el-button type="primary" @click="setupInvoiceItem('new')" :disabled="InvoiceInfoList.length >= 7">+新增开票类别</el-button>
+    <header >
+      <el-button v-if="localPermission.Operate" type="primary" @click="setupInvoiceItem('new')" :disabled="InvoiceInfoList.length >= 7">+新增开票类别</el-button>
+      <span v-else></span>
       <div class="d-c">
         <label for="">默认开票类别：</label>
         <span>{{defaultItemInfo ? defaultItemInfo.CategoryName : '未设置'}}</span>
@@ -9,7 +10,7 @@
         <el-tooltip effect="light" popper-class="invoice-info-default-classify-tooltip" content="未设置开票类别的产品将会使用此类别" placement="bottom">
           <i class="el-icon-info"></i>
         </el-tooltip>
-        <span class="blue-span" @click="visible=true">{{defaultItemInfo ? '编辑' : '设置'}}</span>
+        <span class="blue-span" v-if="localPermission.Operate" @click="visible=true">{{defaultItemInfo ? '编辑' : '设置'}}</span>
       </div>
     </header>
     <div class="content">

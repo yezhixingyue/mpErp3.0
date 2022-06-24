@@ -59,6 +59,7 @@ export default {
   data() {
     return {
       dateList: [
+        { name: '不限', ID: 'all' },
         { name: '今天', ID: 'today' },
         { name: '昨天', ID: 'yesterday' },
         { name: '前天', ID: 'beforeyesterday' },
