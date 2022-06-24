@@ -332,10 +332,6 @@ export default {
       tableName: 'orderTable',
     };
   },
-  updated() {
-    if (window.onselectstart) window.onselectstart = null;
-    if (document.onselectstart) document.onselectstart = null;
-  },
 };
 </script>
 
