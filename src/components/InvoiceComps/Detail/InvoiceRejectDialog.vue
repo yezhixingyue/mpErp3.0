@@ -15,7 +15,7 @@
       <!-- 内容区 -->
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="88px" class="demo-ruleForm" @submit.native.prevent>
         <el-form-item label="驳回原因:" prop="Opinion">
-          <el-input type="textarea" v-model="ruleForm.Opinion" maxlength="300" show-word-limit :rows="6"></el-input>
+          <el-input type="textarea" v-model="ruleForm.Opinion" :rows="6"></el-input>
         </el-form-item>
         <el-form-item class="btn-box">
           <el-button type="danger" @click="submitForm">提交</el-button>
@@ -53,6 +53,17 @@ export default {
     },
   },
   data() {
+    const checkOpinion = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入驳回原因'));
+      } else {
+        if (value.length < 3 || value.length > 300) {
+          const str = value.length > 300 ? `长度在 3 到 300 个字符，当前输入长度：${value.length}` : '长度在 3 到 300 个字符';
+          callback(new Error(str));
+        }
+        callback();
+      }
+    };
     return {
       ruleForm: {
         InvoiceID: this.invoiceID,
@@ -61,7 +72,8 @@ export default {
       rules: {
         Opinion: [
           { required: true, message: '请输入驳回原因', trigger: 'blur' },
-          { min: 3, max: 300, message: '长度在 3 到 300 个字符', trigger: 'blur' },
+          { validator: checkOpinion, trigger: 'change' },
+          { validator: checkOpinion, trigger: 'blur' },
         ],
       },
     };

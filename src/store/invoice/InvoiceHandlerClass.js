@@ -107,7 +107,7 @@ export default class InvoiceHandlerClass {
     }
   }
 
-  syncForStore() { // 同步仓库中对应发票状态的改变
+  syncForStore() { // 同步仓库中对应列表项的发票状态的改变
     if (!this.handleTarget) return;
     const { InvoiceStatus, ExpressCompany, ExpressNumber, OperateTime, InvoiceLog, RejectReason, InvoiceID } = this.handleTarget;
     const OperaterUserName = store.state.common.Permission.StaffName;

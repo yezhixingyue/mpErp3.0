@@ -10,6 +10,7 @@
         :typeList="[['InvoiceType', '']]"
         :value='condition4InvoiceMakeUpList.InvoiceType'
         :defaultProps="{label: 'Name',value: 'ID'}"
+        class="invoice-type-filter-wrap"
       />
       <OrderChannelSelector
         label='发票状态'
@@ -94,4 +95,9 @@ export default {
 };
 </script>
 <style lang='scss'>
+.invoice-type-filter-wrap .mp-common-select-comp-wrap {
+  input {
+    width: 150px;
+  }
+}
 </style>

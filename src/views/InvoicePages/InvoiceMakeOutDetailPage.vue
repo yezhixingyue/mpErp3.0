@@ -65,6 +65,7 @@ export default {
         this.detailData = resp.data.Data;
         // this.detailData = { ...resp.data.Data, InvoiceStatus: 0 };
         this.invoiceHandler = new InvoiceHandlerClass(this.detailData);
+        // this.invoiceHandler.syncForStore(); // 根据详情数据对列表项状态进行更新 -------------  是否要这样做？ 因为其可能不会是最新的状态 -- 可能会产生误导 此处不处理 仅在操作成功后改动
       }
     },
     goback() {
