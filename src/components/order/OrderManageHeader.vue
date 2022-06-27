@@ -5,6 +5,7 @@
         <!-- 该动态类名为判断当前页面是否为包裹列表页面，如果是则做针对样式处理，另设置值方式为在对应table组件中所设置 -->
         <AreaSelector />
         <!-- <ProductSelector /> -->
+        <EpCascader :list="allProductClassifyWithEmpty" v-model="EpCascaderValue" :fiexdWidth="240" />
         <ProductSelector
           :changePropsFunc="setOrderManageRequestObj"
           :requestFunc="getDataList"
@@ -47,7 +48,6 @@
           key='order-Terminal'
           label=''
         />
-        <EpCascader />
       </li>
       <li class="row-two">
         <!-- <TimeSearchSelector /> -->
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import AreaSelector from '@/components/order/orderListHeader/AreaSelector.vue';
 // import ProductSelector from '@/components/order/orderListHeader/ProductSelector.vue';
 import UserSelector from '@/components/order/orderListHeader/UserSelector.vue';
@@ -110,6 +110,7 @@ export default {
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'selfHelpOrderTypeList']),
     ...mapState('orderModule', ['objForOrderList', 'orderListData', 'OrderStatusList']),
+    ...mapGetters('common', ['allProductClassifyWithEmpty']),
     // conditionDate: {
     //   get() {
     //     return [this.objForOrderList.PlaceDate.First, this.objForOrderList.PlaceDate.Second];
@@ -127,6 +128,32 @@ export default {
     },
     localSelfHelpOrderTypeList() {
       return this.selfHelpOrderTypeList?.filter(it => it.name !== '移动端') || [];
+    },
+    // :changePropsFunc="setOrderManageRequestObj"
+    //       :requestFunc="getDataList"
+    //       :ClassID="objForOrderList.ProductClass.First"
+    //       :TypeID="objForOrderList.ProductClass.Second"
+    //       :ProductID="objForOrderList.ProductID"
+    //       :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]"
+    EpCascaderValue: {
+      get() {
+        const list = [
+          this.objForOrderList.ProductClass.First,
+          this.objForOrderList.ProductClass.Second,
+          this.objForOrderList.ProductID,
+        ];
+        return list.filter(it => it || it === 0);
+      },
+      set(ids) {
+        const [_First, _Second, _ProductID] = ids;
+        const First = _First || _First === 0 ? _First : '';
+        const Second = _Second || _Second === 0 ? _Second : '';
+        const ProductID = _ProductID || _ProductID === 0 ? _ProductID : '';
+        this.setOrderManageRequestObj([['ProductClass', 'First'], First]);
+        this.setOrderManageRequestObj([['ProductClass', 'Second'], Second]);
+        this.setOrderManageRequestObj([['ProductID', ''], ProductID]);
+        this.getDataList();
+      },
     },
   },
   data() {
