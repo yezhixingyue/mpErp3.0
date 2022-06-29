@@ -1,5 +1,5 @@
 <template>
-  <ul class="mp-order-product-select-wrap">
+  <ul class="mp-order-product-select-wrap" v-if="!useCascader">
     <li class="text" v-if="!hiddenLabel">
       <span>产品：</span>
     </li>
@@ -34,16 +34,17 @@
         @handleChange="handleSwitch3" />
     </li>
   </ul>
+  <EpCascader v-else :list="allProductClassifyWithEmpty" v-model="EpCascaderValue" :fiexdWidth="240" />
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import SelectComp from '../SelectComp.vue';
+import EpCascader from '../../../packages/EpCascader/index.vue';
+
+// 适配尚未完成 后续处理
 
 export default {
-  components: {
-    SelectComp,
-  },
   props: {
     ClassID: {
       default: '',
@@ -104,9 +105,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    useCascader: { // 此处尚未封装完成
+      type: Boolean,
+      default: false,
+    },
+  },
+  components: {
+    SelectComp,
+    EpCascader,
   },
   computed: {
     ...mapState('common', ['productNames', 'ProductMultipleClassifyList']),
+    ...mapGetters('common', ['allProductClassifyWithEmpty']),
     productClassList() {
       const type = this.useCustomer ? 2 : 6;
       const target = this.ProductMultipleClassifyList.find(it => it.ID === type);

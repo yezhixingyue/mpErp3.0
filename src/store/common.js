@@ -9,7 +9,7 @@ import Product from '@/assets/js/TypeClass/ProductClass';
 import messageBox from '../assets/js/utils/message';
 import CommonClassType from './CommonClassType';
 
-const getAllProductClassifyFunc = (productClassList, productNames, type) => {
+const getAllProductClassifyFunc = (productClassList, productNames, type, filterEmpty = true) => {
   if (productClassList.length === 0 || productNames.length === 0) return [];
 
   // eslint-disable-next-line prefer-const
@@ -37,13 +37,17 @@ const getAllProductClassifyFunc = (productClassList, productNames, type) => {
       }
     }
   }));
-  // 筛选去除无下属产品的分类
-  level1List = level1List.filter(leve1 => leve1.children.length > 0);
-  level1List.forEach(
-    level1 => (level1.children = level1.children.filter(
-      level2 => level2.children.length > 0,
-    )),
-  );
+
+  if (filterEmpty) {
+    // 筛选去除无下属产品的分类
+    level1List = level1List.filter(leve1 => leve1.children.length > 0);
+    level1List.forEach(
+      level1 => (level1.children = level1.children.filter(
+        level2 => level2.children.length > 0,
+      )),
+    );
+  }
+
   return level1List;
 };
 
@@ -475,6 +479,14 @@ export default {
       if (!target) return [];
       const classList = target.List;
       return getAllProductClassifyFunc(classList, state.productNames, 1);
+    },
+    /* 全部产品分类结构树，用于报价目录等地方展示 -- 包含子列表为空的类别
+    -------------------------------*/
+    allProductClassifyWithEmpty(state) {
+      const target = state.ProductMultipleClassifyList.find(it => it.ID === 6);
+      if (!target) return [];
+      const classList = target.List;
+      return getAllProductClassifyFunc(classList, state.productNames, 1, false);
     },
     allProductAndLevelList(state, getters) { // 包含一级二级类别平铺开
       const _arr = [];

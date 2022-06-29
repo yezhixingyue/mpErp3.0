@@ -3,15 +3,17 @@
     <ul class="order-manage-header-content">
       <li class="row-one">
         <!-- 该动态类名为判断当前页面是否为包裹列表页面，如果是则做针对样式处理，另设置值方式为在对应table组件中所设置 -->
-        <AreaSelector />
+        <!-- <AreaSelector /> -->
         <!-- <ProductSelector /> -->
-        <ProductSelector
+        <EpCascader :list="allAreaTreeList" v-model="EpCascaderAreaValue" :fiexdWidth="240" title="销售区域" />
+        <EpCascader :list="allProductClassifyWithEmpty" v-model="EpCascaderProductValue" :fiexdWidth="240" />
+        <!-- <ProductSelector
           :changePropsFunc="setOrderManageRequestObj"
           :requestFunc="getDataList"
           :ClassID="objForOrderList.ProductClass.First"
           :TypeID="objForOrderList.ProductClass.Second"
           :ProductID="objForOrderList.ProductID"
-          :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]" />
+          :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]" /> -->
         <UserSelector />
         <StaffSelector />
         <ExpressSelector />
@@ -77,8 +79,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex';
-import AreaSelector from '@/components/order/orderListHeader/AreaSelector.vue';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
+// import AreaSelector from '@/components/order/orderListHeader/AreaSelector.vue';
 // import ProductSelector from '@/components/order/orderListHeader/ProductSelector.vue';
 import UserSelector from '@/components/order/orderListHeader/UserSelector.vue';
 import StaffSelector from '@/components/order/orderListHeader/StaffSelector.vue';
@@ -89,13 +91,14 @@ import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSele
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
-import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
+// import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
+import EpCascader from '../../packages/EpCascader/index.vue';
 
 export default {
   components: {
     ExpressSelector,
-    AreaSelector,
-    ProductSelector,
+    // AreaSelector,
+    // ProductSelector,
     UserSelector,
     StaffSelector,
     // OrderStatusSelector,
@@ -103,10 +106,12 @@ export default {
     // ElDateRangeSelector,
     LineDateSelectorComp,
     SearchInputComp,
+    EpCascader,
   },
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'selfHelpOrderTypeList']),
     ...mapState('orderModule', ['objForOrderList', 'orderListData', 'OrderStatusList']),
+    ...mapGetters('common', ['allProductClassifyWithEmpty', 'allAreaTreeList']),
     // conditionDate: {
     //   get() {
     //     return [this.objForOrderList.PlaceDate.First, this.objForOrderList.PlaceDate.Second];
@@ -125,11 +130,62 @@ export default {
     localSelfHelpOrderTypeList() {
       return this.selfHelpOrderTypeList?.filter(it => it.name !== '移动端') || [];
     },
+    // :changePropsFunc="setOrderManageRequestObj"
+    //       :requestFunc="getDataList"
+    //       :ClassID="objForOrderList.ProductClass.First"
+    //       :TypeID="objForOrderList.ProductClass.Second"
+    //       :ProductID="objForOrderList.ProductID"
+    //       :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]"
+    EpCascaderAreaValue: {
+      get() {
+        const list = [
+          this.objForOrderList.SellArea.RegionalID,
+          this.objForOrderList.SellArea.CityID,
+          this.objForOrderList.SellArea.CountyID,
+        ];
+        return list.filter(it => it || it === 0);
+      },
+      set(ids) {
+        const [_RegionalID, _CityID, _CountyID] = ids;
+        const RegionalID = _RegionalID || _RegionalID === 0 ? _RegionalID : '';
+        const CityID = _CityID || _CityID === 0 ? _CityID : '';
+        const CountyID = _CountyID || _CountyID === 0 ? _CountyID : '';
+        this.setOrderManageRequestObj([['SellArea', 'RegionalID'], RegionalID]);
+        this.setOrderManageRequestObj([['SellArea', 'CityID'], CityID]);
+        this.setOrderManageRequestObj([['SellArea', 'CountyID'], CountyID]);
+        this.getDataList();
+      },
+    },
+    EpCascaderProductValue: {
+      get() {
+        const list = [
+          this.objForOrderList.ProductClass.First,
+          this.objForOrderList.ProductClass.Second,
+          this.objForOrderList.ProductID,
+        ];
+        return list.filter(it => it || it === 0);
+      },
+      set(ids) {
+        const [_First, _Second, _ProductID] = ids;
+        const First = _First || _First === 0 ? _First : '';
+        const Second = _Second || _Second === 0 ? _Second : '';
+        const ProductID = _ProductID || _ProductID === 0 ? _ProductID : '';
+        this.setOrderManageRequestObj([['ProductClass', 'First'], First]);
+        this.setOrderManageRequestObj([['ProductClass', 'Second'], Second]);
+        this.setOrderManageRequestObj([['ProductID', ''], ProductID]);
+        this.getDataList();
+      },
+    },
   },
   data() {
     return {
-      // eslint-disable-next-line max-len
-      dateList: [{ name: '今天下单', ID: 'today' }, { name: '昨天下单', ID: 'yesterday' }, { name: '前天下单', ID: 'beforeyesterday' }, { name: '本月下单', ID: 'curMonth' }, { name: '上月下单', ID: 'lastMonth' }],
+      dateList: [
+        { name: '今天下单', ID: 'today' },
+        { name: '昨天下单', ID: 'yesterday' },
+        { name: '前天下单', ID: 'beforeyesterday' },
+        { name: '本月下单', ID: 'curMonth' },
+        { name: '上月下单', ID: 'lastMonth' },
+      ],
       dateMenus: [
         { text: '今天', key: 'TodayDate' },
         { text: '昨天', key: 'YesterdayDate' },
@@ -151,6 +207,11 @@ export default {
     clearCondition() {
       this.$store.commit('orderModule/clearConfigObj');
     },
+  },
+  created() {
+    this.$store.dispatch('common/getAreaList');
+    this.$store.dispatch('common/getProductClassifyData', { key: 6 });
+    this.$store.dispatch('common/getAllProductNames');
   },
 };
 </script>
