@@ -118,7 +118,6 @@ export default {
       }
     },
     handleSortEnd(e) {
-      if (this.sortItem) document.removeEventListener('selectstart', this.sortItem);
       let oldIndex = e.oldIndex - 1;
       let newIndex = e.newIndex - 1;
       if (this.curShowColTableData.length < this.tableColData.length) {
@@ -235,8 +234,5 @@ export default {
   },
   deactivated() {
     this.handleDestroyAndDeactivated();
-  },
-  updated() {
-    if (this.sortItem) document.removeEventListener('selectstart', this.sortItem);
   },
 };

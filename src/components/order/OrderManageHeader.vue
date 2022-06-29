@@ -274,6 +274,9 @@ export default {
           display: none;
         }
       }
+      > .mp-common-comps-ep-cascader-comp-wrap {
+        margin-bottom: 22px;
+      }
     }
     .row-two {
       display: flex;
