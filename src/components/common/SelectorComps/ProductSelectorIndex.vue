@@ -105,9 +105,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    useCascader: {
+    useCascader: { // 此处尚未封装完成
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   components: {

@@ -1,6 +1,6 @@
 <template>
   <div class="mp-common-comps-ep-cascader-comp-wrap" :class="{'show-line':showLine}">
-    <label class="title">产品：</label>
+    <label class="title">{{title}}：</label>
     <el-popover
       placement="bottom-start"
       popper-class="mp-common-comps-ep-cascader-comp-popper-wrap"
@@ -64,6 +64,10 @@ export default {
     fiexdWidth: { // 是否固定宽度 如果传的有值则使用固定宽度
       type: Number,
       default: 0,
+    },
+    title: {
+      type: String,
+      default: '产品',
     },
   },
   components: {
@@ -152,7 +156,10 @@ export default {
       }
     },
     onItemHover(index, it) {
-      if (this.activeIds[index] === it[this.defaultProps.ID]) return;
+      if (this.activeIds[index] === it[this.defaultProps.ID]) {
+        this.activeIds = [...this.activeIds.slice(0, index), it[this.defaultProps.ID]];
+        return;
+      }
       this.activeIds = [...this.activeIds.slice(0, index), it[this.defaultProps.ID]];
       this.cascaderList.splice(index + 1);
       const t = this.cascaderList[this.cascaderList.length - 1].list.find(_it => _it[this.defaultProps.ID] === it[this.defaultProps.ID]);
