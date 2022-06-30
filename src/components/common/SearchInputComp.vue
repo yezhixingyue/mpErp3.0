@@ -20,8 +20,6 @@
 </template>
 
 <script>
-import { throttle } from '@/assets/js/utils/throttle';
-
 export default {
   props: {
     word: {
@@ -73,13 +71,7 @@ export default {
     onKeyWordSubmit(e) {
       const _keywords = this.inpVal;
       this.changePropsFunc([this.typeList[0], _keywords]);
-      // if (this.inpVal) {
-      // this.$emit('reset');
-      // this.changePropsFunc([this.typeList[0], _keywords]);
-      this.handleThrottleFunc();
-      // } else {
-      //   this.onResetBtn();
-      // }
+      this.requestFunc();
       e.target.blur();
     },
     onResetBtn() {
@@ -87,9 +79,6 @@ export default {
       this.requestFunc();
       this.inpVal = '';
     },
-  },
-  mounted() {
-    this.handleThrottleFunc = throttle(this.requestFunc, 350);
   },
   watch: {
     searchWatchKey() {
