@@ -5,8 +5,8 @@
         <!-- 该动态类名为判断当前页面是否为包裹列表页面，如果是则做针对样式处理，另设置值方式为在对应table组件中所设置 -->
         <!-- <AreaSelector /> -->
         <!-- <ProductSelector /> -->
-        <EpCascader :list="allAreaTreeList" v-model="EpCascaderAreaValue" :fiexdWidth="240" title="销售区域" />
-        <EpCascader :list="allProductClassifyWithEmpty" v-model="EpCascaderProductValue" :fiexdWidth="240" />
+        <EpCascader :list="allAreaTreeList" v-model="EpCascaderAreaValue" :fiexdWidth="240" title="销售区域" class="mr-12" />
+        <EpCascader :list="allProductClassifyWithEmpty" v-model="EpCascaderProductValue" :fiexdWidth="240" class="mr-12" />
         <!-- <ProductSelector
           :changePropsFunc="setOrderManageRequestObj"
           :requestFunc="getDataList"
@@ -16,6 +16,8 @@
           :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]" /> -->
         <UserSelector />
         <StaffSelector />
+      </li>
+      <li class="row-one">
         <ExpressSelector />
         <!-- <OrderStatusSelector /> -->
         <OrderChannelSelector
@@ -237,24 +239,6 @@ export default {
         &.mp-order-status-select-wrap {
           width: 450px;
         }
-        > li {
-          &:first-of-type {
-            margin-right: 10px;
-          }
-        }
-        &:nth-of-type(1),
-        &:nth-of-type(2) {
-          margin-right: -10px;
-        }
-        &:nth-of-type(3) {
-          margin-right: 0px;
-        }
-        &:nth-of-type(4) {
-          margin-right: 20px;
-        }
-        &:nth-of-type(5) {
-          margin-right: 59px;
-        }
       }
       > .mp-common-comps-order-channel-selector-wrap {
         margin-top: -4px;
@@ -265,17 +249,26 @@ export default {
           }
         }
         &.status {
-          margin-right: 33px;
+          margin-right: 38px;
         }
       }
       > .terminal-select {
-        margin-left: 15px;
+        margin-left: 25px;
         > header {
           display: none;
         }
       }
       > .mp-common-comps-ep-cascader-comp-wrap {
         margin-bottom: 22px;
+      }
+      > .order-express-selector-wrap {
+        margin-right: 40px;
+        > .text {
+          margin-right: 15px;
+        }
+      }
+      > .mp-order-user-select-wrap {
+        margin-right: 10px;
       }
     }
     .row-two {

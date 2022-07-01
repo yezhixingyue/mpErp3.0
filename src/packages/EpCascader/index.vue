@@ -175,8 +175,14 @@ export default {
       }
     },
     onItemClick() {
-      this.$emit('input', [...this.activeIds]);
-      this.$emit('change', [...this.activeIds]);
+      let _val = [...this.activeIds];
+      if (_val.length === 1 && _val[0] === '') _val = [];
+      if (JSON.stringify(_val) === JSON.stringify(this.value)) {
+        this.close();
+        return;
+      }
+      this.$emit('input', _val);
+      this.$emit('change', _val);
       this.close();
       this.$nextTick(() => {
         window.dispatchEvent(new Event('resize'));
@@ -213,6 +219,7 @@ export default {
 <style lang='scss'>
 @import "@/assets/css/var.scss";
 .mp-common-comps-ep-cascader-comp-wrap {
+  white-space: nowrap;
   > .title {
     text-align: right;
     color: #444;
