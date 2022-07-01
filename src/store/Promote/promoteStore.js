@@ -7,6 +7,7 @@ import { Message } from 'element-ui';
 import messageBox from '@/assets/js/utils/message';
 import PromoteListRequestObj from './classType';
 import PromoteAddEditObjClassType from './PromoteAddEditObjClassType';
+import CommonClassType from '../CommonClassType';
 
 export default {
   namespaced: true,
@@ -68,29 +69,7 @@ export default {
     /** 调整请求对象信息中的时间信息 --- 原日期筛选组件不用后该方法废弃
      ---------------------------------------- */
     setRequestObjDate(state) {
-      const dateTypeList = ['all', 'today', 'yesterday', 'beforeyesterday'];
-      if (dateTypeList.includes(state.promoteListRequestObj.DateType)) {
-        switch (state.promoteListRequestObj.DateType) {
-          case 'all':
-            state.promoteListRequestObj.ValidTime.key = this.getters['timeSelectModule/AlltimeDate'].First;
-            state.promoteListRequestObj.ValidTime.value = this.getters['timeSelectModule/AlltimeDate'].Second;
-            break;
-          case 'today':
-            state.promoteListRequestObj.ValidTime.key = this.getters['timeSelectModule/TodayDate'].First;
-            state.promoteListRequestObj.ValidTime.value = this.getters['timeSelectModule/TodayDate'].Second;
-            break;
-          case 'yesterday':
-            state.promoteListRequestObj.ValidTime.key = this.getters['timeSelectModule/YesterdayDate'].First;
-            state.promoteListRequestObj.ValidTime.value = this.getters['timeSelectModule/YesterdayDate'].Second;
-            break;
-          case 'beforeyesterday':
-            state.promoteListRequestObj.ValidTime.key = this.getters['timeSelectModule/BeforeYesterdayTimeDate'].First;
-            state.promoteListRequestObj.ValidTime.value = this.getters['timeSelectModule/BeforeYesterdayTimeDate'].Second;
-            break;
-          default:
-            break;
-        }
-      }
+      CommonClassType.setDate(state.promoteListRequestObj, 'ValidTime', { First: 'key', Second: 'value' });
     },
     /** 设置活动添加请求数据
      ---------------------------------------- */
