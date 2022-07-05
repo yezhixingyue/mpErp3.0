@@ -252,6 +252,13 @@ export default {
     };
   },
   computed: {
+    canMpzj() { // 可以使用名片之家配送（如果不可以的时候不需要地图定位，暂定下单及批量上传处生效）
+      if (this.customerInfo && this.customerInfo.Type) {
+        const { First } = this.customerInfo.Type;
+        return ![8].includes(First);
+      }
+      return true;
+    },
     localExpressList() {
       return this.ExpressList.map(it => ({
         ...it,
@@ -457,8 +464,10 @@ export default {
       this.RegionalList = RegionalList || null;
       // this.curAddIndex = 'new';
       // 打开地图弹窗定位
-      this.setMapVisible = true;
-      this.openType = 'edit';
+      if (this.canMpzj) {
+        this.setMapVisible = true;
+        this.openType = 'edit';
+      }
       // this.$refs.ruleForm.validate();
     },
     /** 弹窗地址修改相关方法
@@ -470,7 +479,7 @@ export default {
     onDialogSubmit(e) { // 弹窗提交
       if (!e) return;
       const { curAddIndex, OutPlateNo, NewAddressInfo } = e;
-      if (curAddIndex === 'new' && !OutPlateNo) { // 弹窗定位
+      if (curAddIndex === 'new' && !OutPlateNo && this.canMpzj) { // 弹窗定位
         this.RegionalList = null;
         this.CityList = null;
         this.CountyList = null;

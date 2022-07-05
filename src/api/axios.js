@@ -120,13 +120,12 @@ axios.interceptors.response.use(
     if (!store.state.common.isLoading) {
       if (getShowLoading(error.config) && loadingInstance) handleLoadingClose();
       if (error.response) {
-        let key = false;
         let b;
         let r;
         let buffterRes;
         let buffterErr = '文件导出数据过大，请缩小导出时间区间或精确筛选条件';
         let _func = null;
-        let _msg = '系统暂无响应，请重试';
+        let _msg = '';
         switch (error.response.status) {
           case 401:
             clearToken();
@@ -138,7 +137,6 @@ axios.interceptors.response.use(
             } else {
               router.replace('/login');
             }
-            key = true;
             break;
           case 403:
             clearToken();
@@ -150,11 +148,9 @@ axios.interceptors.response.use(
             } else {
               router.replace('/login');
             }
-            key = true;
             break;
           case 404:
-            messageBox.failSingleError('操作失败', '404 not found');
-            key = true;
+            _msg = '404 not found';
             break;
           case 413: // 处理文件导出错误
             b = new Blob([error.response.data]);
@@ -164,10 +160,28 @@ axios.interceptors.response.use(
             if (buffterRes && buffterRes.currentTarget && buffterRes.currentTarget.result) {
               buffterErr = buffterRes.currentTarget.result;
             }
-            messageBox.failSingleError(undefined, `[ 错误 413：${buffterErr} ]`);
-            key = true;
+            _msg = `[ 错误 413：${buffterErr} ]`;
+            break;
+          case 500:
+            _msg = '服务器内部错误';
+            break;
+          case 501:
+            _msg = '服务器无法识别请求';
+            break;
+          case 502:
+            _msg = '网关错误';
+            break;
+          case 503:
+            _msg = '服务不可用';
+            break;
+          case 504:
+            _msg = '网关超时';
+            break;
+          case 505:
+            _msg = 'HTTP 版本不受支持';
             break;
           default:
+            _msg = '系统暂无响应，请重试';
             if (error.response.data) {
               if (error.response.data.Message) {
                 _msg = error.response.data.Message;
@@ -175,11 +189,12 @@ axios.interceptors.response.use(
                 _msg = `系统出错，错误码：${error.response.data.Status || 505}`;
               }
             }
-            messageBox.failSingleError('操作失败', _msg);
-            key = true;
             break;
         }
-        if (key) return Promise.reject(error.response);
+        if (_msg) {
+          messageBox.failSingleError('操作失败', _msg);
+        }
+        return Promise.reject(error.response);
       }
       if (error.message === 'Network Error') {
         Message({
