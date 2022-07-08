@@ -19,6 +19,7 @@
         </el-table-column>
         <el-table-column width="67" label="产品数量">
           <template  slot-scope="scope">
+            <!-- {{scope.row.Order | formarProductAmount}} -->
             {{scope.row.ProductAmount}}{{scope.row.Order.Unit}}
           </template>
         </el-table-column>
