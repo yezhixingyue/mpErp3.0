@@ -1,6 +1,6 @@
 <template>
   <button class="mp-common-download-to-excel-comp-wrap is-blue" @click="onClick">
-    导出Excel表格
+    {{title}}
     <i class="el-icon-download"></i>
   </button>
 </template>
@@ -10,6 +10,10 @@ import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
 
 export default {
   props: {
+    title: {
+      type: String,
+      default: '导出Excel表格',
+    },
     /**
      * 下载表格配置对象
      */
@@ -64,6 +68,10 @@ export default {
           const t2 = _second ? ConvertTimeFormat(new Date(new Date(_second.replace('Z', '')).getTime())) : '';
           if (f) fileName = `${this.configObj.fileDefaultName}(${f}至${t2}).xls`;
         }
+      }
+      if (this.configObj.showDateByFile === false) {
+        const curDate = ConvertTimeFormat(new Date());
+        fileName = `${this.configObj.fileDefaultName}(${curDate}日导出).xls`;
       }
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(blobData, fileName);

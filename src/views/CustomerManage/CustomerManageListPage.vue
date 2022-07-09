@@ -16,7 +16,7 @@
     </main>
     <footer>
       <CountComp :count='customerDataNumber' :watchPage='condition4DataList.Page' :handlePageChange='getDataList' center />
-      <DownLoadExcelComp :configObj="configObj" />
+      <DownLoadExcelComp title="导出余额Excel" :configObj="configObj" v-if="PermissionObj.ExportExcel" />
     </footer>
   </section>
 </template>
@@ -43,12 +43,20 @@ export default {
   },
   computed: {
     ...mapState('customerManage', ['customerDataList', 'customerDataNumber', 'loading', 'condition4DataList']),
+    ...mapState('common', ['Permission']),
+    PermissionObj() {
+      if (this.Permission?.PermissionList?.PermissionManageCustomer?.Obj) {
+        return this.Permission.PermissionList.PermissionManageCustomer.Obj;
+      }
+      return {};
+    },
     configObj() { // 导出Excel条件对象
       return {
         condition: CommonClassType.filter(this.condition4DataList, true),
         count: this.customerDataNumber,
-        fileDefaultName: '客户列表',
+        fileDefaultName: '客户余额列表',
         // fileDate: '',
+        showDateByFile: false,
         downFunc: data => this.api.getCustomerList2Excel(data),
       };
     },
