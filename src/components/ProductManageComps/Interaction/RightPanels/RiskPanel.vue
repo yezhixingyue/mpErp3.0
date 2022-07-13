@@ -2,7 +2,7 @@
   <div class="mp-erp-product-manage-comps-interaction-right-panels-risk-panel-container">
     <p>
       <span>提示内容：</span>
-      <el-input size='small' v-model.trim="FailTips" maxlength="60" show-word-limit></el-input>
+      <el-input size='small' v-model.trim="FailTips" maxlength="300" show-word-limit></el-input>
     </p>
     <p>
       <span>提示形式：</span>

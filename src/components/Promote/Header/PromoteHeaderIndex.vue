@@ -55,7 +55,7 @@
             :radioList="PromoteStatusList"
             :requestFunc='getPromoteList'
             class="status-section"
-            v-model="dateValue"
+            v-model="localStatus"
             :isFull="true"
             title='活动状态'
             />
@@ -86,10 +86,9 @@
           :isFull="true"
           :typeList="[['DateType', ''], ['ValidTime', 'key'], ['ValidTime', 'value']]"
           :dateValue='promoteListRequestObj.DateType'
+          :dateList="dateList"
           :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
-          dateType="datetimerange"
          />
-        <!-- <ElDateRangeSelector v-model="conditionDate" type="datetimerange" :menus='dateMenus' :condition="promoteListRequestObj" initText='不限' /> -->
         <search-input-comp
           class="search-section"
           :typeList="[['KeyWords', '']]"
@@ -141,12 +140,20 @@ export default {
         { text: '本月', key: 'curMonthDate' },
         { text: '上月', key: 'lastMonthDate' },
       ],
+      dateList: [
+        { name: '不限', ID: 'all' },
+        { name: '今天', ID: 'today' },
+        { name: '昨天', ID: 'yesterday' },
+        { name: '前天', ID: 'beforeyesterday' },
+        { name: '本月', ID: 'curMonth' },
+        { name: '上月', ID: 'lastMonth' },
+      ],
     };
   },
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'PromoteStatusList', 'Permission']),
     ...mapState('promoteStore', ['promoteListRequestObj', 'searchWatchKey']),
-    dateValue: {
+    localStatus: {
       get() {
         return this.promoteListRequestObj.Status;
       },
@@ -156,17 +163,6 @@ export default {
     },
     UserDefinedTimeIsActive() {
       return this.promoteListRequestObj.DateType === '' && !!this.promoteListRequestObj.ValidTime.key && !!this.promoteListRequestObj.ValidTime.value;
-    },
-    conditionDate: {
-      get() {
-        return [this.promoteListRequestObj.ValidTime.key, this.promoteListRequestObj.ValidTime.value];
-      },
-      set(newVal) {
-        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
-        this.setPromoteListRequestObj([['ValidTime', 'key'], key]);
-        this.setPromoteListRequestObj([['ValidTime', 'value'], value]);
-        this.getPromoteList();
-      },
     },
   },
   methods: {

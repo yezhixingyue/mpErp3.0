@@ -16,6 +16,19 @@ export default class ConditionClass4CustomerDataList {
     CountyID: '',
   }
 
+  DateType = 'all'
+
+  // 使用 RegDate 作为中转
+  RegDate = {
+    First: -777, //
+    Second: -777,
+  }
+
+  RegTime = { // 时间筛选
+    key: -777, //
+    value: -777,
+  }
+
   RegType = '' // 注册方式 number
 
   KeyWords = '' // 关键词搜索

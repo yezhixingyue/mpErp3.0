@@ -22,13 +22,13 @@ Vue.filter('getDoneTime', (ProducePeriod, showTime = false) => {
     if (+d === +_d) dayTimeStr = '今天';
     if (d - _d === 1) dayTimeStr = '明天';
     if (d - _d === 2) dayTimeStr = '后天';
-  } else if ((_m - m === 1 || (m === '1' && _m === '12')) && (d === '1' || d === '2')) {
+  } else if ((m - _m === 1 || (+m === 1 && _m === '12')) && (+d === 1 || +d === 2)) {
     const year = new Date().getFullYear();
-    const surMonthDayCount = new Date(year, _m, 0).getDate();
-    if (surMonthDayCount - _d === 0) {
+    const curMonthDayCount = new Date(year, _m, 0).getDate();
+    if (curMonthDayCount - _d === 0) {
       // eslint-disable-next-line no-nested-ternary
-      dayTimeStr = d === '1' ? '明天' : (d === '2' ? '后天' : '');
-    } else if (surMonthDayCount - _d === 1 && d === '1') {
+      dayTimeStr = +d === 1 ? '明天' : (+d === 2 ? '后天' : '');
+    } else if (curMonthDayCount - _d === 1 && +d === 1) {
       dayTimeStr = '后天';
     }
   }
@@ -66,7 +66,7 @@ export const formarProductAmountFunc = data => { // 根据数据返回产品数�
       amount = `${ProductAmount}${Unit || ' '}`;
     }
     if (HaveKind !== false && KindCount) {
-      kindCount = `${KindCount}款`;
+      kindCount = ` ${KindCount}款`;
     }
     return `${amount}${kindCount}`;
   }

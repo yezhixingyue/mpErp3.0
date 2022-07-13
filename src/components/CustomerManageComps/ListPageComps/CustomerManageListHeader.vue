@@ -3,17 +3,6 @@
     <div class="f">
       <el-button type="primary" size="small" @click="onSetupClick"
        v-if="Permission && Permission.PermissionList.PermissionManageCustomer.Obj.Add">新建客户</el-button>
-      <SearchInputComp
-        class="search-section"
-        :typeList="[['KeyWords', '']]"
-        title="关键词"
-        placeholder='请输入搜索关键词'
-        :requestFunc='getDataList'
-        :changePropsFunc='setCondition4DataList'
-        :word='condition4DataList.KeyWords'
-        :searchWatchKey="customerDataList"
-        @reset='() => this.clearCondition()'
-        />
     </div>
     <div class="s">
       <div class="double">
@@ -89,6 +78,30 @@
         label='功能分类'
         />
     </div>
+    <div class="s space-between">
+      <LineDateSelectorComp
+        :changePropsFunc='setCondition4DataList'
+        :requestFunc='getDataList'
+        :isFull="true"
+        :typeList="[['DateType', ''], ['RegDate', 'First'], ['RegDate', 'Second']]"
+        :dateValue='condition4DataList.DateType'
+        :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+        label="注册时间"
+        />
+        <!-- :dateList="dateList" -->
+
+      <SearchInputComp
+        class="search-section"
+        :typeList="[['KeyWords', '']]"
+        title="关键词"
+        placeholder='请输入搜索关键词'
+        :requestFunc='getDataList'
+        :changePropsFunc='setCondition4DataList'
+        :word='condition4DataList.KeyWords'
+        :searchWatchKey="customerDataList"
+        @reset='() => this.clearCondition()'
+        />
+    </div>
   </header>
 </template>
 
@@ -97,6 +110,7 @@ import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import { CustomerStatusEnumList, AuthStatusEnumList, RegTypeEnumList } from '@/store/customerManage/Enums';
+import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import { mapState } from 'vuex';
 
 export default {
@@ -104,6 +118,7 @@ export default {
     SearchInputComp,
     OrderChannelSelector,
     AreaSelector,
+    LineDateSelectorComp,
   },
   computed: {
     ...mapState('customerManage', ['condition4DataList', 'customerDataList']),
@@ -125,6 +140,10 @@ export default {
     },
     localfunctionClassEnumList() {
       return [{ CategoryID: -777, CategoryName: '类别不限' }, ...this.userfunctionClassEmpty];
+    },
+    UserDefinedTimeIsActive() {
+      // eslint-disable-next-line max-len
+      return this.condition4DataList.DateType === '' && !!this.condition4DataList.RegTime.key && !!this.condition4DataList.RegTime.value;
     },
   },
   methods: {
@@ -185,6 +204,9 @@ export default {
       > div, > ul, > section {
         margin-top: 16px;
       }
+    }
+    &.space-between{
+      justify-content: space-between;
     }
   }
 }

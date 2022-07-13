@@ -94,7 +94,7 @@ export default {
       if (this.sortItem) {
         try {
           this.sortItem.destroy();
-        // eslint-disable-next-line no-empty
+          // eslint-disable-next-line no-empty
         } catch (error) {
 
         }
@@ -112,7 +112,7 @@ export default {
       };
       try {
         this.sortItem = sortable.create(tbody, ops);
-      // eslint-disable-next-line no-empty
+        // eslint-disable-next-line no-empty
       } catch (error) {
 
       }
@@ -158,7 +158,7 @@ export default {
       if (this.sortItem) {
         try {
           this.sortItem.destroy();
-        // eslint-disable-next-line no-empty
+          // eslint-disable-next-line no-empty
         } catch (error) {
 
         }
@@ -193,25 +193,25 @@ export default {
         this.localShowLabelList.push(..._list);
       };
       const message = (
-        <section class='content-box'>
-          <main>
-          <el-checkbox-group value={this.localShowLabelList}>
-            {
-              this.tableColData.map(it => (<el-checkbox onchange={() => onChange(it.label)} label={it.label} key={it.label}></el-checkbox>))
-            }
-          </el-checkbox-group>
-          </main>
-          <footer>
-            <el-button onclick={onSubmit} type='primary'>保存</el-button>
-            <el-button onclick={onClose} >关闭</el-button>
-            <span class='span-title-blue' onclick={onReset}>重置</span>
-            <p class='is-gray'>
-              <span>1. 没有被选中的列将会被隐藏</span>
-              <span>2. 列显示隐藏设置会缓存至本地，在不清除缓存或版本更新的情况下，下次打开会自动延续本次设置</span>
-              <span>3. 中间列可左右拖动（不被缓存）</span>
-            </p>
-          </footer>
-        </section>
+         <section class='content-box'>
+           <main>
+           <el-checkbox-group value={this.localShowLabelList}>
+             {
+               this.tableColData.map(it => (<el-checkbox onchange={() => onChange(it.label)} label={it.label} key={it.label}></el-checkbox>))
+             }
+           </el-checkbox-group>
+           </main>
+           <footer>
+             <el-button onclick={onSubmit} type='primary'>保存</el-button>
+             <el-button onclick={onClose} >关闭</el-button>
+             <span class='span-title-blue' onclick={onReset}>重置</span>
+             <p class='is-gray'>
+               <span>1. 没有被选中的列将会被隐藏</span>
+               <span>2. 列显示隐藏设置会缓存至本地，在不清除缓存或版本更新的情况下，下次打开会自动延续本次设置</span>
+               <span>3. 中间列可左右拖动（不被缓存）</span>
+             </p>
+           </footer>
+         </section>
       );
       this.notify = this.$notify({
         title: '设置列显示',

@@ -2,47 +2,47 @@ import store from '@/store';
 import { getProductArrayList, reg } from '@/components/Promote/promoteUtils';
 
 export default class CommonClassType {
-  static setDate(obj, key = 'Date') {
+  static setDate(obj, key = 'Date', defalutProps = { First: 'First', Second: 'Second' }) {
     const _obj = obj;
-    // console.log(obj[key], store);
-    const dateTypeList = ['all', 'today', 'yesterday', 'beforeyesterday', 'curWeek', 'lastWeek', 'curMonth', 'lastMonth'];
-    if (dateTypeList.includes(obj.DateType)) {
-      switch (obj.DateType) {
-        case 'all':
-          _obj[key].First = store.getters['timeSelectModule/AlltimeDate'].First;
-          _obj[key].Second = store.getters['timeSelectModule/AlltimeDate'].Second;
-          break;
-        case 'today':
-          _obj[key].First = store.getters['timeSelectModule/TodayDate'].First;
-          _obj[key].Second = store.getters['timeSelectModule/TodayDate'].Second;
-          break;
-        case 'yesterday':
-          _obj[key].First = store.getters['timeSelectModule/YesterdayDate'].First;
-          _obj[key].Second = store.getters['timeSelectModule/YesterdayDate'].Second;
-          break;
-        case 'beforeyesterday':
-          _obj[key].First = store.getters['timeSelectModule/BeforeYesterdayTimeDate'].First;
-          _obj[key].Second = store.getters['timeSelectModule/BeforeYesterdayTimeDate'].Second;
-          break;
-        case 'curWeek':
-          _obj[key].First = store.getters['timeSelectModule/curWeekDate'].First;
-          _obj[key].Second = store.getters['timeSelectModule/curWeekDate'].Second;
-          break;
-        case 'lastWeek':
-          _obj[key].First = store.getters['timeSelectModule/lastWeekDate'].First;
-          _obj[key].Second = store.getters['timeSelectModule/lastWeekDate'].Second;
-          break;
-        case 'curMonth':
-          _obj[key].First = store.getters['timeSelectModule/curMonthDate'].First;
-          _obj[key].Second = store.getters['timeSelectModule/curMonthDate'].Second;
-          break;
-        case 'lastMonth':
-          _obj[key].First = store.getters['timeSelectModule/lastMonthDate'].First;
-          _obj[key].Second = store.getters['timeSelectModule/lastMonthDate'].Second;
-          break;
-        default:
-          break;
-      }
+    switch (obj.DateType) {
+      case 'all':
+        _obj[key][defalutProps.First] = store.getters['timeSelectModule/AlltimeDate'].First;
+        _obj[key][defalutProps.Second] = store.getters['timeSelectModule/AlltimeDate'].Second;
+        break;
+      case 'today':
+        _obj[key][defalutProps.First] = store.getters['timeSelectModule/TodayDate'].First;
+        _obj[key][defalutProps.Second] = store.getters['timeSelectModule/TodayDate'].Second;
+        break;
+      case 'yesterday':
+        _obj[key][defalutProps.First] = store.getters['timeSelectModule/YesterdayDate'].First;
+        _obj[key][defalutProps.Second] = store.getters['timeSelectModule/YesterdayDate'].Second;
+        break;
+      case 'beforeyesterday':
+        _obj[key][defalutProps.First] = store.getters['timeSelectModule/BeforeYesterdayTimeDate'].First;
+        _obj[key][defalutProps.Second] = store.getters['timeSelectModule/BeforeYesterdayTimeDate'].Second;
+        break;
+      case 'curWeek':
+        _obj[key][defalutProps.First] = store.getters['timeSelectModule/curWeekDate'].First;
+        _obj[key][defalutProps.Second] = store.getters['timeSelectModule/curWeekDate'].Second;
+        break;
+      case 'lastWeek':
+        _obj[key][defalutProps.First] = store.getters['timeSelectModule/lastWeekDate'].First;
+        _obj[key][defalutProps.Second] = store.getters['timeSelectModule/lastWeekDate'].Second;
+        break;
+      case 'curMonth':
+        _obj[key][defalutProps.First] = store.getters['timeSelectModule/curMonthDate'].First;
+        _obj[key][defalutProps.Second] = store.getters['timeSelectModule/curMonthDate'].Second;
+        break;
+      case 'lastMonth':
+        _obj[key][defalutProps.First] = store.getters['timeSelectModule/lastMonthDate'].First;
+        _obj[key][defalutProps.Second] = store.getters['timeSelectModule/lastMonthDate'].Second;
+        break;
+      default:
+        if (store.getters[`timeSelectModule/${obj.DateType}`]) {
+          _obj[key][defalutProps.First] = store.getters[`timeSelectModule/${obj.DateType}`].First;
+          _obj[key][defalutProps.Second] = store.getters[`timeSelectModule/${obj.DateType}`].Second;
+        }
+        break;
     }
   }
 

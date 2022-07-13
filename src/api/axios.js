@@ -74,53 +74,59 @@ axios.interceptors.request.use(
   },
 );
 
-axios.interceptors.response.use(
-  (response) => {
-    if (getShowLoading(response.config) && loadingInstance) handleLoadingClose();
-    const _list2NotNeed2Toast = [
-      '/Api/AccountReceivable/Excel',
-      '/Api/PaymentOrder/Excel',
-      '/Api/CustomerList/Excel',
-      '/Api/OrderList/Excel',
-      '/Api/Coupon/DownLoad',
-      '/Api/AfterSales/Excel',
-      '/Api/AfterSale/Excel',
-      '/Api/PackageList/Excel',
-      '/Api/CustomerBill/Excel',
-      '/Api/OrderBill/Excel',
-      '/Api/PriceTable/Export',
-      '/Api/CalculatePrice/Excel',
-    ];
-    const _statusList2NotNeed2Toast = [1000, 9062, 8044, 1100];
-    // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
+const handleResponse = (response) => {
+  if (getShowLoading(response.config) && loadingInstance) handleLoadingClose();
+  const _list2NotNeed2Toast = [
+    '/Api/AccountReceivable/Excel',
+    '/Api/PaymentOrder/Excel',
+    '/Api/CustomerList/Excel',
+    '/Api/OrderList/Excel',
+    '/Api/Coupon/DownLoad',
+    '/Api/AfterSales/Excel',
+    '/Api/AfterSale/Excel',
+    '/Api/PackageList/Excel',
+    '/Api/CustomerBill/Excel',
+    '/Api/OrderBill/Excel',
+    '/Api/PriceTable/Export',
+    '/Api/CalculatePrice/Excel',
+  ];
+  const _statusList2NotNeed2Toast = [1000, 9062, 8044, 1100];
+  // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
 
-    if (!_statusList2NotNeed2Toast.includes(response.data.Status) && !_list2NotNeed2Toast.includes(response.config.url.split('?')[0])) {
-      if ([7025, 8037].includes(response.data.Status)) {
-        clearToken();
-        if (!closeTip) {
-          const cb = () => {
-            router.replace('/login');
-          };
-          messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`, cb, cb);
-        } else router.replace('/login');
-      } else if (!closeTip) {
-        messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`);
-      }
+  if (!_statusList2NotNeed2Toast.includes(response.data.Status) && !_list2NotNeed2Toast.includes(response.config.url.split('?')[0])) {
+    if ([7025, 8037].includes(response.data.Status)) {
+      clearToken();
+      if (!closeTip) {
+        const cb = () => {
+          router.replace('/login');
+        };
+        messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`, cb, cb);
+      } else router.replace('/login');
+    } else if (!closeTip) {
+      messageBox.failSingleError('操作失败', `[ ${response.data.Message} ]`);
     }
-    localCancelToken.removeCancelToken(response.config);
-    return response;
-  },
+  }
+  localCancelToken.removeCancelToken(response.config);
+  return response;
+};
+
+axios.interceptors.response.use(
+  handleResponse,
   async (error) => {
+    if (error.response && error.response.status === 200) {
+      return handleResponse(error.response);
+    }
+
     localCancelToken.removeCancelToken(error.config || '');
     if (!store.state.common.isLoading) {
       if (getShowLoading(error.config) && loadingInstance) handleLoadingClose();
       if (error.response) {
-        let key = false;
         let b;
         let r;
         let buffterRes;
         let buffterErr = '文件导出数据过大，请缩小导出时间区间或精确筛选条件';
         let _func = null;
+        let _msg = '';
         switch (error.response.status) {
           case 401:
             clearToken();
@@ -132,7 +138,6 @@ axios.interceptors.response.use(
             } else {
               router.replace('/login');
             }
-            key = true;
             break;
           case 403:
             clearToken();
@@ -144,11 +149,9 @@ axios.interceptors.response.use(
             } else {
               router.replace('/login');
             }
-            key = true;
             break;
           case 404:
-            messageBox.failSingleError('操作失败', '404 not found');
-            key = true;
+            _msg = '404 not found';
             break;
           case 413: // 处理文件导出错误
             b = new Blob([error.response.data]);
@@ -158,15 +161,41 @@ axios.interceptors.response.use(
             if (buffterRes && buffterRes.currentTarget && buffterRes.currentTarget.result) {
               buffterErr = buffterRes.currentTarget.result;
             }
-            messageBox.failSingleError(undefined, `[ 错误 413：${buffterErr} ]`);
-            key = true;
+            _msg = `[ 错误 413：${buffterErr} ]`;
+            break;
+          case 500:
+            _msg = '服务器内部错误';
+            break;
+          case 501:
+            _msg = '服务器无法识别请求';
+            break;
+          case 502:
+            _msg = '网关错误';
+            break;
+          case 503:
+            _msg = '服务不可用';
+            break;
+          case 504:
+            _msg = '网关超时';
+            break;
+          case 505:
+            _msg = 'HTTP 版本不受支持';
             break;
           default:
-            messageBox.failSingleError('操作失败', `${error.response.data && error.response.data.Message ? error.response.data.Message : error.response.statusText}`);
-            key = true;
+            _msg = '系统暂无响应，请重试';
+            if (error.response.data) {
+              if (error.response.data.Message) {
+                _msg = error.response.data.Message;
+              } else {
+                _msg = `系统出错，错误码：${error.response.data.Status || 505}`;
+              }
+            }
             break;
         }
-        if (key) return Promise.reject(error.response);
+        if (_msg) {
+          messageBox.failSingleError('操作失败', _msg);
+        }
+        return Promise.reject(error.response);
       }
       if (error.message === 'Network Error') {
         Message({

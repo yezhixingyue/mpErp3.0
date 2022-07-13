@@ -84,6 +84,9 @@ export default {
     setLoading(state, bool) { // 设置loading
       state.loading = bool || false;
     },
+    setDate(state) {
+      CommonClassType.setDate(state.condition4DataList, 'RegDate');
+    },
   },
   actions: {
     /* 客户列表相关
@@ -92,6 +95,12 @@ export default {
       commit('setCustomerDataList');
       commit('setCondition2DataList', [['Page'], Page]);
       commit('setLoading', true);
+      // 设置时间
+      commit('setDate');
+      // 因为使用了 RegDate 作为中转所以要重新赋值
+      commit('setCondition2DataList', [['RegTime', 'key'], state.condition4DataList.RegDate.First]);
+      commit('setCondition2DataList', [['RegTime', 'value'], state.condition4DataList.RegDate.Second]);
+      // commit('setCondition2DataList', [['RegDate', ''], {}]);
       const temp = CommonClassType.filter(state.condition4DataList, true);
       const resp = await api.getCustomerList(temp).catch(() => null);
       if (resp && resp.data.Status === 1000) {
