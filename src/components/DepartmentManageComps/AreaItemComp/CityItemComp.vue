@@ -3,7 +3,7 @@
     <p class="header hover-margin" @dblclick="onExtendClick" @click="onActiveIDClick(item.ID)"
     :class="{active: activeId === item.ID,'moving-tow': this.moving}">
       <span>{{item.ClassName}}</span>
-      <span class="menu" @dblclick.stop  @click="onManageSubClick" >
+      <span class="menu-btn" @dblclick.stop  @click="onManageSubClick" >
         <template v-if="item.Level < 3">
           <img src="@/assets/images/setup.png" alt="">
           <span>管理子部门</span>
@@ -89,7 +89,7 @@ export default {
 .moving-tow:hover {
     cursor: move;
   }
-.menu{
+.menu-btn{
   display: flex;
   justify-content: flex-end;
   margin-right: 25px;

@@ -4,24 +4,24 @@
       <Tables :dataInfo="DetailData" :paramsData="paramsData"></Tables>
       <footer v-if="DetailData">
         <template v-if="localPermission.Operate">
-          <el-button  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
+          <el-button :disabled='isDisabled'  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
           v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
           >解除挂起</el-button>
           <template v-else>
-            <el-button  class="cancel-blue-btn" @click="onGetDownToClick" key="开始处理"
+            <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onGetDownToClick" key="开始处理"
             v-if="DetailData.AfterSale.Status === 0"
             >开始处理</el-button>
-            <el-button  class="cancel-blue-btn" @click="onExecuteClick" key="执行售后"
-            v-if="DetailData.AfterSale.Status === 10"
+            <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onExecuteClick" key="执行售后"
+            v-if="DetailData.AfterSale.Status === 10 || DetailData.AfterSale.Status === 0"
             >执行售后</el-button>
-            <el-button  class="cancel-blue-btn" @click="onPostponeClick" key="挂起"
+            <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onPostponeClick" key="挂起"
             v-if="DetailData.AfterSale.Status === 10 && !DetailData.AfterSale.IsHang"
             >挂起</el-button>
-            <el-button  class="cancel-blue-btn" @click="onDeliverToClick" key="转他人处理"
+            <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onDeliverToClick" key="转他人处理"
             v-if="DetailData.AfterSale.Status === 10"
             >转他人处理</el-button>
-            <el-button  class="cancel-blue-btn" @click="onRejectClick" key="驳回"
-            v-if="DetailData.AfterSale.Status === 10"
+            <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onRejectClick" key="驳回"
+            v-if="DetailData.AfterSale.Status === 10 || DetailData.AfterSale.Status === 0"
             >驳回</el-button>
           </template>
         </template>
@@ -33,24 +33,24 @@
       <transition name="el-fade-in-linear">
       <footer v-if="DetailData" v-show="isFootFixed" class="FootFixed">
         <template v-if="localPermission.Operate">
-          <el-button  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
+          <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
           v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
           >解除挂起</el-button>
           <template v-else>
-            <el-button  class="cancel-blue-btn" @click="onGetDownToClick" key="开始处理"
+            <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onGetDownToClick" key="开始处理"
             v-if="DetailData.AfterSale.Status === 0"
             >开始处理</el-button>
-            <el-button  class="cancel-blue-btn" @click="onExecuteClick" key="执行售后"
-            v-if="DetailData.AfterSale.Status === 10"
+            <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onExecuteClick" key="执行售后"
+            v-if="DetailData.AfterSale.Status === 10 || DetailData.AfterSale.Status === 0"
             >执行售后</el-button>
-            <el-button  class="cancel-blue-btn" @click="onPostponeClick" key="挂起"
+            <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onPostponeClick" key="挂起"
             v-if="DetailData.AfterSale.Status === 10 && !DetailData.AfterSale.IsHang"
             >挂起</el-button>
-            <el-button  class="cancel-blue-btn" @click="onDeliverToClick" key="转他人处理"
+            <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onDeliverToClick" key="转他人处理"
             v-if="DetailData.AfterSale.Status === 10"
             >转他人处理</el-button>
-            <el-button  class="cancel-blue-btn" @click="onRejectClick" key="驳回"
-            v-if="DetailData.AfterSale.Status === 10"
+            <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onRejectClick" key="驳回"
+            v-if="DetailData.AfterSale.Status === 10 || DetailData.AfterSale.Status === 0"
             >驳回</el-button>
           </template>
         </template>
@@ -130,12 +130,23 @@ export default {
     scrollChange() {
       return this.ScrollInfo.scrollTop + this.ScrollInfo.scrollHeight + this.ScrollInfo.offsetHeight;
     },
+    isDisabled() {
+      // 判断是否为本人处理
+      if (!this.DetailData.AfterSale.IsSelf) return true;
+      // 判断是否超时
+      if (this.DetailData.AfterSale.IsTimeout) return true;
+      return false;
+    },
   },
   methods: {
     async getInitData() {
       this.loading = true;
       this.api.getHandleDetail(this.paramsData.AfterSaleCode).then(res => {
         this.DetailData = res.data.Data;
+        // 处理待处理的售后单客户取消后列表不刷新的问题（列表为待处理，详情为已取消）
+        if (this.DetailData.AfterSale.Status !== this.paramsData.Status) {
+          sessionStorage.setItem('FeedbackList', true);
+        }
         function compare(_a, _b) {
           const a = new Date(_a.CreateTime).getTime();
           const b = new Date(_b.CreateTime).getTime();

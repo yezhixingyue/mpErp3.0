@@ -15,8 +15,8 @@
     <el-form :model="PostponeRuleForm" status-icon ref="ruleForm"  label-width="125px" class="demo-ruleForm" label-position="right">
       <el-form-item style="margin:0" label="挂起原因：" required>
         <TextareaInput
-         v-model="PostponeRuleForm.Reason" type="textarea" show-word-limit :maxlength="300" placeholder="请输入挂起原因"></TextareaInput>
-        <el-checkbox v-model="PostponeRuleForm.ApplyIsShow">挂起原因前台客户可见</el-checkbox>
+         v-model.trim="PostponeRuleForm.Reason" type="textarea" show-word-limit :maxlength="300" placeholder="请输入挂起原因"></TextareaInput>
+        <el-checkbox v-model="PostponeRuleForm.RemarkIsShow">挂起原因前台客户可见</el-checkbox>
       </el-form-item>
       <el-form-item style="margin:0" label="下次处理时间：" required>
         <div>
@@ -72,7 +72,7 @@ export default {
       loading: false,
       PostponeRuleForm: {
         AfterSaleCode: this.paramsData.AfterSaleCode,
-        ApplyIsShow: true,
+        RemarkIsShow: true,
         Reason: '',
         NextOperateType: 1,
         NextOperateTime: '',
@@ -88,7 +88,7 @@ export default {
     onCancle() { // 取消  关闭弹窗
       this.PostponeRuleForm = {
         AfterSaleCode: this.paramsData.AfterSaleCode,
-        ApplyIsShow: true,
+        RemarkIsShow: true,
         Reason: '',
         NextOperateType: 1,
         NextOperateTime: '',

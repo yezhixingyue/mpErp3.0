@@ -14,7 +14,7 @@
    <template>
     <el-form :model="RejectForm" status-icon ref="ruleForm" label-width="110px" class="demo-ruleForm" label-position="left">
       <el-form-item label="处理意见：" required>
-        <TextareaInput v-model="RejectForm.Opinion" :showWordLimit='true' :maxlength="300" placeholder="请输入处理意见" autocomplete="off">
+        <TextareaInput v-model.trim="RejectForm.Opinion" :showWordLimit='true' :maxlength="300" placeholder="请输入处理意见" autocomplete="off">
         </TextareaInput>
       </el-form-item>
     </el-form>

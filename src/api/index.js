@@ -123,7 +123,7 @@ const api = {
   getHandleDetail(data) { // POST /Api/OrderAfterSale/HandleDetail  售后申请详情
     return instance.get(`/Api/OrderAfterSale/HandleDetail?afterSaleCode=${data}`);
   },
-  getComplete(data) { // POST /Api/OrderAfterSale/SaveDetailAsync  获取保存的售后服务详情
+  getComplete(data) { // POST /Api/OrderAfterSale/Complete
     return instance.post('/Api/OrderAfterSale/Complete', data);
   },
   getSaveDetailAsync(afterSaleCode) { // POST /Api/OrderAfterSale/SaveDetailAsync  获取保存的售后服务详情
@@ -132,7 +132,7 @@ const api = {
   getResultDetail(afterSaleCode) { // POST /Api/OrderAfterSale/ResultDetail
     return instance.get(`/Api/OrderAfterSale/ResultDetail?afterSaleCode=${afterSaleCode}`);
   },
-  getSuccessDetail(afterSaleCode) { // POST /Api/OrderAfterSale/ResultDetail
+  getSuccessDetail(afterSaleCode) { // POST /Api/OrderAfterSale/SuccessDetail
     return instance.get(`/Api/OrderAfterSale/SuccessDetail?afterSaleCode=${afterSaleCode}`);
   },
   getSaveResult(data) { // POST /Api/OrderAfterSale/SaveResult
@@ -369,7 +369,8 @@ const api = {
   /* 客户反馈api
   ----------------------------------------------------------------------------------- */
   getApplyQuestionList() { // GET /Api/AfterSales/ApplyQuestionList 获取客户申请问题列表
-    return instance.get('/Api/AfterSales/ApplyQuestionList');
+    return instance.get('/Api/OrderAfterSale/ApplyQuestionList');
+    // return instance.get('/Api/AfterSales/ApplyQuestionList');
   },
   getAfterSalesApplyList(data) { // POST /Api/AfterSales/ApplyList 获取客户售后申请列表数据
     return instance.post('/Api/AfterSales/ApplyList', data);

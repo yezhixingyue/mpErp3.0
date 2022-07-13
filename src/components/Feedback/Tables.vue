@@ -1,29 +1,29 @@
 <template>
     <main class="feed-tables">
       <div>
-        <header>
+        <!-- 商品信息 -->
+        <!-- <header>
           <p class="mp-common-title-wrap">商品信息</p>
         </header>
-        <!-- 商品信息 -->
 
         <el-table v-if="dataInfo" stripe border fit :data="[dataInfo.Order.Product]" style="width: 800px" class="ft-14-table">
           <el-table-column prop="ProductName" label="商品名称" minWidth="192" show-overflow-tooltip></el-table-column>
           <el-table-column prop="Content" label="文件内容" minWidth="194" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.Content || '--'}}</template>
+            <template slot-scope="scope">{{scope.row.Content}}</template>
           </el-table-column>
           <el-table-column prop="CustomerType" label="数量" minWidth="108" show-overflow-tooltip>
             <template slot-scope="scope">{{scope.row.ProductAmount}}{{scope.row.Unit}}{{scope.row.KindCount}}款</template>
           </el-table-column>
           <el-table-column label="尺寸" prop="ProductName" minWidth="103" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.SizeList.join('，')||'--'}}</template>
+            <template slot-scope="scope">{{scope.row.SizeList.join('，')}}</template>
           </el-table-column>
           <el-table-column prop="Order" label="工艺" minWidth="103" show-overflow-tooltip>
-            <span class="is-gray" slot-scope="scope">{{scope.row.CraftList.join('，') || '--'}}</span>
+            <span class="is-gray" slot-scope="scope">{{scope.row.CraftList.join('，') }}</span>
           </el-table-column>
           <el-table-column label="价格合计" minWidth="90" show-overflow-tooltip>
             <template><span class="is-pink">￥{{dataInfo.Order.FinalPrice}}</span></template>
           </el-table-column>
-        </el-table>
+        </el-table> -->
         <header>
           <p class="mp-common-title-wrap">订单信息</p>
         </header>
@@ -41,12 +41,38 @@
           <tr>
             <td>订单状态</td>
             <td>{{dataInfo.Order.Status | formatStatus}}</td>
-            <td>配送方式</td>
-            <td>{{dataInfo.Order.ExpressText || '--'}}</td>
+            <td>商品名称</td>
+            <td>{{dataInfo.Order.Product.ProductName}}</td>
           </tr>
           <tr>
+            <td>文件内容</td>
+            <td>
+              <!-- <el-tooltip effect="dark" :disabled='dataInfo.Order.Product.Content.length<19' :content="dataInfo.Order.Product.Content" placement="top">
+                <p class="textarea">{{dataInfo.Order.Product.Content}}</p>
+              </el-tooltip> -->
+              <p>
+                {{dataInfo.Order.Product.Content}}
+              </p>
+            </td>
+            <td>数量</td>
+            <td>
+              <!-- {{scope.row.ProductAmount}}{{scope.row.Unit}}{{scope.row.KindCount}} -->
+              {{dataInfo.Order.Product.ProductAmount}}{{dataInfo.Order.Product.Unit}}{{dataInfo.Order.Product.KindCount}}款
+            </td>
+          </tr>
+          <tr>
+            <td>尺寸</td>
+            <td>{{dataInfo.Order.Product.SizeList.join('，')}}</td>
+            <td>工艺</td>
+            <td>{{dataInfo.Order.Product.CraftList.join('，')}}</td>
+          </tr>
+          <tr>
+            <td>配送方式</td>
+            <td>{{dataInfo.Order.ExpressText}}</td>
             <td>收件人</td>
             <td>{{dataInfo.Order.Consignee}} &nbsp; &nbsp; {{dataInfo.Order.ConsigneeMobile}}</td>
+          </tr>
+          <tr>
             <td>收件地址</td>
             <td>
               <el-tooltip class="item" effect="dark"
@@ -54,44 +80,35 @@
                 <p class="textarea">{{dataInfo.Order.ProvinceName}}{{dataInfo.Order.CityName}}{{dataInfo.Order.CountyName}}{{dataInfo.Order.AddressDetail}}</p>
               </el-tooltip>
             </td>
-          </tr>
-          <tr>
             <td>客户编号</td>
             <td>{{dataInfo.Order.CustomerNo}}</td>
+          </tr>
+          <tr>
             <td>客户名称</td>
             <td>{{dataInfo.Order.CustomerName}}
               已售后 <span class="number">{{dataInfo.Order.CustomerAfterSaleNumber}} </span> 次
               <span class="details" @click="onDetailClick('customer')">详情</span></td>
-          </tr>
-          <!-- <tr>
-            <td>联系方式</td>
-            <td>{{dataInfo.Order.ConsigneeMobile}}</td>
-            <td>QQ号</td>
-            <td>
-              <a :href="`tencent://message/?uin=${dataInfo.AfterSale.QQ}&Site=SuperNic&Menu=yes`" class="details" style="padding:0">
-              {{dataInfo.AfterSale.QQ}}
-              </a>
-            </td>
-          </tr> -->
-          <tr>
             <td>总金额</td>
             <td>￥{{dataInfo.Order.FinalPrice}}元</td>
-            <td>已付</td>
-            <td>￥{{dataInfo.Order.PaidAmount}}元（印豆抵扣{{dataInfo.Order.PaidPrintBeanCash}}元）</td>
           </tr>
           <tr>
+            <td>已付</td>
+            <td>￥{{dataInfo.Order.PaidAmount}}元（印豆抵扣{{dataInfo.Order.PaidPrintBeanCash}}元）</td>
             <td>运费</td>
             <td>￥{{dataInfo.Order.FreightAmount}}元（含{{dataInfo.Order.FreightOrderNumber}}个订单）</td>
+          </tr>
+          <tr>
             <td>订单备注</td>
-            <td>
-              <!-- <p class="textarea">{{dataInfo.Order.Remark || '--'}}</p> -->
-              <p ref="OrderRemarkCopy" style="position:absolute;overflow: hidden;height:0px;padding:0;">{{dataInfo.Order.Remark}}</p>
+            <td colspan="3">
+              <p>{{dataInfo.Order.Remark}}</p>
+              <!-- <p ref="OrderRemarkCopy" style="position:absolute;overflow: hidden;height:0px;padding:0;">{{dataInfo.Order.Remark}}</p>
               <p ref="OrderRemark" class="textarea" style="overflow: hidden;height:0px;padding:0;">{{dataInfo.Order.Remark}}</p>
               <el-tooltip v-show="showOrderRemarkTool" class="item" effect="dark" :content="dataInfo.Order.Remark" placement="top">
                 <p class="textarea">{{dataInfo.Order.Remark}}</p>
               </el-tooltip>
-              <p v-show="!showOrderRemarkTool" class="textarea">{{dataInfo.Order.Remark || '--'}}</p>
+              <p v-show="!showOrderRemarkTool" class="textarea">{{dataInfo.Order.Remark}}</p> -->
             </td>
+
           </tr>
         </table>
 
@@ -110,55 +127,45 @@
             <td>申请时间</td>
             <td>{{dataInfo.AfterSale.CreateTime | formatDate}}</td>
             <td>联系人名称</td>
-            <td>{{dataInfo.AfterSale.ContactName || '--'}}</td>
+            <td>{{dataInfo.AfterSale.ContactName}}</td>
           </tr>
           <tr>
             <td>联系电话</td>
-            <td>{{dataInfo.AfterSale.Mobile || '--'}}</td>
+            <td>{{dataInfo.AfterSale.Mobile}}</td>
             <td>QQ号</td>
             <td>
               <a v-if="dataInfo.AfterSale.QQ"
               :href="`tencent://message/?uin=${dataInfo.AfterSale.QQ}&amp;Site=名片之家&amp;Menu=yes`" class="details" style="padding:0">
                 {{dataInfo.AfterSale.QQ}}
               </a>
-              <span v-else>--</span>
-            </td>
-          </tr>
-          <tr>
-            <td>问题类型</td>
-            <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.length?dataInfo.AfterSale.QuestionTypeTitleList.join('，'):'--'}}</p></td>
-            <td>问题描述</td>
-            <td>
-              <p ref="QuestionRemarkCopy" style="position:absolute;overflow: hidden;height:0px;padding:0;">{{dataInfo.AfterSale.QuestionRemark}}</p>
-              <p ref="QuestionRemark" class="textarea" style="overflow: hidden;height:0px;padding:0;">{{dataInfo.AfterSale.QuestionRemark}}</p>
-              <el-tooltip v-show="showQuestionRemarkTool" class="item" effect="dark" :content="dataInfo.AfterSale.QuestionRemark" placement="top">
-                <p class="textarea">{{dataInfo.AfterSale.QuestionRemark}}</p>
-              </el-tooltip>
-              <p v-show="!showQuestionRemarkTool" class="textarea">{{dataInfo.AfterSale.QuestionRemark || '--'}}</p>
+              <span v-else></span>
             </td>
           </tr>
           <tr>
             <td>诉求意向</td>
             <td>
-              <span v-if="dataInfo.AfterSale.AppealType === 0">退款</span>
-              <span v-else-if="dataInfo.AfterSale.AppealType === 1">补印</span>
+              <span v-if="dataInfo.AfterSale.AppealType === 2">退款</span>
+              <span v-else-if="dataInfo.AfterSale.AppealType === 7">补印</span>
               <span v-else-if="dataInfo.AfterSale.AppealType === 255">其它</span>
-              <span v-else>--</span>
+              <span v-else></span>
             </td>
-            <td>{{dataInfo.AfterSale.AppealType === 0 ? '退款金额' : dataInfo.AfterSale.AppealType === 1 ? '补印数量' : ''}}</td>
-            <td>
-              <span v-if="dataInfo.AfterSale.AppealType === 0">
-                {{dataInfo.AfterSale.AppealRefundAmount===null ? '--' : `￥${dataInfo.AfterSale.AppealRefundAmount}元`}}
-              </span>
-              <span v-if="dataInfo.AfterSale.AppealType === 1">
-                <template v-if="dataInfo.AfterSale.AppealNumber === null && dataInfo.AfterSale.AppealKindCount === null">
-                  --
-                </template>
-                <template v-else>
-                  {{dataInfo.AfterSale.AppealNumber}}{{dataInfo.Order.Product.Unit}}/{{dataInfo.AfterSale.AppealKindCount}}款
-                </template>
-              </span>
-              <span v-if="dataInfo.AfterSale.AppealType === 255"></span>
+            <td>问题类型</td>
+            <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.length?dataInfo.AfterSale.QuestionTypeTitleList.join('，'):''}}</p></td>
+          </tr>
+          <!-- <tr>
+            <td>问题类型</td>
+            <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.length?dataInfo.AfterSale.QuestionTypeTitleList.join('，'):''}}</p></td>
+          </tr> -->
+          <tr>
+            <td>问题描述</td>
+            <td colspan="3">
+              <p>{{dataInfo.AfterSale.QuestionRemark}}</p>
+              <!-- <p ref="QuestionRemarkCopy" style="position:absolute;overflow: hidden;height:0px;padding:0;">{{dataInfo.AfterSale.QuestionRemark}}</p>
+              <p ref="QuestionRemark" class="textarea" style="overflow: hidden;height:0px;padding:0;">{{dataInfo.AfterSale.QuestionRemark}}</p>
+              <el-tooltip v-show="showQuestionRemarkTool" class="item" effect="dark" :content="dataInfo.AfterSale.QuestionRemark" placement="top">
+                <p class="textarea">{{dataInfo.AfterSale.QuestionRemark}}</p>
+              </el-tooltip>
+              <p v-show="!showQuestionRemarkTool" class="textarea">{{dataInfo.AfterSale.QuestionRemark}}</p> -->
             </td>
           </tr>
           <tr>
@@ -174,8 +181,8 @@
         </table>
       </div>
 
-      <template v-if="DeliverToList && DeliverToList.length">
-        <!--  转交记录 -->
+      <!--  转交记录 -->
+      <!-- <template v-if="DeliverToList && DeliverToList.length">
         <header>
           <p class="mp-common-title-wrap"> 转交记录</p>
         </header>
@@ -183,31 +190,57 @@
           <el-table-column prop="ProductName" label="操作时间" width="160" show-overflow-tooltip>
             <template slot-scope="scope">{{scope.row.CreateTime | formatDate}}</template>
           </el-table-column>
-          <el-table-column prop="ParentOperaterUserName" label="操作人" width="160" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="NextOperaterUserName " label="操作人" width="160" show-overflow-tooltip></el-table-column>
           <el-table-column prop="OperaterRemark" label="转交原因" width="161" show-overflow-tooltip>
           </el-table-column>
           <el-table-column label="转交人" prop="OperaterUserName" width="160" show-overflow-tooltip>
           </el-table-column>
         </el-table>
-      </template>
+      </template> -->
 
 
-      <template v-if="PostponeList && PostponeList.length">
-        <!--  挂起记录 -->
+      <template v-if="dataInfo && dataInfo.AfterSaleLog && dataInfo.AfterSaleLog.length">
+        <!--  售后记录 -->
         <header>
-          <p class="mp-common-title-wrap"> 挂起记录</p>
+          <p class="mp-common-title-wrap"> 售后记录</p>
         </header>
-        <el-table v-if="dataInfo" stripe border fit :data="PostponeList" style="width: 642px" class="ft-14-table">
-          <el-table-column prop="ProductName" label="挂起时间" width="177" show-overflow-tooltip>
+        <el-table v-if="dataInfo" stripe border fit :data="dataInfo.AfterSaleLog" style="width: 800px" class="ft-14-table">
+          <el-table-column prop="ProductName" label="操作时间 " width="167" show-overflow-tooltip>
             <template slot-scope="scope">{{scope.row.CreateTime | formatDate}}</template>
           </el-table-column>
-          <el-table-column prop="OperaterUserName" label="操作人" width="196" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="OperaterRemark" label="挂起原因" width="268" show-overflow-tooltip>
+          <el-table-column prop="OperaterUserName" label="操作人" width="140" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="LogTypeName" label="操作类型" width="140" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="OperaterRemark" label="备注" width="352" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <!-- 挂起 -->
+              <span v-if="scope.row.LogType === 1">
+                因{{scope.row.OperaterRemark}}挂起，下次处理时间：
+                <span v-if="scope.row.NextOperateType">
+                  {{scope.row.NextOperateTime | formatDate}}
+                </span>
+                <span v-else>暂不确定</span>，
+                <span>{{scope.row.RemarkIsShow?'客户可见':'客户不可见'}}</span>
+              </span>
+              <!-- 转交 -->
+              <span v-else-if="scope.row.LogType === 3">
+                因{{scope.row.OperaterRemark}}转{{scope.row.NextOperaterUserName }}处理
+              </span>
+              <!-- 驳回 -->
+              <span v-else-if="scope.row.LogType === 5">
+                {{scope.row.OperaterRemark}}
+              </span>
+              <!-- 完成 -->
+              <span v-else-if="scope.row.LogType === 6">
+                {{scope.row.OperaterRemark}}
+              </span>
+              <!-- 取消挂起/取消 -->
+              <span v-else></span>
+            </template>
           </el-table-column>
         </el-table>
       </template>
-      <template v-if="RejectList && RejectList.length">
-        <!--  驳回记录 -->
+      <!--  驳回记录 -->
+      <!-- <template v-if="RejectList && RejectList.length">
         <header>
           <p class="mp-common-title-wrap"> 驳回记录</p>
         </header>
@@ -219,10 +252,10 @@
           <el-table-column prop="OperaterRemark" label="驳回原因" width="268" show-overflow-tooltip>
           </el-table-column>
         </el-table>
-      </template>
+      </template> -->
 
-      <template v-if="CancelList && CancelList.length">
-        <!--  取消记录 -->
+      <!--  取消记录 -->
+      <!-- <template v-if="CancelList && CancelList.length">
         <header>
           <p class="mp-common-title-wrap"> 取消记录</p>
         </header>
@@ -232,7 +265,7 @@
           </el-table-column>
           <el-table-column prop="OperaterUserName" label="操作人" width="321" show-overflow-tooltip></el-table-column>
         </el-table>
-      </template>
+      </template> -->
 
       <!-- 查看订单详情 -->
     <OrderListDialog @DialogHide='orderListDialogData.orderListDialogShow=false' :orderListDialogData="orderListDialogData"/>
@@ -348,7 +381,7 @@ export default {
   },
   methods: {
     getStatusText(status) {
-      let str = '--';
+      let str = '';
       switch (status) {
         case 0:
           str = '已提交';

@@ -14,16 +14,18 @@
           <template slot-scope="scope">{{scope.row.ProductName}}</template>
         </el-table-column>
         <el-table-column prop="Content" label="文件内容" minWidth="150" show-overflow-tooltip>
-          <span slot-scope="scope">{{scope.row.OrderRemark || '--'}}</span>
+          <span slot-scope="scope">{{scope.row.OrderRemark}}</span>
         </el-table-column>
         <el-table-column label="售后原因" minWidth="115" show-overflow-tooltip>
           <template slot-scope="scope">{{getApplyText(scope.row.QuestionTypeTitleList)}}</template>
         </el-table-column>
         <el-table-column label="诉求意向" minWidth="80" show-overflow-tooltip>
-          <template slot-scope="scope">{{ scope.row.AppealType | formatAppealType }}</template>
+          <!-- <template slot-scope="scope">{{ scope.row.AppealType | formatAppealType }}</template> -->
+          <template slot-scope="scope">{{ getAppealTypeText(scope.row.AppealType) }}</template>
+
         </el-table-column>
         <el-table-column prop="Remark" label="问题备注" minWidth="130" show-overflow-tooltip>
-          <span slot-scope="scope">{{scope.row.QuestionRemark || '--' }}</span>
+          <span slot-scope="scope">{{scope.row.QuestionRemark}}</span>
         </el-table-column>
         <el-table-column prop="SellArea" label="销售区域" minWidth="145" show-overflow-tooltip></el-table-column>
         <el-table-column prop="Mobile" label="联系方式" minWidth="100" show-overflow-tooltip></el-table-column>
@@ -50,7 +52,7 @@
               <span v-if="scope.row.IsHang && scope.row.NextOperateTime">
                 {{ scope.row.NextOperateTime | format2MiddleLangTypeDate}}
               </span>
-              <span v-else>--</span>
+              <span v-else></span>
             </template>
           </template>
           <!-- <span v-if="scope.row.NextOperateTime" slot-scope="scope">{{ scope.row.NextOperateTime | format2MiddleLangTypeDate }}</span>
@@ -68,7 +70,7 @@
           <span v-else>--</span>
         </el-table-column>
         <el-table-column label="处理人" show-overflow-tooltip minWidth="90">
-          <span slot-scope="scope">{{ scope.row.OperaterUserName || '--' }}</span>
+          <span slot-scope="scope">{{ scope.row.OperaterUserName }}</span>
         </el-table-column>
         <el-table-column prop="Content" label="进度" show-overflow-tooltip minWidth="90" fixed="right">
           <div slot-scope="scope">
@@ -287,6 +289,23 @@ export default {
           break;
         case 255:
           str = '已取消';
+          break;
+        default:
+          break;
+      }
+      return str;
+    },
+    getAppealTypeText(status) {
+      let str = '';
+      switch (status) {
+        case 2:
+          str = '减款';
+          break;
+        case 7:
+          str = '补印';
+          break;
+        case 255:
+          str = '其他';
           break;
         default:
           break;

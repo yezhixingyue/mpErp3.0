@@ -15,7 +15,7 @@
     </el-table-column>
     <el-table-column show-overflow-tooltip
       prop="Order.Content" class-name='is-gray' minWidth="110" label="文件内容">
-      <template slot-scope="scope">{{scope.row.Content || '--'}}
+      <template slot-scope="scope">{{scope.row.Content }}
       </template>
     </el-table-column>
     <el-table-column show-overflow-tooltip prop="ProductName"
@@ -100,16 +100,21 @@
     </el-table-column>
     <el-table-column prop="OperaterUserName" minWidth="75" label="处理人">
       <template slot-scope="scope">
-        {{scope.row.OperaterUserName || '--'}}
+        {{scope.row.OperaterUserName}}
       </template>
     </el-table-column>
-    <el-table-column label-class-name='menu-header' prop="handle" width="220" label="操作">
+    <el-table-column prop="OperaterUserName" minWidth="75" label="评价星级">
+      <template slot-scope="scope">
+        {{scope.row.Score ? `${scope.row.Score}星` : '--'}}
+      </template>
+    </el-table-column>
+    <el-table-column label-class-name='menu-header' prop="handle" width="220" label="操作" fixed="right">
       <div class="handle-menus-wrap"  slot-scope="scope">
         <span @click="jump2ServiceDetail(scope.row)">
           <img src="@/assets/images/detail.png" alt />查看详情
         </span>
         <template v-if="localPermission.UpdateQuestion">
-          <span v-if="scope.row.AfterSaleStatus === 30" @click="onChangeQuestionClick(scope.row)">
+          <span v-if="scope.row.AfterSaleStatus === 30 && IsOperaterQuestion(scope.row.Operater)" @click="onChangeQuestionClick(scope.row)">
             <img src="@/assets/images/Compile.png" alt />问题修改
           </span>
           <span v-else class="not-allowed">
@@ -151,6 +156,10 @@ export default {
       }
       return {};
     },
+    IsOperaterQuestion() {
+      const staffDetailData = JSON.parse(localStorage.getItem('staffDetailData'));
+      return (ID) => staffDetailData.StaffID === ID;
+    },
   },
   methods: {
     ...mapMutations('service', ['setIsShowServiceDetailOpen', 'setIsShowServiceDetailClose']),
@@ -188,7 +197,15 @@ export default {
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-    .el-table__header-wrapper{
+    .el-table{
+      .el-table__fixed-right{
+        tr:first-child{
+          line-height: 36px;
+          font-size: 14px;
+        }
+      }
+    }
+      .el-table__header-wrapper{
       .el-table__header{
         tr {
           th{
@@ -225,6 +242,30 @@ export default {
         }
       }
     }
+    .el-table__fixed-body-wrapper{
+      .el-table__body{
+        tr {
+          td{
+            .cell{
+              padding:0 5px;
+              line-height: 23px;
+            }
+          }
+        }
+      }
+    }
+    .el-table__fixed-header-wrapper{
+      .el-table__header{
+        tr {
+          th{
+            .cell{
+              padding: 6px 2px !important;
+            }
+          }
+        }
+      }
+    }
+
     .handle-menus-wrap{
       // width: 105px;
       // margin-right: 55px;

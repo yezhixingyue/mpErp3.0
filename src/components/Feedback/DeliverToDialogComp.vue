@@ -14,7 +14,7 @@
    <template>
     <el-form :model="DeliverToForm" status-icon ref="ruleForm" label-width="110px" class="demo-ruleForm" label-position="left">
       <el-form-item label="选择人员：" required>
-        <el-select style="width:100%;" filterable v-model="DeliverToForm.NextOperaterID" placeholder="请选择转交人">
+        <el-select style="width:100%;" filterable v-model="DeliverToForm.NextOperater" placeholder="请选择转交人">
           <el-option v-for="item in staffList" :key="item.StaffID"
             :label="item.StaffName"
             :value="item.StaffID">
@@ -23,7 +23,7 @@
       </el-form-item>
       <el-form-item label="转交原因：" required>
         <TextareaInput
-        v-model="DeliverToForm.Reason" show-word-limit :maxlength="300" placeholder="请输入转交原因" autocomplete="off"></TextareaInput>
+        v-model.trim="DeliverToForm.Reason" show-word-limit :maxlength="300" placeholder="请输入转交原因" autocomplete="off"></TextareaInput>
       </el-form-item>
     </el-form>
    </template>
@@ -54,7 +54,7 @@ export default {
       staffList: null,
       DeliverToForm: {
         AfterSaleCode: this.paramsData.AfterSaleCode,
-        NextOperaterID: '',
+        NextOperater: '',
         Reason: '',
       },
     };
@@ -63,13 +63,13 @@ export default {
     onCancle() { // 取消  关闭弹窗
       this.DeliverToForm = {
         AfterSaleCode: this.paramsData.AfterSaleCode,
-        NextOperaterID: '',
+        NextOperater: '',
         Reason: '',
       };
       this.$emit('cloce');
     },
     onSubmit() {
-      if (!this.DeliverToForm.NextOperaterID) {
+      if (!this.DeliverToForm.NextOperater) {
         this.messageBox.failSingleError('操作失败', '请选择转交人');
       } else if (!this.DeliverToForm.Reason) {
         this.messageBox.failSingleError('操作失败', '请输入转交原因');

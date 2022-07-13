@@ -18,9 +18,9 @@
         <header class="right-line">
           <VTypeTitle :imgSrc="require('@/assets/images/photo.png')" title="问题照片" />
         </header>
-        <main v-if="DisposeDetailsData.QuestionPicList && DisposeDetailsData.QuestionPicList.length">
-          <!-- {{DisposeDetailsData.QuestionPicList}} -->
-          <DisplayPictrue :imgList='DisposeDetailsData.QuestionPicList' :isEditMode="false" />
+        <main v-if="(DisposeDetailsData.SolutionQuestionPicList && DisposeDetailsData.SolutionQuestionPicList.length)||
+              (DisposeDetailsData.PassQuestionPicList && DisposeDetailsData.PassQuestionPicList.length)">
+          <DisplayPictrue :imgList='[...DisposeDetailsData.PassQuestionPicList,...DisposeDetailsData.SolutionQuestionPicList]' :isEditMode="false" />
         </main>
         <p v-else style="padding-left:30px">暂未上传图片</p>
       </section>
@@ -131,7 +131,7 @@
                         退款：
                       </span>
                       <div class="refund" >
-                        <div class="row line" style="border-bottom:none">
+                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.RefundBalance">
                           <div class="item">
                             <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
                             <div>
@@ -143,7 +143,7 @@
                                 {{DisposeDetailsData.Solution.RefundBalance}}
                                 </span>元
                               </span>
-                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 1">
+                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 1 && DisposeDetailsData.Solution.RefundFreightAmount">
                                 含运费<span class="color-red">
                                   {{DisposeDetailsData.Solution.RefundFreightAmount}}
                                 </span>元
@@ -152,7 +152,7 @@
                             </div>
                           </div>
                         </div>
-                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
+                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.RefundPrintBean">
                           <div class="item">
                             <div><span style="margin:0"></span>
                               <span style="width:20em;">
@@ -160,7 +160,7 @@
                                   {{DisposeDetailsData.Solution.RefundPrintBean}}
                                 </span>个
                               </span>
-                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 3">
+                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 3 && DisposeDetailsData.Solution.RefundFreightAmount">
                                 含运费<span class="color-red">
                                   {{DisposeDetailsData.Solution.RefundFreightAmount}}
                                 </span>个
@@ -168,7 +168,7 @@
                             </div>
                           </div>
                         </div>
-                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
+                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.RefundThirdParty">
                           <div class="item">
                             <div><span style="margin:0"></span>
                               <span style="width:20em;">
@@ -176,7 +176,7 @@
                                   {{DisposeDetailsData.Solution.RefundThirdParty}}
                                 </span>元
                               </span>
-                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 2">
+                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 2 && DisposeDetailsData.Solution.RefundFreightAmount">
                                 含运费<span class="color-red">
                                   {{DisposeDetailsData.Solution.RefundFreightAmount}}
                                 </span>元
