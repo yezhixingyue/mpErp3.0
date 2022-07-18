@@ -244,8 +244,22 @@
                           oninput="value=value.replace(/[^\d]/g,'')" ></el-input>{{dataInfo.Order.Product.Unit}}
                         </div>
                       </div>
-                      <div class="form-item">
+                      <!-- <div class="form-item">
                         <div class="conent">
+                          <div class="upload-file-box" v-if="ReprintIsUpload">
+                            <FileSelectBtn class="uploadFileBox" accept='*'
+                            :func="readFileUniqueName" title="上传文件" />
+                            <span class="file-name-box">
+                              {{fileName}}
+                            </span>
+                          </div>
+                            <p v-else class="is-font-size-12 is-gray" style="line-height:20px">注：该订单不用上传文件</p>
+                        </div>
+                      </div> -->
+                    </div>
+                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType === 7">
+                      <div class="form-item">
+                        <div class="conent" style="padding-left:2.5em">
                           <div class="upload-file-box" v-if="ReprintIsUpload">
                             <FileSelectBtn class="uploadFileBox" accept='*'
                             :func="readFileUniqueName" title="上传文件" />
@@ -305,7 +319,7 @@
                   </div>
                 </div>
               </div>
-              <div class="right" v-if="dataInfo && HandlingAfterSalesForm.Solution.SolutionType === 2">
+              <div class="right" v-if="dataInfo">
                 <p><span class="label">成交价：</span>       {{dataInfo.Order.FinalPrice}}元</p>
                 <p><span class="label">已付金额：</span>     {{dataInfo.Order.PaidAmount}}元（含{{dataInfo.Order.PaidPrintBean}}个印豆）</p>
                 <p><span class="label">退款：</span>         {{dataInfo.Order.RefundOrderAmount}}元（含{{dataInfo.Order.RefundOrderPrintBean}}个印豆）</p>
@@ -530,9 +544,12 @@ export default {
     },
     // 剩余扫码
     RefundThirdPartyShow() {
-      // return this.dataInfo?.Order.SurplusOrderThirdParty;
+      //
+      return 0; // 退款的第三方接口暂时不能使用
+      //
       // SurplusOrderBalance 为已支付金额 如果 SurplusOrderBalance 为0，则不能退扫码（扫码支付可能为多个订单组合支付，分不清当前订单的实际金额）
-      return this.dataInfo?.Order.SurplusOrderBalance ? this.dataInfo?.Order.SurplusOrderThirdParty : 0;
+      // 退款的第三方接口暂时不能使用
+      // return this.dataInfo?.Order.SurplusOrderBalance ? this.dataInfo?.Order.SurplusOrderThirdParty : 0;
     },
     UnpaidReducedAmountShow() {
       return this.dataInfo?.Order.UnPaidAmount;

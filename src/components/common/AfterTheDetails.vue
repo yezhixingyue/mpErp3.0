@@ -143,6 +143,15 @@ export default {
       this.loading = true;
       this.api.getHandleDetail(this.paramsData.AfterSaleCode).then(res => {
         this.DetailData = res.data.Data;
+        if (this.isDisabled) {
+          if (this.DetailData.AfterSale.Status === 10 || this.DetailData.AfterSale.Status === 0) {
+            if (!this.DetailData.AfterSale.IsSelf) {
+              this.$emit('messageChage', '售后服务单不是本人订单');
+            } else {
+              this.$emit('messageChage', '有超时的售后服务单未处理');
+            }
+          }
+        }
         // 处理待处理的售后单客户取消后列表不刷新的问题（列表为待处理，详情为已取消）
         if (this.DetailData.AfterSale.Status !== this.paramsData.Status) {
           sessionStorage.setItem('FeedbackList', true);
