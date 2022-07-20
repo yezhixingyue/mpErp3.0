@@ -1,6 +1,24 @@
 import restoreInitDataByOrigin from '../../../assets/js/utils/reduction';
 import { InvoiceTypeEnums, InvoiceTitleEnums } from '../enums';
 
+const withEnterpriseInfohandler = (obj) => {
+  if (obj) {
+    const {
+      RegisteredAddress, RegisteredTelephone, OpeningBank, BankAccount,
+    } = obj;
+    return RegisteredAddress && RegisteredTelephone && OpeningBank && BankAccount;
+  }
+  return false;
+};
+
+const init = (target, data) => {
+  const _target = target;
+  restoreInitDataByOrigin(_target, data);
+  if (!/^1[3456789]\d{9}$/.test(_target.ReceiverContactWay) && _target.InvoiceType !== InvoiceTypeEnums.special.ID) {
+    _target.ReceiverContactWay = '';
+  }
+  _target.withFullEnterpriseInfo = withEnterpriseInfohandler(_target);
+};
 export default class InvoiceFormClass {
   InvoiceID = '' // 发票id
 
@@ -44,11 +62,10 @@ export default class InvoiceFormClass {
 
   EnterpriseStatus = '' // 企业开票信息审核状态  审核中|被驳回|审核通过
 
+  withFullEnterpriseInfo = false // 是否全部携带注册地址、注册电话、开户银行、银行账号等4种信息 （ 用于判断审核通过的是否为专票企业信息， true则是）
+
   constructor(data) {
-    restoreInitDataByOrigin(this, data);
-    if (!/^1[3456789]\d{9}$/.test(this.ReceiverContactWay) && this.InvoiceType !== InvoiceTypeEnums.special.ID) {
-      this.ReceiverContactWay = '';
-    }
+    init(this, data);
   }
 
   // 梳理提交信息
@@ -123,6 +140,6 @@ export default class InvoiceFormClass {
   }
 
   setEnterpriseInfo(data) {
-    restoreInitDataByOrigin(this, data);
+    init(this, data);
   }
 }

@@ -30,19 +30,19 @@
       <el-input v-else v-model.trim="ruleForm.CreditCode" placeholder="请填写统一社会信用代码/纳税人识别号" maxlength="18"></el-input>
     </el-form-item>
     <el-form-item label="注册地址：" prop="RegisteredAddress" v-if="(!isPersonal && !notThrough && !fetchEnterpriseDataError) || onlyEnterprise">
-      <span class="info" v-if="isThrough && !onlyEnterprise">{{ruleForm.RegisteredAddress}}</span>
+      <span class="info" v-if="isThrough && !onlyEnterprise && ruleForm.withFullEnterpriseInfo">{{ruleForm.RegisteredAddress}}</span>
       <el-input v-else v-model.trim="ruleForm.RegisteredAddress" placeholder="请填写企业注册地址" maxlength="100"></el-input>
     </el-form-item>
     <el-form-item label="注册电话：" prop="RegisteredTelephone" v-if="(!isPersonal && !notThrough && !fetchEnterpriseDataError) || onlyEnterprise">
-      <span class="info" v-if="isThrough && !onlyEnterprise">{{ruleForm.RegisteredTelephone}}</span>
+      <span class="info" v-if="isThrough && !onlyEnterprise && ruleForm.withFullEnterpriseInfo">{{ruleForm.RegisteredTelephone}}</span>
       <el-input v-else v-model.trim="ruleForm.RegisteredTelephone" placeholder="请填写企业注册电话" maxlength="20"></el-input>
     </el-form-item>
     <el-form-item label="开户银行：" prop="OpeningBank" v-if="(!isPersonal && !notThrough && !fetchEnterpriseDataError) || onlyEnterprise">
-      <span class="info" v-if="isThrough && !onlyEnterprise">{{ruleForm.OpeningBank}}</span>
+      <span class="info" v-if="isThrough && !onlyEnterprise && ruleForm.withFullEnterpriseInfo">{{ruleForm.OpeningBank}}</span>
       <el-input v-else v-model.trim="ruleForm.OpeningBank" placeholder="请填写企业开户银行" maxlength="50"></el-input>
     </el-form-item>
     <el-form-item label="银行账号：" prop="BankAccount" v-if="(!isPersonal && !notThrough && !fetchEnterpriseDataError) || onlyEnterprise">
-      <span class="info" v-if="isThrough && !onlyEnterprise">{{localBankCard}}</span>
+      <span class="info" v-if="isThrough && !onlyEnterprise && ruleForm.withFullEnterpriseInfo">{{localBankCard}}</span>
       <el-input v-else v-model.trim="localBankCard" placeholder="请填写银行账号" maxlength="29"></el-input>
     </el-form-item>
     <el-form-item label="收票人手机：" prop="ReceiverContactWay"
@@ -178,17 +178,13 @@ export default { // 企业普票和专票 还有一种形式：已有值的情�
           { pattern: /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/, message: '统一社会信用代码格式不正确', trigger: 'blur' },
         ],
         RegisteredAddress: [
-          { required: true, message: '请填写企业注册地址', trigger: 'blur' },
         ],
         RegisteredTelephone: [
-          { required: true, message: '请填写企业注册电话', trigger: 'blur' },
           { pattern: /^\d{11}$|^\d{7,12}$|^\d{3,4}-\d{6,8}$/, message: '电话格式不正确', trigger: 'blur' },
         ],
         OpeningBank: [
-          { required: true, message: '请填写企业开户银行名称', trigger: 'blur' },
         ],
         BankAccount: [
-          { required: true, message: '请填写企业开户银行账号', trigger: 'blur' },
           { validator: checkBankCard, trigger: 'blur' },
         ],
         ReceiverName: [
@@ -250,6 +246,7 @@ export default { // 企业普票和专票 还有一种形式：已有值的情�
         return this.ruleForm.InvoiceType;
       },
       set(val) {
+        if (this.ruleForm.InvoiceType === val) return;
         this.ruleForm.InvoiceType = val;
         this.$refs.ruleForm.clearValidate();
         if (!this.isSpecial && !/^1[3456789]\d{9}$/.test(this.ruleForm.ReceiverContactWay)) {
@@ -258,6 +255,18 @@ export default { // 企业普票和专票 还有一种形式：已有值的情�
         if (val === InvoiceTypeEnums.special.ID && (!this.originEnterpriseData || this.fetchEnterpriseDataError)) {
           this.$emit('switchToEnterprise');
         }
+        if (val === InvoiceTypeEnums.special.ID && !this.onlyEnterprise) {
+          this.rules.RegisteredAddress.push({ required: true, message: '请填写企业注册地址', trigger: 'blur' });
+          this.rules.RegisteredTelephone.push({ required: true, message: '请填写企业注册电话', trigger: 'blur' });
+          this.rules.OpeningBank.push({ required: true, message: '请填写企业开户银行名称', trigger: 'blur' });
+          this.rules.BankAccount.push({ required: true, message: '请填写企业开户银行账号', trigger: 'blur' });
+        }
+        if (val !== InvoiceTypeEnums.special.ID) {
+          this.rules.RegisteredAddress = this.rules.RegisteredAddress.filter(it => !it.required);
+          this.rules.RegisteredTelephone = this.rules.RegisteredTelephone.filter(it => !it.required);
+          this.rules.OpeningBank = this.rules.OpeningBank.filter(it => !it.required);
+          this.rules.BankAccount = this.rules.BankAccount.filter(it => !it.required);
+        }
       },
     },
     localTitle: {
@@ -265,6 +274,7 @@ export default { // 企业普票和专票 还有一种形式：已有值的情�
         return this.ruleForm.InvoiceMainBody;
       },
       set(val) {
+        if (this.ruleForm.InvoiceMainBody === val) return;
         this.$refs.ruleForm.clearValidate();
         this.ruleForm.InvoiceMainBody = val;
         // 处理个人普票和企业普票信息切换 或着 切换表单
