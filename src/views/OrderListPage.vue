@@ -30,7 +30,7 @@
     <ServiceAfterSalesDialog :visible='ServiceAfterSalesVisible'
     :ServiceAfterSales="ServiceAfterSales" @close='ServiceAfterSalesVisible=false; ServiceAfterSales = null;'
     @success="ServiceAfterSalesSuccess"></ServiceAfterSalesDialog>
-    <ServiceDialog key="order-list-page" className='show-black' />
+    <!-- <ServiceDialog key="order-list-page" className='show-black' /> -->
   </div>
 </template>
 
@@ -48,7 +48,7 @@ export default {
     Count,
     OrderListDialog,
     ServiceAfterSalesDialog,
-    ServiceDialog: () => import(/* webpackChunkName: "async" */ '@/components/order/DialogContent/ServiceDialog.vue'),
+    // ServiceDialog: () => import(/* webpackChunkName: "async" */ '@/components/order/DialogContent/ServiceDialog.vue'),
   },
   mixins: [recordScrollPositionMixin('.order-list-page-wrap .el-table__body-wrapper')],
   computed: {

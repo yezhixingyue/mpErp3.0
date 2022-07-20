@@ -119,31 +119,31 @@ export default {
       });
       return `${worth.toFixed(1)}元`;
     },
-    async jump2Service(data) {
-      let key = true;
-      this.setIsLoading(true);
-      this.clearServiceFormInfo();
-      this.setCurOrderID(data.OrderID);
-      this.setIsShowServiceDiaTrue();
-      await Promise.all(
-        [
-          this.getQuestionTypeList(),
-          this.getOrderDetail(),
-          this.getPackageListByOrderID(data.OrderID),
-          this.getServiceOrderHistory(),
-          this.getPayPackageByOrder(data.OrderID),
-          // this.$store.dispatch('service/getPayPackageByOrder', data.OrderID),
-        ],
-      ).catch((error) => {
-        key = false;
-        this.messageBox.handleLoadingError(
-          error,
-          () => { this.setIsShowServiceDiaFail(); this.setIsLoading(false); },
-          () => { this.setIsShowServiceDiaFail(); this.setIsLoading(false); },
-        );
-      });
-      if (key) this.setIsLoading(false);
-    },
+    // async jump2Service(data) {
+    //   let key = true;
+    //   this.setIsLoading(true);
+    //   this.clearServiceFormInfo();
+    //   this.setCurOrderID(data.OrderID);
+    //   this.setIsShowServiceDiaTrue();
+    //   await Promise.all(
+    //     [
+    //       this.getQuestionTypeList(),
+    //       this.getOrderDetail(),
+    //       this.getPackageListByOrderID(data.OrderID),
+    //       this.getServiceOrderHistory(),
+    //       this.getPayPackageByOrder(data.OrderID),
+    //       // this.$store.dispatch('service/getPayPackageByOrder', data.OrderID),
+    //     ],
+    //   ).catch((error) => {
+    //     key = false;
+    //     this.messageBox.handleLoadingError(
+    //       error,
+    //       () => { this.setIsShowServiceDiaFail(); this.setIsLoading(false); },
+    //       () => { this.setIsShowServiceDiaFail(); this.setIsLoading(false); },
+    //     );
+    //   });
+    //   if (key) this.setIsLoading(false);
+    // },
   },
 };
 </script>

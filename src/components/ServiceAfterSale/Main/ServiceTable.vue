@@ -166,7 +166,7 @@ export default {
     ...mapMutations('orderModule', ['setCurOrderID']),
     ...mapMutations('common', ['setIsLoading']),
     ...mapActions('orderModule', ['getOrderDetail']),
-    ...mapActions('service', ['getServiceDetail']),
+    // ...mapActions('service', ['getServiceDetail']),
     setHeight() {
       const tempHeight = this.getHeight('.mp-service-page-header', 57);
       this.h = tempHeight;

@@ -4,7 +4,7 @@
     <main>
       <Table />
       <OrderListDialog />
-      <ServiceDialog key="package-list-page" />
+      <!-- <ServiceDialog key="package-list-page" /> -->
     </main>
     <footer>
       <Count
@@ -21,7 +21,7 @@
 import PackageHeader from '@/components/Package/Header/PackageHeader.vue';
 import Table from '@/components/Package/TableTransport.vue';
 import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
-import ServiceDialog from '@/components/order/DialogContent/ServiceDialog.vue';
+// import ServiceDialog from '@/components/order/DialogContent/ServiceDialog.vue';
 import Count from '@/components/common/Count.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
@@ -33,7 +33,7 @@ export default {
     PackageHeader,
     Table,
     OrderListDialog,
-    ServiceDialog,
+    // ServiceDialog,
     Count,
   },
   computed: {
