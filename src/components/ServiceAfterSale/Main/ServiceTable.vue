@@ -114,7 +114,7 @@
           <img src="@/assets/images/detail.png" alt />查看详情
         </span>
         <template v-if="localPermission.UpdateQuestion">
-          <span v-if="scope.row.AfterSaleStatus === 30 && IsOperaterQuestion(scope.row.Operater)" @click="onChangeQuestionClick(scope.row)">
+          <span v-if="scope.row.AfterSaleStatus === 30" @click="onChangeQuestionClick(scope.row)">
             <img src="@/assets/images/Compile.png" alt />问题修改
           </span>
           <span v-else class="not-allowed">
@@ -156,10 +156,10 @@ export default {
       }
       return {};
     },
-    IsOperaterQuestion() {
-      const staffDetailData = JSON.parse(localStorage.getItem('staffDetailData'));
-      return (ID) => staffDetailData.StaffID === ID;
-    },
+    // IsOperaterQuestion() { // 非本人订单不能修改
+    //   const staffDetailData = JSON.parse(localStorage.getItem('staffDetailData'));
+    //   return (ID) => staffDetailData.StaffID === ID;
+    // },
   },
   methods: {
     ...mapMutations('service', ['setIsShowServiceDetailOpen', 'setIsShowServiceDetailClose']),
