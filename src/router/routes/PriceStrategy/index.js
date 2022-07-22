@@ -33,7 +33,7 @@ const routes = { // 价格策略
         icon: 'iconfont icon-youhuiquan2',
         pageName: 'CouponListPage',
         requiresAuth: true,
-        PermissionInfo: ['PermissionCoupon', 'HavePomission'],
+        PermissionInfo: ['PermissionCoupon', 'Obj', 'Query'],
       },
       component: () => import('../../../views/CouponPage/CouponListPage.vue'),
     },
