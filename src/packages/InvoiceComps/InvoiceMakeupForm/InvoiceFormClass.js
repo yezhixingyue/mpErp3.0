@@ -58,6 +58,8 @@ export default class InvoiceFormClass {
 
   ReceiverCountyName = ''
 
+  IsPassBusinessAccount = false // 是否经过公户
+
   ReceiverAddress = ''
 
   EnterpriseStatus = '' // 企业开票信息审核状态  审核中|被驳回|审核通过
@@ -128,6 +130,7 @@ export default class InvoiceFormClass {
           ReceiverAddress: this.ReceiverAddress,
           ReceiverContactWay: this.ReceiverContactWay,
           InvoiceMainBody: InvoiceTitleEnums.enterprise.ID, // 专票不会有个人类型，所以这里直接写死为企业类型
+          IsPassBusinessAccount: this.IsPassBusinessAccount, // 是否过公户
         };
       }
 

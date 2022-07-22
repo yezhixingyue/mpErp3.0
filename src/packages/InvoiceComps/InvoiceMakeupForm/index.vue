@@ -53,8 +53,19 @@
       v-if="!isSpecial && (!notThrough || isPersonal) && (!fetchEnterpriseDataError || isPersonal) && !onlyEnterprise">
       <el-input v-model.trim="ruleForm.ReceiverMail" placeholder="请填写收票人邮箱" maxlength="255"></el-input>
     </el-form-item>
-    <p class="blue-v-line invoice-form-section-title" :style="`width:${labelWidth}`"
-      v-show="isSpecial && !notThrough && !fetchEnterpriseDataError && !onlyEnterprise">收票人信息</p>
+    <el-form-item label="是否过公户："  v-if="isSpecial && !notThrough && !fetchEnterpriseDataError && !onlyEnterprise">
+      <!-- <el-switch  v-model="ruleForm.IsPassBusinessAccount" style="margin: 0 15px;user-select: none;"></el-switch> -->
+      <el-radio-group v-model="ruleForm.IsPassBusinessAccount" style="margin: 0 15px;user-select: none;">
+        <el-radio :label="false">不过</el-radio>
+        <el-radio :label="true">过</el-radio>
+      </el-radio-group>
+      <span class="tips-box is-pink" v-show="ruleForm.IsPassBusinessAccount">注：选择过公户需要重新走账</span>
+    </el-form-item>
+    <p class="blue-v-line invoice-form-section-title"
+      v-show="isSpecial && !notThrough && !fetchEnterpriseDataError && !onlyEnterprise">
+      <span>收票人信息</span>
+      <span class="is-pink"> ( 邮寄方式一般为京东快递，运费到付 )</span>
+    </p>
     <el-form-item label="收票人姓名：" prop="ReceiverName" v-if="isSpecial && !notThrough && !fetchEnterpriseDataError && !onlyEnterprise">
       <el-input v-model.trim="ruleForm.ReceiverName" placeholder="请填写收票人姓名" maxlength="20"></el-input>
     </el-form-item>
@@ -369,11 +380,16 @@ export default { // 企业普票和专票 还有一种形式：已有值的情�
     margin-bottom: 25px;
     padding-top: 14px;
     font-weight: 700;
+    margin-right: -200px;
     // &::before {
     //   width: 5px;
     // }
     &:last-of-type {
       padding-right: 36px;
+    }
+    .is-pink {
+      // font-weight: 400;
+      font-size: 13px;
     }
   }
   .el-form-item__content {
