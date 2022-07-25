@@ -184,7 +184,7 @@
                             </div>
                           </div>
                         </div>
-                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
+                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.UnpaidReducedAmount">
                           <div class="item">
                             <div><span style="margin:0"></span>
                               <span style="width:20em;">

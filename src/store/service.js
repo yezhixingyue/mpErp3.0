@@ -4,7 +4,7 @@
 import api from '@/api/index';
 import CommonClassType from '@/store/CommonClassType';
 import messageBox from '../assets/js/utils/message';
-import UploadFileByBreakPoint from '../assets/js/upload/UploadFileByBreakPoint';
+// import UploadFileByBreakPoint from '../assets/js/upload/UploadFileByBreakPoint';
 // import { extname } from '../assets/js/utils/util';
 
 // import { MessageBox } from 'element-ui';
@@ -542,44 +542,45 @@ export default {
     },
     /* 售后单提交
     -------------------------------*/
-    async submitServiceForm({ state, commit }, [curOrderID, AppyCode, callback]) {
-      const data = state.replenishFile;
-      const uniqueName = state.replenishFileUniqueName;
-      const onUploadProgressFunc = (complete) => commit('setPercentage', complete);
-      if (data && uniqueName && state.SolutionType === 'replenish') { // 上传补印文件
-        const key = await UploadFileByBreakPoint(data, uniqueName, onUploadProgressFunc);
-        if (!key) {
-          commit('setPercentage', null);
-          return;
-        }
-      }
-      let PicList = await Promise.all(state.serviceImgList2Upload.map((imgData) => api.uploadImage(imgData, 3).then((res) => { // 上传照片列表
-        if (res.data.Status === 1000) return res.data.Data.Url;
-        return false;
-      }))).catch(() => {
-        commit('setPercentage', null);
-        return false;
-      });
-      if (PicList.includes(false)) return;
-      if (state.serviceImgList2Upload.length < state.serviceImgList.length) {
-        const _d = state.serviceImgList.length - state.serviceImgList2Upload.length;
-        const host = 'http://192.168.1.92:8055/';
-        const arr = state.serviceImgList.slice(0, _d).map(it => (it.includes(host) ? it.replace(host, '') : it));
-        PicList = [...arr, ...PicList];
-      }
-      commit('setPercentage', 99);
-      commit('setRequestObj', { PicList, curOrderID, AppyCode }); // 收集信息，用于设置请求头信息
-      const result = await api.saveServiceOrder(state.requestObj).catch(() => commit('setPercentage', null)); // 提交
-      if (!result) return;
-      if (result.data.Status === 1000) {
-        commit('setPercentage', 100);
-        messageBox.successSingle('提交成功', () => {
-          if (callback) callback();
-          return commit('orderModule/setIsShowServiceDiaFail', {}, { root: true });
-        });
-      }
-      commit('setPercentage', null);
-    },
+    // 已弃用
+    // async submitServiceForm({ state, commit }, [curOrderID, AppyCode, callback]) {
+    //   const data = state.replenishFile;
+    //   const uniqueName = state.replenishFileUniqueName;
+    //   const onUploadProgressFunc = (complete) => commit('setPercentage', complete);
+    //   if (data && uniqueName && state.SolutionType === 'replenish') { // 上传补印文件
+    //     const key = await UploadFileByBreakPoint(data, uniqueName, onUploadProgressFunc);
+    //     if (!key) {
+    //       commit('setPercentage', null);
+    //       return;
+    //     }
+    //   }
+    //   let PicList = await Promise.all(state.serviceImgList2Upload.map((imgData) => api.uploadImage(imgData, 3).then((res) => { // 上传照片列表
+    //     if (res.data.Status === 1000) return res.data.Data.Url;
+    //     return false;
+    //   }))).catch(() => {
+    //     commit('setPercentage', null);
+    //     return false;
+    //   });
+    //   if (PicList.includes(false)) return;
+    //   if (state.serviceImgList2Upload.length < state.serviceImgList.length) {
+    //     const _d = state.serviceImgList.length - state.serviceImgList2Upload.length;
+    //     const host = 'http://192.168.1.92:8055/';
+    //     const arr = state.serviceImgList.slice(0, _d).map(it => (it.includes(host) ? it.replace(host, '') : it));
+    //     PicList = [...arr, ...PicList];
+    //   }
+    //   commit('setPercentage', 99);
+    //   commit('setRequestObj', { PicList, curOrderID, AppyCode }); // 收集信息，用于设置请求头信息
+    //   const result = await api.saveServiceOrder(state.requestObj).catch(() => commit('setPercentage', null)); // 提交
+    //   if (!result) return;
+    //   if (result.data.Status === 1000) {
+    //     commit('setPercentage', 100);
+    //     messageBox.successSingle('提交成功', () => {
+    //       if (callback) callback();
+    //       return commit('orderModule/setIsShowServiceDiaFail', {}, { root: true });
+    //     });
+    //   }
+    //   commit('setPercentage', null);
+    // },
     /* 获取售后问题列表
     -------------------------------*/
     async getQuestionTypeList({ state, commit }) {
@@ -595,18 +596,19 @@ export default {
       const res = await api.getPackageListByOrderID(orderId);
       if (res.data.Status === 1000) commit('setOrderPackageListTableData', res.data.Data);
     },
-    async getServiceDetail({ commit }, aferSalesID) {
-      commit('setCurServiceOrdrData', null);
-      commit('setBackImgList', []);
-      const res = await api.getServiceDetail(aferSalesID);
-      if (res.data.Status === 1000) {
-        commit('setCurServiceOrdrData', res.data.Data);
-        const list = res.data.Data.PicList;
-        commit('setBackImgList', list);
-      } else {
-        throw new Error(res.data.Message);
-      }
-    },
+
+    // async getServiceDetail({ commit }, aferSalesID) {
+    //   commit('setCurServiceOrdrData', null);
+    //   commit('setBackImgList', []);
+    //   const res = await api.getServiceDetail(aferSalesID);
+    //   if (res.data.Status === 1000) {
+    //     commit('setCurServiceOrdrData', res.data.Data);
+    //     const list = res.data.Data.PicList;
+    //     commit('setBackImgList', list);
+    //   } else {
+    //     throw new Error(res.data.Message);
+    //   }
+    // },
     async downLoadOrderFile({ rootState }, detailData) {
       const orderID = detailData.OrderID || rootState.orderModule.curOrderID;
       const res = await api.getOrderFilePath2DownLoad(orderID);

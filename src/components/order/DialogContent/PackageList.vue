@@ -40,11 +40,9 @@
           </template>
         </el-table-column>
         <el-table-column prop="handle" label="操作">
-          <div class="handle-menus" slot-scope="scope">
+          <div class="handle-menus" >
           <template v-if="Permission.PermissionList.PermissionManageOrder.Obj.ApplyAfterSales">
-            <ImgBtn v-if="scope.row.AllowAfterSales && showCrtl"
-              @handleClick="jump2Service(scope.row.Order)" :url='img1' />
-            <ImgBtn v-else disabled :url='img2' />
+            <ImgBtn disabled :url='img2' />
           </template>
           </div>
         </el-table-column>
@@ -117,31 +115,31 @@ export default {
       });
       return `${worth.toFixed(1)}元`;
     },
-    async jump2Service(data) {
-      let key = true;
-      this.setIsLoading(true);
-      this.clearServiceFormInfo();
-      this.setCurOrderID(data.OrderID);
-      this.setIsShowServiceDiaTrue();
-      await Promise.all(
-        [
-          this.getQuestionTypeList(),
-          this.getOrderDetail(),
-          this.getPackageListByOrderID(data.OrderID),
-          this.getServiceOrderHistory(),
-          this.getPayPackageByOrder(data.OrderID),
-          // this.$store.dispatch('service/getPayPackageByOrder', data.OrderID),
-        ],
-      ).catch((error) => {
-        key = false;
-        this.messageBox.handleLoadingError(
-          error,
-          () => { this.setIsShowServiceDiaFail(); this.setIsLoading(false); },
-          () => { this.setIsShowServiceDiaFail(); this.setIsLoading(false); },
-        );
-      });
-      if (key) this.setIsLoading(false);
-    },
+    // async jump2Service(data) {
+    //   let key = true;
+    //   this.setIsLoading(true);
+    //   this.clearServiceFormInfo();
+    //   this.setCurOrderID(data.OrderID);
+    //   this.setIsShowServiceDiaTrue();
+    //   await Promise.all(
+    //     [
+    //       this.getQuestionTypeList(),
+    //       this.getOrderDetail(),
+    //       this.getPackageListByOrderID(data.OrderID),
+    //       this.getServiceOrderHistory(),
+    //       this.getPayPackageByOrder(data.OrderID),
+    //       // this.$store.dispatch('service/getPayPackageByOrder', data.OrderID),
+    //     ],
+    //   ).catch((error) => {
+    //     key = false;
+    //     this.messageBox.handleLoadingError(
+    //       error,
+    //       () => { this.setIsShowServiceDiaFail(); this.setIsLoading(false); },
+    //       () => { this.setIsShowServiceDiaFail(); this.setIsLoading(false); },
+    //     );
+    //   });
+    //   if (key) this.setIsLoading(false);
+    // },
   },
 };
 </script>

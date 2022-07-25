@@ -488,15 +488,15 @@ export default {
       commit('setOrderDetailData', res.data.Data);
       commit('setOrderDetailDateSetTime', new Date().getTime());
     },
-    async getServiceOrderHistory({ state, commit }) { // 查询售后单历史记录
-      const res = await api.getServiceOrderHistory(state.curOrderID);
-      if (res.data.Status === 1000) {
-        commit('setCurCustomerInfo2Service', res.data.Data.Customer);
-        commit('setCurServiceOrderHistory', res.data.Data.List);
-      } else {
-        throw new Error(res.data.Message);
-      }
-    },
+    // async getServiceOrderHistory({ state, commit }) { // 查询售后单历史记录
+    //   const res = await api.getServiceOrderHistory(state.curOrderID);
+    //   if (res.data.Status === 1000) {
+    //     commit('setCurCustomerInfo2Service', res.data.Data.Customer);
+    //     commit('setCurServiceOrderHistory', res.data.Data.List);
+    //   } else {
+    //     throw new Error(res.data.Message);
+    //   }
+    // },
     async selectOrderProgress({ state, commit }) { // 查询订单进度
       const res = await api.selectOrderProgress(state.curOrderID);
       if (!res) return;

@@ -63,9 +63,10 @@ const api = {
   PollingPayStatus(payCode) {
     return instance.get(`/Api/PaymentOrder/PayResult?payCode=${payCode}`);
   },
-  getServiceListData2Excel(data) { // POST /Api/AfterSales/Excel
-    return instance.post('/Api/AfterSales/Excel', data, { responseType: 'arraybuffer' });
-  },
+  // 已弃用
+  // getServiceListData2Excel(data) { // POST /Api/AfterSales/Excel
+  //   return instance.post('/Api/AfterSales/Excel', data, { responseType: 'arraybuffer' });
+  // },
   getServicesListData2Excel(data) { // POST /Api/AfterSale/Excel
     return instance.post('/Api/AfterSale/Excel', data, { responseType: 'arraybuffer' });
   },
@@ -73,23 +74,24 @@ const api = {
   /* 订单售后api
    ----------------------------------------------------------------------------------- */
   getQuestionList() { // 获取售后问题列表   GET /Api/AfterSales/QuestionList
-    return instance.get('/Api/AfterSales/QuestionList');
+    return instance.get('/Api/OrderAfterSale/SolutionQuestionList');
   },
-  saveServiceOrder(data) { // 售后单提交   POST /Api/AfterSales/Save
-    return instance.post('/Api/AfterSales/Save', data);
-  },
-  getServiceList(data, config = {}) { // 获取售后单列表   GET /Api/AfterSales/List
-    return instance.post('/Api/AfterSales/List', data, config);
-  },
-  getServiceDetail(aferSalesID) { // 获取售后单详情   GET /Api/AfterSales/Detail
-    return instance.get(`/Api/AfterSales/Detail?aferSalesID=${aferSalesID}`);
-  },
-  getServiceQuestionChange(data) { // 修改售后单问题、备注及责任部门  POST /Api/AfterSales/ChangeQuestion
-    return instance.post('/Api/AfterSales/ChangeQuestion', data);
-  },
-  getServiceOrderHistory(orderID) { // 获取售后单已售后记录   GET /Api/Order/AfterSales/List
-    return instance.get(`/Api/Order/AfterSales/List?orderID=${orderID}`);
-  },
+  // saveServiceOrder(data) { // 售后单提交   POST /Api/AfterSales/Save
+  //   return instance.post('/Api/AfterSales/Save', data);
+  // },
+  // getServiceList(data, config = {}) { // 获取售后单列表   GET /Api/AfterSales/List
+  //   return instance.post('/Api/AfterSales/List', data, config);
+  // },
+  // getServiceDetail(aferSalesID) { // 获取售后单详情   GET /Api/AfterSales/Detail
+  //   return instance.get(`/Api/AfterSales/Detail?aferSalesID=${aferSalesID}`);
+  // },
+  // getServiceQuestionChange(data) { // 修改售后单问题、备注及责任部门  POST /Api/AfterSales/ChangeQuestion
+  //   return instance.post('/Api/AfterSales/ChangeQuestion', data);
+  // },
+  // getServiceOrderHistory(orderID) { // 获取售后单已售后记录   GET /Api/Order/AfterSales/List
+  //   return instance.get(`/Api/Order/AfterSales/List?orderID=${orderID}`);
+  // },
+
   getPayPackageByOrder(orderID) { // GET /Api/PayPackage/GetByOrder  根据订单查询相关合包信息
     return instance.get(`/Api/PayPackage/GetByOrder?orderID=${orderID}`);
   },
@@ -372,6 +374,8 @@ const api = {
     return instance.get('/Api/OrderAfterSale/ApplyQuestionList');
     // return instance.get('/Api/AfterSales/ApplyQuestionList');
   },
+
+  /* 已废弃
   getAfterSalesApplyList(data) { // POST /Api/AfterSales/ApplyList 获取客户售后申请列表数据
     return instance.post('/Api/AfterSales/ApplyList', data);
   },
@@ -381,8 +385,10 @@ const api = {
   getAfterSalesDealApply(applyCode) { // PUT  开始处理
     return instance.put(`/Api/AfterSales/DealApply?applyCode=${applyCode}`);
   },
-  getAfterSalesDepartmentList() { // GET /Api/AfterSales/DepartmentList 获取售后责任部门列表
-    return instance.get('/Api/AfterSales/DepartmentList');
+  */
+
+  getAfterSalesDepartmentList() { // GET /Api/AfterSale/DepartmentList 获取售后责任部门列表
+    return instance.get('/Api/OrderAfterSale/DepartmentList');
   },
   getOrderAfterSaleEvaluateDetail(afterSaleCode) { // POST /Api/OrderAfterSale/EvaluateDetail  获取售后评价
     return instance.get(`/Api/OrderAfterSale/EvaluateDetail?afterSaleCode=${afterSaleCode}`, { closeLoading: true });
