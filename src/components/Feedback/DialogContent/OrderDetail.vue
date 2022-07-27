@@ -143,8 +143,7 @@
                   </li>
                   <li
                   class="right-flex-wrap download-box"
-                  v-if="$route.name === 'orderManage'
-                    && showData.FilePath && !showData.ProductParams.Attributes.IsSpotGoods && localPermission.DownloadFile">
+                  v-if="showData.FilePath && !showData.ProductParams.Attributes.IsSpotGoods">
                     <span class="text-title">文件下载：</span>
                     <normalBtn @click.native="handleDownLoad(showData)" title="下载订单文件" />
                   </li>
@@ -244,12 +243,12 @@ export default {
   computed: {
     ...mapState('orderModule', ['orderDetailData']),
     ...mapState('common', ['userTypeList', 'userRankList', 'Permission']),
-    localPermission() {
-      if (this.Permission?.PermissionList?.PermissionManageOrder?.Obj) {
-        return this.Permission.PermissionList.PermissionManageOrder.Obj;
-      }
-      return {};
-    },
+    // localPermission() {    && localPermission.DownloadFile
+    //   if (this.Permission?.PermissionList?.PermissionManageOrder?.Obj) {
+    //     return this.Permission.PermissionList.PermissionManageOrder.Obj;
+    //   }
+    //   return {};
+    // },
     showData() {
       if (this.detailData) return this.detailData;
       return this.orderDetailData;
