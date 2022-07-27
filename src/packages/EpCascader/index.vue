@@ -220,6 +220,7 @@ export default {
 @import "@/assets/css/var.scss";
 .mp-common-comps-ep-cascader-comp-wrap {
   white-space: nowrap;
+  display: inline-block;
   > .title {
     text-align: right;
     color: #444;
@@ -234,6 +235,40 @@ export default {
     color: #444;
     min-width: 114px;
     text-align: left;
+    border-radius: 4px;
+    position: relative;
+    box-sizing: border-box;
+    line-height: 26px;
+    padding: 0 26px 0 13px;
+    transition: border-color 0.5s !important;
+    height: 30px;
+    background: #fff;
+    &::after {
+      content: "";
+      position: absolute;
+      background: url('../images/arrowbottom.png') no-repeat center;
+      background-size: 100% 100%;
+      height: 9px;
+      width: 11px;
+      right: 10px;
+      top: 11px;
+      background: none;
+      border: 5px solid #eee;
+      width: 0;
+      height: 0;
+      border-top-width: 6px;
+      border-bottom-width: 0px;
+      border-color: rgba($color: #000000, $alpha: 0);
+      border-top-color: rgba($color: #000000, $alpha: 0.3);
+      border-radius: 2px;
+    }
+    &:hover {
+      border-color: #aaa;
+      background: #fff;
+    }
+    &.active {
+      border-color: $--color-primary;
+    }
     > span {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -244,43 +279,18 @@ export default {
   }
   &.show-line {
     .btn {
+      height: auto;
+      height: unset;
       border-left: none;
       border-right: none;
       border-top: none;
       border-radius: 0;
-      background: #fff;
-      transition: border-color 0.5s !important;
-      &:hover {
-        border-color: #C0C4CC;
-      }
-      padding: 0 7px 0 5px;
       line-height: 22px;
+      padding: 0 7px 0 5px;
       padding-right: 19px;
-      position: relative;
-      box-sizing: border-box;
       &::after {
-        content: "";
-        position: absolute;
-        background: url('../images/arrowbottom.png') no-repeat center;
-        background-size: 100% 100%;
-        height: 9px;
-        width: 11px;
-        right: 5px;
-        top: 5px;
         top: 7px;
         right: 4px;
-        background: none;
-        border: 5px solid #eee;
-        width: 0;
-        height: 0;
-        border-top-width: 6px;
-        border-bottom-width: 0px;
-        border-color: rgba($color: #000000, $alpha: 0);
-        border-top-color: rgba($color: #000000, $alpha: 0.3);
-        border-radius: 2px;
-      }
-      &.active {
-        border-color: $--color-primary;
       }
     }
   }
