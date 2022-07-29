@@ -175,8 +175,8 @@ export default {
     AppealType() {
       return [
         { name: '不限', ID: '' },
-        { name: '退款', ID: 0 },
-        { name: '补印', ID: 1 },
+        { name: '退款', ID: 2 },
+        { name: '补印', ID: 7 },
         { name: '其他', ID: 255 },
       ];
     },
