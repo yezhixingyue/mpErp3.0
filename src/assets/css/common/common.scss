@@ -199,10 +199,10 @@
   user-select: none;
   transition: color 0.05s;
   &:hover {
-    color: #35dff9 !important;
+    color: #428dfa !important;
   }
   &:active {
-    color: #428dfa !important;
+    color: #35dff9 !important;
   }
   &.disabled, &:disabled {
     color: #cbcbcb !important;
@@ -325,16 +325,37 @@
   opacity: 1;
   transition: 0.1s ease-in-out;
   &:hover, &:focus {
-    color: #428dfa;
-    border-color: #428dfa;
-    // opacity: 0.85;
-    background-color: rgba(66, 141, 249, 0.1);
+    color: lighten($color: #26bcf9, $amount: 0.5);
+    border-color: lighten($color: #26bcf9, $amount: 0.5);
+    background-color: lighten($color: #26bcf9, $amount: 40);
   }
   &:active {
     opacity: 1;
-    color: #2c6ad4;
-    border-color: #2c6ad4;
-    background-color: rgba(66, 141, 249, 0.3);
+    color: darken($color: #26bcf9, $amount: 10);
+    border-color: darken($color: #26bcf9, $amount: 10);
+    background-color: lighten($color: #26bcf9, $amount: 35);
+  }
+}
+
+.cancel-pink-btn {
+  color: #ff3769;
+  border-color: #ff3769;
+  width: 100px;
+  height: 30px;
+  padding: 0;
+  border-radius: 2px;
+  opacity: 1;
+  transition: 0.1s ease-in-out;
+  &:hover, &:focus {
+    color: lighten($color: #ff3769, $amount: 0.5);
+    border-color: lighten($color: #ff3769, $amount: 0.5);
+    background-color: lighten($color: #ff3769, $amount: 40);
+  }
+  &:active {
+    opacity: 1;
+    color: darken($color: #ff3769, $amount: 10);
+    border-color: darken($color: #ff3769, $amount: 10);
+    background-color: lighten($color: #ff3769, $amount: 35);
   }
 }
 
@@ -573,6 +594,9 @@ button.border-blue-btn {
   .ml-#{$num} {
     margin-left: #{$num}px
   };
+  .ml-f-#{$num} {
+    margin-left: #{$num}px !important
+  };
   .mr-#{$num} {
     margin-right: #{$num}px
   };
@@ -599,5 +623,21 @@ button.border-blue-btn {
   }
   .ft-f-#{$num} {
     font-size: #{$num}px !important;
+  }
+  body .iconfont.ft-#{$num} {
+    font-size: #{$num}px;
+  }
+}
+
+// 前面带有蓝色竖条的标题样式
+.blue-v-line {
+  &::before {
+    width: 3px;
+    height: 16px;
+    background-color: #26bcf9;
+    content: '';
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 8px;
   }
 }
