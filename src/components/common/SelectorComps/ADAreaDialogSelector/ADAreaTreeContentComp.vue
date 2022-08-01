@@ -6,7 +6,8 @@
     :treeList="allLevelList"
     :defaultCheckedKeys="defaultCheckedKeys"
     :handleChangeFunc="handleAreaChangeFunc"
-    newDataType
+    :shouldDisabledList="shouldDisabledList"
+    :showDisabled="showDisabled"
     :checkAllTitle="`所有${treeType==='area' ? '地区' : '产品'}`"
     :defaultProps="defaultProps"
     ref="TreeComp"
@@ -16,6 +17,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 import TreeComp from '@/components/common/TreeComp.vue';
+import CommonClassType from '../../../../store/CommonClassType';
 
 export default {
   props: {
@@ -31,7 +33,23 @@ export default {
       type: Number,
       default: 6, // 代客下单分类
     },
-    displayLevel2: {
+    displayLevel2: { // 是否仅展示到2级结构
+      type: Boolean,
+      default: false,
+    },
+    defaultLabels: { // 如果不想使用defaultPropKeys中指定的2种格式类型时，传入此值
+      type: Object,
+      default: null,
+    },
+    shouldDisabledList: {
+      type: Array,
+      default: () => [],
+    },
+    showDisabled: {
+      type: Boolean,
+      default: false,
+    },
+    useSpreadDataType: { // 展开数据格式 类似2.0
       type: Boolean,
       default: false,
     },
@@ -59,6 +77,9 @@ export default {
       };
     },
     defaultPropKeys() {
+      if (this.defaultLabels) {
+        return this.defaultLabels;
+      }
       if (this.treeType === 'area') {
         return {
           rootKey: 'CountryID',
@@ -93,33 +114,10 @@ export default {
       return this.allProductClassify;
     },
     defaultCheckedKeys() { // 差还原keys 还原后该组件即可使用
-      const list = [];
-      if (Array.isArray(this.value) && this.value.length > 0) {
-        if (this.value.length === 1) {
-          if (this.value[0][this.defaultPropKeys.lv1Key] === 0) return this.AllLevel3AreaKeysList;
-        }
-        this.value.forEach(it => { // 可能为省全部、市全部 也可能为单个城区
-          if (it[this.defaultPropKeys.lv2Key] === 0) { // 全省
-            const lv1 = this.allLevelList.find(_it => _it.ID === it[this.defaultPropKeys.lv1Key]);
-            if (lv1) {
-              lv1.children.forEach(lv2 => {
-                list.push(...lv2.children.map(lv3 => lv3.ID));
-              });
-            }
-          } else if (it[this.defaultPropKeys.lv3Key] === this.lv3KeyEmptyValue) { // 全市
-            const lv1 = this.allLevelList.find(_it => _it.ID === it[this.defaultPropKeys.lv1Key]);
-            if (lv1) {
-              const lv2 = lv1.children.find(_it => _it.ID === it[this.defaultPropKeys.lv2Key]);
-              if (lv2) {
-                list.push(...lv2.children.map(lv3 => lv3.ID));
-              }
-            }
-          } else { // 单个城区
-            list.push(it[this.defaultPropKeys.lv3Key]);
-          }
-        });
+      if (this.useSpreadDataType) {
+        return this.value.map(it => it[this.defaultPropKeys.lv3Key]);
       }
-      return list;
+      return this.getDefaultCheckedKeys(this.value);
     },
     Level1AreaList() {
       if (this.spreadList.length === 0) return [];
@@ -147,6 +145,21 @@ export default {
       return temp;
     },
     handleAreaChangeFunc(checkedNodes, checkedKeys, isAll) {
+      if (this.useSpreadDataType) {
+        const _level2List = checkedNodes.filter(it => it.Level === 2);
+        const _list = checkedNodes.filter(it => it.Level === 3).map(it => {
+          const lv2KeyID = it.ParentID;
+          let _t = _level2List.find(it2 => it2.ID === lv2KeyID);
+          if (!_t) {
+            _t = this.Level2AreaList.find(it4 => it4.ID === lv2KeyID);
+          }
+          const lv1KeyID = _t ? _t.ParentID : '';
+          return ({ [this.defaultPropKeys.lv1Key]: lv1KeyID, [this.defaultPropKeys.lv2Key]: lv2KeyID, [this.defaultPropKeys.lv3Key]: it.ID });
+        });
+        this.$emit('input', _list);
+        return;
+      }
+
       if (checkedNodes.length === 0) {
         this.$emit('input', []);
         return;
@@ -186,11 +199,43 @@ export default {
       this.$emit('input', list);
     },
     getTextDisplayContent() { // 获取选中区域文字展示
-      return this.$utils.getTreeTextDisplayContent(this.value, this.allLevelList);
+      if (this.useSpreadDataType) {
+        return CommonClassType.generateProductString(this.value, this.allLevelList, this.defaultProps);
+      }
+      return this.$utils.getTreeTextDisplayContent(this.value, this.allLevelList, this.treeType, this.defaultPropKeys);
+    },
+    getDefaultCheckedKeys(value) {
+      const list = [];
+      if (Array.isArray(value) && value.length > 0) {
+        if (value.length === 1) {
+          if (value[0][this.defaultPropKeys.lv1Key] === 0) return this.AllLevel3AreaKeysList;
+        }
+        value.forEach(it => { // 可能为省全部、市全部 也可能为单个城区
+          if (it[this.defaultPropKeys.lv2Key] === 0) { // 全省
+            const lv1 = this.allLevelList.find(_it => _it.ID === it[this.defaultPropKeys.lv1Key]);
+            if (lv1) {
+              lv1.children.forEach(lv2 => {
+                list.push(...lv2.children.map(lv3 => lv3.ID));
+              });
+            }
+          } else if (it[this.defaultPropKeys.lv3Key] === this.lv3KeyEmptyValue) { // 全市
+            const lv1 = this.allLevelList.find(_it => _it.ID === it[this.defaultPropKeys.lv1Key]);
+            if (lv1) {
+              const lv2 = lv1.children.find(_it => _it.ID === it[this.defaultPropKeys.lv2Key]);
+              if (lv2) {
+                list.push(...lv2.children.map(lv3 => lv3.ID));
+              }
+            }
+          } else { // 单个城区
+            list.push(it[this.defaultPropKeys.lv3Key]);
+          }
+        });
+      }
+      return list;
     },
   },
   mounted() {
-    this.$store.dispatch('common/fetchAdAreaList');
+    if (this.treeType === 'area') this.$store.dispatch('common/fetchAdAreaList');
   },
 };
 </script>

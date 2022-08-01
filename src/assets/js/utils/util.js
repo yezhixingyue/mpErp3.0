@@ -367,7 +367,7 @@ export const scrollToBottom = element => element.scrollIntoView({ behavior: 'smo
  */
 export const generateRandomHexColor = () => `#${Math.floor(Math.random() * 0xffffff).toString(16)}`;
 
-export const getTreeTextDisplayContent = (value, allAdAreaTreeList, type = 'area') => {
+export const getTreeTextDisplayContent = (value, allAdAreaTreeList, type = 'area', defaultLabels = null) => {
   let defaultPropKeys = {
     rootKey: 'CountryID',
     lv1Key: 'ProvinceID',
@@ -381,6 +381,9 @@ export const getTreeTextDisplayContent = (value, allAdAreaTreeList, type = 'area
       lv2Key: 'SecondLevelID',
       lv3Key: 'ProductID',
     };
+  }
+  if (defaultLabels) {
+    defaultPropKeys = defaultLabels;
   }
   let title = '全部';
   if (type === 'area') title = '全部区域';

@@ -6,7 +6,7 @@
     </span>
     <span @click="onDetailClick" :class="canDetail ? '' : 'disabled'" v-if="showList.includes('detail')">
       <img src="@/assets/images/detail.png" alt="" style="height: 15px;position:relative;top:1px">
-      <i>详情</i>
+      <i>{{detailText}}</i>
     </span>
     <span @click="onCopyClick" :class="canCopy ? '' : 'disabled'" v-if="showList.includes('copy')">
       <img src="@/assets/images/copy.png" alt="">
@@ -158,6 +158,10 @@ export default {
     editText: {
       type: String,
       default: '编辑',
+    },
+    detailText: {
+      type: String,
+      default: '详情',
     },
   },
   methods: {

@@ -3,6 +3,19 @@ export default class Condition4InvoiceMakeUpList {
 
   PageSize = 20
 
+  InvoiceType = ''
+
+  InvoiceStatus = ''
+
+  InvoiceApplyTime = {
+    First: '',
+    Second: '',
+  }
+
+  DateType = 'today';
+
+  KeyWords = ''
+
   setCondition([[key1, key2], value]) {
     if (!key1) return;
     if (!key2) {
