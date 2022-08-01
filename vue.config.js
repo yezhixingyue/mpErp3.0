@@ -1,14 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 09:37:02
- * @LastEditTime: 2022-08-01 11:04:29
+ * @LastEditTime: 2022-08-01 11:31:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue.config.js
  */
 const TerserPlugin = require('terser-webpack-plugin');
 
-const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web3/';
+const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web/';
 
 
 let proxyUrl = 'http://192.168.3.68:8050';
