@@ -59,7 +59,8 @@
           <span v-else>--</span> -->
         </el-table-column>
         <el-table-column label="服务单来源" show-overflow-tooltip minWidth="100">
-          <span slot-scope="scope">{{ scope.row.Source === 2 ? '自助下单' : '代客下单' }}</span>
+          <span slot-scope="scope">{{ scope.row | formatSource(ServerApplyTypeList) }}</span>
+          <!-- <span slot-scope="scope">{{ scope.row.Source === 2 ? '自助申请' : '代客申请' }}</span> -->
         </el-table-column>
         <el-table-column label="响应时间" show-overflow-tooltip minWidth="125">
           <span v-if="scope.row.RespondTime" slot-scope="scope">{{ scope.row.RespondTime | format2MiddleLangTypeDate }}</span>
@@ -121,6 +122,21 @@ export default {
     ListPageHeader,
   },
   mixins: [mixin, tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
+  filters: {
+    formatSource(item, ServerApplyTypeList) {
+      if (!item || !Array.isArray(ServerApplyTypeList)) return '';
+      let str = '';
+      const { ApplicantUserName, Source } = item;
+      if (Source === 1) { // 代客申请
+        str = ApplicantUserName || '';
+      }
+      if (!str) {
+        const t = ServerApplyTypeList.find(it => it.ID === Source);
+        if (t && t.name) str = t.name;
+      }
+      return str;
+    },
+  },
   data() {
     return {
       nowDate: null,
@@ -158,7 +174,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('common', ['Permission']),
+    ...mapState('common', ['Permission', 'ServerApplyTypeList']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionAfterSalesApply?.Obj) {
         return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;

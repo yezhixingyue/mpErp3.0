@@ -54,7 +54,7 @@
       <li>
         <OrderChannelSelector
         style="margin-right: 30px"
-        :options='orderCreateTypeList'
+        :options='ServerApplyTypeList'
         :requestFunc='getDataList'
         :changePropsFunc='setCondition4DataList'
         :typeList="[['Source', '']]"
@@ -149,7 +149,7 @@ export default {
     // ElDateRangeSelector,
   },
   computed: {
-    ...mapState('common', ['FeedbackProgress', 'FeedbackQuestionList', 'userTypeList', 'userRankList', 'orderCreateTypeList']),
+    ...mapState('common', ['FeedbackProgress', 'FeedbackQuestionList', 'userTypeList', 'userRankList', 'ServerApplyTypeList']),
     UserDefinedTimeIsActive() {
       return this.condition.DateType === '' && !!this.condition.Date.First && !!this.condition.Date.Second;
     },
