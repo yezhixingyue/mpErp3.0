@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-invoice-info-manage-list-page-wrap">
     <header >
-      <el-button v-if="localPermission.Operate" type="primary" @click="setupInvoiceItem('new')" :disabled="InvoiceInfoList.length >= 7">+新增开票类别</el-button>
+      <el-button v-if="localPermission.Operate" type="primary" @click="setupInvoiceItem('new')">+新增开票类别</el-button>
       <span v-else></span>
       <div class="d-c">
         <label for="">默认开票类别：</label>
