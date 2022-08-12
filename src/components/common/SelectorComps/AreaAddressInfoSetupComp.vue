@@ -30,6 +30,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    isEdit: {
+      type: Boolean,
+      default: false,
+    },
+    autoFill: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -113,7 +121,7 @@ export default {
     this.loading = true;
     await this.$store.dispatch('common/fetchAdAreaList');
     this.loading = false;
-    if (!this.RegionalID && this.RegionalID !== 0) this.RegionalID = 1497; // 河南省的ID
+    if (!this.RegionalID && this.RegionalID !== 0 && !this.isEdit && this.autoFill) this.RegionalID = 1497; // 河南省的ID
   },
 };
 </script>

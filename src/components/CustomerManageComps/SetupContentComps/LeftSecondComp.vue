@@ -1,7 +1,7 @@
 <template>
   <el-form v-if="ruleForm" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="90px" class="customer-second-ruleForm-wrap" @submit.native.prevent>
-    <el-form-item label="经营地址：" size="small">
-      <AreaAddressInfoSetupComp class="address-select"
+    <el-form-item label="经营地址：" size="small" prop="AuthenInfo.SellArea">
+      <AreaAddressInfoSetupComp class="address-select" :isEdit="isEdit"
        v-model="ruleForm.AuthenInfo.SellArea" :allAreaDataList='allAdAreaTreeList' :disabled="!PermissionObj.EditArea && isEdit" />
     </el-form-item>
     <el-form-item prop="AuthenInfo.DetailAddress" size="small">
@@ -83,10 +83,19 @@ export default {
     },
   },
   data() {
+    const validateSellArea = (rule, value, callback) => {
+      if (!value || (!value.RegionalID && value.RegionalID !== 0)) {
+        callback(new Error('请选择经营地址'));
+      }
+      callback();
+    };
     return {
       ruleForm: null,
       rules: {
         AuthenInfo: {
+          SellArea: [
+            { validator: validateSellArea, trigger: 'change' },
+          ],
           DetailAddress: [
             { required: true, message: '请输入详细地址', trigger: 'blur' },
             { max: 30, message: '请控制在30个字符以内', trigger: 'blur' },
