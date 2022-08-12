@@ -29,12 +29,12 @@
         </span>
         <span
           v-if="curServiceOrdrData.Solution.Type === 2"
-        >订单减款{{curServiceOrdrData.Solution.Refund}}元
+        >订单退款{{curServiceOrdrData.Solution.Refund}}元
           <template v-if="curServiceOrdrData.Solution.RefundBeanNumber > 0">(含印豆{{curServiceOrdrData.Solution.RefundBeanNumber}}个)</template>
         </span>
         <span style='margin-left: 15px'
           v-if="curServiceOrdrData.Solution.Type === 2"
-        >运费减款{{curServiceOrdrData.Solution.RefundFreight}}元
+        >运费退款{{curServiceOrdrData.Solution.RefundFreight}}元
           <template v-if="curServiceOrdrData.Solution.RefundFreightBeanNumber > 0">(含印豆{{curServiceOrdrData.Solution.RefundFreightBeanNumber}}个)</template>
         </span>
         <span

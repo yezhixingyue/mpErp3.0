@@ -202,8 +202,8 @@ export default {
     getSolution(solution) {
       const arr = [];
       if (solution.Type === 2) {
-        arr.push(`订单减款${solution.Refund}元`);
-        arr.push(`运费减款${solution.RefundFreight}元`);
+        arr.push(`订单退款${solution.Refund}元`);
+        arr.push(`运费退款${solution.RefundFreight}元`);
       } else if (solution.Type === 7) {
         arr.push('补印');
         arr.push(`${solution.KindCount}款`);

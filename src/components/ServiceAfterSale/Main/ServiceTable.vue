@@ -40,12 +40,12 @@
         {{scope.row.ReprintOrderID || "--"}}
       </template>
     </el-table-column>
-    <el-table-column minWidth="72" label="订单减款">
+    <el-table-column minWidth="72" label="订单退款">
       <template slot-scope="scope">
         {{scope.row.RefundAmount  === null ? '--' : scope.row.RefundAmount + '元'}}
       </template>
     </el-table-column>
-    <el-table-column minWidth="70" label="运费减款">
+    <el-table-column minWidth="70" label="运费退款">
       <template slot-scope="scope" >
         {{scope.row.RefundFreightAmount === null ? '--' : scope.row.RefundFreightAmount + '元'}}
       </template>

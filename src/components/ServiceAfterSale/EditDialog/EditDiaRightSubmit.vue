@@ -93,13 +93,13 @@
             </li>
             <li v-if="radioState === 0" class="mp-service-count-wrap" >
               <div>
-                <span>订单减款：</span>
+                <span>订单退款：</span>
                 <input :class="refund.err ? 'is-warn' : ''" style="width:60px"
                   v-model="refundNum" @input="onRefundInput" type="text">
                 <span>元</span>
               </div>
               <div style="margin-left: 25px">
-                <span>运费减款：</span>
+                <span>运费退款：</span>
                 <input :class="refundFreight.err ? 'is-warn' : ''" style="width: 60px"
                   v-model="refundFreightAmount" @input="onRefundFreightAmountInput" type="text">
                 <span>元</span>
@@ -234,7 +234,7 @@ export default {
       return this.QuestionTypeLevelList;
     },
     selectList() {
-      return [{ value: '减款', type: true }, { value: '补印', type: true }, { value: '赠送优惠券', type: true }]; // 判断信息不明确 ，暂时先全部都可选择
+      return [{ value: '退款', type: true }, { value: '补印', type: true }, { value: '赠送优惠券', type: true }]; // 判断信息不明确 ，暂时先全部都可选择
     },
     departmentSelectList() {
       if (this.DepartmentList.length === 0) return [];

@@ -448,8 +448,8 @@ export default {
     getSolution(solution) {
       const arr = [];
       if (solution.SolutionType === 2) {
-        arr.push(`订单减款${solution.RefundAmount}元`);
-        arr.push(`运费减款${solution.RefundFreightAmount}元`);
+        arr.push(`订单退款${solution.RefundAmount}元`);
+        arr.push(`运费退款${solution.RefundFreightAmount}元`);
       } else if (solution.SolutionType === 7) {
         arr.push('补印');
         arr.push(`${solution.KindCount}款`);

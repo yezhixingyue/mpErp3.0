@@ -299,7 +299,7 @@ export default {
       let str = '';
       switch (status) {
         case 2:
-          str = '减款';
+          str = '退款';
           break;
         case 7:
           str = '补印';

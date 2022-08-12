@@ -16,7 +16,7 @@ export default {
   },
   data() {
     return {
-      radioList: [{ value: '不限', type: true }, { value: '减款', type: true }, { value: '补印', type: true }, { value: '赠送优惠券', type: true }],
+      radioList: [{ value: '不限', type: true }, { value: '退款', type: true }, { value: '补印', type: true }, { value: '赠送优惠券', type: true }],
     };
   },
   computed: {
