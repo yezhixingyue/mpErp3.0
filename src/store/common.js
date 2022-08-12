@@ -126,6 +126,13 @@ export default {
       { name: '网页版', ID: 1 },
       { name: '移动端', ID: 2 },
     ],
+    /* 售后申请方式
+    -------------------------------*/
+    ServerApplyTypeList: [
+      { name: '不限', ID: '' },
+      { name: '自助申请', ID: 2 },
+      { name: '代客申请', ID: 1 },
+    ],
     /* 订单状态相关 --- 只用于包裹列表等运单部分状态显示
     -------------------------------*/
     OrderStatusList2Transport: [

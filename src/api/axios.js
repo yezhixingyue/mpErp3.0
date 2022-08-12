@@ -89,6 +89,7 @@ const handleResponse = (response) => {
     '/Api/OrderBill/Excel',
     '/Api/PriceTable/Export',
     '/Api/CalculatePrice/Excel',
+    '/Api/InvoiceManage/ExportExcel',
   ];
   const _statusList2NotNeed2Toast = [1000, 9062, 8044, 1100];
   // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
@@ -113,9 +114,9 @@ const handleResponse = (response) => {
 axios.interceptors.response.use(
   handleResponse,
   async (error) => {
-    if (error.response && error.response.status === 200) {
-      return handleResponse(error.response);
-    }
+    // if (error.response && error.response.status === 200) {
+    //   return handleResponse(error.response);
+    // }
 
     localCancelToken.removeCancelToken(error.config || '');
     if (!store.state.common.isLoading) {
@@ -187,7 +188,7 @@ axios.interceptors.response.use(
               if (error.response.data.Message) {
                 _msg = error.response.data.Message;
               } else {
-                _msg = `系统出错，错误码：${error.response.data.Status || 505}`;
+                _msg = `系统出错，错误码：${error.response.data.Status}`;
               }
             }
             break;
