@@ -1,10 +1,17 @@
 {
   "id": "3470998",
-  "name": "后台-管理",
+  "name": "名片之家后台",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "mpzj后台管理系统图标集合",
   "glyphs": [
+    {
+      "icon_id": "31357626",
+      "name": "发票  已取消",
+      "font_class": "a-fapiaoyiquxiao",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
     {
       "icon_id": "22886125",
       "name": "财务管理",
