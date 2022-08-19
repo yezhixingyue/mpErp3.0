@@ -87,6 +87,42 @@ export default class InvoiceHandlerClass {
     }
   }
 
+  async cancel(params) { // 取消
+    if (!params || !this.handleTarget || this.handleTarget.InvoiceStatus !== InvoiceStatusEnums.makingUp.ID) return;
+    // 下方需要更改为取消处理内容
+    // const resp = await api.getInvoiceManageComplete(this.handleTarget.InvoiceID).catch(() => null);
+    // if (resp && resp.data.Status === 1000) {
+    //   const cb = () => {
+    //     this.handleTarget.InvoiceStatus = InvoiceStatusEnums.haveMaked.ID;
+    //     if (!this.handleTarget.InvoiceLog) this.handleTarget.InvoiceLog = [];
+    //     this.handleTarget.InvoiceLog.unshift({
+    //       LogType: InvoiceStatusEnums.haveMaked.ID,
+    //       CreateTime: getFormatDateString(),
+    //     });
+    //     this.handleTarget.OperateTime = getFormatDateString();
+    //     this.syncForStore();
+    //   };
+    //   messageBox.successSingle('已开票完成', cb, cb);
+    // }
+    console.log(params);
+    const resp = await api.getInvoiceManageCancel(params).catch(() => null);
+    if (resp && resp.data.Status === 1000) {
+      // 取消成功
+      const cb = () => {
+        this.handleTarget.InvoiceStatus = InvoiceStatusEnums.canceled.ID;
+        if (!this.handleTarget.InvoiceLog) this.handleTarget.InvoiceLog = [];
+        this.handleTarget.InvoiceLog.unshift({
+          LogType: InvoiceStatusEnums.canceled.ID,
+          CreateTime: getFormatDateString(),
+        });
+        this.handleTarget.RejectReason = params.Opinion;
+        this.handleTarget.OperateTime = getFormatDateString();
+        this.syncForStore();
+      };
+      messageBox.successSingle('已取消', cb, cb);
+    }
+  }
+
   async mail(params) { // 邮寄
     if (!params || !this.handleTarget || this.handleTarget.InvoiceStatus !== InvoiceStatusEnums.haveMaked.ID) return;
     const resp = await api.getInvoiceManagePost({ ...params, InvoiceID: this.handleTarget.InvoiceID }).catch(() => null);

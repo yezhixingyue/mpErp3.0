@@ -5,8 +5,8 @@
         <!-- 该动态类名为判断当前页面是否为包裹列表页面，如果是则做针对样式处理，另设置值方式为在对应table组件中所设置 -->
         <!-- <AreaSelector /> -->
         <!-- <ProductSelector /> -->
-        <EpCascader :list="allAreaTreeList" v-model="EpCascaderAreaValue" :fiexdWidth="240" title="销售区域" class="mr-12" />
-        <EpCascader :list="allProductClassifyWithEmpty" v-model="EpCascaderProductValue" :fiexdWidth="240" class="mr-12" />
+        <EpCascader showLine :list="allAreaTreeList" v-model="EpCascaderAreaValue" :fiexdWidth="240" title="销售区域" class="mr-12" />
+        <EpCascader showLine :list="allProductClassifyWithEmpty" v-model="EpCascaderProductValue" :fiexdWidth="240" class="mr-12" />
         <!-- <ProductSelector
           :changePropsFunc="setOrderManageRequestObj"
           :requestFunc="getDataList"

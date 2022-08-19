@@ -1219,6 +1219,9 @@ const api = {
   getInvoiceManageReject(data) { // POST /Api/InvoiceManage/Reject  驳回
     return instance.post('/Api/InvoiceManage/Reject', data);
   },
+  getInvoiceManageCancel(data) { // POST /Api/InvoiceManage/Cancel  取消
+    return instance.post('/Api/InvoiceManage/Cancel', data);
+  },
   getInvoiceManageComplete(invoiceID) { // GET /Api/InvoiceManage/Complete  开具完成
     return instance.get('/Api/InvoiceManage/Complete', { params: { invoiceID } });
   },

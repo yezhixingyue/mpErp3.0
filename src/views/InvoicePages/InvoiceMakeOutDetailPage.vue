@@ -2,11 +2,12 @@
   <section class="mp-erp-invoice-make-out-detail-page-wrap">
     <ApplyDetailContent v-if="detailData" :detailData="detailData" @through="onThroughClick" ref="oDetailContentDom" />
     <InvoiceMailFormComp v-if="pendingMail" ref="oMailWrap" @submit="submitMail" />
-    <InvoiceRejectDialog v-if="pendingCheck" :visible.sync="rejectVisible" :invoiceID="invoiceID" @submit="submitReject" />
+    <InvoiceRejectDialog v-if="pendingCheck||isMakingUp" :visible.sync="rejectVisible" :rejectType="rejectType" :invoiceID="invoiceID" @submit="submitReject" />
     <footer v-if="detailData">
       <el-button v-if="pendingCheck" type="primary" @click="onThroughClick">审核通过</el-button>
-      <el-button v-if="pendingCheck" class="cancel-blue-btn" @click="rejectVisible = true">驳回</el-button>
+      <el-button v-if="pendingCheck" class="cancel-blue-btn" @click="onRejectClick('reject')">驳回</el-button>
       <el-button v-if="isMakingUp" type="primary" @click="onMakeoutlick">开票完成</el-button>
+      <el-button v-if="isMakingUp" class="cancel-blue-btn" @click="onRejectClick('cancel')">取消</el-button>
       <el-button v-if="pendingMail" type="primary" @click="$refs.oMailWrap.submitForm()">提交</el-button>
       <el-button class="cancel-blue-btn" @click="goback">返回</el-button>
     </footer>
@@ -35,6 +36,7 @@ export default {
       detailData: null, // 会对订单详情进行修改，主要修改的内容如上
       invoiceHandler: null,
       rejectVisible: false,
+      rejectType: '', // 类型： reject|cancel 驳回或者取消
     };
   },
   computed: {
@@ -71,6 +73,10 @@ export default {
     goback() {
       this.$goback();
     },
+    onRejectClick(type) { // 驳回 或 取消
+      this.rejectType = type;
+      this.rejectVisible = true;
+    },
     onMakeoutlick() { // 开票完成
       this.messageBox.warnCancelNullMsg('确定开票完成吗', () => {
         this.invoiceHandler.makeout();
@@ -83,7 +89,16 @@ export default {
     },
     submitReject(e) { // 驳回
       if (!e) return;
-      this.invoiceHandler.reject(e);
+      switch (this.rejectType) {
+        case 'reject':
+          this.invoiceHandler.reject(e);
+          break;
+        case 'cancel':
+          this.invoiceHandler.cancel(e);
+          break;
+        default:
+          break;
+      }
     },
     submitMail(e) { // 邮寄
       this.messageBox.warnCancelNullMsg('确定邮寄该发票吗', () => {
