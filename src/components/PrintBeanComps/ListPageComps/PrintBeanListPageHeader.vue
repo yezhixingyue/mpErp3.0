@@ -2,12 +2,21 @@
   <header>
     <div>
       <el-button type="primary" @click="onAddClick" v-if="localPermission.SetupPrintBean">添加印豆设置</el-button>
-      <AreaSelector
+      <!-- <AreaSelector
         :changePropsFunc='setCondition'
         :requestFunc='getList'
         :RegionalID='condition.SellArea.RegionalID'
         :CityID='condition.SellArea.CityID'
         :CountyID='condition.SellArea.CountyID'
+        :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+      /> -->
+      <EpCascaderByArea
+        class="mr-25 mt-18"
+        :getList="getList"
+        :setCondition="setCondition"
+        :RegionalID="condition.SellArea.RegionalID"
+        :CityID="condition.SellArea.CityID"
+        :CountyID="condition.SellArea.CountyID"
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
       />
       <OrderChannelSelector
@@ -64,12 +73,13 @@
 
 <script>
 import { mapState } from 'vuex';
-import AreaSelector from '../../common/SelectorComps/AreaSelectorIndex.vue';
+// import AreaSelector from '../../common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '../../common/SelectorComps/OrderChannelSelector.vue';
 import { CategoryEnumsList } from '../../../store/printBean/PrintBeanClassType';
 import SearchInputComp from '../../common/SearchInputComp.vue';
 import RadioButtonGroupComp from '../../common/RadioButtonGroupComp.vue';
 import { PrintBeanBuyStatusEnumsList } from '../../../store/printBean/ConditonClass4ListData';
+import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
   props: {
@@ -80,10 +90,11 @@ export default {
     searchWatchKey: {},
   },
   components: {
-    AreaSelector,
+    // AreaSelector,
     OrderChannelSelector,
     SearchInputComp,
     RadioButtonGroupComp,
+    EpCascaderByArea,
   },
   data() {
     return {

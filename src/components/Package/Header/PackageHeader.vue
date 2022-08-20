@@ -1,13 +1,22 @@
 <template>
   <header class="mp-erp-package-page-header-comp-wrap">
     <div class="first">
-      <area-selector
+      <!-- <area-selector
         :changePropsFunc='setCondition4DataList'
         :requestFunc='getPackageDataList'
         :RegionalID='condition4DataList.SellArea.RegionalID'
         :CityID='condition4DataList.SellArea.CityID'
         :CountyID='condition4DataList.SellArea.CountyID'
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+        /> -->
+      <EpCascaderByArea
+          class="mr-12"
+          :getList="getPackageDataList"
+          :setCondition="setCondition4DataList"
+          :RegionalID="condition4DataList.SellArea.RegionalID"
+          :CityID="condition4DataList.SellArea.CityID"
+          :CountyID="condition4DataList.SellArea.CountyID"
+          :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
         />
       <div class="user-selector">
         <OrderChannelSelector
@@ -77,19 +86,21 @@
 </template>
 
 <script>
-import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
+// import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
+import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
   components: {
-    AreaSelector,
+    // AreaSelector,
     OrderChannelSelector,
     LineDateSelectorComp,
     SearchInputComp,
+    EpCascaderByArea,
     // ElDateRangeSelector,
   },
   computed: {

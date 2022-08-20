@@ -2,10 +2,19 @@
   <header class="mp-feedback-page-main-wrap-header-wrap">
     <ul>
       <li>
-        <AreaSelector
+        <!-- <AreaSelector
           style="margin-right: 40px"
           :changePropsFunc="setCondition4DataList"
           :requestFunc="getDataList"
+          :RegionalID="condition.SellRegionalID"
+          :CityID="condition.SellCityID"
+          :CountyID="condition.SellCountyID"
+          :typeList="[['SellRegionalID', ''],['SellCityID', ''],['SellCountyID', '']]"
+        /> -->
+        <EpCascaderByArea
+           style="margin-right: 40px"
+          :getList="getDataList"
+          :setCondition="setCondition4DataList"
           :RegionalID="condition.SellRegionalID"
           :CityID="condition.SellCityID"
           :CountyID="condition.SellCountyID"
@@ -125,9 +134,10 @@
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
-import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
+// import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState } from 'vuex';
+import EpCascaderByArea from '../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
   props: {
@@ -145,7 +155,8 @@ export default {
     OrderChannelSelector,
     LineDateSelectorComp,
     SearchInputComp,
-    AreaSelector,
+    // AreaSelector,
+    EpCascaderByArea,
     // ElDateRangeSelector,
   },
   computed: {

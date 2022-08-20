@@ -6,15 +6,24 @@
       </li>
       <li class="selector-wrap-2">
         <!-- <radio-button-group-comp :radioList='couponTypeList' v-model='radio1' /> -->
-        <AreaSelector
+        <!-- <AreaSelector
           :changePropsFunc="setCondition2ListData"
           :requestFunc="getCouponList"
           :RegionalID="condition2ListData.SellArea.RegionalID"
           :CityID="condition2ListData.SellArea.CityID"
           :CountyID="condition2ListData.SellArea.CountyID"
           :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+        /> -->
+        <EpCascaderByArea
+          class="mr-25"
+          :getList="getCouponList"
+          :setCondition="setCondition2ListData"
+          :RegionalID="condition2ListData.SellArea.RegionalID"
+          :CityID="condition2ListData.SellArea.CityID"
+          :CountyID="condition2ListData.SellArea.CountyID"
+          :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
         />
-        <ProductSelector
+        <!-- <ProductSelector
           useCustomer
           :changePropsFunc="setCondition2ListData"
           :requestFunc="getCouponList"
@@ -22,7 +31,16 @@
           :TypeID="condition2ListData.Product.TypeID"
           :ProductID="condition2ListData.Product.ProductID"
           :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
-        />
+        /> -->
+        <EpCascaderByProduct
+          class="mr-25"
+          :getList="getCouponList"
+          :setCondition="setCondition2ListData"
+          :First="condition2ListData.Product.ClassID"
+          :Second="condition2ListData.Product.TypeID"
+          :ProductID="condition2ListData.Product.ProductID"
+          :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
+         />
         <user-selector
           :changePropsFunc="setCondition2ListData"
           :requestFunc="getCouponList"
@@ -88,21 +106,25 @@
 import { mapState, mapMutations, mapActions } from 'vuex';
 import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import RadioButtonGroupComp from '@/components/common/RadioButtonGroupComp.vue';
-import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
-import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
+// import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
+// import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 import UserSelector from '@/components/common/SelectorComps/UserSelectorIndex.vue';
 import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
+import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
+import EpCascaderByProduct from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
 
 export default {
   components: {
     normalBtnFull,
     RadioButtonGroupComp,
-    AreaSelector,
-    ProductSelector,
+    // AreaSelector,
+    // ProductSelector,
     UserSelector,
     StaffSelector,
     SearchInputComp,
+    EpCascaderByArea,
+    EpCascaderByProduct,
   },
   computed: {
     ...mapState('couponStore', ['condition2ListData', 'searchWatchKey']),
@@ -161,7 +183,6 @@ export default {
         > div {
           flex: none;
           margin-top: 24px;
-          margin-right: 70px;
         }
         > ul {
           flex: none;

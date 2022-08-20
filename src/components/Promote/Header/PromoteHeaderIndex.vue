@@ -9,7 +9,7 @@
          />
       </li>
       <li class="selector-wrap-2">
-        <AreaSelector
+        <!-- <AreaSelector
           :changePropsFunc='setPromoteListRequestObj'
           :requestFunc='getPromoteList'
           :RegionalID='promoteListRequestObj.SellArea.RegionalID'
@@ -25,7 +25,25 @@
           :TypeID='promoteListRequestObj.Product.TypeID'
           :ProductID='promoteListRequestObj.Product.ProductID'
           :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
-         />
+         /> -->
+        <EpCascaderByArea
+          class="mr-25"
+          :getList="getPromoteList"
+          :setCondition="setPromoteListRequestObj"
+          :RegionalID="promoteListRequestObj.SellArea.RegionalID"
+          :CityID="promoteListRequestObj.SellArea.CityID"
+          :CountyID="promoteListRequestObj.SellArea.CountyID"
+          :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+        />
+        <EpCascaderByProduct
+          class="mr-24"
+          :getList="getPromoteList"
+          :setCondition="setPromoteListRequestObj"
+          :First="promoteListRequestObj.Product.ClassID"
+          :Second="promoteListRequestObj.Product.TypeID"
+          :ProductID="promoteListRequestObj.Product.ProductID"
+          :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
+        />
         <UserSelector
           :changePropsFunc='setPromoteListRequestObj'
           :requestFunc='getPromoteList'
@@ -106,28 +124,32 @@
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
 import normalBtnFull from '@/components/common/normalBtnFull.vue';
-import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
-import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
+// import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
+// import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 import UserSelector from '@/components/common/SelectorComps/UserSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import RadioButtonGroupComp from '@/components/common/RadioButtonGroupComp.vue';
+import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
+import EpCascaderByProduct from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 
 
 export default {
   components: {
     normalBtnFull,
-    AreaSelector,
-    ProductSelector,
+    // AreaSelector,
+    // ProductSelector,
     UserSelector,
     OrderChannelSelector,
     StaffSelector,
     SearchInputComp,
     LineDateSelectorComp,
     RadioButtonGroupComp,
+    EpCascaderByArea,
+    EpCascaderByProduct,
     // ElDateRangeSelector,
   },
   data() {
@@ -205,7 +227,7 @@ export default {
         > div {
           flex: none;
           margin-top: 24px;
-          margin-right: 70px;
+          // margin-right: 70px;
         }
         > ul {
           flex: none;

@@ -1,14 +1,23 @@
 <template>
   <ul>
     <li>
-      <area-selector
+      <!-- <area-selector
         :changePropsFunc="setCondition4BalanceType"
         :requestFunc="getCustomerBill"
         :RegionalID="condition4BalanceType.SellArea.RegionalID"
         :CityID="condition4BalanceType.SellArea.CityID"
         :CountyID="condition4BalanceType.SellArea.CountyID"
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
-       />
+       /> -->
+      <EpCascaderByArea
+        class="mr-20"
+        :getList="getCustomerBill"
+        :setCondition="setCondition4BalanceType"
+        :RegionalID="condition4BalanceType.SellArea.RegionalID"
+        :CityID="condition4BalanceType.SellArea.CityID"
+        :CountyID="condition4BalanceType.SellArea.CountyID"
+        :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+      />
       <OrderChannelSelector
       :options='FundBillMonetyTypeList'
       :requestFunc='getCustomerBill'
@@ -84,19 +93,21 @@
 </template>
 
 <script>
-import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
+// import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState, mapMutations, mapActions } from 'vuex';
+import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
   components: {
-    AreaSelector,
+    // AreaSelector,
     OrderChannelSelector,
     LineDateSelectorComp,
     SearchInputComp,
+    EpCascaderByArea,
     // ElDateRangeSelector,
   },
   computed: {

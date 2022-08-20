@@ -5,8 +5,24 @@
         <!-- 该动态类名为判断当前页面是否为包裹列表页面，如果是则做针对样式处理，另设置值方式为在对应table组件中所设置 -->
         <!-- <AreaSelector /> -->
         <!-- <ProductSelector /> -->
-        <EpCascader showLine :list="allAreaTreeList" v-model="EpCascaderAreaValue" :fiexdWidth="240" title="销售区域" class="mr-12" />
-        <EpCascader showLine :list="allProductClassifyWithEmpty" v-model="EpCascaderProductValue" :fiexdWidth="240" class="mr-12" />
+        <EpCascaderByArea
+          class="mr-12"
+          :getList="getDataList"
+          :setCondition="setOrderManageRequestObj"
+          :RegionalID="objForOrderList.SellArea.RegionalID"
+          :CityID="objForOrderList.SellArea.CityID"
+          :CountyID="objForOrderList.SellArea.CountyID"
+          :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+        />
+        <EpCascaderByProduct
+          class="mr-12"
+          :getList="getDataList"
+          :setCondition="setOrderManageRequestObj"
+          :First="objForOrderList.ProductClass.First"
+          :Second="objForOrderList.ProductClass.Second"
+          :ProductID="objForOrderList.ProductID"
+          :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]"
+         />
         <!-- <ProductSelector
           :changePropsFunc="setOrderManageRequestObj"
           :requestFunc="getDataList"
@@ -94,7 +110,8 @@ import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannel
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 // import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
-import EpCascader from '../../packages/EpCascader/index.vue';
+import EpCascaderByArea from '../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
+import EpCascaderByProduct from '../common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
 
 export default {
   components: {
@@ -108,7 +125,9 @@ export default {
     // ElDateRangeSelector,
     LineDateSelectorComp,
     SearchInputComp,
-    EpCascader,
+    // EpCascader,
+    EpCascaderByArea,
+    EpCascaderByProduct,
   },
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'selfHelpOrderTypeList']),
@@ -138,46 +157,6 @@ export default {
     //       :TypeID="objForOrderList.ProductClass.Second"
     //       :ProductID="objForOrderList.ProductID"
     //       :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]"
-    EpCascaderAreaValue: {
-      get() {
-        const list = [
-          this.objForOrderList.SellArea.RegionalID,
-          this.objForOrderList.SellArea.CityID,
-          this.objForOrderList.SellArea.CountyID,
-        ];
-        return list.filter(it => it || it === 0);
-      },
-      set(ids) {
-        const [_RegionalID, _CityID, _CountyID] = ids;
-        const RegionalID = _RegionalID || _RegionalID === 0 ? _RegionalID : '';
-        const CityID = _CityID || _CityID === 0 ? _CityID : '';
-        const CountyID = _CountyID || _CountyID === 0 ? _CountyID : '';
-        this.setOrderManageRequestObj([['SellArea', 'RegionalID'], RegionalID]);
-        this.setOrderManageRequestObj([['SellArea', 'CityID'], CityID]);
-        this.setOrderManageRequestObj([['SellArea', 'CountyID'], CountyID]);
-        this.getDataList();
-      },
-    },
-    EpCascaderProductValue: {
-      get() {
-        const list = [
-          this.objForOrderList.ProductClass.First,
-          this.objForOrderList.ProductClass.Second,
-          this.objForOrderList.ProductID,
-        ];
-        return list.filter(it => it || it === 0);
-      },
-      set(ids) {
-        const [_First, _Second, _ProductID] = ids;
-        const First = _First || _First === 0 ? _First : '';
-        const Second = _Second || _Second === 0 ? _Second : '';
-        const ProductID = _ProductID || _ProductID === 0 ? _ProductID : '';
-        this.setOrderManageRequestObj([['ProductClass', 'First'], First]);
-        this.setOrderManageRequestObj([['ProductClass', 'Second'], Second]);
-        this.setOrderManageRequestObj([['ProductID', ''], ProductID]);
-        this.getDataList();
-      },
-    },
   },
   data() {
     return {
@@ -209,11 +188,6 @@ export default {
     clearCondition() {
       this.$store.commit('orderModule/clearConfigObj');
     },
-  },
-  created() {
-    this.$store.dispatch('common/getAreaList');
-    this.$store.dispatch('common/getProductClassifyData', { key: 6 });
-    this.$store.dispatch('common/getAllProductNames');
   },
 };
 </script>

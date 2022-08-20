@@ -89,22 +89,6 @@ export default class InvoiceHandlerClass {
 
   async cancel(params) { // 取消
     if (!params || !this.handleTarget || this.handleTarget.InvoiceStatus !== InvoiceStatusEnums.makingUp.ID) return;
-    // 下方需要更改为取消处理内容
-    // const resp = await api.getInvoiceManageComplete(this.handleTarget.InvoiceID).catch(() => null);
-    // if (resp && resp.data.Status === 1000) {
-    //   const cb = () => {
-    //     this.handleTarget.InvoiceStatus = InvoiceStatusEnums.haveMaked.ID;
-    //     if (!this.handleTarget.InvoiceLog) this.handleTarget.InvoiceLog = [];
-    //     this.handleTarget.InvoiceLog.unshift({
-    //       LogType: InvoiceStatusEnums.haveMaked.ID,
-    //       CreateTime: getFormatDateString(),
-    //     });
-    //     this.handleTarget.OperateTime = getFormatDateString();
-    //     this.syncForStore();
-    //   };
-    //   messageBox.successSingle('已开票完成', cb, cb);
-    // }
-    console.log(params);
     const resp = await api.getInvoiceManageCancel(params).catch(() => null);
     if (resp && resp.data.Status === 1000) {
       // 取消成功

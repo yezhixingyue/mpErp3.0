@@ -4,7 +4,7 @@
       <el-button type="primary" @click="onAddClick" v-if="localPermission.Setup">添加消费返现</el-button>
     </div>
     <div class="list">
-      <AreaSelector
+      <!-- <AreaSelector
         title="区域"
         :changePropsFunc="setCondition"
         :requestFunc="getList"
@@ -19,6 +19,25 @@
         :ClassID='conditionForDataList.Product.ClassID'
         :TypeID='conditionForDataList.Product.TypeID'
         :ProductID='conditionForDataList.Product.ProductID'
+        :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
+      /> -->
+      <EpCascaderByArea
+          class="mt-10"
+          title="区域"
+          :getList="getList"
+          :setCondition="setCondition"
+          :RegionalID="conditionForDataList.SellArea.RegionalID"
+          :CityID="conditionForDataList.SellArea.CityID"
+          :CountyID="conditionForDataList.SellArea.CountyID"
+          :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+        />
+      <EpCascaderByProduct
+        class="mr-20 mt-10"
+        :getList="getList"
+        :setCondition="setCondition"
+        :First="conditionForDataList.Product.ClassID"
+        :Second="conditionForDataList.Product.TypeID"
+        :ProductID="conditionForDataList.Product.ProductID"
         :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
       />
       <OrderChannelSelector
@@ -69,18 +88,22 @@
 
 <script>
 import { mapState } from 'vuex';
-import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
-import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
+// import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
+// import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 import OrderChannelSelector from '../../common/SelectorComps/OrderChannelSelector.vue';
 import SearchInputComp from '../../common/SearchInputComp.vue';
 import { CategoryEnumsList } from '../../../store/printBean/PrintBeanClassType';
+import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
+import EpCascaderByProduct from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
 
 export default {
   components: {
-    AreaSelector,
-    ProductSelector,
+    // AreaSelector,
+    // ProductSelector,
     OrderChannelSelector,
     SearchInputComp,
+    EpCascaderByArea,
+    EpCascaderByProduct,
   },
   data() {
     return {

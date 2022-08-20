@@ -47,11 +47,21 @@
           label=''
         />
       </div>
-      <AreaSelector
+      <!-- <AreaSelector
         style="margin-right: 40px"
         title='所属区域'
         :changePropsFunc="setCondition4DataList"
         :requestFunc="getDataList"
+        :RegionalID="condition4DataList.SellArea.RegionalID"
+        :CityID="condition4DataList.SellArea.CityID"
+        :CountyID="condition4DataList.SellArea.CountyID"
+        :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+      /> -->
+      <EpCascaderByArea
+         style="margin-right: 25px"
+         title='所属区域'
+        :getList="getDataList"
+        :setCondition="setCondition4DataList"
         :RegionalID="condition4DataList.SellArea.RegionalID"
         :CityID="condition4DataList.SellArea.CityID"
         :CountyID="condition4DataList.SellArea.CountyID"
@@ -108,17 +118,19 @@
 <script>
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
-import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
+// import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import { CustomerStatusEnumList, AuthStatusEnumList, RegTypeEnumList } from '@/store/customerManage/Enums';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import { mapState } from 'vuex';
+import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
   components: {
     SearchInputComp,
     OrderChannelSelector,
-    AreaSelector,
+    // AreaSelector,
     LineDateSelectorComp,
+    EpCascaderByArea,
   },
   computed: {
     ...mapState('customerManage', ['condition4DataList', 'customerDataList']),

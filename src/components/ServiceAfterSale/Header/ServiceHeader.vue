@@ -11,13 +11,22 @@
               :defaultProps="{ label: 'label', value: 'value' }"
               label="售后类型"
             />
-            <ProductSelector
+            <!-- <ProductSelector
             :changePropsFunc="setCondition4DataList"
             :requestFunc="getDataList"
             :ClassID="obj4RequestServiceList.Product.ClassID"
             :TypeID="obj4RequestServiceList.Product.TypeID"
             :ProductID="obj4RequestServiceList.Product.ProductID"
-            :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]" />
+            :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]" /> -->
+            <EpCascaderByProduct
+              class="mr-12"
+              :getList="getDataList"
+              :setCondition="setCondition4DataList"
+              :First="obj4RequestServiceList.Product.ClassID"
+              :Second="obj4RequestServiceList.Product.TypeID"
+              :ProductID="obj4RequestServiceList.Product.ProductID"
+              :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
+            />
             <div class="user-selector">
               <order-channel-selector
                 :options="userTypeList"
@@ -103,22 +112,24 @@
 <script>
 import { mapState } from 'vuex';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
-import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
+// import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 // import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+import EpCascaderByProduct from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 // import ServiceClassify from './ServiceClassify.vue';
 
 export default {
   components: {
     // ServiceClassify,
-    ProductSelector,
+    // ProductSelector,
     OrderChannelSelector,
     // StaffSelector,
     // ElDateRangeSelector,
     SearchInputComp,
     LineDateSelectorComp,
+    EpCascaderByProduct,
   },
   computed: {
     ...mapState('common', ['userTypeList', 'userRankList']),

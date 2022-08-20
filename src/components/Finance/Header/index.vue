@@ -1,14 +1,32 @@
 <template>
   <header class="mp-finance-page-header">
     <div class="mp-finance-page-selector-wrap">
-      <AreaSelector />
-      <ProductSelector style="margin-right: 15px"
+      <!-- <AreaSelector /> -->
+      <!-- <ProductSelector style="margin-right: 15px"
         :changePropsFunc="setFinanceRequestObj"
         :requestFunc="getFinanceTableData"
         :ClassID="searchCondition4Finance.ProductClass.First"
         :TypeID="searchCondition4Finance.ProductClass.Second"
         :ProductID="searchCondition4Finance.ProductID"
-        :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]" />
+        :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]" /> -->
+      <EpCascaderByArea
+        class="mr-12"
+        :getList="getFinanceTableData"
+        :setCondition="setFinanceRequestObj"
+        :RegionalID="searchCondition4Finance.SellArea.RegionalID"
+        :CityID="searchCondition4Finance.SellArea.CityID"
+        :CountyID="searchCondition4Finance.SellArea.CountyID"
+        :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+      />
+      <EpCascaderByProduct
+         class="mr-20"
+        :getList="getFinanceTableData"
+        :setCondition="setFinanceRequestObj"
+        :First="searchCondition4Finance.ProductClass.First"
+        :Second="searchCondition4Finance.ProductClass.Second"
+        :ProductID="searchCondition4Finance.ProductID"
+        :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]"
+        />
       <WriteComp />
       <ExpressSelector />
       <order-channel-selector
@@ -82,22 +100,24 @@
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import { mapState, mapMutations, mapActions } from 'vuex';
-import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
+// import ProductSelector from '@/components/common/SelectorComps/ProductSelectorIndex.vue';
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
-import AreaSelector from './AreaSelector.vue';
+// import AreaSelector from './AreaSelector.vue';
 // import UserSelector from './UserSelector.vue';
 // import OrderStatusSelector from './OrderStatusSelector.vue';
 // import ProductSelector from './ProductSelector.vue';
 import ExpressSelector from './ExpressSelector.vue';
 import WriteComp from './WriteComp.vue';
 // import TimeSearchSelector from './TimeSearchSelector.vue';
+import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
+import EpCascaderByProduct from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
 
 export default {
   components: {
-    AreaSelector,
-    ProductSelector,
+    // AreaSelector,
+    // ProductSelector,
     ExpressSelector,
     // OrderStatusSelector,
     WriteComp,
@@ -107,6 +127,8 @@ export default {
     // ElDateRangeSelector,
     SearchInputComp,
     LineDateSelectorComp,
+    EpCascaderByProduct,
+    EpCascaderByArea,
   },
   computed: {
     ...mapState('common', ['orderCreateTypeList', 'deliverStatus']),
