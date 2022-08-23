@@ -2,12 +2,24 @@
   <section class="mp-erp-period-manage-dispatch-time-manage-list-page">
     <header>
       <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.DispatchSetup">添加派件时间</el-button>
-      <AreaSelector
+      <!-- <AreaSelector
         title="区域"
         useADArea
         useLabel
         :changePropsFunc="setCondition2ListData"
         :requestFunc="getTableDataList"
+        :RegionalID="Condition4DispatchTimeList.ProvinceName"
+        :CityID="Condition4DispatchTimeList.CityName"
+        :CountyID="Condition4DispatchTimeList.CountyName"
+        :typeList="[['ProvinceName', ''],['CityName', ''],['CountyName', '']]"
+      /> -->
+      <EpCascaderByArea
+         title="区域"
+         useAdArea
+         useLabel
+         class="mr-20"
+        :setCondition="setCondition2ListData"
+        :getList="getTableDataList"
         :RegionalID="Condition4DispatchTimeList.ProvinceName"
         :CityID="Condition4DispatchTimeList.CityName"
         :CountyID="Condition4DispatchTimeList.CountyName"
@@ -32,15 +44,17 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import CountComp from '@/components/common/Count.vue';
-import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
+// import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import DispatchTimeTableComp from '../../../components/ProducePeriodComps/DispatchTimeComps/DispatchTimeTableComp.vue';
+import EpCascaderByArea from '../../../components/common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
   name: 'DispatchTimeListPage',
   components: {
     DispatchTimeTableComp,
     CountComp,
-    AreaSelector,
+    // AreaSelector,
+    EpCascaderByArea,
   },
   computed: {
     ...mapState('periodManage', ['loading', 'DispatchTimeDataList', 'DispatchTimeDataNumber', 'Condition4DispatchTimeList']),

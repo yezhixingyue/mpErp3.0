@@ -7,7 +7,15 @@
           <el-button type="primary" class="mp-common-btn-styles" @click="jumpAreaTempPage">适用范围模板</el-button>
           <el-button type="primary" class="mp-common-btn-styles" @click="jumpMakeupRulePage">拼版规则设置</el-button>
         </template>
-        <NewProductClassifySelectComp v-model="ProductClassData" />
+        <!-- <NewProductClassifySelectComp v-model="ProductClassData" /> -->
+        <EpCascaderByProductWithRoot
+          class="mr-15"
+         :ClassType="condition4PriceManageList.ClassType"
+         :First="condition4PriceManageList.ProductClass.First"
+         :Second="condition4PriceManageList.ProductClass.Second"
+         :getList="getPriceManageList"
+         :setCondition="setObjForListData"
+        />
         <el-checkbox v-model="noPriceChecked">仅显示无报价产品</el-checkbox>
       </div>
       <search-input-comp
@@ -42,9 +50,10 @@
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import PriceTableComp from '@/components/PriceComps/ListTable/PriceTableComp.vue';
 import Count from '@/components/common/Count.vue';
-import NewProductClassifySelectComp from '@/components/common/SelectorComps/NewProductClassifySelectComp.vue';
+// import NewProductClassifySelectComp from '@/components/common/SelectorComps/NewProductClassifySelectComp.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
+import EpCascaderByProductWithRoot from '../../components/common/SelectorComps/EpCascaderWrap/EpCascaderByProductWithRoot.vue';
 
 export default {
   name: 'PriceManageListPage',
@@ -52,7 +61,8 @@ export default {
     SearchInputComp,
     PriceTableComp,
     Count,
-    NewProductClassifySelectComp,
+    // NewProductClassifySelectComp,
+    EpCascaderByProductWithRoot,
   },
   mixins: [recordScrollPositionMixin('.mp-erp-price-manage-table-comp-wrap')],
   computed: {
@@ -152,6 +162,10 @@ export default {
       margin-right: 20px;
       white-space: nowrap;
       margin-bottom: 15px;
+    }
+    .mp-common-comps-ep-cascader-comp-wrap {
+      position: relative;
+      top: 2px;
     }
   }
   > main {

@@ -436,8 +436,8 @@ export default {
     /* 产品分类管理相关
     -------------------------------*/
     ProductClassifyIDList: [
-      { ID: 6, Name: '代客下单', Type: 1 }, // ID只与从缓存获取数据有关  其它分类管理 和 分类筛选等 都使用Type
-      { ID: 2, Name: '自助上传', Type: 2 },
+      { ID: 6, Name: '代客下单', Type: 1, ClassName: '代客下单' }, // ID只与从缓存获取数据有关  其它分类管理 和 分类筛选等 都使用Type
+      { ID: 2, Name: '自助上传', Type: 2, ClassName: '自助上传' },
     ],
     ProductMultipleClassifyList: [], // 产品多分类列表数据
     /* 物料列表
@@ -515,6 +515,12 @@ export default {
       if (!target) return [];
       const classList = target.List;
       return getAllProductClassifyFunc(classList, state.productNames, 2);
+    },
+    allProductClassify4CustomerWithEmpty(state) {
+      const target = state.ProductMultipleClassifyList.find(it => it.ID === 2);
+      if (!target) return [];
+      const classList = target.List;
+      return getAllProductClassifyFunc(classList, state.productNames, 2, false);
     },
     /* 全部销售区域分级树形结构
     -------------------------------*/

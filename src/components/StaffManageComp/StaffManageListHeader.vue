@@ -36,7 +36,19 @@
           label=''
         />
       </div>
-      <TwoLevelSelectComp v-model="locationIDs" :level1Options='level1Options' :level2Options='level2Options' showLine title='城市' />
+      <!-- <TwoLevelSelectComp v-model="locationIDs" :level1Options='level1Options' :level2Options='level2Options' showLine title='城市' /> -->
+      <EpCascaderByArea
+         title="城市"
+         class="mr-20"
+        :useAdArea="true"
+        :level="2"
+        :fiexdWidth="180"
+        :RegionalID="condition.Location.First"
+        :CityID="condition.Location.Second"
+        :getList="getDataList"
+        :setCondition="setCondition"
+        :typeList="[['Location', 'First'],['Location', 'Second']]"
+      />
       <AreaSelector
         title='管理部门'
         hasNullOption
@@ -76,11 +88,12 @@
 
 <script>
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
-import TwoLevelSelectComp from '@/components/common/SelectorComps/TwoLevelSelectComp.vue';
+// import TwoLevelSelectComp from '@/components/common/SelectorComps/TwoLevelSelectComp.vue';
 import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import SearchInputComp from '@/components/common/SearchInputComp';
 import { SexEnumList, EducationEnumList, StaffStatusEnumList } from '@/assets/js/TypeClass/StaffManage/enums';
 import { mapState, mapGetters } from 'vuex';
+import EpCascaderByArea from '../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
   props: {
@@ -100,9 +113,10 @@ export default {
   },
   components: {
     OrderChannelSelector,
-    TwoLevelSelectComp,
+    // TwoLevelSelectComp,
     AreaSelector,
     SearchInputComp,
+    EpCascaderByArea,
   },
   computed: {
     ...mapState('common', ['Permission']),

@@ -3,25 +3,35 @@
     <normal-btn-full
      v-if="Permission.PermissionList.PermissionSetupDeposit.Obj.Manage"
      class="blue-full-color-btn-styles" @click.native="onClick" title="添加定金设置" />
-    <product-selector-index-two-levels
+    <!-- <product-selector-index-two-levels
       :changePropsFunc="setObjForListData"
       :requestFunc="getDepositList"
       :ClassID="objForListData.Product.classID"
       :TypeID="objForListData.Product.typeID"
       useCustomer
-      :typeList="[['Product', 'classID'],['Product', 'typeID']]" />
+      :typeList="[['Product', 'classID'],['Product', 'typeID']]" /> -->
+    <EpCascaderByLv2ProductOrOther
+       useCustomer
+      :setCondition="setObjForListData"
+      :getList="getDepositList"
+      :First="objForListData.Product.classID"
+      :Second="objForListData.Product.typeID"
+      :typeList="[['Product', 'classID'],['Product', 'typeID']]"
+     />
   </header>
 </template>
 
 <script>
-import normalBtnFull from '@/components/common/normalBtnFull.vue';
-import ProductSelectorIndexTwoLevels from '@/components/common/SelectorComps/ProductSelectorIndexTwoLevels.vue';
 import { mapState, mapMutations, mapActions } from 'vuex';
+import normalBtnFull from '@/components/common/normalBtnFull.vue';
+// import ProductSelectorIndexTwoLevels from '@/components/common/SelectorComps/ProductSelectorIndexTwoLevels.vue';
+import EpCascaderByLv2ProductOrOther from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByLv2ProductOrOther.vue';
 
 export default {
   components: {
     normalBtnFull,
-    ProductSelectorIndexTwoLevels,
+    // ProductSelectorIndexTwoLevels,
+    EpCascaderByLv2ProductOrOther,
   },
   computed: {
     ...mapState('deposit', ['objForListData', 'listData']),

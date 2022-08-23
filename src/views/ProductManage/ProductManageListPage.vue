@@ -7,7 +7,14 @@
          v-if="Permission.PermissionList.PermissionProductBase.Obj.SetupProduct">添加产品</el-button>
         <el-button type="primary" class="mp-common-btn-styles" @click="goToClassifyPage"
          v-if="Permission.PermissionList.PermissionProductBase.Obj.ManageProductClass">管理产品分类</el-button>
-        <NewProductClassifySelectComp v-model="ProductClassData" />
+        <!-- <NewProductClassifySelectComp v-model="ProductClassData" /> -->
+        <EpCascaderByProductWithRoot
+         :ClassType="condition4ProductManageList.ClassType"
+         :First="condition4ProductManageList.ProductClass.First"
+         :Second="condition4ProductManageList.ProductClass.Second"
+         :getList="getManageProductList"
+         :setCondition="setObjForListData"
+        />
       </div>
       <search-input-comp
         class="search-section"
@@ -41,9 +48,10 @@
 import SearchInputComp from '@/components/common/SearchInputComp.vue';
 import ProductTableComp from '@/components/ProductManageComps/ListPageComps/ProductTableComp.vue';
 import Count from '@/components/common/Count.vue';
-import NewProductClassifySelectComp from '@/components/common/SelectorComps/NewProductClassifySelectComp.vue';
+// import NewProductClassifySelectComp from '@/components/common/SelectorComps/NewProductClassifySelectComp.vue';
 import { mapState } from 'vuex';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+import EpCascaderByProductWithRoot from '../../components/common/SelectorComps/EpCascaderWrap/EpCascaderByProductWithRoot.vue';
 
 export default {
   name: 'ProductManageList',
@@ -51,7 +59,8 @@ export default {
     SearchInputComp,
     ProductTableComp,
     Count,
-    NewProductClassifySelectComp,
+    // NewProductClassifySelectComp,
+    EpCascaderByProductWithRoot,
   },
   mixins: [recordScrollPositionMixin('.mp-erp-product-manage-table-comp-wrap')],
   computed: {
@@ -130,6 +139,10 @@ export default {
     > section {
       margin-right: 20px;
       white-space: nowrap;
+    }
+    .mp-common-comps-ep-cascader-comp-wrap {
+      position: relative;
+      top: 2px;
     }
   }
   > main {

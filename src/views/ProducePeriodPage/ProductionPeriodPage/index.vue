@@ -1,14 +1,25 @@
 <template>
   <section class="mp-product-production-period-root-list-page">
     <header>
-      <ProductSelectorIndexTwoLevels
+      <!-- <ProductSelectorIndexTwoLevels
         title='产品分类'
         haveNotEmpty
         :changePropsFunc="setObjForListData"
         :requestFunc="getDataList"
         :ClassID="condition4RootDataList.classID"
         :TypeID="condition4RootDataList.typeID"
-        :typeList="[['classID', ''],['typeID', '']]" />
+        :typeList="[['classID', ''],['typeID', '']]" /> -->
+      <EpCascaderByLv2ProductOrOther
+         title='产品分类'
+         initValue
+         onlyLastValid
+        :withEmpty="false"
+        :setCondition="setObjForListData"
+        :getList="getDataList"
+        :First="condition4RootDataList.classID"
+        :Second="condition4RootDataList.typeID"
+        :typeList="[['classID', ''],['typeID', '']]"
+       />
     </header>
     <main>
       <!-- 列表数据 -->
@@ -28,13 +39,15 @@
 </template>
 
 <script>
-import ProductSelectorIndexTwoLevels from '@/components/common/SelectorComps/ProductSelectorIndexTwoLevels.vue';
 import { mapState } from 'vuex';
+// import ProductSelectorIndexTwoLevels from '@/components/common/SelectorComps/ProductSelectorIndexTwoLevels.vue';
+import EpCascaderByLv2ProductOrOther from '../../../components/common/SelectorComps/EpCascaderWrap/EpCascaderByLv2ProductOrOther.vue';
 
 export default {
   name: 'ProductionPeriodPage',
   components: {
-    ProductSelectorIndexTwoLevels,
+    // ProductSelectorIndexTwoLevels,
+    EpCascaderByLv2ProductOrOther,
   },
   data() {
     return {

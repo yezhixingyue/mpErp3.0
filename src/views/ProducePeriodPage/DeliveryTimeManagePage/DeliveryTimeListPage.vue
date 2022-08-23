@@ -2,12 +2,24 @@
   <section class="mp-erp-period-manage-delivery-time-manage-list-page">
     <header>
       <el-button type="primary" sizi='small' @click="onItemSetupClick(null)" v-if="localPermission.ShiftSetup">添加发货班次</el-button>
-      <AreaSelector
+      <!-- <AreaSelector
         title="区域"
         useADArea
         useLabel
         :changePropsFunc="setCondition2ListData"
         :requestFunc="getTableDataList"
+        :RegionalID="Condition4DeliveryTimeList.ProvinceName"
+        :CityID="Condition4DeliveryTimeList.CityName"
+        :CountyID="Condition4DeliveryTimeList.CountyName"
+        :typeList="[['ProvinceName', ''],['CityName', ''],['CountyName', '']]"
+      /> -->
+      <EpCascaderByArea
+         title="区域"
+         useAdArea
+         useLabel
+         class="mr-20"
+        :setCondition="setCondition2ListData"
+        :getList="getTableDataList"
         :RegionalID="Condition4DeliveryTimeList.ProvinceName"
         :CityID="Condition4DeliveryTimeList.CityName"
         :CountyID="Condition4DeliveryTimeList.CountyName"
@@ -42,17 +54,19 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import CountComp from '@/components/common/Count.vue';
-import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
+// import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import DeliveryTimeTableComp from '../../../components/ProducePeriodComps/DeliveryTimeComps/DeliveryTimeTableComp.vue';
+import EpCascaderByArea from '../../../components/common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
   name: 'DeliveryTimeListPage',
   components: {
     DeliveryTimeTableComp,
     CountComp,
-    AreaSelector,
+    // AreaSelector,
     OrderChannelSelector,
+    EpCascaderByArea,
   },
   computed: {
     ...mapState('periodManage', ['loading', 'DeliveryTimeDataList', 'DeliveryTimeDataNumber', 'Condition4DeliveryTimeList']),

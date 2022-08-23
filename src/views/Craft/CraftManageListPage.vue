@@ -7,7 +7,7 @@
       <template v-if="Permission && Permission.PermissionList.PermissionCraftBase.Obj.SetupCraftClass">
         <span class="blue-span" @click="jumpToClassifyPageClick">管理工艺分类</span>
       </template>
-      <OrderChannelSelector
+      <!-- <OrderChannelSelector
         :options='level1OptionList'
         :requestFunc='getCraftListData'
         :changePropsFunc='setCondition4CraftList'
@@ -27,7 +27,16 @@
         :defaultProps="{ label: 'ClassName', value: 'ID' }"
         key='order-Terminal'
         label=''
-      />
+      /> -->
+      <EpCascaderByLv2ProductOrOther
+         title="工艺分类筛选"
+        :ClassifyList="twoLevelsCraftClassify"
+        :getList="getCraftListData"
+        :setCondition="setCondition4CraftList"
+        :First="Condition4CraftList.Category.First"
+        :Second="Condition4CraftList.Category.Second"
+        :typeList="[['Category', 'First'],['Category', 'Second']]"
+       />
     </header>
     <main>
       <CraftSaveDialog :curData='curData' :visible.sync='visible' :classifyData='twoLevelsCraftClassify' @submitSuccess='onCraftSaveSuccess' />
@@ -48,9 +57,10 @@
 import CraftSaveDialog from '@/components/CraftComps/CraftSaveDialog.vue';
 import CountComp from '@/components/common/Count.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
-import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
+// import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import { mapGetters, mapState, mapMutations } from 'vuex';
 import CraftListTableComp from '../../components/CraftComps/CraftListTableComp.vue';
+import EpCascaderByLv2ProductOrOther from '../../components/common/SelectorComps/EpCascaderWrap/EpCascaderByLv2ProductOrOther.vue';
 
 export default {
   name: 'CraftManageList',
@@ -59,7 +69,8 @@ export default {
     CraftSaveDialog,
     CraftListTableComp,
     CountComp,
-    OrderChannelSelector,
+    // OrderChannelSelector,
+    EpCascaderByLv2ProductOrOther,
   },
   data() {
     return {
@@ -163,6 +174,10 @@ export default {
       > header {
         display: none;
       }
+    }
+    .mp-common-comps-ep-cascader-comp-wrap {
+      position: relative;
+      top: 2px;
     }
   }
   > main {
