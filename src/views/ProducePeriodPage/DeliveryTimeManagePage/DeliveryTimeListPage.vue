@@ -26,7 +26,7 @@
         :typeList="[['ProvinceName', ''],['CityName', ''],['CountyName', '']]"
       />
       <OrderChannelSelector
-        useEmpty
+         withEmpty
         :options="subExpressList"
         :requestFunc="getTableDataList"
         :changePropsFunc="setCondition2ListData"

@@ -229,6 +229,9 @@ export default {
         transform: scaleY(1.4);
         display: inline-block;
       }
+      & + .el-button {
+        margin-left: 30px;
+      }
     }
   }
 }
