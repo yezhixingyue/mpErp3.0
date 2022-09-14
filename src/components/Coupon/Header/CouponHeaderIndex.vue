@@ -33,7 +33,8 @@
           :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
         /> -->
         <EpCascaderByProduct
-          class="mr-25"
+           class="mr-25"
+           useCustomer
           :getList="getCouponList"
           :setCondition="setCondition2ListData"
           :First="condition2ListData.Product.ClassID"

@@ -27,7 +27,7 @@
           :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
          /> -->
         <EpCascaderByArea
-          class="mr-25"
+           class="mr-25"
           :getList="getPromoteList"
           :setCondition="setPromoteListRequestObj"
           :RegionalID="promoteListRequestObj.SellArea.RegionalID"
@@ -36,7 +36,8 @@
           :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
         />
         <EpCascaderByProduct
-          class="mr-24"
+           class="mr-24"
+           useCustomer
           :getList="getPromoteList"
           :setCondition="setPromoteListRequestObj"
           :First="promoteListRequestObj.Product.ClassID"

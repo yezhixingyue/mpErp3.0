@@ -2,7 +2,7 @@
   <!-- v-bind="$attrs" v-on="$listeners" -->
   <EpCascader
     :showLine="showLine"
-    :list="allProductClassifyWithEmpty"
+    :list="localProductList"
     :fiexdWidth="fiexdWidth"
     :title="title"
     v-model="EpCascaderProductValue"
@@ -48,12 +48,19 @@ export default {
       type: Function,
       default: () => {},
     },
+    useCustomer: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     EpCascader,
   },
   computed: {
-    ...mapGetters('common', ['allProductClassifyWithEmpty']),
+    ...mapGetters('common', ['allProductClassifyWithEmpty', 'allProductClassify4CustomerWithEmpty']),
+    localProductList() {
+      return !this.useCustomer ? this.allProductClassifyWithEmpty : this.allProductClassify4CustomerWithEmpty;
+    },
     EpCascaderProductValue: {
       get() {
         const list = [
@@ -76,7 +83,8 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('common/getProductClassifyData', { key: 6 });
+    const key = this.useCustomer ? 2 : 6;
+    this.$store.dispatch('common/getProductClassifyData', { key });
     this.$store.dispatch('common/getAllProductNames');
   },
 };
