@@ -98,7 +98,7 @@ export default class PriceTactic {
         if (t2) SecondLevelName = t2.ClassName;
       }
       return { ...it, FirstLevelName, SecondLevelName };
-    });
+    }).filter(it => it.FirstLevelName && it.SecondLevelName);
     this.PolicyTableList = list;
   }
 
