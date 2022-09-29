@@ -52,7 +52,7 @@ export default class CommonClassType {
     if (!obj) return {};
     Object.keys(obj).forEach(key => {
       if (Object.prototype.toString.call(obj[key]) !== '[object Object]') {
-        if ((obj[key] && key !== 'DateType') || (bool && obj[key] === 0)) _tempObj[key] = obj[key];
+        if ((obj[key] && key !== 'DateType') || (bool && obj[key] === 0) || obj[key] === false) _tempObj[key] = obj[key];
       } else {
         const _t = obj[key];
         Object.keys(_t).forEach(subKey => {

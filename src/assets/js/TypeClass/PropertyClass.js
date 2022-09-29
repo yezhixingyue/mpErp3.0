@@ -409,7 +409,7 @@ export default class PropertyClass {
                 if (Property && Property.DisplayContent) {
                   if (Array.isArray(Property.OptionList)) {
                     const t = Property.OptionList.find(_it => _it.First === _val);
-                    if (t) _val = it.Second;
+                    if (t) _val = t.Second;
                   }
                 }
               } else {
