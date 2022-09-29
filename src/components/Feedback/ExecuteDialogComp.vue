@@ -924,7 +924,7 @@ export default {
           breakPointUpload(file, uniqueName, (res) => {
             this.ReprintFilePercentage = Math.round(res);
           }).then(res => {
-            if (!res) return;
+            if (!res.status) return;
             // 文件上传成功
             this.CompleteSave(temp, IsSave);
           });
