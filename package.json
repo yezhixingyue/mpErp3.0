@@ -20,6 +20,7 @@
     "element-ui": "^2.13.0",
     "js-base64": "^2.5.2",
     "js-sha1": "^0.6.0",
+    "mpzj-sell-lib": "^0.1.8",
     "nprogress": "^0.2.0",
     "sha1-file": "^2.0.0",
     "sortable": "^2.0.0",

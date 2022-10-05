@@ -11,7 +11,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import EpCascader from '../../../../packages/EpCascader/index.vue';
+import lib from 'mpzj-sell-lib';
+// import EpCascader from '../../../../packages/EpCascader/index.vue';
 
 export default {
   props: {
@@ -54,7 +55,8 @@ export default {
     },
   },
   components: {
-    EpCascader,
+    // EpCascader,
+    EpCascader: lib.EpCascader,
   },
   computed: {
     ...mapGetters('common', ['allProductClassifyWithEmpty', 'allProductClassify4CustomerWithEmpty']),

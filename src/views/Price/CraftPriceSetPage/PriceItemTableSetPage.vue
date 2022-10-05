@@ -182,7 +182,8 @@ export default {
       return this.PriceTableData?.Unit;
     },
     OtherDataUnit() { // 其它数据
-      return this.PriceTableData?.DataList.map(it => (it.Unit ? `${it.Name}（单位：${it.Unit}）` : `${it.Name}`)).join('、');
+      if (!this.PriceTableData) return '';
+      return this.PriceTableData.DataList.map(it => (it.Unit ? `${it.Name}（单位：${it.Unit}）` : `${it.Name}`)).join('、');
     },
     XAxisList() {
       if (Array.isArray(this.PriceTableData.XAxis.List) && this.PriceTableData.XAxis.List.length > 0) return this.PriceTableData.XAxis.List;

@@ -39,7 +39,7 @@ export default {
       setTimeout(() => {
         const oPoppers = document.querySelectorAll('.el-tooltip__popper');
         if (oPoppers.length === 0) return;
-        oPoppers.forEach(oEl => {
+        [...oPoppers].forEach(oEl => {
           const _oEl = oEl;
           _oEl.style.display = 'none';
         });

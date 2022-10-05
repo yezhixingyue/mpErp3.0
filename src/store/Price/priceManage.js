@@ -15,7 +15,7 @@ const initConditon = {
   KeyWords: '',
   ClassType: '',
   FieldType: 4,
-  NoPrice: false,
+  NoPrice: '', // true | ''
 };
 
 export default {

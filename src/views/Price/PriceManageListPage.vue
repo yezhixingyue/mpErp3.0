@@ -85,7 +85,7 @@ export default {
         return this.condition4PriceManageList.NoPrice;
       },
       set(val) {
-        this.$store.commit('priceManage/setCondition4PriceManageList', [['NoPrice', ''], val]);
+        this.$store.commit('priceManage/setCondition4PriceManageList', [['NoPrice', ''], val || '']);
         this.getPriceManageList();
       },
     },

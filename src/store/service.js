@@ -614,7 +614,7 @@ export default {
       const res = await api.getOrderFilePath2DownLoad(orderID);
       if (res.data.Status === 1000 && res.data.Data) {
         const list = document.body.querySelectorAll('iframe');
-        list.forEach(it => {
+        [...list].forEach(it => {
           if (it.name === 'mpDownload') {
             document.body.removeChild(it);
           }
