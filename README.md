@@ -1,29 +1,18 @@
-# test2.7
+## 名片之家 - 转换器项目
 
-## Project setup
-```
-npm install
-```
+### 项目构成
+> vue2.7 + ts + pania + axios + elementui   
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### 搭建工具
+> webpack
 
-### Run your unit tests
+### vue-router meta类型修改(router.d.ts中添加内容项)
+```javascript
+export interface RouteMeta extends Record<string | number | symbol, any> {
+  /** 页面标题 */
+  title: string,
+  /** 是否需要登录权限 */
+  requiresAuth: boolean,
+}
 ```
-npm run test:unit
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

@@ -1,41 +1,25 @@
 import Vue from 'vue';
-import VueRouter, { RouteConfig } from 'vue-router';
+import VueRouter from 'vue-router';
+import routeConfig from './routes';
+
+import handleRouterEach from './handleRouterEach';
+
+export const { routes } = routeConfig;
 
 Vue.use(VueRouter);
-
-const routes: Array<RouteConfig> = [
-  {
-    path: '/',
-    redirect: '/home',
-  },
-  {
-    path: '/home',
-    name: 'home',
-    meta: {
-      name: '首页',
-    },
-    component: () => import(/* webpackChunkName: "Home" */ '@/views/Home.vue'),
-  },
-  {
-    path: '/test',
-    name: 'test',
-    meta: {
-      name: '测试页面',
-    },
-    component: () => import(/* webpackChunkName: "Test" */ '@/views/Test.vue'),
-  },
-  {
-    path: '/login',
-    name: 'login',
-    meta: {
-      name: '登录页面',
-    },
-    component: () => import(/* webpackChunkName: "LoginPage" */ '@/views/LoginPage.vue'),
-  },
-];
 
 const router = new VueRouter({
   routes,
 });
+
+handleRouterEach(router);
+
+export function useRouter() {
+  return router;
+}
+
+export function useRoute() {
+  return router.currentRoute;
+}
 
 export default router;

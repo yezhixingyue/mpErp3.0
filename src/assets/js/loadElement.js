@@ -6,23 +6,43 @@ import {
   Popover,
   Dialog,
   Scrollbar,
-  // Table,
-  // TableColumn,
+  Menu,
+  MenuItem,
+  Submenu,
+  Tabs,
+  TabPane,
+  Input,
+  Form,
+  FormItem,
+  Dropdown,
+  DropdownItem,
+  Tooltip,
+  DropdownMenu,
 } from 'element-ui';
 
 // 指令
 import Clickoutside from 'element-ui/lib/utils/clickoutside';
+
+import { Button as MpButton } from 'mpzj-sell-lib';
 
 Vue.use(Pagination);
 Vue.use(Button);
 Vue.use(Popover);
 Vue.use(Dialog);
 Vue.use(Scrollbar);
-// Vue.use(Table);
-// Vue.use(TableColumn);
+Vue.use(Menu);
+Vue.use(MenuItem);
+Vue.use(Submenu);
+Vue.use(Tabs);
+Vue.use(TabPane);
+Vue.use(Input);
+Vue.use(Form);
+Vue.use(FormItem);
+Vue.use(Dropdown);
+Vue.use(DropdownItem);
+Vue.use(DropdownMenu);
+Vue.use(Tooltip);
 
-// import ElementUI from 'element-ui';
-
-// Vue.use(ElementUI);
+Vue.component('MpButton', MpButton);
 
 Vue.directive('clickoutside', Clickoutside);

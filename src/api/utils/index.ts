@@ -18,7 +18,6 @@ export class Handler {
    * @memberof Utils
    */
   static setLoading(config: AxiosRequestConfig) {
-    console.log('setLoading -1', config);
     if (config && config.loading !== false) { // 展示loading
       loadingHandler.display();
     }
@@ -32,7 +31,6 @@ export class Handler {
    * @memberof Utils
    */
   static closeLading(config: AxiosRequestConfig) {
-    console.log('closeLading 11', config);
     if (config && config.loading !== false) { // 关闭loading
       loadingHandler.hidden();
     }
@@ -101,7 +99,6 @@ export class Handler {
    */
   static backToLogin() {
     tokenHandler.removeToken();
-    console.log('localCancelToken', localCancelToken.recordList);
     localCancelToken.cancelAllRequest();
     loadingHandler.hiddenByForce();
     router.replace('/login');

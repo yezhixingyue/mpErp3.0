@@ -2,6 +2,7 @@ module.exports = {
   root: true,
   env: {
     node: true,
+    'vue/setup-compiler-macros': true,
   },
   extends: [
     'plugin:vue/essential',
@@ -30,6 +31,9 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 0,
     'vue/multi-word-component-names': 'off',
     'import/prefer-default-export': 'off',
+    'vuejs-accessibility/click-events-have-key-events': 'off',
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
   },
   overrides: [
     {

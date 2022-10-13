@@ -1,17 +1,16 @@
 import Vue from 'vue';
-import { createPinia, PiniaVuePlugin } from 'pinia';
+import { PiniaVuePlugin, pinia } from './store/pinia';
 import App from './App.vue';
 import router from './router';
 
 import './assets/js/loadElement';
-import './assets/js/dialogDrag';
+import './assets/js/directive';
 
 import './registerServiceWorker';
 
 import './assets/css/index.scss';
 
 Vue.use(PiniaVuePlugin);
-const pinia = createPinia();
 
 Vue.config.productionTip = false;
 

@@ -14,11 +14,3 @@ export interface IMPAxiosInstance extends AxiosInstance {
   put<T = any, R = AxiosResponse<IMpResponse<T>>, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<R>;
   delete<T = any, R = AxiosResponse<IMpResponse<T>>, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R>;
 }
-
-export interface IUser {
-  ID: string,
-  Name: string,
-  Account: {
-    Token: string
-  },
-}
