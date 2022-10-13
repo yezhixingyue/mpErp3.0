@@ -14,7 +14,7 @@
       </div>
       <ul>
         <li class="content-item" v-for="(item, index) in SizeList" :key="item.key || item.ID" >
-          <el-input v-if="!hiddenName" v-model.trim="item.Name" maxlength="20" size="small" class="name"></el-input>
+          <el-input v-if="!hiddenName" v-model.trim="item.Name" maxlength="30" size="small" class="name"></el-input>
           <ul class="flex-content">
             <li :style="`width:${autoWidth}`" v-for="(it,i) in ElementList" :key="it.ID">
               <NumberTypeItemComp
