@@ -5,7 +5,7 @@ import router from './router';
 
 import './assets/js/loadElement';
 import './assets/js/directive';
-
+import './assets/js/filter';
 import './registerServiceWorker';
 
 import './assets/css/index.scss';

@@ -20,7 +20,7 @@ const getErrorTitle = (error:any) => {
       title = '404 | 资源未找到';
       break;
     case 500:
-      title = '500 | 服务器内部错误';
+      title = '500 | 服务器错误';
       break;
     case 501:
       title = '501 | 服务器无法识别请求';

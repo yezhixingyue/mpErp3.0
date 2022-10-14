@@ -34,6 +34,7 @@ module.exports = {
     'vuejs-accessibility/click-events-have-key-events': 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
+    'no-use-before-define': 'off',
   },
   overrides: [
     {

@@ -18,6 +18,8 @@ import {
   DropdownItem,
   Tooltip,
   DropdownMenu,
+  Table,
+  TableColumn,
 } from 'element-ui';
 
 // 指令
@@ -42,6 +44,8 @@ Vue.use(Dropdown);
 Vue.use(DropdownItem);
 Vue.use(DropdownMenu);
 Vue.use(Tooltip);
+Vue.use(Table);
+Vue.use(TableColumn);
 
 Vue.component('MpButton', MpButton);
 

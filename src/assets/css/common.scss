@@ -119,7 +119,7 @@
     color: lighten($color: $--color-primary, $amount: 5) !important;
   }
   &:active {
-    color: darken($color: $--color-primary, $amount: 20) !important;
+    color: darken($color: $--color-primary, $amount: 15) !important;
   }
   &.disabled, &:disabled {
     color: #cbcbcb !important;
