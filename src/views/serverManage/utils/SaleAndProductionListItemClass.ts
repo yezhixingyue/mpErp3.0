@@ -48,7 +48,15 @@ export class SaleAndProductionListItemClass {
   }
 
   async save() {
-    const resp = await api.getServerSave(this).catch(() => null);
+    const temp: Partial<SaleAndProductionListItemPlainType> = {
+      Url: this.Url,
+      Name: this.Name,
+      Type: this.Type,
+    };
+    if (typeof this.ID === 'number') {
+      temp.ID = this.ID;
+    }
+    const resp = await api.getServerSave(temp).catch(() => null);
     if (resp && resp.data.Status === 1000) {
       if (!this.ID && this.ID !== 0) { // 新增  需要给ID、CreateTime、Operator 赋值
         this.ID = +resp.data.Data;

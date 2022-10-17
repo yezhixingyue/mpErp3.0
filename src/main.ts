@@ -10,6 +10,10 @@ import './registerServiceWorker';
 
 import './assets/css/index.scss';
 
+const infiniteScroll = require('vue-infinite-scroll');
+
+Vue.use(infiniteScroll);
+
 Vue.use(PiniaVuePlugin);
 
 Vue.config.productionTip = false;
@@ -19,3 +23,5 @@ new Vue({
   pinia,
   render: (h) => h(App),
 }).$mount('#app');
+
+console.log(infiniteScroll, Vue, Vue.directive);

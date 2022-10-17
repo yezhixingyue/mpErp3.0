@@ -35,6 +35,7 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     'no-use-before-define': 'off',
+    'vuejs-accessibility/label-has-for': 'off',
   },
   overrides: [
     {
