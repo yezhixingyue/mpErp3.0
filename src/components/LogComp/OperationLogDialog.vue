@@ -1,6 +1,6 @@
 <template>
   <CommonDialogComp
-    width="700px"
+    width="600px"
     :visible.sync="localVisible"
     :showSubmit="false"
     cancelText="关闭"
@@ -12,15 +12,17 @@
     top="15vh"
   >
     <template v-if="logData">
-      <ul class="infinite-list" v-infinite-scroll="load" :infinite-scroll-disabled="logData.loadAll" infinite-scroll-distance="1">
+      <ul class="infinite-list" v-load-more="load">
         <li v-for="it in logData.list" :key="it.ID">
-          <span>{{it.Content}}</span>
-          <span>{{it.Operator.Name}}</span>
-          <span>{{formatDateForDisplay(it.CreateTime)}}</span>
+          <span class="c" :title="it.Content">{{it.Content}}</span>
+          <span class="n" :title="it.Operator.Name">{{it.Operator.Name}}</span>
+          <span class="t">{{formatDateForDisplay(it.CreateTime)}}</span>
         </li>
+        <p class="state">
+          <template v-if="logData.loading">加载中...</template>
+          <template v-if="logData.loadAll && logData.listNumber > 10">没有更多了</template>
+        </p>
       </ul>
-      <p v-if="logData.loading">加载中...</p>
-      <p v-if="logData.loadAll">没有更多了</p>
     </template>
   </CommonDialogComp>
 </template>
@@ -63,8 +65,7 @@ const open = () => {
 };
 
 const load = () => {
-  console.log('load');
-  if (!logData.value || logData.value.loadAll) return;
+  if (!logData.value || logData.value.loadAll || logData.value.loading) return;
   const p = logData.value.list.length > 0 ? logData.value.condition.Page + 1 : 1;
   logData.value.getList(p);
 };
@@ -74,15 +75,44 @@ const load = () => {
 <style scoped lang='scss'>
 .dialog {
   :deep(.el-dialog__body) {
-    height: 460px;
+    height: 440px;
     box-sizing: border-box;
-    padding: 30px;
+    padding: 20px;
+    padding-left: 30px;
+    padding-bottom: 0;
+    border-bottom: 1px solid #d9d9d9;
     .infinite-list {
-      height: 400px;
+      height: 100%;
       overflow: auto;
       li {
-        height: 40px;
+        height: 30px;
+        display: flex;
+        > span {
+          flex: none;
+          margin-right: 10px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          &.c {
+            flex: 1;
+          }
+          &.n {
+            width: 7em;
+          }
+          &.t {
+            width: 110px;
+            margin-right: 0;
+          }
+        }
       }
+    }
+    color: #888E99;
+    font-size: 12px;
+    line-height: 16px;
+    .state {
+      height: 34px;
+      line-height: 32px;
+      color: #aaa;
     }
   }
 }

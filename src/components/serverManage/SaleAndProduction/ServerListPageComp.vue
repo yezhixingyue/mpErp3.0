@@ -51,7 +51,11 @@ const visible = ref(false);
 .mp-ts-sale-and-production-list-page-comp-wrap {
   padding-left: 8px;
   padding-right: 1px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   > header {
+    flex: none;
     font-size: 14px;
     font-weight: 100;
     padding: 20px;
@@ -67,6 +71,9 @@ const visible = ref(false);
         opacity: 0.8;
       }
     }
+  }
+  > main {
+    flex: 1;
   }
 }
 </style>

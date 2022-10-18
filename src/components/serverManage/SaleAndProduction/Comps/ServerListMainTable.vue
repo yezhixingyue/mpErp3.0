@@ -84,8 +84,9 @@ const generate = () => {
 
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
 .mp-ts-sale-and-production-list-page-main-comp-wrap {
+  overflow: hidden;
   .intro {
     height: 16px;
     font-size: 12px;
@@ -103,6 +104,14 @@ const generate = () => {
       border-radius: 50%;
       margin-right: 6px;
       vertical-align: 2px;
+    }
+  }
+  .el-table {
+    height: calc(100% - 40px);
+    .el-table__body-wrapper {
+      overflow: auto;
+      overflow: overlay;
+      height: calc(100% - 40px);
     }
   }
 }

@@ -46,11 +46,11 @@ const routes = { // 基本设置
       meta: {
         title: '转换器',
         icon: 'el-icon-sort',
-        pageName: 'SwitchServerListPage',
+        pageName: 'SwitchServersListPage',
         // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
         requiresAuth: true,
       },
-      component: () => import('@/views/serverManage/SwitchServerListPage.vue'),
+      component: () => import('@/views/serverManage/SwitchServersListPage.vue'),
     },
   ],
 };

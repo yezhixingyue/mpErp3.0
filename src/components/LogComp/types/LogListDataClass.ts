@@ -29,7 +29,7 @@ export class LogListDataClass {
 
   constructor(data: GetLogOptions) {
     this.condition = new LogConditionClass(data);
-    // this.getList(); // 加载时会自动请求一次
+    this.getList(); // 加载时自动请求一次
   }
 
   async getList(Page = 1) {
@@ -43,17 +43,8 @@ export class LogListDataClass {
     this.loading = false;
 
     if (resp?.data.Status === 1000) {
-      this.list.push(...[...resp.data.Data, ...resp.data.Data, ...resp.data.Data,
-        ...resp.data.Data,
-        ...resp.data.Data,
-        ...resp.data.Data,
-        ...resp.data.Data,
-        ...resp.data.Data,
-        ...resp.data.Data,
-        ...resp.data.Data,
-        ...resp.data.Data,
-      ]); // 累加
-      this.listNumber = resp.data.DataNumber * 1000;
+      this.list.push(...resp.data.Data); // 累加
+      this.listNumber = resp.data.DataNumber;
 
       const total = Math.ceil(this.listNumber / this.condition.PageSize); // 总页码
       if (this.condition.Page >= total) { // 全部加载完成

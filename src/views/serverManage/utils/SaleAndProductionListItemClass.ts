@@ -41,6 +41,7 @@ export class SaleAndProductionListItemClass {
     if (data) {
       if (typeof data === 'object') {
         restoreInitDataByOrigin(this, data);
+        if (data.Operator) this.Operator = { ...data.Operator };
       } else {
         this.Type = data;
       }
@@ -73,4 +74,4 @@ export class SaleAndProductionListItemClass {
   }
 }
 
-export type SaleAndProductionListItemPlainType = Omit<SaleAndProductionListItemClass, ''>;
+export type SaleAndProductionListItemPlainType = Omit<SaleAndProductionListItemClass, 'save'>;
