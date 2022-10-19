@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetLogOptions } from '@/components/LogComp/types/LogConditionClass';
+import { TransformerListConditionClass } from '@/store/modules/transformer/TransformerListConditionClass';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import { SwitchListItemPlainType } from '@/views/serverManage/utils/SwitchListItemClass';
 import { ServerTypeEnum } from '@/views/serverManage/utils/types';
@@ -42,6 +43,14 @@ const api = {
   },
   getConvertServerNotifyReceiveSetup(data: Partial<SwitchListItemPlainType>) { // POST /Api/ConvertServer/NotifyReceiveSetup  转换器转换失败通知设置
     return instance.post('/Api/ConvertServer/NotifyReceiveSetup', data);
+  },
+  /* 转换设置
+  ------------------------------- */
+  getProductClassList(serverID: string) { // GET /Api/ProductClass/List   获取产品分类列表
+    return instance.get('/Api/ProductClass/List', { params: { serverID } });
+  },
+  getProductList(data: Partial<TransformerListConditionClass>) { // POST /Api/Product/List   获取产品列表
+    return instance.post('/Api/Product/List', data);
   },
 };
 

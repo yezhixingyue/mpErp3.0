@@ -72,8 +72,5 @@ const visible = ref(false);
       }
     }
   }
-  > main {
-    flex: 1;
-  }
 }
 </style>

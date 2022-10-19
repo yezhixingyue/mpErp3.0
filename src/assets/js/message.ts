@@ -111,9 +111,9 @@ class MpMessage {
 
   success(options: IOptions) {
     const _options: IOptions = {
-      showCancel: true,
+      showCancel: false,
       cancelText: '关闭',
-      showSubmit: false,
+      showSubmit: true,
       submitText: '确定',
       ...options,
     };

@@ -1,6 +1,6 @@
 <template>
   <CommonDialogComp
-    width="600px"
+    width="550px"
     :visible.sync="localVisible"
     :showSubmit="false"
     cancelText="关闭"
@@ -21,6 +21,7 @@
         <p class="state">
           <template v-if="logData.loading">加载中...</template>
           <template v-if="logData.loadAll && logData.listNumber > 10">没有更多了</template>
+          <template v-if="logData.loadAll && logData.listNumber === 0">暂无数据</template>
         </p>
       </ul>
     </template>
@@ -37,6 +38,7 @@ import { LogListDataClass } from './types/LogListDataClass';
 const props = defineProps<{
   visible: boolean
   type: ServerTypeEnum
+  ServerID?: string
 }>();
 
 const emit = defineEmits(['update:visible']);
@@ -61,7 +63,11 @@ const closed = () => {
 };
 
 const open = () => {
-  logData.value = new LogListDataClass({ Type: props.type });
+  const temp = { Type: props.type, ServerID: props.ServerID };
+  if (!props.ServerID) {
+    delete temp.ServerID;
+  }
+  logData.value = new LogListDataClass(temp);
 };
 
 const load = () => {
@@ -114,6 +120,9 @@ const load = () => {
       line-height: 32px;
       color: #aaa;
     }
+  }
+  :deep(.el-dialog__footer) {
+    padding-top: 2px;
   }
 }
 </style>

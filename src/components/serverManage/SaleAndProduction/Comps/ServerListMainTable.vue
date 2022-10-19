@@ -87,6 +87,7 @@ const generate = () => {
 <style lang='scss'>
 .mp-ts-sale-and-production-list-page-main-comp-wrap {
   overflow: hidden;
+  flex: 1;
   .intro {
     height: 16px;
     font-size: 12px;
@@ -95,6 +96,7 @@ const generate = () => {
     color: #585858;
     line-height: 14px;
     margin-top: 10px;
+    height: 30px;
     &::before {
       content: '';
       display: inline-block;

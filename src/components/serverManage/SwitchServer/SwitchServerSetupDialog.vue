@@ -17,14 +17,16 @@
       </el-form-item>
       <el-form-item prop="SellSide.ID" class="r">
         <h4 class="title">销售端：</h4>
-        <el-radio-group v-model="ruleForm.SellSide.ID">
-          <el-radio v-for="it in sellServers" :key="it.ID" :label="it.ID">{{it.Name}}</el-radio>
+        <div v-if="sellServers.length===0" class="ft-12 is-gray">暂无销售端数据（或销售端未设置密钥）</div>
+        <el-radio-group v-else v-model="ruleForm.SellSide.ID" :disabled="!!props.pageTypeData.curEditItem">
+          <el-radio v-for="it in sellServers" :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item prop="FactorySide.ID" class="r">
         <h4 class="title">生产端：</h4>
-        <el-radio-group v-model="ruleForm.FactorySide.ID">
-          <el-radio v-for="it in productionServers" :key="it.ID" :label="it.ID">{{it.Name}}</el-radio>
+        <div v-if="productionServers.length===0" class="ft-12 is-gray">暂无生产端数据（或生产端未设置密钥）</div>
+        <el-radio-group v-else v-model="ruleForm.FactorySide.ID" :disabled="!!props.pageTypeData.curEditItem">
+          <el-radio v-for="it in productionServers" :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>
@@ -32,6 +34,7 @@
       <i class="el-icon-warning ft-14"></i>
       <span>注: 转换器一经创建后，便不能修改销售端和生产端，仅可编辑转换器名称</span>
       <span>删除转换器时，该转换器不能包含任何转换设置的数据（已转换的订单除外），否则删除失败</span>
+      <span>关于销售和生产端：此处筛选掉了未设置密钥的服务器数据</span>
     </p>
   </CommonDialogComp>
 </template>
@@ -113,9 +116,9 @@ const rules = {
 
 const serverList = ref<SaleAndProductionListItemPlainType[]>([]);
 
-const sellServers = computed(() => serverList.value.filter(it => it.Type === ServerTypeEnum.sales));
+const sellServers = computed(() => serverList.value.filter(it => it.Type === ServerTypeEnum.sales && it.Key));
 
-const productionServers = computed(() => serverList.value.filter(it => it.Type === ServerTypeEnum.production));
+const productionServers = computed(() => serverList.value.filter(it => it.Type === ServerTypeEnum.production && it.Key));
 
 const onOpen = async () => {
   ruleForm.value = new SwitchListItemClass(props.pageTypeData.curEditItem || undefined);

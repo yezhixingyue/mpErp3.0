@@ -22,6 +22,8 @@ import {
   TableColumn,
   Radio,
   RadioGroup,
+  RadioButton,
+  Empty,
 } from 'element-ui';
 
 // 指令
@@ -29,8 +31,10 @@ import Clickoutside from 'element-ui/lib/utils/clickoutside';
 
 import { Button as MpButton } from 'mpzj-sell-lib';
 
+Vue.use(Empty);
 Vue.use(Radio);
 Vue.use(RadioGroup);
+Vue.use(RadioButton);
 Vue.use(Pagination);
 Vue.use(Button);
 Vue.use(Popover);
