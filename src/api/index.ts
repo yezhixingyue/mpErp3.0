@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetLogOptions } from '@/components/LogComp/types/LogConditionClass';
+import { IAssistMapParams } from '@/store/modules/transformer/map/types';
 import { TransformerListConditionClass } from '@/store/modules/transformer/TransformerListConditionClass';
+import { IPartChangeParams } from '@/store/modules/transformer/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import { SwitchListItemPlainType } from '@/views/serverManage/utils/SwitchListItemClass';
 import { ServerTypeEnum } from '@/views/serverManage/utils/types';
@@ -51,6 +53,19 @@ const api = {
   },
   getProductList(data: Partial<TransformerListConditionClass>) { // POST /Api/Product/List   获取产品列表
     return instance.post('/Api/Product/List', data);
+  },
+  getConvertServerPartSave(data: IPartChangeParams) { // POST /Api/ConvertServer/PartSave  部件保存
+    return instance.post('/Api/ConvertServer/PartSave', data);
+  },
+  getAssistMappingList(data: IAssistMapParams) { //  POST /Api/AssistMapping/List   获取辅助映射列表 [辅助映射列表]
+    return instance.post('/Api/AssistMapping/List', data);
+  },
+  // GET /Api/File/List 获取输出文件列表 [审稿端]
+  getFileList({ serverID, onlyShowPdf, onlyShowMakeupUsed }: { serverID: string, onlyShowPdf?:boolean, onlyShowMakeupUsed?:boolean }) {
+    return instance.get('/Api/File/List', { params: { serverID, onlyShowPdf, onlyShowMakeupUsed } });
+  },
+  getAssistantInfoList(serverID: string) { // GET /Api/AssistantInfo/List   获取文件辅助信息列表 [生产端]
+    return instance.get('/Api/AssistantInfo/List', { params: { serverID } });
   },
 };
 

@@ -8,6 +8,7 @@ import { useUserStore } from '@/store/modules/user';
 import { useRouteRecordStore } from '@/store/modules/routeRecord';
 import { getLocalStorageUser, tokenHandler } from '../api/utils/handleToken/tokenHandler';
 import { getLastRouteInfoByName } from './getLastRouteInfoByName';
+import router from '.';
 
 /*  页面进度条
 ------------------------------------------ */
@@ -89,8 +90,8 @@ function handlePermission(to: Route, next: NavigationGuardNext, Permission: IPer
   } else next({ path: '/notauth' });
 }
 
-const handleRouterEach = (router: VueRouter) => {
-  router.beforeEach((to, from, next) => { // 使用全局路由导航守卫进行权限控制
+const handleRouterEach = (_router: VueRouter) => {
+  _router.beforeEach((to, from, next) => { // 使用全局路由导航守卫进行权限控制
     if (to.path === '/pathFromClient') {
       const { url, token } = to.query;
       if (url && token && typeof token === 'string' && typeof url === 'string') {
@@ -150,55 +151,54 @@ const handleRouterEach = (router: VueRouter) => {
     }
   });
 
-  router.afterEach((to: Route) => {
+  _router.afterEach((to: Route) => {
     if (to.meta?.title) { // 1. 根据路由元信息中title信息设置页面标题
       document.title = `${to.meta.title} - 名片之家转换器`;
     }
     NProgress.done();
   });
+};
 
-  /**
+/**
    * @description:  用于替代系统回退的方法
    * @param {*}
    * @return {*}
    */
-  const goBackLastPage = () => {
-    if (!router || !router.currentRoute) return;
-    const curRouteName = router.currentRoute.name;
-    if (!curRouteName) return;
-    // 1 首先找到其上一级的路由name名称
-    const lastRouteName = getLastRouteInfoByName(curRouteName);
-    if (!lastRouteName) return;
-    // 2 然后根据该name名称在lastPaths中从后往前找到其上级name所对应的路径名称
-    const routeRecordStore = useRouteRecordStore();
+export const goBackLastPage = () => {
+  if (!router || !router.currentRoute) return;
+  const curRouteName = router.currentRoute.name;
+  if (!curRouteName) return;
+  // 1 首先找到其上一级的路由name名称
+  const lastRouteName = getLastRouteInfoByName(curRouteName);
+  if (!lastRouteName) return;
+  // 2 然后根据该name名称在lastPaths中从后往前找到其上级name所对应的路径名称
+  const routeRecordStore = useRouteRecordStore();
 
-    const lastPaths = routeRecordStore.lastPagePaths;
-    if (!Array.isArray(lastPaths)) return;
-    const t = lastPaths.find(it => it.name === lastRouteName);
-    if (!t) return;
+  const lastPaths = routeRecordStore.lastPagePaths;
+  if (!Array.isArray(lastPaths)) return;
+  const t = lastPaths.find(it => it.name === lastRouteName);
+  if (!t) return;
+  // 3 完成跳转 并在缓存状态中清除掉刚已跳转离开的页面缓存信息
+  router.replace(t.fullPath);
+  setTimeout(() => {
+    routeRecordStore.setLastPagePathsFilterAfterGoback(curRouteName);
+  }, 0);
+};
 
-    // 3 完成跳转 并在缓存状态中清除掉刚已跳转离开的页面缓存信息
-    router.replace(t.fullPath);
-    setTimeout(() => {
-      routeRecordStore.setLastPagePathsFilterAfterGoback(curRouteName);
-    }, 0);
-  };
-
-  /**
+/**
    * @description: 阻止并替换浏览器默认回退方法
    * @param {*}
    * @return {*}
    */
-  window.addEventListener('popstate', () => {
-    let url = '/';
-    if (router && router.currentRoute && router.currentRoute.fullPath) {
-      url = `#${router.currentRoute.fullPath}`;
-    }
-    window.history.pushState(null, '', url);
-    goBackLastPage();
-  });
+window.addEventListener('popstate', () => {
+  let url = '/';
+  if (router && router.currentRoute && router.currentRoute.fullPath) {
+    url = `#${router.currentRoute.fullPath}`;
+  }
+  window.history.pushState(null, '', url);
+  goBackLastPage();
+});
 
-  Vue.prototype.$goback = goBackLastPage;
-};
+Vue.prototype.$goback = goBackLastPage;
 
 export default handleRouterEach;

@@ -127,6 +127,44 @@
     cursor: default;
   }
 }
+.red-span {
+  color: #ff3769 !important;
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    color: lighten($color: #ff3769, $amount: 10) !important;
+  }
+  &:active {
+    color: darken($color: #ff3769, $amount: 12) !important;
+  }
+  &.disabled, &:disabled {
+    color: #cbcbcb !important;
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+.cancel-blue-btn {
+  color: #26bcf9;
+  border-color: #26bcf9;
+  width: 120px;
+  height: 35px;
+  padding: 0;
+  border-radius: 4px;
+  opacity: 1;
+  transition: 0.1s ease-in-out;
+  &:hover, &:focus {
+    color: lighten($color: #26bcf9, $amount: 0.5);
+    border-color: lighten($color: #26bcf9, $amount: 0.5);
+    background-color: lighten($color: #26bcf9, $amount: 40);
+  }
+  &:active {
+    opacity: 1;
+    color: darken($color: #26bcf9, $amount: 10);
+    border-color: darken($color: #26bcf9, $amount: 10);
+    background-color: lighten($color: #26bcf9, $amount: 35);
+  }
+}
 
 .mpzj-sell-lib-comps-dialog-comp-wrap .el-dialog .el-dialog__header {
   height: 24px !important;

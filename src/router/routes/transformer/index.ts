@@ -24,6 +24,18 @@ const routes = { // 基本设置
       },
       component: () => import('@/views/transformer/TransformerListPage.vue'),
     },
+    {
+      path: '/mapAssist',
+      name: 'mapAssist',
+      meta: {
+        title: '辅助文件映射',
+        hideMenu: true,
+        pageName: 'assistMapPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/commonSetupPages/assistMapPage.vue'),
+    },
   ],
 };
 
@@ -31,11 +43,13 @@ const routeTree = {
   name: 'transformer',
   isModuleRoot: true,
   children: [
-    /*  信息转换
+    /*  转换设置
     ------------------------------------------ */
     {
       name: 'transformerList',
-      children: [],
+      children: [
+        { name: 'mapAssist', children: [] },
+      ],
     },
   ],
 };

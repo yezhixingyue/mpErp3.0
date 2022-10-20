@@ -42,7 +42,10 @@ import { formatDateForDisplay } from '@/assets/js/filter';
 import EditMenu from '@/components/common/menus/EditMenu.vue';
 import RemoveMenu from '@/components/common/menus/RemoveMenu.vue';
 import { message } from '@/assets/js/message';
+import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
 import GenerateDialog from './GenerateDialog.vue';
+
+recordScrollPosition('.el-table__body-wrapper');
 
 const props = defineProps<{
   title: string,

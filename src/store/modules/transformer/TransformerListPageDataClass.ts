@@ -2,7 +2,7 @@ import api from '@/api';
 import { getTwoLevelsClassifyDataFromList, IProductClassItem, IProductClassLv1ListItem } from '@/assets/js/utils';
 import { getFilterParams } from 'yezhixingyue-js-utils-4-mpzj';
 import { TransformerListConditionClass } from './TransformerListConditionClass';
-import { IProduct } from './types';
+import { IPartChangeParams, IProduct } from './types';
 
 export class TransformerListPageDataClass {
   ServerID = ''
@@ -19,6 +19,10 @@ export class TransformerListPageDataClass {
 
   loading = false
 
+  curEditItem: null | IProduct = null
+
+  curPartID = '' // 当curPartID为''时说明设置对象为产品本身，否则就是该部件
+
   constructor(serverID: string) {
     this.ServerID = serverID;
     this.condition.ServerID = serverID;
@@ -31,6 +35,22 @@ export class TransformerListPageDataClass {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const temp: { [key:string]: any } = this.condition;
     temp[key1] = value;
+  }
+
+  setCurEditItemAndPart(item: null | IProduct, PartID: string) {
+    this.curEditItem = item;
+    this.curPartID = PartID;
+  }
+
+  handlePartChange(data: IPartChangeParams) {
+    if (!this.curEditItem) return;
+    const { IsSelected, PartList } = data;
+    this.curEditItem.IsSelected = IsSelected;
+    const selectedIds = PartList.filter(it => it.IsSelected).map(it => it.ID);
+    this.curEditItem.PartList.forEach(p => {
+      const part = p;
+      part.IsSelected = selectedIds.includes(part.ID);
+    });
   }
 
   /** 获取产品分类列表 */

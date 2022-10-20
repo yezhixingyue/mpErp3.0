@@ -7,7 +7,7 @@
       @changeServer="handleServerChange"
       @menuClick="onMenuClick"
     />
-    <Main :TransformerListPageData="TransformerListPageData" />
+    <Main :TransformerListPageData="TransformerListPageData" @menuClick="onMenuClick" />
     <Footer :TransformerListPageData="TransformerListPageData" />
     <OperationLogDialog
       v-if="TransformerListPageData"
@@ -15,6 +15,7 @@
       :type="ServerTypeEnum.ConvertSetup"
       :ServerID="TransformerListPageData.ServerID"
     />
+    <PartSetupDialog v-if="TransformerListPageData" :visible.sync="partSetupVisible" :item="TransformerListPageData.curEditItem" @submited="onPartSubmited" />
   </section>
 </template>
 
@@ -23,10 +24,12 @@ import Header from '@/components/transformer/ListComps/Header.vue';
 import Main from '@/components/transformer/ListComps/Main.vue';
 import Footer from '@/components/transformer/ListComps/Footer.vue';
 import OperationLogDialog from '@/components/LogComp/OperationLogDialog.vue';
+import PartSetupDialog from '@/components/transformer/ListComps/PartSetupDialog.vue';
 import { useTransformerStore } from '@/store/modules/transformer';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
-import { menuTypeEnum } from '@/store/modules/transformer/types';
+import router from '@/router';
+import { IPartChangeParams, menuTypeEnum } from '@/store/modules/transformer/types';
 import { ServerTypeEnum } from '../serverManage/utils/types';
 
 const transformerStore = useTransformerStore();
@@ -40,13 +43,26 @@ const loading4Servers = ref(false);
 
 transformerStore.setTransformerListPageData(null);
 
-const visible = ref(false);
+const visible = ref(false); // 操作日志
+const partSetupVisible = ref(false); // 部件设置
+
+const onPartSubmited = (e: IPartChangeParams) => {
+  if (TransformerListPageData.value) TransformerListPageData.value.handlePartChange(e);
+};
 
 const onMenuClick = (type: menuTypeEnum) => {
   console.log('onMenuClick', type);
   switch (type) {
     case menuTypeEnum.log: // 操作日志
       visible.value = true;
+      break;
+
+    case menuTypeEnum.partSetup: // 选择产品部件
+      partSetupVisible.value = true;
+      break;
+
+    case menuTypeEnum.assist: // 辅助文件映射
+      router.push('/mapAssist');
       break;
 
     default:

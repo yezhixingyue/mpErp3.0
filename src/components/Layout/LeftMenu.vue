@@ -198,12 +198,12 @@ const handleRouteChange = (newRoute: Route, oldRoute: Route) => {
   setInitMenuDefaultActive(newRoute, true);
 };
 
-const menuInited = ref(false);
+// const menuInited = ref(false);
 router.afterEach((to: Route, from: Route) => {
-  if (!menuInited.value) {
-    handleRouteChange(to, from);
-    menuInited.value = true;
-  }
+  // if (!menuInited.value) {
+  handleRouteChange(to, from);
+  // menuInited.value = true;
+  // }
 });
 
 watch(() => isLeftCollapse.value, (newVal) => {

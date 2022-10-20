@@ -35,6 +35,9 @@ import EditMenu from '@/components/common/menus/EditMenu.vue';
 import RemoveMenu from '@/components/common/menus/RemoveMenu.vue';
 import { message } from '@/assets/js/message';
 import { SwitchListItemPlainType } from '@/views/serverManage/utils/SwitchListItemClass';
+import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
+
+recordScrollPosition('.el-table__body-wrapper');
 
 const props = defineProps<{
   tableData: SwitchListItemPlainType[],

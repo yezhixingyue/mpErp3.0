@@ -13,7 +13,7 @@ interface IActions {
 }
 
 const storeOptions: DefineStoreOptions<string, IState, IGetters, IActions> = {
-  id: 'user',
+  id: 'routeRecord',
   state: () => ({
     lastPagePaths: [], // 上一个页面的path路径
   }),

@@ -3,9 +3,9 @@
     <dt>
       <div class="name">{{getProductName(props.item)}}</div>
       <div class="right">
-        <span class="blue-span">选择产品部件 ({{selectedPartList.length}})</span>
-        <span class="blue-span">组合生产线映射 ({{props.item.UnionLineCount}})</span>
-        <span class="blue-span">组合工序映射 ({{props.item.UnionWorkingCount}})</span>
+        <span class="blue-span" @click="onClick(menuTypeEnum.partSetup)">选择产品部件 ({{selectedPartList.length}})</span>
+        <span class="blue-span" @click="onClick(menuTypeEnum.UnionLine)">组合生产线映射 ({{props.item.UnionLineCount}})</span>
+        <span class="blue-span" @click="onClick(menuTypeEnum.UnionWorking)">组合工序映射 ({{props.item.UnionWorkingCount}})</span>
         <span @click="displayPart = !displayPart" class="arrow" :class="{disabled:selectedPartList.length===0}">
           {{displayPart ? '隐藏' : '展开'}}
           <i class="el-icon-caret-bottom" v-show="!displayPart"></i>
@@ -16,14 +16,14 @@
     <dd v-for="it in selectedPartList" :key="it.ID" v-show="displayPart">
       <div class="left">
         <span class="name" :title="it.Name">{{it.Name}}</span>
-        <span class="blue-span">生产线映射 ({{it.LineCount}})</span>
-        <span class="blue-span">工序映射 ({{it.WorkingCount}})</span>
-        <span class="blue-span">作业次数 ({{it.WorkTimesCount}})</span>
+        <span class="blue-span" @click="onClick(menuTypeEnum.LineCount, it.ID)">生产线映射 ({{it.LineCount}})</span>
+        <span class="blue-span" @click="onClick(menuTypeEnum.WorkingCount, it.ID)">工序映射 ({{it.WorkingCount}})</span>
+        <span class="blue-span" @click="onClick(menuTypeEnum.WorkTimes, it.ID)">作业次数 ({{it.WorkTimesCount}})</span>
       </div>
       <div class="right">
-        <span class="blue-span">文字信息映射 ({{it.WordsInfoCount}})</span>
-        <span class="blue-span">数值映射 ({{it.NumbericInfoCount}})</span>
-        <span class="blue-span">合拼设置 ({{it.UnionMakeupLimitCount}})</span>
+        <span class="blue-span" @click="onClick(menuTypeEnum.WordsInfo, it.ID)">文字信息映射 ({{it.WordsInfoCount}})</span>
+        <span class="blue-span" @click="onClick(menuTypeEnum.NumbericInfo, it.ID)">数值映射 ({{it.NumbericInfoCount}})</span>
+        <span class="blue-span" @click="onClick(menuTypeEnum.UnionMakeupLimit, it.ID)">合拼设置 ({{it.UnionMakeupLimitCount}})</span>
         <span>
           产出半成品：
           <i class="blue-span">设置</i>
@@ -36,13 +36,20 @@
 
 <script setup lang='ts'>
 import { IProductClassLv1ListItem } from '@/assets/js/utils';
-import { IPart, IProduct } from '@/store/modules/transformer/types';
+import { IPart, IProduct, menuTypeEnum } from '@/store/modules/transformer/types';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
   item: IProduct,
   productClassLevelList: IProductClassLv1ListItem[]
 }>();
+
+const emit = defineEmits(['menuClick']);
+
+const onClick = (type: menuTypeEnum, PartID?: string) => {
+  const _PartID = PartID && PartID !== props.item.ID ? PartID : '';
+  emit('menuClick', type, props.item, _PartID);
+};
 
 const getProductName = (it: IProduct) => {
   const arr = [];

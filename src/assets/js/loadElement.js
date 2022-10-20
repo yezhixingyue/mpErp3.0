@@ -24,6 +24,7 @@ import {
   RadioGroup,
   RadioButton,
   Empty,
+  ButtonGroup,
 } from 'element-ui';
 
 // 指令
@@ -31,6 +32,7 @@ import Clickoutside from 'element-ui/lib/utils/clickoutside';
 
 import { Button as MpButton } from 'mpzj-sell-lib';
 
+Vue.use(ButtonGroup);
 Vue.use(Empty);
 Vue.use(Radio);
 Vue.use(RadioGroup);
