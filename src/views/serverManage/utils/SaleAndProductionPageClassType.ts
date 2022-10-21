@@ -68,7 +68,8 @@ export class SaleAndProductionPageClassType {
       const cb = () => {
         const t = this.list.find(it => it.ID === item.ID);
         if (t) {
-          t.Key = resp.data.Data;
+          t.PrivateKey = resp.data.Data.PrivateKey;
+          t.PublicKey = resp.data.Data.PublicKey;
         }
       };
       message.success({

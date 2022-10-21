@@ -60,24 +60,6 @@ export class SwitchPageDataClassType {
     }
   }
 
-  // async generate(item: SwitchListItemPlainType) {
-  //   if (typeof item.ID !== 'number') return;
-  //   const resp = await api.getServerGenerateSecretKey(item.ID).catch(() => null);
-  //   if (resp?.data.Status === 1000) {
-  //     const cb = () => {
-  //       const t = this.list.find(it => it.ID === item.ID);
-  //       if (t) {
-  //         t.Key = resp.data.Data;
-  //       }
-  //     };
-  //     message.success({
-  //       title: '生成成功',
-  //       onOk: cb,
-  //       onCancel: cb,
-  //     });
-  //   }
-  // }
-
   constructor() {
     // 此处获取列表数据
     this.getList();

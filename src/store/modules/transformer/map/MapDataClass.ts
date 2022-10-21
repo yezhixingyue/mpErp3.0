@@ -1,11 +1,23 @@
-export abstract class MapDataClass<L, R, M> {
+import { AssistMapItemClass } from './AssistMapItemClass';
+
+/**
+ * 抽象类 - 映射父类
+ *
+ * @export
+ * @abstract
+ * @class MapDataClass
+ * @template L
+ * @template R
+ * @template P
+ */
+export abstract class MapDataClass<L, R, P> {
   /**
    * 转换器ID
    *
    * @protected
    * @memberof MapDataClass
    */
-  protected ServerID = ''
+  public ServerID = ''
 
   /**
    * 左侧列表数据
@@ -26,12 +38,14 @@ export abstract class MapDataClass<L, R, M> {
   /**
    * 映射信息列表数据
    *
-   * @type {M[]}
+   * @type {AssistMapItemClass[]}
    * @memberof MapDataClass
    */
-  mapDataList: M[] = []
+  mapDataList: AssistMapItemClass[] = []
 
   loading = false
+
+  curEditItem: L | null = null
 
   /**
    * 获取左侧数据的方法-子类实现
@@ -58,15 +72,44 @@ export abstract class MapDataClass<L, R, M> {
    *
    * @protected
    * @abstract
-   * @returns {(Promise<null | M[]>)}
+   * @returns {(Promise<null | AssistMapItemClass[]>)}
    * @memberof MapDataClass
    */
-  protected abstract getMapList(): Promise<null | M[]>
+  protected abstract getMapList(): Promise<null | AssistMapItemClass[]>
+
+  /**
+   * 获取映射结果 用于右侧展示 - 子类实现
+   *
+   * @protected
+   * @abstract
+   * @returns {string}
+   * @memberof MapDataClass
+   */
+  public abstract getItemMapResult(id: string, mapList: AssistMapItemClass[], rightList: R[]): string
+
+  /**
+   * 单个项目保存
+   *
+   * @abstract
+   * @param {P} data
+   * @returns {Promise<void>}
+   * @memberof MapDataClass
+   */
+  public abstract saveItem(data: P): Promise<void>
 
   constructor(ServerID: string) {
     this.ServerID = ServerID;
-    console.log('1. MapDataClass 抽象类 constructor ');
     this.getData(); // 获取数据
+  }
+
+  public handleItemChange = (temp: Partial<AssistMapItemClass>) => {
+    const i = this.mapDataList.findIndex(it => it.SourceID === temp.SourceID || it.SourceID === `${temp.SourceID}`);
+    if (i > -1) {
+      const _temp = { ...this.mapDataList[i], ...temp };
+      this.mapDataList.splice(i, 1, _temp);
+    } else {
+      this.mapDataList.push(new AssistMapItemClass(temp));
+    }
   }
 
   /** 获取全部数据： 左侧、右侧及映射数据 */
@@ -80,14 +123,5 @@ export abstract class MapDataClass<L, R, M> {
     this.leftDataList = leftResArr || [];
     this.rightDataList = rightResArr || [];
     this.mapDataList = mapResArr || [];
-
-    this.combine();
   }
-
-  /** 合并左侧、右侧及映射数据为合并数据 */
-  protected combine() {
-    console.log('combine 合并结果', this.leftDataList, this.rightDataList, this.mapDataList);
-  }
-
-  // 3组数据组合方法 -- 后续看是在此处实现 还是在子类中实现
 }

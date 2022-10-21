@@ -34,7 +34,31 @@ const routes = { // 基本设置
         // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
         requiresAuth: true,
       },
-      component: () => import('@/views/transformer/commonSetupPages/assistMapPage.vue'),
+      component: () => import('@/views/transformer/assistTypeSetupPages/assistInfoMap/assistMapPage.vue'),
+    },
+    {
+      path: '/mapColor',
+      name: 'mapColor',
+      meta: {
+        title: '专色文件映射',
+        hideMenu: true,
+        pageName: 'colorInfoMapPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/colorInfoMap/colorInfoMapPage.vue'),
+    },
+    {
+      path: '/mapMakeup',
+      name: 'mapMakeup',
+      meta: {
+        title: '拼版文件映射',
+        hideMenu: true,
+        pageName: 'MakeupInfoMapPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/makeupInfoMap/MakeupInfoMapPage.vue'),
     },
   ],
 };
@@ -49,6 +73,8 @@ const routeTree = {
       name: 'transformerList',
       children: [
         { name: 'mapAssist', children: [] },
+        { name: 'mapColor', children: [] },
+        { name: 'mapMakeup', children: [] },
       ],
     },
   ],

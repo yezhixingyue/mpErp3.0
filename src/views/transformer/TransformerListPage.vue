@@ -65,6 +65,14 @@ const onMenuClick = (type: menuTypeEnum) => {
       router.push('/mapAssist');
       break;
 
+    case menuTypeEnum.color: // 专色文件映射
+      router.push('/mapColor');
+      break;
+
+    case menuTypeEnum.makeup: // 拼版文件映射
+      router.push('/mapMakeup');
+      break;
+
     default:
       break;
   }

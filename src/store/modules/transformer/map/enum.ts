@@ -29,3 +29,10 @@ export enum GenerelMappingTypeEnum {
   /** 合拼禁用限制 */
   UnionMakeupLimit = 4
 }
+
+/** 生产端辅助信息枚举类型： 文件 | 文字信息 | 数值 */
+export enum AssistInfoTypeEnum {
+  file = 0,
+  text = 1,
+  numerical = 2,
+}

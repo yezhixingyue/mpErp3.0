@@ -1,5 +1,5 @@
 <template>
-  <section class="assist-page">
+  <section class="wrap">
     <header>
       <Crumbs :list="crumbsList" />
     </header>
@@ -11,10 +11,10 @@
         border
         style="width: 100%">
         <el-table-column prop="Name" label="审稿文件" width="315" show-overflow-tooltip align="center" header-align="center" ></el-table-column>
-        <el-table-column label="对应生产辅助文件" show-overflow-tooltip class-name="l" label-class-name="h-l" min-width="400px">
+        <el-table-column label="映射专色" show-overflow-tooltip class-name="l" label-class-name="h-l" min-width="400px">
           <template #default="scope">
             <span class="blue-span" @click="onMapClick(scope.row)">设置映射</span>
-            <span class="p-names">映射到的名称映射到的名称映射到的名称映射到的名称映射到的名称映射到的名称映射到的名称映射到的名称映射到的名称</span>
+            <span class="p-names">{{data.getItemMapResult(scope.row.ID, data.mapDataList)}}</span>
           </template>
         </el-table-column>
         <template #empty>
@@ -23,6 +23,7 @@
           </div>
         </template>
       </el-table>
+      <SetupDialog :data="data" />
     </main>
     <footer>
       <mp-button class="cancel-blue-btn" @click="goBackLastPage">返回</mp-button>
@@ -37,7 +38,8 @@ import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { goBackLastPage } from '@/router/handleRouterEach';
 import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
-import { AssistInfoMapClass } from '@/store/modules/transformer/map/AssistInfoMapClass';
+import { ColorInfoMapClass, IColorInfoLeftType } from './ColorInfoMapClass';
+import SetupDialog from './SetupDialog.vue';
 
 recordScrollPosition('.el-table__body-wrapper');
 
@@ -49,26 +51,28 @@ const crumbsList = computed(() => {
   const serverName = t ? t.Name : '未获取到转换器名称';
   return [
     { name: `转换设置 ( ${serverName} )`, path: '/transformerList' },
-    { name: '辅助文件映射' },
+    { name: '专色文件映射' },
   ];
 });
 
-const onMapClick = (item: any) => {
+const onMapClick = (item: IColorInfoLeftType) => {
   console.log('onMapClick', item);
+  data.value.curEditItem = item;
+  data.value.visible = true;
 };
 
-const data = ref(new AssistInfoMapClass(TransformerListPageData.value?.ServerID || ''));
+const data = ref(new ColorInfoMapClass(TransformerListPageData.value?.ServerID || ''));
 
 </script>
 
 <script lang='ts'>
 export default {
-  name: 'assistMapPage',
+  name: 'colorInfoMapPage',
 };
 </script>
 
 <style scoped lang='scss'>
-.assist-page {
+.wrap {
   padding: 0 8px;
   background-color: #f5f5f5;
   height: 100%;

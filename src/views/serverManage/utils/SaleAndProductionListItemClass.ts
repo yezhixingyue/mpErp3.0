@@ -26,7 +26,10 @@ export class SaleAndProductionListItemClass {
   Url = ''
 
   /** 密钥 */
-  Key = ''
+  PrivateKey = ''
+
+  /** 公钥 */
+  PublicKey = ''
 
   /** 关联数量 */
   RelationNumber = 0

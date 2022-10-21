@@ -6,9 +6,10 @@
       resizable
       border
       style="width: 100%">
-      <el-table-column prop="Name" label="名称" min-width="180" show-overflow-tooltip align="center" header-align="center" ></el-table-column>
-      <el-table-column prop="Url" label="服务器地址" min-width="180" show-overflow-tooltip align="center" header-align="center"></el-table-column>
-      <el-table-column prop="Key" label="密钥" min-width="220" show-overflow-tooltip align="center" header-align="center"></el-table-column>
+      <el-table-column prop="Name" label="名称" min-width="150" show-overflow-tooltip align="center" header-align="center" ></el-table-column>
+      <el-table-column prop="Url" label="服务器地址" min-width="150" show-overflow-tooltip align="center" header-align="center"></el-table-column>
+      <el-table-column prop="PublicKey" label="公钥" min-width="180" show-overflow-tooltip align="center" header-align="center"></el-table-column>
+      <el-table-column prop="PrivateKey" label="密钥" min-width="180" show-overflow-tooltip align="center" header-align="center"></el-table-column>
       <el-table-column label="关联转换器" width="120" show-overflow-tooltip align="center" header-align="center">
         <template #default="scope">
           {{ scope.row.RelationNumber }}个
@@ -23,7 +24,7 @@
       <el-table-column label="操作" width="280" show-overflow-tooltip align="center" header-align="center">
         <template #default="scope">
           <div class="ctrl-box">
-            <span class="blue-span" @click="onGenerateClick(scope.row)">{{scope.row.Key ? '重新生成' : '生成密钥'}}</span>
+            <span class="blue-span" @click="onGenerateClick(scope.row)">{{scope.row.PrivateKey ? '重新生成' : '生成密钥'}}</span>
             <EditMenu @click="onEditClick(scope.row)" />
             <RemoveMenu @click="onRemoveClick(scope.row)" :disabled="scope.row.RelationNumber > 0" />
           </div>
@@ -72,7 +73,7 @@ const visible = ref(false);
 const visibleData = ref<null | SaleAndProductionListItemPlainType>(null);
 
 const onGenerateClick = (row: SaleAndProductionListItemPlainType) => {
-  if (!row.Key) {
+  if (!row.PrivateKey) {
     emit('generate', row);
     return;
   }

@@ -37,7 +37,7 @@
 <script setup lang='ts'>
 import { IProductClassLv1ListItem } from '@/assets/js/utils';
 import { IPart, IProduct, menuTypeEnum } from '@/store/modules/transformer/types';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
   item: IProduct,
@@ -96,6 +96,10 @@ const selectedPartList = computed(() => {
 });
 
 const displayPart = ref(false);
+
+watch(() => selectedPartList.value, (newVal) => {
+  displayPart.value = newVal.length > 0;
+});
 
 </script>
 

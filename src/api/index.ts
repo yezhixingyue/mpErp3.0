@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetLogOptions } from '@/components/LogComp/types/LogConditionClass';
+import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
+import { AssistInfoTypeEnum } from '@/store/modules/transformer/map/enum';
 import { IAssistMapParams } from '@/store/modules/transformer/map/types';
 import { TransformerListConditionClass } from '@/store/modules/transformer/TransformerListConditionClass';
 import { IPartChangeParams } from '@/store/modules/transformer/types';
@@ -64,8 +66,20 @@ const api = {
   getFileList({ serverID, onlyShowPdf, onlyShowMakeupUsed }: { serverID: string, onlyShowPdf?:boolean, onlyShowMakeupUsed?:boolean }) {
     return instance.get('/Api/File/List', { params: { serverID, onlyShowPdf, onlyShowMakeupUsed } });
   },
-  getAssistantInfoList(serverID: string) { // GET /Api/AssistantInfo/List   获取文件辅助信息列表 [生产端]
-    return instance.get('/Api/AssistantInfo/List', { params: { serverID } });
+  getAssistantInfoList(serverID: string, type: AssistInfoTypeEnum) { // GET /Api/AssistantInfo/List   获取文件辅助信息列表 [生产端]
+    return instance.get('/Api/AssistantInfo/List', { params: { serverID, type } });
+  },
+  getAssistMappingSave(data: Partial<AssistMapItemClass>) { // POST /Api/AssistMapping/Save  辅助映射保存
+    return instance.post('/Api/AssistMapping/Save', data);
+  },
+  getColorList(serverID: string) { // GET /Api/Color/List   获取专色列表 [生产端]
+    return instance.get('/Api/Color/List', { params: { serverID } });
+  },
+  getImpositionTemplateClassList(serverID: string) { // GET /Api/ImpositionTemplateClass/List   获取拼版模板分类列表
+    return instance.get('/Api/ImpositionTemplateClass/List', { params: { serverID } });
+  },
+  getImpositionTemplateList(serverID: string) { // GET /Api/ImpositionTemplate/List  获取拼版模板列表
+    return instance.get('/Api/ImpositionTemplate/List', { params: { serverID } });
   },
 };
 
