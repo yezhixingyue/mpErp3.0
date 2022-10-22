@@ -2,7 +2,7 @@
 import { GetLogOptions } from '@/components/LogComp/types/LogConditionClass';
 import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
 import { AssistInfoTypeEnum } from '@/store/modules/transformer/map/enum';
-import { IAssistMapParams } from '@/store/modules/transformer/map/types';
+import { IAssistMapParams, IFactoryMaterialClass } from '@/store/modules/transformer/map/types';
 import { TransformerListConditionClass } from '@/store/modules/transformer/TransformerListConditionClass';
 import { IPartChangeParams } from '@/store/modules/transformer/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
@@ -75,11 +75,23 @@ const api = {
   getColorList(serverID: string) { // GET /Api/Color/List   获取专色列表 [生产端]
     return instance.get('/Api/Color/List', { params: { serverID } });
   },
-  getImpositionTemplateClassList(serverID: string) { // GET /Api/ImpositionTemplateClass/List   获取拼版模板分类列表
+  getImpositionTemplateClassList(serverID: string) { // GET /Api/ImpositionTemplateClass/List   获取拼版模板分类列表 [生产端]
     return instance.get('/Api/ImpositionTemplateClass/List', { params: { serverID } });
   },
-  getImpositionTemplateList(serverID: string) { // GET /Api/ImpositionTemplate/List  获取拼版模板列表
+  getImpositionTemplateList(serverID: string) { // GET /Api/ImpositionTemplate/List  获取拼版模板列表 [生产端]
     return instance.get('/Api/ImpositionTemplate/List', { params: { serverID } });
+  },
+  getFactoryMaterialTypeList(serverID: string) { // GET /Api/FactoryMaterialType/List  获取物料类型列表 [生产端]
+    return instance.get<IFactoryMaterialClass[]>('/Api/FactoryMaterialType/List', { params: { serverID } });
+  },
+  getFactoryMaterialList(serverID: string, typeID?: string) { // GET /Api/FactoryMaterial/List   获取物料列表 [生产端]  typeID： 二级物料分类id
+    return instance.get('/Api/FactoryMaterial/List', { params: { serverID, typeID } });
+  },
+  getMaterialTypeList(serverID: string) { // GET /Api/MaterialType/List  获取物料类型列表 [销售端]
+    return instance.get('/Api/MaterialType/List', { params: { serverID } });
+  },
+  getMaterialList(serverID: string, typeID?: string) { // GET /Api/Material/List   获取物料列表 [销售端]  typeID： 物料分类id
+    return instance.get('/Api/Material/List', { params: { serverID, typeID } });
   },
 };
 

@@ -1,12 +1,12 @@
 <template>
   <dl class="item">
-    <dt>
+    <dt @click.self="onHideClick" :class="{a: selectedPartList.length>0}">
       <div class="name">{{getProductName(props.item)}}</div>
       <div class="right">
         <span class="blue-span" @click="onClick(menuTypeEnum.partSetup)">选择产品部件 ({{selectedPartList.length}})</span>
         <span class="blue-span" @click="onClick(menuTypeEnum.UnionLine)">组合生产线映射 ({{props.item.UnionLineCount}})</span>
         <span class="blue-span" @click="onClick(menuTypeEnum.UnionWorking)">组合工序映射 ({{props.item.UnionWorkingCount}})</span>
-        <span @click="displayPart = !displayPart" class="arrow" :class="{disabled:selectedPartList.length===0}">
+        <span @click="onHideClick" class="arrow" :class="{disabled:selectedPartList.length===0}">
           {{displayPart ? '隐藏' : '展开'}}
           <i class="el-icon-caret-bottom" v-show="!displayPart"></i>
           <i class="el-icon-caret-top" v-show="displayPart"></i>
@@ -58,9 +58,12 @@ const getProductName = (it: IProduct) => {
   const lv1 = props.productClassLevelList.find(_it => _it.ID === FirstLevel.ID);
   if (lv1) {
     arr.push(lv1.Name);
+    const _item = it;
+    _item.Class.FirstLevel.Name = lv1.Name;
     const lv2 = lv1.children.find(_it => _it.ID === SecondLevel.ID);
     if (lv2) {
       arr.push(lv2.Name);
+      _item.Class.SecondLevel.Name = lv2.Name;
     }
   }
 
@@ -101,6 +104,11 @@ watch(() => selectedPartList.value, (newVal) => {
   displayPart.value = newVal.length > 0;
 });
 
+const onHideClick = () => {
+  if (selectedPartList.value.length === 0) return;
+  displayPart.value = !displayPart.value;
+};
+
 </script>
 
 <style scoped lang='scss'>
@@ -121,6 +129,7 @@ watch(() => selectedPartList.value, (newVal) => {
     border: 1px solid #f8f8f8;
     transition: borderColor 0.1s ease-in-out;
     margin-bottom: 2px;
+    cursor: pointer;
     .blue-span {
       display: inline-block;
       width: 160px;
@@ -147,6 +156,12 @@ watch(() => selectedPartList.value, (newVal) => {
     }
     &:hover {
       border-color: #ccc;
+    }
+    &.a:active {
+      border-color: #aaa;
+    }
+    .name {
+      cursor: text;
     }
   }
   > dd {

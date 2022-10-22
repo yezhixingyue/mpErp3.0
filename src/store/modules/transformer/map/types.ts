@@ -6,3 +6,9 @@ export interface IAssistMapParams {
   ProductID?: string
   Type: AssistMappingTypeEnum
 }
+
+export interface IFactoryMaterialClass {
+  ID: string,
+  Name: string,
+  List: { ID: string, Name: string }[],
+}

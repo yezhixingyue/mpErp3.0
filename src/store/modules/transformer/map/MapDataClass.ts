@@ -85,7 +85,8 @@ export abstract class MapDataClass<L, R, P> {
    * @returns {string}
    * @memberof MapDataClass
    */
-  public abstract getItemMapResult(id: string, mapList: AssistMapItemClass[], rightList: R[]): string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public abstract getItemMapResult(id: string, mapList: AssistMapItemClass[], other: any): string
 
   /**
    * 单个项目保存

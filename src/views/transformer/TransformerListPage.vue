@@ -73,6 +73,14 @@ const onMenuClick = (type: menuTypeEnum) => {
       router.push('/mapMakeup');
       break;
 
+    case menuTypeEnum.material: // 物料映射
+      router.push('/mapMaterial');
+      break;
+
+    case menuTypeEnum.WordsInfo: // 文字信息映射
+      router.push('/mapWords');
+      break;
+
     default:
       break;
   }

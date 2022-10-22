@@ -59,8 +59,8 @@ export interface IPart {
 export interface IProduct extends Omit<IPart, 'UseTimes'> {
   ServerID: string
   Class: {
-    FirstLevel: { ID: number },
-    SecondLevel: { ID: number },
+    FirstLevel: { ID: number, Name: null | string },
+    SecondLevel: { ID: number, Name: null | string },
   }
   /** 默认组合生产线 */
   DefaultUnionLine: null

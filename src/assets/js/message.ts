@@ -71,6 +71,8 @@ class MpMessage {
       confirmButtonText,
       center: true,
       dangerouslyUseHTMLString: true,
+      closeOnClickModal: false,
+      closeOnPressEscape: false,
       cancelButtonClass: 'cancel',
       customClass: `mp-message-box ${className}`,
     }).then(() => onOk && onOk()).catch(() => onCancel && onCancel());

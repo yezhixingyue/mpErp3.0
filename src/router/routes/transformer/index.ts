@@ -60,6 +60,30 @@ const routes = { // 基本设置
       },
       component: () => import('@/views/transformer/assistTypeSetupPages/makeupInfoMap/MakeupInfoMapPage.vue'),
     },
+    {
+      path: '/mapMaterial',
+      name: 'mapMaterial',
+      meta: {
+        title: '物料映射',
+        hideMenu: true,
+        pageName: 'MaterialInfoMapPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/materialMap/MaterialInfoMapPage.vue'),
+    },
+    {
+      path: '/mapWords',
+      name: 'mapWords',
+      meta: {
+        title: '文字信息映射',
+        hideMenu: true,
+        pageName: 'WordsInfoMapPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/wordsInfoMap/WordsInfoMapPage.vue'),
+    },
   ],
 };
 
@@ -75,6 +99,8 @@ const routeTree = {
         { name: 'mapAssist', children: [] },
         { name: 'mapColor', children: [] },
         { name: 'mapMakeup', children: [] },
+        { name: 'mapMaterial', children: [] },
+        { name: 'mapWords', children: [] },
       ],
     },
   ],

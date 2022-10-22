@@ -1,7 +1,9 @@
 <template>
   <ul v-if="list && list.length > 0" class="mp-erp-common-comps-crumbs-comp-wrap">
     <li v-for="it in list" :key="it.path">
-      <span :class="it.path ? 'blue-span' : 'is-blue'" @click="onClick(it)">{{it.name}}</span>
+      <span :class="it.path ? 'blue-span' : 'is-blue'" @click="onClick(it)">
+        <pre>{{it.name}}</pre>
+      </span>
       <i v-if="it.path" class="is-blue el-icon-arrow-right"></i>
     </li>
   </ul>
@@ -48,6 +50,9 @@ export default {
     > span {
       font-weight: 700;
       font-family: Microsoft YaHei-Bold, Microsoft YaHei;
+      pre {
+        display: inline;
+      }
       &.blue-span {
         opacity: 1;
         // border-bottom: 1px solid rgba($color: #000000, $alpha: 0);
