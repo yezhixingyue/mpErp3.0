@@ -4,7 +4,7 @@ import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapIte
 import { AssistInfoTypeEnum } from '@/store/modules/transformer/map/enum';
 import { IAssistMapParams, IFactoryMaterialClass } from '@/store/modules/transformer/map/types';
 import { TransformerListConditionClass } from '@/store/modules/transformer/TransformerListConditionClass';
-import { IPartChangeParams } from '@/store/modules/transformer/types';
+import { IPartChangeParams, ISemiFinishedSaveParams } from '@/store/modules/transformer/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import { SwitchListItemPlainType } from '@/views/serverManage/utils/SwitchListItemClass';
 import { ServerTypeEnum } from '@/views/serverManage/utils/types';
@@ -92,6 +92,18 @@ const api = {
   },
   getMaterialList(serverID: string, typeID?: string) { // GET /Api/Material/List   获取物料列表 [销售端]  typeID： 物料分类id
     return instance.get('/Api/Material/List', { params: { serverID, typeID } });
+  },
+  getSemiFinishedProductList(serverID: string) { // GET /Api/SemiFinished/List  获取半成品列表 [生产端]
+    return instance.get('/Api/SemiFinished/List', { params: { serverID } });
+  },
+  getSemiFinishedSetup(data: ISemiFinishedSaveParams) { // PUT /Api/SemiFinished/Setup  生成半成品设置
+    return instance.put('/Api/SemiFinished/Setup', data);
+  },
+  getSellPropertyList() { // POST /Api/Property/List   获取属性列表  [销售端]
+    return instance.post('/Api/Property/List');
+  },
+  getSellProductProperty(serverID: string, productID: string, partID?: string) { // GET /Api/ProductProperty/List  获取产品属性列表  [销售端 - 文字信息映射]
+    return instance.get('/Api/ProductProperty/List', { params: { serverID, productID, partID } });
   },
 };
 

@@ -16,6 +16,7 @@
       :ServerID="TransformerListPageData.ServerID"
     />
     <PartSetupDialog v-if="TransformerListPageData" :visible.sync="partSetupVisible" :item="TransformerListPageData.curEditItem" @submited="onPartSubmited" />
+    <SemiFinishedProductDialog :visible.sync="semiVisible" :TransformerListPageData="TransformerListPageData" />
   </section>
 </template>
 
@@ -25,6 +26,7 @@ import Main from '@/components/transformer/ListComps/Main.vue';
 import Footer from '@/components/transformer/ListComps/Footer.vue';
 import OperationLogDialog from '@/components/LogComp/OperationLogDialog.vue';
 import PartSetupDialog from '@/components/transformer/ListComps/PartSetupDialog.vue';
+import SemiFinishedProductDialog from '@/components/transformer/ListComps/SemiFinishedProductDialog.vue';
 import { useTransformerStore } from '@/store/modules/transformer';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
@@ -45,6 +47,7 @@ transformerStore.setTransformerListPageData(null);
 
 const visible = ref(false); // 操作日志
 const partSetupVisible = ref(false); // 部件设置
+const semiVisible = ref(false);
 
 const onPartSubmited = (e: IPartChangeParams) => {
   if (TransformerListPageData.value) TransformerListPageData.value.handlePartChange(e);
@@ -79,6 +82,10 @@ const onMenuClick = (type: menuTypeEnum) => {
 
     case menuTypeEnum.WordsInfo: // 文字信息映射
       router.push('/mapWords');
+      break;
+
+    case menuTypeEnum.SemiFinishedProduct: // 半成品设置
+      semiVisible.value = true;
       break;
 
     default:

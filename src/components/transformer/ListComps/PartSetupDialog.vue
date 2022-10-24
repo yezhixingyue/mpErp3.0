@@ -79,7 +79,7 @@ export default {
         if (it.SetupCountAttribute) {
           const {
             LineCount, NumbericInfoCount, UnionMakeupLimitCount, WordsInfoCount,
-            WorkTimesCount, WorkingCount, DefaultLine, SemiFinishedProduct,
+            WorkTimesCount, WorkingCount, DefaultLine, SemiFinished,
           } = it;
           _setupNumber += (LineCount || 0);
           _setupNumber += (NumbericInfoCount || 0);
@@ -88,7 +88,7 @@ export default {
           _setupNumber += (WorkTimesCount || 0);
           _setupNumber += (WorkingCount || 0);
           if (DefaultLine) _setupNumber += 1;
-          if (SemiFinishedProduct) _setupNumber += 1;
+          if (SemiFinished) _setupNumber += 1;
         }
         return {
           ...it,

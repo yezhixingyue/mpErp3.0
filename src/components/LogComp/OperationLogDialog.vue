@@ -79,6 +79,7 @@ const load = () => {
 </script>
 
 <style scoped lang='scss'>
+@import '@/assets/css/mixins.scss';
 .dialog {
   :deep(.el-dialog__body) {
     height: 440px;
@@ -86,10 +87,14 @@ const load = () => {
     padding: 20px;
     padding-left: 30px;
     padding-bottom: 0;
+    padding-right: 12px;
     border-bottom: 1px solid #d9d9d9;
     .infinite-list {
       height: 100%;
       overflow: auto;
+      overflow: overlay;
+      @include scroll;
+      padding-right: 10px;
       li {
         height: 30px;
         display: flex;
@@ -103,7 +108,9 @@ const load = () => {
             flex: 1;
           }
           &.n {
-            width: 7em;
+            width: 6em;
+            text-align: right;
+            margin-right: 15px;
           }
           &.t {
             width: 110px;

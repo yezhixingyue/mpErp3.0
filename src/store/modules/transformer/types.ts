@@ -28,6 +28,8 @@ export enum menuTypeEnum {
   NumbericInfo = 'NumbericInfoCount',
   /** 合拼设置 */
   UnionMakeupLimit = 'UnionMakeupLimitCount',
+  /** 半成品设置 */
+  SemiFinishedProduct = 'SemiFinishedProduct',
 }
 
 export interface IPart {
@@ -41,7 +43,7 @@ export interface IPart {
   /** 数值信息映射条数 */
   NumbericInfoCount: number
   /** 半成品 */
-  SemiFinishedProduct: null
+  SemiFinished: null | { ID: string, Name: string }
   /** 合拼禁用设置条数 */
   UnionMakeupLimitCount: number
   /** 文字信息映射条数  */
@@ -76,4 +78,11 @@ export interface IPartChangeParams {
   IsSelected: boolean
   ServerID: string
   PartList: { ID: string, IsSelected: boolean }[]
+}
+
+export interface ISemiFinishedSaveParams {
+  ServerID: string
+  ProductID: string
+  InstanceID: string
+  SemiFinishedID: string
 }

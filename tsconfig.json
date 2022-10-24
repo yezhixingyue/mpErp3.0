@@ -34,8 +34,12 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
-, "src/assets/js/loadElement.js", "src/assets/js/directive/index.js", "src/assets/js/directive/loadMore.js"  ],
+    "tests/**/*.tsx",
+    "src/assets/js/loadElement.js",
+    "src/assets/js/directive/index.js",
+    "src/assets/js/directive/loadMore.js",
+    "src/assets/js/property/index.ts",
+  ],
   "exclude": [
     "node_modules"
   ],

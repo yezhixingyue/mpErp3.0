@@ -26,8 +26,8 @@
         <span class="blue-span" @click="onClick(menuTypeEnum.UnionMakeupLimit, it.ID)">合拼设置 ({{it.UnionMakeupLimitCount}})</span>
         <span>
           产出半成品：
-          <i class="blue-span">设置</i>
-          <em class="semi" :title="it.SemiFinishedProduct||''">{{it.SemiFinishedProduct || '无'}}</em>
+          <i class="blue-span" @click="onClick(menuTypeEnum.SemiFinishedProduct, it.ID)">设置</i>
+          <em class="semi" :title="it.SemiFinished?.Name ||''">{{it.SemiFinished ? it.SemiFinished.Name || '未知' : '无'}}</em>
         </span>
       </div>
     </dd>
@@ -83,7 +83,7 @@ const selectedPartList = computed(() => {
       DefaultLine: props.item.DefaultLine,
       LineCount: props.item.LineCount,
       NumbericInfoCount: props.item.NumbericInfoCount,
-      SemiFinishedProduct: props.item.SemiFinishedProduct,
+      SemiFinished: props.item.SemiFinished,
       UnionMakeupLimitCount: props.item.UnionMakeupLimitCount,
       WordsInfoCount: props.item.WordsInfoCount,
       WorkTimesCount: props.item.WorkTimesCount,

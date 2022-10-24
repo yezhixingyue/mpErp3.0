@@ -1,5 +1,6 @@
 import { restoreInitDataByOrigin } from 'yezhixingyue-js-utils-4-mpzj';
 import { AssistMappingTypeEnum } from './enum';
+import { IPropertyType } from './types';
 
 export class AssistMapItemClass {
   ServerID = ''
@@ -15,6 +16,9 @@ export class AssistMapItemClass {
 
   /** 映射列表 */
   Target: string[] = []
+
+  /** 映射属性列表 文字信息映射等地方用到 */
+  TargetProperty: IPropertyType[] = []
 
   // /** 是否为印刷版 */
   IsPrintPlate = false

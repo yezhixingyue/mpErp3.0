@@ -1,8 +1,11 @@
 import api from '@/api';
+import { message } from '@/assets/js/message';
 import { getTwoLevelsClassifyDataFromList, IProductClassItem, IProductClassLv1ListItem } from '@/assets/js/utils';
 import { getFilterParams } from 'yezhixingyue-js-utils-4-mpzj';
 import { TransformerListConditionClass } from './TransformerListConditionClass';
-import { IPartChangeParams, IProduct } from './types';
+import {
+  IPart, IPartChangeParams, IProduct, ISemiFinishedSaveParams,
+} from './types';
 
 export class TransformerListPageDataClass {
   ServerID = ''
@@ -21,7 +24,9 @@ export class TransformerListPageDataClass {
 
   curEditItem: null | IProduct = null
 
-  curPartID = '' // 当curPartID为''时说明设置对象为产品本身，否则就是该部件
+  curPart: null | IPart = null // 当为null时说明设置对象为产品本身，否则就是该部件
+
+  curEditProductName = ''
 
   constructor(serverID: string) {
     this.ServerID = serverID;
@@ -39,7 +44,18 @@ export class TransformerListPageDataClass {
 
   setCurEditItemAndPart(item: null | IProduct, PartID: string) {
     this.curEditItem = item;
-    this.curPartID = PartID;
+    this.curPart = item ? item.PartList.find(it => it.ID === PartID) || null : null;
+    const arr = [];
+    if (!item) {
+      this.curEditProductName = '';
+      return;
+    }
+    const { Class, Name } = item;
+    const { FirstLevel, SecondLevel } = Class;
+    if (FirstLevel.Name) arr.push(FirstLevel.Name);
+    if (SecondLevel.Name) arr.push(SecondLevel.Name);
+    arr.push(Name);
+    this.curEditProductName = arr.join('-');
   }
 
   handlePartChange(data: IPartChangeParams) {
@@ -82,6 +98,34 @@ export class TransformerListPageDataClass {
     if (resp?.data.Status === 1000) {
       this.productList = resp.data.Data;
       this.productListNumber = resp.data.DataNumber;
+    }
+  }
+
+  /** 设置半成品 */
+  async getSemiFinishedSave(SemiFinished: { ID: string, Name: string }, callback: () => void) {
+    if (!this.curEditItem) return;
+    const temp: ISemiFinishedSaveParams = {
+      ServerID: this.ServerID,
+      ProductID: this.curEditItem.ID,
+      InstanceID: this.curPart ? this.curPart.ID : this.curEditItem.ID,
+      SemiFinishedID: SemiFinished.ID,
+    };
+    const resp = await api.getSemiFinishedSetup(temp).catch(() => null);
+    if (resp?.data.Status === 1000) {
+      const cb = () => {
+        // 处理数据变动
+        if (this.curPart) {
+          this.curPart.SemiFinished = { ...SemiFinished };
+        } else if (this.curEditItem) {
+          this.curEditItem.SemiFinished = { ...SemiFinished };
+        }
+        callback();
+      };
+      message.success({
+        title: '保存成功',
+        onOk: cb,
+        onCancel: cb,
+      });
     }
   }
 }

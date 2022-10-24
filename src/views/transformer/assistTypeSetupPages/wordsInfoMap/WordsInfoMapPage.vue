@@ -11,7 +11,7 @@
         border
         style="width: 100%">
         <el-table-column prop="Name" label="生产辅助信息" width="315" show-overflow-tooltip align="center" header-align="center" ></el-table-column>
-        <el-table-column label="映射专色" show-overflow-tooltip class-name="l" label-class-name="h-l" min-width="400px">
+        <el-table-column label="销售产品/部件属性" show-overflow-tooltip class-name="l" label-class-name="h-l" min-width="400px">
           <template #default="scope">
             <span class="blue-span" @click="onMapClick(scope.row)">设置映射</span>
             <span class="p-names">{{data.getItemMapResult(scope.row.ID, data.mapDataList)}}</span>
@@ -46,33 +46,14 @@ recordScrollPosition('.el-table__body-wrapper');
 const transformerStore = useTransformerStore();
 const { convertServerList, TransformerListPageData } = storeToRefs(transformerStore);
 
-const productNameWithClass = computed(() => {
-  const arr: string[] = [];
-  if (TransformerListPageData.value?.curEditItem) {
-    const { FirstLevel, SecondLevel } = TransformerListPageData.value.curEditItem.Class;
-    if (FirstLevel && FirstLevel.Name) arr.push(FirstLevel.Name);
-    if (SecondLevel && SecondLevel.Name) arr.push(SecondLevel.Name);
-    arr.push(TransformerListPageData.value.curEditItem.Name);
-  }
-  return arr.join('-');
-});
-
-const curPart = computed(() => {
-  if (TransformerListPageData.value?.curEditItem && TransformerListPageData.value.curPartID) {
-    const curPart = TransformerListPageData.value.curEditItem.PartList.find(it => it.ID === TransformerListPageData.value?.curPartID);
-    if (curPart) return curPart;
-  }
-  return null;
-});
-
 const crumbsList = computed(() => {
   const t = convertServerList.value.find(it => it.ID === TransformerListPageData.value?.ServerID);
   const serverName = t ? t.Name : '未获取到转换器名称';
-  const partName = curPart.value?.Name || '产品';
+  const partName = TransformerListPageData.value?.curPart?.Name || '';
 
   return [
     { name: `转换设置 ( ${serverName} )`, path: '/transformerList' },
-    { name: `辅助文字信息映射：${productNameWithClass.value}   ${partName}` }, // 后面补充产品与部件信息
+    { name: `辅助文字信息映射：${TransformerListPageData.value?.curEditProductName}   ${partName}` }, // 后面补充产品与部件信息
   ];
 });
 
@@ -81,9 +62,7 @@ const onMapClick = (item: IWordsInfoLeftType) => {
   data.value.visible = true;
 };
 
-const data = ref(new WordsInfoMapClass(TransformerListPageData.value?.ServerID || ''));
-
-console.log(TransformerListPageData.value?.curEditItem, TransformerListPageData.value?.curPartID);
+const data = ref(new WordsInfoMapClass(TransformerListPageData.value));
 
 </script>
 

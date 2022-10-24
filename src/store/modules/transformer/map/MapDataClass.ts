@@ -1,4 +1,6 @@
+import { TransformerListPageDataPlainType } from '../TransformerListPageDataClass';
 import { AssistMapItemClass } from './AssistMapItemClass';
+import { AssistMappingTypeEnum } from './enum';
 
 /**
  * 抽象类 - 映射父类
@@ -45,7 +47,11 @@ export abstract class MapDataClass<L, R, P> {
 
   loading = false
 
+  /** 当前选中的左侧列表中的项 */
   curEditItem: L | null = null
+
+  /** 当前页面数据  TransformerListPageDataClass */
+  curPageData: null | TransformerListPageDataPlainType = null
 
   /**
    * 获取左侧数据的方法-子类实现
@@ -98,9 +104,16 @@ export abstract class MapDataClass<L, R, P> {
    */
   public abstract saveItem(data: P): Promise<void>
 
-  constructor(ServerID: string) {
-    this.ServerID = ServerID;
-    this.getData(); // 获取数据
+  constructor(data: string | TransformerListPageDataPlainType | null) {
+    if (typeof data === 'string') {
+      this.ServerID = data;
+      this.curPageData = null;
+    } else if (data) {
+      this.ServerID = data.ServerID;
+      this.curPageData = data;
+    }
+
+    if (this.ServerID) this.getData(); // 获取数据
   }
 
   public handleItemChange = (temp: Partial<AssistMapItemClass>) => {
@@ -110,6 +123,19 @@ export abstract class MapDataClass<L, R, P> {
       this.mapDataList.splice(i, 1, _temp);
     } else {
       this.mapDataList.push(new AssistMapItemClass(temp));
+      if (this.curPageData) {
+        const target = this.curPageData.curPart || this.curPageData.curEditItem;
+        if (target) {
+          switch (temp.Type) {
+            case AssistMappingTypeEnum.WordsInfo:
+              target.WordsInfoCount += 1;
+              break;
+
+            default:
+              break;
+          }
+        }
+      }
     }
   }
 
@@ -124,5 +150,10 @@ export abstract class MapDataClass<L, R, P> {
     this.leftDataList = leftResArr || [];
     this.rightDataList = rightResArr || [];
     this.mapDataList = mapResArr || [];
+
+    this.loaded();
   }
+
+  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-empty-function
+  loaded() {}
 }

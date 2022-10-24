@@ -11,9 +11,9 @@ export enum AssistMappingTypeEnum {
   /** 作业次数 */
   WorkTimes = 4,
   /** 文字信息 */
-  WordsInfo = 4,
+  WordsInfo = 5,
   /**  数值信息 */
-  Numberic = 5
+  Numberic = 6
 }
 
 /** 常用映射类型 ( 包含条件 ) */
@@ -35,4 +35,10 @@ export enum AssistInfoTypeEnum {
   file = 0,
   text = 1,
   numerical = 2,
+}
+
+export enum FixedType {
+  Material = 54,
+  Size = 55,
+  constant = 255
 }
