@@ -1,4 +1,4 @@
-export const amapAppkey = 'd1de441473f06000bd61463102442b1e';
+export const amapAppkey = '5133382d95bf0ad64b941ae71d8ae861';
 export const projectType = 'erp';
 
 export default {
