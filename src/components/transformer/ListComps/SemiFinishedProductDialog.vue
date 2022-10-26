@@ -16,7 +16,10 @@
     </h4>
     <div class="content">
       <label for="">半成品：</label>
-      <el-radio-group v-model="radioValue">
+      <p v-if="SemiFinishedList.length === 0 && !loading" >
+        <span class="danger ft-2"><i class="el-icon-warning ft-14 mr-5"></i>暂无数据</span>
+      </p>
+      <el-radio-group v-model="radioValue" >
         <el-radio v-for="it in SemiFinishedList" :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-radio>
       </el-radio-group>
     </div>
@@ -46,10 +49,14 @@ const localVisible = computed({
   },
 });
 
+const loading = ref(false);
+
 const SemiFinishedList = ref<{ID: string, Name: string}[]>([]);
 const getSemiList = async () => {
   if (!props.TransformerListPageData || SemiFinishedList.value.length > 0) return;
+  loading.value = true;
   const resp = await api.getSemiFinishedProductList(props.TransformerListPageData.ServerID).catch(() => null);
+  loading.value = false;
   if (resp?.data.Status === 1000) {
     SemiFinishedList.value = resp.data.Data;
     if (radioValue.value) {

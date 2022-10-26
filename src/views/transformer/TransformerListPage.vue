@@ -84,6 +84,10 @@ const onMenuClick = (type: menuTypeEnum) => {
       router.push('/mapWords');
       break;
 
+    case menuTypeEnum.WorkTimes: // 作业次数
+      router.push('/mapWorkTimes');
+      break;
+
     case menuTypeEnum.SemiFinishedProduct: // 半成品设置
       semiVisible.value = true;
       break;

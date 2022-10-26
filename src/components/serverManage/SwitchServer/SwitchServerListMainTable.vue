@@ -89,7 +89,7 @@ const onRemoveClick = (row: SwitchListItemPlainType) => {
   }
   .el-table {
     height: calc(100% - 40px);
-    .el-table__body-wrapper {
+    :deep(.el-table__body-wrapper) {
       overflow: auto;
       overflow: overlay;
       height: calc(100% - 40px);

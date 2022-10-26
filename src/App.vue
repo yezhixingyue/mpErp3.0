@@ -17,6 +17,8 @@ import LeftMenu from './components/Layout/LeftMenu.vue';
 import HeaderTabs from './components/Layout/HeaderTabs.vue';
 import router from './router';
 
+const config = require('@/../config');
+
 const oLeft = ref<InstanceType<typeof LeftMenu>>();
 
 const handlePathChange = (pathName: string) => {
@@ -26,7 +28,6 @@ const handlePathChange = (pathName: string) => {
 };
 
 watch(() => router.currentRoute.fullPath, () => {
-  console.log('router.currentRoute.fullPath change');
   setTimeout(() => {
     const oPoppers = document.querySelectorAll('.el-tooltip__popper');
     if (oPoppers.length === 0) return;
@@ -41,7 +42,7 @@ onMounted(() => {
   // 简单判断是否使用Chrome相同内核或Firefox浏览器
   const bool = navigator.userAgent.includes('Chrome') || navigator.userAgent.includes('Firefox');
   if (!bool) {
-    const url = process.env.NODE_ENV === 'development' ? '/browser' : '/Web/browser';
+    const url = process.env.NODE_ENV === 'development' ? '/browser' : `${config.path}/browser`;
     window.location.replace(url);
   }
 });

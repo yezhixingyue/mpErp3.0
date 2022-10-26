@@ -84,6 +84,18 @@ const routes = { // 基本设置
       },
       component: () => import('@/views/transformer/assistTypeSetupPages/wordsInfoMap/WordsInfoMapPage.vue'),
     },
+    {
+      path: '/mapWorkTimes',
+      name: 'mapWorkTimes',
+      meta: {
+        title: '作业次数',
+        hideMenu: true,
+        pageName: 'WorkTimesMapPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/workTimesMap/WorkTimesMapPage.vue'),
+    },
   ],
 };
 
@@ -101,6 +113,7 @@ const routeTree = {
         { name: 'mapMakeup', children: [] },
         { name: 'mapMaterial', children: [] },
         { name: 'mapWords', children: [] },
+        { name: 'mapWorkTimes', children: [] },
       ],
     },
   ],

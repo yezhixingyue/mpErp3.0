@@ -14,6 +14,9 @@
     <el-checkbox-group v-model="checkList">
       <el-checkbox class="check-item" v-for="it in props.data.rightDataList" :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-checkbox>
     </el-checkbox-group>
+    <p v-if="props.data.rightDataList.length === 0" >
+      <span class="danger ft-2"><i class="el-icon-warning ft-14 mr-5"></i>暂无数据</span>
+    </p>
   </CommonDialogComp>
 </template>
 
