@@ -4,7 +4,9 @@ import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapIte
 import { AssistInfoTypeEnum } from '@/store/modules/transformer/map/enum';
 import { IAssistMapParams, IFactoryMaterialClass } from '@/store/modules/transformer/map/types';
 import { TransformerListConditionClass } from '@/store/modules/transformer/TransformerListConditionClass';
-import { IPartChangeParams, ISemiFinishedSaveParams } from '@/store/modules/transformer/types';
+import {
+  IGetFormulaParams, IGetWorkingProcedureParams, IPartChangeParams, ISemiFinishedSaveParams,
+} from '@/store/modules/transformer/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import { SwitchListItemPlainType } from '@/views/serverManage/utils/SwitchListItemClass';
 import { ServerTypeEnum } from '@/views/serverManage/utils/types';
@@ -50,6 +52,9 @@ const api = {
   },
   /* 转换设置
   ------------------------------- */
+  getFactoryIsConnect(serverID: string) { //  GET /Api/Factory/IsConnect   是否成功链接
+    return instance.get('/Api/Factory/IsConnect', { params: { serverID } });
+  },
   getProductClassList(serverID: string) { // GET /Api/ProductClass/List   获取产品分类列表
     return instance.get('/Api/ProductClass/List', { params: { serverID } });
   },
@@ -104,6 +109,12 @@ const api = {
   },
   getSellProductProperty(serverID: string, productID: string, partID?: string) { // GET /Api/ProductProperty/List  获取产品属性列表  [销售端 - 文字信息映射]
     return instance.get('/Api/ProductProperty/List', { params: { serverID, productID, partID } });
+  },
+  getWorkingProcedureList(data: IGetWorkingProcedureParams) { // POST /Api/WorkingProcedure/List   获取工序列表
+    return instance.post('/Api/WorkingProcedure/List', data);
+  },
+  getFormulaList(data: IGetFormulaParams) { // POST /Api/Formula/List   获取公式列表
+    return instance.post('/Api/Formula/List', data);
   },
 };
 

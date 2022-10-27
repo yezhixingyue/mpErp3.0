@@ -1,21 +1,21 @@
 import api from '@/api';
 import { message } from '@/assets/js/message';
-import { AssistMappingTypeEnum } from '@/store/modules/transformer/map/enum';
+import { AssistInfoTypeEnum, AssistMappingTypeEnum } from '@/store/modules/transformer/map/enum';
 import { MapDataClass } from '@/store/modules/transformer/map/MapDataClass';
 import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
 
-export interface IWorkTimesLeftType {
+export interface INumbericLeftType {
   ID: string
   Name: string
 }
 
-export interface IWorkTimesRightType {
+export interface INumbericRightType {
   ID: string
   Name: string
   PartID: null | string
 }
 
-export class WorkTimesMapClass extends MapDataClass<IWorkTimesLeftType, IWorkTimesRightType, string[]> {
+export class NumbericMapClass extends MapDataClass<INumbericLeftType, INumbericRightType, string[]> {
   visible = false
 
   setVisible = (bool: boolean) => {
@@ -25,9 +25,9 @@ export class WorkTimesMapClass extends MapDataClass<IWorkTimesLeftType, IWorkTim
   public getItemMapResult(id: string, mapList: AssistMapItemClass[]) {
     const _mapList = mapList || this.mapDataList;
     const t = _mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);
-    if (!t) return '1次';
-    if (typeof t.Value === 'number') return `${t.Value}次`;
-    return t.Target.map(_id => this.rightDataList.find(it => it.ID === _id)).map(it => (it ? `公式：${it.Name}` : '')).filter(it => it).join('、') || '1次';
+    if (!t) return '';
+    if (typeof t.Value === 'number') return `${t.Value}`;
+    return t.Target.map(_id => this.rightDataList.find(it => it.ID === _id)).map(it => (it ? `公式：${it.Name}` : '')).filter(it => it).join('、') || '';
   }
 
   public async saveItem(data: string[] | number): Promise<void> {
@@ -35,7 +35,7 @@ export class WorkTimesMapClass extends MapDataClass<IWorkTimesLeftType, IWorkTim
     const InstanceID = this.curPageData?.curPart?.ID || ProductID;
     const temp: Partial<AssistMapItemClass> = {
       ServerID: this.ServerID,
-      Type: AssistMappingTypeEnum.WorkTimes,
+      Type: AssistMappingTypeEnum.Numberic,
       SourceID: this.curEditItem?.ID || '',
       ProductID,
       InstanceID,
@@ -64,16 +64,10 @@ export class WorkTimesMapClass extends MapDataClass<IWorkTimesLeftType, IWorkTim
    *
    * @protected
    * @returns
-   * @memberof WorkTimesMapClass
+   * @memberof NumbericMapClass
    */
   protected async getLeftList() {
-    const data = {
-      ServerID: this.ServerID,
-      OnlyShowNormal: true,
-      Page: 0,
-      PageSize: 10000,
-    };
-    const resp = await api.getWorkingProcedureList(data).catch(() => null);
+    const resp = await api.getAssistantInfoList(this.ServerID, AssistInfoTypeEnum.numerical).catch(() => null);
     return resp?.data.Status === 1000 ? resp.data.Data : [];
   }
 
@@ -82,7 +76,7 @@ export class WorkTimesMapClass extends MapDataClass<IWorkTimesLeftType, IWorkTim
    *
    * @protected
    * @returns
-   * @memberof WorkTimesMapClass
+   * @memberof NumbericMapClass
    */
   protected async getRightList() {
     const ProductID = this.curPageData?.curEditItem?.ID || '';
@@ -95,7 +89,7 @@ export class WorkTimesMapClass extends MapDataClass<IWorkTimesLeftType, IWorkTim
     const resp = await api.getFormulaList(temp).catch(() => null);
     const list = resp?.data.Status === 1000 ? resp.data.Data : [];
     return list;
-    // return list.map(transformProperty).filter((it: IWorkTimesRightType) => it);
+    // return list.map(transformProperty).filter((it: INumbericRightType) => it);
   }
 
   /**
@@ -103,14 +97,14 @@ export class WorkTimesMapClass extends MapDataClass<IWorkTimesLeftType, IWorkTim
    *
    * @protected
    * @returns
-   * @memberof WorkTimesMapClass
+   * @memberof NumbericMapClass
    */
   protected async getMapList() {
     const ProductID = this.curPageData?.curEditItem?.ID || '';
     const InstanceID = this.curPageData?.curPart?.ID || ProductID;
     const temp = {
       ServerID: this.ServerID,
-      Type: AssistMappingTypeEnum.WorkTimes,
+      Type: AssistMappingTypeEnum.Numberic,
       ProductID,
       InstanceID,
     };

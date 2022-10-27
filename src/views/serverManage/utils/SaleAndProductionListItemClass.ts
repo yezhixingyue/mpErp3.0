@@ -25,7 +25,7 @@ export class SaleAndProductionListItemClass {
   /** 服务器地址 */
   Url = ''
 
-  /** 密钥 */
+  /** 私钥 */
   PrivateKey = ''
 
   /** 公钥 */

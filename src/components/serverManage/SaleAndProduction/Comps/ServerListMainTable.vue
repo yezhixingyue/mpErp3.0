@@ -9,7 +9,7 @@
       <el-table-column prop="Name" label="名称" min-width="150" show-overflow-tooltip align="center" header-align="center" ></el-table-column>
       <el-table-column prop="Url" label="服务器地址" min-width="150" show-overflow-tooltip align="center" header-align="center"></el-table-column>
       <el-table-column prop="PublicKey" label="公钥" min-width="180" show-overflow-tooltip align="center" header-align="center"></el-table-column>
-      <el-table-column prop="PrivateKey" label="密钥" min-width="180" show-overflow-tooltip align="center" header-align="center"></el-table-column>
+      <el-table-column prop="PrivateKey" label="私钥" min-width="180" show-overflow-tooltip align="center" header-align="center"></el-table-column>
       <el-table-column label="关联转换器" width="120" show-overflow-tooltip align="center" header-align="center">
         <template #default="scope">
           {{ scope.row.RelationNumber }}个

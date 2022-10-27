@@ -96,6 +96,18 @@ const routes = { // 基本设置
       },
       component: () => import('@/views/transformer/assistTypeSetupPages/workTimesMap/WorkTimesMapPage.vue'),
     },
+    {
+      path: '/mapNumberic',
+      name: 'mapNumberic',
+      meta: {
+        title: '数值映射',
+        hideMenu: true,
+        pageName: 'NumbericMapPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/numbericMap/NumbericMapPage.vue'),
+    },
   ],
 };
 
@@ -114,6 +126,7 @@ const routeTree = {
         { name: 'mapMaterial', children: [] },
         { name: 'mapWords', children: [] },
         { name: 'mapWorkTimes', children: [] },
+        { name: 'mapNumberic', children: [] },
       ],
     },
   ],

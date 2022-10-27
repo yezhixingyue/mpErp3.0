@@ -116,9 +116,9 @@ const rules = {
 
 const serverList = ref<SaleAndProductionListItemPlainType[]>([]);
 
-const sellServers = computed(() => serverList.value.filter(it => it.Type === ServerTypeEnum.sales && it.PrivateKey));
+const sellServers = computed(() => serverList.value.filter(it => it.Type === ServerTypeEnum.sales && it.PrivateKey && it.PublicKey));
 
-const productionServers = computed(() => serverList.value.filter(it => it.Type === ServerTypeEnum.production && it.PrivateKey));
+const productionServers = computed(() => serverList.value.filter(it => it.Type === ServerTypeEnum.production && it.PrivateKey && it.PublicKey));
 
 const onOpen = async () => {
   ruleForm.value = new SwitchListItemClass(props.pageTypeData.curEditItem || undefined);

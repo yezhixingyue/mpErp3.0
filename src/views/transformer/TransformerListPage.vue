@@ -88,6 +88,10 @@ const onMenuClick = (type: menuTypeEnum) => {
       router.push('/mapWorkTimes');
       break;
 
+    case menuTypeEnum.NumbericInfo: // 数值映射
+      router.push('/mapNumberic');
+      break;
+
     case menuTypeEnum.SemiFinishedProduct: // 半成品设置
       semiVisible.value = true;
       break;

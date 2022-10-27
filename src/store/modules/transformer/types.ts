@@ -86,3 +86,16 @@ export interface ISemiFinishedSaveParams {
   InstanceID: string
   SemiFinishedID: string
 }
+
+export interface IGetWorkingProcedureParams {
+  ServerID: string
+  OnlyShowNormal: boolean
+  Page: number
+  PageSize: number
+}
+
+export interface IGetFormulaParams {
+  ServerID: string
+  ProductID: string
+  PartID?: string
+}

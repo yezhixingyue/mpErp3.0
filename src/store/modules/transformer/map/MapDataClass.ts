@@ -131,6 +131,14 @@ export abstract class MapDataClass<L, R, P> {
               target.WordsInfoCount += 1;
               break;
 
+            case AssistMappingTypeEnum.WorkTimes:
+              target.WorkTimesCount += 1;
+              break;
+
+            case AssistMappingTypeEnum.Numberic:
+              target.NumbericInfoCount += 1;
+              break;
+
             default:
               break;
           }

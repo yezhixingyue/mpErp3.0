@@ -72,6 +72,11 @@ export class TransformerListPageDataClass {
   /** 获取产品分类列表 */
   private async _getProductClassList() {
     this.loading = true;
+    const IsConnectResp = await api.getFactoryIsConnect(this.ServerID).catch(() => null);
+    if (!IsConnectResp || IsConnectResp.data.Status !== 1000) {
+      this.loading = false;
+      return;
+    }
     const resp = await api.getProductClassList(this.ServerID).catch(() => null);
     this.loading = false;
 

@@ -1,7 +1,7 @@
 <template>
   <CommonDialogComp
     width="700px"
-    :title="`作业次数设置：${props.data.curEditItem?.Name}`"
+    :title="`设置数值映射：${props.data.curEditItem?.Name}`"
     :visible.sync="localVisible"
     @open="onOpen"
     @submit="submit"
@@ -43,15 +43,15 @@
 import { message } from '@/assets/js/message';
 import { CommonDialogComp } from 'mpzj-sell-lib';
 import { computed, ref } from 'vue';
-import { IWorkTimesRightType, WorkTimesMapClass } from './WorkTimesMapClass';
+import { INumbericRightType, NumbericMapClass } from './NumbericMapClass';
 
 interface IDisplayItem {
   TypeName: string
-  List: IWorkTimesRightType[]
+  List: INumbericRightType[]
 }
 
 const props = defineProps<{
-  data: Omit<WorkTimesMapClass, 'getLeftList' | 'getRightList' | 'getMapList' | 'getData'>
+  data: Omit<NumbericMapClass, 'getLeftList' | 'getRightList' | 'getMapList' | 'getData'>
 }>();
 
 const localVisible = computed({
