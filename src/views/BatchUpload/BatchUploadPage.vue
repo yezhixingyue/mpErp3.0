@@ -29,7 +29,8 @@
         </div>
         <!-- :disabled='!canSelectFile' -->
         <div class="select-box">
-          <FileSelectComp @change="handleFileChange" v-show='canSelectFile' :accept='accept' :selectTitle='selectTitle' ref="oFileBox" />
+          <!-- v-show='canSelectFile' -->
+          <FileSelectComp @change="handleFileChange" v-show="customer" :disabled="!canSelectFile" :accept='accept' :selectTitle='selectTitle' ref="oFileBox" />
           <FailListComp :failed-list="failedList" width="720" :offset='122' />
         </div>
       </div>
@@ -146,7 +147,9 @@ export default {
     ...mapGetters('common', ['subExpressList']),
     canSelectFile() { // 是否允许选择产品（）
       if (!this.Product.ProductID && this.Product.isSingle) return false;
-      if (!this.customer || !this.customer.CustomerID || !this.address || !this.address.Address) return false;
+      if (!this.customer || !this.customer.CustomerID) return false;
+      if (!this.UseSameAddress) return true;
+      if (!this.address || !this.address.Address) return false;
       const { Address, AddressID, Express } = this.address.Address;
       if (!Express || (!Express.First && Express.First !== 0) || (!Express.Second && Express.Second !== 0)) return false;
       if (!AddressID) {
