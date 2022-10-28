@@ -42,3 +42,16 @@ export enum FixedType {
   Size = 55,
   constant = 255
 }
+
+export enum UseModuleEnum {
+  /** 合拼禁用限制 */
+  UnionMakeupLimit = 21,
+  /** 生产线映射 */
+  NormalLine = 21,
+  /** 工序映射 */
+  NormalWorking = 21,
+  /** 组合生产线映射 */
+  UnionLine = 21,
+  /** 组合工序映射 */
+  UnionWorking = 21
+}

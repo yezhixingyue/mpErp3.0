@@ -1,6 +1,5 @@
+import { nextTick } from 'vue';
 import { TransformerListPageDataPlainType } from '../TransformerListPageDataClass';
-import { AssistMapItemClass } from './AssistMapItemClass';
-import { AssistMappingTypeEnum } from './enum';
 
 /**
  * 抽象类 - 映射父类
@@ -12,7 +11,7 @@ import { AssistMappingTypeEnum } from './enum';
  * @template R
  * @template P
  */
-export abstract class MapDataClass<L, R, P> {
+export abstract class MapDataClass<L, R, P, M> {
   /**
    * 转换器ID
    *
@@ -40,10 +39,10 @@ export abstract class MapDataClass<L, R, P> {
   /**
    * 映射信息列表数据
    *
-   * @type {AssistMapItemClass[]}
+   * @type {M[]}
    * @memberof MapDataClass
    */
-  mapDataList: AssistMapItemClass[] = []
+  mapDataList: M[] = []
 
   loading = false
 
@@ -78,10 +77,10 @@ export abstract class MapDataClass<L, R, P> {
    *
    * @protected
    * @abstract
-   * @returns {(Promise<null | AssistMapItemClass[]>)}
+   * @returns {(Promise<null | M[]>)}
    * @memberof MapDataClass
    */
-  protected abstract getMapList(): Promise<null | AssistMapItemClass[]>
+  protected abstract getMapList(): Promise<null | M[]>
 
   /**
    * 获取映射结果 用于右侧展示 - 子类实现
@@ -92,7 +91,7 @@ export abstract class MapDataClass<L, R, P> {
    * @memberof MapDataClass
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public abstract getItemMapResult(id: string, mapList: AssistMapItemClass[], other: any): string
+  public abstract getItemMapResult(id: string, mapList: M[], other: any): string
 
   /**
    * 单个项目保存
@@ -116,39 +115,9 @@ export abstract class MapDataClass<L, R, P> {
     if (this.ServerID) this.getData(); // 获取数据
   }
 
-  public handleItemChange = (temp: Partial<AssistMapItemClass>) => {
-    const i = this.mapDataList.findIndex(it => it.SourceID === temp.SourceID || it.SourceID === `${temp.SourceID}`);
-    if (i > -1) {
-      const _temp = { ...this.mapDataList[i], ...temp };
-      this.mapDataList.splice(i, 1, _temp);
-    } else {
-      this.mapDataList.push(new AssistMapItemClass(temp));
-      if (this.curPageData) {
-        const target = this.curPageData.curPart || this.curPageData.curEditItem;
-        if (target) {
-          switch (temp.Type) {
-            case AssistMappingTypeEnum.WordsInfo:
-              target.WordsInfoCount += 1;
-              break;
-
-            case AssistMappingTypeEnum.WorkTimes:
-              target.WorkTimesCount += 1;
-              break;
-
-            case AssistMappingTypeEnum.Numberic:
-              target.NumbericInfoCount += 1;
-              break;
-
-            default:
-              break;
-          }
-        }
-      }
-    }
-  }
-
   /** 获取全部数据： 左侧、右侧及映射数据 */
   protected async getData() {
+    await nextTick();
     this.loading = true;
     const respArr = await Promise.all([this.getLeftList(), this.getRightList(), this.getMapList()]);
     this.loading = false;

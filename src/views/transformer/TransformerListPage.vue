@@ -92,6 +92,10 @@ const onMenuClick = (type: menuTypeEnum) => {
       router.push('/mapNumberic');
       break;
 
+    case menuTypeEnum.UnionMakeupLimit: // 合拼设置
+      router.push('/unionMakeupLimitList');
+      break;
+
     case menuTypeEnum.SemiFinishedProduct: // 半成品设置
       semiVisible.value = true;
       break;

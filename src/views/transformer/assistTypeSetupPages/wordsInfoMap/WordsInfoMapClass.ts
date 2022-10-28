@@ -1,7 +1,7 @@
 import api from '@/api';
 import { message } from '@/assets/js/message';
 import { AssistInfoTypeEnum, AssistMappingTypeEnum, FixedType } from '@/store/modules/transformer/map/enum';
-import { MapDataClass } from '@/store/modules/transformer/map/MapDataClass';
+import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
 import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
 import { IPropertyType } from '@/store/modules/transformer/map/types';
 import { getPerfectPropertyByImperfectProperty } from '@/assets/js/property';
@@ -70,13 +70,7 @@ const transformProperty = (it: IPropertyType): IWordsInfoRightType | null => {
   return { ...it, ...temp };
 };
 
-export class WordsInfoMapClass extends MapDataClass<IWordsInfoLeftType, IWordsInfoRightType, IWordsInfoRightType[]> {
-  visible = false
-
-  setVisible = (bool: boolean) => {
-    this.visible = bool;
-  }
-
+export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IWordsInfoRightType, IWordsInfoRightType[]> {
   public getItemMapResult(id: string, mapList: AssistMapItemClass[]) {
     const _mapList = mapList || this.mapDataList;
     const t = _mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);

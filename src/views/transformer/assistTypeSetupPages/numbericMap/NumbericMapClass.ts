@@ -1,7 +1,7 @@
 import api from '@/api';
 import { message } from '@/assets/js/message';
 import { AssistInfoTypeEnum, AssistMappingTypeEnum } from '@/store/modules/transformer/map/enum';
-import { MapDataClass } from '@/store/modules/transformer/map/MapDataClass';
+import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
 import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
 
 export interface INumbericLeftType {
@@ -15,13 +15,7 @@ export interface INumbericRightType {
   PartID: null | string
 }
 
-export class NumbericMapClass extends MapDataClass<INumbericLeftType, INumbericRightType, string[]> {
-  visible = false
-
-  setVisible = (bool: boolean) => {
-    this.visible = bool;
-  }
-
+export class NumbericMapClass extends AssistMapDataClass<INumbericLeftType, INumbericRightType, string[]> {
   public getItemMapResult(id: string, mapList: AssistMapItemClass[]) {
     const _mapList = mapList || this.mapDataList;
     const t = _mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);

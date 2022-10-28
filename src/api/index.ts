@@ -2,10 +2,11 @@
 import { GetLogOptions } from '@/components/LogComp/types/LogConditionClass';
 import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
 import { AssistInfoTypeEnum } from '@/store/modules/transformer/map/enum';
-import { IAssistMapParams, IFactoryMaterialClass } from '@/store/modules/transformer/map/types';
+import { GeneralMapItemClass } from '@/store/modules/transformer/map/GeneralMapItemClass';
+import { IAssistMapParams, IFactoryMaterialClass, IGeneralMapParams } from '@/store/modules/transformer/map/types';
 import { TransformerListConditionClass } from '@/store/modules/transformer/TransformerListConditionClass';
 import {
-  IGetFormulaParams, IGetWorkingProcedureParams, IPartChangeParams, ISemiFinishedSaveParams,
+  IGetFormulaParams, IGetPropertyListParams, IGetWorkingProcedureParams, IPartChangeParams, ISemiFinishedSaveParams,
 } from '@/store/modules/transformer/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import { SwitchListItemPlainType } from '@/views/serverManage/utils/SwitchListItemClass';
@@ -64,15 +65,15 @@ const api = {
   getConvertServerPartSave(data: IPartChangeParams) { // POST /Api/ConvertServer/PartSave  部件保存
     return instance.post('/Api/ConvertServer/PartSave', data);
   },
-  getAssistMappingList(data: IAssistMapParams) { //  POST /Api/AssistMapping/List   获取辅助映射列表 [辅助映射列表]
-    return instance.post('/Api/AssistMapping/List', data);
-  },
   // GET /Api/File/List 获取输出文件列表 [审稿端]
   getFileList({ serverID, onlyShowPdf, onlyShowMakeupUsed }: { serverID: string, onlyShowPdf?:boolean, onlyShowMakeupUsed?:boolean }) {
     return instance.get('/Api/File/List', { params: { serverID, onlyShowPdf, onlyShowMakeupUsed } });
   },
   getAssistantInfoList(serverID: string, type: AssistInfoTypeEnum) { // GET /Api/AssistantInfo/List   获取文件辅助信息列表 [生产端]
     return instance.get('/Api/AssistantInfo/List', { params: { serverID, type } });
+  },
+  getAssistMappingList(data: IAssistMapParams) { //  POST /Api/AssistMapping/List   获取辅助映射列表 [辅助映射列表]
+    return instance.post('/Api/AssistMapping/List', data);
   },
   getAssistMappingSave(data: Partial<AssistMapItemClass>) { // POST /Api/AssistMapping/Save  辅助映射保存
     return instance.post('/Api/AssistMapping/Save', data);
@@ -104,9 +105,6 @@ const api = {
   getSemiFinishedSetup(data: ISemiFinishedSaveParams) { // PUT /Api/SemiFinished/Setup  生成半成品设置
     return instance.put('/Api/SemiFinished/Setup', data);
   },
-  getSellPropertyList() { // POST /Api/Property/List   获取属性列表  [销售端]
-    return instance.post('/Api/Property/List');
-  },
   getSellProductProperty(serverID: string, productID: string, partID?: string) { // GET /Api/ProductProperty/List  获取产品属性列表  [销售端 - 文字信息映射]
     return instance.get('/Api/ProductProperty/List', { params: { serverID, productID, partID } });
   },
@@ -115,6 +113,15 @@ const api = {
   },
   getFormulaList(data: IGetFormulaParams) { // POST /Api/Formula/List   获取公式列表
     return instance.post('/Api/Formula/List', data);
+  },
+  getGeneralMappingList(data: IGeneralMapParams) { //  POST /Api/GeneralMapping/List 获取常规映射列表 [常规映射列表]
+    return instance.post('/Api/GeneralMapping/List', data);
+  },
+  getGeneralMappingSave(data: Partial<GeneralMapItemClass>) { // POST /Api/GeneralMapping/Save  常规映射(生产线/组合生产线/工序/组合工序)
+    return instance.post('/Api/GeneralMapping/Save', data);
+  },
+  getPropertyList(data: IGetPropertyListParams) { // POST /Api/Property/List  获取属性列表
+    return instance.post('/Api/Property/List', data);
   },
 };
 

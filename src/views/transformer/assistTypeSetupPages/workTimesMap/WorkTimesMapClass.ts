@@ -1,7 +1,7 @@
 import api from '@/api';
 import { message } from '@/assets/js/message';
 import { AssistMappingTypeEnum } from '@/store/modules/transformer/map/enum';
-import { MapDataClass } from '@/store/modules/transformer/map/MapDataClass';
+import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
 import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
 
 export interface IWorkTimesLeftType {
@@ -15,13 +15,7 @@ export interface IWorkTimesRightType {
   PartID: null | string
 }
 
-export class WorkTimesMapClass extends MapDataClass<IWorkTimesLeftType, IWorkTimesRightType, string[]> {
-  visible = false
-
-  setVisible = (bool: boolean) => {
-    this.visible = bool;
-  }
-
+export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IWorkTimesRightType, string[]> {
   public getItemMapResult(id: string, mapList: AssistMapItemClass[]) {
     const _mapList = mapList || this.mapDataList;
     const t = _mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);
@@ -70,7 +64,7 @@ export class WorkTimesMapClass extends MapDataClass<IWorkTimesLeftType, IWorkTim
     const data = {
       ServerID: this.ServerID,
       OnlyShowNormal: true,
-      Page: 0,
+      Page: 1,
       PageSize: 10000,
     };
     const resp = await api.getWorkingProcedureList(data).catch(() => null);

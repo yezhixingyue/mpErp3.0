@@ -1,7 +1,7 @@
 import api from '@/api';
 import { message } from '@/assets/js/message';
 import { AssistMappingTypeEnum } from '@/store/modules/transformer/map/enum';
-import { MapDataClass } from '@/store/modules/transformer/map/MapDataClass';
+import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
 import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
 
 export interface IMakeupInfoLeftType {
@@ -16,13 +16,7 @@ export interface IMakeupInfoRightType {
   Name: string
 }
 
-export class MakeupInfoMapClass extends MapDataClass<IMakeupInfoLeftType, IMakeupInfoRightType, Pick<AssistMapItemClass, 'IsPrintPlate' | 'Target'>> {
-  visible = false
-
-  setVisible = (bool: boolean) => {
-    this.visible = bool;
-  }
-
+export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, IMakeupInfoRightType, Pick<AssistMapItemClass, 'IsPrintPlate' | 'Target'>> {
   public getItemMapResult(id: string, mapList: AssistMapItemClass[]) {
     const t = mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);
     if (!t) return '无';

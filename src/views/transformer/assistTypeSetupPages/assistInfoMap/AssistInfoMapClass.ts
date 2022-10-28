@@ -1,7 +1,7 @@
 import api from '@/api';
 import { message } from '@/assets/js/message';
 import { AssistInfoTypeEnum, AssistMappingTypeEnum } from '@/store/modules/transformer/map/enum';
-import { MapDataClass } from '@/store/modules/transformer/map/MapDataClass';
+import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
 import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
 
 export interface IAssistInfoLeftType {
@@ -14,13 +14,7 @@ interface IAssistInfoRightType {
   Name: string
 }
 
-export class AssistInfoMapClass extends MapDataClass<IAssistInfoLeftType, IAssistInfoRightType, string[]> {
-  visible = false
-
-  setVisible = (bool: boolean) => {
-    this.visible = bool;
-  }
-
+export class AssistInfoMapClass extends AssistMapDataClass<IAssistInfoLeftType, IAssistInfoRightType, string[]> {
   public getItemMapResult(id: string, mapList: AssistMapItemClass[]) {
     const t = mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);
     if (!t) return '无';

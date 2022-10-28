@@ -108,6 +108,30 @@ const routes = { // 基本设置
       },
       component: () => import('@/views/transformer/assistTypeSetupPages/numbericMap/NumbericMapPage.vue'),
     },
+    {
+      path: '/unionMakeupLimitList',
+      name: 'unionMakeupLimitList',
+      meta: {
+        title: '合并设置',
+        hideMenu: true,
+        pageName: 'UnionMakeupLimitListPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/UnionMakeupLimit/UnionMakeupLimitListPage.vue'),
+    },
+    {
+      path: '/unionMakeupLimitSetup',
+      name: 'unionMakeupLimitSetup',
+      meta: {
+        title: '合并设置',
+        hideMenu: true,
+        pageName: 'UnionMakeupLimitSetupPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/UnionMakeupLimit/UnionMakeupLimitSetupPage.vue'),
+    },
   ],
 };
 
@@ -127,6 +151,12 @@ const routeTree = {
         { name: 'mapWords', children: [] },
         { name: 'mapWorkTimes', children: [] },
         { name: 'mapNumberic', children: [] },
+        {
+          name: 'unionMakeupLimitList',
+          children: [
+            { name: 'unionMakeupLimitSetup', children: [] },
+          ],
+        },
       ],
     },
   ],

@@ -1,7 +1,7 @@
 import api from '@/api';
 import { message } from '@/assets/js/message';
 import { AssistMappingTypeEnum } from '@/store/modules/transformer/map/enum';
-import { MapDataClass } from '@/store/modules/transformer/map/MapDataClass';
+import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
 import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
 import { IFactoryMaterialClass } from '@/store/modules/transformer/map/types';
 
@@ -17,13 +17,7 @@ interface IMaterialInfoRightType {
   TypeID: string
 }
 
-export class MaterialInfoMapClass extends MapDataClass<IMaterialInfoLeftType, IMaterialInfoRightType, string[]> {
-  visible = false
-
-  setVisible = (bool: boolean) => {
-    this.visible = bool;
-  }
-
+export class MaterialInfoMapClass extends AssistMapDataClass<IMaterialInfoLeftType, IMaterialInfoRightType, string[]> {
   public getItemMapResult(id: string, mapList: AssistMapItemClass[], FactoryMaterialClassList: IFactoryMaterialClass[]) {
     const t = mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);
     if (!t || t.Target.length === 0) return '无';

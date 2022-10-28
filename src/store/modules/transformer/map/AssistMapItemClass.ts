@@ -9,7 +9,7 @@ export class AssistMapItemClass {
 
   ProductID = ''
 
-  Type = AssistMappingTypeEnum.AssistFile // 枚举数值
+  Type:AssistMappingTypeEnum = AssistMappingTypeEnum.AssistFile // 枚举数值
 
   /** 原属性ID */
   SourceID: string | number = ''

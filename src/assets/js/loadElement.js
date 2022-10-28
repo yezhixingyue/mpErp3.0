@@ -27,6 +27,8 @@ import {
   ButtonGroup,
   Checkbox,
   CheckboxGroup,
+  Select,
+  Option,
 } from 'element-ui';
 
 // 指令
@@ -34,6 +36,8 @@ import Clickoutside from 'element-ui/lib/utils/clickoutside';
 
 import { Button as MpButton } from 'mpzj-sell-lib';
 
+Vue.use(Select);
+Vue.use(Option);
 Vue.use(Checkbox);
 Vue.use(CheckboxGroup);
 Vue.use(ButtonGroup);

@@ -1,10 +1,17 @@
-import { AssistMappingTypeEnum, FixedType } from './enum';
+import { AssistMappingTypeEnum, FixedType, GenerelMappingTypeEnum } from './enum';
 
 export interface IAssistMapParams {
   ServerID: string
   InstanceID?: string
   ProductID?: string
   Type: AssistMappingTypeEnum
+}
+
+export interface IGeneralMapParams {
+  ServerID: string
+  InstanceID?: string
+  ProductID?: string
+  Type: GenerelMappingTypeEnum
 }
 
 export interface IFactoryMaterialClass {
@@ -32,4 +39,17 @@ export interface IPropertyType {
   Type: number
   DefaultValue: number | string | null
   CraftOptionList: null | { ID: string, Name: string, Part: null | { ID: string, Name: string } }[]
+}
+
+export interface IConstraintListItem {
+  ConstraintID: string
+  Property: IPropertyType
+  Operator: number // 可调整为枚举
+  ValueList: { Property?: IPropertyType, ValueType?: number, Value?: string }[]
+}
+
+export interface IConstraint {
+  ConstraintID: string
+  FilterType: 1 | 2 // 可调整为枚举
+  ItemList: IConstraintListItem[]
 }

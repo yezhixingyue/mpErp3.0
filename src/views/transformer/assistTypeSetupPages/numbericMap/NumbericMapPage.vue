@@ -57,7 +57,7 @@ const crumbsList = computed(() => {
 
   return [
     { name: `转换设置 ( ${serverName} )`, path: '/transformerList' },
-    { name: `数值映射：${TransformerListPageData.value?.curEditProductName}   ${partName}` }, // 后面补充产品与部件信息
+    { name: `数值映射：${TransformerListPageData.value?.curEditProductName}   ${partName}` },
   ];
 });
 

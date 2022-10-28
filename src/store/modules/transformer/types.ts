@@ -1,3 +1,5 @@
+import { UseModuleEnum } from './map/enum';
+
 /** 页面头部按钮种类信息 */
 export enum menuTypeEnum {
   /** 操作日志 */
@@ -98,4 +100,8 @@ export interface IGetFormulaParams {
   ServerID: string
   ProductID: string
   PartID?: string
+}
+
+export interface IGetPropertyListParams extends IGetFormulaParams {
+  UseModule: UseModuleEnum
 }
