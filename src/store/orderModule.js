@@ -479,6 +479,8 @@ export default {
       if (result.data.Status === 1000) {
         messageBox.successSingle('取消成功', () => {
           commit('changeStatus4OrderListData', [index, 254]);
+        }, () => {
+          commit('changeStatus4OrderListData', [index, 254]);
         });
       }
     },

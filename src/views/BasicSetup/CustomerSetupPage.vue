@@ -270,6 +270,8 @@ export default {
           this.sermissionSettingVisible = false;
           this.messageBox.successSingle('分配成功', () => {
             this.getDataList();
+          }, () => {
+            this.getDataList();
           });
         }
       });

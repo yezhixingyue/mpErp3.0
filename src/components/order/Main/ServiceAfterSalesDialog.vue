@@ -397,6 +397,8 @@ export default {
           this.messageBox.successSingle('提交成功',
             () => {
               this.$emit('success');
+            }, () => {
+              this.$emit('success');
             });
         }
       }

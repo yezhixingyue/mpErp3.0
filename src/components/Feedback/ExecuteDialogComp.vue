@@ -897,14 +897,15 @@ export default {
     CompleteSave(temp, IsSave) {
       this.api.getComplete(temp).then(resp => {
         if (resp.data.Status === 1000 || resp.data.Status === 1100) {
-          // 保存/提交成功
-          this.messageBox.successSingle(IsSave ? '保存成功' : '提交成功', () => {
+          const cb = () => {
             if (IsSave) {
               this.handleClose();
             } else {
               this.$emit('successSubmit');
             }
-          });
+          };
+          // 保存/提交成功
+          this.messageBox.successSingle(IsSave ? '保存成功' : '提交成功', cb, cb);
         }
       });
     },

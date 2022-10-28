@@ -51,10 +51,11 @@ export default {
         const { type } = this.$route.params;
         // eslint-disable-next-line no-nested-ternary
         const _text = type === 'add' ? '添加成功' : type === 'edit' ? '修改成功' : '';
-        this.messageBox.successSingle(_text, () => {
+        const cb = () => {
           this.onReturnClick();
           this.$store.dispatch('couponStore/getCouponList');
-        });
+        };
+        this.messageBox.successSingle(_text, cb, cb);
       }
     },
     onReturnClick() {

@@ -259,7 +259,7 @@ export default {
       };
       const result = await api.cancelStaffOrder(obj);
       if (result.data.Status === 1000) {
-        messageBox.successSingle('取消成功', () => { commit('setSingleOrderDataStatus'); });
+        messageBox.successSingle('取消成功', () => { commit('setSingleOrderDataStatus'); }, () => { commit('setSingleOrderDataStatus'); });
       } else if (result.data.Status === 9062) {
         messageBox.failSingleError('该订单取消失败 ！', '(您无权限取消他人创建的订单)');
       }

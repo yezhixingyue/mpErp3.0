@@ -165,7 +165,7 @@ export default {
         // 执行网络请求
         const res = await this.api.generateCoupons(_obj);
         if (res.data.Status === 1000) {
-          this.messageBox.successSingle('生成成功!', async () => {
+          const cb = async () => {
             const _count = +this.dialogData.Data.GenerateNumber + +this.generateNum;
             this.ReceiveUser.StaffID = '';
             this.generateNum = '';
@@ -174,7 +174,8 @@ export default {
             if (this.dialogIndex >= 0) {
               this.changeCouponListData([this.dialogIndex, ['Data', 'GenerateNumber'], _count]);
             }
-          });
+          };
+          this.messageBox.successSingle('生成成功!', cb, cb);
         }
       }
     },

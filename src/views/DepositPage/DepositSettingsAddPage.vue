@@ -47,10 +47,11 @@ export default {
       const { type } = this.$route.params;
       // eslint-disable-next-line no-nested-ternary
       const _text = type === 'add' ? '添加成功' : type === 'edit' ? '修改成功' : '';
-      this.messageBox.successSingle(_text, () => {
+      const cb = () => {
         this.$store.dispatch('deposit/getDepositList');
         this.onReturnClick();
-      });
+      };
+      this.messageBox.successSingle(_text, cb, cb);
     },
     onReturnClick() {
       this.$store.commit('deposit/clearObjForDepositAdd');
