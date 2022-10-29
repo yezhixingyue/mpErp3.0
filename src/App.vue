@@ -11,6 +11,7 @@
   </div>
 </template>
 <script>
+import { generateGetKeySrc } from '@/packages/ConsigneeAddressSetpComp/AMapLoader';
 import LeftMenu from './components/common/Layout/LeftMenu.vue';
 import HeaderTabs from './components/common/Layout/HeaderTabs.vue';
 
@@ -53,6 +54,9 @@ export default {
       const url = process.env.NODE_ENV === 'development' ? '/browser' : '/Web/browser';
       window.location.replace(url);
     }
+  },
+  created() {
+    generateGetKeySrc();
   },
 };
 </script>
