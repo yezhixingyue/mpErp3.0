@@ -83,17 +83,6 @@ export abstract class MapDataClass<L, R, P, M> {
   protected abstract getMapList(): Promise<null | M[]>
 
   /**
-   * 获取映射结果 用于右侧展示 - 子类实现
-   *
-   * @protected
-   * @abstract
-   * @returns {string}
-   * @memberof MapDataClass
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public abstract getItemMapResult(id: string, mapList: M[], other: any): string
-
-  /**
    * 单个项目保存
    *
    * @abstract

@@ -132,6 +132,30 @@ const routes = { // 基本设置
       },
       component: () => import('@/views/transformer/assistTypeSetupPages/UnionMakeupLimit/UnionMakeupLimitSetupPage.vue'),
     },
+    {
+      path: '/mapLineList/:pageType',
+      name: 'mapLineList',
+      meta: {
+        title: '生产线映射',
+        hideMenu: true,
+        pageName: 'LineMapListPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/lineMap/LineMapListPage.vue'),
+    },
+    {
+      path: '/mapLineSetup/:pageType',
+      name: 'mapLineSetup',
+      meta: {
+        title: '生产线映射',
+        hideMenu: true,
+        pageName: 'LineMapSetupPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/lineMap/LineMapSetupPage.vue'),
+    },
   ],
 };
 
@@ -155,6 +179,12 @@ const routeTree = {
           name: 'unionMakeupLimitList',
           children: [
             { name: 'unionMakeupLimitSetup', children: [] },
+          ],
+        },
+        {
+          name: 'mapLineList',
+          children: [
+            { name: 'mapLineSetup', children: [] },
           ],
         },
       ],

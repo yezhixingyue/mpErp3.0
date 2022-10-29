@@ -120,6 +120,9 @@ const api = {
   getGeneralMappingSave(data: Partial<GeneralMapItemClass>) { // POST /Api/GeneralMapping/Save  常规映射(生产线/组合生产线/工序/组合工序)
     return instance.post('/Api/GeneralMapping/Save', data);
   },
+  getGeneralMappingRemove(serverID: string, id: string) { // DELETE /Api/GeneralMapping/Remove  常规映射删除
+    return instance.delete('/Api/GeneralMapping/Remove', { params: { serverID, id } });
+  },
   getPropertyList(data: IGetPropertyListParams) { // POST /Api/Property/List  获取属性列表
     return instance.post('/Api/Property/List', data);
   },

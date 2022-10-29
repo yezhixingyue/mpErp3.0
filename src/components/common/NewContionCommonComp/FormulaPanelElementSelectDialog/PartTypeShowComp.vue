@@ -53,7 +53,7 @@
 
 <script>
 import PropertyClass from '../utils/PropertyClass';
-import TipsSpanButton from '../Comps/TipsSpanButton.vue';
+import TipsSpanButton from './TipsSpanButton.vue';
 import ElementTypeShowComp from './ElementTypeShowComp';
 
 export default {

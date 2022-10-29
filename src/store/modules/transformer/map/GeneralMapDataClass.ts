@@ -1,4 +1,6 @@
 import api from '@/api';
+import { message } from '@/assets/js/message';
+import { goBackLastPage } from '@/router/handleRouterEach';
 import { GeneralMapItemClass } from './GeneralMapItemClass';
 import { GenerelMappingTypeEnum, UseModuleEnum } from './enum';
 import { MapDataClass } from './MapDataClass';
@@ -15,10 +17,50 @@ import { IPropertyType } from './types';
  * @template R
  * @template P
  */
-export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemClass, IPropertyType, string[], GeneralMapItemClass> {
+export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemClass, IPropertyType, Partial<GeneralMapItemClass>, GeneralMapItemClass> {
   abstract UseModule: UseModuleEnum
 
   abstract Type: GenerelMappingTypeEnum
+
+  public async saveItem(data: Partial<GeneralMapItemClass>): Promise<void> {
+    const temp = {
+      ServerID: this.ServerID,
+      Type: this.Type,
+      ID: this.curEditItem?.ID || '',
+      InstanceID: this.curPageData?.curPart?.ID || this.curPageData?.curEditItem?.ID,
+      ProductID: this.curPageData?.curEditItem?.ID,
+      ...data,
+    };
+    const resp = await api.getGeneralMappingSave(temp).catch(() => null);
+    if (resp?.data.Status === 1000) {
+      const cb = () => {
+        goBackLastPage(); // 返回页面
+        if (!this.curEditItem) {
+          temp.ID = resp.data.Data || ''; // 新增时 填充ID
+        }
+        this.handleItemChange(temp);
+      };
+      message.success({
+        title: this.curEditItem ? '编辑成功' : '添加成功',
+        onOk: cb,
+        onCancel: cb,
+      });
+    }
+  }
+
+  public async removeItem(data: GeneralMapItemClass) {
+    const resp = await api.getGeneralMappingRemove(data.ServerID, data.ID).catch(() => null);
+    if (resp?.data.Status === 1000) {
+      const cb = () => {
+        this.handleItemChange(data, true);
+      };
+      message.success({
+        title: '删除成功',
+        onOk: cb,
+        onCancel: cb,
+      });
+    }
+  }
 
   protected async getLeftList() {
     return this.leftDataList;
@@ -32,8 +74,6 @@ export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemCla
    * @memberof UnionMakeupLimitItemClass
    */
   protected async getRightList() {
-    console.log(this.UseModule);
-
     const ProductID = this.curPageData?.curEditItem?.ID || '';
     const PartID = this.curPageData?.curPart?.ID || undefined;
 
@@ -43,7 +83,6 @@ export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemCla
       ProductID,
       PartID,
     };
-    console.log(temp);
     const resp = await api.getPropertyList(temp).catch(() => null);
     return resp?.data.Status === 1000 ? resp.data.Data : [];
   }
@@ -68,46 +107,61 @@ export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemCla
     return resp?.data.Status === 1000 ? resp.data.Data : [];
   }
 
-  public handleItemChange = (temp: Partial<GeneralMapItemClass>) => {
+  public handleItemChange = (temp: Partial<GeneralMapItemClass>, isRemove = false) => {
     const i = this.mapDataList.findIndex(it => it.ID === temp.ID);
     if (i > -1) {
       const _temp = { ...this.mapDataList[i], ...temp };
       this.mapDataList.splice(i, 1, _temp);
-    } else {
-      this.mapDataList.push(new GeneralMapItemClass(temp));
-      if (this.curPageData) {
-        const target = this.curPageData.curPart || this.curPageData.curEditItem;
-        if (target) {
-          const isIProduct = (t: IPart | IProduct): t is IProduct => (t as IProduct).Class !== undefined;
-          switch (temp.Type) {
-            case GenerelMappingTypeEnum.NormalLine:
-              target.LineCount += 1;
-              break;
+      if (!isRemove) return;
+      this.mapDataList.splice(i, 1);
+    }
 
-            case GenerelMappingTypeEnum.NormalWorking:
-              target.WorkingCount += 1;
-              break;
+    if (!isRemove) this.mapDataList.push(new GeneralMapItemClass(temp));
 
-            case GenerelMappingTypeEnum.UnionMakeupLimit:
-              target.UnionMakeupLimitCount += 1;
-              break;
+    if (this.curPageData) {
+      const target = this.curPageData.curPart || this.curPageData.curEditItem;
+      if (target) {
+        const isIProduct = (t: IPart | IProduct): t is IProduct => (t as IProduct).Class !== undefined;
+        const num = isRemove ? -1 : 1;
+        switch (temp.Type) {
+          case GenerelMappingTypeEnum.NormalLine:
+            target.LineCount += num;
+            break;
 
-            case GenerelMappingTypeEnum.UnionLine:
-              if (isIProduct(target)) {
-                target.UnionLineCount += 1;
-              }
-              break;
-            case GenerelMappingTypeEnum.UnionWorking:
-              if (isIProduct(target)) {
-                target.UnionWorkingCount += 1;
-              }
-              break;
+          case GenerelMappingTypeEnum.NormalWorking:
+            target.WorkingCount += num;
+            break;
 
-            default:
-              break;
-          }
+          case GenerelMappingTypeEnum.UnionMakeupLimit:
+            target.UnionMakeupLimitCount += num;
+            break;
+
+          case GenerelMappingTypeEnum.UnionLine:
+            if (isIProduct(target)) {
+              target.UnionLineCount += num;
+            }
+            break;
+          case GenerelMappingTypeEnum.UnionWorking:
+            if (isIProduct(target)) {
+              target.UnionWorkingCount += num;
+            }
+            break;
+
+          default:
+            break;
         }
       }
     }
   }
+
+  /**
+   * 获取映射结果 用于右侧展示 - 子类实现
+   *
+   * @protected
+   * @abstract
+   * @returns {string}
+   * @memberof MapDataClass
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public abstract getItemMapResult(item: GeneralMapItemClass): string
 }

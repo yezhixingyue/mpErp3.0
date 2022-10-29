@@ -19,6 +19,17 @@ export abstract class AssistMapDataClass<L, R, P> extends MapDataClass<L, R, P, 
     this.visible = bool;
   }
 
+  /**
+   * 获取映射结果 用于右侧展示 - 子类实现
+   *
+   * @protected
+   * @abstract
+   * @returns {string}
+   * @memberof MapDataClass
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public abstract getItemMapResult(id: string, mapList: AssistMapItemClass[], other: any): string
+
   public handleItemChange = (temp: Partial<AssistMapItemClass>) => {
     const i = this.mapDataList.findIndex(it => it.SourceID === temp.SourceID || it.SourceID === `${temp.SourceID}`);
     if (i > -1) {

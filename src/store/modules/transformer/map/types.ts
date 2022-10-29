@@ -53,3 +53,10 @@ export interface IConstraint {
   FilterType: 1 | 2 // 可调整为枚举
   ItemList: IConstraintListItem[]
 }
+
+export interface IGetConditonResult{
+  ID: string
+  Name: string
+  Priority: number
+  Constraint: IConstraint
+}

@@ -93,7 +93,7 @@
 import { CommonDialogComp } from 'mpzj-sell-lib';
 // import { FormulaUseModuleEnum } from '@/assets/js/TypeClass/FormulaClass';
 import PropertyClass, { ElementSelectTypeEnum } from '../utils/PropertyClass';
-import TipsSpanButton from '../Comps/TipsSpanButton.vue';
+import TipsSpanButton from './TipsSpanButton.vue';
 import ElementGroupTypeShowComp from './ElementGroupTypeShowComp.vue';
 import ElementTypeShowComp from './ElementTypeShowComp.vue';
 import CraftTypeShowComp from './CraftTypeShowComp.vue';
@@ -329,10 +329,6 @@ export default {
       this.onCancle();
     },
     onMultipleSubmit() {
-      // if (this.MultipleList.length === 0) {
-      //   this.messageBox.failSingleError('保存失败', '请至少选中一个选项');
-      //   return;
-      // }
       this.$emit('select', this.MultipleList);
     },
   },

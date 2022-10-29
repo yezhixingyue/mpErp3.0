@@ -1,20 +1,14 @@
 <template>
-  <div class="mp-common-comps-checkbox-group-comp-wrap">
-    <span v-if="showTitle">{{title}}：</span>
-    <el-checkbox-group v-model="checkList">
-      <el-checkbox
-        v-for='(item, i) in itemList'
-        :label="useLabel?item[defaultProps.label]:item[defaultProps.value]"
-        :key='(item[defaultProps.value] + "-" + item[defaultProps.label] + i)'
-        :disabled='isDisabled'
-        >
-        <el-tooltip v-if="showTips" popper-class="checkbox-tip" :visible-arrow='false' transition='none'
-         :content="item[defaultProps.label]" placement="bottom" :enterable='false'>
-          <span>{{item[defaultProps.label]}}</span>
-        </el-tooltip>
-      </el-checkbox>
-    </el-checkbox-group>
-  </div>
+  <el-checkbox-group v-model="checkList" class="mp-common-comps-checkbox-group-comp-wrap">
+    <el-checkbox
+      v-for='(item, i) in itemList'
+      :label="useLabel?item[defaultProps.label]:item[defaultProps.value]"
+      :key='(item[defaultProps.value] + "-" + item[defaultProps.label] + i)'
+      :disabled='isDisabled'
+      >
+      <span :title="item[defaultProps.label]">{{item[defaultProps.label]}}</span>
+    </el-checkbox>
+  </el-checkbox-group>
 </template>
 
 <script>
@@ -89,13 +83,7 @@ export default {
 @import "@/assets/css/var.scss";
 .mp-common-comps-checkbox-group-comp-wrap {
   display: flex;
-  > span {
-    font-size: 14px;
-    color: $--color-text-primary;
-    line-height: 19px;
-    margin-right: 15px;
-    flex: none;
-  }
+  flex-wrap: wrap;
   .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
     background-color: #26bcf9;
     border-color: #26bcf9;
@@ -106,10 +94,5 @@ export default {
   .el-checkbox__label {
     color: $--color-text-primary !important;
   }
-}
-.checkbox-tip {
-  background-color: rgb(117, 117, 117) !important;
-  border-radius: 2px;
-  padding: 8px 12px !important;
 }
 </style>

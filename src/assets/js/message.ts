@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { MessageBox } from 'element-ui';
+import Vue from 'vue';
 // import 'element-ui/lib/theme-chalk/message.css';
 // import 'element-ui/lib/theme-chalk/message-box.css';
 import '../css/message.scss';
@@ -122,5 +123,25 @@ class MpMessage {
     this.alertHandler(_options, 'success');
   }
 }
+
+const temp = {
+  failSingleError(title: string, msg: string, successFunc?: () => void, failFunc?: () => void) {
+    message.error({
+      title,
+      message: msg,
+      onOk: successFunc,
+      onCancel: failFunc,
+    });
+  },
+  warnCancelNullMsg(title: string, successFunc?: () => void, failFunc?: () => void) {
+    message.confirm({
+      title,
+      onOk: successFunc,
+      onCancel: failFunc,
+    });
+  },
+};
+
+Vue.prototype.messageBox = temp;
 
 export const message = new MpMessage();

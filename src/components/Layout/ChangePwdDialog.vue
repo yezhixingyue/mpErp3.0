@@ -79,6 +79,7 @@
 
 <script>
 import { CommonDialogComp } from 'mpzj-sell-lib';
+import { message } from '@/assets/js/message';
 
 export default {
   props: {
@@ -154,7 +155,11 @@ export default {
         const cb = () => {
           this.localVisible = false;
         };
-        this.messageBox.successSingle('修改成功', cb, cb);
+        message.success({
+          title: '修改成功',
+          onOk: cb,
+          onCancel: cb,
+        });
       }
     },
   },

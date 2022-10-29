@@ -1,23 +1,21 @@
 <template>
-  <el-dialog
-  :title="title"
-  :visible.sync="dialogVisible"
-  :width="width"
-  v-dialogDrag
-  :modal='false'
-  class="mp-img-style-header mp-erp-common-check-box-dialog-comp-wrap"
-  :before-close="handleClose">
-  <el-checkbox v-model="checkedAll" v-if="checkAll" :indeterminate="isIndeterminate" class="check-all-box">全选</el-checkbox>
-  <CheckboxGroupComp :showTitle='false' :useLabel="false" :itemList='list' :defaultProps='defaultProps' v-model="checkList" />
-  <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="onSubmitClick">{{submitText}}</el-button>
-    <el-button @click="handleClose">取消</el-button>
-  </span>
-</el-dialog>
+  <CommonDialogComp
+    :title="title"
+    :visible.sync="dialogVisible"
+    :width="width"
+    @cancel="handleClose"
+    @open="open"
+    @submit="onSubmitClick"
+    class="mp-img-style-header mp-erp-common-check-box-dialog-comp-wrap"
+    >
+    <el-checkbox v-model="checkedAll" v-if="checkAll" :indeterminate="isIndeterminate" class="check-all-box">全选</el-checkbox>
+    <LocalCheckGroup :showTitle='false' :useLabel="false" :itemList='list' :defaultProps='defaultProps' v-model="checkList" />
+  </CommonDialogComp>
 </template>
 
 <script>
-import CheckboxGroupComp from './CheckboxGroupComp.vue';
+import { CommonDialogComp } from 'mpzj-sell-lib';
+import LocalCheckGroup from './LocalCheckGroup.vue';
 
 export default {
   model: {
@@ -62,7 +60,8 @@ export default {
     },
   },
   components: {
-    CheckboxGroupComp,
+    LocalCheckGroup,
+    CommonDialogComp,
   },
   computed: {
     dialogVisible: {
@@ -95,6 +94,14 @@ export default {
     };
   },
   methods: {
+    open() {
+      const IDList = this.list.map(it => it[this.defaultProps.value]);
+      this.checkList = this.value.map(it => {
+        if (Object.prototype.toString.call(it) === '[object Object]') return it;
+        if (typeof it === 'string') return { [this.defaultProps.value]: it };
+        return it;
+      }).filter(it => IDList.includes(it[this.defaultProps.value]));
+    },
     handleClose() {
       this.dialogVisible = false;
     },
@@ -104,42 +111,23 @@ export default {
       this.handleClose();
     },
   },
-  watch: {
-    visible(bool) {
-      if (bool) {
-        const IDList = this.list.map(it => it[this.defaultProps.value]);
-        this.checkList = this.value.map(it => {
-          if (Object.prototype.toString.call(it) === '[object Object]') return it;
-          if (typeof it === 'string') return { [this.defaultProps.value]: it };
-          return it;
-        }).filter(it => IDList.includes(it[this.defaultProps.value]));
-      }
-    },
-  },
 };
 </script>
 <style lang='scss'>
 .mp-erp-common-check-box-dialog-comp-wrap {
-  .el-dialog__header {
-    > span::before {
-      background: url(../../../images/Compile.png) no-repeat center;
-    }
-    border-radius: 2px 2px 0px 0
-  }
-
   .el-dialog__body {
+    padding-left: 25px;
     .el-checkbox-group {
       .el-checkbox {
         margin-bottom: 21px;
-        margin-right: 20px;
+        margin-right: 15px;
         .el-checkbox__label {
-          font-size: 13px;
-          width: 91px;
+          font-size: 12px;
+          width: 216px;
           overflow: hidden;
-          // text-overflow: ellipsis;
           white-space: nowrap;
           line-height: 16px;
-          vertical-align: middle;
+          vertical-align: -2px;
         }
       }
     }
@@ -148,21 +136,5 @@ export default {
     }
   }
 
-  .el-dialog__footer {
-    display: flex;
-    justify-content: center;
-    > .dialog-footer {
-      padding: 10px 0;
-      > button {
-        height: 30px;
-        width: 120px;
-        padding: 0;
-        border-radius: 2px;
-        & + button {
-          margin-left: 20px;
-        }
-      }
-    }
-  }
 }
 </style>

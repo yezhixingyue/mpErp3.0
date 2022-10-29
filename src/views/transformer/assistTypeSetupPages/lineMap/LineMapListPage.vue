@@ -21,7 +21,6 @@
         :showHeader="false"
         :getDisplayContent="GeneralMapDataClassData.getItemMapResult"
         :rightText="'则'"
-        operationTitle="禁止合拼条件"
         @setup='onMapClick' @remove="onRemoveClick"
       />
       <div v-else-if="GeneralMapDataClassData && !GeneralMapDataClassData.loading" class="empty-box">
@@ -44,9 +43,15 @@ import { goBackLastPage } from '@/router/handleRouterEach';
 import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
 import { GeneralMapItemClass } from '@/store/modules/transformer/map/GeneralMapItemClass';
 import ResultFormulaTableCom from '@/components/common/NewContionCommonComp/ResultFormulaTableComp/ResultFormulaTableCom.vue';
-import { UnionMakeupLimitItemClass } from './UnionMakeupLimitItemClass';
+import { GenerelMappingTypeEnum, UseModuleEnum } from '@/store/modules/transformer/map/enum';
+import { menuTypeEnum } from '@/store/modules/transformer/types';
+import { LineMapItemClass } from './LineMapItemClass';
 
 recordScrollPosition('.page-main');
+
+console.log(router.currentRoute.params.pageType);
+
+const title = router.currentRoute.params.pageType === menuTypeEnum.LineCount ? '生产线' : '组合生产线';
 
 const transformerStore = useTransformerStore();
 const { convertServerList, TransformerListPageData, GeneralMapDataClassData } = storeToRefs(transformerStore);
@@ -58,7 +63,7 @@ const crumbsList = computed(() => {
 
   return [
     { name: `转换设置 ( ${serverName} )`, path: '/transformerList' },
-    { name: `合拼设置：${TransformerListPageData.value?.curEditProductName}   ${partName}` },
+    { name: `${title}映射：${TransformerListPageData.value?.curEditProductName}   ${partName}` },
   ];
 });
 
@@ -73,19 +78,17 @@ const onRemoveClick = (item: GeneralMapItemClass) => {
   }
 };
 
-transformerStore.setGeneralMapDataClassData(new UnionMakeupLimitItemClass(TransformerListPageData.value));
+transformerStore.setGeneralMapDataClassData(new LineMapItemClass(UseModuleEnum.NormalLine, GenerelMappingTypeEnum.NormalLine, TransformerListPageData.value));
 
 </script>
 
 <script lang='ts'>
 export default {
-  name: 'UnionMakeupLimitListPage',
+  name: 'LineMapListPage',
 };
 </script>
 
 <style scoped lang='scss'>
-@import '@/assets/css/mixins.scss';
-
 .wrap {
   padding-left: 8px;
   background-color: #f5f5f5;
@@ -121,9 +124,7 @@ export default {
   }
   > main {
     flex: 1;
-    overflow: auto;
-    overflow: overlay;
-    @include scroll;
+    overflow: hidden;
     padding-left: 1px;
     .empty-box {
       width: 100%;

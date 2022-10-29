@@ -6,7 +6,7 @@
     :visible="visible"
     :submitText='submitText'
     @submit="onSubmit"
-    @cancle="onCancle"
+    @cancel="onCancle"
     @open='onOpen'
     @closed='onClosed'
     class="mp-erp-comps-pruduct-module-factory-set-material-select-dialog-comp-wrap"

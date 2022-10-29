@@ -96,6 +96,14 @@ const onMenuClick = (type: menuTypeEnum) => {
       router.push('/unionMakeupLimitList');
       break;
 
+    case menuTypeEnum.LineCount: // 生产线映射
+      router.push({ name: 'mapLineList', params: { pageType: menuTypeEnum.LineCount } });
+      break;
+
+    case menuTypeEnum.UnionLine: // 组合生产线映射
+      router.push({ name: 'mapLineList', params: { pageType: menuTypeEnum.UnionLine } });
+      break;
+
     case menuTypeEnum.SemiFinishedProduct: // 半成品设置
       semiVisible.value = true;
       break;

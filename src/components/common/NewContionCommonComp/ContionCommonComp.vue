@@ -84,6 +84,7 @@ import LRWidthDragAutoChangeComp from './Comps/LRWidthDragAutoChangeComp.vue';
 import OperatorSelectorComp from './Comps/OperatorSelectorComp/OperatorSelectorComp.vue';
 import ValueSelectorComp from './Comps/ValueSelectorComp.vue';
 import PropertyClass from './utils/PropertyClass';
+import { getValueIsOrNotNumber } from './utils/util';
 
 export default {
   props: {
@@ -241,7 +242,7 @@ export default {
           this.alertError('请设置优先级');
           return false;
         }
-        if ((!this.$utils.getValueIsOrNotNumber(Priority, true)) || Priority < 0) {
+        if ((!getValueIsOrNotNumber(Priority, true)) || Priority < 0) {
           this.alertError('优先级必须为大于等于0的整数类型');
           return false;
         }
@@ -270,7 +271,7 @@ export default {
         } = Property;
         if (ValueType === 0 && !ValueList[0].Property) { // 为0 数值校验
           const val = ValueList[0].Value;
-          if (!this.$utils.getValueIsOrNotNumber(val) && FixedType !== 41) {
+          if (!getValueIsOrNotNumber(val) && FixedType !== 41) {
             this.alertError(`第${i + 1}行值应为数字类型`);
             return false;
           }
@@ -583,6 +584,47 @@ export default {
     &::before {
       height: 16px;
     }
+  }
+}
+.el-radio-group.mp-common-tab-radio-box {
+  > label {
+    .el-radio-button__inner {
+      padding: 9px 34px;
+      color: #585858;
+      font-size: 14px;
+      border-color: #e5e5e5;
+    }
+    &.is-active {
+      position: relative;
+      .el-radio-button__inner{
+        color: #fff;
+        border-color: #26bcf9;
+        &::before {
+          content: '';
+          position: absolute;
+          height: 4px;
+          width: 4px;
+          border-radius: 50%;
+          background-color: #fff;
+          left: 21px;
+          transition: 0.2s ease-in-out;
+          top: calc(50% - 1px);
+        }
+      }
+    }
+  }
+}
+.mp-scroll-wrap::-webkit-scrollbar {
+  width: 6px;
+  height: 8px;
+  // display: none;
+}
+.mp-scroll-wrap::-webkit-scrollbar-thumb {
+  background-color: #e6e6e6;
+  border-radius: 3px;
+  transition: background-color 0.1s ease-in-out;
+  &:hover {
+    background-color: #cbcbcb;
   }
 }
 </style>

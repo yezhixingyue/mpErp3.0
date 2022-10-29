@@ -70,7 +70,7 @@ const onSubmitClick = () => {
 
 <script lang='ts'>
 export default {
-  name: 'UnionMakeupLimitSetupPage',
+  name: 'LineMapSetupPage',
 };
 </script>
 

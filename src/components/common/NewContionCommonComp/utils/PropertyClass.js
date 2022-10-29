@@ -449,7 +449,7 @@ export default class PropertyClass {
             }
           }
           if (!_val && OptionList) {
-            _val = ValueList.map(_it => OptionList.find(option => option.First === _it.Value)).filter(_it => _it).map(_it => _it.Second).join(' ');
+            _val = ValueList.map(_it => OptionList.find(option => option.First === _it.Value)).filter(_it => _it).map(_it => _it.Second).join('、');
             if (ValueType === 6) { // 为物料类型 对物料类型数据进行组合
               const checkList = ValueList.map(_it => _it.Value);
               _val = this.getMaterialListShowText(checkList, OptionList, Type);

@@ -295,7 +295,7 @@ export default {
       .mp-erp-common-check-box-dialog-comp-wrap {
         .el-dialog__header {
           height: 28px;
-          padding: 6px 20px;
+          padding: 9px 20px;
           line-height: 28px;
         }
         .el-dialog__body {
