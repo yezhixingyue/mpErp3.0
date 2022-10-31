@@ -1,6 +1,6 @@
 import api from '@/api';
 import { message } from '@/assets/js/message';
-import { AssistInfoTypeEnum, AssistMappingTypeEnum, FixedType } from '@/store/modules/transformer/map/enum';
+import { AssistMappingTypeEnum, FixedType } from '@/store/modules/transformer/map/enum';
 import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
 import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
 import { IPropertyType } from '@/store/modules/transformer/map/types';
@@ -114,7 +114,15 @@ export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IW
    * @memberof WordsInfoMapClass
    */
   protected async getLeftList() {
-    const resp = await api.getAssistantInfoList(this.ServerID, AssistInfoTypeEnum.text).catch(() => null);
+    const temp = {
+      ServerID: this.ServerID,
+      ProductID: this.curPageData?.curEditItem?.ID || '',
+      InstanceID: this.curPageData?.curPart?.ID || this.curPageData?.curEditItem?.ID || '',
+      Page: 1,
+      PageSize: 10000,
+      IncludeNote: true,
+    };
+    const resp = await api.getWorkingProcedureWordAssistantList(temp).catch(() => null);
     return resp?.data.Status === 1000 ? resp.data.Data : [];
   }
 

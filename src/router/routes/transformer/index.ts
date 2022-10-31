@@ -148,13 +148,37 @@ const routes = { // 基本设置
       path: '/mapLineSetup/:pageType',
       name: 'mapLineSetup',
       meta: {
-        title: '生产线映射',
+        title: '生产线映射设置',
         hideMenu: true,
         pageName: 'LineMapSetupPage',
         // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
         requiresAuth: true,
       },
       component: () => import('@/views/transformer/assistTypeSetupPages/lineMap/LineMapSetupPage.vue'),
+    },
+    {
+      path: '/mapWorkingList/:pageType',
+      name: 'mapWorkingList',
+      meta: {
+        title: '工序映射',
+        hideMenu: true,
+        pageName: 'WorkingMapListPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/workingMap/WorkingMapListPage.vue'),
+    },
+    {
+      path: '/mapWorkingSetup/:pageType',
+      name: 'mapWorkingSetup',
+      meta: {
+        title: '工序映射设置',
+        hideMenu: true,
+        pageName: 'WorkingMapSetupPage',
+        // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/transformer/assistTypeSetupPages/workingMap/WorkingMapSetupPage.vue'),
     },
   ],
 };
@@ -185,6 +209,12 @@ const routeTree = {
           name: 'mapLineList',
           children: [
             { name: 'mapLineSetup', children: [] },
+          ],
+        },
+        {
+          name: 'mapWorkingList',
+          children: [
+            { name: 'mapWorkingSetup', children: [] },
           ],
         },
       ],

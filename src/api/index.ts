@@ -6,6 +6,7 @@ import { GeneralMapItemClass } from '@/store/modules/transformer/map/GeneralMapI
 import { IAssistMapParams, IFactoryMaterialClass, IGeneralMapParams } from '@/store/modules/transformer/map/types';
 import { TransformerListConditionClass } from '@/store/modules/transformer/TransformerListConditionClass';
 import {
+  IGetDefaultLineSetupParams,
   IGetFormulaParams, IGetPropertyListParams, IGetWorkingProcedureParams, IPartChangeParams, ISemiFinishedSaveParams,
 } from '@/store/modules/transformer/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
@@ -125,6 +126,16 @@ const api = {
   },
   getPropertyList(data: IGetPropertyListParams) { // POST /Api/Property/List  获取属性列表
     return instance.post('/Api/Property/List', data);
+  },
+  getProduceLineList(serverID: string, isUnionLine: boolean) { // GET /Api/ProduceLine/List   获取生产线列表
+    return instance.get('/Api/ProduceLine/List', { params: { serverID, isUnionLine } });
+  },
+  getDefaultLineSetup(data: IGetDefaultLineSetupParams) { // PUT /Api/DefaultLine/Setup  设置默认生产线
+    return instance.put('/Api/DefaultLine/Setup', data);
+  },
+  /** POST /Api/WorkingProcedure/WordAssistantList  获取工序所含文字辅助信息列表 */
+  getWorkingProcedureWordAssistantList(data: IGetWorkingProcedureParams) {
+    return instance.post('/Api/WorkingProcedure/WordAssistantList', data);
   },
 };
 

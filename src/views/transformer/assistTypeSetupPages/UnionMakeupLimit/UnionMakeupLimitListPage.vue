@@ -5,7 +5,7 @@
       <div>
         <mp-button type="primary" size="small" @click="onMapClick(null)">+ 添加禁止合拼条件</mp-button>
         <span class="warning ft-12 tips-box ml-47">
-          <i class="el-icon-warning ft-14"></i>
+          <i class="el-icon-warning ft-14 mr-8 ml-5"></i>
           注：匹配任意一条，则不允许合拼
         </span>
       </div>
@@ -112,6 +112,9 @@ export default {
       line-height: 28px;
       background: #FFFBF6;
       width: 243px;
+      i {
+        vertical-align: -1px;
+      }
     }
   }
   > header, > main, > footer {

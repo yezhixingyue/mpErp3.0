@@ -39,7 +39,7 @@ export interface IPart {
   Name: string
   IsSelected: boolean
   /** 默认生产线 */
-  DefaultLine: null
+  DefaultLine: null | { ID: string, Name: string }
   /** 生产线映射条数 */
   LineCount: number
   /** 数值信息映射条数 */
@@ -67,7 +67,7 @@ export interface IProduct extends Omit<IPart, 'UseTimes'> {
     SecondLevel: { ID: number, Name: null | string },
   }
   /** 默认组合生产线 */
-  DefaultUnionLine: null
+  DefaultUnionLine: null | { ID: string, Name: string }
   /** 组合生产线映射数量  */
   UnionLineCount: number
   /** 组合工序映射条数 */
@@ -91,7 +91,9 @@ export interface ISemiFinishedSaveParams {
 
 export interface IGetWorkingProcedureParams {
   ServerID: string
-  OnlyShowNormal: boolean
+  OnlyShowNormal?: boolean
+  ProductID: string
+  InstanceID?: string
   Page: number
   PageSize: number
 }
@@ -104,4 +106,12 @@ export interface IGetFormulaParams {
 
 export interface IGetPropertyListParams extends IGetFormulaParams {
   UseModule: UseModuleEnum
+}
+
+export interface IGetDefaultLineSetupParams {
+  ServerID: string
+  ProductID: string
+  InstanceID?: string
+  DefaultLineID?: string
+  DefaultUnionLineID?: string
 }

@@ -104,6 +104,14 @@ const onMenuClick = (type: menuTypeEnum) => {
       router.push({ name: 'mapLineList', params: { pageType: menuTypeEnum.UnionLine } });
       break;
 
+    case menuTypeEnum.WorkingCount: // 工序映射
+      router.push({ name: 'mapWorkingList', params: { pageType: menuTypeEnum.WorkingCount } });
+      break;
+
+    case menuTypeEnum.UnionWorking: // 组合工序映射
+      router.push({ name: 'mapWorkingList', params: { pageType: menuTypeEnum.UnionWorking } });
+      break;
+
     case menuTypeEnum.SemiFinishedProduct: // 半成品设置
       semiVisible.value = true;
       break;

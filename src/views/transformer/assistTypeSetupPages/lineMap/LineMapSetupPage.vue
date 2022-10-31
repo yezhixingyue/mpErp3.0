@@ -5,19 +5,27 @@
     </header>
     <main>
       <ContionCommonComp ref="oLeftComp"
-        v-if="GeneralMapDataClassData && GeneralMapDataClassData.rightDataList.length > 0"
+        v-if="GeneralMapDataClassData"
         :PropertyList='GeneralMapDataClassData.rightDataList'
         :curEditData='GeneralMapDataClassData.curEditItem'
-        leftWidth='800px'
-        single
+        leftWidth='42%'
        >
         <!-- 右侧面板 -->
         <!-- <span slot="title" v-if="curPanel && curPanel.canAdd" class="blue-span" style="position: relative;top:1px" @click="onAddClick">+ 添加</span> -->
+        <div class="r-content">
+          <p class="ft-12 mb-20">选择以下生产线：</p>
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox class="c-it" v-for="it in GeneralMapDataClassData.leftDataList" :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-checkbox>
+          </el-checkbox-group>
+          <div v-if="GeneralMapDataClassData.leftDataList.length===0" class="em">
+            <i class="el-icon-warning ft-14 mr-5"></i>
+            <span>暂无可映射{{GeneralMapDataClassData.title || '数据'}}</span>
+          </div>
+        </div>
       </ContionCommonComp>
-      <el-empty class="mt-80" v-else description="暂无属性可设置"></el-empty>
     </main>
     <footer>
-      <mp-button :disabled="!(GeneralMapDataClassData && GeneralMapDataClassData.rightDataList.length > 0)" type="primary" @click="onSubmitClick">保存</mp-button>
+      <mp-button :disabled="!GeneralMapDataClassData" type="primary" @click="onSubmitClick">保存</mp-button>
       <mp-button class="cancel-blue-btn" @click="goBackLastPage">返回</mp-button>
     </footer>
   </section>
@@ -32,6 +40,9 @@ import { goBackLastPage } from '@/router/handleRouterEach';
 import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
 import ContionCommonComp from '@/components/common/NewContionCommonComp/ContionCommonComp.vue';
 import { IGetConditonResult } from '@/store/modules/transformer/map/types';
+import router from '@/router';
+import { message } from '@/assets/js/message';
+import { Message } from 'element-ui';
 
 recordScrollPosition('.mp-erp-new-comps-condtion-set-common-comp-wrap > .left > .left-content > main > .el-form.constraint-ruleForm');
 
@@ -45,23 +56,44 @@ const crumbsList = computed(() => {
 
   return [
     { name: `转换设置 ( ${serverName} )`, path: '/transformerList' },
-    { name: '合拼设置', path: '/unionMakeupLimitList' },
-    { name: `${GeneralMapDataClassData.value?.curEditItem ? '编辑' : '添加'}禁止合拼条件：${TransformerListPageData.value?.curEditProductName}   ${partName}` },
+    { name: `${GeneralMapDataClassData.value?.title || ''}映射`, path: { name: 'mapLineList', params: { pageType: router.currentRoute.params.pageType } } },
+    {
+      // eslint-disable-next-line max-len
+      name: `${GeneralMapDataClassData.value?.curEditItem ? '编辑' : '添加'}${GeneralMapDataClassData.value?.title || ''}映射：${TransformerListPageData.value?.curEditProductName}   ${partName}`,
+    },
   ];
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const oLeftComp = ref<InstanceType<any>>();
 
+const checkList = ref<string[]>([]);
+
+if (GeneralMapDataClassData.value?.curEditItem) {
+  const ids = GeneralMapDataClassData.value.leftDataList.map(it => it.ID);
+  const list = GeneralMapDataClassData.value.curEditItem.List.map(it => it.ID);
+  const list2 = list.filter(id => ids.length === 0 || ids.includes(id));
+  if (list2.length > list.length) {
+    Message.error(`有${list2.length - list.length}个原生产线选项不存在于当前列表中，已被筛除，保存后生效`);
+  }
+  checkList.value = list2;
+}
+
 const onSubmitClick = () => {
   if (!oLeftComp.value || !GeneralMapDataClassData.value) return;
   const condition = oLeftComp.value.getConditonResult() as IGetConditonResult;
   if (!condition) return;
+  if (checkList.value.length === 0) {
+    message.error({ title: '保存失败', message: `请选择${GeneralMapDataClassData.value.title}` });
+    return;
+  }
+  const List = checkList.value.map(id => GeneralMapDataClassData.value?.leftDataList.find(it => it.ID === id)).filter(it => it) as {ID: string, Name: string}[];
   const { ID, Priority, Constraint } = condition;
   const temp = {
     ID,
     Priority,
     Constraint,
+    List,
   };
   GeneralMapDataClassData.value.saveItem(temp);
 };
@@ -94,8 +126,34 @@ export default {
     flex: 1;
     overflow: hidden;
     padding: 0 20px;
-    :deep(.mp-erp-common-comps-left-and-right-width-drap-auto-change-comp-wrap) > .left {
-      width: 750px !important;
+    .r-content {
+      padding-left: 10px;
+      color: #444;
+      max-width: 800px;
+      > p {
+        margin-top: -10px;
+      }
+      > .em {
+        font-size: 12px;
+        color: #cbcbcb;
+        i {
+          vertical-align: -1px;
+          font-size: 15px;
+        }
+      }
+      .c-it {
+        margin-right: 10px;
+        margin-bottom: 8px;
+        :deep(.el-checkbox__label) {
+          display: inline-block;
+          vertical-align: -4px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 10em;
+          font-size: 12px;
+        }
+      }
     }
   }
   > footer {

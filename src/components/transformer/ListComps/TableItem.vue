@@ -51,6 +51,7 @@ const emit = defineEmits(['menuClick']);
 const onClick = (type: menuTypeEnum, PartID?: string) => {
   if (type === menuTypeEnum.UnionLine || type === menuTypeEnum.UnionWorking) {
     if (selectedPartList.value.length <= 1) {
+      console.log(1);
       onHideClick();
       return;
     }
@@ -144,21 +145,24 @@ const onHideClick = () => {
     }
     .arrow {
       display: inline-block;
-      margin-left: 25px;
+      padding-left: 25px;
       text-align: right;
-      margin-right: 18px;
+      padding-right: 18px;
       color: #a2a2a2;
       cursor: pointer;
+      transition: color 0.1s ease-in-out;
+      user-select: none;
       i {
         font-size: 14px;
         transform: scale(1.3);
-        color: #cbcbcb;
+        color:  inherit;
+        transition: color 0.1s ease-in-out;
+      }
+      &:hover {
+        color: #585858;
       }
       &.disabled {
         color: #ddd;
-        i {
-          color: #ddd;
-        }
         pointer-events: none;
       }
     }

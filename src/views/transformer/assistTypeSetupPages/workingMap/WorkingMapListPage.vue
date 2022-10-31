@@ -6,15 +6,9 @@
         <mp-button type="primary" size="small" @click="onMapClick(null)">+ 添加{{GeneralMapDataClassData?.title || ''}}映射</mp-button>
         <span class="warning ft-12 tips-box ml-47">
           <i class="el-icon-warning ft-14 mr-8  ml-5"></i>
-          注：仅匹配一条，优先级数字越小，越优先匹配
+          注：匹配多条，优先级数字越小，越优先匹配
         </span>
       </div>
-      <div class="default ft-12" v-if="GeneralMapDataClassData">
-        <span class="blue-span mr-20" @click="onSetDefaultClick">设置默认{{GeneralMapDataClassData.title}}</span>
-        <span class="line" :title="curDefaultLine?.Name || ''">{{curDefaultLine?.Name || '未设置'}}</span>
-        <span> ( 无匹配时，使用默认生产线 )</span>
-      </div>
-      <DefaultLineDialog v-if="GeneralMapDataClassData" :visible.sync="visible" :lineData="curDefaultLine" :data="GeneralMapDataClassData" />
     </header>
     <main class="page-main">
       <ResultFormulaTableCom
@@ -26,7 +20,7 @@
         :isLoading='GeneralMapDataClassData.loading'
         :showHeader="false"
         :getDisplayContent="getItemMapResult"
-        :rightText="'则选择：'"
+        :rightText="'则需要工序：'"
         :operationTitle="GeneralMapDataClassData.title"
         @setup='onMapClick' @remove="onRemoveClick"
       />
@@ -44,7 +38,7 @@
 import Crumbs from '@/components/common/Crumbs.vue';
 import { useTransformerStore } from '@/store/modules/transformer';
 import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import router from '@/router';
 import { goBackLastPage } from '@/router/handleRouterEach';
 import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
@@ -52,8 +46,7 @@ import { GeneralMapItemClass } from '@/store/modules/transformer/map/GeneralMapI
 import ResultFormulaTableCom from '@/components/common/NewContionCommonComp/ResultFormulaTableComp/ResultFormulaTableCom.vue';
 import { GenerelMappingTypeEnum, UseModuleEnum } from '@/store/modules/transformer/map/enum';
 import { menuTypeEnum } from '@/store/modules/transformer/types';
-import { LineMapItemClass } from './LineMapItemClass';
-import DefaultLineDialog from './DefaultLineDialog.vue';
+import { WorkingMapItemClass } from './WorkingMapItemClass';
 
 recordScrollPosition('.page-main');
 
@@ -73,7 +66,7 @@ const crumbsList = computed(() => {
 
 const onMapClick = (item: GeneralMapItemClass | null) => {
   if (GeneralMapDataClassData.value) GeneralMapDataClassData.value.curEditItem = item;
-  router.push({ name: 'mapLineSetup', params: { pageType: router.currentRoute.params.pageType } });
+  router.push({ name: 'mapWorkingSetup', params: { pageType: router.currentRoute.params.pageType } });
 };
 
 const onRemoveClick = (item: GeneralMapItemClass) => {
@@ -84,38 +77,17 @@ const onRemoveClick = (item: GeneralMapItemClass) => {
 
 const getItemMapResult = (it: GeneralMapItemClass) => GeneralMapDataClassData.value?.getItemMapResult(it);
 
-const UseModule = router.currentRoute.params.pageType === menuTypeEnum.LineCount ? UseModuleEnum.NormalLine : UseModuleEnum.UnionLine;
+const UseModule = router.currentRoute.params.pageType === menuTypeEnum.WorkingCount ? UseModuleEnum.NormalWorking : UseModuleEnum.UnionWorking;
 
-const Type = router.currentRoute.params.pageType === menuTypeEnum.LineCount ? GenerelMappingTypeEnum.NormalLine : GenerelMappingTypeEnum.UnionLine;
+const Type = router.currentRoute.params.pageType === menuTypeEnum.WorkingCount ? GenerelMappingTypeEnum.NormalWorking : GenerelMappingTypeEnum.UnionWorking;
 
-transformerStore.setGeneralMapDataClassData(new LineMapItemClass(UseModule, Type, TransformerListPageData.value));
-
-const visible = ref(false);
-const onSetDefaultClick = () => {
-  visible.value = true;
-};
-
-const curDefaultLine = computed(() => {
-  let temp = { ID: '', Name: '' };
-  if (!TransformerListPageData.value) return temp;
-  if (router.currentRoute.params.pageType === menuTypeEnum.LineCount) { // 普通生产线
-    const _part = TransformerListPageData.value.curPart || TransformerListPageData.value.curEditItem;
-    if (_part?.DefaultLine) temp = _part.DefaultLine;
-  } else if (TransformerListPageData.value.curEditItem?.DefaultUnionLine) {
-    temp = TransformerListPageData.value.curEditItem.DefaultUnionLine;
-  }
-  if (temp.ID && !temp.Name && GeneralMapDataClassData.value && GeneralMapDataClassData.value.leftDataList.length > 0) {
-    const t = GeneralMapDataClassData.value.leftDataList.find(it => it.ID === temp.ID);
-    temp.Name = t?.Name || '未知生产线';
-  }
-  return temp;
-});
+transformerStore.setGeneralMapDataClassData(new WorkingMapItemClass(UseModule, Type, TransformerListPageData.value));
 
 </script>
 
 <script lang='ts'>
 export default {
-  name: 'LineMapListPage',
+  name: 'WorkingMapListPage',
 };
 </script>
 
@@ -134,7 +106,6 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    position: relative;
     button {
       font-size: 14px;
       padding: 0 15px;
@@ -149,22 +120,6 @@ export default {
       width: 314px;
       i {
         vertical-align: -1px;
-      }
-    }
-    .default {
-      position: absolute;
-      right: 21px;
-      bottom: 15px;
-      .line {
-        font-weight: 700;
-        display: inline-block;
-        min-width: 7em;
-        text-align: right;
-        max-width: 20px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        vertical-align: top;
       }
     }
   }

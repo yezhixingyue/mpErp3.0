@@ -19,6 +19,9 @@ export abstract class AssistMapDataClass<L, R, P> extends MapDataClass<L, R, P, 
     this.visible = bool;
   }
 
+  /** 当前选中的左侧列表中的项 */
+  curEditItem: L | null = null
+
   /**
    * 获取映射结果 用于右侧展示 - 子类实现
    *

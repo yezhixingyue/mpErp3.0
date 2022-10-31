@@ -1,5 +1,6 @@
 import api from '@/api';
 import { SwitchListItemPlainType } from '@/views/serverManage/utils/SwitchListItemClass';
+import { LineMapItemClass } from '@/views/transformer/assistTypeSetupPages/lineMap/LineMapItemClass';
 import { defineStore, DefineStoreOptions } from 'pinia';
 import { GeneralMapDataClass } from './map/GeneralMapDataClass';
 import { TransformerListPageDataClass } from './TransformerListPageDataClass';
@@ -7,7 +8,7 @@ import { TransformerListPageDataClass } from './TransformerListPageDataClass';
 interface IState {
   TransformerListPageData: null | TransformerListPageDataClass
   convertServerList: SwitchListItemPlainType[]
-  GeneralMapDataClassData: null | GeneralMapDataClass
+  GeneralMapDataClassData: null | GeneralMapDataClass | LineMapItemClass
 }
 
 type IGetters = Record<string, never>;

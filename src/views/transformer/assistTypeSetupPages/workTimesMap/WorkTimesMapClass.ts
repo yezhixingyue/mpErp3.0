@@ -36,8 +36,10 @@ export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IW
     };
     if (typeof data === 'number') {
       temp.Value = data;
+      temp.Target = [];
     } else {
       temp.Target = data;
+      temp.Value = '';
     }
     const resp = await api.getAssistMappingSave(temp).catch(() => null);
     if (resp?.data.Status === 1000) {
@@ -63,6 +65,8 @@ export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IW
   protected async getLeftList() {
     const data = {
       ServerID: this.ServerID,
+      ProductID: this.curPageData?.curEditItem?.ID || '',
+      InstanceID: this.curPageData?.curPart?.ID || this.curPageData?.curEditItem?.ID || '',
       OnlyShowNormal: true,
       Page: 1,
       PageSize: 10000,

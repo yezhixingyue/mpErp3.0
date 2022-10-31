@@ -4,11 +4,11 @@ import { goBackLastPage } from '@/router/handleRouterEach';
 import { GeneralMapItemClass } from './GeneralMapItemClass';
 import { GenerelMappingTypeEnum, UseModuleEnum } from './enum';
 import { MapDataClass } from './MapDataClass';
-import { IPart, IProduct } from '../types';
+import { IGetDefaultLineSetupParams, IPart, IProduct } from '../types';
 import { IPropertyType } from './types';
 
 /**
- * 抽象类 - 辅助信息相关映射父类
+ * 抽象类 - 含条件设置模块相关映射父类
  *
  * @export
  * @abstract
@@ -17,13 +17,25 @@ import { IPropertyType } from './types';
  * @template R
  * @template P
  */
-export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemClass, IPropertyType, Partial<GeneralMapItemClass>, GeneralMapItemClass> {
+export abstract class GeneralMapDataClass extends MapDataClass<{ID: string, Name: string}, IPropertyType, Partial<GeneralMapItemClass>, GeneralMapItemClass> {
+  title = ''
+
   abstract UseModule: UseModuleEnum
 
   abstract Type: GenerelMappingTypeEnum
 
+  /** 当前选中的左侧列表中的项 */
+  curEditItem: GeneralMapItemClass | null = null
+
+  /**
+   * 保存项目
+   *
+   * @param {Partial<GeneralMapItemClass>} data
+   * @returns {Promise<void>}
+   * @memberof GeneralMapDataClass
+   */
   public async saveItem(data: Partial<GeneralMapItemClass>): Promise<void> {
-    const temp = {
+    const temp: Partial<GeneralMapItemClass> = {
       ServerID: this.ServerID,
       Type: this.Type,
       ID: this.curEditItem?.ID || '',
@@ -31,6 +43,9 @@ export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemCla
       ProductID: this.curPageData?.curEditItem?.ID,
       ...data,
     };
+    if (this.Type === GenerelMappingTypeEnum.UnionLine || this.Type === GenerelMappingTypeEnum.UnionWorking) {
+      delete temp.InstanceID;
+    }
     const resp = await api.getGeneralMappingSave(temp).catch(() => null);
     if (resp?.data.Status === 1000) {
       const cb = () => {
@@ -48,6 +63,12 @@ export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemCla
     }
   }
 
+  /**
+   * 删除项目
+   *
+   * @param {GeneralMapItemClass} data
+   * @memberof GeneralMapDataClass
+   */
   public async removeItem(data: GeneralMapItemClass) {
     const resp = await api.getGeneralMappingRemove(data.ServerID, data.ID).catch(() => null);
     if (resp?.data.Status === 1000) {
@@ -62,6 +83,13 @@ export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemCla
     }
   }
 
+  /**
+   * 获取 生产线、组合生产线、工序、组合工序等列表数据
+   *
+   * @protected
+   * @returns
+   * @memberof GeneralMapDataClass
+   */
   protected async getLeftList() {
     return this.leftDataList;
   }
@@ -107,6 +135,11 @@ export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemCla
     return resp?.data.Status === 1000 ? resp.data.Data : [];
   }
 
+  /**
+   * 处理项目编辑、删除或新增成功后的改动
+   *
+   * @memberof GeneralMapDataClass
+   */
   public handleItemChange = (temp: Partial<GeneralMapItemClass>, isRemove = false) => {
     const i = this.mapDataList.findIndex(it => it.ID === temp.ID);
     if (i > -1) {
@@ -164,4 +197,49 @@ export abstract class GeneralMapDataClass extends MapDataClass<GeneralMapItemCla
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public abstract getItemMapResult(item: GeneralMapItemClass): string
+
+  /**
+   * 设置默认生产线|默认组合生产线
+   *
+   * @param {{ ID: string, Name: string }} lineData
+   * @param {() => void} callback
+   * @memberof GeneralMapDataClass
+   */
+  async getDefaultLineSetup(lineData: { ID: string, Name: string }, callback: () => void) {
+    const temp: IGetDefaultLineSetupParams = {
+      ServerID: this.ServerID,
+      ProductID: this.curPageData?.curEditItem?.ID || '',
+    };
+    let target: undefined | IPart | IProduct;
+    if (this.Type === GenerelMappingTypeEnum.NormalLine) {
+      target = this.curPageData?.curPart || this.curPageData?.curEditItem || undefined;
+      const InstanceID = target?.ID || '';
+      temp.InstanceID = InstanceID;
+      temp.DefaultLineID = lineData.ID;
+    } else {
+      target = this.curPageData?.curEditItem || undefined;
+      temp.DefaultUnionLineID = lineData.ID;
+    }
+    const resp = await api.getDefaultLineSetup(temp).catch(() => null);
+    if (resp?.data.Status === 1000) {
+      const cb = () => {
+        if (callback) callback();
+        if (target) {
+          if (this.Type === GenerelMappingTypeEnum.UnionLine) {
+            const isIProduct = (t: IPart | IProduct): t is IProduct => (t as IProduct).Class !== undefined;
+            if (isIProduct(target)) {
+              target.DefaultUnionLine = lineData;
+            }
+          } else {
+            target.DefaultLine = lineData;
+          }
+        }
+      };
+      message.success({
+        title: '保存成功',
+        onOk: cb,
+        onCancel: cb,
+      });
+    }
+  }
 }

@@ -83,7 +83,7 @@
       </main>
       <main v-else class="null-box">
         <!-- <img src="@/assets/images/null.png" alt=""> -->
-        <p class="is-font-size-12 is-gray">暂无数据，请先添加</p>
+        <p class="is-font-size-12 ft-12 is-gray"><i class="el-icon-warning mr-12 ft-28"></i>暂无数据，请先添加</p>
       </main>
     </section>
   </CommonDialogComp>
@@ -400,11 +400,11 @@ export default {
         }
       }
       > .null-box {
-        text-align: center;
-        padding-right: 50px;
-        padding-top: 50px;
+        margin-top: -10px;
         > p {
-          padding-top: 20px;
+          i {
+            vertical-align: -2px;
+          }
         }
       }
     }

@@ -3,9 +3,17 @@ import { GenerelMappingTypeEnum, UseModuleEnum } from '@/store/modules/transform
 import { GeneralMapDataClass } from '@/store/modules/transformer/map/GeneralMapDataClass';
 import { GeneralMapItemClass } from '@/store/modules/transformer/map/GeneralMapItemClass';
 import { TransformerListPageDataPlainType } from '@/store/modules/transformer/TransformerListPageDataClass';
+import { IGetWorkingProcedureParams } from '@/store/modules/transformer/types';
 
-export class LineMapItemClass extends GeneralMapDataClass {
-  title = '生产线'
+/**
+ * 工序映射 - 类
+ *
+ * @export
+ * @class WorkingMapItemClass
+ * @extends {GeneralMapDataClass}
+ */
+export class WorkingMapItemClass extends GeneralMapDataClass {
+  title = '工序'
 
   UseModule = UseModuleEnum.NormalLine
 
@@ -23,11 +31,18 @@ export class LineMapItemClass extends GeneralMapDataClass {
   }
 
   protected async getLeftList() {
-    const resp = await api.getProduceLineList(this.ServerID, this.Type === GenerelMappingTypeEnum.UnionLine).catch(() => null);
-    if (resp?.data.Status === 1000) {
-      return resp.data.Data || [];
+    const data: IGetWorkingProcedureParams = {
+      ServerID: this.ServerID,
+      ProductID: this.curPageData?.curEditItem?.ID || '',
+      InstanceID: this.curPageData?.curPart?.ID || this.curPageData?.curEditItem?.ID || '',
+      Page: 1,
+      PageSize: 10000,
+    };
+    if (this.Type === GenerelMappingTypeEnum.UnionWorking) {
+      delete data.InstanceID;
     }
-    return [];
+    const resp = await api.getWorkingProcedureList(data).catch(() => null);
+    return resp?.data.Status === 1000 ? resp.data.Data : [];
   }
 
   constructor(UseModule: UseModuleEnum, Type: GenerelMappingTypeEnum, data: TransformerListPageDataPlainType | null) {
@@ -36,8 +51,8 @@ export class LineMapItemClass extends GeneralMapDataClass {
     this.UseModule = UseModule;
     this.Type = Type;
 
-    if (Type === GenerelMappingTypeEnum.UnionLine) {
-      this.title = '组合生产线';
+    if (Type === GenerelMappingTypeEnum.UnionWorking) {
+      this.title = '组合工序';
     }
   }
 }

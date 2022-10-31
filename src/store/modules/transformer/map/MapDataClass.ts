@@ -46,9 +46,6 @@ export abstract class MapDataClass<L, R, P, M> {
 
   loading = false
 
-  /** 当前选中的左侧列表中的项 */
-  curEditItem: L | null = null
-
   /** 当前页面数据  TransformerListPageDataClass */
   curPageData: null | TransformerListPageDataPlainType = null
 

@@ -1,6 +1,6 @@
 <template>
   <ul v-if="list && list.length > 0" class="mp-erp-common-comps-crumbs-comp-wrap">
-    <li v-for="it in list" :key="it.path">
+    <li v-for="it in list" :key="it.name">
       <span :class="it.path ? 'blue-span' : 'is-blue'" @click="onClick(it)">
         <pre>{{it.name}}</pre>
       </span>
