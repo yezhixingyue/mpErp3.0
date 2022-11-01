@@ -79,11 +79,9 @@
 </template>
 
 <script>
-import FormulaPanelElementSelectDialog from './FormulaPanelElementSelectDialog/FormulaPanelElementSelectDialog';
-import LRWidthDragAutoChangeComp from './Comps/LRWidthDragAutoChangeComp.vue';
+import { LRWidthDragAutoChangeComp, PropertyClass, FormulaPanelElementSelectDialog } from 'mpzj-sell-lib';
 import OperatorSelectorComp from './Comps/OperatorSelectorComp/OperatorSelectorComp.vue';
 import ValueSelectorComp from './Comps/ValueSelectorComp.vue';
-import PropertyClass from './utils/PropertyClass';
 import { getValueIsOrNotNumber } from './utils/util';
 
 export default {

@@ -1,6 +1,7 @@
 import api from '@/api';
 import { message } from '@/assets/js/message';
 import { goBackLastPage } from '@/router/handleRouterEach';
+import { PropertyClass } from 'mpzj-sell-lib';
 import { GeneralMapItemClass } from './GeneralMapItemClass';
 import { GenerelMappingTypeEnum, UseModuleEnum } from './enum';
 import { MapDataClass } from './MapDataClass';
@@ -111,8 +112,8 @@ export abstract class GeneralMapDataClass extends MapDataClass<{ID: string, Name
       ProductID,
       PartID,
     };
-    const resp = await api.getPropertyList(temp).catch(() => null);
-    return resp?.data.Status === 1000 ? resp.data.Data : [];
+    const resp = await PropertyClass.getPropertyList(temp, api.getPropertyList).catch(() => null);
+    return resp || [];
   }
 
   /**

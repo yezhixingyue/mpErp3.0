@@ -17,7 +17,7 @@
       <DefaultLineDialog v-if="GeneralMapDataClassData" :visible.sync="visible" :lineData="curDefaultLine" :data="GeneralMapDataClassData" />
     </header>
     <main class="page-main">
-      <ResultFormulaTableCom
+      <ResultFormulaTableComp
         hiddenTip
         usePropList
         v-if="GeneralMapDataClassData && GeneralMapDataClassData.mapDataList.length > 0"
@@ -42,6 +42,7 @@
 
 <script setup lang='ts'>
 import Crumbs from '@/components/common/Crumbs.vue';
+import { ResultFormulaTableComp } from 'mpzj-sell-lib';
 import { useTransformerStore } from '@/store/modules/transformer';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
@@ -49,7 +50,6 @@ import router from '@/router';
 import { goBackLastPage } from '@/router/handleRouterEach';
 import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
 import { GeneralMapItemClass } from '@/store/modules/transformer/map/GeneralMapItemClass';
-import ResultFormulaTableCom from '@/components/common/NewContionCommonComp/ResultFormulaTableComp/ResultFormulaTableCom.vue';
 import { GenerelMappingTypeEnum, UseModuleEnum } from '@/store/modules/transformer/map/enum';
 import { menuTypeEnum } from '@/store/modules/transformer/types';
 import { LineMapItemClass } from './LineMapItemClass';

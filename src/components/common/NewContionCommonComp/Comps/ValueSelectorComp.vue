@@ -38,8 +38,6 @@
 </template>
 
 <script>
-// import { AllOperatorList } from '@/assets/js/TypeClass/PropertyClass';
-
 export default {
   model: {
     prop: 'value',

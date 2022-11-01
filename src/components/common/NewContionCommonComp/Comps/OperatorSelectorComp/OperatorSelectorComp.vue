@@ -31,12 +31,14 @@
 
 <script>
 // import { mapGetters } from 'vuex';
+import { PropertyUtils } from 'mpzj-sell-lib';
 import CheckboxDialogComp from './CheckboxDialogComp/CheckboxDialogComp.vue';
-import {
-  AllOperatorList, getTempMaterialListObj, getTempMaterialOptionList, getTempMaterialSelectedListShowText,
-} from '../../utils/PropertyClass';
 // import ADAreaDialogSelector from '../../../SelectorComps/ADAreaDialogSelector';
 import MaterialSelectDialog from './MaterialSelectDialog.vue';
+
+const {
+  AllOperatorList, getTempMaterialListObj, getTempMaterialOptionList, getTempMaterialSelectedListShowText,
+} = PropertyUtils;
 
 export default {
   model: {
@@ -69,6 +71,18 @@ export default {
     sellAreaLevel2: { // 销售筛选使用2级分类
       type: Boolean,
       default: false,
+    },
+    allAdAreaTreeList: {
+      type: Array,
+      default: () => [],
+    },
+    allProductClassify: {
+      type: Array,
+      default: () => [],
+    },
+    allAreaTreeList: {
+      type: Array,
+      default: () => [],
     },
   },
   components: {
@@ -202,16 +216,16 @@ export default {
       }
     }
     this.ValueType = this.PropertyData.ValueType;
-    if (this.PropertyData.FixedType === 46) {
-      this.$store.dispatch('common/fetchAdAreaList');
-    }
-    if (this.PropertyData.FixedType === 47) {
-      this.$store.dispatch('common/getProductClassifyData');
-      this.$store.dispatch('common/getAllProductNames');
-    }
-    if (this.PropertyData.FixedType === 52) {
-      this.$store.dispatch('common/getAreaList');
-    }
+    // if (this.PropertyData.FixedType === 46) {
+    //   this.$store.dispatch('common/fetchAdAreaList');
+    // }
+    // if (this.PropertyData.FixedType === 47) {
+    //   this.$store.dispatch('common/getProductClassifyData');
+    //   this.$store.dispatch('common/getAllProductNames');
+    // }
+    // if (this.PropertyData.FixedType === 52) {
+    //   this.$store.dispatch('common/getAreaList');
+    // }
   },
 };
 </script>
