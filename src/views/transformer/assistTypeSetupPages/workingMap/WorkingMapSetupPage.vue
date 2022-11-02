@@ -37,7 +37,7 @@ import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { goBackLastPage } from '@/router/handleRouterEach';
 import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
-import ContionCommonComp from '@/components/common/NewContionCommonComp/ContionCommonComp.vue';
+import { ContionCommonComp } from 'mpzj-sell-lib';
 import { IGetConditonResult } from '@/store/modules/transformer/map/types';
 import router from '@/router';
 import { message } from '@/assets/js/message';

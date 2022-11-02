@@ -32,7 +32,10 @@
         <el-table-column min-width="200px" prop="Name" align="center" show-overflow-tooltip label="已添加部件"></el-table-column>
         <el-table-column width="260px" label="操作" align="center">
           <template slot-scope="scope">
-            <span :class="scope.row._setupNumber===0?'red-span':'is-gray'" @click="del(scope.row)">删除</span>
+            <span
+             :class="scope.row._setupNumber===0?'red-span':'is-gray'"
+             :title="scope.row._setupNumber===0?'':'生产线映射、工序映射或合拼设置不为空，不能删除'"
+             @click="del(scope.row)">删除</span>
           </template>
         </el-table-column>
         <div slot="empty">
@@ -76,20 +79,17 @@ export default {
       list.unshift({ ...this.item, Name: '产品' });
       list = list.map(it => {
         let _setupNumber = 0;
-        if (it.SetupCountAttribute) {
-          const {
-            LineCount, NumbericInfoCount, UnionMakeupLimitCount, WordsInfoCount,
-            WorkTimesCount, WorkingCount, DefaultLine, SemiFinished,
-          } = it;
-          _setupNumber += (LineCount || 0);
-          _setupNumber += (NumbericInfoCount || 0);
-          _setupNumber += (UnionMakeupLimitCount || 0);
-          _setupNumber += (WordsInfoCount || 0);
-          _setupNumber += (WorkTimesCount || 0);
-          _setupNumber += (WorkingCount || 0);
-          if (DefaultLine) _setupNumber += 1;
-          if (SemiFinished) _setupNumber += 1;
-        }
+        const {
+          LineCount, UnionMakeupLimitCount, WorkingCount,
+        } = it;
+        _setupNumber += (LineCount || 0);
+        // _setupNumber += (NumbericInfoCount || 0);
+        _setupNumber += (UnionMakeupLimitCount || 0);
+        // _setupNumber += (WordsInfoCount || 0);
+        // _setupNumber += (WorkTimesCount || 0);
+        _setupNumber += (WorkingCount || 0);
+        // if (DefaultLine) _setupNumber += 1;
+        // if (SemiFinished) _setupNumber += 1;
         return {
           ...it,
           _setupNumber,

@@ -54,7 +54,6 @@ const onPartSubmited = (e: IPartChangeParams) => {
 };
 
 const onMenuClick = (type: menuTypeEnum) => {
-  console.log('onMenuClick', type);
   switch (type) {
     case menuTypeEnum.log: // 操作日志
       visible.value = true;

@@ -122,8 +122,6 @@ const onOpen = () => {
       condition.TypeID = List[0].ID;
     }
   }
-
-  console.log(condition);
 };
 
 const cancel = () => {

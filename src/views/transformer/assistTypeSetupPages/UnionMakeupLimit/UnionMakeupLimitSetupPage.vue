@@ -30,7 +30,7 @@ import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { goBackLastPage } from '@/router/handleRouterEach';
 import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
-import ContionCommonComp from '@/components/common/NewContionCommonComp/ContionCommonComp.vue';
+import { ContionCommonComp } from 'mpzj-sell-lib';
 import { IGetConditonResult } from '@/store/modules/transformer/map/types';
 
 recordScrollPosition('.mp-erp-new-comps-condtion-set-common-comp-wrap > .left > .left-content > main > .el-form.constraint-ruleForm');

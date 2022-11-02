@@ -51,7 +51,6 @@ const emit = defineEmits(['menuClick']);
 const onClick = (type: menuTypeEnum, PartID?: string) => {
   if (type === menuTypeEnum.UnionLine || type === menuTypeEnum.UnionWorking) {
     if (selectedPartList.value.length <= 1) {
-      console.log(1);
       onHideClick();
       return;
     }

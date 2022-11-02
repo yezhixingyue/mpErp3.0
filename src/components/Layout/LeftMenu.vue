@@ -6,7 +6,7 @@
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu :default-active="defaultActive" :default-openeds='defaultOpeneds' background-color="#222B3A" :collapse="isCollapse"
         :collapse-transition='true' text-color="#fff" class="el-menu-vertical-demo" active-text-color="#26bcf9">
-        <el-submenu v-for="(routeWrap, index) in menuList" :key="routeWrap.path" :index='`${index + 1}`'
+        <el-submenu v-for="(routeWrap, index) in menuList" :key="routeWrap.path" :index='`${index + 1}`' popper-class="mp-left-menu"
           v-show="routeWrap.children &&routeWrap.children.length > 0">
           <template slot="title">
             <i :class="routeWrap.meta?.icon" class="title-icon" v-show="isCollapse"></i>
@@ -418,5 +418,12 @@ onMounted(() => {
   .el-menu--vertical > .el-menu .el-menu-item > i.el-icon {
     text-align: left;
     margin-left: 5px;
+  }
+  .mp-left-menu {
+    .el-menu-item {
+      i {
+        margin-right: 10px;
+      }
+    }
   }
 </style>

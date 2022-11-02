@@ -7,7 +7,7 @@ const routes = { // 基本设置
   meta: {
     title: '信息转换',
     requiresAuth: true,
-    icon: 'el-icon-s-help',
+    icon: 'icon-xinxizhuanhuan iconfont',
   },
   children: [
     /*  转换设置
@@ -17,7 +17,7 @@ const routes = { // 基本设置
       name: 'transformerList',
       meta: {
         title: '转换设置',
-        icon: 'el-icon-s-help',
+        icon: 'icon-zhuanhuanshezhi iconfont',
         pageName: 'TransformerListPage',
         // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
         requiresAuth: true,

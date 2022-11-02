@@ -56,7 +56,6 @@ const crumbsList = computed(() => {
 });
 
 const onMapClick = (item: IColorInfoLeftType) => {
-  console.log('onMapClick', item);
   data.value.curEditItem = item;
   data.value.visible = true;
 };

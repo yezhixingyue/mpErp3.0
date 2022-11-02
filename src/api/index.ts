@@ -23,6 +23,9 @@ const api = {
   getUser<T = any>() {
     return instance.post<T>('/Api/Staff/Detail');
   },
+  getStaffChangePassword(data: { OldPassword: string, Password: string }) { // 修改密码
+    return instance.post('/Api/Staff/ChangePassword', data);
+  },
   /* 销售端 & 生产端
   ------------------------------- */
   getServerList(type?: ServerTypeEnum) { // GET /Api/Server/List  获取服务器列表

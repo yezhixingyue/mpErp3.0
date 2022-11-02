@@ -7,7 +7,7 @@ const routes = { // 基本设置
   meta: {
     title: '服务器管理',
     requiresAuth: true,
-    icon: 'el-icon-menu',
+    icon: 'icon-fuwuqiguanli iconfont',
   },
   children: [
     /*  销售端
@@ -17,7 +17,7 @@ const routes = { // 基本设置
       name: 'saleServers',
       meta: {
         title: '销售端',
-        icon: 'el-icon-s-fold',
+        icon: 'icon-xiaoshouduan iconfont ft-f-18',
         pageName: 'SaleServerListPage',
         // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
         requiresAuth: true,
@@ -31,7 +31,7 @@ const routes = { // 基本设置
       name: 'productionServers',
       meta: {
         title: '生产端',
-        icon: 'el-icon-s-unfold',
+        icon: 'icon-shengchanxian iconfont ft-f-16',
         pageName: 'ProductionServerListPage',
         // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
         requiresAuth: true,
@@ -45,7 +45,7 @@ const routes = { // 基本设置
       name: 'switchServers',
       meta: {
         title: '转换器',
-        icon: 'el-icon-sort',
+        icon: 'icon-zhuanhuanqi iconfont ft-f-19',
         pageName: 'SwitchServersListPage',
         // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
         requiresAuth: true,

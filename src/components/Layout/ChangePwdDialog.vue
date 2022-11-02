@@ -80,6 +80,7 @@
 <script>
 import { CommonDialogComp } from 'mpzj-sell-lib';
 import { message } from '@/assets/js/message';
+import api from '@/api';
 
 export default {
   props: {
@@ -150,7 +151,7 @@ export default {
         OldPassword,
         Password: Password1,
       };
-      const resp = await this.api.getStaffChangePassword(temp).catch(() => null);
+      const resp = await api.getStaffChangePassword(temp).catch(() => null);
       if (resp && resp.data.Status === 1000) {
         const cb = () => {
           this.localVisible = false;
