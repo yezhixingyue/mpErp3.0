@@ -1,5 +1,9 @@
 <template>
-  <label class="menu-box" @click="onClick" :class="{disabled: props.disabled, isPink: displayType==='icon' && props.isPink}">
+  <label class="menu-box" @click="onClick" :class="{
+    disabled: props.disabled,
+    isPink: displayType==='icon' && props.isPink,
+    isSuccess: displayType==='icon' && props.isSuccess
+   }">
     <!-- type模式 -->
     <template v-if="displayType === 'type'">
       <!-- 编辑 -->
@@ -42,6 +46,7 @@ const props = withDefaults(defineProps<{
   type?: 'edit' | 'del'
   icon?: string
   isPink?: boolean // 仅icon模式生效
+  isSuccess?: boolean // 仅icon模式生效
   defineOption?: null | { // 需要传递未禁用时图片路径 和 禁用时图片路径
     rightImgUrl: string
     disabledImgUrl: string
@@ -130,6 +135,19 @@ const onClick = () => {
       color: darken($color: #ff3769, $amount: 20)
     }
 
+  }
+  &.isSuccess {
+    > i {
+      color: #80c269;
+      margin-right: 5px;
+      font-size: 15px;
+    }
+    &:hover > i {
+      color: darken($color: #80c269, $amount: 8)
+    }
+    &:active > i {
+      color: darken($color: #80c269, $amount: 20)
+    }
   }
 
   &.disabled {

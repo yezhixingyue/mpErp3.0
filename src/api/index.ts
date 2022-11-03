@@ -9,6 +9,7 @@ import {
   IGetDefaultLineSetupParams,
   IGetFormulaParams, IGetPropertyListParams, IGetWorkingProcedureParams, IPartChangeParams, ISemiFinishedSaveParams,
 } from '@/store/modules/transformer/types';
+import { IGetStaffListParams, IStaff } from '@/views/companyManage/StaffManageListPage/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import { SwitchListItemPlainType } from '@/views/serverManage/utils/SwitchListItemClass';
 import { ServerTypeEnum } from '@/views/serverManage/utils/types';
@@ -25,6 +26,15 @@ const api = {
   },
   getStaffChangePassword(data: { OldPassword: string, Password: string }) { // 修改密码
     return instance.post('/Api/Staff/ChangePassword', data);
+  },
+  getStaffList(data: IGetStaffListParams) { // POST /Api/Staff/List  员工列表
+    return instance.post('/Api/Staff/List', data);
+  },
+  getStaffBaseInfoSave(data: IStaff) { // POST /Api/StaffBaseInfo/Save  员工信息保存
+    return instance.post('/Api/StaffBaseInfo/Save', data);
+  },
+  getStaffPause(id: string, isDimission: boolean) { // PUT /Api/Staff/Pause  员工离职/就职
+    return instance.put('/Api/Staff/Pause', null, { params: { id, isDimission } });
   },
   /* 销售端 & 生产端
   ------------------------------- */

@@ -1,0 +1,121 @@
+{
+  "id": "3673252",
+  "name": "转换器",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "6250266",
+      "name": "离职",
+      "font_class": "lizhi",
+      "unicode": "e6bb",
+      "unicode_decimal": 59067
+    },
+    {
+      "icon_id": "3996617",
+      "name": "返回",
+      "font_class": "fanhui",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "32365753",
+      "name": "出入库记录",
+      "font_class": "churukujilu",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "32324070",
+      "name": "设为可用",
+      "font_class": "sheweikeyong",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "4801994",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e777",
+      "unicode_decimal": 59255
+    },
+    {
+      "icon_id": "27500846",
+      "name": "删除",
+      "font_class": "delete",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "32318437",
+      "name": "生产设置",
+      "font_class": "shengchanshezhi",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "32318439",
+      "name": "信息转换",
+      "font_class": "xinxizhuanhuan",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "32318440",
+      "name": "转换设置",
+      "font_class": "zhuanhuanshezhi",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "32315931",
+      "name": "服务器管理",
+      "font_class": "fuwuqiguanli",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "32315915",
+      "name": "组合生产线",
+      "font_class": "zuheshengchanxian",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "32315906",
+      "name": "工序",
+      "font_class": "gongxu",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "32315853",
+      "name": "生产端",
+      "font_class": "shengchanduan",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "32315854",
+      "name": "生产线",
+      "font_class": "shengchanxian",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "32315849",
+      "name": "转换器",
+      "font_class": "zhuanhuanqi",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "32315851",
+      "name": "销售端",
+      "font_class": "xiaoshouduan",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    }
+  ]
+}

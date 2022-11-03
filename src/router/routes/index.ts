@@ -3,6 +3,7 @@ import { RouteConfig } from 'vue-router';
 import { IRouteTree } from '../types/types';
 import transformerRoutes from './transformer';
 import serverManageRoutes from './serverManage';
+import companyManageRoutes from './companyManage';
 
 const routes: Array<RouteConfig> = [
   { // 首页
@@ -29,6 +30,7 @@ const routes: Array<RouteConfig> = [
   },
   transformerRoutes.routes,
   serverManageRoutes.routes,
+  companyManageRoutes.routes,
   { // 无权限页
     path: '/notauth',
     name: 'notauth',
@@ -49,6 +51,7 @@ const routes: Array<RouteConfig> = [
 const routeTree: IRouteTree[] = [
   transformerRoutes.routeTree,
   serverManageRoutes.routeTree,
+  companyManageRoutes.routeTree,
 ];
 
 export default {
