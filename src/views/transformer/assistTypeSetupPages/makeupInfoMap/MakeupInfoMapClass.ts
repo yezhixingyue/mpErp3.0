@@ -34,6 +34,10 @@ export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, 
     };
     if (!IsPrintPlate) {
       temp.Target = Target;
+      if (Target.length === 0) {
+        message.error({ title: '保存失败', message: '请选择生产拼版模板' });
+        return;
+      }
     }
     const resp = await api.getAssistMappingSave(temp).catch(() => null);
     if (resp?.data.Status === 1000) {

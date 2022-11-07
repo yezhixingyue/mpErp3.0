@@ -41,7 +41,7 @@ export const setConditionFunc = ([[key1, key2], val]: setConditionParams, condit
     throw new Error('key1 is an invalid parameter');
   }
 
-  if (key2 && !Object.hasOwnProperty.call(condition, key2)) {
+  if (key2 && !Object.hasOwnProperty.call(condition[key1], key2)) {
     throw new Error('key2 is an invalid parameter');
   }
 
