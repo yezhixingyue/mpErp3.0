@@ -46,6 +46,10 @@
         <template slot-scope="scope">{{ scope.row.result.CurrentCost | formatCurrentCost }}</template>
       </el-table-column>
 
+      <el-table-column label="理论重量" width="140" show-overflow-tooltip>
+        <template slot-scope="scope">{{ scope.row.result.Weight | formatWeight }}</template>
+      </el-table-column>
+
       <el-table-column label="配送方式" width="140" show-overflow-tooltip v-if="!UseSameAddress">
           <el-select :value="scope.row.Express.Second" @change="e => onExpressChange(e, scope.row)" placeholder="请选择" slot-scope="scope" size="mini">
             <el-option
@@ -189,6 +193,12 @@ export default {
     formatCurrentCost(cost) { // 价格
       if (cost || cost === 0) {
         return `￥${(+cost).toFixed(2)}元`;
+      }
+      return '';
+    },
+    formatWeight(weight) { // 重量
+      if (weight || weight === 0) {
+        return `${+(+weight).toFixed(2)}kg`;
       }
       return '';
     },
