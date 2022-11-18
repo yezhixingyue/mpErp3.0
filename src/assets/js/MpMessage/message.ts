@@ -1,11 +1,13 @@
-import Dialog from "./dialog";
-import type { IDialogOptions } from "./dialog/types";
+/* eslint-disable max-len */
+/* eslint-disable class-methods-use-this */
+import Dialog from './dialog';
+import type { IDialogOptions } from './dialog/types';
 
 interface IMessageOptions {
   message?: string
   title: string
   width?: string
-  onOk?: (close:Function) => void
+  onOk?: (close:() => void) => void
   onCancel?: () => void
   submitText?: string
   cancelText?: string
@@ -29,8 +31,11 @@ class Message {
     const dialog = new Dialog();
     dialog.create(options);
   }
+
   private _toast(options: IMessageOptions, type: IMessageType) {
-    const { iconColor, iconClass, showSubmit, showCancel, submitText, cancelText, isCancelDefaultStyle, closeWhenCancel } = type;
+    const {
+      iconColor, iconClass, showSubmit, showCancel, submitText, cancelText, isCancelDefaultStyle, closeWhenCancel,
+    } = type;
     let main = `
       <h2 class='message-box-title ft-16 is-black'>
         <i class='iconfont ${iconClass} ft-f-34 ${iconColor}'></i>
@@ -41,13 +46,16 @@ class Message {
       main += `<div class='message-box-content'>${options.message}</div>`;
     }
     const { onOk, onCancel } = options;
-    const handleOkClick = (close: Function) => {
+    const handleOkClick = (close: () => void) => {
       if (onOk) onOk(close);
       close();
     };
     const width = options.width || !options.message ? '320px' : '380px';
-    this._create({ width, showClose: false, showHeader: false, main, onOk: handleOkClick, onClose: onCancel, minHeight: '180px', showSubmit, submitText, showCancel, cancelText, isCancelDefaultStyle, closeWhenCancel });
+    this._create({
+      width, showClose: false, showHeader: false, main, onOk: handleOkClick, onClose: onCancel, minHeight: '180px', showSubmit, submitText, showCancel, cancelText, isCancelDefaultStyle, closeWhenCancel,
+    });
   }
+
   warn(options: IMessageOptions) {
     const showSubmit = typeof options.showSubmit === 'boolean' ? options.showSubmit : false;
     const showCancel = typeof options.showCancel === 'boolean' ? options.showCancel : true;
@@ -58,10 +66,11 @@ class Message {
       submitText: options.submitText || '确定',
       iconColor: 'warning',
       iconClass: 'icon-warn',
-      isCancelDefaultStyle: true
+      isCancelDefaultStyle: true,
     };
     this._toast({ ...options, showSubmit, showCancel }, type);
   }
+
   success(options: IMessageOptions) {
     const showSubmit = typeof options.showSubmit === 'boolean' ? options.showSubmit : false;
     const showCancel = typeof options.showCancel === 'boolean' ? options.showCancel : true;
@@ -76,6 +85,7 @@ class Message {
     };
     this._toast({ ...options, showSubmit, showCancel }, type);
   }
+
   error(options: IMessageOptions) {
     const showSubmit = typeof options.showSubmit === 'boolean' ? options.showSubmit : false;
     const showCancel = typeof options.showCancel === 'boolean' ? options.showCancel : true;
@@ -90,6 +100,7 @@ class Message {
     };
     this._toast({ ...options, showSubmit, showCancel }, type);
   }
+
   confirm(options: IMessageOptions) {
     const showSubmit = typeof options.showSubmit === 'boolean' ? options.showSubmit : true;
     const showCancel = typeof options.showCancel === 'boolean' ? options.showCancel : true;
@@ -100,10 +111,11 @@ class Message {
       submitText: options.submitText || '确定',
       iconColor: 'warning',
       iconClass: 'icon-warn',
-      isCancelDefaultStyle: true
+      isCancelDefaultStyle: true,
     };
     this._toast({ ...options, showSubmit, showCancel }, type);
   }
+
   loading() {
     const dialog = new Dialog();
     return dialog.loading();
