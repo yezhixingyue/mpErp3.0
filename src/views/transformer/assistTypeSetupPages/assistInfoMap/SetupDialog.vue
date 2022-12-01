@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang='ts'>
-import { CommonDialogComp } from 'mpzj-sell-lib';
+import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import { computed, ref } from 'vue';
 import { AssistInfoMapClass } from './AssistInfoMapClass';
 

@@ -6,7 +6,7 @@ export class LogConditionClass {
 
   OperatorID = ''
 
-  Type = ServerTypeEnum.sales
+  Type = ServerTypeEnum.ManageConvert
 
   Page = 1
 

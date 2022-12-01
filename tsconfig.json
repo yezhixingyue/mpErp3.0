@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "moduleResolution": "node",
     "experimentalDecorators": true,
@@ -39,6 +39,8 @@
     "src/assets/js/directive/index.js",
     "src/assets/js/directive/loadMore.js",
     "src/assets/js/property/index.ts",
+    "src/router/index.js",
+    "src/router/handleRouterEach.js",
   ],
   "exclude": [
     "node_modules"

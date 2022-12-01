@@ -1,10 +1,10 @@
 import api from '@/api';
-import { message } from '@/assets/js/message';
-import { AssistMappingTypeEnum, FixedType } from '@/store/modules/transformer/map/enum';
-import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
-import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
-import { IPropertyType } from '@/store/modules/transformer/map/types';
-import { getPerfectPropertyByImperfectProperty } from '@/assets/js/property';
+import { AssistMappingTypeEnum, FixedType } from '@/pinia/modules/transformer/map/enum';
+import { AssistMapDataClass } from '@/pinia/modules/transformer/map/AssistMapDataClass';
+import { AssistMapItemClass } from '@/pinia/modules/transformer/map/AssistMapItemClass';
+import { IPropertyType } from '@/pinia/modules/transformer/map/types';
+import PropertyClass from '@/assets/js/TypeClass/PropertyClass';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 export interface IWordsInfoLeftType {
   ID: string | number
@@ -98,7 +98,7 @@ export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IW
         this.visible = false;
         this.handleItemChange(temp);
       };
-      message.success({
+      MpMessage.success({
         title: '设置成功',
         onOk: cb,
         onCancel: cb,
@@ -164,7 +164,7 @@ export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IW
   loaded() {
     const list = this.mapDataList.map(it => ({
       ...it,
-      TargetProperty: it.TargetProperty?.map(p => getPerfectPropertyByImperfectProperty(p, this.rightDataList) || p)
+      TargetProperty: it.TargetProperty?.map(p => PropertyClass.getPerfectPropertyByImperfectProperty(p, this.rightDataList) || p)
         .map((p) => transformProperty(p) || p) || [],
     }));
     this.mapDataList = list;

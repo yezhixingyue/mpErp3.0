@@ -7,6 +7,7 @@
       <el-table
         :data="data.leftDataList"
         stripe
+        class="mp-table"
         resizable
         border
         style="width: 100%">
@@ -32,12 +33,12 @@
 </template>
 
 <script setup lang='ts'>
-import Crumbs from '@/components/common/Crumbs.vue';
-import { useTransformerStore } from '@/store/modules/transformer';
+import Crumbs from '@/components/common/NewSetupComps/Crumbs.vue';
+import { useTransformerStore } from '@/pinia/modules/transformer';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { goBackLastPage } from '@/router/handleRouterEach';
-import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
+import { recordScrollPosition } from '@/assets/ts/recordScrollPositionMixin';
 import { WordsInfoMapClass, IWordsInfoLeftType } from './WordsInfoMapClass';
 import SetupDialog from './SetupDialog.vue';
 
@@ -95,6 +96,7 @@ export default {
     }
     :deep(.l .cell) {
       margin-right: 30px;
+      text-align: left;
       span {
         flex: none;
         &.blue-span {

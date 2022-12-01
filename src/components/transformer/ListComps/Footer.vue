@@ -11,8 +11,8 @@
 </template>
 
 <script setup lang='ts'>
-import { TransformerListPageDataPlainType } from '@/store/modules/transformer/TransformerListPageDataClass';
-import { Pager } from 'mpzj-sell-lib';
+import { TransformerListPageDataPlainType } from '@/pinia/modules/transformer/TransformerListPageDataClass';
+import { Pager } from '@/components/common/mpzj-sell-lib/lib';
 
 const props = defineProps<{
   TransformerListPageData: TransformerListPageDataPlainType | null,

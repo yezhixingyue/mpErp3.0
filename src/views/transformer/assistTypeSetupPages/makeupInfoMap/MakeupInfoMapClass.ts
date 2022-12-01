@@ -1,8 +1,8 @@
 import api from '@/api';
-import { message } from '@/assets/js/message';
-import { AssistMappingTypeEnum } from '@/store/modules/transformer/map/enum';
-import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
-import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
+import { AssistMappingTypeEnum } from '@/pinia/modules/transformer/map/enum';
+import { AssistMapDataClass } from '@/pinia/modules/transformer/map/AssistMapDataClass';
+import { AssistMapItemClass } from '@/pinia/modules/transformer/map/AssistMapItemClass';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 export interface IMakeupInfoLeftType {
   ID: string | number
@@ -35,7 +35,7 @@ export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, 
     if (!IsPrintPlate) {
       temp.Target = Target;
       if (Target.length === 0) {
-        message.error({ title: '保存失败', message: '请选择生产拼版模板' });
+        MpMessage.error({ title: '保存失败', msg: '请选择生产拼版模板' });
         return;
       }
     }
@@ -45,7 +45,7 @@ export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, 
         this.visible = false;
         this.handleItemChange(temp);
       };
-      message.success({
+      MpMessage.success({
         title: '设置成功',
         onOk: cb,
         onCancel: cb,
@@ -60,8 +60,9 @@ export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, 
    * @returns
    * @memberof MakeupInfoMapClass
    */
+  // eslint-disable-next-line class-methods-use-this
   protected async getLeftList() {
-    const resp = await api.getFileList({ serverID: this.ServerID, onlyShowMakeupUsed: true }).catch(() => null);
+    const resp = await api.getOutputFileList({ onlyShowMakeupUsed: true, includeUseTimes: false }).catch(() => null);
     return resp?.data.Status === 1000 ? resp.data.Data : [];
   }
 

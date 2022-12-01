@@ -31,7 +31,7 @@
         @setup='onMapClick' @remove="onRemoveClick"
       />
       <div v-else-if="GeneralMapDataClassData && !GeneralMapDataClassData.loading" class="empty-box">
-        <el-empty description="暂无映射数据"></el-empty>
+        <mp-empty description="暂无映射数据"></mp-empty>
       </div>
     </main>
     <footer>
@@ -41,17 +41,17 @@
 </template>
 
 <script setup lang='ts'>
-import Crumbs from '@/components/common/Crumbs.vue';
-import { ResultFormulaTableComp } from 'mpzj-sell-lib';
-import { useTransformerStore } from '@/store/modules/transformer';
+import Crumbs from '@/components/common/NewSetupComps/Crumbs.vue';
+import { ResultFormulaTableComp } from '@/components/common/mpzj-sell-lib/lib';
+import { useTransformerStore } from '@/pinia/modules/transformer';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import router from '@/router';
 import { goBackLastPage } from '@/router/handleRouterEach';
-import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
-import { GeneralMapItemClass } from '@/store/modules/transformer/map/GeneralMapItemClass';
-import { GenerelMappingTypeEnum, UseModuleEnum } from '@/store/modules/transformer/map/enum';
-import { menuTypeEnum } from '@/store/modules/transformer/types';
+import { recordScrollPosition } from '@/assets/ts/recordScrollPositionMixin';
+import { GeneralMapItemClass } from '@/pinia/modules/transformer/map/GeneralMapItemClass';
+import { GenerelMappingTypeEnum, UseModuleEnum } from '@/pinia/modules/transformer/map/enum';
+import { menuTypeEnum } from '@/pinia/modules/transformer/types';
 import { LineMapItemClass } from './LineMapItemClass';
 import DefaultLineDialog from './DefaultLineDialog.vue';
 

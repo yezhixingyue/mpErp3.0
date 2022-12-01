@@ -25,7 +25,7 @@
       <span v-else class="danger ft-12"><i class="el-icon-warning ft-14 mr-5"></i> 暂无生产端可用分类数据</span>
     </header>
     <div class="c">
-      <el-empty v-if="classList.length === 0" />
+      <mp-empty v-if="classList.length === 0" />
       <el-radio-group v-model="radio">
         <el-radio class="check-item" v-for="it in radioList" :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-radio>
       </el-radio-group>
@@ -34,11 +34,11 @@
 </template>
 
 <script setup lang='ts'>
-import { message } from '@/assets/js/message';
-import { IFactoryMaterialClass } from '@/store/modules/transformer/map/types';
+import { IFactoryMaterialClass } from '@/pinia/modules/transformer/map/types';
 import { Message } from 'element-ui';
-import { CommonDialogComp, EpCascader } from 'mpzj-sell-lib';
+import { CommonDialogComp, EpCascader } from '@/components/common/mpzj-sell-lib/lib';
 import { computed, reactive, ref } from 'vue';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
 import { MaterialInfoMapClass } from './MaterialInfoMapClass';
 
 const props = defineProps<{
@@ -141,7 +141,7 @@ const submit = () => {
     id = '';
   }
   if (!id) {
-    message.error({ title: '保存失败', message: '请选择映射物料' });
+    MpMessage.error({ title: '保存失败', msg: '请选择映射物料' });
     return;
   }
   props.data.saveItem([id]);

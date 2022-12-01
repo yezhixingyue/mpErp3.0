@@ -14,7 +14,7 @@
           title="产品分类"
           :fiexdWidth="240"
           :list="classList"
-          :defaultProps="{ID: 'ID',Name: 'Name',children: 'children'}"
+          :defaultProps="{ID: 'ID',Name: 'ClassName',children: 'children'}"
           :level="2"
           v-model="EpCascaderProductValue"
         />
@@ -31,15 +31,15 @@
 </template>
 
 <script setup lang='ts'>
-import { EpCascader } from 'mpzj-sell-lib';
-import { TransformerListPageDataPlainType } from '@/store/modules/transformer/TransformerListPageDataClass';
-import { SwitchListItemPlainType } from '@/views/serverManage/utils/SwitchListItemClass';
+import { EpCascader } from '@/components/common/mpzj-sell-lib/lib';
+import { TransformerListPageDataPlainType } from '@/pinia/modules/transformer/TransformerListPageDataClass';
 import { computed } from 'vue';
-import { menuTypeEnum } from '@/store/modules/transformer/types';
+import { menuTypeEnum } from '@/pinia/modules/transformer/types';
+import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 
 const props = defineProps<{
   TransformerListPageData: TransformerListPageDataPlainType | null,
-  convertServerList: SwitchListItemPlainType[]
+  convertServerList: SaleAndProductionListItemPlainType[]
   loading4Servers: boolean
 }>();
 
@@ -92,6 +92,7 @@ const onClick = (type: menuTypeEnum) => { emit('menuClick', type); };
   > .danger {
     line-height: 28px;
     height: 28px;
+    color: #ff3769;
   }
   > .box {
     margin-top: 22px;
@@ -109,6 +110,7 @@ const onClick = (type: menuTypeEnum) => { emit('menuClick', type); };
       font-weight: 100;
       white-space: nowrap;
       margin-right: 10px;
+      font-size: 14px;
     }
     > div {
       height: 100%;

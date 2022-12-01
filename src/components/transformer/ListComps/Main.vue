@@ -1,6 +1,6 @@
 <template>
   <main>
-    <el-empty v-if="isEmpty" description="暂无数据"></el-empty>
+    <mp-empty v-if="isEmpty" description="暂无数据"></mp-empty>
     <div class="content" v-else-if="props.TransformerListPageData" ref="oScrollWrap">
       <TableItem
         v-for="it in props.TransformerListPageData.productList"
@@ -14,10 +14,10 @@
 </template>
 
 <script setup lang='ts'>
-import { TransformerListPageDataPlainType } from '@/store/modules/transformer/TransformerListPageDataClass';
+import { TransformerListPageDataPlainType } from '@/pinia/modules/transformer/TransformerListPageDataClass';
 import { computed, ref } from 'vue';
-import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
-import { IProduct, menuTypeEnum } from '@/store/modules/transformer/types';
+import { recordScrollPosition } from '@/assets/ts/recordScrollPositionMixin';
+import { IProduct, menuTypeEnum } from '@/pinia/modules/transformer/types';
 import TableItem from './TableItem.vue';
 
 const props = defineProps<{

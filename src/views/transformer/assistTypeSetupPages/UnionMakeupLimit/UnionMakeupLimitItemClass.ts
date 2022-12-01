@@ -1,6 +1,6 @@
-import { GenerelMappingTypeEnum, UseModuleEnum } from '@/store/modules/transformer/map/enum';
-import { GeneralMapDataClass } from '@/store/modules/transformer/map/GeneralMapDataClass';
-import { GeneralMapItemClass } from '@/store/modules/transformer/map/GeneralMapItemClass';
+import { GenerelMappingTypeEnum, UseModuleEnum } from '@/pinia/modules/transformer/map/enum';
+import { GeneralMapDataClass } from '@/pinia/modules/transformer/map/GeneralMapDataClass';
+import { GeneralMapItemClass } from '@/pinia/modules/transformer/map/GeneralMapItemClass';
 
 export class UnionMakeupLimitItemClass extends GeneralMapDataClass {
   UseModule = UseModuleEnum.UnionMakeupLimit

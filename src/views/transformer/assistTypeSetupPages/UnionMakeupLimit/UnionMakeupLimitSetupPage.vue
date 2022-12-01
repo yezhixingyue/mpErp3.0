@@ -14,7 +14,7 @@
         <!-- 右侧面板 -->
         <!-- <span slot="title" v-if="curPanel && curPanel.canAdd" class="blue-span" style="position: relative;top:1px" @click="onAddClick">+ 添加</span> -->
       </ContionCommonComp>
-      <el-empty class="mt-80" v-else description="暂无属性可设置"></el-empty>
+      <mp-empty class="mt-80" v-else description="暂无属性可设置"></mp-empty>
     </main>
     <footer>
       <mp-button :disabled="!GeneralMapDataClassData" type="primary" @click="onSubmitClick">保存</mp-button>
@@ -24,14 +24,14 @@
 </template>
 
 <script setup lang='ts'>
-import Crumbs from '@/components/common/Crumbs.vue';
-import { useTransformerStore } from '@/store/modules/transformer';
+import Crumbs from '@/components/common/NewSetupComps/Crumbs.vue';
+import { useTransformerStore } from '@/pinia/modules/transformer';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { goBackLastPage } from '@/router/handleRouterEach';
-import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
-import { ContionCommonComp } from 'mpzj-sell-lib';
-import { IGetConditonResult } from '@/store/modules/transformer/map/types';
+import { recordScrollPosition } from '@/assets/ts/recordScrollPositionMixin';
+import { ContionCommonComp } from '@/components/common/mpzj-sell-lib/lib';
+import { IGetConditonResult } from '@/pinia/modules/transformer/map/types';
 
 recordScrollPosition('.mp-erp-new-comps-condtion-set-common-comp-wrap > .left > .left-content > main > .el-form.constraint-ruleForm');
 

@@ -1,0 +1,128 @@
+
+@import "../var.scss";
+.mpzj-sell-lib-comps-dialog-comp-wrap {
+  background-color: rgba(0, 0, 0, 0.45);
+  > .el-dialog {
+    border-radius: 5px;
+  }
+  .el-dialog__header {
+    > span{
+      font-size: 15px;
+      color: $--color-title-gray !important;
+      &::before {
+        width: 3px !important;
+        background-color: $--color-primary;
+        content: "";
+        display: inline-block;
+        height: 16px;
+        width: 16px;
+        vertical-align: -12%;
+        margin-right: 10px;
+      }
+    }
+    border-radius: 5px 5px 0px 0;
+    background-color: #fff !important;
+    height: 30px !important;
+    line-height: 30px !important;
+    position: relative;
+    padding: 10px 20px;
+    .el-dialog__headerbtn {
+      top: 13px;
+    }
+    &::after {
+      width: calc(100% - 22px);
+      position: absolute;
+      height: 1px;
+      background-color: #eee;
+      left: 11px;
+      bottom: 0;
+      content: '';
+    }
+  }
+
+  // .el-dialog__body {
+  // }
+
+  .el-dialog__footer {
+    display: flex;
+    justify-content: center;
+    > .dialog-footer {
+      padding: 10px 0;
+      > div {
+        margin-bottom: 20px;
+        text-align: left;
+      }
+      > p {
+        text-align: center;
+        > button {
+          height: 35px;
+          width: 120px;
+          padding: 0;
+          border-radius: 3px;
+          & + button {
+            margin-left: 20px;
+          }
+          &.el-button--default {
+            border-color: $--color-primary;
+            color: $--color-primary;
+            &:active {
+              border-color: $--color-blue;
+              color: $--color-blue;
+            }
+          }
+          &.el-button--primary {
+            background: linear-gradient(to right, $--color-primary, $--color-blue-lighter);
+            border: none;
+            &:hover {
+              opacity: 0.88;
+            }
+            &:active {
+              background: linear-gradient(to right, $--color-blue, $--color-primary);
+            }
+          }
+          &.el-button--danger {
+            background: $--color-danger;
+            border-color: $--color-danger;
+            &:hover {
+              opacity: 0.88;
+            }
+            &:active {
+              border-color: darken($color: $--color-danger, $amount: 15);
+              background: darken($color: $--color-danger, $amount: 15);
+            }
+          }
+          &.is-disabled {
+            background: #cbcbcb !important;
+            opacity: 1 !important;
+          }
+        }
+        > span.clear {
+          font-size: 12px;
+          margin-left: 32px;
+          display: inline-block;
+          padding: 4px 8px;
+          color: $--color-danger !important;
+          cursor: pointer;
+          user-select: none;
+          &:hover {
+            opacity: 0.88;
+          }
+          &:active {
+            color: darken($color: $--color-danger, $amount: 15) !important;
+          }
+        }
+      }
+    }
+  }
+  &.smallBtn {
+    .el-dialog__footer {
+      > .dialog-footer {
+        > p {
+          > button {
+            height: 32px;
+          }
+        }
+      }
+    }
+  }
+}

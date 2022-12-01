@@ -16,12 +16,12 @@
         </el-button-group>
         <p v-show="topList.length === 0" class="is-gray ft-12 em">已全部添加</p>
       </header>
-      <p class="tip-box warning">
+      <p class="tips-box warning">
         <i class="el-icon-warning"></i>
         <span class="ft-12 ml-5">请添加需要生产的部件，不需要生产则不用添加</span>
       </p>
       <el-table
-        class="content"
+        class="content mp-table"
         :max-height="278"
         fit
         :data="selectedList"
@@ -47,9 +47,9 @@
 </template>
 
 <script>
-import { CommonDialogComp } from 'mpzj-sell-lib';
-import { message } from '@/assets/js/message';
+import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import api from '@/api';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 export default {
   props: {
@@ -116,13 +116,13 @@ export default {
     },
     async submit() {
       if (!this.item || !this.item.PartList) return;
-      const originSelectIds = this.item.PartList.filter(it => it.IsSelected).map(it => it.ID) || [];
-      if (this.item.IsSelected) originSelectIds.unshift(this.item.ID);
-      if (this.selectedIds.length === originSelectIds.length && originSelectIds.length === [...new Set([...this.selectedIds, ...originSelectIds])].length) {
-        // 未变化
-        message.error({ title: '保存失败', message: '选中数据未更改' });
-        return;
-      }
+      // const originSelectIds = this.item.PartList.filter(it => it.IsSelected).map(it => it.ID) || [];
+      // if (this.item.IsSelected) originSelectIds.unshift(this.item.ID);
+      // if (this.selectedIds.length === originSelectIds.length && originSelectIds.length === [...new Set([...this.selectedIds, ...originSelectIds])].length) {
+      //   // 未变化
+      //   MpMessage.error({ title: '保存失败', msg: '选中数据未更改' });
+      //   return;
+      // }
       // 有变化
       const temp = {
         ID: this.item.ID,
@@ -136,7 +136,7 @@ export default {
           this.$emit('submited', temp);
           this.cancel();
         };
-        message.success({ title: '保存成功', onOk: cb, onCancel: cb });
+        MpMessage.success({ title: '保存成功', onOk: cb, onCancel: cb });
       }
     },
     cancel() {
@@ -190,7 +190,7 @@ export default {
           height: 28px;
         }
       }
-      > .tip-box {
+      > .tips-box {
         padding-bottom: 12px;
         i {
           vertical-align: -1px;

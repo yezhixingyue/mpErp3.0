@@ -1,0 +1,538 @@
+@import "@/assets/css/var.scss";
+
+
+// 下面部分为设置接单员选中状态时的字体颜色
+.el-select-dropdown__item.selected{
+  color: $--color-primary !important;
+}
+
+.mp-general-loading-box{
+  z-index: 9999 !important;
+  .el-loading-spinner i {
+    font-size: 20px;
+  }
+  .el-loading-spinner i,.el-loading-spinner .el-loading-text {
+    color: $--color-blue !important;
+  }
+  // left: 180px;
+}
+.mp-general-loading-hidden-box {
+  z-index: 9999 !important;
+  .el-loading-spinner i {
+    font-size: 20px;
+  }
+  .el-loading-spinner i,.el-loading-spinner .el-loading-text {
+    color: rgba(0, 0, 0, 0) !important;
+  }
+}
+.tips{
+  color: rgb(18, 188, 121) !important;
+  font-size: 12px !important;
+}
+
+
+// ------------------------- 表格样式初始化
+.el-table .el-table__header-wrapper, .el-table .el-table__fixed-header-wrapper {
+  thead {
+    tr {
+      th {
+        text-align: center;
+        color: $--color-text-regular;
+        font-weight: 600;
+        padding: 0;
+        background-color: $--bg-color-base;
+        border-right: none;
+        font-size: 12px;
+        .cell {
+          white-space: nowrap;
+          padding: 0 2px !important;
+        }
+      }
+    }
+  }
+  
+}
+.el-table__body-wrapper, .el-table__fixed-right, .el-table__fixed {
+  font-size: 12px;
+  width: 100%;
+  color: $--color-text-regular;
+  
+  .el-table__body {
+    tbody {
+      tr {
+        td {
+          padding: 8px 0;
+          text-align: center;
+          border: none;
+          > .cell {
+            line-height: 28px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-break: keep-all !important;
+            font-size: 12px;
+          }
+          &.md-font-item{
+              font-size: 14px;
+            }
+          &.total-freight{
+            background-color: $--color-white !important;
+            border-left: 1px solid $--border-color-light;
+            box-sizing: border-box;
+          }
+        }
+        &:hover, &.hover-row {
+          td {
+            background-color: $--color-text-table-hover !important;
+          }
+        }
+
+      }
+    }
+  }
+}
+// .el-table__body-wrapper {
+//   // overflow-y: overlay !important;
+// }
+.el-table__fixed-right-patch{
+  background-color: rgb(245, 245, 245);
+}
+.el-table--striped .el-table__body tr.el-table__row--striped td {
+  background-color: rgb(248, 248, 248) !important;
+}
+
+.mp-table-trans-wrap, .mp-payment-module-table, .mp-service-page-main-table, .el-table{
+  .has-gutter > tr > th.is-leaf {
+    background-color: $--bg-color-base;
+    color: $--color-text-regular;
+    font-weight: 600;
+    border: none;
+    border-bottom: 1px solid $--border-color-base;
+    position: relative;
+    &::after{
+      content: '';
+      width: 1px;
+      position: absolute;
+      right: 0;
+      height: 16px;
+      top: 11px;
+      background-color: rgba(0,0,0,0.15);
+      pointer-events: none;
+    }
+    &:last-of-type::after{
+      display: none;
+    }
+  }
+}
+.mp-table-trans-wrap .has-gutter > tr > th::after{
+  top: 11px;
+  height: 15px;
+}
+.mp-payment-module-table .has-gutter > tr > th::after, .mp-service-page-main-table .has-gutter > tr > th::after{
+  top: 11px;
+  height: 16px;
+}
+
+
+
+// ------------------------ 字体相关样式设置
+* {
+  font-family: MicrosoftYaHei,'微软雅黑' , Arial, Helvetica, sans-serif;
+}
+
+body {
+  font-family: MicrosoftYaHei, Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
+}
+
+.el-dropdown-link{
+  cursor: pointer;
+}
+
+// ------------------------ 设置该类名，可以在元素右侧生成一个竖直虚线
+.right-line{
+  position: relative;
+  &::after{
+    content: "";
+    position: absolute;
+    height: 100%;
+    background-image: linear-gradient(
+      to bottom,
+      $--border-color-light 0%,
+      $--border-color-light 76%,
+      transparent 24%
+    );
+    background-repeat: repeat-y;
+    background-size: 1px 6px;
+    top: 0px;
+    width: 1px;
+    right: 0;
+  }
+}
+.bottom-line{
+  position: relative;
+  &::after{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-image: linear-gradient(
+      to right,
+      $--border-color-light 0%,
+      $--border-color-light 84%,
+      transparent 16%
+    );
+    background-repeat: repeat-x;
+    background-size: 7px 1px;
+    bottom: 0px;
+    left: 0;
+  }
+}
+.top-line{
+  position: relative;
+  &::after{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-image: linear-gradient(
+      to right,
+      $--border-color-light 0%,
+      $--border-color-light 84%,
+      transparent 16%
+    );
+    background-repeat: repeat-x;
+    background-size: 7px 1px;
+    top: 0px;
+    left: 0;
+  }
+}
+
+// ------------------------ input输入框， 聚焦动画
+input[type='text']{
+  transition: border-color 0.5s !important;
+  border-radius: 2px;
+  position: relative;
+  vertical-align: middle;
+  &:focus{
+    border-color:  $--color-primary !important;
+  }
+}
+input.is-warn{
+  border-color: rgba($color:  $--color-text-table-pending, $alpha: 0.6) !important;
+}
+// ------------------------ 解决下拉列表内容过多时上下展示不全问题
+.el-dropdown-menu.el-popper{
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+
+// ------------------------- 滚动条样式设置
+.mp-scroll-wrap::-webkit-scrollbar ,.el-dropdown-menu.el-popper::-webkit-scrollbar{
+  width: 6px;
+  height: 8px;
+  // display: none;
+}
+.mp-scroll-wrap::-webkit-scrollbar-thumb ,.el-dropdown-menu.el-popper::-webkit-scrollbar-thumb {
+  background-color: $--border-color-base;
+  border-radius: 3px;
+  transition: background-color 0.1s ease-in-out;
+  &:hover {
+    background-color: $--color-text-secondary;
+  }
+}
+.hidden.mp-scroll-wrap{
+  &::-webkit-scrollbar-thumb {
+    // opacity: 0;
+    background-color: rgba($color: $--border-color-base, $alpha: 0)
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    // opacity: 0;
+    background-color: rgba($color: $--border-color-base, $alpha: 1)
+  }
+}
+.mp-scroll-wrap {
+  scroll-behavior: smooth;
+}
+.mp-scroll-wrap > .el-table__body-wrapper::-webkit-scrollbar ,.el-dropdown-menu.el-popper::-webkit-scrollbar{
+  width: 6px;
+  height: 8px;
+  // display: none;
+}
+.mp-scroll-wrap > .el-table__body-wrapper::-webkit-scrollbar-thumb ,.el-dropdown-menu.el-popper::-webkit-scrollbar-thumb {
+  background-color: $--border-color-base;
+  border-radius: 3px;
+  &:hover {
+    background-color: $--color-text-secondary;
+  }
+}
+
+
+
+// -------------------------- dialog弹出框样式：标题为图片样式  使用类名：mp-img-style-header
+.mp-img-style-header {
+  .el-dialog__header {
+    height: 20px;
+    padding: 10px 20px;
+    background-color: $--bg-color-base;
+    text-align: left;
+    user-select: none;
+    > span {
+      line-height: 20px;
+      font-size: 14px;
+      color: $--color-text-regular;
+      &::before {
+        content: "";
+        display: inline-block;
+        height: 16px;
+        width: 16px;
+        // background: url(../../../assets/images/service.png) no-repeat center;
+        vertical-align: -15%;
+        margin-right: 10px;
+      }
+    }
+    .el-dialog__headerbtn {
+      top: 10px;
+      font-size: 18px;
+      .el-dialog__close {
+        color: $--color-text-table-time;
+      }
+    }
+  }
+}
+.el-dialog__header {
+  > button.el-dialog__headerbtn{
+    > i.el-dialog__close:hover{
+      // background-color: $--color-primary-light;
+      color: $--color-primary-light;
+    }
+  }
+}
+
+
+// -------------------------- 各个列表搜索框样式
+.mp-order-search-box{
+  > input {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+  > button.mp-search-box-btn {
+    border: 1px solid #26bcf9 !important;
+    &:hover {
+      border-color: #009EF9 !important;
+    }
+    &:active {
+      border-color: #35dff9 !important;
+    }
+    > i{
+      display: block;
+      height: 20px;
+      width: 100%;
+      background: url('../images/search.png') center center no-repeat;
+    }
+  }
+  > button.order-header-reset-btn{
+    line-height: 26px !important;
+    box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+}
+
+
+// -------------------------- 通用字体颜色
+td.is-gray .cell{
+  color: $--color-text-table-time;
+}
+.is-origin{
+  color: $--color-text-orgin !important;
+}
+.is-gray{
+  color: $--color-text-table-time !important;
+}
+.gray {
+  color: #888 !important;
+}
+.is-red{
+  color: $--color-text-table-pending !important;
+}
+.is-cancel{
+  color: $--color-text-secondary !important;
+}
+.is-pink{
+  color: $--color-pink !important;
+}
+.is-primary{
+  color: $--color-text-primary !important;
+}
+.is-primary-blue{
+  color: $--color-blue !important;
+}
+.is-success{
+  color: $--color-text-table-completed !important;
+}
+.is-blue{
+  color: $--color-primary !important;
+}
+.is-cyan {
+  color: $--color-cyan !important;
+}
+.is-black {
+  color: $--color-text-primary !important;
+}
+.is-bold {
+  font-weight: 600;
+}
+.is-disabled {
+  color: $--color-text-secondary;
+  cursor: not-allowed !important;
+}
+.is-list-btn {
+  color: $--color-text-light;
+  font-size: 13px;
+  &:hover {
+    color: $--color-text-primary;
+  }
+}
+// -------------------------- 通用字体形状
+.is-thick-line { // 粗体
+  font-weight: 600;
+}
+.is-font-size-16 {
+  font-size: 16px !important;
+}
+.is-font-size-14 {
+  font-size: 14px !important;
+}
+.is-font-size-13 {
+  font-size: 13px !important;
+}
+.is-font-size-12 {
+  font-size: 12px !important;
+}
+// -------------------------- 通用字体形状
+.is-disabled-g { // 禁止点击
+  user-select: none !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+
+// --------------------------- 错误提示窗
+.el-message.el-message--error,
+.el-message.el-message--success {
+  background-color: #fff;
+  border: none;
+  min-width: 320px;
+  max-width: 415px;
+  display: flex;
+  min-height: 50px;
+  text-align: center;
+  font-size: 14px;
+  // position: relative;
+  > i.el-message__icon {
+    color: rgb(233, 57, 57) !important;
+    font-size: 36px;
+    width: 50px;
+  }
+  
+  .el-message-box__message {
+    > p{
+      color: $--color-text-primary !important;
+      font-size: 14px;
+      text-align: left;
+      line-height: 18px;
+      // width: 230px;
+      // padding-left: 10px;
+    }
+  }
+  > i.el-message__closeBtn{
+    position: absolute;
+    top: 13px;
+    right: 6px;
+  }
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+}
+.el-message.el-message--success {
+  > i.el-message__icon {
+    color: rgb(128, 194, 105) !important;
+  }
+}
+// .el-message.el-message--info {
+  
+// }
+.el-message-box.mp-order-del-pop-reverse-fail .el-message-box__content {
+  padding-top: 20px;
+  .el-message-box__container .el-message-box__message > p {
+    font-size: 14px !important;
+  }
+}
+
+
+// --------------------------- 时间选择框样式设置
+.mp-header-search-wrap {
+  .time-menu{
+    width: 695px;
+  }
+}
+
+// --------------------------- header部分公共样式
+@import '@/assets/css/mixins/header/DropDownArea.scss';
+.order-staff-select-dropdown-wrap {
+  &.el-select .el-input.is-focus .el-input__inner {
+    border-color: $--border-color-base !important;
+  }
+  .el-input {
+    height: 20px;
+    > input.el-input__inner {
+      border: none;
+      outline: none;
+      height: 25px;
+      border-bottom: 1px solid $--border-color-base;
+      border-radius: 0%;
+      line-height: 25px;
+      padding: 0 5px;
+      width: 114px;
+      vertical-align: -17%;
+      position: relative;
+      top: -3px;
+      &:hover {
+        border-color: $--border-color-base !important;
+      }
+    }
+    > span {
+      display: none;
+    }
+  }
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    background: url('../images/arrowbottom.png') no-repeat center;
+    background-size: 100% 100%;
+    height: 9px;
+    width: 11px;
+    right: 5px;
+    top: 3px;
+  }
+}
+.order-staff-select-dropdown-pop-wrap.el-select-dropdown{
+  margin-top: 1px !important;
+  .popper__arrow{
+    display: none;
+  }
+  .el-select-dropdown__item.hover{
+    color: $--color-primary !important;
+  }
+}
+
+.el-select-dropdown__item:hover {
+  &:not(.is-disabled) {
+    color:$--color-primary !important;
+  }
+}
+
+.el-tooltip__popper {
+  max-width: 580px !important;
+  transition: none !important;
+  padding: 5px 10px !important;
+}
+

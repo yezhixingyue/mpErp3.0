@@ -11,7 +11,7 @@
     top="20vh"
   >
     <el-form :model="ruleForm" :rules="rules" hide-required-asterisk ref="oForm" label-width="140px" class="adapter-ruleForm" v-if="ruleForm" size="small">
-      <el-form-item :label="`${props.pageTypeData.options.title}名称：`" prop="Name">
+      <el-form-item :label="`服务器名称：`" prop="Name">
         <el-input v-model.trim="ruleForm.Name" autocomplete="off" maxlength="20"></el-input>
       </el-form-item>
       <el-form-item label="服务器地址：" prop="Url">
@@ -25,7 +25,7 @@
 import { SaleAndProductionListItemClass } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import { SaleAndProductionPageClassType } from '@/views/serverManage/utils/SaleAndProductionPageClassType';
 import { Form } from 'element-ui';
-import { CommonDialogComp } from 'mpzj-sell-lib';
+import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
@@ -34,7 +34,7 @@ const props = defineProps<{
 
 const title = computed(() => {
   const o = props.pageTypeData.curEditItem ? '编辑' : '添加';
-  return `${o}${props.pageTypeData.options.title}`;
+  return `${o}转换服务器`;
 });
 
 const localVisible = computed({
@@ -51,7 +51,7 @@ const ruleForm = ref<null | SaleAndProductionListItemClass>(null);
 const validateNameRepeat = (rule: unknown, value: string, callback: (arg0?: Error) => void) => {
   const t = props.pageTypeData.list.find(it => ruleForm.value && it.ID !== ruleForm.value.ID && it.Name === value);
   if (t) {
-    callback(new Error(`${props.pageTypeData.options.title}名称重复，请检查`));
+    callback(new Error('服务器名称重复，请检查'));
   } else {
     callback();
   }
@@ -59,7 +59,7 @@ const validateNameRepeat = (rule: unknown, value: string, callback: (arg0?: Erro
 
 const rules = {
   Name: [
-    { required: true, message: `请输入${props.pageTypeData.options.title}名称`, trigger: 'change' },
+    { required: true, message: '请输入服务器名称', trigger: 'change' },
     { validator: validateNameRepeat, trigger: 'change' },
   ],
   Url: [
@@ -69,7 +69,7 @@ const rules = {
 };
 
 const onOpen = () => {
-  ruleForm.value = new SaleAndProductionListItemClass(props.pageTypeData.curEditItem || props.pageTypeData.options.type);
+  ruleForm.value = new SaleAndProductionListItemClass(props.pageTypeData.curEditItem);
 };
 
 const cancel = () => {

@@ -37,8 +37,8 @@
 </template>
 
 <script setup lang='ts'>
-import { IProductClassLv1ListItem } from '@/assets/js/utils';
-import { IPart, IProduct, menuTypeEnum } from '@/store/modules/transformer/types';
+import { IPart, IProduct, menuTypeEnum } from '@/pinia/modules/transformer/types';
+import { IProductClassLv1ListItem } from '@/pinia/modules/transformer/utils';
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
@@ -65,13 +65,13 @@ const getProductName = (it: IProduct) => {
   const { FirstLevel, SecondLevel } = it.Class;
   const lv1 = props.productClassLevelList.find(_it => _it.ID === FirstLevel.ID);
   if (lv1) {
-    arr.push(lv1.Name);
+    arr.push(lv1.ClassName);
     const _item = it;
-    _item.Class.FirstLevel.Name = lv1.Name;
+    _item.Class.FirstLevel.Name = lv1.ClassName;
     const lv2 = lv1.children.find(_it => _it.ID === SecondLevel.ID);
     if (lv2) {
-      arr.push(lv2.Name);
-      _item.Class.SecondLevel.Name = lv2.Name;
+      arr.push(lv2.ClassName);
+      _item.Class.SecondLevel.Name = lv2.ClassName;
     }
   }
 

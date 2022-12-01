@@ -1,14 +1,17 @@
 import api from '@/api';
-import { message } from '@/assets/js/message';
-import { AssistMappingTypeEnum } from '@/store/modules/transformer/map/enum';
-import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
-import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
-import { IFactoryMaterialClass } from '@/store/modules/transformer/map/types';
+import { AssistMappingTypeEnum } from '@/pinia/modules/transformer/map/enum';
+import { AssistMapDataClass } from '@/pinia/modules/transformer/map/AssistMapDataClass';
+import { AssistMapItemClass } from '@/pinia/modules/transformer/map/AssistMapItemClass';
+import { IFactoryMaterialClass } from '@/pinia/modules/transformer/map/types';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 export interface IMaterialInfoLeftType {
   ID: string | number
-  Name: string
-  TypeID: string
+  DisplayName: string
+  Type: {
+    ID: string
+    InternalName: string
+  }
 }
 
 interface IMaterialInfoRightType {
@@ -49,7 +52,7 @@ export class MaterialInfoMapClass extends AssistMapDataClass<IMaterialInfoLeftTy
         this.visible = false;
         this.handleItemChange(temp);
       };
-      message.success({
+      MpMessage.success({
         title: '设置成功',
         onOk: cb,
         onCancel: cb,
@@ -64,8 +67,9 @@ export class MaterialInfoMapClass extends AssistMapDataClass<IMaterialInfoLeftTy
    * @returns
    * @memberof MaterialInfoMapClass
    */
+  // eslint-disable-next-line class-methods-use-this
   protected async getLeftList() {
-    const resp = await api.getMaterialList(this.ServerID).catch(() => null);
+    const resp = await api.getMaterialList({ page: 1, pageSize: 100000 }).catch(() => null);
     return resp?.data.Status === 1000 ? resp.data.Data : [];
   }
 

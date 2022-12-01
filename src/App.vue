@@ -1,58 +1,69 @@
 <template>
   <div id="app">
-    <LeftMenu v-if="router.currentRoute.name !== 'login'" ref="oLeft" />
+    <LeftMenu v-if="key" ref="oLeft" />
     <section>
-      <HeaderTabs v-if="router.currentRoute.name !== 'login'" @downtime='handlePathChange' />
+      <HeaderTabs v-if="key" @downtime='handlePathChange' />
       <main class="page-wrap">
         <router-view />
       </main>
     </section>
+    <div class="mp-general-loading-wrap"></div>
   </div>
 </template>
-<script setup lang="ts">
-import {
-  onMounted, ref, watch,
-} from 'vue';
-import LeftMenu from './components/Layout/LeftMenu.vue';
-import HeaderTabs from './components/Layout/HeaderTabs.vue';
-import router from './router';
+<script>
+import { generateGetKeySrc } from '@/packages/ConsigneeAddressSetpComp/AMapLoader';
+import LeftMenu from './components/common/Layout/LeftMenu.vue';
+import HeaderTabs from './components/common/Layout/HeaderTabs.vue';
 
-const config = require('@/../config');
-
-const oLeft = ref<InstanceType<typeof LeftMenu>>();
-
-const handlePathChange = (pathName: string) => {
-  if (oLeft.value) {
-    oLeft.value.handlePathChange(pathName);
-  }
+export default {
+  components: {
+    LeftMenu,
+    HeaderTabs,
+  },
+  computed: {
+    key() {
+      return this.$route.name !== 'login';
+    },
+    curRouter() {
+      return this.$route.fullPath;
+    },
+  },
+  methods: {
+    handlePathChange(pathName) {
+      if (this.$refs.oLeft && typeof this.$refs.oLeft.handlePathChange === 'function') {
+        this.$refs.oLeft.handlePathChange(pathName);
+      }
+    },
+  },
+  watch: {
+    curRouter() {
+      setTimeout(() => {
+        const oPoppers = document.querySelectorAll('.el-tooltip__popper');
+        if (oPoppers.length === 0) return;
+        [...oPoppers].forEach(oEl => {
+          const _oEl = oEl;
+          _oEl.style.display = 'none';
+        });
+      }, 500);
+    },
+  },
+  mounted() {
+    // 简单判断是否使用Chrome相同内核或Firefox浏览器
+    const bool = navigator.userAgent.includes('Chrome') || navigator.userAgent.includes('Firefox');
+    if (!bool) {
+      const url = process.env.NODE_ENV === 'development' ? '/browser' : '/Web/browser';
+      window.location.replace(url);
+    }
+  },
+  created() {
+    generateGetKeySrc();
+  },
 };
-
-watch(() => router.currentRoute.fullPath, () => {
-  setTimeout(() => {
-    const oPoppers = document.querySelectorAll('.el-tooltip__popper');
-    if (oPoppers.length === 0) return;
-    [...oPoppers].forEach(oEl => {
-      const _oEl = oEl as HTMLElement;
-      _oEl.style.display = 'none';
-    });
-  }, 500);
-});
-
-onMounted(() => {
-  // 简单判断是否使用Chrome相同内核或Firefox浏览器
-  const bool = navigator.userAgent.includes('Chrome') || navigator.userAgent.includes('Firefox');
-  if (!bool) {
-    const url = process.env.NODE_ENV === 'development' ? '/browser' : `${config.path}/browser`;
-    window.location.replace(url);
-  }
-});
 </script>
-
 <style lang="scss" scoped>
   #app{
     display: flex;
     background-color: #f5f5f5;
-    height: 100vh;
     > .leftmenu {
       flex: none;
       width: 180px;

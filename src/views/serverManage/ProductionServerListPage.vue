@@ -6,9 +6,8 @@
 import { ref } from 'vue';
 import ServerListPageComp from '@/components/serverManage/SaleAndProduction/ServerListPageComp.vue';
 import { SaleAndProductionPageClassType } from './utils/SaleAndProductionPageClassType';
-import { ServerTypeEnum } from './utils/types';
 
-const pageTypeData = ref(new SaleAndProductionPageClassType(ServerTypeEnum.production));
+const pageTypeData = ref(new SaleAndProductionPageClassType());
 </script>
 
 <script lang='ts'>

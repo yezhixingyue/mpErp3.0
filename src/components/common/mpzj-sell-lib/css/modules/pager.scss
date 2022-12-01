@@ -1,0 +1,104 @@
+@import "../var.scss";
+.mpzj-sell-lib-comps-pager-wrap {
+  text-align: right;
+  font-size: 12px;
+  line-height: 45px;
+  padding-right: 72px;
+  padding-top: 0px;
+  width: 100%;
+  height: 45px;
+  box-sizing: border-box;
+  border-top: none;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 13px;
+  color: $--color-text-primary;
+  background-color: $--color-white;
+  user-select: none;
+  overflow: hidden;
+  .count{
+    margin-left: 70px;
+    i {
+      font-weight: 600;
+      color: $--color-primary;
+      margin: 0 3px;
+  }
+  }
+  .mp-pagination-wrap{
+    height: 45px;
+    .el-pagination{
+      padding-top: 8px;
+      color: $--color-text-gray-lighter;
+      font-weight: 400;
+      .btn-prev, .btn-next{
+        .el-icon {
+          font-size: 17px;
+          color: $--color-text-gray-lighter;
+          font-weight: 100;
+          position: relative;
+          top: -1px;
+        }
+        &:disabled {
+          .el-icon {
+            color: lighten($color: $--color-text-gray-lighter, $amount: 20);
+          }
+        }
+      }
+      .el-pager{
+        > li{
+          height: 28px;
+          padding: 0 3px;
+          margin-left: 10px;
+          margin-right: 5px;
+          box-sizing: border-box;
+          font-size: 14px;
+          min-width: 28px;
+          border-radius: 5px;
+          cursor: pointer;
+          &.active, &.active:hover {
+            background-color: $--color-primary;
+            color: $--color-white;
+          }
+          &:hover {
+            background-color: rgba($color: $--color-primary, $alpha: .15);
+            color: $--color-text-gray-lighter;
+          }
+          &.el-icon.more.el-icon-more:before,
+          &.el-icon.more.el-icon-d-arrow-right:before,
+          &.el-icon.more.el-icon-d-arrow-left:before  {
+            content: "...";
+            font-size: 20px;
+            position: relative;
+            top: -5px;
+            color: $--color-text-gray-lighter;
+          }
+        }
+      }
+      .el-pagination__jump{
+        color: $--color-text-gray-lighter;
+        margin-left: 14px;
+        > .el-input{
+          margin: 0 10px;
+          min-width: 32px;
+          height: 28px;
+          padding: 0;
+        }
+      }
+    }
+  }
+  &.is-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    > .count {
+      position: absolute;
+      right: 70px;
+    }
+  }
+  @media screen and (max-width: 1000px) {
+    > .count {
+      display: none;
+    }
+  }
+}

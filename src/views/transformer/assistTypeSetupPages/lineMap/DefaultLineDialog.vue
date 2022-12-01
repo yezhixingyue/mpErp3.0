@@ -20,10 +20,10 @@
 </template>
 
 <script setup lang='ts'>
-import { message } from '@/assets/js/message';
-import { GeneralMapDataClass } from '@/store/modules/transformer/map/GeneralMapDataClass';
-import { CommonDialogComp } from 'mpzj-sell-lib';
+import { GeneralMapDataClass } from '@/pinia/modules/transformer/map/GeneralMapDataClass';
+import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import { computed, ref } from 'vue';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 const props = defineProps<{
   visible: boolean
@@ -62,7 +62,7 @@ const closed = () => {
 
 const submit = async () => {
   if (!radio.value) {
-    message.error({ title: '保存失败', message: '请选择生产线' });
+    MpMessage.error({ title: '保存失败', msg: '请选择生产线' });
     return;
   }
   const lineData = props.data.leftDataList.find(it => it.ID === radio.value);

@@ -29,9 +29,9 @@
 </template>
 
 <script setup lang='ts'>
-import { formatDateForDisplay } from '@/assets/js/filter';
+import { formatDateForDisplay } from '@/assets/ts/filter';
 import { ServerTypeEnum } from '@/views/serverManage/utils/types';
-import { CommonDialogComp } from 'mpzj-sell-lib';
+import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import { computed, ref } from 'vue';
 import { LogListDataClass } from './types/LogListDataClass';
 
@@ -67,6 +67,7 @@ const open = () => {
   if (!props.ServerID) {
     delete temp.ServerID;
   }
+  console.log(temp);
   logData.value = new LogListDataClass(temp);
 };
 

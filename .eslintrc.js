@@ -36,6 +36,12 @@ module.exports = {
     '@typescript-eslint/no-shadow': ['error'],
     'no-use-before-define': 'off',
     'vuejs-accessibility/label-has-for': 'off',
+    'no-unused-expressions': 'off',
+    'vuejs-accessibility/alt-text': 'off',
+    '@typescript-eslint/no-empty-function': 'off',
+    'object-curly-newline': 'off',
+    'vuejs-accessibility/mouse-events-have-key-events': 'off',
+    'vuejs-accessibility/form-control-has-label': 'off',
   },
   overrides: [
     {

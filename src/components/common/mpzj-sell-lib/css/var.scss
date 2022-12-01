@@ -1,0 +1,14 @@
+//@import "@/assets/css/var.scss";
+/* Color
+ -------------------------------*/
+ $--color-primary: #26bcf9 !default;
+ $--color-danger: #ff3769 !default;
+ $--color-blue: #428dfa !default;
+ $--color-blue-lighter: #35dff9 !default;
+ $--color-white: #fff !default;
+ $--color-title-gray: #888E99 !default;
+
+ $--color-text-primary: #444 !default;
+ $--color-text-gray-lighter: #989898 !default;
+ 
+ $--color-bg-hover-primary: lighten($color: $--color-primary, $amount: 40) !default;

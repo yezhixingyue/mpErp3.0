@@ -45,8 +45,8 @@
 
 <script setup lang='ts'>
 import api from '@/api';
-import { IProductClassItem } from '@/assets/js/utils';
-import { CommonDialogComp } from 'mpzj-sell-lib';
+import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
+import { IProductClassItem } from '@/pinia/modules/transformer/utils';
 import { computed, reactive, ref } from 'vue';
 import { IMakeupInfoRightType, MakeupInfoMapClass } from './MakeupInfoMapClass';
 

@@ -27,11 +27,11 @@ import Footer from '@/components/transformer/ListComps/Footer.vue';
 import OperationLogDialog from '@/components/LogComp/OperationLogDialog.vue';
 import PartSetupDialog from '@/components/transformer/ListComps/PartSetupDialog.vue';
 import SemiFinishedProductDialog from '@/components/transformer/ListComps/SemiFinishedProductDialog.vue';
-import { useTransformerStore } from '@/store/modules/transformer';
+import { useTransformerStore } from '@/pinia/modules/transformer';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 import router from '@/router';
-import { IPartChangeParams, menuTypeEnum } from '@/store/modules/transformer/types';
+import { IPartChangeParams, menuTypeEnum } from '@/pinia/modules/transformer/types';
 import { ServerTypeEnum } from '../serverManage/utils/types';
 
 const transformerStore = useTransformerStore();

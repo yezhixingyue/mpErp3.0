@@ -53,8 +53,7 @@
 
 <script>
 import { Base64 } from 'js-base64';
-import { tokenHandler } from '@/api/utils/handleToken/tokenHandler';
-import api from '@/api';
+import TokenClass from '@/assets/js/utils/tokenManage';
 
 export default {
   data() {
@@ -73,9 +72,9 @@ export default {
       if (!bool) return;
       const temp = { ...this.ruleForm };
       temp.Password = Base64.encode(this.ruleForm.Password);
-      const res = await api.getLogin(temp);
+      const res = await this.api.getLogin(temp);
       if (res.data.Status === 1000 && res.data.Data) {
-        tokenHandler.setToken(res.data.Data);
+        TokenClass.setToken(res.data.Data);
         window.location = window.location.pathname;
       }
     },
@@ -188,7 +187,6 @@ section.login-wrap {
                     > img {
                       width: 23px;
                       height: 23px;
-                      vertical-align: 0px;
                     }
                   }
                   &::after {

@@ -10,7 +10,7 @@
           fill="#ffffff" p-id="8186" data-spm-anchor-id="a313x.7781069.0.i8" class="selected"></path>
       </svg>
       <span>你好，</span>
-      <span>欢迎使用名片之家转换器管理系统</span>
+      <span>欢迎使用名片之家后台管理系统</span>
       <span v-if="dateString">，今天是{{dateString}}，{{weekString}}</span>
       <span>，开始今天的工作吧！</span>
       <!-- <i>!</i> -->
@@ -18,28 +18,38 @@
   </section>
 </template>
 
-<script setup lang='ts'>
-
-const date = new Date();
-const day = date.getDate();
-const month = date.getMonth() + 1;
-const year = date.getFullYear();
-const w = date.getDay() - 1;
-
-const dateString = `${year}年${month}月${day}日`;
-
-const weekTextList = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
-
-const weekString = weekTextList[w];
+<script>
+export default {
+  data() {
+    return {
+      dateString: '',
+      weekString: '',
+      weekTextList: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+    };
+  },
+  methods: {
+    getCurDate() {
+      const date = new Date();
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const w = date.getDay();
+      this.dateString = `${year}年${month}月${day}日`;
+      this.weekString = this.weekTextList[w];
+    },
+  },
+  mounted() {
+    this.getCurDate();
+  },
+};
 </script>
-
-<style scoped lang='scss'>
+<style lang='scss'>
 .mp-erp-home-page-wrap {
   // width: calc(100vw - 180px);
   > header {
     display: flex;
     align-items: center;
-    padding: 20px;
+    padding: 10px 30px;
     white-space: nowrap;
     > svg {
       margin-right: 10px;

@@ -32,17 +32,17 @@
 </template>
 
 <script setup lang='ts'>
-import Crumbs from '@/components/common/Crumbs.vue';
-import { ContionCommonComp } from 'mpzj-sell-lib';
-import { useTransformerStore } from '@/store/modules/transformer';
+import Crumbs from '@/components/common/NewSetupComps/Crumbs.vue';
+import { ContionCommonComp } from '@/components/common/mpzj-sell-lib/lib';
+import { useTransformerStore } from '@/pinia/modules/transformer';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { goBackLastPage } from '@/router/handleRouterEach';
-import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
-import { IGetConditonResult } from '@/store/modules/transformer/map/types';
+import { recordScrollPosition } from '@/assets/ts/recordScrollPositionMixin';
+import { IGetConditonResult } from '@/pinia/modules/transformer/map/types';
 import router from '@/router';
-import { message } from '@/assets/js/message';
 import { Message } from 'element-ui';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 recordScrollPosition('.mp-erp-new-comps-condtion-set-common-comp-wrap > .left > .left-content > main > .el-form.constraint-ruleForm');
 
@@ -84,7 +84,7 @@ const onSubmitClick = () => {
   const condition = oLeftComp.value.getConditonResult() as IGetConditonResult;
   if (!condition) return;
   if (checkList.value.length === 0) {
-    message.error({ title: '保存失败', message: `请选择${GeneralMapDataClassData.value.title}` });
+    MpMessage.error({ title: '保存失败', msg: `请选择${GeneralMapDataClassData.value.title}` });
     return;
   }
   const List = checkList.value.map(id => GeneralMapDataClassData.value?.leftDataList.find(it => it.ID === id)).filter(it => it) as {ID: string, Name: string}[];

@@ -1,8 +1,8 @@
 import api from '@/api';
-import { message } from '@/assets/js/message';
-import { AssistMappingTypeEnum } from '@/store/modules/transformer/map/enum';
-import { AssistMapDataClass } from '@/store/modules/transformer/map/AssistMapDataClass';
-import { AssistMapItemClass } from '@/store/modules/transformer/map/AssistMapItemClass';
+import { AssistMappingTypeEnum } from '@/pinia/modules/transformer/map/enum';
+import { AssistMapDataClass } from '@/pinia/modules/transformer/map/AssistMapDataClass';
+import { AssistMapItemClass } from '@/pinia/modules/transformer/map/AssistMapItemClass';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 export interface IColorInfoLeftType {
   ID: string | number
@@ -34,7 +34,7 @@ export class ColorInfoMapClass extends AssistMapDataClass<IColorInfoLeftType, IC
         this.visible = false;
         this.handleItemChange(temp);
       };
-      message.success({
+      MpMessage.success({
         title: '设置成功',
         onOk: cb,
         onCancel: cb,
@@ -49,8 +49,9 @@ export class ColorInfoMapClass extends AssistMapDataClass<IColorInfoLeftType, IC
    * @returns
    * @memberof ColorInfoMapClass
    */
+  // eslint-disable-next-line class-methods-use-this
   protected async getLeftList() {
-    const resp = await api.getFileList({ serverID: this.ServerID, onlyShowPdf: true }).catch(() => null);
+    const resp = await api.getOutputFileList({ onlyShowPdf: true, includeUseTimes: false }).catch(() => null);
     return resp?.data.Status === 1000 ? resp.data.Data : [];
   }
 

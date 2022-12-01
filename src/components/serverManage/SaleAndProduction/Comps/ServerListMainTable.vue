@@ -3,6 +3,7 @@
     <el-table
       :data="props.tableData"
       stripe
+      class="mp-table"
       resizable
       border
       style="width: 100%">
@@ -21,17 +22,17 @@
         </template>
       </el-table-column>
       <el-table-column prop="Operator.Name" label="创建人" width="120" show-overflow-tooltip align="center" header-align="center"></el-table-column>
-      <el-table-column label="操作" width="280" show-overflow-tooltip align="center" header-align="center">
+      <el-table-column label="操作" width="330" show-overflow-tooltip align="center" header-align="center">
         <template #default="scope">
           <div class="ctrl-box">
-            <span class="blue-span" @click="onGenerateClick(scope.row)">{{scope.row.PrivateKey ? '重新生成' : '生成密钥'}}</span>
+            <span class="blue-span" @click="onNotifySetupClick(scope.row)" style="margin-right: 16px">转换失败通知设置</span>
+            <span class="blue-span" @click="onGenerateClick(scope.row)" style="margin-right: 8px">{{scope.row.PrivateKey ? '重新生成' : '生成密钥'}}</span>
             <EditMenu @click="onEditClick(scope.row)" />
             <RemoveMenu @click="onRemoveClick(scope.row)" :disabled="scope.row.RelationNumber > 0" />
           </div>
         </template>
       </el-table-column>
     </el-table>
-    <p class="intro">说明：新建{{props.title}}后，需要生成密钥，在{{props.title}}填写此密钥，然后点击同步数据，成功即完成添加操作。</p>
     <GenerateDialog :visible.sync="visible" @submit="generate" />
   </main>
 </template>
@@ -39,11 +40,11 @@
 <script setup lang='ts'>
 import { ref } from 'vue';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
-import { formatDateForDisplay } from '@/assets/js/filter';
-import EditMenu from '@/components/common/menus/EditMenu.vue';
-import RemoveMenu from '@/components/common/menus/RemoveMenu.vue';
-import { message } from '@/assets/js/message';
-import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { recordScrollPosition } from '@/assets/ts/recordScrollPositionMixin';
+import { formatDateForDisplay } from '@/assets/ts/filter';
+import EditMenu from '@/components/common/NewSetupComps/menus/EditMenu.vue';
+import RemoveMenu from '@/components/common/NewSetupComps/menus/RemoveMenu.vue';
 import GenerateDialog from './GenerateDialog.vue';
 
 recordScrollPosition('.el-table__body-wrapper');
@@ -53,16 +54,16 @@ const props = defineProps<{
   tableData: SaleAndProductionListItemPlainType[],
 }>();
 
-const emit = defineEmits(['edit', 'remove', 'generate']);
+const emit = defineEmits(['edit', 'remove', 'generate', 'notify']);
 
 const onEditClick = (row: SaleAndProductionListItemPlainType) => {
   emit('edit', row);
 };
 
 const onRemoveClick = (row: SaleAndProductionListItemPlainType) => {
-  message.confirm({
+  MpMessage.warn({
     title: '确定删除该服务器吗?',
-    message: `服务器名称：[ ${row.Name} ]`,
+    msg: `服务器名称：[ ${row.Name} ]`,
     onOk: () => {
       emit('remove', row);
     },
@@ -79,6 +80,10 @@ const onGenerateClick = (row: SaleAndProductionListItemPlainType) => {
   }
   visibleData.value = row;
   visible.value = true;
+};
+
+const onNotifySetupClick = (row: SaleAndProductionListItemPlainType) => {
+  emit('notify', row);
 };
 
 const generate = () => {
@@ -110,14 +115,6 @@ const generate = () => {
       border-radius: 50%;
       margin-right: 6px;
       vertical-align: 2px;
-    }
-  }
-  .el-table {
-    height: calc(100% - 40px);
-    .el-table__body-wrapper {
-      overflow: auto;
-      overflow: overlay;
-      height: calc(100% - 40px);
     }
   }
 }

@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang='ts'>
-import { CommonDialogComp } from 'mpzj-sell-lib';
+import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import { computed } from 'vue';
 
 const props = defineProps<{
@@ -64,9 +64,10 @@ const submit = () => {
       display: flex;
       font-weight: 700;
       color: #444;
-      font-size: 16px;
+      font-size: 17px;
       font-family: Microsoft YaHei UI-Bold, Microsoft YaHei UI;
       align-items: center;
+      line-height: 18px;
       img {
         margin-right: 17px;
         flex: none;
@@ -76,7 +77,8 @@ const submit = () => {
     }
     .content {
       font-size: 12px;
-      margin-top: 16px;
+      margin-top: 13px;
+      line-height: 18px;
       color: #444;
       font-family: Microsoft YaHei UI-Regular, Microsoft YaHei UI;
     }

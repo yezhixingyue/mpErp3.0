@@ -40,8 +40,8 @@
 </template>
 
 <script setup lang='ts'>
-import { message } from '@/assets/js/message';
-import { CommonDialogComp } from 'mpzj-sell-lib';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import { computed, ref } from 'vue';
 import { INumbericRightType, NumbericMapClass } from './NumbericMapClass';
 
@@ -123,15 +123,15 @@ const submit = () => {
     data = numbericValue.value;
     // 此处进行校验 必须为正整数
     if (data === 0) {
-      message.error({ title: '保存失败', message: '常数不能等于0' });
+      MpMessage.error({ title: '保存失败', msg: '常数不能等于0' });
       return;
     }
     if (!data) {
-      message.error({ title: '保存失败', message: '请输入常数' });
+      MpMessage.error({ title: '保存失败', msg: '请输入常数' });
       return;
     }
     if (!/^\d+$/.test(`${data}`) || typeof data !== 'number') {
-      message.error({ title: '保存失败', message: '输入的数值不正确，必须为正整数' });
+      MpMessage.error({ title: '保存失败', msg: '输入的数值不正确，必须为正整数' });
       return;
     }
   } else {
@@ -140,7 +140,7 @@ const submit = () => {
     if (ids.length > 0 && !ids.includes(data)) data = '';
     // 此处进行校验 必须有值
     if (!data) {
-      message.error({ title: '保存失败', message: '未设置内容' });
+      MpMessage.error({ title: '保存失败', msg: '未设置内容' });
       return;
     }
     data = [data];

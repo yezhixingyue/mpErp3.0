@@ -1,9 +1,9 @@
 import api from '@/api';
-import { GenerelMappingTypeEnum, UseModuleEnum } from '@/store/modules/transformer/map/enum';
-import { GeneralMapDataClass } from '@/store/modules/transformer/map/GeneralMapDataClass';
-import { GeneralMapItemClass } from '@/store/modules/transformer/map/GeneralMapItemClass';
-import { TransformerListPageDataPlainType } from '@/store/modules/transformer/TransformerListPageDataClass';
-import { IGetWorkingProcedureParams } from '@/store/modules/transformer/types';
+import { GenerelMappingTypeEnum, UseModuleEnum } from '@/pinia/modules/transformer/map/enum';
+import { GeneralMapDataClass } from '@/pinia/modules/transformer/map/GeneralMapDataClass';
+import { GeneralMapItemClass } from '@/pinia/modules/transformer/map/GeneralMapItemClass';
+import { TransformerListPageDataPlainType } from '@/pinia/modules/transformer/TransformerListPageDataClass';
+import { IGetWorkingProcedureParams } from '@/pinia/modules/transformer/types';
 
 /**
  * 工序映射 - 类

@@ -1,0 +1,35 @@
+* {
+    // &:not(.has-transition) {
+    //   transition: none !important;
+    // }
+    body {
+      #app {
+        .order-manage {
+          width: 100%;
+          padding: 0;
+          padding-left: 8px;
+        }
+        .mp-payment-list-wrap {
+          width: 100%;
+          padding: 0;
+          height: 100%;
+          padding-left: 8px;
+        }
+        .mp-service-page-wrap{
+          width: 100%;
+          padding: 0;
+          padding-left: 8px;
+        }
+        
+        // .dialog-fade-enter-active {
+        //   animation: none;
+        // }
+        
+        // .dialog-fade-leave-active {
+        //   animation: none;
+        // }
+
+
+      }
+    }
+  }

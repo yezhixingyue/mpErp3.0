@@ -1,0 +1,43 @@
+
+/* 改变主题色变量 */
+$--color-primary: #26bcf9;
+$--color-warning: #F4A307;
+$--color-danger: #ff3769;
+
+$--color-bg-hover-primary: lighten($color: $--color-primary, $amount: 40);
+
+// $--background-color-base: rgb(245,245,245);
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+
+@font-face {
+  font-family: 'PingFang-R'; 
+  src: url('./font/PingFang Regular_0.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PingFang-M'; 
+  src: url('./font/PingFang Medium.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PingFang-H'; 
+  src: url('./font/PingFang Heavy.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@import "~element-ui/packages/theme-chalk/src/index";
+@import '../../components/common/mpzj-sell-lib/css/index.scss';
+
+
+
+@import './common/pop.scss';
+@import './common/reset2.scss';
+@import './common/reset.css';
+@import './common/reset-element-ui.scss';
+@import './iconfont/iconfont.css';
+@import './converter-icons/iconfont.css';

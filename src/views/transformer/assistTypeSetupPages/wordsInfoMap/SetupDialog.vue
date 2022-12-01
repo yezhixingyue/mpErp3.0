@@ -24,12 +24,12 @@
         </el-checkbox>
       </div>
     </div>
-    <el-empty v-if="DisplayList.length === 0" description="暂无可映射数据"></el-empty>
+    <mp-empty v-if="DisplayList.length === 0" description="暂无可映射数据"></mp-empty>
   </CommonDialogComp>
 </template>
 
 <script setup lang='ts'>
-import { CommonDialogComp } from 'mpzj-sell-lib';
+import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import { computed, ref } from 'vue';
 import { DisplayTypeEnum, IWordsInfoRightType, WordsInfoMapClass } from './WordsInfoMapClass';
 
@@ -142,9 +142,6 @@ const submit = () => {
           }
         }
       }
-    }
-    .el-empty {
-      margin-right: 65px;
     }
   }
 }

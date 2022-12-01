@@ -6,7 +6,7 @@
         showLine
         title="销售端物料类型"
         :list="MaterialClassList"
-        :defaultProps="{ID: 'ID',Name: 'Name',children: 'children'}"
+        :defaultProps="{ID: 'ID',Name: 'InternalName',children: 'children'}"
         :level="1"
         :fiexdWidth="150"
         v-model="EpCascaderValue"
@@ -14,18 +14,19 @@
     </header>
     <main>
       <el-table
+        class="mp-table"
         :data="tableData"
         stripe
         resizable
         border
         style="width: 100%">
-        <el-table-column prop="Name" label="销售端物料类型" min-width="120" show-overflow-tooltip align="center" header-align="center" >
-          <template #default="scope">
+        <el-table-column prop="Type.InternalName" label="销售端物料类型" min-width="120" show-overflow-tooltip align="center" header-align="center" >
+          <!-- <template #default="scope">
             {{getMaterialClassName(scope.row.TypeID)}}
-          </template>
+          </template> -->
         </el-table-column>
-        <el-table-column prop="Name" label="销售端物料" min-width="160" show-overflow-tooltip align="center" header-align="center" ></el-table-column>
-        <el-table-column prop="Name" label="映射" min-width="340" show-overflow-tooltip align="center" header-align="center" >
+        <el-table-column prop="DisplayName" label="销售端物料" min-width="160" show-overflow-tooltip align="center" header-align="center" ></el-table-column>
+        <el-table-column label="映射" min-width="340" show-overflow-tooltip align="center" header-align="center" >
           <template #default="scope">
             {{data.getItemMapResult(scope.row.ID, data.mapDataList, FactoryMaterialClassList)}}
           </template>
@@ -57,17 +58,17 @@
 </template>
 
 <script setup lang='ts'>
-import Crumbs from '@/components/common/Crumbs.vue';
-import { Pager, EpCascader } from 'mpzj-sell-lib';
-import { useTransformerStore } from '@/store/modules/transformer';
+import Crumbs from '@/components/common/NewSetupComps/Crumbs.vue';
+import { Pager, EpCascader } from '@/components/common/mpzj-sell-lib/lib';
+import { useTransformerStore } from '@/pinia/modules/transformer';
 import { storeToRefs } from 'pinia';
 import {
   computed, onMounted, reactive, ref,
 } from 'vue';
 import api from '@/api';
 import { goBackLastPage } from '@/router/handleRouterEach';
-import { recordScrollPosition } from '@/assets/js/recordScrollPositionMixin';
-import { IFactoryMaterialClass } from '@/store/modules/transformer/map/types';
+import { recordScrollPosition } from '@/assets/ts/recordScrollPositionMixin';
+import { IFactoryMaterialClass } from '@/pinia/modules/transformer/map/types';
 import { MaterialInfoMapClass, IMaterialInfoLeftType } from './MaterialInfoMapClass';
 import SetupDialog from './SetupDialog.vue';
 
@@ -94,15 +95,15 @@ const data = ref(new MaterialInfoMapClass(TransformerListPageData.value?.ServerI
 
 const MaterialClassList = ref<{ID:string, Name:string}[]>([]);
 const getMaterialClassList = async () => {
-  const resp = await api.getMaterialTypeList(TransformerListPageData.value?.ServerID || '').catch(() => null);
+  const resp = await api.getMaterialTypeList().catch(() => null);
   if (resp?.data.Status === 1000) {
     MaterialClassList.value = resp.data.Data || [];
   }
 };
-const getMaterialClassName = (TypeID: string) => {
-  const t = MaterialClassList.value.find(it => it.ID === TypeID);
-  return t ? t.Name : '';
-};
+// const getMaterialClassName = (TypeID: string) => {
+//   const t = MaterialClassList.value.find(it => it.ID === TypeID);
+//   return t ? t.Name : '';
+// };
 
 const FactoryMaterialClassList = ref<IFactoryMaterialClass[]>([]);
 const getFactoryMaterialClassList = async () => {
@@ -124,11 +125,12 @@ const EpCascaderValue = computed({
   },
   set([val]) {
     condition.TypeID = val || '';
+    condition.Page = 1;
     const dom = document.querySelector('.el-table__body-wrapper');
     if (dom) dom.scrollTop = 0;
   },
 });
-const filterList = computed(() => data.value.leftDataList.filter(it => (!condition.TypeID || it.TypeID === condition.TypeID)));
+const filterList = computed(() => data.value.leftDataList.filter(it => (!condition.TypeID || it.Type.ID === condition.TypeID)));
 const tableData = computed(() => {
   const start = (condition.Page - 1) * condition.PageSize;
   const end = condition.Page * condition.PageSize;

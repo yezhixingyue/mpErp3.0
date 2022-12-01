@@ -1,18 +1,20 @@
 <template>
   <section class="mp-ts-sale-and-production-list-page-comp-wrap">
     <header>
-      <mp-button :style="buttonStyle" size="small" @click="setup(null)">添加{{props.pageTypeData.options.title}}</mp-button>
+      <mp-button size="small" type="primary" @click="setup(null)">添加转换服务器</mp-button>
       <span class="blue-span" @click="visible = true">操作日志</span>
     </header>
     <MainTable
-     :title="props.pageTypeData.options.title"
+     title="转换服务器"
      :tableData="props.pageTypeData.list"
      @edit="setup"
      @remove="onRemoveClick"
      @generate="onGenerateClick"
+     @notify="setNotifyClick"
     />
     <Dialog :pageTypeData="props.pageTypeData" />
-    <OperationLogDialog :visible.sync="visible" :type="props.pageTypeData.options.type" />
+    <NotifySetupDialog :pageTypeData="props.pageTypeData" />
+    <OperationLogDialog :visible.sync="visible" :type="ServerTypeEnum.ManageConvert" />
   </section>
 </template>
 
@@ -21,14 +23,14 @@ import { ref } from 'vue';
 import { SaleAndProductionPageClassType } from '@/views/serverManage/utils/SaleAndProductionPageClassType';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import OperationLogDialog from '@/components/LogComp/OperationLogDialog.vue';
+import { ServerTypeEnum } from '@/views/serverManage/utils/types';
+import NotifySetupDialog from './Comps/NotifySetupDialog.vue';
 import MainTable from './Comps/ServerListMainTable.vue';
 import Dialog from './Comps/ServerSetupDialog.vue';
 
 const props = defineProps<{
   pageTypeData: SaleAndProductionPageClassType,
 }>();
-
-const buttonStyle = ref(`background: ${props.pageTypeData.options.color};border-color:${props.pageTypeData.options.color}`);
 
 const setup = (item: null | SaleAndProductionListItemPlainType) => {
   props.pageTypeData.setCurEditItem(item);
@@ -41,6 +43,11 @@ const onRemoveClick = (item: SaleAndProductionListItemPlainType) => {
 
 const onGenerateClick = (item: SaleAndProductionListItemPlainType) => {
   props.pageTypeData.generate(item);
+};
+
+const setNotifyClick = (item: null | SaleAndProductionListItemPlainType) => {
+  props.pageTypeData.setCurEditItem(item);
+  props.pageTypeData.setNotifyVisible(true);
 };
 
 const visible = ref(false);
