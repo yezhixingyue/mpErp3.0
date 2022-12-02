@@ -1,6 +1,6 @@
 const { defineConfig } = require('@vue/cli-service');
 
-const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web2/';
+const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web/';
 
 let proxyUrl = 'http://192.168.3.68:8050';
 // let proxyUrl = 'http://192.168.3.253';
