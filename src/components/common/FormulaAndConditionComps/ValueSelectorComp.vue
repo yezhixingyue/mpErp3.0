@@ -26,7 +26,7 @@
     </el-select> -->
     <!-- 可多选 -->
     <!-- <span class="blue-span" v-else-if="ValueType === 6">设置</span> -->
-    <el-select v-model="localValue" v-else-if="ValueType !== 5 && !isMultiple && !ValProperty" placeholder="请选择" size="mini" key="ValueType!5">
+    <el-select v-model="localValue" v-else-if="![5, 10].includes(ValueType) && !isMultiple && !ValProperty" placeholder="请选择" size="mini" key="ValueType!5">
       <el-option
         v-for="item in localOptionList"
         :key="item.First"
@@ -91,7 +91,7 @@ export default {
     this.ValueType = ValueType;
     this.OptionList = OptionList;
     this.Unit = Unit;
-    if (OptionList && OptionList.length > 0 && ValueType !== 5 && !this.isMultiple && ValueType !== 0 && !this.ValProperty) {
+    if (OptionList && OptionList.length > 0 && ![5, 10].includes(ValueType) && !this.isMultiple && ValueType !== 0 && !this.ValProperty) {
       if (!this.localValue || (Array.isArray(this.localValue) && this.localValue.length === 0)) {
         if (Element && Element.Type !== 3) this.localValue = OptionList[0].First;
         else this.localValue = 'True';

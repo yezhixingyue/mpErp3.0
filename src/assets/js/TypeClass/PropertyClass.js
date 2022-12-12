@@ -88,6 +88,8 @@ export const AllOperatorList = [ // 运算符号列表
   { ID: 12, Name: '＞值≤' },
   { ID: 13, Name: '≥值＜' },
   { ID: 14, Name: '＞值＜' },
+  { ID: 15, Name: '相同' },
+  { ID: 16, Name: '不相同' },
   { ID: 21, Name: '禁用' },
   { ID: 22, Name: '隐藏' },
   { ID: 23, Name: '必选' },
@@ -385,7 +387,7 @@ export default class PropertyClass {
         }
         _operator += str;
       }
-      if (ValueType === 5) _operator += '时';
+      if ([5, 10].includes(ValueType)) _operator += '时';
       const _name = DisplayContent ? DisplayContent.replace(/\[|\]/g, '') : '';
       let _val = '';
       if (ValueList) {

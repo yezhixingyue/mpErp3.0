@@ -24,7 +24,7 @@ export default {
     return {
       dateString: '',
       weekString: '',
-      weekTextList: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+      weekTextList: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
     };
   },
   methods: {
@@ -33,7 +33,7 @@ export default {
       const day = date.getDate();
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
-      const w = date.getDay() - 1;
+      const w = date.getDay();
       this.dateString = `${year}年${month}月${day}日`;
       this.weekString = this.weekTextList[w];
     },
