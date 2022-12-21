@@ -19,6 +19,10 @@ const api = {
   getExpressList(data) { // 获取配送方式
     return instance.get('/Api/Express/List', data);
   },
+  // /Api/Address/Search GET请求，参数address
+  getAddressSearch(address) {
+    return instance.get('/Api/Address/Search', { params: { address } });
+  },
   getOrderList(data) { // 获取客户订单列表（后台）
     return instance.post('/Api/Order/List', data); // /Api/Customer/OrderList
   },
@@ -1407,9 +1411,9 @@ const api = {
   getColorList(serverID: string) { // GET /Api/Color/List   获取专色列表 [生产端]
     return instance.get('/Api/Color/List', { params: { serverID } });
   },
-  getImpositionTemplateClassList(serverID: string) { // GET /Api/ImpositionTemplateClass/List   获取拼版模板分类列表 [生产端]
-    return instance.get('/Api/ImpositionTemplateClass/List', { params: { serverID } });
-  },
+  // getImpositionTemplateClassList(serverID: string) { // GET /Api/ImpositionTemplateClass/List   获取拼版模板分类列表 [生产端]
+  //   return instance.get('/Api/ImpositionTemplateClass/List', { params: { serverID } });
+  // },
   getImpositionTemplateList(serverID: string) { // GET /Api/ImpositionTemplate/List  获取拼版模板列表 [生产端]
     return instance.get('/Api/ImpositionTemplate/List', { params: { serverID } });
   },

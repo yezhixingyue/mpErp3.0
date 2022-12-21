@@ -45,11 +45,12 @@
                 :allProductClassify="allProductClassify"
                 :allProductAndLevelList="allProductAndLevelList" />
               <ValueSelectorComp v-model="it.ValueList" :PropertyData='it.Property' :ComparePropertyList='ComparePropertyList'  />
-              <div class="setup-btn" @click="onSetupClick(index)" v-if="ComparePropertyList && ComparePropertyList.length > 0 && it.Property.ValueType !== 5">
+              <div class="setup-btn" @click="onSetupClick(index)"
+                v-if="ComparePropertyList && ComparePropertyList.length > 0 && ![5, 10].includes(it.Property.ValueType)">
                 <img src="./images/setup.png" alt="">
                 <span>设置</span>
               </div>
-              <div class="setup-btn is-disabled" v-if="ComparePropertyList && ComparePropertyList.length > 0 && it.Property.ValueType === 5">
+              <div class="setup-btn is-disabled" v-if="ComparePropertyList && ComparePropertyList.length > 0 && [5, 10].includes(it.Property.ValueType)">
                 <img src="./images/setup.png" alt="">
                 <span>设置</span>
               </div>
@@ -283,7 +284,7 @@ export default {
       const i = ItemList.findIndex((it) => {
         const { Property, ValueList } = it;
         const { ValueType } = Property;
-        return (ValueType !== 5)
+        return (![5, 10].includes(ValueType))
          && (ValueList.length === 0 || (ValueList.length === 1 && !ValueList[0].Value && ValueList[0].Value !== 0 && !ValueList[0].Property));
       });
       if (i > -1) {

@@ -10,34 +10,29 @@ export interface IMakeupInfoLeftType {
 }
 
 export interface IMakeupInfoRightType {
-  ClassID: number
-  IsPrintingPlate: boolean
   ID: string
   Name: string
+  IsPrintingPlate: boolean
+  IsSameSizeWithPrintingPlate: boolean
 }
 
-export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, IMakeupInfoRightType, Pick<AssistMapItemClass, 'IsPrintPlate' | 'Target'>> {
+export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, IMakeupInfoRightType, Pick<AssistMapItemClass, 'Target'>> {
   public getItemMapResult(id: string, mapList: AssistMapItemClass[]) {
     const t = mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);
     if (!t) return '无';
-    if (t.IsPrintPlate) return '印刷版';
-    const str = t.Target.map(_id => this.rightDataList.find(it => it.ID === _id)).filter(it => it).map(it => it?.Name).join('、') || '无';
-    return `其它 ${str}`;
+    return t.Target.map(_id => this.rightDataList.find(it => it.ID === _id)).filter(it => it).map(it => it?.Name).join('、') || '无';
   }
 
-  public async saveItem({ Target, IsPrintPlate }: { IsPrintPlate: '' | boolean, Target: string[] }): Promise<void> {
+  public async saveItem({ Target }: { Target: string[] }): Promise<void> {
     const temp: Partial<AssistMapItemClass> = {
       ServerID: this.ServerID,
       Type: AssistMappingTypeEnum.MakeupFile,
       SourceID: this.curEditItem?.ID || '',
-      IsPrintPlate: IsPrintPlate || false,
+      Target,
     };
-    if (!IsPrintPlate) {
-      temp.Target = Target;
-      if (Target.length === 0) {
-        MpMessage.error({ title: '保存失败', msg: '请选择生产拼版模板' });
-        return;
-      }
+    if (Target.length === 0) {
+      MpMessage.error({ title: '保存失败', msg: '请选择生产拼版模板' });
+      return;
     }
     const resp = await api.getAssistMappingSave(temp).catch(() => null);
     if (resp?.data.Status === 1000) {

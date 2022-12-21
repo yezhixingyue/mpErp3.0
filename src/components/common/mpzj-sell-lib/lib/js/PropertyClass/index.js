@@ -217,7 +217,7 @@ export default class PropertyClass {
         }
         _operator += str;
       }
-      if (ValueType === 5) _operator += '时';
+      if ([5, 10].includes(ValueType)) _operator += '时';
       const _name = DisplayContent ? DisplayContent.replace(/\[|\]/g, '') : '';
       let _val = '';
       if (ValueList) {

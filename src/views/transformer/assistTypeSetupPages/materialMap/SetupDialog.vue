@@ -65,8 +65,10 @@ const EpCascaderValue = computed({
     return [condition.ClassID, condition.TypeID];
   },
   set([ClassID, TypeID]) {
+    if (condition.ClassID === ClassID && condition.TypeID === TypeID) return;
     condition.ClassID = ClassID || '';
     condition.TypeID = TypeID || '';
+    radio.value = '';
   },
 });
 
@@ -154,7 +156,7 @@ const submit = () => {
 .dialog {
   :deep(.el-dialog__body) {
     padding: 20px 60px;
-    padding-left: 100px;
+    padding-left: 35px;
     padding-right: 0px;
     padding-top: 0;
     header {
@@ -165,7 +167,7 @@ const submit = () => {
       display: flex;
       align-items: center;
       padding-top: 10px;
-      margin-left: 45px;
+      margin-left: 23px;
       > span > i {
         vertical-align: -1px;
       }
@@ -180,7 +182,7 @@ const submit = () => {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        width: 13em;
+        width: 15em;
         font-size: 12px;
         vertical-align: -5px;
       }

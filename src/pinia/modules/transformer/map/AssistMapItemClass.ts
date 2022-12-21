@@ -21,7 +21,7 @@ export class AssistMapItemClass {
   TargetProperty: IPropertyType[] = []
 
   // /** 是否为印刷版 */
-  IsPrintPlate = false
+  // IsPrintPlate = false
 
   /** 数值映射常数值 */
   Value:number | '' = ''
