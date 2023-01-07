@@ -7,6 +7,9 @@ export class UnionMakeupLimitItemClass extends GeneralMapDataClass {
 
   Type = GenerelMappingTypeEnum.UnionMakeupLimit
 
+  /** 是否手动设置拼版尺寸 */
+  NeedSetPlateSize = false
+
   // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
   public getItemMapResult(item: GeneralMapItemClass) {
     return '不允许合拼';

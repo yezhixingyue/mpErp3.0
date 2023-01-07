@@ -9,10 +9,12 @@
         :PropertyList='GeneralMapDataClassData.rightDataList'
         :curEditData='GeneralMapDataClassData.curEditItem'
         leftWidth='800px'
-        single
        >
         <!-- 右侧面板 -->
-        <!-- <span slot="title" v-if="curPanel && curPanel.canAdd" class="blue-span" style="position: relative;top:1px" @click="onAddClick">+ 添加</span> -->
+        <div class="union-right-content-box">
+          <p>禁止合拼</p>
+          <el-checkbox v-model="checked">手动设置拼版尺寸</el-checkbox>
+        </div>
       </ContionCommonComp>
       <mp-empty class="mt-80" v-else description="暂无属性可设置"></mp-empty>
     </main>
@@ -27,11 +29,12 @@
 import Crumbs from '@/components/common/NewSetupComps/Crumbs.vue';
 import { useTransformerStore } from '@/pinia/modules/transformer';
 import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { goBackLastPage } from '@/router/handleRouterEach';
 import { recordScrollPosition } from '@/assets/ts/recordScrollPositionMixin';
 import { ContionCommonComp } from '@/components/common/mpzj-sell-lib/lib';
 import { IGetConditonResult } from '@/pinia/modules/transformer/map/types';
+import { UnionMakeupLimitItemClass } from './UnionMakeupLimitItemClass';
 
 recordScrollPosition('.mp-erp-new-comps-condtion-set-common-comp-wrap > .left > .left-content > main > .el-form.constraint-ruleForm');
 
@@ -62,9 +65,16 @@ const onSubmitClick = () => {
     ID,
     Priority,
     Constraint,
+    NeedSetPlateSize: checked.value,
   };
   GeneralMapDataClassData.value.saveItem(temp);
 };
+
+const checked = ref(false);
+
+onMounted(() => {
+  checked.value = (GeneralMapDataClassData.value.curEditItem as unknown as UnionMakeupLimitItemClass).NeedSetPlateSize;
+});
 
 </script>
 
@@ -94,8 +104,14 @@ export default {
     flex: 1;
     overflow: hidden;
     padding: 0 20px;
-    :deep(.mp-erp-common-comps-left-and-right-width-drap-auto-change-comp-wrap) > .left {
-      width: 750px !important;
+    // :deep(.mp-erp-common-comps-left-and-right-width-drap-auto-change-comp-wrap) > .left {
+    //   width: 750px !important;
+    // }
+    .union-right-content-box {
+      color: #585858;
+      > p {
+        margin-bottom: 10px;
+      }
     }
   }
   > footer {

@@ -101,7 +101,7 @@ const routes = [
     path: '/unionMakeupLimitList',
     name: 'unionMakeupLimitList',
     meta: {
-      title: '合并设置',
+      title: '合拼设置',
       hideMenu: true,
       pageName: 'UnionMakeupLimitListPage',
       // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
@@ -113,7 +113,7 @@ const routes = [
     path: '/unionMakeupLimitSetup',
     name: 'unionMakeupLimitSetup',
     meta: {
-      title: '合并设置',
+      title: '合拼设置',
       hideMenu: true,
       pageName: 'UnionMakeupLimitSetupPage',
       // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],

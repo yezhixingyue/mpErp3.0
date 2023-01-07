@@ -61,6 +61,12 @@
         </span> -->
         <span>
         </span>
+        <!-- 使用span -->
+        <template v-if="renderColumns.length > 0" >
+          <span v-for="(col, i) in renderColumns" :key="i" :style="`width:${col.width}px`">
+            {{ col.renderFunc(item, i) }}
+          </span>
+        </template>
         <span class="priority-box">优先级：{{item.Priority}}</span>
         <span v-if="showName" class="part-name" :title='item.Name'>名称：{{item.Name}}</span>
         <div class="ctrl-menus-container" v-if="showCtrlMenus">
@@ -167,6 +173,10 @@ export default {
     showCtrlMenus: {
       type: Boolean,
       default: true,
+    },
+    renderColumns: {
+      type: Array,
+      default: () => [],
     },
   },
   computed: {

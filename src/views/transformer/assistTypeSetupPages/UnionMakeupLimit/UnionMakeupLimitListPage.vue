@@ -21,9 +21,10 @@
         :showHeader="false"
         :getDisplayContent="GeneralMapDataClassData.getItemMapResult"
         :rightText="'则'"
+        :renderColumns="renderColumns"
         operationTitle="禁止合拼条件"
         @setup='onMapClick' @remove="onRemoveClick"
-      />
+       />
       <div v-else-if="GeneralMapDataClassData && !GeneralMapDataClassData.loading" class="empty-box">
         <mp-empty description="暂无禁止合拼条件"></mp-empty>
       </div>
@@ -72,6 +73,11 @@ const onRemoveClick = (item: GeneralMapItemClass) => {
     GeneralMapDataClassData.value.removeItem(item);
   }
 };
+
+const renderColumns = [{
+  renderFunc: (item) => (item.NeedSetPlateSize ? '手动设置拼版尺寸' : ''),
+  width: 140,
+}];
 
 transformerStore.setGeneralMapDataClassData(new UnionMakeupLimitItemClass(TransformerListPageData.value));
 

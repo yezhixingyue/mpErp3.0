@@ -50,6 +50,9 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/FactoryManage/ManualOutsourceManage/ManualOutsourceManagePage.vue'),
     },
+    /*  转换设置
+    ------------------------------------------ */
+    ...transformerRoutes.routes,
     /*  转换服务器
     ------------------------------------------ */
     {
@@ -64,7 +67,6 @@ const routes = { // 基本设置
       },
       component: () => import('@/views/serverManage/ProductionServerListPage.vue'),
     },
-    ...transformerRoutes.routes,
   ],
 };
 
