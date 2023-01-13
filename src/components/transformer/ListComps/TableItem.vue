@@ -4,9 +4,9 @@
       <div class="name">{{getProductName(props.item)}}</div>
       <div class="right">
         <span class="blue-span" @click="onClick(menuTypeEnum.partSetup)">选择产品部件 ({{selectedPartList.length}})</span>
-        <span :class="{hide: selectedPartList.length <= 1}" class="blue-span"
+        <span :class="{hide: selectedPartList.length < 1}" class="blue-span"
           @click="onClick(menuTypeEnum.UnionLine)">组合生产线映射 ({{props.item.UnionLineCount}})</span>
-        <span :class="{hide: selectedPartList.length <= 1}" class="blue-span"
+        <span :class="{hide: selectedPartList.length < 1}" class="blue-span"
           @click="onClick(menuTypeEnum.UnionWorking)">组合工序映射 ({{props.item.UnionWorkingCount}})</span>
         <span @click="onHideClick" class="arrow" :class="{disabled:selectedPartList.length===0}">
           {{displayPart ? '隐藏' : '展开'}}
@@ -50,7 +50,7 @@ const emit = defineEmits(['menuClick']);
 
 const onClick = (type: menuTypeEnum, PartID?: string) => {
   if (type === menuTypeEnum.UnionLine || type === menuTypeEnum.UnionWorking) {
-    if (selectedPartList.value.length <= 1) {
+    if (selectedPartList.value.length < 1) {
       onHideClick();
       return;
     }
