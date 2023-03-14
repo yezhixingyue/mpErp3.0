@@ -57,10 +57,11 @@ const closed = () => {
 
 const submit = () => {
   const ids = props.data.rightDataList.map(it => it.ID);
+
   if (ids.length > 0 && !ids.includes(radio.value)) {
     radio.value = '';
   }
-  props.data.saveItem({ Target: radio.value ? [radio.value] : [] });
+  props.data.saveItem({ Target: [radio.value] });
 };
 
 </script>

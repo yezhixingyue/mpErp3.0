@@ -52,7 +52,8 @@ export class ColorInfoMapClass extends AssistMapDataClass<IColorInfoLeftType, IC
   // eslint-disable-next-line class-methods-use-this
   protected async getLeftList() {
     const resp = await api.getOutputFileList({ onlyShowPdf: true, includeUseTimes: false }).catch(() => null);
-    return resp?.data.Status === 1000 ? resp.data.Data : [];
+
+    return resp?.data.Status === 1000 ? resp.data.Data.filter(it => !it.IsMakeup) : [];
   }
 
   /**

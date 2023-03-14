@@ -28,8 +28,9 @@ export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, 
       ServerID: this.ServerID,
       Type: AssistMappingTypeEnum.MakeupFile,
       SourceID: this.curEditItem?.ID || '',
-      Target,
+      Target: Target.filter(it => it),
     };
+
     if (Target.length === 0) {
       MpMessage.error({ title: '保存失败', msg: '请选择生产拼版模板' });
       return;
@@ -70,7 +71,12 @@ export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, 
    */
   protected async getRightList() {
     const resp = await api.getImpositionTemplateList(this.ServerID).catch(() => null);
-    return resp?.data.Status === 1000 ? resp.data.Data : [];
+    const list = resp.data.Data || [];
+    list.unshift({
+      ID: '',
+      Name: '无',
+    });
+    return resp?.data.Status === 1000 ? list : [];
   }
 
   /**
