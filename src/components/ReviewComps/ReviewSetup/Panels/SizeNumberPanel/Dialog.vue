@@ -61,7 +61,7 @@
       <p class="mp-common-title-wrap">出血：</p>
       <BleedSetupComp :ruleForm='ruleForm' @change="onBleedChange"/>
 
-      <p class="mp-common-title-wrap">
+      <p class="mp-common-title-wrap" v-show="!this.part">
         <label>修改产品数量为：</label>
         <span class="blue-span" @click="onFormulaSelectClick('NumberFormula')">选择公式</span>
         <span class="formula" :class="{'is-gray':!(ruleForm&&ruleForm.NumberFormula)}">{{getFormulaName('NumberFormula')}}</span>
