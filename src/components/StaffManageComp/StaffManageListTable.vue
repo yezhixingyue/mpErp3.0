@@ -31,7 +31,7 @@
     <el-table-column :width="lastColWidth" label="操作" v-if="maxMenuLen">
       <div class="menus" slot-scope="scope">
         <CtrlMenus
-         :showList="scope.row._icons"
+         :showList="scope.row._icons.filter(it => ['detail', 'check'].includes(it))"
          :isDimission='scope.row._isDimission'
          :canRemove='scope.row._canRemove'
          @detail='onDetailClick(scope.row, scope.$index)'
@@ -40,6 +40,28 @@
          @edit='onEditClick(scope.row)'
          @remove='onRemoveClick(scope.row, scope.$index)'
          />
+        <el-dropdown trigger="click" placement="bottom"
+         :disabled="scope.row._icons.filter(it => !['detail', 'check'].includes(it)).length === 0" @command="(e) => oncommand(e, scope.row, scope.$index)">
+          <span class="el-dropdown-link">
+            <i class="el-icon-more"></i>
+            更多
+          </span>
+          <el-dropdown-menu slot="dropdown" class="mp-erp-staff-manage-list-table-menu-dropdown-box">
+            <el-dropdown-item v-if="scope.row._icons.includes('dimission')" command="dimission">
+              <img v-if="!scope.row._isDimission" src="@/assets/images/dimission.png" alt="">
+              <img v-else src="@/assets/images/regain.png" alt="">
+              <span>{{ scope.row._isDimission ? '取消离职' : '离职' }}</span>
+            </el-dropdown-item>
+            <el-dropdown-item v-if="scope.row._icons.includes('edit')" command="edit">
+              <img src="@/assets/images/Compile.png" alt="">
+              <span>编辑</span>
+            </el-dropdown-item>
+            <el-dropdown-item :disabled="!scope.row._canRemove" command="del" v-if="scope.row._icons.includes('del')">
+              <img src="@/assets/images/del.png" alt="">
+              <span>删除</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
     </el-table-column>
     <div slot="empty">
@@ -108,11 +130,11 @@ export default {
       return lens.length > 0 ? Math.max(...lens) : 0;
     },
     lastColWidth() {
-      if (this.maxMenuLen >= 4) return '310px';
-      if (this.maxMenuLen === 3) return '240px';
-      if (this.maxMenuLen === 2) return '160px';
-      if (this.maxMenuLen === 1) return '120px';
-      return '0px';
+      // if (this.maxMenuLen >= 4) return '310px';
+      // if (this.maxMenuLen === 3) return '240px';
+      // if (this.maxMenuLen === 2) return '160px';
+      // if (this.maxMenuLen === 1) return '120px';
+      return '185px';
     },
     getCanUseName() {
       return (id) => {
@@ -224,12 +246,31 @@ export default {
       }, null);
     },
     onEditClick(item) {
+      console.log(item);
       this.$emit('edit', { item, id: item.StaffID });
     },
     onRemoveClick(item, index) {
       this.messageBox.warnCancelBox('确定要删除员工吗 ?', `删除员工：${item.StaffName}`, () => {
         this.$emit('remove', { item, index });
       }, null);
+    },
+    oncommand(command, item, index) {
+      switch (command) {
+        case 'dimission':
+          this.onDimissionClick(item, index);
+          break;
+
+        case 'edit':
+          this.onEditClick(item);
+          break;
+
+        case 'del':
+          this.onRemoveClick(item, index);
+          break;
+
+        default:
+          break;
+      }
     },
   },
   mounted() {
@@ -275,22 +316,83 @@ export default {
       .menus {
         text-align: right;
         padding-right: 16px;
-        .ctrl-menus-container > span {
-          &.em-4 {
-            margin-right: -21px;
-            i {
-              display: inline-block;
-              width: 4em;
-              text-align: left;
+        .ctrl-menus-container {
+          margin-right: 30px;
+          > span {
+            &.em-4 {
+              margin-right: -24px;
+              i {
+                display: inline-block;
+                width: 4em;
+                text-align: left;
+              }
+            }
+            & + span {
+              margin-left: 28px;
             }
           }
-          & + span {
-            margin-left: 28px;
+        }
+
+        .el-dropdown {
+          .el-dropdown-link {
+            font-size: 12px;
+            margin-right: 0px;
+            font-size: 12px;
+            line-height: 23px;
+            > i {
+              font-size: 15px;
+              transform: rotateZ(90deg);
+              font-size: 14px;
+              vertical-align: -1px;
+              color: #989898;
+            }
+
+            &:not([disabled]) {
+              color: #989898;
+              cursor: pointer;
+              > i {
+                color: #989898;
+              }
+              &:hover {
+                color: #585858;
+              }
+            }
+            &[disabled] {
+              visibility: hidden;
+              margin-left: -20px;
+            }
           }
         }
       }
     }
   }
 }
+.mp-erp-staff-manage-list-table-menu-dropdown-box.el-popper {
+  overflow: visible;
+  width: auto;
+  > li {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
 
+    img {
+      margin-right: 8px;
+    }
+
+    &.is-disabled {
+      cursor: not-allowed;
+      filter: grayscale(1);
+      opacity: 0.8;
+    }
+  }
+  > div {
+    display: block !important;
+    &::after {
+      display: block !important;
+    }
+  }
+  &[x-placement^=bottom] {
+    margin-top: 12px;
+  }
+}
 </style>
