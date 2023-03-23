@@ -382,7 +382,7 @@ export default {
     &.is-disabled {
       cursor: not-allowed;
       filter: grayscale(1);
-      opacity: 0.8;
+      opacity: 0.7;
     }
   }
   > div {
