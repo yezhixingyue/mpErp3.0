@@ -7,7 +7,7 @@ import { AssistInfoTypeEnum } from '@/pinia/modules/transformer/map/enum';
 import { GeneralMapItemClass } from '@/pinia/modules/transformer/map/GeneralMapItemClass';
 import { IAssistMapParams, IFactoryMaterialClass, IGeneralMapParams } from '@/pinia/modules/transformer/map/types';
 import { TransformerListConditionClass } from '@/pinia/modules/transformer/TransformerListConditionClass';
-import { IPartChangeParams, ISemiFinishedSaveParams, IGetWorkingProcedureParams, IGetFormulaParams, IGetPropertyListParams, IGetDefaultLineSetupParams } from '@/pinia/modules/transformer/types';
+import { IPartChangeParams, ISemiFinishedSaveParams, IGetWorkingProcedureParams, IGetPropertyListParams, IGetDefaultLineSetupParams } from '@/pinia/modules/transformer/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 
 const api = {
@@ -1176,6 +1176,9 @@ const api = {
   getThirdPlatExpressList() { // GET /Api/ThirdPlat/Express/List  获取第三方物流快递列表
     return instance.get('/Api/ThirdPlat/Express/List');
   },
+  getExpressProductList() { // GET /Api/ExpressPrint/Product  获取快印仓快递产品列表
+    return instance.get('/Api/ExpressPrint/Product');
+  },
   /**
    * 关联第三方快递
    *
@@ -1186,6 +1189,9 @@ const api = {
    */
   getLogisticsBindExpress(data) { // POST /Api/Logistics/BindExpress  关联第三方快递
     return instance.post('/Api/Logistics/BindExpress', data);
+  },
+  getLogisticsBindExpressPrint(data) { // POST /Api/Logistics/BindExpressPrint  关联第三方快递(快印仓)
+    return instance.post('/Api/Logistics/BindExpressPrint', data);
   },
   getLogisticsBindStation(data) { // POST /Api/Logistics/BindStation  关联网点 -- 参数同保存参数 RelationList
     return instance.post('/Api/Logistics/BindStation', data);
@@ -1457,9 +1463,9 @@ const api = {
   getWorkingProcedureWordAssistantList(data: IGetWorkingProcedureParams) {
     return instance.post('/Api/WorkingProcedure/WordAssistantList', data);
   },
-  getProductFormulaList(data: IGetFormulaParams) { // POST /Api/ProductFormula/List 获取公式列表  - 转换设置
-    return instance.post('/Api/ProductFormula/List', data);
-  },
+  // getProductFormulaList(data: IGetFormulaParams) { // POST /Api/ProductFormula/List 获取公式列表  - 转换设置
+  //   return instance.post('/Api/ProductFormula/List', data);
+  // },
 };
 
 export default api;

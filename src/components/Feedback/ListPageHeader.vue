@@ -20,6 +20,15 @@
           :CountyID="condition.SellCountyID"
           :typeList="[['SellRegionalID', ''],['SellCityID', ''],['SellCountyID', '']]"
         />
+        <EpCascaderByProduct
+          class="mr-12"
+          :getList="getDataList"
+          :setCondition="setCondition4DataList"
+          :First="condition.Product.ClassID"
+          :Second="condition.Product.TypeID"
+          :ProductID="condition.Product.ProductID"
+          :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
+        />
         <OrderChannelSelector
         style="margin-right: 50px"
         :options='questionList'
@@ -137,6 +146,8 @@ import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
 // import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState } from 'vuex';
+import EpCascaderByProduct from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
+
 import EpCascaderByArea from '../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
@@ -157,6 +168,7 @@ export default {
     SearchInputComp,
     // AreaSelector,
     EpCascaderByArea,
+    EpCascaderByProduct,
     // ElDateRangeSelector,
   },
   computed: {

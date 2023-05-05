@@ -177,7 +177,7 @@ const submit = () => {
       > .item-content {
         > label {
           margin-right: 8px;
-          margin-bottom: 3px;
+          margin-bottom: 8px;
           .el-radio__label {
             font-size: 12px;
             display: inline-block;

@@ -7,6 +7,7 @@ import store from '../store';
 import TokenClass from '../assets/js/utils/tokenManage';
 import { getLastRouteInfoByName } from './getLastRouteInfoByName';
 import router from './index';
+import { useUserStore } from '../pinia/modules/user';
 
 // if (window.location.protocol.includes('https')) {
 //   window.location = window.location.href.replace('https', 'http');
@@ -133,6 +134,8 @@ const handleRouterEach = (_router) => {
           TokenClass.getPermission(token).then(res => {
             if (res && Object.prototype.toString.call(res) === '[object Object]' && res.Token && res.Token === token) {
               store.commit('common/setPermission', res);
+              const userStore = useUserStore();
+              userStore.setUserDetail(res);
               handlePermission(to, next, res.PermissionList, from);
             }
           });

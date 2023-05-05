@@ -1,12 +1,15 @@
 <template>
   <section class="mp-ts-sale-and-production-list-page-comp-wrap">
     <header>
-      <mp-button size="small" type="primary" @click="setup(null)">添加转换服务器</mp-button>
-      <span class="blue-span" @click="visible = true">操作日志</span>
+      <template v-if="UserDetail && UserDetail.PermissionList.PermissionCheckFileConvertion.Obj.Setup">
+        <mp-button size="small" type="primary" @click="setup(null)">添加转换服务器</mp-button>
+        <span class="blue-span" @click="visible = true">操作日志</span>
+      </template>
     </header>
     <MainTable
      title="转换服务器"
      :tableData="props.pageTypeData.list"
+     :UserDetail="UserDetail"
      @edit="setup"
      @remove="onRemoveClick"
      @generate="onGenerateClick"
@@ -24,9 +27,15 @@ import { SaleAndProductionPageClassType } from '@/views/serverManage/utils/SaleA
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import OperationLogDialog from '@/components/LogComp/OperationLogDialog.vue';
 import { ServerTypeEnum } from '@/views/serverManage/utils/types';
+import { useUserStore } from '@/pinia/modules/user';
+import { storeToRefs } from 'pinia';
 import NotifySetupDialog from './Comps/NotifySetupDialog.vue';
 import MainTable from './Comps/ServerListMainTable.vue';
 import Dialog from './Comps/ServerSetupDialog.vue';
+
+const userStore = useUserStore();
+
+const { UserDetail } = storeToRefs(userStore);
 
 const props = defineProps<{
   pageTypeData: SaleAndProductionPageClassType,
@@ -66,6 +75,7 @@ const visible = ref(false);
     font-size: 14px;
     font-weight: 100;
     padding: 20px;
+    padding-bottom: 0;
     font-family: Microsoft YaHei-Regular, Microsoft YaHei;
     > button {
       color: #fff;
@@ -74,6 +84,7 @@ const visible = ref(false);
       font-size: 14px;
       font-weight: 100;
       margin-right: 30px;
+      margin-bottom: 20px;
       &:hover {
         opacity: 0.8;
       }

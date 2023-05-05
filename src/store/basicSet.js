@@ -47,6 +47,7 @@ export default {
     -------------------------------*/
     logisticList: [],
     ThirdPlatExpressList: [],
+    ExpressProductList: [],
     loading: false,
     logisticItemFormulaList: [], // 工期组成列表数据 及 总工期列表数据
     logisticItemConditionPropertyList: [], // 工期组成条件属性列表数据 及 总工期条件属性列表数据
@@ -354,6 +355,9 @@ export default {
     setThirdPlatExpressList(state, list) {
       state.ThirdPlatExpressList = list || [];
     },
+    setExpressProductList(state, list) {
+      state.ExpressProductList = list || [];
+    },
     setLoading(state, bool) {
       state.loading = bool;
     },
@@ -612,6 +616,13 @@ export default {
         sessionStorage.setItem('ThirdPlatExpressList', JSON.stringify(resp.data.Data));
       }
     },
+    async getExpressProductList({ state, commit }) { // 获取第三方（快印仓）配送方式（快递产品）列表
+      if (state.ExpressProductList.length > 0) return;
+      const resp = await api.getExpressProductList().catch(() => null);
+      if (resp?.data.Status === 1000) {
+        commit('setExpressProductList', resp.data.Data);
+      }
+    },
     async getLogisticsBindExpress({ commit }, { item, callback }) { // 编辑与新增
       const resp = await api.getLogisticsBindExpress(item).catch(() => null);
       if (resp && resp.data.Status === 1000) {
@@ -620,6 +631,16 @@ export default {
           if (callback && typeof callback === 'function') callback();
         };
         messageBox.successSingle('快递打单关联成功', cb, cb);
+      }
+    },
+    async getLogisticsBindExpressPrint({ commit }, { item, callback }) { // 编辑与新增
+      const resp = await api.getLogisticsBindExpressPrint(item).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setLogisticItemChange', { item, ID: resp.data.Data });
+          if (callback && typeof callback === 'function') callback();
+        };
+        messageBox.successSingle('快印仓关联成功', cb, cb);
       }
     },
     async getLogisticsItemFormulaList({ state, commit }, { LogisticsID }) { // 获取配送方式价格公式

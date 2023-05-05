@@ -161,11 +161,14 @@ export default {
           First: '',
           Second: '',
         },
-
+        Product: { // 产品
+          ClassID: '',
+          TypeID: '',
+          ProductID: '',
+        },
         SellRegionalID: '', // 销售区域
         SellCityID: '',
         SellCountyID: '',
-
         Source: '',
         SolutionType: '',
         RefundPayType: '',
@@ -211,6 +214,11 @@ export default {
         CustomerType: {
           First: '',
           Second: '',
+        },
+        Product: { // 产品
+          ClassID: '',
+          TypeID: '',
+          ProductID: '',
         },
         SellArea: { // 销售区域
           RegionalID: '',

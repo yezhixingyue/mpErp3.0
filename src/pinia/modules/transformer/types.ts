@@ -72,6 +72,8 @@ export interface IProduct extends Omit<IPart, 'UseTimes'> {
   UnionLineCount: number
   /** 组合工序映射条数 */
   UnionWorkingCount: number
+  /** 组合 - 数值信息映射条数 */
+  UnionNumbericInfoCount: number
   PartList: IPart[]
 }
 
@@ -99,7 +101,6 @@ export interface IGetWorkingProcedureParams {
 }
 
 export interface IGetFormulaParams {
-  ServerID: string
   ProductID: string
   PartID?: string
 }

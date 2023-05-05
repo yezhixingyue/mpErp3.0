@@ -6,6 +6,7 @@
         v-for="it in props.TransformerListPageData.productList"
         :key="it.ID"
         :item="it"
+        :UserDetail="UserDetail"
         :product-class-level-list="props.TransformerListPageData.productClassLevelList"
         @menuClick="onClick"
       />
@@ -18,10 +19,12 @@ import { TransformerListPageDataPlainType } from '@/pinia/modules/transformer/Tr
 import { computed, ref } from 'vue';
 import { recordScrollPosition } from '@/assets/ts/recordScrollPositionMixin';
 import { IProduct, menuTypeEnum } from '@/pinia/modules/transformer/types';
+import { IUser } from '@/pinia/modules/user/type';
 import TableItem from './TableItem.vue';
 
 const props = defineProps<{
   TransformerListPageData: TransformerListPageDataPlainType | null,
+  UserDetail: null | IUser
 }>();
 
 const emit = defineEmits(['menuClick']);
@@ -33,7 +36,7 @@ const oScrollWrap = ref<InstanceType<typeof HTMLElement> | null>(null);
 
 recordScrollPosition(oScrollWrap);
 
-const onClick = (type: menuTypeEnum, item: IProduct, PartID: string) => {
+const onClick = (type: menuTypeEnum, item: IProduct, PartID: string) => { // PartID可能为产品ID、部件ID 或 空字符串
   if (!props.TransformerListPageData) return;
   props.TransformerListPageData.setCurEditItemAndPart(item, PartID);
   emit('menuClick', type);

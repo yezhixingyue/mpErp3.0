@@ -26,6 +26,8 @@ export class TransformerListPageDataClass {
 
   curPart: null | IPart = null // 当为null时说明设置对象为产品本身，否则就是该部件
 
+  curInstance: null | IProduct | IPart = null // 当前实例 如果为产品实例则为产品本身 如果为部件实例则为对应部件 如果都不是（设置的是组合数值映射等情况时）则为null
+
   curEditProductName = ''
 
   constructor(serverID: string) {
@@ -42,9 +44,14 @@ export class TransformerListPageDataClass {
     temp[key1] = value;
   }
 
-  setCurEditItemAndPart(item: null | IProduct, PartID: string) {
+  setCurEditItemAndPart(item: null | IProduct, PartID: string) { // PartID可能为产品ID、部件ID 或 空字符串
     this.curEditItem = item;
     this.curPart = item ? item.PartList.find(it => it.ID === PartID) || null : null;
+
+    this.curInstance = null;
+    if (this.curPart) this.curInstance = this.curPart;
+    else if (PartID && PartID === item?.ID) this.curInstance = this.curEditItem;
+
     const arr = [];
     if (!item) {
       this.curEditProductName = '';
@@ -112,17 +119,15 @@ export class TransformerListPageDataClass {
     const temp: ISemiFinishedSaveParams = {
       ServerID: this.ServerID,
       ProductID: this.curEditItem.ID,
-      InstanceID: this.curPart ? this.curPart.ID : this.curEditItem.ID,
+      InstanceID: this.curInstance?.ID,
       SemiFinishedID: SemiFinished.ID,
     };
     const resp = await api.getSemiFinishedSetup(temp).catch(() => null);
     if (resp?.data.Status === 1000) {
       const cb = () => {
         // 处理数据变动
-        if (this.curPart) {
-          this.curPart.SemiFinished = { ...SemiFinished };
-        } else if (this.curEditItem) {
-          this.curEditItem.SemiFinished = { ...SemiFinished };
+        if (this.curInstance) {
+          this.curInstance.SemiFinished = { ...SemiFinished };
         }
         callback();
       };

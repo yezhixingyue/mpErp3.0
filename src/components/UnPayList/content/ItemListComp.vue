@@ -181,9 +181,7 @@ export default {
     },
     goToOrderDetail(row) {
       this.setCurOrderID(row.OrderID);
-      this.$utils.handleLoadingHOF(
-        () => this.getOrderDetail(), () => this.setIsShowDia(true), () => this.setIsShowDia(false),
-      );
+      this.$utils.handleLoadingHOF(() => this.getOrderDetail(), () => this.setIsShowDia(true), () => this.setIsShowDia(false));
     },
     go2PaySingleOrder(row) {
       // this.setIsLoading(true);

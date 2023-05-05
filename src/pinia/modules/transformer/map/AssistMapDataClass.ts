@@ -53,7 +53,11 @@ export abstract class AssistMapDataClass<L, R, P> extends MapDataClass<L, R, P, 
               break;
 
             case AssistMappingTypeEnum.Numberic:
-              target.NumbericInfoCount += 1;
+              if (this.curPageData.curInstance) {
+                target.NumbericInfoCount += 1;
+              } else {
+                this.curPageData.curEditItem.UnionNumbericInfoCount += 1; // 数值映射需多考虑一种情况：在非产品或部件实例上的数值映射
+              }
               break;
 
             default:

@@ -24,7 +24,7 @@
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane v-if="true" label="订单详情" name="first">
-          <OrderDetail v-if="!isLoading" :detailData="detailData"/>
+          <OrderDetail v-if="!isLoading" :detailData="detailData" showDownload/>
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane  v-if="canShowExpressList" label="包裹列表" name="second">
@@ -43,7 +43,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
-import OrderDetail from '@/components/Feedback/DialogContent/OrderDetail.vue';
+import OrderDetail from '@/components/order/DialogContent/OrderDetail.vue';
 import PackageList from '@/components/Feedback/DialogContent/PackageList.vue';
 import OrderProgress from '@/components/order/DialogContent/OrderProgress.vue';
 import normalBtn from '@/components/common/normalBtn.vue';

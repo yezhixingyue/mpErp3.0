@@ -8,7 +8,7 @@ const routes = [
       title: '转换设置',
       icon: 'icon-zhuanhuanshezhi iconfont',
       pageName: 'TransformerListPage',
-      // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+      PermissionInfo: ['PermissionManageConvert', 'HavePomission'],
       requiresAuth: true,
     },
     component: () => import('@/views/transformer/TransformerListPage.vue'),

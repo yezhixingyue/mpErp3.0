@@ -22,6 +22,9 @@ export default class LogisticItem {
 
   RecordCount = 0
 
+  // 关联快印仓产品
+  ExpressProductID = ''
+
   // 关联快递打单列表
   RelationList = []
 

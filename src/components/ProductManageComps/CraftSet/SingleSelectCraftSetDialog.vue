@@ -17,7 +17,7 @@
     <div class="select-type" v-if="ruleForm">
       <el-checkbox v-model="ruleForm.IsRequired">必选</el-checkbox>
       <div>
-        <template v-if="ruleForm && ruleForm.IsRequired">
+        <template v-if="ruleForm && ruleForm.IsRequired && optionList.length > 1">
           <span>初始选中：</span>
           <el-select  v-model="DefaultCraft" placeholder="请选择" size="mini">
             <el-option

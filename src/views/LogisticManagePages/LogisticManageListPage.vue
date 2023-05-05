@@ -11,15 +11,23 @@
         :dataList='logisticList'
         :sorting='sorting'
         :ThirdPlatExpressList='ThirdPlatExpressList'
+        :ExpressProductList='ExpressProductList'
         :loading='loading'
         @edit="onItemSaveClick"
         @remove='handleRemove'
         @setPrice='onSetPriceClick'
         @linkRelation='onRelationLinkClick'
+        @linkPrintedSheet='onPrintedSheetLinkClick'
         @linkStation='onStationLinkClick'
        />
       <LogisticItemSaveDialog :visible.sync="visible" :edit-data="curEditItem" @submit="handleItemSave" :list='logisticList' />
       <LogisticItemLinkStationDialog :visible.sync="stationLinkVisible" :edit-data="curEditItem" @submit="onStationLinkSubmit" />
+      <LogisticItemLinkPrintedSheetDialog
+        :visible.sync="printedSheetLinkVisible"
+        :ExpressProductList='ExpressProductList'
+        :edit-data="curEditItem"
+        @submit="onPrintedSheetLinkSubmit"
+       />
       <LogisticItemLinkRelationDialog
         :visible.sync="relationLinkVisible"
         :ThirdPlatExpressList='ThirdPlatExpressList'
@@ -45,6 +53,7 @@ import LogisticTableComp from '../../components/LogisticManage/LogisticTableComp
 import LogisticItemSaveDialog from '../../components/LogisticManage/LogisticItemSaveDialog.vue';
 import LogisticItemLinkStationDialog from '../../components/LogisticManage/LogisticItemLinkStationDialog.vue';
 import LogisticItemLinkRelationDialog from '../../components/LogisticManage/LogisticItemLinkRelationDialog.vue';
+import LogisticItemLinkPrintedSheetDialog from '../../components/LogisticManage/LogisticItemLinkPrintedSheetDialog.vue';
 
 export default {
   name: 'LogisticManageListPage',
@@ -53,6 +62,7 @@ export default {
     LogisticItemSaveDialog,
     LogisticItemLinkStationDialog,
     LogisticItemLinkRelationDialog,
+    LogisticItemLinkPrintedSheetDialog,
   },
   data() {
     return {
@@ -60,11 +70,12 @@ export default {
       curEditItem: null,
       sorting: false,
       stationLinkVisible: false,
+      printedSheetLinkVisible: false,
       relationLinkVisible: false,
     };
   },
   computed: {
-    ...mapState('basicSet', ['logisticList', 'ThirdPlatExpressList', 'loading']),
+    ...mapState('basicSet', ['logisticList', 'ThirdPlatExpressList', 'ExpressProductList', 'loading']),
     ...mapState('common', ['Permission', 'ExpressList']),
     localPermission() {
       return this.Permission?.PermissionList?.PermissionManageLogistics?.Obj || {};
@@ -104,9 +115,19 @@ export default {
       };
       this.$store.dispatch('basicSet/getLogisticsSetOrder', { ids, callback });
     },
+    onPrintedSheetLinkClick(item) { // 点击关联快印仓
+      this.curEditItem = item;
+      this.printedSheetLinkVisible = true;
+    },
     onRelationLinkClick(item) { // 点击关联快递打单
       this.curEditItem = item;
       this.relationLinkVisible = true;
+    },
+    onPrintedSheetLinkSubmit(item) { // 关联快印仓提交
+      const callback = () => {
+        this.printedSheetLinkVisible = false;
+      };
+      this.$store.dispatch('basicSet/getLogisticsBindExpressPrint', { item, callback });
     },
     onRelationLinkSubmit(item) { // 关联快递打单提交
       const callback = () => {
@@ -135,6 +156,7 @@ export default {
   mounted() {
     this.$store.dispatch('basicSet/getLogisticList');
     this.$store.dispatch('basicSet/getThirdPlatExpressList');
+    this.$store.dispatch('basicSet/getExpressProductList');
     // string boolean number null undefined symbol object BigInt
   },
 };

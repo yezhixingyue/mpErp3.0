@@ -829,7 +829,7 @@ export default {
 
         // 退余额
         if (Solution.RefundFreightType === 1
-          && (Number(Solution.RefundBalance) - Number(Solution.RefundFreightAmount)) > this.dataInfo.Order.SurplusOrderBalance
+          && (Number(Solution.RefundBalance) - Number(Solution.RefundFreightAmount)).toFixed(2) > this.dataInfo.Order.SurplusOrderBalance
         ) {
           this.messageBox.failSingleError('提交失败', '余额退款金额不能超过支付金额');
           return false;
@@ -841,7 +841,7 @@ export default {
         }
         // 退印豆
         if (Solution.RefundFreightType === 3
-          && (Number(Solution.RefundPrintBean) - Number(Solution.RefundFreightAmount)) > this.dataInfo.Order.SurplusOrderPrintBean
+          && (Number(Solution.RefundPrintBean) - Number(Solution.RefundFreightAmount)).toFixed(2) > this.dataInfo.Order.SurplusOrderPrintBean
         ) {
           this.messageBox.failSingleError('提交失败', '印豆退款数量不能超过支付印豆数量');
           return false;

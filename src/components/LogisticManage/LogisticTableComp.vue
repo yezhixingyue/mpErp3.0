@@ -20,6 +20,7 @@
       <span slot-scope="scope" :class="scope.row.IsEnabled ? 'is-success' : 'is-pink'">{{scope.row._EnableContent}}</span>
     </el-table-column>
     <el-table-column prop="_PriceRecord" label="价格记录" width="180" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="_PrintedSheetContent" label="关联快印仓" min-width="180" show-overflow-tooltip></el-table-column>
     <el-table-column prop="_RelationContent" label="关联快递打单" min-width="180" show-overflow-tooltip></el-table-column>
     <el-table-column prop="_StationContent" label="关联物流配送" width="150" show-overflow-tooltip></el-table-column>
     <!-- <el-table-column label="" min-width="50" class-name="blank"></el-table-column>
@@ -31,6 +32,7 @@
     </el-table-column> -->
     <el-table-column label="操作" width="540" v-if="localPermission.Setup" class-name="ctrl">
       <div slot-scope="scope" class='menus'>
+        <span class="blue-span" @click="onPrintedSheetLinkClick(scope.row)">关联快印仓</span>
         <span class="blue-span" @click="onRelationLinkClick(scope.row)">关联快递打单</span>
         <span class="blue-span" @click="onStationLinkClick(scope.row)">关联物流配送</span>
         <CtrlMenus
@@ -93,6 +95,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    ExpressProductList: {
+      type: Array,
+      default: () => [],
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -121,6 +127,7 @@ export default {
         _EnableContent: it.IsEnabled ? '已启用' : '未启用',
         _PriceRecord: `${it.RecordCount > 0 ? '有' : '无'}价格（${it.RecordCount}条记录）`,
         _RelationContent: this.getRelationContent(it, this.ThirdPlatExpressList),
+        _PrintedSheetContent: this.getPrintedSheetContent(it, this.ExpressProductList),
         _StationContent: this.getStationContent(it),
       }));
     },
@@ -159,6 +166,10 @@ export default {
       }).filter(it => it);
       return list.join('、');
     },
+    getPrintedSheetContent({ ExpressProductID }, ExpressProductList) { // OutPlatTypeEnumList
+      if (!ExpressProductID) return '';
+      return ExpressProductList.find(it => it.ID === ExpressProductID)?.Name;
+    },
     onInpNumFocus(e) {
       e.target.select();
     },
@@ -195,6 +206,9 @@ export default {
         },
       };
       this.sortItem = sortable.create(tbody, ops);
+    },
+    onPrintedSheetLinkClick(item) { // 关联快印仓
+      this.$emit('linkPrintedSheet', item);
     },
     onRelationLinkClick(item) { // 关联快递打单
       this.$emit('linkRelation', item);

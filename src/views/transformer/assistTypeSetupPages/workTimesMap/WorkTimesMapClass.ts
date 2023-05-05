@@ -3,6 +3,7 @@ import { AssistMappingTypeEnum } from '@/pinia/modules/transformer/map/enum';
 import { AssistMapDataClass } from '@/pinia/modules/transformer/map/AssistMapDataClass';
 import { AssistMapItemClass } from '@/pinia/modules/transformer/map/AssistMapItemClass';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { PropertyClass } from '@/components/common/mpzj-sell-lib/lib';
 
 export interface IWorkTimesLeftType {
   ID: string
@@ -84,15 +85,12 @@ export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IW
    */
   protected async getRightList() {
     const ProductID = this.curPageData?.curEditItem?.ID || '';
-    const PartID = this.curPageData?.curPart?.ID || undefined;
-    const temp = {
-      ServerID: this.ServerID,
-      ProductID,
-      PartID,
-    };
-    const resp = await api.getProductFormulaList(temp).catch(() => null);
+    const PartID = this.curPageData?.curPart?.ID || null;
+
+    const resp = await api.getProductFormulasList(ProductID).catch(() => null);
     const list = resp?.data.Status === 1000 ? resp.data.Data : [];
-    return list;
+
+    return PropertyClass.filterProductFormulasList(list, PartID);
     // return list.map(transformProperty).filter((it: IWorkTimesRightType) => it);
   }
 

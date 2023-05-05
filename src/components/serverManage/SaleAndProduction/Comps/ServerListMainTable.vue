@@ -22,7 +22,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="Operator.Name" label="创建人" width="120" show-overflow-tooltip align="center" header-align="center"></el-table-column>
-      <el-table-column label="操作" width="330" show-overflow-tooltip align="center" header-align="center">
+      <el-table-column label="操作" width="330" show-overflow-tooltip align="center" header-align="center"
+       v-if="UserDetail&&UserDetail.PermissionList.PermissionCheckFileConvertion.Obj.Setup">
         <template #default="scope">
           <div class="ctrl-box">
             <span class="blue-span" @click="onNotifySetupClick(scope.row)" style="margin-right: 16px">转换失败通知设置</span>
@@ -39,6 +40,7 @@
 
 <script setup lang='ts'>
 import { ref } from 'vue';
+import { IUser } from '@/pinia/modules/user/type';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
 import { recordScrollPosition } from '@/assets/ts/recordScrollPositionMixin';
@@ -52,6 +54,7 @@ recordScrollPosition('.el-table__body-wrapper');
 const props = defineProps<{
   title: string,
   tableData: SaleAndProductionListItemPlainType[],
+  UserDetail: IUser | null
 }>();
 
 const emit = defineEmits(['edit', 'remove', 'generate', 'notify']);

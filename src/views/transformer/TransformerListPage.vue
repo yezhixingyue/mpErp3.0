@@ -4,10 +4,11 @@
       :convertServerList="convertServerList"
       :TransformerListPageData="TransformerListPageData"
       :loading4Servers="loading4Servers"
+      :UserDetail="UserDetail"
       @changeServer="handleServerChange"
       @menuClick="onMenuClick"
     />
-    <Main :TransformerListPageData="TransformerListPageData" @menuClick="onMenuClick" />
+    <Main :TransformerListPageData="TransformerListPageData" @menuClick="onMenuClick" :UserDetail="UserDetail" />
     <Footer :TransformerListPageData="TransformerListPageData" />
     <OperationLogDialog
       v-if="TransformerListPageData"
@@ -28,11 +29,16 @@ import OperationLogDialog from '@/components/LogComp/OperationLogDialog.vue';
 import PartSetupDialog from '@/components/transformer/ListComps/PartSetupDialog.vue';
 import SemiFinishedProductDialog from '@/components/transformer/ListComps/SemiFinishedProductDialog.vue';
 import { useTransformerStore } from '@/pinia/modules/transformer';
+import { useUserStore } from '@/pinia/modules/user';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 import router from '@/router';
 import { IPartChangeParams, menuTypeEnum } from '@/pinia/modules/transformer/types';
 import { ServerTypeEnum } from '../serverManage/utils/types';
+
+const userStore = useUserStore();
+
+const { UserDetail } = storeToRefs(userStore);
 
 const transformerStore = useTransformerStore();
 const { convertServerList, TransformerListPageData } = storeToRefs(transformerStore);

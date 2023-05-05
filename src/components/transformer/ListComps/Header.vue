@@ -18,9 +18,9 @@
           :level="2"
           v-model="EpCascaderProductValue"
         />
-        <span class="blue-span" @click="onClick(menuTypeEnum.log)">操作日志</span>
+        <span class="blue-span" v-show="UserDetail&&UserDetail.PermissionList.PermissionManageConvert.Obj.Setup" @click="onClick(menuTypeEnum.log)">操作日志</span>
       </div>
-      <div class="right">
+      <div class="right" v-show="UserDetail && UserDetail.PermissionList.PermissionManageConvert.Obj.Setup">
         <mp-button type="primary" @click="onClick(menuTypeEnum.assist)">辅助文件映射</mp-button>
         <mp-button type="primary" @click="onClick(menuTypeEnum.makeup)">拼版文件映射</mp-button>
         <mp-button type="primary" @click="onClick(menuTypeEnum.color)">专色文件映射</mp-button>
@@ -36,11 +36,13 @@ import { TransformerListPageDataPlainType } from '@/pinia/modules/transformer/Tr
 import { computed } from 'vue';
 import { menuTypeEnum } from '@/pinia/modules/transformer/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
+import { IUser } from '@/pinia/modules/user/type';
 
 const props = defineProps<{
   TransformerListPageData: TransformerListPageDataPlainType | null,
   convertServerList: SaleAndProductionListItemPlainType[]
   loading4Servers: boolean
+  UserDetail: null | IUser
 }>();
 
 const emit = defineEmits(['changeServer', 'menuClick']);

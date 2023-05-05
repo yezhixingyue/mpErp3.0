@@ -3,11 +3,12 @@
     <dt @click.self="onHideClick" :class="{a: selectedPartList.length>0}">
       <div class="name">{{getProductName(props.item)}}</div>
       <div class="right">
-        <span class="blue-span" @click="onClick(menuTypeEnum.partSetup)">选择产品部件 ({{selectedPartList.length}})</span>
-        <span :class="{hide: selectedPartList.length < 1}" class="blue-span"
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.partSetup)">选择产品部件 ({{selectedPartList.length}})</span>
+        <span :class="{hide: selectedPartList.length < 0}" class="blue-span" v-if="HavePomission"
           @click="onClick(menuTypeEnum.UnionLine)">组合生产线映射 ({{props.item.UnionLineCount}})</span>
-        <span :class="{hide: selectedPartList.length < 1}" class="blue-span"
+        <span :class="{hide: selectedPartList.length < 0}" class="blue-span" v-if="HavePomission"
           @click="onClick(menuTypeEnum.UnionWorking)">组合工序映射 ({{props.item.UnionWorkingCount}})</span>
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.NumbericInfo)">数值映射 ({{props.item.UnionNumbericInfoCount}})</span>
         <span @click="onHideClick" class="arrow" :class="{disabled:selectedPartList.length===0}">
           {{displayPart ? '隐藏' : '展开'}}
           <i class="el-icon-caret-bottom" v-show="!displayPart"></i>
@@ -18,17 +19,17 @@
     <dd v-for="it in selectedPartList" :key="it.ID" v-show="displayPart">
       <div class="left">
         <span class="name" :title="it.Name">{{it.Name}}</span>
-        <span class="blue-span" @click="onClick(menuTypeEnum.LineCount, it.ID)">生产线映射 ({{it.LineCount}})</span>
-        <span class="blue-span" @click="onClick(menuTypeEnum.WorkingCount, it.ID)">工序映射 ({{it.WorkingCount}})</span>
-        <span class="blue-span" @click="onClick(menuTypeEnum.WorkTimes, it.ID)">作业次数 ({{it.WorkTimesCount}})</span>
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.LineCount, it.ID)">生产线映射 ({{it.LineCount}})</span>
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.WorkingCount, it.ID)">工序映射 ({{it.WorkingCount}})</span>
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.WorkTimes, it.ID)">作业次数 ({{it.WorkTimesCount}})</span>
       </div>
       <div class="right">
-        <span class="blue-span" @click="onClick(menuTypeEnum.WordsInfo, it.ID)">文字信息映射 ({{it.WordsInfoCount}})</span>
-        <span class="blue-span" @click="onClick(menuTypeEnum.NumbericInfo, it.ID)">数值映射 ({{it.NumbericInfoCount}})</span>
-        <span class="blue-span" @click="onClick(menuTypeEnum.UnionMakeupLimit, it.ID)">合拼设置 ({{it.UnionMakeupLimitCount}})</span>
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.WordsInfo, it.ID)">文字信息映射 ({{it.WordsInfoCount}})</span>
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.NumbericInfo, it.ID)">数值映射 ({{it.NumbericInfoCount}})</span>
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.UnionMakeupLimit, it.ID)">合拼设置 ({{it.UnionMakeupLimitCount}})</span>
         <span>
           产出半成品：
-          <i class="blue-span" @click="onClick(menuTypeEnum.SemiFinishedProduct, it.ID)">设置</i>
+          <i class="blue-span" @click="onClick(menuTypeEnum.SemiFinishedProduct, it.ID)" v-if="HavePomission">设置</i>
           <em class="semi" :title="it.SemiFinished?.Name ||''">{{it.SemiFinished ? it.SemiFinished.Name || '未知' : '无'}}</em>
         </span>
       </div>
@@ -39,24 +40,35 @@
 <script setup lang='ts'>
 import { IPart, IProduct, menuTypeEnum } from '@/pinia/modules/transformer/types';
 import { IProductClassLv1ListItem } from '@/pinia/modules/transformer/utils';
+import { IUser } from '@/pinia/modules/user/type';
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
   item: IProduct,
   productClassLevelList: IProductClassLv1ListItem[]
+  UserDetail: null | IUser
 }>();
 
 const emit = defineEmits(['menuClick']);
 
+const HavePomission = computed(() => props.UserDetail && props.UserDetail.PermissionList.PermissionManageConvert.Obj.Setup);
+
+// const localPermission = computed(() => {
+//   if (this.Permission?.PermissionList?.PermissionCoupon?.Obj) {
+//     return this.Permission.PermissionList.PermissionCoupon.Obj;
+//   }
+//   return {};
+// });
+
 const onClick = (type: menuTypeEnum, PartID?: string) => {
-  if (type === menuTypeEnum.UnionLine || type === menuTypeEnum.UnionWorking) {
-    if (selectedPartList.value.length < 1) {
-      onHideClick();
-      return;
-    }
-  }
-  const _PartID = PartID && PartID !== props.item.ID ? PartID : '';
-  emit('menuClick', type, props.item, _PartID);
+  // if (type === menuTypeEnum.UnionLine || type === menuTypeEnum.UnionWorking) {
+  //   if (selectedPartList.value.length < 1) {
+  //     onHideClick();
+  //     return;
+  //   }
+  // }
+  // const _PartID = PartID && PartID !== props.item.ID ? PartID : '';
+  emit('menuClick', type, props.item, PartID || '');
 };
 
 const getProductName = (it: IProduct) => {
