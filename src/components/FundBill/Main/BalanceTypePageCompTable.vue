@@ -49,7 +49,7 @@
         <span class="is-gray" slot-scope="scope">{{scope.row.Remark}}</span>
     </el-table-column>
     <el-table-column label="销售区域" min-width="160" show-overflow-tooltip>
-      <span slot-scope="scope" v-if="scope.row.Customer">{{ getAdd(scope.row.Customer.Location) }}</span>
+      <span slot-scope="scope" v-if="scope.row.Customer">{{ getAdd(scope.row.Customer.SellArea) }}</span>
     </el-table-column>
     <el-table-column label="操作人" min-width="80">
       <template slot-scope="scope">{{
@@ -81,8 +81,8 @@ export default {
       const tempHeight = this.getHeight('.mp-fund-bill-page-balance-type-page-comp-wrap > header', 122);
       this.h = tempHeight;
     },
-    getAdd(Location) {
-      const { RegionalName, CityName, CountyName } = Location;
+    getAdd(SellArea) {
+      const { RegionalName, CityName, CountyName } = SellArea;
       return `${RegionalName}${CityName}${CountyName}`;
     },
   },
