@@ -35,7 +35,7 @@ export default {
   computed: {
     sellArea() {
       if (!this.customer) return '';
-      return this.getRCCAddressContent(this.customer.Location);
+      return this.getRCCAddressContent(this.customer.SellArea);
     },
     deliveryDddressList() {
       if (!this.customer || !Array.isArray(this.customer.Address)) return [];

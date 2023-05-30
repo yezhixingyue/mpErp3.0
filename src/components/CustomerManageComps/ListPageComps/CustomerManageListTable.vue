@@ -182,9 +182,9 @@ export default {
     getTypeGradeContent({ Type, Grade }) {
       return `${(Type && Type.Second) || ''}${(Grade && Grade.Second) || ''}`;
     },
-    getLocationContent({ Location, CustomerSN }) {
-      if (Location) {
-        const { RegionalName, CityName, CountyName } = Location;
+    getLocationContent({ SellArea, CustomerSN }) {
+      if (SellArea) {
+        const { RegionalName, CityName, CountyName } = SellArea;
         const str = `${RegionalName || ''}${CityName || ''}${CountyName || ''}`;
         return str || (CustomerSN === '/' ? '/' : '');
       }

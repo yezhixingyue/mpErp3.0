@@ -224,6 +224,7 @@ export default {
         { label: '向下取整', isMini: false, value: 'Floor()', num: -1 },
         { label: '最大值', isMini: false, value: 'Max()', num: -1 },
         { label: '最小值', isMini: false, value: 'Min()', num: -1 },
+        { label: '平方根', isMini: false, value: 'Sqrt()', num: -1 },
       ],
       CalculateRes: '',
       isloading: false,
@@ -606,13 +607,13 @@ export default {
         padding-bottom: 30px;
       }
       > main {
-        width: 765px;
+        width: 800px;
         > .ctrl-box {
           display: flex;
           margin: 20px 0;
           justify-content: space-between;
           > span {
-            width: 65px;
+            width: 64px;
             height: 35px;
             border: 1px solid #B2E4F9;
             border-radius: 5px;

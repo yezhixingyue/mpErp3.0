@@ -45,7 +45,7 @@ export default class Customer {
       StaffID: '',
       StaffName: '',
     },
-    SellArea: { // 经营地址
+    SellArea: { // 经营地址 ---- 此处为行政区域
       RegionalID: '',
       RegionalName: '',
       CityID: '',
@@ -81,7 +81,7 @@ export default class Customer {
 
   PolicyList = [] // 设置价格中的产品和等级
 
-  Location = { // 销售区域
+  SellArea = { // 销售区域
     RegionalID: '',
     RegionalName: '',
     CityID: '',

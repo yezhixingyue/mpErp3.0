@@ -1,7 +1,7 @@
 <template>
   <div class="mp-erp-layout-left-menu-comp-wrap" :class="isCollapse ? 'collapsed':'unfold'">
     <div class="logo-box" @click="onMenuItemClick(homeRouteInfo, '0')">
-      <img src="@/assets/images/logo.png" alt="" class="broad">
+      <img src="@/assets/images/logo.png" alt="" class="broad" width="127px" height="31px">
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu :default-active="defaultActive" :default-openeds='defaultOpeneds' background-color="#222B3A" :collapse="isCollapse"

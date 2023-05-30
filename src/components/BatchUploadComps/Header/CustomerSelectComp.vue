@@ -15,8 +15,8 @@
       <li class="level is-gray"  v-if="customer.Type && customer.Grade">
         <span>{{customer.Type.Second || ''}}{{customer.Grade.Second || ''}}</span>
       </li>
-      <li class="area is-gray" v-if="customer.Location">
-        <span>{{customer.Location.RegionalName || ''}}{{customer.Location.CityName || ''}}{{customer.Location.CountyName || ''}}</span>
+      <li class="area is-gray" v-if="customer.SellArea">
+        <span>{{customer.SellArea.RegionalName || ''}}{{customer.SellArea.CityName || ''}}{{customer.SellArea.CountyName || ''}}</span>
       </li>
       <li class="rechange" v-if="Amount || Amount === 0">
         <span>余额：</span>

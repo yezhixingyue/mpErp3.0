@@ -4,7 +4,7 @@
       <span>当前部件：{{$route.params.ProductName}} - {{$route.params.PartName}}</span>
       <div>
         <span class="label">子条件名称：</span>
-        <el-input v-model.trim="Name" size="small" maxlength="10" show-word-limit></el-input>
+        <el-input v-model.trim="Name" size="small" maxlength="15" show-word-limit></el-input>
       </div>
     </header>
     <main>
