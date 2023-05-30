@@ -21,13 +21,6 @@ module.exports = {
     'max-len': ['error', { code: 160 }],
     'import/no-cycle': 'off',
     'import/no-unresolved': 'off',
-    'import/extensions': ['error', 'always', {
-      js: 'never',
-      vue: 'ignorePackages',
-      jsx: 'never',
-      ts: 'never',
-      tsx: 'never',
-    }],
     '@typescript-eslint/no-var-requires': 0,
     'vue/multi-word-component-names': 'off',
     'import/prefer-default-export': 'off',
@@ -42,6 +35,7 @@ module.exports = {
     'object-curly-newline': 'off',
     'vuejs-accessibility/mouse-events-have-key-events': 'off',
     'vuejs-accessibility/form-control-has-label': 'off',
+    'import/extensions': 'off',
   },
   overrides: [
     {

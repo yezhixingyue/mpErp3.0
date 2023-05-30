@@ -11,9 +11,9 @@ export const RegTypeEnum = { // 注册方式
 };
 
 export const AuthStatusEnum = { // 认证状态
-  Initial: { ID: 0, Name: '未申请' },
+  Initial: { ID: 0, Name: '未认证' },
 
-  Apply: { ID: 1, Name: '申请中' },
+  Apply: { ID: 1, Name: '待审核' },
 
   Checked: { ID: 2, Name: '已通过' },
 

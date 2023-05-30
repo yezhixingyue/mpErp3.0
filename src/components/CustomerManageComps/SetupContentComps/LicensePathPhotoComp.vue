@@ -127,7 +127,7 @@ export default {
             return;
           }
           if (!this.cutting) {
-            const res = await this.api.uploadImage(file).catch(() => null);
+            const res = await this.api.uploadImage(file, 2).catch(() => null);
             if (res && res.data.Status === 1000) {
               this.$emit('change', res.data.Data.Url);
             }
@@ -144,7 +144,7 @@ export default {
     },
     async onCropSubmit(blob) {
       this.cropperVisible = false;
-      const res = await this.api.uploadImage(blob).catch(() => null);
+      const res = await this.api.uploadImage(blob, 2).catch(() => null);
       if (res && res.data.Status === 1000) {
         this.$emit('change', res.data.Data.Url);
       }

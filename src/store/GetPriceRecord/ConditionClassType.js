@@ -12,6 +12,24 @@ export default class RecordListConditonClass {
     Second: '',
   }
 
+  SellArea = { // 销售区域
+    RegionalID: '',
+    CityID: '',
+    SellArea: '',
+  }
+
+  ProductID = '';
+
+  ProductClass = { // 产品
+    First: '',
+    Second: '',
+  }
+
+  Amount = { // 成交价
+    First: '',
+    Second: '',
+  }
+
   Terminal = '';
 
   // initDateText = '今天';

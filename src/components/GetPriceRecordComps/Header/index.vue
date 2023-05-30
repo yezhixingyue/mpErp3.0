@@ -1,6 +1,32 @@
 <template>
   <header class="mp-erp-get-price-record-page-header-comp-wrap">
-    <div>
+    <div style="justify-content: flex-start;">
+      <EpCascaderByProduct
+      class="mr-12"
+      :getList="getRecordList"
+      :setCondition="setRequestObj"
+      :First="condition4RecordList.ProductClass.First"
+      :Second="condition4RecordList.ProductClass.Second"
+      :ProductID="condition4RecordList.ProductID"
+      :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]"
+      />
+      <EpCascaderByArea
+        class="mr-12"
+        :getList="getRecordList"
+        :setCondition="setRequestObj"
+        :RegionalID="condition4RecordList.SellArea.RegionalID"
+        :CityID="condition4RecordList.SellArea.CityID"
+        :CountyID="condition4RecordList.SellArea.CountyID"
+        :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
+      />
+      <MinMaxNum
+        class="mr-12"
+        :getList="getRecordList"
+        :setCondition="setRequestObj"
+        :First="condition4RecordList.Amount.First"
+        :Second="condition4RecordList.Amount.Second"
+        :typeList="[['Amount', 'First'],['Amount', 'Second']]"
+       />
       <OrderChannelSelector
         :options='selfHelpOrderTypeList'
         :requestFunc='getRecordList'
@@ -41,12 +67,18 @@ import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSele
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState } from 'vuex';
+import EpCascaderByProduct from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
+import MinMaxNum from '../../common/min-max-Num.vue';
+import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
   components: {
     SearchInputComp,
     LineDateSelectorComp,
     OrderChannelSelector,
+    EpCascaderByArea,
+    EpCascaderByProduct,
+    MinMaxNum,
     // ElDateRangeSelector,
   },
   computed: {
@@ -109,7 +141,7 @@ export default {
     padding-left: 20px;
     padding-right: 65px;
     // height: 30px;
-    &:first-of-type {
+    >div{
       height: 30px;
     }
     .mp-line-date-selector-wrap {

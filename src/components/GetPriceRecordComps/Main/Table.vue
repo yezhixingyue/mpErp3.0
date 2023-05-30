@@ -21,6 +21,15 @@
       show-overflow-tooltip
     ></el-table-column>
     <el-table-column
+      label="销售区域"
+      minWidth="160"
+      show-overflow-tooltip
+    >
+      <span class="is-gray" slot-scope="scope">
+        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+      </span>
+    </el-table-column>
+    <el-table-column
       prop="Customer.Mobile"
       label="联系电话"
       width="120"

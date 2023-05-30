@@ -33,6 +33,11 @@ module.exports = defineConfig({
         ws: true, // 开启websockets
         changeOrigin: true, // 开启代理
       },
+      '/License': { //
+        target: proxyUrl,
+        ws: true, // 开启websockets
+        changeOrigin: true, // 开启代理
+      },
     },
   },
   configureWebpack: {

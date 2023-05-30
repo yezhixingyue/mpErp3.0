@@ -10,7 +10,7 @@
       <el-input v-model.trim="ruleForm.QQ" maxlength="11" placeholder="客户传单的常用QQ号" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
     </el-form-item>
 
-    <el-form-item label="客户等级分类：" size="small">
+    <el-form-item label="客户分类：" size="small">
       <el-select v-model="ruleForm.Type.First" placeholder="请选择" @change="onTypeChange" :disabled='!PermissionObj.EditType && isEdit'>
         <el-option
           v-for="item in userTypeListNoneEmpty"
@@ -19,7 +19,9 @@
           :value="item.CategoryID">
         </el-option>
       </el-select>
-      <el-select v-model="ruleForm.Grade.First" placeholder="请选择" @change="onGradeChange" :disabled='!PermissionObj.EditType && isEdit'>
+    </el-form-item>
+    <el-form-item label="客户等级：" size="small">
+      <el-select v-model="ruleForm.Grade.First" placeholder="请选择" @change="onGradeChange" :disabled='!PermissionObj.EditGrade && isEdit'>
         <el-option
           v-for="item in userRankListNoneEmpty"
           :key="item.CategoryID"
@@ -29,7 +31,7 @@
       </el-select>
     </el-form-item>
     <el-form-item label="功能分类：" size="small">
-      <el-select v-model="ruleForm.Feature.First" placeholder="请选择" @change="onFeatureChange" :disabled='!PermissionObj.EditType && isEdit'>
+      <el-select v-model="ruleForm.Feature.First" placeholder="请选择" @change="onFeatureChange" :disabled='!PermissionObj.EditFunction && isEdit'>
         <el-option
           label="无"
           :value="-777">
@@ -45,11 +47,11 @@
     <el-form-item size="mini">
       <el-checkbox v-model="ruleForm.Config.IsAcceptNotify">接收未付款订单提醒</el-checkbox>
     </el-form-item>
-    <el-form-item label="企业名称：" prop="AuthenInfo.CompanyName" size="small">
+    <!-- <el-form-item label="企业名称：" prop="AuthenInfo.CompanyName" size="small">
       <el-input v-model.trim="ruleForm.AuthenInfo.CompanyName" maxlength="30"
        placeholder="须与营业执照上的名称一致" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
-    </el-form-item>
-    <el-form-item label="纳税人识别号：" size="small">
+    </el-form-item> -->
+    <!-- <el-form-item label="纳税人识别号：" size="small">
       <el-input v-model.trim="ruleForm.AuthenInfo.TaxID" maxlength="20" placeholder="营业执照上的纳税人识别号" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
     </el-form-item>
     <el-form-item label="法人：" size="small">
@@ -57,8 +59,8 @@
     </el-form-item>
     <el-form-item label="法人手机号：" prop="AuthenInfo.Mobile" size="small">
       <el-input v-model.trim="ruleForm.AuthenInfo.Mobile" maxlength="11" placeholder="法人的手机号码" :disabled='!PermissionObj.EditOther && isEdit'></el-input>
-    </el-form-item>
-    <el-form-item label="企业类型：" size="small">
+    </el-form-item> -->
+    <!-- <el-form-item label="企业类型：" size="small">
       <el-select v-model="ruleForm.AuthenInfo.Type" placeholder="请选择" :disabled='!PermissionObj.EditOther && isEdit'>
         <el-option
           v-for="item in CompanyTypeEnumList"
@@ -75,8 +77,8 @@
           :value="item.ID">
         </el-option>
       </el-select>
-    </el-form-item>
-    <el-form-item label="经营场所：" size="small">
+    </el-form-item> -->
+    <!-- <el-form-item label="经营场所：" size="small">
       <el-select v-model="ruleForm.AuthenInfo.Place" placeholder="请选择" :disabled='!PermissionObj.EditOther && isEdit'>
         <el-option
           v-for="item in CompanyPlaceEnumList"
@@ -85,7 +87,7 @@
           :value="item.ID">
         </el-option>
       </el-select>
-    </el-form-item>
+    </el-form-item> -->
     <!-- <el-form-item label="主营产品：" size="small">
       <el-button class="cancel-blue-btn" @click="onScopeArraySetupClick">选择主营产品</el-button>
       <ScopeArrayDialog v-model="ruleForm.AuthenInfo.ScopeArray" :visible.sync='visible' />
@@ -135,14 +137,11 @@ export default {
           { pattern: MobileReg, message: '手机号码格式不正确', trigger: 'blur' },
         ],
         QQ: [
+          { required: true, message: '请输入QQ号码', trigger: 'blur' },
           { min: 5, max: 11, message: 'QQ长度应在5 - 11位之间', trigger: 'blur' },
           { pattern: /^\d+$/, message: 'QQ应为纯数字组成', trigger: 'blur' },
         ],
         AuthenInfo: {
-          CompanyName: [
-            { required: true, message: '请输入企业名称', trigger: 'blur' },
-            { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' },
-          ],
           Mobile: [
             { min: 11, max: 11, message: '长度应为11位', trigger: 'blur' },
             { pattern: MobileReg, message: '手机号码格式不正确', trigger: 'blur' },

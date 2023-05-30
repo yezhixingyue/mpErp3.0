@@ -178,6 +178,7 @@ const api = {
   getFileServer(Position) {
     return instance.get(`/Api/FileServer?Position=${Position}`);
   },
+  // type 图片类型 为1时为营业执照会打水印
   uploadImage(data, type = 1) { // 图片上传  POST /Api/Upload/Image
     const formData = new FormData();
     formData.append('file', data);
@@ -1354,6 +1355,14 @@ const api = {
   getInvoiceManagePost(data) { // POST /Api/InvoiceManage/Post  邮寄
     return instance.post('/Api/InvoiceManage/Post', data);
   },
+  // ---------------企业认证api
+  getChangeAuthStatus(data) { // POST /Api/Company/Authentication/ChangeAuthStatus  企业认证审核
+    return instance.post('/Api/Company/Authentication/ChangeAuthStatus', data);
+  },
+  getAuthenticationEdit(data) { // POST /Api/Company/Authentication/Edit  企业认证编辑
+    return instance.post('/Api/Company/Authentication/Edit', data);
+  },
+
   // /Api/Heartbeat
   getHeartbeat() {
     return instance.get('/Api/Heartbeat', { closeLoading: true });

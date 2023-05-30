@@ -61,6 +61,22 @@ export default class Customer {
     LicensePath: '', // 营业执照照片地址
   }
 
+  CompanyAuthenticationInfo = {
+
+    ChangeWay: 2,
+    CheckTime: null,
+    CheckUser: { ID: '', Name: null },
+    ID: '',
+    Name: null,
+    CompanyName: '',
+    CreateTime: '',
+    CreditCode: '',
+    CreditPath: [],
+    CustomerID: '',
+    Remark: '',
+    Status: 0,
+  }
+
   RegType = RegTypeEnum.Manual.ID // 注册方式
 
   AuthStatus = AuthStatusEnum.Checked.ID // 认证状态

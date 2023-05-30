@@ -298,7 +298,7 @@ export default {
         {
           label: '销售区域',
           minWidth: '130px',
-          sortable: true,
+          // sortable: true,
           showOverflowTooltip: true,
           scope: (scope) => <span class="is-gray">{scope.row.SellArea}</span>,
           show: true,

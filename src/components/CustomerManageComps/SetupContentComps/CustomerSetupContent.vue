@@ -9,14 +9,14 @@
         <LeftSecondComp :customer="customer" ref="oAddressBox" :PermissionObj='PermissionObj' :isEdit='isEdit' />
       </main>
     </section>
-    <section class="right">
+    <!-- <section class="right">
       <header>
         <p class="mp-common-title-wrap">营业执照照片</p>
       </header>
       <main  v-if="customer">
         <RightPhotoComp :customer="customer" ref="oLicenseBox" :AllowEdit="PermissionObj.EditOther || !isEdit" />
       </main>
-    </section>
+    </section> -->
   </div>
 </template>
 
@@ -24,7 +24,7 @@
 import { mapState } from 'vuex';
 import LeftFirstComp from './LeftFirstComp.vue';
 import LeftSecondComp from './LeftSecondComp.vue';
-import RightPhotoComp from './RightPhotoComp.vue';
+// import RightPhotoComp from './RightPhotoComp.vue';
 
 export default {
   props: {
@@ -40,7 +40,7 @@ export default {
   components: {
     LeftFirstComp,
     LeftSecondComp,
-    RightPhotoComp,
+    // RightPhotoComp,
   },
   computed: {
     ...mapState('common', ['Permission']),
@@ -53,12 +53,12 @@ export default {
   },
   methods: {
     async submit() {
-      if (this.$refs.oInfoBox && this.$refs.oAddressBox && this.$refs.oLicenseBox) {
+      if (this.$refs.oInfoBox && this.$refs.oAddressBox) {
         const [infoResp, addressResp] = await Promise.all([this.$refs.oInfoBox.submitForm(), this.$refs.oAddressBox.submitForm()]).catch(() => []);
         if (!infoResp || !addressResp) return null;
         const { Address, AuthenInfo } = addressResp;
-        const LicensePath = this.$refs.oLicenseBox.LicensePath || '';
-        const _AuthenInfo = { ...infoResp.AuthenInfo, SellArea: AuthenInfo.SellArea, DetailAddress: AuthenInfo.DetailAddress, LicensePath };
+        // const LicensePath = this.$refs.oLicenseBox.LicensePath || '';
+        const _AuthenInfo = { ...infoResp.AuthenInfo, SellArea: AuthenInfo.SellArea, DetailAddress: AuthenInfo.DetailAddress };
         const temp = { ...infoResp, Address, AuthenInfo: _AuthenInfo };
         return temp;
       }

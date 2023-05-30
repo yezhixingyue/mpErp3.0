@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Customer from '@/store/customerManage/Customer';
 import CustomerSetupContent from '../../components/CustomerManageComps/SetupContentComps/CustomerSetupContent.vue';
 
@@ -18,6 +19,9 @@ export default {
   name: 'CustomerManageSetupPage',
   components: {
     CustomerSetupContent,
+  },
+  computed: {
+    ...mapState('customerManage', ['condition4DataList']),
   },
   data() {
     return {
@@ -55,6 +59,7 @@ export default {
             const title = isEdit ? '编辑成功' : '新增成功';
             const cb = () => {
               this.$store.commit('customerManage/setCustomerItemSave', [{ ...data, CustomerID: resp.data.Data }, isEdit]);
+              this.$store.dispatch('customerManage/getCustomerDataList', this.condition4DataList.Page);
               this.onGoBackClick();
             };
             this.messageBox.successSingle(title, cb, cb);

@@ -182,7 +182,7 @@
                     </el-tooltip>
                   </li>
                   <li v-if="showData.Weight">
-                    <span class="text-title">货品重量：</span>
+                    <span class="text-title">理论重量：</span>
                     <span class="text">{{showData.Weight}} 千克</span>
                   </li>
                   <li class="right-flex-wrap" v-if="showData.Remark">

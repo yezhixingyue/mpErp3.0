@@ -18,7 +18,7 @@
       <BasicInfoComp :customer='customer' @changeStatus='handleChangeStatus' :disabled='!PermissionObj.Freeze' />
       <FinanceInfoComp :customer='customer' @recharge='handleRecharge' :PermissionObj='PermissionObj' />
       <PriceInfoComp :customer='customer' @jump='onJumpClick("setPrice")' :PermissionObj='PermissionObj' />
-      <AuthenInfoComp :customer='customer' />
+      <AuthenInfoComp :customer='customer' :getCustomerData="getCustomerData" :isGetList="(bool) => isGetList = bool"/>
       <AddressInfoComp :customer='customer' />
     </ul>
     <SetPriceComp v-show="showType === 'setPrice'" :customer='customer' @jump='onJumpClick("detail")' ref="oPriceForm" />
@@ -63,6 +63,7 @@ export default {
   },
   computed: {
     ...mapState('common', ['Permission']),
+    ...mapState('customerManage', ['condition4DataList']),
     PermissionObj() {
       if (this.Permission?.PermissionList?.PermissionManageCustomer?.Obj) {
         return this.Permission.PermissionList.PermissionManageCustomer.Obj;
@@ -87,6 +88,7 @@ export default {
       customer: null,
       showType: '',
       loading: false,
+      isGetList: false, // 是否需要重新获取客户列表
     };
   },
   methods: {
@@ -114,10 +116,14 @@ export default {
     onOpen() { // 打开时初始化数据
       this.showType = this.openType;
       this.getCustomerData();
+      this.isGetList = false;
     },
     onClosed() {
       this.customer = null;
       this.showType = '';
+      if (this.isGetList) {
+        this.$store.dispatch('customerManage/getCustomerDataList', this.condition4DataList.Page);
+      }
     },
     async getCustomerData() { // 获取客户数据
       this.loading = true;
@@ -136,10 +142,12 @@ export default {
       if (!this.customer) return;
       this.customer.Status = Status;
       this.$store.commit('customerManage/setCustomerItemStatusChange', [this.customer.CustomerID, Status]);
+      this.isGetList = true;
     },
     handleRecharge(increment) { // 充值及退款
       this.customer.FundInfo.Amount = +this.customer.FundInfo.Amount + +increment;
       this.$store.commit('customerManage/setCustomerItemAmountChange', [this.customer.CustomerID, increment]);
+      this.isGetList = true;
     },
     onJumpClick(type = 'setPrice') { // 跳转价格详情 -- 切换showType
       this.showType = type;

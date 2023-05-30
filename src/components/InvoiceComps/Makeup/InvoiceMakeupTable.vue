@@ -24,6 +24,9 @@
     <el-table-column width="75px"  label="开票信息">
       <span slot-scope="scope" class="blue-span" @click="onInvoiceDetailClick(scope.row)">查看</span>
     </el-table-column>
+    <el-table-column width="85px"  label="开票总金额">
+      <span slot-scope="scope"> {{ scope.row.InvoiceAmount }} </span>
+    </el-table-column>
     <el-table-column width="130px" prop="_InvoiceTypeText" show-overflow-tooltip label="发票类型"></el-table-column>
     <el-table-column width="75px"  label="是否过公户">
       <span slot-scope="scope">{{scope.row.IsPassBusinessAccount === true ? '过公户' : (scope.row.IsPassBusinessAccount === false ? '不过公户' : '')}}</span>
