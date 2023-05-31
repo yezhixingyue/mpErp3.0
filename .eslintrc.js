@@ -36,6 +36,7 @@ module.exports = {
     'vuejs-accessibility/mouse-events-have-key-events': 'off',
     'vuejs-accessibility/form-control-has-label': 'off',
     'import/extensions': 'off',
+    'import/order': 'off',
   },
   overrides: [
     {
