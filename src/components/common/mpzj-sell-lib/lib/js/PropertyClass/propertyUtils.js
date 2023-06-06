@@ -67,12 +67,14 @@ export const PropertyFixedType = [
   { ID: 47, Name: '产品' },
   { ID: 48, Name: '重量' },
   { ID: 49, Name: '客户类型' },
-  { ID: 50, Name: '生产工厂' },
-  { ID: 51, Name: '客户等级' },
-  { ID: 52, Name: '销售区域' },
-  { ID: 53, Name: '印后工艺' },
-  { ID: 54, Name: '物料' },
-  { ID: 55, Name: '尺寸' },
+  { ID: 50, Name: '经营城市与收件城市' },
+  { ID: 51, Name: '产品原价' },
+  { ID: 52, Name: '客户等级' },
+  { ID: 53, Name: '销售区域' },
+  { ID: 54, Name: '印后工艺' },
+  { ID: 55, Name: '物料' },
+  { ID: 56, Name: '尺寸' },
+  { ID: 57, Name: '生产工厂' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表
