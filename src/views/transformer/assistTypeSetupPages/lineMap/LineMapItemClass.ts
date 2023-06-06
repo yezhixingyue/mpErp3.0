@@ -19,7 +19,7 @@ export class LineMapItemClass extends GeneralMapDataClass {
       .map(it => it?.Name || '')
       .filter(it => it)
       .join('、');
-    return str || '未知数据';
+    return str || '';
   }
 
   protected async getLeftList() {
