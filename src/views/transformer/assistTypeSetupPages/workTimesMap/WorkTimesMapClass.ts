@@ -20,7 +20,7 @@ export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IW
   public getItemMapResult(id: string, mapList: AssistMapItemClass[]) {
     const _mapList = mapList || this.mapDataList;
     const t = _mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);
-    if (!t) return '1次';
+    if (!t) return '';
     if (typeof t.Value === 'number') return `${t.Value}次`;
     return t.Target.map(_id => this.rightDataList.find(it => it.ID === _id)).map(it => (it ? `公式：${it.Name}` : '')).filter(it => it).join('、') || '1次';
   }

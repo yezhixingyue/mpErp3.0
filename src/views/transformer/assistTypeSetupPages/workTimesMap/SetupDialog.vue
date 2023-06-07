@@ -102,6 +102,9 @@ const onOpen = () => {
       numbericValue.value = t.Value;
     }
     radio.value = t.Target[0] || '';
+  } else {
+    isConst.value = true;
+    numbericValue.value = 1;
   }
 
   getDisplayList();
