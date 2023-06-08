@@ -12,6 +12,8 @@
     :allAdAreaTreeList="allAdAreaTreeList"
     :allProductClassify="allProductClassify"
     :allAreaTreeList="allAreaTreeList"
+    nameAtBefore
+    :showNameLabel="false"
     operationTitle="分配策略"
     rightText = '则'
     @setup='edit' @remove="remove"
