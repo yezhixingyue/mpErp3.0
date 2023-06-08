@@ -116,22 +116,22 @@ export const PagesNumberTypeEnums = {
 
 export const PrintColorTypeEnums = {
   C: {
-    ID: 0,
+    ID: 1,
     Name: 'C',
     remark: '青',
   },
   M: {
-    ID: 1,
+    ID: 2,
     Name: 'M',
     remark: '洋红',
   },
   Y: {
-    ID: 2,
+    ID: 3,
     Name: 'Y',
     remark: '黄',
   },
   K: {
-    ID: 3,
+    ID: 4,
     Name: 'K',
     remark: '黑',
   },

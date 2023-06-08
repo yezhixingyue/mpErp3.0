@@ -96,8 +96,8 @@ export interface IGetWorkingProcedureParams {
   OnlyShowNormal?: boolean
   ProductID: string
   InstanceID?: string
-  Page: number
-  PageSize: number
+  Page?: number
+  PageSize?: number
 }
 
 export interface IGetFormulaParams {

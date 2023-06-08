@@ -1,5 +1,5 @@
 import api from '@/api';
-import { AssistMappingTypeEnum, FixedType } from '@/pinia/modules/transformer/map/enum';
+import { AssistInfoTypeEnum, AssistMappingTypeEnum, FixedType } from '@/pinia/modules/transformer/map/enum';
 import { AssistMapDataClass } from '@/pinia/modules/transformer/map/AssistMapDataClass';
 import { AssistMapItemClass } from '@/pinia/modules/transformer/map/AssistMapItemClass';
 import { IPropertyType } from '@/pinia/modules/transformer/map/types';
@@ -118,9 +118,7 @@ export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IW
       ServerID: this.ServerID,
       ProductID: this.curPageData?.curEditItem?.ID || '',
       InstanceID: this.curPageData?.curPart?.ID || this.curPageData?.curEditItem?.ID || '',
-      Page: 1,
-      PageSize: 10000,
-      IncludeNote: true,
+      NoteType: AssistInfoTypeEnum.text,
     };
     const resp = await api.getWorkingProcedureWordAssistantList(temp).catch(() => null);
     return resp?.data.Status === 1000 ? resp.data.Data : [];
