@@ -38,6 +38,7 @@ module.exports = {
     'import/extensions': 'off',
     'import/order': 'off',
     '@typescript-eslint/no-this-alias': 'off',
+    'class-methods-use-this': 'off',
   },
   overrides: [
     {

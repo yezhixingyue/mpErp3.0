@@ -1472,6 +1472,10 @@ const api = {
   getWorkingProcedureWordAssistantList(data: IGetWorkingProcedureParams) {
     return instance.post('/Api/WorkingProcedure/WordAssistantList', data);
   },
+  /** PUT /Api/Folding/Setup  设置折手 */
+  getFoldingSetup(data) {
+    return instance.put('/Api/Folding/Setup', data);
+  },
   // getProductFormulaList(data: IGetFormulaParams) { // POST /Api/ProductFormula/List 获取公式列表  - 转换设置
   //   return instance.post('/Api/ProductFormula/List', data);
   // },

@@ -30,6 +30,8 @@ export enum menuTypeEnum {
   NumbericInfo = 'NumbericInfoCount',
   /** 合拼设置 */
   UnionMakeupLimit = 'UnionMakeupLimitCount',
+  /** 其它设置（主要为折手及其相关） */
+  OtherSetup = 'OtherSetup',
   /** 半成品设置 */
   SemiFinishedProduct = 'SemiFinishedProduct',
 }
@@ -57,7 +59,9 @@ export interface IPart {
   UseTimes: {
     MinValue: number
     MaxValue: number
-  }
+  },
+  /** 是否需要折手  */
+  NeedFolding: boolean
 }
 
 export interface IProduct extends Omit<IPart, 'UseTimes'> {
@@ -89,6 +93,14 @@ export interface ISemiFinishedSaveParams {
   ProductID: string
   InstanceID: string
   SemiFinishedID: string
+}
+
+/** 设置是否需要折手要提交的参数数据类型 */
+export interface IFoldingSetupSaveParams {
+  ServerID: string
+  ProductID: string
+  InstanceID: string
+  NeedFolding: boolean
 }
 
 export interface IGetWorkingProcedureParams {

@@ -27,7 +27,15 @@ export enum GenerelMappingTypeEnum {
   /** 工序映射 */
   NormalWorking = 3,
   /** 合拼禁用限制 */
-  UnionMakeupLimit = 4
+  UnionMakeupLimit = 4,
+  /** 贴序 帖标 */
+  SheetIndex = 5,
+  /** 爬移 */
+  Move = 6,
+  /** 叼口 */
+  FeedEdge = 7,
+  /** 铣背 */
+  Milling = 8,
 }
 
 /** 生产端辅助信息枚举类型： 文件 | 文字信息 | 数值 */
@@ -53,5 +61,31 @@ export enum UseModuleEnum {
   /** 组合生产线映射 */
   UnionLine = 21,
   /** 组合工序映射 */
-  UnionWorking = 21
+  UnionWorking = 21,
+  // /** 贴序 帖标映射 */
+  // SheetIndex = 21,
+  // /** 爬移映射 */
+  // Move = 21,
+  // /** 叼口映射 */
+  // FeedEdge = 21,
+  // /** 铣背映射 */
+  // Milling = 21,
+  /** 转换设置 - 其它设置 帖标、爬移、叼口、铣背共用 */
+  otherSetupGeneral = 21,
+}
+
+/** 爬移类型枚举 */
+export enum MoveTypeEnum {
+  /** 偏移 */
+  Skewing = 1,
+  /** 缩放 */
+  Zoom = 2
+}
+
+/** 叼口类型枚举 */
+export enum FeedEdgePosition {
+  /** 前叼口 */
+  Front = 1,
+  /** 后叼口 */
+  Back = 2,
 }

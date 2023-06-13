@@ -101,6 +101,10 @@ const onMenuClick = (type: menuTypeEnum) => {
       router.push('/unionMakeupLimitList');
       break;
 
+    case menuTypeEnum.OtherSetup: // 其它设置
+      router.push('/otherLimitList');
+      break;
+
     case menuTypeEnum.LineCount: // 生产线映射
       router.push({ name: 'mapLineList', params: { pageType: menuTypeEnum.LineCount } });
       break;

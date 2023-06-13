@@ -1,3 +1,4 @@
+import { Message } from 'element-ui';
 import message from './message';
 
 interface Ioptions {
@@ -56,5 +57,25 @@ export const MpMessage = {
     const canCloseOnPressEscape = true;
 
     message.successSingle(title, onOk, onCancel, canCloseOnPressEscape, msg, dangerouslyUseHTMLString);
+  },
+
+  dialogSuccess(options: Ioptions) {
+    const {
+      title, msg, onOk, onCancel, dangerouslyUseHTMLString,
+    } = options;
+
+    const needToast = false;
+
+    if (needToast) {
+      const canCloseOnPressEscape = true;
+      message.successSingle(title, onOk, onCancel, canCloseOnPressEscape, msg, dangerouslyUseHTMLString);
+    } else {
+      Message({
+        showClose: true,
+        message: title,
+        type: 'success',
+      });
+      if (onOk) onOk();
+    }
   },
 };

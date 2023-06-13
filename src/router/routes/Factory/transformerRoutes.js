@@ -122,6 +122,30 @@ const routes = [
     component: () => import('@/views/transformer/assistTypeSetupPages/UnionMakeupLimit/UnionMakeupLimitSetupPage.vue'),
   },
   {
+    path: '/otherLimitList',
+    name: 'otherLimitList',
+    meta: {
+      title: '其它设置',
+      hideMenu: true,
+      pageName: 'OtherSetupListView',
+      // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+      requiresAuth: true,
+    },
+    component: () => import('@/views/transformer/assistTypeSetupPages/otherSetupViews/OtherSetupListView.vue'),
+  },
+  {
+    path: '/otherLimitSetup',
+    name: 'otherLimitSetup',
+    meta: {
+      title: '其它设置',
+      hideMenu: true,
+      pageName: 'OtherSetupSetupView',
+      // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+      requiresAuth: true,
+    },
+    component: () => import('@/views/transformer/assistTypeSetupPages/otherSetupViews/OtherSetupSetupView.vue'),
+  },
+  {
     path: '/mapLineList/:pageType',
     name: 'mapLineList',
     meta: {
@@ -188,6 +212,12 @@ const routeTree = [
         name: 'unionMakeupLimitList',
         children: [
           { name: 'unionMakeupLimitSetup', children: [] },
+        ],
+      },
+      {
+        name: 'otherLimitList',
+        children: [
+          { name: 'otherLimitSetup', children: [] },
         ],
       },
       {

@@ -35,20 +35,6 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/CompanyManage/StaffManage/StaffManageSetupPage.vue'),
     },
-    /*  花名管理
-    ------------------------------------------ */
-    {
-      path: '/ScreenNameManage',
-      name: 'ScreenNameManage',
-      meta: {
-        title: '花名管理',
-        icon: 'el-icon-notebook-1',
-        pageName: 'ScreenNameManagePage',
-        PermissionInfo: ['PermissionManageRoster', 'HavePomission'],
-        requiresAuth: true,
-      },
-      component: () => import('../../../views/CompanyManage/ScreenNameManage/ScreenNameManagePage.vue'),
-    },
     /*  部门管理
     ------------------------------------------ */
     {
@@ -87,6 +73,20 @@ const routes = { // 基本设置
         requiresAuth: true,
       },
       component: () => import('../../../views/CompanyManage/JobPostManage/PostManageSetupPage.vue'),
+    },
+    /*  花名管理
+    ------------------------------------------ */
+    {
+      path: '/ScreenNameManage',
+      name: 'ScreenNameManage',
+      meta: {
+        title: '花名管理',
+        icon: 'el-icon-notebook-1',
+        pageName: 'ScreenNameManagePage',
+        PermissionInfo: ['PermissionManageRoster', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CompanyManage/ScreenNameManage/ScreenNameManagePage.vue'),
     },
   ],
 };
