@@ -31,6 +31,8 @@ export class GeneralMapItemClass {
 
   MoveType: '' | MoveTypeEnum = ''
 
+  NeedSetPlateSize = false
+
   constructor(data: Partial<GeneralMapItemClass>) {
     if (data) {
       restoreInitDataByOrigin(this, data);
