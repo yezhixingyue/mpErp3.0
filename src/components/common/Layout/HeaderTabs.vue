@@ -52,8 +52,10 @@
           </span>
           <el-dropdown-menu slot="dropdown" class="mp-erp-user-drop-down-wrap">
             <el-dropdown-item icon="el-icon-lock" command='changePwd'>修改密码</el-dropdown-item>
-            <el-dropdown-item v-if="docPermissions?.manage" command='manage'><i class="iconfont icon-wendangguanli1"></i>文档管理</el-dropdown-item>
-            <el-dropdown-item v-if="docPermissions?.read" command='document'><i class="iconfont icon-bangzhuzhongxin"></i>帮助中心</el-dropdown-item>
+            <el-dropdown-item v-if="docPermissions && docPermissions.manage" command='manage'>
+              <i class="iconfont icon-wendangguanli1"></i>文档管理</el-dropdown-item>
+            <el-dropdown-item v-if="docPermissions && docPermissions.read" command='document'>
+              <i class="iconfont icon-bangzhuzhongxin"></i>帮助中心</el-dropdown-item>
             <!-- <el-dropdown-item command='downtime' class="downtime">
               <img src="@/assets/images/downtime.png" alt="">
               <span>停机维护</span>
@@ -106,18 +108,21 @@ export default {
       },
     },
     showFileCheck() {
-      const obj = this.Permission?.PermissionList?.PermissionCheckFileContent || {};
-      return obj.HavePomission;
+      if (this.Permission && this.Permission.PermissionList && this.Permission.PermissionList.PermissionCheckFileContent) {
+        return this.Permission.PermissionList.PermissionCheckFileContent.HavePomission;
+      }
+
+      return false;
     },
     docPermissions() { // 文档权限
       if (!this.Permission) return null;
 
       const {
-        ReadLevel1, ReadLevel2, ReadLevel3, ReadLevel4, ReadLevel5,
+        ReadLevel1, ReadLevel2, ReadLevel3, ReadLevel4, ReadLevel5, Setup,
       } = this.Permission.PermissionList.PermissionManageArticle.Obj || {};
 
       return {
-        manage: this.Permission.PermissionList.PermissionManageArticle.Obj?.Setup,
+        manage: Setup,
         read: [ReadLevel1, ReadLevel2, ReadLevel3, ReadLevel4, ReadLevel5].includes(true),
       };
     },
