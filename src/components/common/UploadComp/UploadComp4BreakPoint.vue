@@ -118,8 +118,9 @@ export default { // 上传图片按钮
         if (!isNaN(progress)) this.percentage = progress;
       };
       if (file && _name) {
-        const key = await UploadFileByBreakPoint(file, _name, onUploadProgressFunc, 100);
-        if (key) {
+        const result = await UploadFileByBreakPoint(file, _name, onUploadProgressFunc, 100);
+
+        if (result && result.status) {
           // 上传成功
           this.successFunc(_name);
         } else {
