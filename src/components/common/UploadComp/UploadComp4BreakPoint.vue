@@ -125,7 +125,7 @@ export default { // 上传图片按钮
           this.successFunc(_name);
         } else {
           // 上传失败
-          this.massageBox.failSingleError('文件上传失败', '抱歉，文件上传失败，请重试!', this.failFunc);
+          this.massageBox.failSingleError('文件上传失败', result && result.error ? result.error : '抱歉，文件上传失败，请重试!', this.failFunc);
         }
         if (this.showProgress) this.showProgress = false;
         if (this.showLoading) this.showLoading = false;
