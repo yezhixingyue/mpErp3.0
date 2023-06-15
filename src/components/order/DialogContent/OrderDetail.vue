@@ -193,7 +193,8 @@
                   class="right-flex-wrap download-box"
                   v-if="showDownload && showData.FilePath && !showData.ProductParams.Attributes.IsSpotGoods && localPermission.DownloadFile">
                     <span class="text-title">文件下载：</span>
-                    <normalBtn @click.native="handleDownLoad(showData)" title="下载订单文件" />
+                    <!-- <normalBtn @click.native="handleDownLoad(showData)" title="下载订单文件" /> -->
+                    <a :href="showData.FilePath" target="_blank" class="link download">下载订单文件</a>
                   </li>
                   <li class="btn-box" v-if="showData.Status===35 && $route.name === 'orderManage'" :class="{hiddenFileUpload: !showData.FileCase}">
                     <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc" v-if="showData.FileCase" :CustomerID='showData.Customer.CustomerID' />
@@ -270,7 +271,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import normalBtn from '@/components/common/normalBtn.vue';
+// import normalBtn from '@/components/common/normalBtn.vue';
 import UploadComp4BreakPoint from '@/components/common/UploadComp/UploadComp4BreakPoint.vue';
 import ShowProductDetail from '@/assets/js/TypeClass/ShowProductDetail';
 import OrderDetailDisplayItem from '@/packages/OrderDetailDisplayItem';
@@ -366,7 +367,7 @@ export default {
     },
   },
   components: {
-    normalBtn,
+    // normalBtn,
     UploadComp4BreakPoint,
     OrderDetailDisplayItem,
     OrderDetailPriceBox,
@@ -713,14 +714,14 @@ export default {
           padding-bottom: 12px;
         }
         &.download-box {
-          > button {
+          > button, .link {
             margin: 0;
             height: 16px;
             line-height: 13px;
             // display: inline-block;
             border: none;
             padding: 0;
-            padding-bottom: 10px;
+            // padding-bottom: 10px;
             width: 6em;
             overflow: hidden;
             font-size: 12px;
@@ -728,23 +729,23 @@ export default {
             text-align: center;
             left: 0;
             box-shadow: none;
-            &::after {
-              position: absolute;
-              content: "";
-              width: 0%;
-              height: 1px;
-              left: 50%;
-              transform: translateX(-50%);
-              bottom: 0;
-              background-color: $--color-primary-light;
-              transition: width 0.3s;
-            }
+            color: #26bcf9;
+            text-decoration: none;
+            // &::after {
+            //   position: absolute;
+            //   content: "";
+            //   width: 0%;
+            //   height: 1px;
+            //   left: 50%;
+            //   transform: translateX(-50%);
+            //   bottom: 0;
+            //   background-color: $--color-primary-light;
+            //   transition: width 0.3s;
+            // }
             &:hover {
               color: $--color-primary-light;
               font-size: 12px !important;
-              &::after {
-                width: 100%;
-              }
+              text-decoration: underline;
             }
           }
         }

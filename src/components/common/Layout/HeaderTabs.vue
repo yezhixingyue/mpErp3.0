@@ -1,11 +1,11 @@
 <template>
   <header class="mp-erp-layout-header-comp-wrap">
     <div class="list" @contextmenu="onContextmenuclick" ref="oList">
-      <div class="collapse-ctrl-box">
+      <!-- <div class="collapse-ctrl-box">
         <i class="el-icon-s-fold" v-if="!isLeftCollapse" @click="onCollapseClick(true)"></i>
         <i class="el-icon-s-unfold" v-else @click="onCollapseClick(false)"></i>
-      </div>
-      <el-tabs
+      </div> -->
+      <!-- <el-tabs
         v-model="localTabsValue"
         type="border-card"
         @tab-remove="onCloseCurClick"
@@ -18,7 +18,20 @@
           :closable="item.closable"
         >
         </el-tab-pane>
-      </el-tabs>
+      </el-tabs> -->
+      <div class="menus">
+        <span
+          v-for="(item) in editableTabs.filter(it => it.closable)"
+          :key="item.name"
+          @click="localTabsValue = item.name"
+          :class="{active: localTabsValue === item.name}"
+          :style="`width:calc(${item.title.length}em + 55px)`"
+          :title="item.title"
+          >
+          <em>{{ item.title }}</em>
+          <i class="close el-icon-close" @click="onCloseCurClick(item.name)"></i>
+        </span>
+      </div>
       <el-tooltip
         popper-class="mp-common-tip-span-btn-popper-box"
         :open-delay="280"
@@ -43,6 +56,16 @@
         <li @click="onCloseAllClick">关闭所有</li>
       </ul>
       <div class="user">
+        <span class="internet" style="top: -1px;position: relative;">
+          <template v-if="!isIntranet">
+            <i class="iconfont icon-waibuwangluohuanjing"></i>
+            当前为外部网络环境
+          </template>
+          <template v-else>
+            <i class="iconfont icon-neibuwangluohuanjing"></i>
+            当前为内部网络环境
+          </template>
+        </span>
         <span class="menu ft-12 mr-18" v-if="showFileCheck" @click="handleFileCheck"> <i class="iconfont icon-pindianjiancha ft-16"></i> 检查文件内容</span>
         <el-dropdown trigger="click" v-if="Permission" @command='onCommand'>
           <span class="el-dropdown-link">
@@ -73,7 +96,7 @@
 import { mapMutations, mapState } from 'vuex';
 import { throttle } from '@/assets/js/utils/throttle';
 import TokenClass from '@/assets/js/utils/tokenManage';
-import sortable from '../../../assets/js/mixins/Sortable/Sortable';
+// import sortable from '../../../assets/js/mixins/Sortable/Sortable';
 import ChangePwdDialog from './ChangePwdDialog.vue';
 
 export default {
@@ -88,6 +111,7 @@ export default {
       contextmenuItemData: null,
       sortItem: null,
       visible4ChangePassword: false, // 修改密码弹窗打开状态
+      isIntranet: true,
     };
   },
   computed: {
@@ -194,11 +218,11 @@ export default {
       this.localTabsValue = '1';
     },
     tableSort() {
-      const tbody = document.querySelector('.mp-erp-layout-header-comp-wrap .list .el-tabs__nav-scroll > div ');
-      const ops = {
-        draggable: '.is-closable',
-      };
-      this.sortItem = sortable.create(tbody, ops);
+      // const tbody = document.querySelector('.mp-erp-layout-header-comp-wrap .list .el-tabs__nav-scroll > div ');
+      // const ops = {
+      //   draggable: '.is-closable',
+      // };
+      // this.sortItem = sortable.create(tbody, ops);
     },
     setIsLeftCollapse(bool) {
       this.$store.commit('layout/setIsLeftCollapse', bool);
@@ -244,8 +268,10 @@ export default {
   },
   mounted() {
     document.addEventListener('click', this.onDocumentClick);
-    this.tableSort();
+    // this.tableSort();
     this.setLeftCollapse = throttle(this.setIsLeftCollapse, 360);
+
+    this.isIntranet = !window.location.protocol.startsWith('https');
   },
   beforeDestroy() {
     document.removeEventListener('click', this.onDocumentClick);
@@ -258,47 +284,21 @@ export default {
   box-sizing: border-box;
   width: 100%;
   min-width: 400px;
-  > .info {
-    height: 48px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    > div.collapse-ctrl-box {
-      margin-right: 19px;
-      font-size: 20px;
-      width: 35px;
-      box-sizing: border-box;
-      > i {
-        cursor: pointer;
-      }
-    }
-    > svg {
-      margin-right: 10px;
-    }
-    > span {
-      font-size: 12px;
-      color: #999;
-      white-space: nowrap;
-    }
-    > i {
-      margin-left: 6px;
-      font-size: 15px;
-      color: #999;
-    }
-  }
+  background-color: #f5f5f5;
   > .list {
     display: flex;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
-    border-bottom: 1px solid #d8dce5;
+    // box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+    // border-bottom: 1px solid #d8dce5;
     align-items: center;
     height: 40px;
-    padding-top: 6px;
+    padding-top: 8px;
     position: relative;
-    padding-bottom: 2px;
-    padding-right: 245px;
+    // padding-bottom: 2px;
+    padding-right: 460px;
     width: 100%;
     box-sizing: border-box;
+    background-color: #191F2A;
+    margin-bottom: 7px;
     > div.collapse-ctrl-box {
       margin-right: 5px;
       font-size: 20px;
@@ -384,9 +384,9 @@ export default {
     }
     .clear-box {
       margin-left: 12px;
-      border: 1px solid #ddd;
+      border: 1px solid #ababab;
       padding: 2px;
-      color: #cbcbcb;
+      color: #ababab;
       border-radius: 2px;
       cursor: pointer;
       transition: 0.1s ease-in-out;
@@ -433,7 +433,7 @@ export default {
       position: absolute;
       flex: none;
       text-align: right;
-      width: 245px;
+      width: 460px;
       right: 0;
       top: 0;
       bottom: 0;
@@ -447,11 +447,12 @@ export default {
         position: relative;
         top: -1px;
         cursor: pointer;
-        color: #888e99;
+        color: #ddd;
         user-select: none;
         > i {
           font-weight: 700;
           vertical-align: -1px;
+          color: #26bcf9;
         }
         &:hover {
           color: #26bcf9;
@@ -461,7 +462,7 @@ export default {
         }
       }
       .el-dropdown-link {
-        color: #888e99;
+        color: #ddd;
         font-size: 13px;
         line-height: 21px;
         display: flex;
@@ -474,6 +475,7 @@ export default {
           font-size: 16px;
           margin-right: 4px;
           font-weight: 700;
+          color: #26bcf9;
         }
         span {
           margin: 0 4px;
@@ -484,6 +486,7 @@ export default {
         }
         i {
           font-weight: 700;
+          color: #26bcf9;
         }
         transition: color 0.12s ease-in-out;
         user-select: none;
@@ -492,6 +495,59 @@ export default {
         }
         &:active {
           color: #428dfa;
+        }
+      }
+
+      .internet {
+        color: #888e99;
+        margin-right: 50px;
+        font-size: 13px;
+        img {
+          vertical-align: -2px;
+          margin-right: 2px;
+          filter: grayscale(1);
+        }
+      }
+    }
+
+    > .menus {
+      color: #ababab;
+      font-size: 14px;
+      display: flex;
+      flex: 0 1 auto;
+      overflow: hidden;
+      height: 31px;
+      white-space: nowrap;
+      > span {
+        padding-left: 15px;
+        padding-right: 12px;
+        background-color: #32405A;
+        border-radius: 4px 4px 0px 0px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 2px;
+        cursor: pointer;
+        margin-right: 1px;
+        flex: 0 1 auto;
+        overflow: hidden;
+        i {
+          margin-left: 8px;
+          flex: none;
+          &:hover {
+            color: #26bcf9;
+          }
+        }
+        em {
+          flex: 0 1 auto;
+          overflow: hidden;
+        }
+        &:hover {
+          background-color: #454C5A;
+        }
+        &.active {
+          background-color: #f5f5f5;
+          color: #444444;
         }
       }
     }

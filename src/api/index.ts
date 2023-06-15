@@ -175,8 +175,8 @@ const api = {
 
   /* 图片与文件上传api
    ----------------------------------------------------------------------------------- */
-  getFileServer(Position, terminal = 1) {
-    return instance.get('/Api/FileServer', { params: { Position, terminal } });
+  getFileServer(Position) {
+    return instance.get('/Api/FileServer', { params: { Position } });
   },
   // type 图片类型 为1时为营业执照会打水印
   uploadImage(data, type = 1) { // 图片上传  POST /Api/Upload/Image

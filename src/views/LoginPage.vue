@@ -40,7 +40,14 @@
                     </i>
                   </el-input>
               </el-form-item>
-              <el-form-item>
+              <el-form-item class="btn">
+                  <div class="intranet">
+                    <label>使用网络：</label>
+                    <el-radio-group v-model="ruleForm.Position">
+                      <el-radio :label="0">内网</el-radio>
+                      <el-radio :label="255">外网</el-radio>
+                    </el-radio-group>
+                  </div>
                   <el-button type="info" @click="submitForm" size="medium">登录</el-button>
               </el-form-item>
             </el-form>
@@ -63,6 +70,7 @@ export default {
         Mobile: '',
         Terminal: 1,
         Site: 1,
+        Position: 0, // 内网0 外网255
       },
     };
   },
@@ -74,8 +82,15 @@ export default {
       temp.Password = Base64.encode(this.ruleForm.Password);
       const res = await this.api.getLogin(temp);
       if (res.data.Status === 1000 && res.data.Data) {
-        TokenClass.setToken(res.data.Data);
-        window.location = window.location.pathname;
+        const targetProtocol = this.ruleForm.Position === 0 ? 'http:' : 'https:';
+        const { origin, pathname, protocol } = window.location;
+        if (protocol === targetProtocol) {
+          TokenClass.setToken(res.data.Data);
+          window.location = window.location.pathname;
+          return;
+        }
+        const url = `${origin}${pathname}#/pathFromClient?url=/&token=${res.data.Data}`.replace(protocol, targetProtocol);
+        window.location = url;
       }
     },
     resetForm(formName) {
@@ -215,6 +230,23 @@ section.login-wrap {
                 }
                 &:active {
                   background-color: #cbcbcb;
+                }
+              }
+            }
+
+            .btn .el-form-item__content {
+              // height: 70px;
+              line-height: 30px;
+              button {
+                margin-top: 20px;
+              }
+              .intranet {
+                margin-top: 5px;
+                > label {
+                  font-size: 12px;
+                  color: #585858;
+                  margin-right: 10px;
+                  margin-left: 10px;
                 }
               }
             }
