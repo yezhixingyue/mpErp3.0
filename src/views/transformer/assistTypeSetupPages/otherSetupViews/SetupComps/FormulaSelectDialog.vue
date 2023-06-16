@@ -97,6 +97,7 @@ const onChange = (ID: string) => {
 
 const onOpen = () => {
   radio.value = props.curSelectedID;
+  if (!props.curSelectedID) isConst.value = true;
   getDisplayList();
 };
 

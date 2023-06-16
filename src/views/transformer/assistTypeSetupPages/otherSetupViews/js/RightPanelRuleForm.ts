@@ -35,6 +35,10 @@ export class RightPanelRuleForm {
     //   return {};
     // }
     if (this.Type === GenerelMappingTypeEnum.Move) { // 爬移
+      if (!this.MoveType && (this.MoveType as number) !== 0) {
+        MpMessage.error({ title: '保存失败', msg: '请设置爬移类型' });
+        return null;
+      }
       if (!/^\d+$/.test(`${this.MoveType}`)) {
         MpMessage.error({ title: '保存失败', msg: '爬移类型设置不正确' });
         return null;
@@ -49,7 +53,11 @@ export class RightPanelRuleForm {
           temp.Formula = this.Formula;
           temp.Value = null;
         } else {
-          if (!/^\d+$/.test(this.Value.toString()) || this.Value === 0) {
+          if (!this.Value && this.Value !== 0) {
+            MpMessage.error({ title: '保存失败', msg: '内爬移量未设置' });
+            return null;
+          }
+          if (!/^\d+$/.test(`${this.Value}`) || this.Value === 0) {
             MpMessage.error({ title: '保存失败', msg: '内爬移常数设置不正确' });
             return null;
           }
@@ -62,6 +70,10 @@ export class RightPanelRuleForm {
           temp.MoveOutFormula = this.MoveOutFormula;
           temp.MoveOutValue = null;
         } else {
+          if (!this.MoveOutValue && this.MoveOutValue !== 0) {
+            MpMessage.error({ title: '保存失败', msg: '外爬移量未设置' });
+            return null;
+          }
           if (!/^\d+$/.test(this.MoveOutValue.toString()) || this.MoveOutValue === 0) {
             MpMessage.error({ title: '保存失败', msg: '外爬移常数设置不正确' });
             return null;
@@ -73,6 +85,10 @@ export class RightPanelRuleForm {
     }
 
     if (this.Type === GenerelMappingTypeEnum.FeedEdge) { // 叼口
+      if (!this.Position && (this.Position as number) !== 0) {
+        MpMessage.error({ title: '保存失败', msg: '请选择叼口类型' });
+        return null;
+      }
       if (!/^\d+$/.test(`${this.Position}`)) {
         MpMessage.error({ title: '保存失败', msg: '叼口类型设置不正确' });
         return null;
@@ -83,7 +99,11 @@ export class RightPanelRuleForm {
         temp.Formula = this.Formula;
         temp.Value = null;
       } else {
-        if (!/^\d+$/.test(this.Value.toString()) || this.Value === 0) {
+        if (!this.Value && this.Value !== 0) {
+          MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸不能为空' });
+          return null;
+        }
+        if (!/^\d+$/.test(`${this.Value}`) || this.Value === 0) {
           MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸设置不正确' });
           return null;
         }
@@ -97,7 +117,11 @@ export class RightPanelRuleForm {
         temp.Formula = this.Formula;
         temp.Value = null;
       } else {
-        if (!/^\d+$/.test(this.Value.toString()) || this.Value === 0) {
+        if (!this.Value && this.Value !== 0) {
+          MpMessage.error({ title: '保存失败', msg: '铣背值不能为空' });
+          return null;
+        }
+        if (!/^\d+$/.test(`${this.Value}`) || this.Value === 0) {
           MpMessage.error({ title: '保存失败', msg: '铣背深度设置不正确' });
           return null;
         }
