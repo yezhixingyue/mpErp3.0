@@ -25,6 +25,8 @@ export abstract class GeneralMapDataClass extends MapDataClass<{ID: string, Name
 
   abstract Type: GenerelMappingTypeEnum
 
+  noLongerGetRightList = false // 如果在子类中为该属性赋值 且 设置为true 将不会再获取右侧列表数据
+
   /** 当前选中的左侧列表中的项 */
   curEditItem: GeneralMapItemClass | null = null
 
@@ -103,6 +105,9 @@ export abstract class GeneralMapDataClass extends MapDataClass<{ID: string, Name
    * @memberof UnionMakeupLimitItemClass
    */
   protected async getRightList() {
+    if (this.noLongerGetRightList) {
+      return this.rightDataList;
+    }
     const ProductID = this.curPageData?.curEditItem?.ID || '';
     const PartID = this.curPageData?.curPart?.ID || undefined;
 

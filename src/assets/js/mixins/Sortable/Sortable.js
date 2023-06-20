@@ -2297,7 +2297,7 @@
           break;
 
         case 'selectstart':
-          evt.preventDefault();
+          // evt.preventDefault();
           break;
       }
     },

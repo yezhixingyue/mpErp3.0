@@ -3,6 +3,7 @@ import api from '../../api';
 import Condition4ReviewList from './condition4ReviewProductList';
 import messageBox from '../../assets/js/utils/message';
 import ReviewAllocationListConditionClass from './TypeClass/ReviewAllocation/ReviewAllocationListConditionClass';
+import { PrintSideTypeEnums, PrintColorTypeEnums } from './reviewEnums';
 
 export default {
   namespaced: true,
@@ -107,13 +108,25 @@ export default {
         const IsSelected = PartIDList.includes(part.ID);
         const _part = part;
         _part.IsSelected = IsSelected;
-        if (IsSelected && !_part.SetupCountAttribute) {
-          _part.SetupCountAttribute = {
-            FilePages: 0,
-            OutputFile: 0,
-            Process: 0,
-            SizeNumber: 0,
-          };
+        if (IsSelected) {
+          if (!_part.SetupCountAttribute) {
+            _part.SetupCountAttribute = {
+              FilePages: 0,
+              OutputFile: 0,
+              Process: 0,
+              SizeNumber: 0,
+            };
+          }
+          if (!_part.PrintSideInfo) {
+            _part.PrintSideInfo = {
+              DoubleSide: null,
+              SideType: PrintSideTypeEnums.doubleSide.ID,
+              SingleSide: null,
+            };
+          }
+          if (!_part.DefaultPrintColor) {
+            _part.DefaultPrintColor = [PrintColorTypeEnums.C.ID, PrintColorTypeEnums.M.ID, PrintColorTypeEnums.Y.ID, PrintColorTypeEnums.K.ID];
+          }
         }
       };
       if (state.reviewProductList?.[state.curPanelData.itemIndex]) {

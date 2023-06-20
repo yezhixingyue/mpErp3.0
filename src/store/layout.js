@@ -2,6 +2,12 @@ export default {
   namespaced: true,
   state: {
     editableTabsValue: '1',
+    // editableTabs: [{
+    //   title: '首页',
+    //   name: '1',
+    //   path: '/',
+    //   closable: false,
+    // }],
     editableTabs: [{
       title: '首页',
       name: '1',

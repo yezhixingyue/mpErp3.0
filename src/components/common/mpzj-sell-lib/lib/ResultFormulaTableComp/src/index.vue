@@ -11,6 +11,7 @@
     <main :class="{ loading: loading || isLoading }">
       <div v-for="(item, i) in localTableData" :key="item.ID" @click="onRowClick(item)" :class="{active: activeRowID === item.ID}">
         <span class="sort">{{i + 1}}.</span>
+        <span v-if="showName && nameAtBefore" class="part-name" :title='item.Name'>{{ showNameLabel ? '名称：' : '' }}{{item.Name}}</span>
         <div class="condition">
           <el-tooltip effect="light" popper-class='common-property-condition-text-tips-box' placement="bottom-start" :visible-arrow='false'>
             <div slot="content">
@@ -68,7 +69,7 @@
           </span>
         </template>
         <span class="priority-box">优先级：{{item.Priority}}</span>
-        <span v-if="showName" class="part-name" :title='item.Name'>名称：{{item.Name}}</span>
+        <span v-if="showName && !nameAtBefore" class="part-name" :title='item.Name'>{{ showNameLabel ? '名称：' : '' }}{{item.Name}}</span>
         <div class="ctrl-menus-container" v-if="showCtrlMenus">
           <span @click="onSetupClick(item)">
             <img src="./images/Compile.png" alt="">
@@ -127,6 +128,14 @@ export default {
       default: false,
     },
     showName: {
+      type: Boolean,
+      default: false,
+    },
+    showNameLabel: { // 是否展示名称前的【名称】字段
+      type: Boolean,
+      default: true,
+    },
+    nameAtBefore: { // 是否把名称放置到最前面
       type: Boolean,
       default: false,
     },

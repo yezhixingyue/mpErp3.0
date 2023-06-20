@@ -1,7 +1,7 @@
 <template>
   <CommonDialogComp
     width="700px"
-    :title="`作业次数设置：${props.data.curEditItem?.Name}`"
+    title="选择公式"
     :visible.sync="localVisible"
     @open="onOpen"
     @submit="submit"
@@ -31,9 +31,9 @@
     </div>
     <div class="num">
       <el-radio :label="true" v-model="isConst">
-        <span class="title">常数：</span>
-        <el-input v-model.number="numbericValue" maxlength="9" size="small" @focus="isConst = true"></el-input>
-        <span class="is-gray ml-8">次</span>
+        <span class="title">常数</span>
+        <!-- <el-input v-model.number="numbericValue" maxlength="9" size="small" @focus="isConst = true"></el-input>
+        <span class="is-gray ml-8">次</span> -->
       </el-radio>
     </div>
   </CommonDialogComp>
@@ -43,23 +43,26 @@
 import { MpMessage } from '@/assets/js/utils/MpMessage';
 import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import { computed, ref } from 'vue';
-import { IWorkTimesRightType, WorkTimesMapClass } from './WorkTimesMapClass';
+import { INumbericRightType } from '../../numbericMap/NumbericMapClass';
 
 interface IDisplayItem {
   TypeName: string
-  List: IWorkTimesRightType[]
+  List: INumbericRightType[]
 }
 
 const props = defineProps<{
-  data: Omit<WorkTimesMapClass, 'getLeftList' | 'getRightList' | 'getMapList' | 'getData'>
+  visible: boolean,
+  FormulaList: INumbericRightType[]
+  curSelectedID: string
 }>();
+const emit = defineEmits(['update:visible', 'submit']);
 
 const localVisible = computed({
   get() {
-    return props.data.visible;
+    return props.visible;
   },
   set(val) {
-    props.data.setVisible(val);
+    emit('update:visible', val);
   },
 });
 
@@ -67,19 +70,17 @@ const radio = ref('');
 
 const isConst = ref(false);
 
-const numbericValue = ref<''|number>('');
-
 const DisplayList = ref<IDisplayItem[]>([]);
 
 const getDisplayList = () => {
   DisplayList.value = [];
   const fomulaItem = {
     TypeName: '公式',
-    List: props.data.rightDataList.filter(it => !it.PartID),
+    List: props.FormulaList.filter(it => !it.PartID),
   };
   const subFomulaItem = {
     TypeName: '子公式',
-    List: props.data.rightDataList.filter(it => it.PartID),
+    List: props.FormulaList.filter(it => it.PartID),
   };
   if (fomulaItem.List.length > 0) {
     DisplayList.value.push(fomulaItem);
@@ -95,18 +96,8 @@ const onChange = (ID: string) => {
 };
 
 const onOpen = () => {
-  const t = props.data.mapDataList.find(it => it.SourceID === props.data.curEditItem?.ID || it.SourceID === `${props.data.curEditItem?.ID}`);
-  if (t) {
-    if (t.Value || t.Value === 0) {
-      isConst.value = true;
-      numbericValue.value = t.Value;
-    }
-    radio.value = t.Target[0] || '';
-  } else {
-    isConst.value = true;
-    numbericValue.value = 1;
-  }
-
+  radio.value = props.curSelectedID;
+  if (!props.curSelectedID) isConst.value = true;
   getDisplayList();
 };
 
@@ -116,40 +107,25 @@ const cancel = () => {
 
 const closed = () => {
   radio.value = '';
-  numbericValue.value = '';
   isConst.value = false;
 };
 
 const submit = () => {
-  let data;
-  if (isConst.value) {
-    data = numbericValue.value;
-    // 此处进行校验 必须为正整数
-    if (data === 0) {
-      MpMessage.error({ title: '保存失败', msg: '常数不能等于0' });
-      return;
-    }
-    if (!data) {
-      MpMessage.error({ title: '保存失败', msg: '请输入常数' });
-      return;
-    }
-    if (!/^\d+$/.test(`${data}`) || typeof data !== 'number') {
-      MpMessage.error({ title: '保存失败', msg: '输入的数值不正确，必须为正整数' });
-      return;
-    }
-  } else {
-    data = radio.value;
-    const ids = props.data.rightDataList.map(it => it.ID);
-    if (ids.length > 0 && !ids.includes(data)) data = '';
+  let id: null | string = null;
+  let temp = null;
+  if (!isConst.value) {
+    id = radio.value;
+    const t = props.FormulaList.find(it => it.ID === id);
+    if (!t) id = '';
     // 此处进行校验 必须有值
-    if (!data) {
+    if (!id) {
       MpMessage.error({ title: '保存失败', msg: '未设置内容' });
       return;
     }
-    data = [data];
+    temp = { ID: id, Name: t.Name };
   }
 
-  props.data.saveItem(data);
+  emit('submit', temp);
 };
 
 </script>
@@ -180,7 +156,7 @@ const submit = () => {
       > .item-content {
         > label {
           margin-right: 8px;
-          margin-bottom: 3px;
+          margin-bottom: 8px;
           .el-radio__label {
             font-size: 12px;
             display: inline-block;

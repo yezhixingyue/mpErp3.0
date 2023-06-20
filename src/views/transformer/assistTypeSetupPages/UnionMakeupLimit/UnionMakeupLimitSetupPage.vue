@@ -73,7 +73,7 @@ const onSubmitClick = () => {
 const checked = ref(false);
 
 onMounted(() => {
-  checked.value = (GeneralMapDataClassData.value.curEditItem as unknown as UnionMakeupLimitItemClass).NeedSetPlateSize;
+  checked.value = (GeneralMapDataClassData.value.curEditItem as unknown as UnionMakeupLimitItemClass)?.NeedSetPlateSize || false;
 });
 
 </script>

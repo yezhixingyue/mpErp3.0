@@ -6,6 +6,34 @@
   "description": "mpzj后台管理系统图标集合",
   "glyphs": [
     {
+      "icon_id": "36014206",
+      "name": "内部网络环境",
+      "font_class": "neibuwangluohuanjing",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "36014207",
+      "name": "外部网络环境",
+      "font_class": "waibuwangluohuanjing",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    },
+    {
+      "icon_id": "580060",
+      "name": "帮助中心",
+      "font_class": "bangzhuzhongxin",
+      "unicode": "e78f",
+      "unicode_decimal": 59279
+    },
+    {
+      "icon_id": "26851705",
+      "name": "文档管理",
+      "font_class": "wendangguanli1",
+      "unicode": "ea41",
+      "unicode_decimal": 59969
+    },
+    {
       "icon_id": "23376809",
       "name": "频点检查",
       "font_class": "pindianjiancha",

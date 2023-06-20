@@ -176,7 +176,7 @@ const api = {
   /* 图片与文件上传api
    ----------------------------------------------------------------------------------- */
   getFileServer(Position) {
-    return instance.get(`/Api/FileServer?Position=${Position}`);
+    return instance.get('/Api/FileServer', { params: { Position } });
   },
   // type 图片类型 为1时为营业执照会打水印
   uploadImage(data, type = 1) { // 图片上传  POST /Api/Upload/Image
@@ -1471,6 +1471,10 @@ const api = {
   /** POST /Api/WorkingProcedure/WordAssistantList  获取工序所含文字辅助信息列表 */
   getWorkingProcedureWordAssistantList(data: IGetWorkingProcedureParams) {
     return instance.post('/Api/WorkingProcedure/WordAssistantList', data);
+  },
+  /** PUT /Api/Folding/Setup  设置折手 */
+  getFoldingSetup(data) {
+    return instance.put('/Api/Folding/Setup', data);
   },
   // getProductFormulaList(data: IGetFormulaParams) { // POST /Api/ProductFormula/List 获取公式列表  - 转换设置
   //   return instance.post('/Api/ProductFormula/List', data);

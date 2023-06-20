@@ -8,7 +8,6 @@ import UploadFileByBreakPoint from '../assets/js/upload/UploadFileByBreakPoint';
 
 // import { MessageBox } from 'element-ui';
 
-
 /**
  * vuex 售后服务模块状态管理
  */

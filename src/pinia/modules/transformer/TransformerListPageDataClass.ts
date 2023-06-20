@@ -4,6 +4,7 @@ import { MpMessage } from '@/assets/js/utils/MpMessage';
 import { getTwoLevelsClassifyDataFromList, IProductClassItem, IProductClassLv1ListItem } from './utils';
 import { TransformerListConditionClass } from './TransformerListConditionClass';
 import {
+  IFoldingSetupSaveParams,
   IPart, IPartChangeParams, IProduct, ISemiFinishedSaveParams,
 } from './types';
 
@@ -136,6 +137,27 @@ export class TransformerListPageDataClass {
         onOk: cb,
         onCancel: cb,
       });
+    }
+  }
+
+  /** 设置是否需要折手 */
+  async getFoldingSetup(NeedFolding: boolean, callback: () => void) {
+    const temp: IFoldingSetupSaveParams = {
+      ServerID: this.ServerID,
+      ProductID: this.curEditItem.ID,
+      InstanceID: this.curInstance?.ID,
+      NeedFolding,
+    };
+    const resp = await api.getFoldingSetup(temp).catch(() => null);
+
+    if (resp?.data.Status === 1000) {
+      const cb = () => { // 处理数据变动
+        if (this.curInstance) {
+          this.curInstance.NeedFolding = NeedFolding;
+        }
+        callback();
+      };
+      MpMessage.dialogSuccess({ title: '设置成功', onOk: cb, onCancel: cb });
     }
   }
 }

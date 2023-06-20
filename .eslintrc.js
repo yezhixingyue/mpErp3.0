@@ -37,6 +37,8 @@ module.exports = {
     'vuejs-accessibility/form-control-has-label': 'off',
     'import/extensions': 'off',
     'import/order': 'off',
+    '@typescript-eslint/no-this-alias': 'off',
+    'class-methods-use-this': 'off',
   },
   overrides: [
     {

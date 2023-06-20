@@ -27,6 +27,10 @@
         <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.WordsInfo, it.ID)">文字信息映射 ({{it.WordsInfoCount}})</span>
         <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.NumbericInfo, it.ID)">数值映射 ({{it.NumbericInfoCount}})</span>
         <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.UnionMakeupLimit, it.ID)">合拼设置 ({{it.UnionMakeupLimitCount}})</span>
+        <span class="blue-span" v-if="HavePomission">
+          <i @click="onClick(menuTypeEnum.OtherSetup, it.ID)">其它设置：</i>
+          <i class="gray">{{ it.NeedFolding ? '需要折手' : '不需要折手' }}</i>
+        </span>
         <span>
           产出半成品：
           <i class="blue-span" @click="onClick(menuTypeEnum.SemiFinishedProduct, it.ID)" v-if="HavePomission">设置</i>
@@ -112,6 +116,7 @@ const selectedPartList = computed(() => {
         MinValue: 1,
         MaxValue: 1,
       },
+      NeedFolding: props.item.NeedFolding,
     };
     list.unshift(temp);
   }
