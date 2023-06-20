@@ -74,7 +74,7 @@ export default {
     ...mapState('packageModule', ['packageDataList', 'isTableDataLoading']),
   },
   methods: {
-    ...mapMutations('orderModule', ['setOrderListDialogShow', 'setOrderListDialogHide', 'setCurExpressID']),
+    ...mapMutations('orderModule', ['setOrderListDialogShow', 'setOrderListDialogHide', 'setCurExpressID', 'setCurExpressNumber']),
     ...mapMutations('common', ['setIsLoading']),
     ...mapActions('orderModule', ['getPackageListByExressID', 'getExpressProgress']),
     setHeight() {
@@ -96,6 +96,7 @@ export default {
       switch (id) {
         case 0:
           str = 'express';
+          this.setCurExpressNumber(data.ExpressNo);
           this.setOrderListDialogShow(str);
           await this.getExpressProgress().catch((error) => {
             key = false;

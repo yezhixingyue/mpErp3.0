@@ -1475,6 +1475,9 @@ const api = {
   // getProductFormulaList(data: IGetFormulaParams) { // POST /Api/ProductFormula/List 获取公式列表  - 转换设置
   //   return instance.post('/Api/ProductFormula/List', data);
   // },
+  getPackageProgress(packageID) { // GET /Api/Package/Progress 通过包裹号查询包裹配送进度
+    return instance.get(`/Api/Package/Progress?packageID=${packageID}`, { closeLoading: true });
+  },
 };
 
 export default api;

@@ -122,6 +122,9 @@ export default {
     /* 当前在查看订单的运单ID  用于tab切换时获取网络请求数据
     -------------------------------*/
     curExpressID: '',
+    /* 当前在查看订单的运单号  用于配送进度展示
+    -------------------------------*/
+    ExpressNo: '',
     /* 是否可以加载更多 及  表格加载项是否显示状态
     -------------------------------*/
     orderListCanLoadMore: false,
@@ -385,6 +388,11 @@ export default {
     -------------------------------*/
     setCurExpressID(state, orderID) {
       state.curExpressID = orderID;
+    },
+    /* 弹窗 -- 设置包裹对应的包裹号
+    -------------------------------*/
+    setCurExpressNumber(state, ExpressNo) {
+      state.ExpressNo = ExpressNo;
     },
     /* 设置售后弹窗展示状态
     -------------------------------*/

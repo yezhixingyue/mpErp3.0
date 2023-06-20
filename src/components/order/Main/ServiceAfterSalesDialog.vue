@@ -373,6 +373,8 @@ export default {
         this.messageBox.failSingleError('提交失败', '请选择问题类型');
       } else if (this.ruleForm.QuestionRemark === '') {
         this.messageBox.failSingleError('提交失败', '请输入问题描述');
+      } else if (this.ruleForm.QuestionRemark.length < 3 || this.ruleForm.QuestionRemark.length > 300) {
+        this.messageBox.failSingleError('提交失败', '请输入3到300字的问题描述');
       } else if (this.ruleForm.ContactName === '') {
         this.messageBox.failSingleError('提交失败', '请输入联系人');
       } else if (this.ruleForm.Mobile === '') {

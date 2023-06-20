@@ -32,7 +32,7 @@
           <tr>
             <td>订单编号</td>
             <td>{{dataInfo.Order.OrderID}}
-              <span class="details" @click="OrderInfo">查看</span>已售后
+              <span class="details" @click="OrderInfo(dataInfo.Order,1)">查看</span>已售后
               <span class="number">{{dataInfo.Order.OrderAfterSaleNumber}} </span>次
               <span class="details" @click="onDetailClick('order')">详情</span></td>
             <td>下单时间</td>
@@ -267,7 +267,8 @@
       </template> -->
 
       <!-- 查看订单详情 -->
-    <OrderListDialog @DialogHide='orderListDialogData.orderListDialogShow=false' :orderListDialogData="orderListDialogData"/>
+    <!-- <OrderListDialog @DialogHide='orderListDialogData.orderListDialogShow=false' :orderListDialogData="orderListDialogData"/> -->
+    <OrderListDialog />
 
     <el-dialog :title="curDialogTitle" :visible.sync="dialogVisible" width="800px" append-to-body top="10vh" :modal='false'
       custom-class="mp-service-detail-cord-dia mp-img-style-header" :before-close="handleClose">
@@ -312,7 +313,9 @@
 
 <script>
 import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index';
-import OrderListDialog from '@/components/Feedback/OrderListDialog.vue';
+// import OrderListDialog from '@/components/Feedback/OrderListDialog.vue';
+import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
+
 import normalBtn from '@/components/common/normalBtn.vue';
 
 export default {
@@ -405,9 +408,10 @@ export default {
       }
       return str;
     },
-    OrderInfo() {
-      this.orderListDialogData.orderListDialogShow = true;
-      this.orderListDialogData.OrderID = this.dataInfo.Order.OrderID;
+    async OrderInfo(data, id) {
+      const orderItem = { ...data };
+      orderItem.ProductName = data.Product.ProductName;
+      this.onMenuClick(orderItem, id);
     },
     // 售后详情
     async onDetailClick(type) {
@@ -546,8 +550,10 @@ export default {
         height: 60px;
       }
     }
-    header{
-      padding: 20px 0 15px 0;
+    >div{
+      >header{
+        padding: 20px 0 15px 0;
+      }
     }
     .table{
       width: 800px;

@@ -9,7 +9,7 @@
               <span v-if="data.showLine" class="line"></span>
           </section>
           <section class="right-progress-wrap">
-                <!-- <span v-if="data.title" class="title">{{data.title}}</span> -->
+                <span v-if="data.StatusName" class="title">{{data.StatusName}}</span>
                 <span>{{data.expressDetail}}</span>
                 <span v-if="data.operator" class="operator"><i>/</i>{{data.operator}}</span>
           </section>

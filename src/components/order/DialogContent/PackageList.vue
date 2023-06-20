@@ -31,18 +31,21 @@
             {{scope.row.UnPaidAmount}}元
           </template>
         </el-table-column>
+        <el-table-column min-width="67" label="实际运输单位">
+          <template  slot-scope="scope">
+            {{scope.row.UnPaidAmount}}元
+          </template>
+        </el-table-column>
         <el-table-column width="74" label="状态">
           <template slot-scope="scope">
             {{scope.row.Status === 0
              ? '' : scope.row.Status | formatTransportStatus}}
           </template>
         </el-table-column>
-        <el-table-column prop="handle" label="操作">
-          <div class="handle-menus" >
-          <template v-if="Permission.PermissionList.PermissionManageOrder.Obj.ApplyAfterSales">
-            <ImgBtn disabled :url='img2' />
+        <el-table-column width="66" prop="handle" label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" @click="onExpressClick(scope.row)">配送进度</el-button>
           </template>
-          </div>
         </el-table-column>
       </el-table>
     </div>
@@ -63,24 +66,58 @@
         </li>
       </ul>
     </footer>
+    <CommonDialogComp
+      :visible="visible"
+      v-if="visible"
+      top='18vh'
+      title="配送进度"
+      width="760px"
+      @cancle="handleBeforeDiaClose"
+      @closed='handleBeforeDiaClose'
+      append-to-body
+      :showSubmit="false"
+      cancelText="关闭"
+    >
+      <ul class="order-list-express-progress-dialog-wrap" v-loading='loading' element-loading-text="正在加载中...">
+        <template v-if="list.length > 0">
+          <template v-if="list.length > 0">
+            <li class="express-num" v-if="BillNo">
+              运单号：{{BillNo}}
+            </li>
+          </template>
+          <MiniProgressItem v-for="(item,i) in list" :key='item.Status + "-" + i' :data='item' />
+        </template>
+        <li v-else-if='!loading' class="no-info-box">
+          暂无信息
+        </li>
+      </ul>
+    </CommonDialogComp>
   </div>
 </template>
 
 <script>
+import CommonDialogComp from '@/packages/CommonDialogComp';
 import { mapState, mapMutations, mapActions } from 'vuex';
-import ImgBtn from '@/components/common/ImgBtn.vue';
+// import ImgBtn from '@/components/common/ImgBtn.vue';
+import MiniProgressItem from '@/components/common/MiniProgressItem.vue';
 
 const img1 = require('@/assets/images/service.png');
 const img2 = require('@/assets/images/servicestop.png');
 
 export default {
   components: {
-    ImgBtn,
+    MiniProgressItem,
+    CommonDialogComp,
   },
   data() {
     return {
       img1,
       img2,
+      visible: false,
+      BillNo: '',
+      dataList: [],
+      curPackageID: '',
+      loading: false,
     };
   },
   computed: {
@@ -88,6 +125,30 @@ export default {
     ...mapState('common', ['Permission']),
     showCrtl() {
       return this.$route.name !== 'feedback';
+    },
+    list() {
+      if (!this.dataList) return [];
+      const arr = [];
+      this.dataList.forEach((it, i) => {
+        const obj = {};
+        if (it.Operator) obj.operator = it.Operator;
+        obj.showLine = true;
+        if (i === 0) obj.showLine = false;
+        if (i === this.dataList.length - 1) obj.isNewest = true;
+        if (it.Description) obj.expressDetail = it.Description;
+        if (it.OperateTime) {
+          const [year, afterTime] = it.OperateTime.split('T');
+          obj.afterTime = afterTime;
+          obj.year = year;
+        }
+        arr.push(obj);
+      });
+      const newArr = arr.map((item, index) => {
+        const temp = item;
+        if (index < arr.length - 1 && temp.year === arr[index + 1].year) temp.year = '';
+        return temp;
+      }).reverse();
+      return newArr;
     },
   },
   methods: {
@@ -112,6 +173,28 @@ export default {
         worth += it[item];
       });
       return `${worth.toFixed(1)}元`;
+    },
+    async getExpressDetail(id) {
+      if (!id || id === this.curPackageID) return;
+      this.dataList = [];
+      let key = true;
+      this.loading = true;
+      const res = await this.api.getPackageProgress(id).catch(() => { key = false; });
+      this.loading = false;
+      if (key && res && res.data.Status === 1000) {
+        this.dataList = res.data.Data;
+        this.curPackageID = id;
+      }
+    },
+    onExpressClick({ ID, Logistics: { BillNo } }) {
+      console.log(BillNo);
+      this.BillNo = BillNo;
+      this.visible = true;
+      this.getExpressDetail(ID);
+    },
+    handleBeforeDiaClose() {
+      this.visible = false;
+      this.BillNo = '';
     },
     // async jump2Service(data) {
     //   let key = true;
@@ -213,6 +296,9 @@ export default {
         word-break: keep-all !important;
         padding: 0 5px;
       }
+      .el-button{
+        font-size: 12px;
+      }
     }
   }
 
@@ -231,6 +317,30 @@ export default {
           }
         }
       }
+    }
+  }
+  .order-list-express-progress-dialog-wrap {
+    min-height: 260px;
+    max-height: 420px;
+    overflow: auto;
+    .el-loading-spinner {
+      top: 30%;
+    }
+    .no-info-box {
+      text-align: center;
+      padding-top: 75px;
+      color: #888;
+      font-size: 13px;
+    }
+    >.express-num{
+      font-size: 16px;
+      font-weight: 700;
+      padding-left: 124px;
+      line-height: 1em;
+      margin-bottom: 20px;
+    }
+    .left-title-wrap {
+      width: 200px;
     }
   }
 }

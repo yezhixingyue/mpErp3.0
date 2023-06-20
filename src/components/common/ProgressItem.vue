@@ -156,9 +156,11 @@ export default {
               }
             }
             .operator{
+              font-family:"宋体";
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
+              vertical-align: middle;
             }
             > i{
               margin: 0 7px 0 5px;

@@ -1,6 +1,11 @@
 <template>
   <ul class="order-list-express-progress-wrap">
     <template v-if="list.length > 0">
+      <template v-if="list.length > 0">
+        <li class="express-num">
+          运单号：{{ExpressNo}}
+        </li>
+      </template>
       <MiniProgressItem v-for="(item,i) in list" :key='item.Status + "-" + i' :data='item' />
     </template>
     <li v-else class="no-info-box">
@@ -18,7 +23,7 @@ export default {
     MiniProgressItem,
   },
   computed: {
-    ...mapState('orderModule', ['expressProgressData', 'OrderStatusList']),
+    ...mapState('orderModule', ['ExpressNo', 'expressProgressData', 'OrderStatusList']),
     list() {
       if (!this.expressProgressData) return [];
       const arr = [];
@@ -62,6 +67,16 @@ export default {
       text-align: center;
       font-size: 13px;
       margin-top: 100px;
+    }
+    >.express-num{
+      font-size: 16px;
+      font-weight: 700;
+      padding-left: 194px;
+      line-height: 1em;
+      margin-bottom: 20px;
+    }
+    .left-title-wrap {
+      width: 200px;
     }
   }
 </style>

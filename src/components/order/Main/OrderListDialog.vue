@@ -136,7 +136,7 @@ export default {
           }
           break;
         case 'second': // 包裹列表 - 双页
-          if (this.$route.name === 'orderManage' || this.$route.name === 'feedback') {
+          if (this.$route.name === 'orderManage' || this.$route.name === 'FeedbackInfo' || this.$route.name === 'ServiceInfo') {
             if (this.dialogPackageData.length === 0
               || this.dialogPackageData[0].Order.OrderID !== this.curOrderID
               || new Date().getTime() - this.packageListDateByOrderSetTime > this.requestDuration) {
@@ -178,7 +178,7 @@ export default {
     },
   },
   mounted() {
-    if (this.$route.name === 'orderManage' || this.$route.name === 'feedback') {
+    if (this.$route.name === 'orderManage' || this.$route.name === 'FeedbackInfo' || this.$route.name === 'ServiceInfo') {
       this.showDetail = true;
       this.showService = true;
     }
@@ -202,14 +202,14 @@ export default {
       left: 0px;
       z-index: 99;
     }
-    .el-dialog__header {
+    >.el-dialog__header {
       height: 25px;
       padding: 0;
       > button {
         top: 10px;
       }
     }
-    .el-dialog__body {
+    >.el-dialog__body {
       padding: 0 !important;
       .order-list-tabs-box {
         .el-tabs__header {
@@ -247,7 +247,7 @@ export default {
         }
       }
     }
-    .el-dialog__footer{
+    >.el-dialog__footer{
       padding-top: 25px;
       position: absolute;
       left: 50%;
