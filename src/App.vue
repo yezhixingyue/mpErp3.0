@@ -16,6 +16,7 @@ import LeftMenu from './components/common/Layout/LeftMenu.vue';
 import HeaderTabs from './components/common/Layout/HeaderTabs.vue';
 
 export default {
+
   components: {
     LeftMenu,
     HeaderTabs,
