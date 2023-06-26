@@ -57,8 +57,8 @@ export class RightPanelRuleForm {
             MpMessage.error({ title: '保存失败', msg: '内爬移量未设置' });
             return null;
           }
-          if (!/^\d+$/.test(`${this.Value}`) || this.Value === 0) {
-            MpMessage.error({ title: '保存失败', msg: '内爬移常数设置不正确' });
+          if (!/^\d+(.\d{1})?$/.test(`${this.Value}`) || this.Value === 0) {
+            MpMessage.error({ title: '保存失败', msg: '内爬移常数设置不正确，必须为大于0的数字且最多1位小数' });
             return null;
           }
           temp.Formula = null;
@@ -74,8 +74,8 @@ export class RightPanelRuleForm {
             MpMessage.error({ title: '保存失败', msg: '外爬移量未设置' });
             return null;
           }
-          if (!/^\d+$/.test(this.MoveOutValue.toString()) || this.MoveOutValue === 0) {
-            MpMessage.error({ title: '保存失败', msg: '外爬移常数设置不正确' });
+          if (!/^\d+(.\d{1})?$/.test(this.MoveOutValue.toString()) || this.MoveOutValue === 0) {
+            MpMessage.error({ title: '保存失败', msg: '外爬移常数设置不正确，必须为大于0的数字且最多1位小数' });
             return null;
           }
           temp.MoveOutFormula = null;
@@ -103,8 +103,8 @@ export class RightPanelRuleForm {
           MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸不能为空' });
           return null;
         }
-        if (!/^\d+$/.test(`${this.Value}`) || this.Value === 0) {
-          MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸设置不正确' });
+        if (!/^\d+(.\d{1})?$/.test(`${this.Value}`) || this.Value === 0) {
+          MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸设置不正确，必须为大于0的数字且最多1位小数' });
           return null;
         }
         temp.Formula = null;
@@ -121,8 +121,8 @@ export class RightPanelRuleForm {
           MpMessage.error({ title: '保存失败', msg: '铣背值不能为空' });
           return null;
         }
-        if (!/^\d+$/.test(`${this.Value}`) || this.Value === 0) {
-          MpMessage.error({ title: '保存失败', msg: '铣背深度设置不正确' });
+        if (!/^\d+(.\d{1})?$/.test(`${this.Value}`) || this.Value === 0) {
+          MpMessage.error({ title: '保存失败', msg: '铣背深度设置不正确，必须为大于0的数字且最多1位小数' });
           return null;
         }
         temp.Formula = null;
