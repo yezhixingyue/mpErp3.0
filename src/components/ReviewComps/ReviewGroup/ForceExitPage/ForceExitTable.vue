@@ -14,7 +14,7 @@
     <el-table-column min-width="120px"  prop="lastMonthTimes" show-overflow-tooltip label="上月强退次数"></el-table-column>
     <el-table-column min-width="120px"  prop="curMonthTimes" show-overflow-tooltip label="本月强退次数"></el-table-column>
     <el-table-column min-width="160px"  prop="lastForceExitTime" show-overflow-tooltip label="最后一次强退时间" class-name="is-gray"></el-table-column>
-    <el-table-column width="260px" label="操作" v-if="localPermission.SetupPrintBean">
+    <el-table-column width="260px" label="操作" v-if="localPermission.QueryForcedExit">
       <template slot-scope="scope">
         <CtrlMenus :showList="['detail']" detailText="查看详情" @detail="onDetailClick(scope.row)" />
       </template>
@@ -48,8 +48,8 @@ export default {
   computed: {
     ...mapState('common', ['Permission']),
     localPermission() {
-      if (this.Permission?.PermissionList?.PermissionManagePrintBean?.Obj) {
-        return this.Permission.PermissionList.PermissionManagePrintBean.Obj;
+      if (this.Permission?.PermissionList?.PermissionCheckFileMemberGroup?.Obj) {
+        return this.Permission.PermissionList.PermissionCheckFileMemberGroup.Obj;
       }
       return {};
     },
