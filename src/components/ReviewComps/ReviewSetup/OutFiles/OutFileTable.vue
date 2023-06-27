@@ -41,7 +41,7 @@
         {{scope.row.UseTimes}}次
       </template>
     </el-table-column>
-    <el-table-column min-width="180px" label="操作" v-if="localPermission.SetupPrintBean">
+    <el-table-column min-width="180px" label="操作" v-if="localPermission.Setup">
       <template slot-scope="scope">
         <CtrlMenus
           :canRemove='!scope.row.UseTimes'
@@ -79,8 +79,8 @@ export default {
   computed: {
     ...mapState('common', ['Permission']),
     localPermission() {
-      if (this.Permission?.PermissionList?.PermissionManagePrintBean?.Obj) {
-        return this.Permission.PermissionList.PermissionManagePrintBean.Obj;
+      if (this.Permission?.PermissionList?.PermissionCheckFileSetup?.Obj) {
+        return this.Permission.PermissionList.PermissionCheckFileSetup.Obj;
       }
       return {};
     },

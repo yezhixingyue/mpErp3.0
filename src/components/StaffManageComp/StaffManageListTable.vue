@@ -246,7 +246,7 @@ export default {
       }, null);
     },
     onEditClick(item) {
-      console.log(item);
+      // console.log(item);
       this.$emit('edit', { item, id: item.StaffID });
     },
     onRemoveClick(item, index) {

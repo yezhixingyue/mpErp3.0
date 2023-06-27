@@ -67,7 +67,7 @@ const open = () => {
   if (!props.ServerID) {
     delete temp.ServerID;
   }
-  console.log(temp);
+  // console.log(temp);
   logData.value = new LogListDataClass(temp);
 };
 
