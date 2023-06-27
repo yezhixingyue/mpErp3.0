@@ -215,9 +215,6 @@ const api = {
     };
     return instance.post(`/Api/Upload/File?uniqueName=${uniqueName}`, formData, config);
   },
-  getOrderFilePath2DownLoad(orderID) { // GET /Api/Order/GetFilePath
-    return instance.get(`/Api/Order/GetFilePath?orderID=${orderID}`);
-  },
 
   /* 财务模块api
    ----------------------------------------------------------------------------------- */
