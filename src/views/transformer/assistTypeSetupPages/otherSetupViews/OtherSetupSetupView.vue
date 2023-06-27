@@ -35,7 +35,7 @@
                     <span v-if="rultForm.Formula">{{ getFormulaName(rultForm.Formula) }}</span>
                     <div v-else>
                       <span>常数：</span>
-                      <el-input v-model.number="rultForm.Value" maxlength="9" size="small"></el-input>
+                      <el-input v-model="rultForm.Value" maxlength="9" size="small"></el-input>
                       <em>mm</em>
                     </div>
                   </template>
@@ -47,7 +47,7 @@
                     <span v-if="rultForm.MoveOutFormula">{{ getFormulaName(rultForm.MoveOutFormula) }}</span>
                     <div v-else>
                       <span>常数：</span>
-                      <el-input v-model.number="rultForm.MoveOutValue" maxlength="9" size="small"></el-input>
+                      <el-input v-model="rultForm.MoveOutValue" maxlength="9" size="small"></el-input>
                       <em>mm</em>
                     </div>
                   </template>
@@ -72,7 +72,7 @@
                   <span v-if="rultForm.Formula">{{ getFormulaName(rultForm.Formula) }}</span>
                   <div v-else>
                     <span>常数：</span>
-                    <el-input v-model.number="rultForm.Value" maxlength="9" size="small"></el-input>
+                    <el-input v-model="rultForm.Value" maxlength="9" size="small"></el-input>
                     <em>mm</em>
                   </div>
                 </div>
@@ -89,7 +89,7 @@
                   <span v-if="rultForm.Formula">{{ getFormulaName(rultForm.Formula) }}</span>
                   <div v-else>
                     <span>常数：</span>
-                    <el-input v-model.number="rultForm.Value" maxlength="9" size="small"></el-input>
+                    <el-input v-model="rultForm.Value" maxlength="9" size="small"></el-input>
                     <em>mm</em>
                   </div>
                 </div>

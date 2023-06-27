@@ -193,7 +193,6 @@
                   class="right-flex-wrap download-box"
                   v-if="showDownload && showData.FilePath && !showData.ProductParams.Attributes.IsSpotGoods && localPermission.DownloadFile">
                     <span class="text-title">文件下载：</span>
-                    <!-- <normalBtn @click.native="handleDownLoad(showData)" title="下载订单文件" /> -->
                     <a :href="showData.FilePath" target="_blank" class="link download">下载订单文件</a>
                   </li>
                   <li class="btn-box" v-if="showData.Status===35 && $route.name === 'orderManage'" :class="{hiddenFileUpload: !showData.FileCase}">
@@ -406,9 +405,6 @@ export default {
       }
       // eslint-disable-next-line consistent-return
       return list.filter((item) => item.Value.length > 0);
-    },
-    handleDownLoad(orderDetailData) {
-      this.messageBox.warnCancelNullMsg('确定下载订单文件吗?', () => this.$store.dispatch('service/downLoadOrderFile', orderDetailData));
     },
     handleReview() { // 不传文件重新提交审稿
       this.messageBox.warnCancelBox(

@@ -608,23 +608,6 @@ export default {
     //     throw new Error(res.data.Message);
     //   }
     // },
-    async downLoadOrderFile({ rootState }, detailData) {
-      const orderID = detailData.OrderID || rootState.orderModule.curOrderID;
-      const res = await api.getOrderFilePath2DownLoad(orderID);
-      if (res.data.Status === 1000 && res.data.Data) {
-        const list = document.body.querySelectorAll('iframe');
-        [...list].forEach(it => {
-          if (it.name === 'mpDownload') {
-            document.body.removeChild(it);
-          }
-        });
-        const oIframe = document.createElement('iframe');
-        oIframe.src = res.data.Data;
-        oIframe.name = 'mpDownload';
-        oIframe.style.display = 'none';
-        document.body.appendChild(oIframe);
-      }
-    },
     async getPayPackageByOrder({ commit }, orderId) {
       const res = await api.getPayPackageByOrder(orderId);
       if (res && res.data.Status === 1000) {
