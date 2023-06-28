@@ -81,11 +81,11 @@ export default {
       rules: {
         Name: [
           { required: true, message: '请设置文件种类名称' },
-          { validator: this.validateRepeat },
+          { validator: this.validateRepeat, trigger: 'blur' },
         ],
         IncludeContent: [
           { required: true, message: '请设置包含词条' },
-          { pattern: /^[^|]+(\|[^|]+)*$/, message: '格式不正确' },
+          { pattern: /^[^|]+(\|[^|]+)*$/, message: '格式不正确', trigger: 'blur' },
         ],
         Index: [
           { required: true, message: '请设置摆放顺序' },
