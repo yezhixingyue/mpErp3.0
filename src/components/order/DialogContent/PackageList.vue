@@ -100,6 +100,7 @@ import CommonDialogComp from '@/packages/CommonDialogComp';
 import { mapState, mapMutations, mapActions } from 'vuex';
 // import ImgBtn from '@/components/common/ImgBtn.vue';
 import MiniProgressItem from '@/components/common/MiniProgressItem.vue';
+import { format2LangTypeDateFunc } from '@/assets/js/filters/filters.js';
 
 const img1 = require('@/assets/images/service.png');
 const img2 = require('@/assets/images/servicestop.png');
@@ -137,7 +138,7 @@ export default {
         if (i === this.dataList.length - 1) obj.isNewest = true;
         if (it.Description) obj.expressDetail = it.Description;
         if (it.OperateTime) {
-          const [year, afterTime] = it.OperateTime.split('T');
+          const [year, afterTime] = format2LangTypeDateFunc(it.OperateTime).split(' ');
           obj.afterTime = afterTime;
           obj.year = year;
         }
