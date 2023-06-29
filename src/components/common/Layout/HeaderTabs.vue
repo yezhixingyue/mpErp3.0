@@ -250,7 +250,7 @@ export default {
     onDocClick(target) {
       if (!this.Permission) return;
       const siteType = 1;
-      window.open(`http://192.168.1.92:3020/init?token=${this.Permission.Token}&siteType=${siteType}&target=${target}`);
+      window.open(`http://file.ybz888.com:7006/init?token=${this.Permission.Token}&siteType=${siteType}&target=${target}`);
     },
     handleLogoutClick() { // 退出
       this.messageBox.warnCancelNullMsg('确定退出登录吗?', () => {

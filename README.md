@@ -62,3 +62,6 @@
 
 ## 订单管理表格无法复制文字问题？
     可能和Sortable库中的selectstart有关，已做针对处理，后续查看效果
+
+## 可能会用到的js库
+    vuex-module-decorators
