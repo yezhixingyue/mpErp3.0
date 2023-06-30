@@ -152,7 +152,7 @@ export default {
         }
     }
     .right-progress-wrap{
-        width: 380px;
+        width: 360px;
         margin-right: -70px;
         line-height: 22px;
         margin-top: -5px;
