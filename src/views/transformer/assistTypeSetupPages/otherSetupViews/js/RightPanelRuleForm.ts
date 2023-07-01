@@ -48,10 +48,13 @@ export class RightPanelRuleForm {
         MpMessage.error({ title: '保存失败', msg: '爬移量未设置' });
         return null;
       }
+      temp.Formula = null;
+      temp.Value = null;
+      temp.MoveOutFormula = null;
+      temp.MoveOutValue = null;
       if (this._MoveInChecked) { // 勾选了内爬移
         if (this.Formula && this.Formula.ID) {
           temp.Formula = this.Formula;
-          temp.Value = null;
         } else {
           if (!this.Value && this.Value !== 0) {
             MpMessage.error({ title: '保存失败', msg: '内爬移量未设置' });
@@ -61,14 +64,12 @@ export class RightPanelRuleForm {
             MpMessage.error({ title: '保存失败', msg: '内爬移常数设置不正确，必须为大于0的数字且最多1位小数' });
             return null;
           }
-          temp.Formula = null;
           temp.Value = this.Value;
         }
       }
       if (this._MoveOutChecked) { // 勾选了外爬移
         if (this.MoveOutFormula && this.MoveOutFormula.ID) {
           temp.MoveOutFormula = this.MoveOutFormula;
-          temp.MoveOutValue = null;
         } else {
           if (!this.MoveOutValue && this.MoveOutValue !== 0) {
             MpMessage.error({ title: '保存失败', msg: '外爬移量未设置' });
@@ -78,7 +79,6 @@ export class RightPanelRuleForm {
             MpMessage.error({ title: '保存失败', msg: '外爬移常数设置不正确，必须为大于0的数字且最多1位小数' });
             return null;
           }
-          temp.MoveOutFormula = null;
           temp.MoveOutValue = this.MoveOutValue;
         }
       }
@@ -94,10 +94,11 @@ export class RightPanelRuleForm {
         return null;
       }
       temp.Position = this.Position;
+      temp.Value = null;
+      temp.Formula = null;
 
       if (this.Formula && this.Formula.ID) {
         temp.Formula = this.Formula;
-        temp.Value = null;
       } else {
         if (!this.Value && this.Value !== 0) {
           MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸不能为空' });
@@ -107,15 +108,15 @@ export class RightPanelRuleForm {
           MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸设置不正确，必须为大于0的数字且最多1位小数' });
           return null;
         }
-        temp.Formula = null;
         temp.Value = this.Value;
       }
     }
 
     if (this.Type === GenerelMappingTypeEnum.Milling) { // 铣背
+      temp.Value = null;
+      temp.Formula = null;
       if (this.Formula && this.Formula.ID) {
         temp.Formula = this.Formula;
-        temp.Value = null;
       } else {
         if (!this.Value && this.Value !== 0) {
           MpMessage.error({ title: '保存失败', msg: '铣背值不能为空' });
@@ -125,7 +126,6 @@ export class RightPanelRuleForm {
           MpMessage.error({ title: '保存失败', msg: '铣背深度设置不正确，必须为大于0的数字且最多1位小数' });
           return null;
         }
-        temp.Formula = null;
         temp.Value = this.Value;
       }
     }
