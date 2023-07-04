@@ -397,6 +397,7 @@ export default {
               line-height: 28px;
               box-sizing: border-box;
               transition: background 0.06s ease-in-out;
+              display: flex;
               > div {
                 &:nth-of-type(2) {
                   color: #989898;
@@ -423,7 +424,7 @@ export default {
             padding-right: 40px;
           }
           &:last-of-type {
-            width: 220px;
+            width: 200px;
           }
         }
         > footer {
