@@ -45,7 +45,6 @@
         <user-selector
           :changePropsFunc="setCondition2ListData"
           :requestFunc="getCouponList"
-          isValueEq1
           :userType="condition2ListData.Customer.First"
           :userRank="condition2ListData.Customer.Second"
           :typeList="[['Customer', 'First'],['Customer', 'Second']]"
