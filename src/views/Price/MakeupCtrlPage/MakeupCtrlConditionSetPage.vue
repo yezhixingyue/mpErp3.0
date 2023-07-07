@@ -91,7 +91,7 @@ export default {
     },
     localProductFormulasListJoinCalculate() {
       const PartID = this.routeInfo.PartID || null;
-      return PropertyClass.filterProductFormulasList(this.ProductFormulasListJoinCalculate, PartID);
+      return PropertyClass.filterProductFormulasList(this.ProductFormulasListJoinCalculate, PartID, true);
     },
   },
   methods: {

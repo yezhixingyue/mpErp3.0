@@ -327,13 +327,14 @@ export default class PropertyClass {
    * @returns
    * @memberof PropertyClass
    */
-  static filterProductFormulasList(list, PartID) {
-    // 1. 找出产品公式（非子公式） UseModule: 1为公式  2为子公式
-    const _productFormulas = list.filter(it => it.UseModule === 1 && !it.PartID);
+  static filterProductFormulasList(list, PartID, isIncludeCalculate = false) {
+    // 1. 找出产品公式（非子公式） UseModule: 1为公式  2为子公式 3为计算公式
+    const _UseModules = isIncludeCalculate ? [1, 3] : [1];
+    const _productFormulas = list.filter(it => _UseModules.includes(it.UseModule) && !it.PartID);
 
     // 2. 找出部件本身子公式（非元素组子公式）
     const _partFormulas = PartID ? list.filter(it => it.PartID === PartID && !it.GroupID) : [];
-
+    console.log('_partFormulas', _partFormulas, PartID, list);
     // 3. 合并结果
     return [..._productFormulas, ..._partFormulas];
   }
