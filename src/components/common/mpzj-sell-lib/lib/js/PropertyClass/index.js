@@ -334,7 +334,6 @@ export default class PropertyClass {
 
     // 2. 找出部件本身子公式（非元素组子公式）
     const _partFormulas = PartID ? list.filter(it => it.PartID === PartID && !it.GroupID) : [];
-    console.log('_partFormulas', _partFormulas, PartID, list);
     // 3. 合并结果
     return [..._productFormulas, ..._partFormulas];
   }

@@ -20,6 +20,7 @@
         <span class="danger ft-2"><i class="el-icon-warning ft-14 mr-5"></i>暂无数据</span>
       </p>
       <el-radio-group v-model="radioValue" >
+        <el-radio :label="''">无</el-radio>
         <el-radio v-for="it in SemiFinishedList" :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-radio>
       </el-radio-group>
     </div>
@@ -98,13 +99,20 @@ const closed = () => {
 
 const submit = () => {
   if (!props.TransformerListPageData) return;
-  if (!radioValue.value) {
+  if (!radioValue.value && radioValue.value !== '') {
     MpMessage.error({ title: '保存失败', msg: '请选择半成品' });
     return;
   }
-  const t = SemiFinishedList.value.find(it => it.ID === radioValue.value);
-  if (!t) return;
-  props.TransformerListPageData.getSemiFinishedSave(t, cancel);
+  let temp = { ID: '', Name: '无' };
+  if (radioValue.value) {
+    temp = SemiFinishedList.value.find(it => it.ID === radioValue.value);
+  }
+  if (!temp) {
+    MpMessage.error({ title: '保存失败', msg: '找不到半成品' });
+    return;
+  }
+
+  props.TransformerListPageData.getSemiFinishedSave(temp, cancel);
 };
 
 </script>
