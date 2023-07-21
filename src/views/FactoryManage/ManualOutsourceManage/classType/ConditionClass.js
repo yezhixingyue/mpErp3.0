@@ -8,11 +8,11 @@ export default class ConditionClass {
 
   ProductID = ''
 
-  IsOutOrder = true // boolean
-
   FactoryID = ''
 
   KeyWords = '' // 订单号
+
+  CheckFileOrderStatus = ''
 
   Page = 1
 

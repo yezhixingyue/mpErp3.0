@@ -25,7 +25,12 @@
     <!-- <el-table-column prop="Convert.Name" label="转换器" min-width="130"> </el-table-column> -->
     <el-table-column label="操作" width="320">
       <div class="menu-list" slot-scope="scope" >
-        <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupPrice" @click="onSettingClick(scope.row)"><i></i>外发设置</span>
+        <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupPrice" @click="onSettingClick(scope.row, 'account')">
+          <i class="el-icon-user-solid is-blue none"></i>账号设置
+        </span>
+        <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupPrice" @click="onSettingClick(scope.row, 'outsource')">
+          <i class="setup"></i>外发设置
+        </span>
         <template v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.Setup">
           <span @click="onEditClick(scope.row)"><i></i>编辑</span>
           <span @click="onRemoveClick(scope.row)"><i></i>删除</span>
@@ -69,8 +74,8 @@ export default {
       const tempHeight = this.getHeight('', 105);
       this.h = tempHeight;
     },
-    onSettingClick(itemData) {
-      this.$emit('handleAddressItemSetting', itemData);
+    onSettingClick(itemData, type) {
+      this.$emit('setting', itemData, type);
     },
     onEditClick(itemData) {
       this.$emit('handleAddressItemEdit', itemData);
@@ -115,18 +120,24 @@ export default {
               > i {
                 width: 14px;
                 height: 14px;
-                background: url(../../assets/images/Compile.png) no-repeat center center/14px 14px;
                 margin-right: 6px;
+                &:not(.none) {
+                  background: url(../../assets/images/Compile.png) no-repeat center center/14px 14px;
+                }
+                &.is-blue {
+                  font-size: 15px;
+                  margin-top: -1px;
+                }
+                &.setup {
+                  width: 12px;
+                  height: 16px;
+                  background: url(../../assets/images/setup.png) no-repeat center center/14px 14px;
+                }
               }
               &:last-of-type > i {
                 width: 12px;
                 height: 16px;
                 background: url(../../assets/images/del.png) no-repeat center center/12px 16px;
-              }
-              &:first-of-type > i {
-                width: 12px;
-                height: 16px;
-                background: url(../../assets/images/setup.png) no-repeat center center/14px 14px;
               }
             }
           }

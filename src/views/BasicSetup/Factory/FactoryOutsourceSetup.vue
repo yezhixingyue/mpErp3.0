@@ -27,12 +27,12 @@
 
 <script>
 import { mapState } from 'vuex';
-import FactoryManageSetupTable from '../../components/FactoryManage/FactoryManageSetupTable.vue';
-import FactoryManageSetupDialog from '../../components/FactoryManage/FactoryManageSetupDialog.vue';
-import recordScrollPositionMixin from '../../assets/js/mixins/recordScrollPositionMixin';
+import FactoryManageSetupTable from '../../../components/FactoryManage/FactoryManageSetupTable.vue';
+import FactoryManageSetupDialog from '../../../components/FactoryManage/FactoryManageSetupDialog.vue';
+import recordScrollPositionMixin from '../../../assets/js/mixins/recordScrollPositionMixin';
 
 export default {
-  name: 'FactoryManagSetupPage',
+  name: 'FactoryOutsourceSetup',
   mixins: [recordScrollPositionMixin('.mp-erp-factory-manage-setup-page-wrap .el-table__body-wrapper')],
   components: {
     FactoryManageSetupTable,

@@ -11,26 +11,26 @@
     ref="multipleTable"
     @selection-change="handleSelectionChange"
   >
-    <el-table-column type="selection" width="40"></el-table-column>
-    <el-table-column width="100px" prop="OrderID" show-overflow-tooltip label="订单号"></el-table-column>
+    <el-table-column type="selection" width="40" :selectable="(row) => row._canComfirm"></el-table-column>
+    <el-table-column width="85px" prop="OrderID" show-overflow-tooltip label="订单号"></el-table-column>
     <el-table-column min-width="100px" show-overflow-tooltip label="产品名称">
       <template slot-scope="scope">{{scope.row | getFullName(true)}}</template>
     </el-table-column>
-    <el-table-column width="125px" show-overflow-tooltip label="数量">
+    <el-table-column width="120px" show-overflow-tooltip label="数量">
       <template slot-scope="scope">{{scope.row | formarProductAmount}}</template>
     </el-table-column>
-    <el-table-column width="125px" show-overflow-tooltip label="尺寸">
+    <el-table-column width="120px" show-overflow-tooltip label="尺寸">
       <template slot-scope="scope">{{scope.row.SizeList.join('、')}}</template>
     </el-table-column>
-    <el-table-column width="125px" show-overflow-tooltip label="工艺">
+    <el-table-column width="120px" show-overflow-tooltip label="工艺">
       <template slot-scope="scope">{{scope.row.CraftList.join('、')}}</template>
     </el-table-column>
-    <el-table-column width="110px" prop="Funds.FinalPrice" show-overflow-tooltip label="成交价">
+    <el-table-column width="105px" prop="Funds.FinalPrice" show-overflow-tooltip label="成交价">
       <span class="is-pink" slot-scope="scope">{{scope.row.Funds.FinalPrice}}元</span>
     </el-table-column>
-    <el-table-column width="120px" prop="Factory.Name" show-overflow-tooltip label="原外协工厂"></el-table-column>
+    <el-table-column width="110px" prop="Factory.Name" show-overflow-tooltip label="原外协工厂"></el-table-column>
     <el-table-column width="150px" show-overflow-tooltip label="更换外协工厂" class-name="el-box">
-      <el-select :disabled="!localPermission.ChangeFactory"
+      <el-select :disabled="!localPermission.ChangeFactory || !scope.row._canComfirm"
        :value="scope.row.Factory.ID" placeholder="请选择" slot-scope="scope" @change="(e) => scope.row.changeFactory(e)" size="mini">
         <el-option v-for="it in factorys" :key="it.FactoryID" :label="it.FactoryName" :value="it.FactoryID"></el-option>
       </el-select>
@@ -43,22 +43,24 @@
         @focus="(e) => e.target.select()"
         placeholder="请输入外协价格"
         maxlength="9"
-        :disabled="!localPermission.ChangePrice"
+        :disabled="!localPermission.ChangePrice || !scope.row._canComfirm"
         class="p"
         size="mini">
       </el-input>
     </el-table-column>
+    <el-table-column width="100px" prop="_statusText" show-overflow-tooltip label="外协状态"></el-table-column>
     <el-table-column width="125px" show-overflow-tooltip label="付款时间">
       <template slot-scope="scope">{{scope.row.PayTime | format2MiddleLangTypeDate}}</template>
     </el-table-column>
-    <el-table-column width="160px" show-overflow-tooltip label="预计工期">
+    <el-table-column width="155px" show-overflow-tooltip label="预计工期">
       <template slot-scope="scope">{{scope.row.ProducePeriod | getDoneTime}}</template>
     </el-table-column>
-    <el-table-column width="180px" label="操作" v-if="localPermission.SetupPrintBean">
-      <template slot-scope="scope">
-        <span class="blue-span" @click="onOutsourceClick(scope.row)" v-if="localPermission.ReceiveOrder">确认外协</span>
+    <el-table-column width="180px" label="操作" v-if="localPermission.Query">
+      <div class="menus" slot-scope="scope">
+        <span class="blue-span" @click="onOutsourceClick(scope.row)" v-if="localPermission.ReceiveOrder && scope.row._canComfirm">确认外协</span>
+        <span class="red-span" @click="onOutsourceClick(scope.row)" v-if="localPermission.ReceiveOrder && scope.row._canCancel">取消外协</span>
         <span class="blue-span ml-15" @click="onStatusDisplayClick(scope.row)">修改记录</span>
-      </template>
+      </div>
     </el-table-column>
     <div slot="empty">
       <span v-show="!loading">暂无数据</span>
@@ -110,9 +112,21 @@ export default {
         this.$refs.multipleTable.toggleAllSelection();
       }
     },
+    toggleRowSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      }
+    },
     onOutsourceClick(item) { // 确认外协
-      this.messageBox.warnCancelBox('确认外协该订单吗 ?', `订单号：[ ${item.OrderID} ]`, () => {
-        this.$emit('singleOutsource', item);
+      const title = item._canCancel ? '确认取消该订单外协吗 ?' : '确认外协该订单吗 ?';
+      this.messageBox.warnCancelBox(title, `订单号：[ ${item.OrderID} ]`, () => {
+        if (item._canCancel) {
+          this.$emit('comfirmCancle', [item]);
+        } else {
+          this.$emit('singleOutsource', item);
+        }
       });
     },
     onStatusDisplayClick(item) { // 操作记录
@@ -152,10 +166,17 @@ export default {
     > .cell {
       color: #585858;
       height: 32px;
+      input {
+        padding: 0 10px;
+      }
       .p {
         input {
           text-align: center;
         }
+      }
+      .menus {
+        text-align: right;
+        padding-right: 25px;
       }
     }
     &.left {

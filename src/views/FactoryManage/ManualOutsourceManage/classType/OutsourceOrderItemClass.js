@@ -1,6 +1,7 @@
 import api from '../../../../api';
 import messageBox from '../../../../assets/js/utils/message';
 import restoreInitDataByOrigin from '../../../../assets/js/utils/reduction';
+import { CheckFileOrderStatusEnumObj, CheckFileOrderStatusEnumList } from './EnumList';
 
 const localToFixed = (num) => {
   const _num = +num;
@@ -38,6 +39,8 @@ export default class OutsourceOrderItemClass {
 
   PayTime = '' // 付款时间
 
+  CheckFileStatus = '' // 外协状态
+
   Factory = {
     ID: '',
     Name: '',
@@ -50,7 +53,20 @@ export default class OutsourceOrderItemClass {
   }
 
   set _outPrice(val) {
-    this.Funds.OutPrice = localToFixed(val);
+    this.Funds.OutPrice = val === '' ? val : localToFixed(val);
+  }
+
+  get _canComfirm() {
+    return this.CheckFileStatus === CheckFileOrderStatusEnumObj.WaitSendFactory.ID;
+  }
+
+  get _canCancel() {
+    return this.CheckFileStatus === CheckFileOrderStatusEnumObj.OutsourceComfirm.ID;
+  }
+
+  get _statusText() {
+    const t = CheckFileOrderStatusEnumList.find(it => it.ID === this.CheckFileStatus);
+    return t ? t.Name : '';
   }
 
   constructor(data) {
@@ -66,6 +82,10 @@ export default class OutsourceOrderItemClass {
       if (typeof data.Funds.FinalPrice === 'number') {
         this.Funds.FinalPrice = localToFixed(data.Funds.FinalPrice);
       }
+    }
+
+    if (this.CheckFileStatus === '' && typeof data.CheckFileStatus === 'number') {
+      this.CheckFileStatus = data.CheckFileStatus;
     }
   }
 
@@ -85,7 +105,7 @@ export default class OutsourceOrderItemClass {
     let price = this._outPrice;
     const initialPrice = this._InitialOutPrice;
 
-    if (price === initialPrice || +price === initialPrice) { // 没有变化
+    if (price && (price === initialPrice || +price === initialPrice)) { // 没有变化
       this._outPrice = price;
       return;
     }
@@ -94,7 +114,8 @@ export default class OutsourceOrderItemClass {
       this._outPrice = initialPrice;
     };
     if (price === '') {
-      messageBox.failSingleError('价格更改失败', '输入的值为空', changeFailFunc, changeFailFunc);
+      changeFailFunc();
+      // messageBox.failSingleError('价格更改失败', '输入的值为空', changeFailFunc, changeFailFunc);
       return;
     }
     if (Number.isNaN(+price)) {

@@ -11,6 +11,17 @@
         :typeList="[['FactoryID', '']]"
         :value='condition.FactoryID'
         label='外协工厂'
+        class="mt-18 mr-30"
+      />
+      <OrderChannelSelector
+        withEmpty
+        :options='CheckFileOrderStatusOptions'
+        :defaultProps="{label: 'Name', value: 'ID'}"
+        :requestFunc='getDataList'
+        :changePropsFunc='setCondition'
+        :typeList="[['CheckFileOrderStatus', '']]"
+        :value='condition.CheckFileOrderStatus'
+        label='外协状态'
         class="mt-18"
       />
     </div>
@@ -33,6 +44,7 @@ import { mapGetters } from 'vuex';
 import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
 import EpCascader from '../../../packages/EpCascader/index.vue';
 import OrderChannelSelector from '../../common/SelectorComps/OrderChannelSelector.vue';
+import { CheckFileOrderStatusEnumList } from '@/views/FactoryManage/ManualOutsourceManage/classType/EnumList';
 
 export default {
   props: {
@@ -61,6 +73,11 @@ export default {
     EpCascader,
     OrderChannelSelector,
     SearchInputComp,
+  },
+  data() {
+    return {
+      CheckFileOrderStatusOptions: CheckFileOrderStatusEnumList.filter(it => it.filter),
+    };
   },
   computed: {
     ...mapGetters('common', ['allProductClassifyWithEmpty']),
