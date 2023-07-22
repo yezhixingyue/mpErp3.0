@@ -44,6 +44,7 @@
 <script>
 import { mapState } from 'vuex';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+import CommonClassType from '@/store/CommonClassType';
 import ManualOutsourceHeader from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceHeader.vue';
 import ManualOutsourceTable from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceTable.vue';
 import ManualOutsourceFooter from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceFooter.vue';
@@ -91,6 +92,8 @@ export default {
     },
     async getList(Page = 1) { // 获取列表数据
       this.condition.Page = Page;
+
+      CommonClassType.setDate(this.condition, 'PlaceDate');
 
       const temp = this.condition.getFilterObj();
 

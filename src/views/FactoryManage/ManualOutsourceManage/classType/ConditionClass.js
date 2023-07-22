@@ -14,6 +14,13 @@ export default class ConditionClass {
 
   CheckFileOrderStatus = ''
 
+  PlaceDate = {
+    First: '',
+    Second: '',
+  }
+
+  DateType = 'today'
+
   Page = 1
 
   PageSize = 20
