@@ -27,12 +27,15 @@
     </el-table-column>
     <el-table-column minWidth="70" label="售后类型">
       <template slot-scope="scope">
-        <!-- {{scope.row.SolutionType}} -->
-        <span v-if="scope.row.SolutionType === 2">退款</span>
-        <span v-else-if="scope.row.SolutionType === 7">补印</span>
-        <span v-else-if="scope.row.SolutionType === 8">赠送优惠券</span>
-        <span v-else-if="scope.row.SolutionType === 255">其他</span>
-        <span v-else>--</span>
+        <template v-for="(item,i) in scope.row.SolutionTypes" >
+          <span :key="i">
+            <span v-if="i>0">、</span>
+            <span v-if="item === 2">退款</span>
+            <span v-else-if="item === 7">补印</span>
+            <span v-else-if="item === 8">赠送优惠券</span>
+            <span v-else-if="item === 255">其他</span>
+          </span>
+        </template>
       </template>
     </el-table-column>
     <el-table-column prop="ReprintOrderID" minWidth="80" label="补印单号">
@@ -108,7 +111,12 @@
         {{scope.row.Score ? `${scope.row.Score}星` : '--'}}
       </template>
     </el-table-column>
-    <el-table-column label-class-name='menu-header' prop="handle" width="220" label="操作" fixed="right">
+    <el-table-column prop="OperaterUserName" minWidth="75" label="定损状态" fixed="right">
+      <template slot-scope="scope">
+        {{scope.row.LossConfirmStatus ? `已确认` : '未确认'}}
+      </template>
+    </el-table-column>
+    <el-table-column label-class-name='menu-header' prop="handle" width="360" label="操作" fixed="right">
       <div class="handle-menus-wrap"  slot-scope="scope">
         <span @click="jump2ServiceDetail(scope.row)">
           <img src="@/assets/images/detail.png" alt />查看详情
@@ -127,6 +135,14 @@
         <span v-else class="not-allowed">
           <img src="@/assets/images/seeEvaluation-disabled.png" alt />查看评价
         </span>
+        <template v-if="localPermission.UpdateQuestion">
+          <span v-if="scope.row.AfterSaleStatus === 30" @click="onLossAssessmentClick(scope.row)">
+            <i class="iconfont icon-dingsunqueren"></i> 定损确认
+          </span>
+          <span v-else class="not-allowed">
+            <i class="iconfont icon-dingsunqueren"></i> 定损确认
+          </span>
+        </template>
       </div>
     </el-table-column>
     <div slot="empty">
@@ -179,6 +195,9 @@ export default {
     },
     onSeeEstimateClick(data) { // 查看评价
       this.$emit('seeEstimate', data);
+    },
+    onLossAssessmentClick(data) { // 查看评价
+      this.$emit('LossAssessment', data);
     },
   },
 };
@@ -273,6 +292,10 @@ export default {
       display: flex;
       justify-content: space-between;
       cursor: pointer;
+      i{
+        font-size: 12px;
+        color: #06b3f9;
+      }
       &:before,
         &:after {
           content: '';

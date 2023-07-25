@@ -2,7 +2,7 @@
   <section class="mp-erp-common-classify-manage-comp-wrap">
     <LRWidthDragAutoChangeComp leftWidth='45%'>
       <template v-slot:left>
-        <ContentLeft @setCurEditClassifyData='setCurEditClassifyData' :classifyData='classifyData' @submit='onLeftSubmit' :title='title' />
+        <ContentLeft :showSort="false" @setCurEditClassifyData='setCurEditClassifyData' :classifyData='classifyData' :title='title' />
       </template>
       <template v-slot:right>
         <ContentRight :dataList='curEditClassify' :ParentID='ParentID' :classifyName='curClassify' @goback='onGobackClick' @submit='onRightSubmit' />
@@ -13,8 +13,8 @@
 
 <script>
 import { LRWidthDragAutoChangeComp } from '@/components/common/mpzj-sell-lib/lib';
-import ContentLeft from './ContentLeft.vue';
-import ContentRight from './ContentRight.vue';
+import ContentLeft from '@/components/common/ClassifyManage/ContentLeft.vue';
+import ContentRight from '@/components/common/ClassifyManage/ContentRight.vue';
 
 export default {
   props: {
@@ -34,6 +34,11 @@ export default {
       type: String,
       default: '产品',
     },
+    DivideID: {
+      type: String,
+      default: '',
+
+    },
   },
   components: {
     LRWidthDragAutoChangeComp,
@@ -48,7 +53,8 @@ export default {
     };
   },
   methods: {
-    setCurEditClassifyData([data, ParentID, classifyName]) {
+    setCurEditClassifyData([data, ParentID, classifyName, aaa]) {
+      console.log(data, ParentID, classifyName, aaa);
       const item = { ClassName: '', ParentID, ID: '' };
       if (ParentID === -1) item.children = [];
       this.curEditClassify = [...data, item].map(it => ({ ...it, key: this.$utils.getRandomRangeId(10) }));
@@ -58,20 +64,14 @@ export default {
     onGobackClick() {
       this.$emit('goback');
     },
-    // eslint-disable-next-line no-unused-vars
-    onLeftSubmit(list) {
-      this.$emit('sort', list);
-      // this.fetchData(true);
-      this.$store.dispatch('common/getAllProductNames', true);
-    },
     async onRightSubmit(data) {
-      const List = data.map(it => ({ Name: it.ClassName, ID: it.ID }));
+      const ClassList = data.map(it => ({ Name: it.ClassName, ID: it.ID }));
       const temp = {
-        Type: this.type,
+        DivideID: this.DivideID,
         ParentID: this.ParentID,
-        List,
+        ClassList,
       };
-      const resp = await this.api.getClassSave(temp).catch(() => {});
+      const resp = await this.api.getOrderAfterSaleQuestionClassSave(temp).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         const cb = () => {
           this.fetchData(true);
@@ -92,12 +92,6 @@ export default {
         this.setCurEditClassifyData([this.classifyData, -1, '根分类']);
       });
     }
-    setTimeout(() => {
-      console.log(this.classifyData);
-      console.log(this.type);
-      console.log(this.fetchData);
-      console.log(this.title);
-    }, 500);
   },
 };
 </script>

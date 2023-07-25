@@ -38,7 +38,7 @@
         <div v-if='classifyData.length === 0' class="non-data">暂无分类数据，快去添加吧</div>
       </div>
     </main>
-    <footer>
+    <footer v-if="showSort">
       <template v-if="!editable">
         <el-button type='primary' @click="onSortClick" :disabled='classifyData.length === 0'>排序</el-button>
       </template>
@@ -62,6 +62,10 @@ export default {
     title: {
       type: String,
       default: '产品',
+    },
+    showSort: {
+      type: Boolean,
+      default: true,
     },
   },
   components: {

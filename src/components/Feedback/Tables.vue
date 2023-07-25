@@ -145,6 +145,7 @@
             <td>诉求意向</td>
             <td>
               <span v-if="dataInfo.AfterSale.AppealType === 2">退款</span>
+              <span v-if="dataInfo.AfterSale.AppealType === 3">退款3</span>
               <span v-else-if="dataInfo.AfterSale.AppealType === 7">补印</span>
               <span v-else-if="dataInfo.AfterSale.AppealType === 255">其它</span>
               <span v-else></span>
@@ -550,10 +551,8 @@ export default {
         height: 60px;
       }
     }
-    >div{
-      >header{
-        padding: 20px 0 15px 0;
-      }
+    header{
+      padding: 20px 0 15px 0;
     }
     .table{
       width: 800px;

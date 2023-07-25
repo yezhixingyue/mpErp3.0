@@ -1479,6 +1479,31 @@ const api = {
   getPackageProgress(packageID) { // GET /Api/Package/Progress 通过包裹号查询包裹配送进度
     return instance.get(`/Api/Package/Progress?packageID=${packageID}`, { closeLoading: true });
   },
+  // 售后问题相关
+  // searchType 0责任ID,1产品ID
+  getOrderAfterSaleQuestionClassList({ searchType, ID }) { // GET /Api/OrderAfterSale/QuestionClass/List 售后问题分类查询
+    return instance.get(`/Api/OrderAfterSale/QuestionClass/List?searchType=${searchType}&id=${ID}`);
+  },
+  getOrderAfterSaleQuestionClassSave(data) { // GET //Api/OrderAfterSale/QuestionClass/Save 售后问题分类保存
+    return instance.post('/Api/OrderAfterSale/QuestionClass/Save', data);
+  },
+  // 售后责任划分相关
+  getOrderAfterSaleDivideSave(data) { // GET /Api/OrderAfterSale/Divide/Save 售后责任划分标准保存
+    return instance.post('/Api/OrderAfterSale/Divide/Save', data);
+  },
+  getOrderAfterSaleDivideList(data) { // GET /Api/OrderAfterSale/Divide/List 售后责任划分标准查询
+    return instance.post('/Api/OrderAfterSale/Divide/List', data);
+  },
+  getOrderAfterSaleDivideRemove(ID) { // GET /Api/OrderAfterSale/Divide/Remove 售后责任划分标准删除
+    return instance.delete(`/Api/OrderAfterSale/Divide/Remove?id=${ID}`);
+  },
+  // 定损
+  getOrderAfterSaleLossConfirmInfo(afterSaleCode) { // GET /Api/OrderAfterSale/LossConfirmInfo 定损详情
+    return instance.get(`/Api/OrderAfterSale/LossConfirmInfo?afterSaleCode=${afterSaleCode}`);
+  },
+  getOrderAfterSaleLossConfirm(data) { // GET /Api/OrderAfterSale/LossConfirm 定损
+    return instance.post('/Api/OrderAfterSale/LossConfirm', data);
+  },
 };
 
 export default api;

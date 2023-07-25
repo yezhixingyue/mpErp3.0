@@ -5,7 +5,7 @@ const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web/';
 let proxyUrl = 'http://192.168.3.68:8050';
 // let proxyUrl = 'http://192.168.3.253';
 // let proxyUrl = 'http://erp.ybz888.com/';
-if (process.env.VUE_APP_BASE_URL && process.env.VUE_APP_BASE_URL === 'test-development-8520') proxyUrl = 'http://192.168.1.92:8050';
+if (process.env.VUE_APP_BASE_URL && process.env.VUE_APP_BASE_URL === 'test-development-8520') proxyUrl = 'http://192.168.1.92:8051';
 
 module.exports = defineConfig({
   transpileDependencies: true,
@@ -29,6 +29,11 @@ module.exports = defineConfig({
         changeOrigin: true, // 开启代理
       },
       '/Image': { // 代理正式图片地址
+        target: proxyUrl,
+        ws: true, // 开启websockets
+        changeOrigin: true, // 开启代理
+      },
+      '/AfterSaleImage': { // 代理正式图片地址
         target: proxyUrl,
         ws: true, // 开启websockets
         changeOrigin: true, // 开启代理

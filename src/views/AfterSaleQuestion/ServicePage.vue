@@ -17,7 +17,7 @@
 import { mapActions } from 'vuex';
 import ServiceMain from '@/components/ServiceAfterSale/Main/ServiceMain.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
-import ServiceHeader from '../components/ServiceAfterSale/Header/ServiceHeader.vue';
+import ServiceHeader from '@/components/ServiceAfterSale/Header/ServiceHeader.vue';
 
 export default {
   name: 'ServicePage',

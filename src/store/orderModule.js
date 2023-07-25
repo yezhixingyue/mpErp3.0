@@ -349,6 +349,11 @@ export default {
     changeStatus4OrderListData(state, [index, status]) {
       state.orderListData[index].Status = status;
     },
+    changeAllowAfterSaleOrderListData(state, [index, status]) {
+      console.log(index, status);
+      state.orderListData[index].AllowAfterSale = status;
+      console.log(state.orderListData[index].AllowAfterSale);
+    },
     /* 设置订单列表数据加载状态
     -------------------------------*/
     setOrderDataLoading(state, boolean) {

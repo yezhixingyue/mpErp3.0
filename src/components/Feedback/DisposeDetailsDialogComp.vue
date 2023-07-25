@@ -74,131 +74,132 @@
                 </div>
               </div>
             </div>
-            <div class="tab-row" v-if="DisposeDetailsData.Solution && selectedCouponList">
+            <div class="tab-row" v-if="DisposeDetailsData.Solution">
               <div class="left"><div class="piece"></div></div>
               <div class="right">
-                <div class="row line" v-if="DisposeDetailsData.Solution.SolutionType === 255">
-                  <div class="item">
-                    <div><span>解决方案：</span>
-                    <!-- 其他 -->
-                      其他
+                <template v-for="(SolutionType, SolutionTypeindex) in DisposeDetailsData.Solution.SolutionTypes">
+                  <div :key="SolutionTypeindex" class="row line" v-if="SolutionType === 255">
+                    <div class="item">
+                      <div><span>解决方案：</span>
+                      <!-- 其他 -->
+                        其他
+                      </div>
                     </div>
                   </div>
-                </div>
-                <template v-if="DisposeDetailsData.Solution && DisposeDetailsData.Solution.SolutionType === 8">
-                  <div class="row line" v-for="(it,index) in selectedCouponList" :key="it.CouponID">
-                    <div class="item" >
-                      <div class="discount-coupon" ><span>{{index ===0?'解决方案：':''}}</span>
-                      <!-- 赠送优惠券 -->
-                        <span v-if="index === 0" :style="`text-indent:${index === 0 ? 0 : 5.05}em`">赠送优惠券：</span>
-                        <span v-else style="margin-right:11.05em"></span>
+                  <template v-if="DisposeDetailsData.Solution && SolutionType === 8">
+                    <div class="row line" v-for="(it,index) in selectedCouponList" :key="`${it.CouponID}${SolutionTypeindex}`">
+                      <div class="item" >
+                        <div class="discount-coupon" ><span>{{index ===0?'解决方案：':''}}</span>
+                        <!-- 赠送优惠券 -->
+                          <span v-if="index === 0" :style="`text-indent:${index === 0 ? 0 : 5.05}em`">赠送优惠券：</span>
+                          <span v-else style="margin-right:11.05em"></span>
 
-                        <span class="is-pink">{{it.Data.Amount}}元</span><i> - </i>
-                        <span class="MinPayAmount"> 满{{it.Data.MinPayAmount}}元使用</span>
-                        <span>（ <i class="is-origin">{{it.CouponNumber}}</i>张 ）</span>
-                        <i> - </i>
-                        <el-tooltip placement="top-start" :enterable='false' >
-                          <div slot="content">
-                              <p v-for="(item, i) in it.ProductListTextArray" :key="item + '---' + i">
-                                {{ item }}
-                              </p>
+                          <span class="is-pink">{{it.Data.Amount}}元</span><i> - </i>
+                          <span class="MinPayAmount"> 满{{it.Data.MinPayAmount}}元使用</span>
+                          <span>（ <i class="is-origin">{{it.CouponNumber}}</i>张 ）</span>
+                          <i> - </i>
+                          <el-tooltip placement="top-start" :enterable='false' >
+                            <div slot="content">
+                                <p v-for="(item, i) in it.ProductListTextArray" :key="item + '---' + i">
+                                  {{ item }}
+                                </p>
+                            </div>
+                            <span class="area-span">限产品：{{ it.ProductListTextArray.join(' ') }}</span>
+                          </el-tooltip>
+
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <div :key="SolutionTypeindex" class="row line" v-if="SolutionType === 7">
+                    <div class="item">
+                      <div><span>解决方案：</span>
+                      <!-- 补印 -->
+                      <span v-if="SolutionType === 7">
+                        补印：款数：<span class="color-red">{{DisposeDetailsData.Solution.KindCount}} &nbsp;</span>款，
+                        数量：<span class="color-red">{{DisposeDetailsData.Solution.Number}}</span>{{dataInfo.Order.Product.Unit}}
+                      </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div :key="SolutionTypeindex" class="row line" style="border-bottom:none" v-if="SolutionType === 2">
+                    <div class="item">
+                      <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
+                      <div>
+                        <span>解决方案：</span>
+                        <span>
+                          退款：
+                        </span>
+                        <div class="refund" >
+                          <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.RefundBalance">
+                            <div class="item">
+                              <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
+                              <div>
+                                <span style="margin:0"></span>
+                                <!-- 退款： -->
+                                <span style="width:20em; text-indent:0em;">
+                                  退到余额：
+                                  <span class="color-red">
+                                  {{DisposeDetailsData.Solution.RefundBalance}}
+                                  </span>元
+                                </span>
+                                <span v-if="DisposeDetailsData.Solution.RefundFreightType === 1 && DisposeDetailsData.Solution.RefundFreightAmount">
+                                  含运费<span class="color-red">
+                                    {{DisposeDetailsData.Solution.RefundFreightAmount}}
+                                  </span>元
+                                </span>
+                                <span class="is-origin refund-sess">退款成功</span>
+                              </div>
+                            </div>
                           </div>
-                          <span class="area-span">限产品：{{ it.ProductListTextArray.join(' ') }}</span>
-                        </el-tooltip>
-
+                          <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.RefundPrintBean">
+                            <div class="item">
+                              <div><span style="margin:0"></span>
+                                <span style="width:20em;">
+                                  退印豆：<span class="color-red">
+                                    {{DisposeDetailsData.Solution.RefundPrintBean}}
+                                  </span>个
+                                </span>
+                                <span v-if="DisposeDetailsData.Solution.RefundFreightType === 3 && DisposeDetailsData.Solution.RefundFreightAmount">
+                                  含运费<span class="color-red">
+                                    {{DisposeDetailsData.Solution.RefundFreightAmount}}
+                                  </span>个
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.RefundThirdParty">
+                            <div class="item">
+                              <div><span style="margin:0"></span>
+                                <span style="width:20em;">
+                                  退到扫码账户：<span class="color-red">
+                                    {{DisposeDetailsData.Solution.RefundThirdParty}}
+                                  </span>元
+                                </span>
+                                <span v-if="DisposeDetailsData.Solution.RefundFreightType === 2 && DisposeDetailsData.Solution.RefundFreightAmount">
+                                  含运费<span class="color-red">
+                                    {{DisposeDetailsData.Solution.RefundFreightAmount}}
+                                  </span>元
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.UnpaidReducedAmount">
+                            <div class="item">
+                              <div><span style="margin:0"></span>
+                                <span style="width:20em;">
+                                  售后优惠：<span class="color-red">
+                                    {{DisposeDetailsData.Solution.UnpaidReducedAmount}}
+                                  </span>元
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </template>
-                <div class="row line" v-if="DisposeDetailsData.Solution.SolutionType === 7">
-                  <div class="item">
-                    <div><span>解决方案：</span>
-
-                    <!-- 补印 -->
-                    <span v-if="DisposeDetailsData.Solution.SolutionType === 7">
-                      补印：款数：<span class="color-red">{{DisposeDetailsData.Solution.KindCount}} &nbsp;</span>款，
-                      数量：<span class="color-red">{{DisposeDetailsData.Solution.Number}}</span>{{dataInfo.Order.Product.Unit}}
-                    </span>
-                    </div>
-                  </div>
-                </div>
-                <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.SolutionType === 2">
-                  <div class="item">
-                    <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
-                    <div>
-                      <span>解决方案：</span>
-                      <span>
-                        退款：
-                      </span>
-                      <div class="refund" >
-                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.RefundBalance">
-                          <div class="item">
-                            <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
-                            <div>
-                              <span style="margin:0"></span>
-                              <!-- 退款： -->
-                              <span style="width:20em; text-indent:0em;">
-                                退到余额：
-                                <span class="color-red">
-                                {{DisposeDetailsData.Solution.RefundBalance}}
-                                </span>元
-                              </span>
-                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 1 && DisposeDetailsData.Solution.RefundFreightAmount">
-                                含运费<span class="color-red">
-                                  {{DisposeDetailsData.Solution.RefundFreightAmount}}
-                                </span>元
-                              </span>
-                              <span class="is-origin refund-sess">退款成功</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.RefundPrintBean">
-                          <div class="item">
-                            <div><span style="margin:0"></span>
-                              <span style="width:20em;">
-                                退印豆：<span class="color-red">
-                                  {{DisposeDetailsData.Solution.RefundPrintBean}}
-                                </span>个
-                              </span>
-                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 3 && DisposeDetailsData.Solution.RefundFreightAmount">
-                                含运费<span class="color-red">
-                                  {{DisposeDetailsData.Solution.RefundFreightAmount}}
-                                </span>个
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.RefundThirdParty">
-                          <div class="item">
-                            <div><span style="margin:0"></span>
-                              <span style="width:20em;">
-                                退到扫码账户：<span class="color-red">
-                                  {{DisposeDetailsData.Solution.RefundThirdParty}}
-                                </span>元
-                              </span>
-                              <span v-if="DisposeDetailsData.Solution.RefundFreightType === 2 && DisposeDetailsData.Solution.RefundFreightAmount">
-                                含运费<span class="color-red">
-                                  {{DisposeDetailsData.Solution.RefundFreightAmount}}
-                                </span>元
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row line" style="border-bottom:none" v-if="DisposeDetailsData.Solution.UnpaidReducedAmount">
-                          <div class="item">
-                            <div><span style="margin:0"></span>
-                              <span style="width:20em;">
-                                售后优惠：<span class="color-red">
-                                  {{DisposeDetailsData.Solution.UnpaidReducedAmount}}
-                                </span>元
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
                 <div class="row line">
                   <div class="item">

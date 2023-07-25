@@ -25,6 +25,17 @@ const routes = { // 客户订单管理
       component: () => import('../../../components/order/Order.vue'),
     },
     {
+      path: '/applyAfterSales',
+      name: 'applyAfterSales',
+      meta: {
+        title: '申请售后',
+        pageName: 'applyAfterSalesPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
+      },
+      component: () => import('../../../components/order/applyAfterSales.vue'),
+    },
+    {
       path: '/GetPriceRecord',
       name: 'GetPriceRecord',
       meta: {
@@ -103,7 +114,29 @@ const routes = { // 客户订单管理
         requiresAuth: true,
         PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
       },
-      component: () => import('../../../views/ServicePage.vue'),
+      component: () => import('../../../views/AfterSaleQuestion/ServicePage.vue'),
+    },
+    {
+      path: '/ResponsibilityMeasure',
+      name: 'ResponsibilityMeasure',
+      meta: {
+        title: '售后管理',
+        pageName: 'ResponsibilityMeasurePage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
+      },
+      component: () => import('../../../views/AfterSaleQuestion/ResponsibilityMeasurePage.vue'),
+    },
+    {
+      path: '/QuestionClass',
+      name: 'QuestionClass',
+      meta: {
+        title: '管理问题分类',
+        pageName: 'QuestionClassPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
+      },
+      component: () => import('../../../views/AfterSaleQuestion/QuestionClassPage.vue'),
     },
     {
       path: '/ServiceInfo',
@@ -180,7 +213,10 @@ const routeTree = {
   children: [
     /*  订单管理
     ------------------------------------------ */
-    { name: 'orderManage', children: [] },
+    { name: 'orderManage',
+      children: [
+        { name: 'applyAfterSales', children: [] },
+      ] },
     { name: 'GetPriceRecord', children: [] },
     { name: 'BatchUpload', children: [] },
     /*  运单管理
@@ -195,6 +231,10 @@ const routeTree = {
     { name: 'Service',
       children: [
         { name: 'ServiceInfo', children: [] },
+        { name: 'ResponsibilityMeasure',
+          children: [
+            { name: 'QuestionClass', children: [] },
+          ] },
       ],
     },
     /*  未付款订单

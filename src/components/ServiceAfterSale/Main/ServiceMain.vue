@@ -2,6 +2,7 @@
   <div class="mp-service-page-main-wrap">
       <ServiceTable
         @changeQuestion='handleChangeQuestion'
+        @LossAssessment='handleLossAssessment'
         @seeEstimate='handleSeeEstimate' />
       <Count :watchPage='obj4RequestServiceList.Page'
        :handlePageChange='handlePageChange' :count='totalCount' :showLoading='isShowLoadingMore'>
@@ -19,6 +20,12 @@
       :visible='seeEstimateVisible'
       @closed="seeEstimateVisible = false"
       @submit="seeEstimateVisible = false"></SeeEstimateDialogComp>
+      <!-- 定损确认 -->
+      <LossAssessmentDialogComp
+      :AfterSaleData='AfterSaleData'
+      :visible='LossAssessmentVisible'
+      @closed="LossAssessmentVisible = false"
+      @submit="LossAssessmentVisible = false"></LossAssessmentDialogComp>
   </div>
 </template>
 
@@ -30,6 +37,7 @@ import ServiceTable from './ServiceTable.vue';
 import ServiceDetailDialog from './ServiceDetailDialog.vue';
 import ChangeQuestionDialog from './ChangeQuestionDialog.vue';
 import SeeEstimateDialogComp from './SeeEstimateDialogComp.vue';
+import LossAssessmentDialogComp from './LossAssessmentDialogComp.vue';
 
 export default {
   components: {
@@ -39,6 +47,7 @@ export default {
     DownLoadExcelComp,
     ChangeQuestionDialog,
     SeeEstimateDialogComp,
+    LossAssessmentDialogComp,
   },
   computed: {
     ...mapState('service', ['isShowLoadingMore', 'totalCount', 'obj4RequestServiceList', 'tableData']),
@@ -66,6 +75,7 @@ export default {
 
       AfterSaleData: null,
       seeEstimateVisible: false,
+      LossAssessmentVisible: false,
     };
   },
   methods: {
@@ -110,6 +120,11 @@ export default {
     // 查看评价
     handleSeeEstimate(AfterSaleData) {
       this.seeEstimateVisible = true;
+      this.AfterSaleData = AfterSaleData;
+    },
+    // 定损确认
+    handleLossAssessment(AfterSaleData) {
+      this.LossAssessmentVisible = true;
       this.AfterSaleData = AfterSaleData;
     },
   },

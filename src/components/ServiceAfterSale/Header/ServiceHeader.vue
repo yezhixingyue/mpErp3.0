@@ -105,7 +105,7 @@
           />
         </div>
       </li>
-      <li></li>
+      <li><el-button @click="toResponsibilityMeasurePage" type="primary" size="small" style="margin-bottom: 10px;">管理责任划分标准</el-button></li>
   </ul>
 </template>
 
@@ -183,6 +183,9 @@ export default {
       this.api.getOperateStaff().then(res => {
         this.staffList = [{ StaffName: '不限', StaffID: '' }, ...res.data.Data];
       });
+    },
+    toResponsibilityMeasurePage() {
+      this.$router.push('ResponsibilityMeasure');
     },
   },
   mounted() {

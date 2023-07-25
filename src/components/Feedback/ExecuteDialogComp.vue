@@ -133,19 +133,20 @@
                   </div>
                   <div class="right">
                     <div class="row">
-                      <el-radio-group v-model="HandlingAfterSalesForm.Solution.SolutionType">
-                        <el-radio :label="2"
-                        :disabled='!RefundBalanceShow && !RefundPrintBeanShow && !RefundThirdPartyShow && !UnpaidReducedAmountShow'>退款</el-radio>
-                        <el-radio :label="7">补印</el-radio>
-                        <el-radio :label="8">赠送优惠劵</el-radio>
-                        <el-radio :label="255">其他</el-radio>
-                      </el-radio-group>
+                      <el-checkbox-group v-model="HandlingAfterSalesForm.Solution.SolutionTypes">
+                        <el-checkbox :label="2"
+                        :disabled='(!RefundBalanceShow && !RefundPrintBeanShow && !RefundThirdPartyShow && !UnpaidReducedAmountShow) ||
+                         !!HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 7)'>退款</el-checkbox>
+                        <el-checkbox :label="7" :disabled="!!HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 2)">补印</el-checkbox>
+                        <el-checkbox :label="8">赠送优惠劵</el-checkbox>
+                        <el-checkbox :label="255">其他</el-checkbox>
+                      </el-checkbox-group>
                     </div>
                   </div>
                 </div>
                 <div class="dispose">
                   <div class="right">
-                    <template v-if="HandlingAfterSalesForm.Solution.SolutionType === 2">
+                    <template v-if="HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 2)">
                       <div class="row solution-type2" v-if="RefundBalanceShow">
                         <div class="form-item">
                           <div class="label">
@@ -226,7 +227,7 @@
                       </div>
                     </template>
 
-                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType === 7">
+                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 7)">
                       <div class="form-item">
                         <div class="label" style="width: 5.8em;">
                           款数：
@@ -257,7 +258,7 @@
                         </div>
                       </div> -->
                     </div>
-                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType === 7">
+                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 7)">
                       <div class="form-item">
                         <div class="conent" style="padding-left:2.5em">
                           <div class="upload-file-box" v-if="ReprintIsUpload">
@@ -274,7 +275,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionType === 8">
+                    <div class="row" v-if="HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 8)">
                       <div class="form-item">
                         <div class="label select" @click="onCouponSelectClick">
                           选择优惠券
@@ -303,7 +304,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="row" v-if="!!HandlingAfterSalesForm.Solution.SolutionType">
+                    <div class="row" v-if="!!HandlingAfterSalesForm.Solution.SolutionTypes.length">
                       <div class="form-item opinion">
                         <div class="label">
                           处理意见：
@@ -474,7 +475,7 @@ export default {
         AfterSalePackages: [],
         PackageList: '包裹列表',
         Solution: {
-          SolutionType: '',
+          SolutionTypes: [],
           KindCount: '',
           Number: '',
           UniqueName: '',
@@ -513,14 +514,16 @@ export default {
   computed: {
     ...mapState('common', ['isLoading', 'DepartmentList']),
     FirstGradeQuestionType() {
-      return this.QuestionTypeList?.filter(res => res.ParentID === -1);
+      return this.QuestionTypeList?.filter(res => res.SonClassList.length);
+      // return this.QuestionTypeList?.filter(res => res.ParentID === -1);
     },
     // 图片总数量
     QuestionPicLength() {
       return [...this.HandlingAfterSalesForm.PassQuestionPicList, ...this.serviceImgList];
     },
     SecondLevelQuestionType() {
-      return (index) => this.QuestionTypeList?.filter(res => res.ParentID === this.HandlingAfterSalesForm.AfterSaleQuestions[index].FirstQuestionType);
+      return (index) => this.QuestionTypeList?.find(res => res.ID === this.HandlingAfterSalesForm.AfterSaleQuestions[index].FirstQuestionType)?.SonClassList;
+      // return (index) => this.QuestionTypeList?.filter(res => res.ParentID === this.HandlingAfterSalesForm.AfterSaleQuestions[index].FirstQuestionType);
     },
     fileName() {
       // this.HandlingAfterSalesForm.Solution.FileName
@@ -570,7 +573,7 @@ export default {
         AfterSalePackages: [],
         PackageList: '包裹列表',
         Solution: {
-          SolutionType: '',
+          SolutionTypes: [],
           KindCount: '',
           Number: '',
           UniqueName: '',
@@ -793,12 +796,12 @@ export default {
         // 提示责任部门有错误
         return false;
       }
-      if (this.HandlingAfterSalesForm.Solution.SolutionType === '') { // 解决方案
+      if (!this.HandlingAfterSalesForm.Solution.SolutionTypes.length) { // 解决方案
         this.messageBox.failSingleError('提交失败', '请选择解决方案');
         // 提示解决方案有错误
         return false;
       }
-      if (this.HandlingAfterSalesForm.Solution.SolutionType === 2) { // 订单退款
+      if (this.HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 2)) { // 订单退款
         const { Solution } = this.HandlingAfterSalesForm;
 
         if (this.RefundBalanceShow || this.RefundPrintBeanShow || this.RefundThirdPartyShow || this.UnpaidReducedAmountShow) {
@@ -865,7 +868,7 @@ export default {
           return false;
         }
       }
-      if (this.HandlingAfterSalesForm.Solution.SolutionType === 7) { // 补印
+      if (this.HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 7)) { // 补印
         if (!this.HandlingAfterSalesForm.Solution.KindCount) {
           this.messageBox.failSingleError('提交失败', '请输入补印款数');
           return false;
@@ -879,7 +882,7 @@ export default {
           return false;
         }
       }
-      if (this.HandlingAfterSalesForm.Solution.SolutionType === 8) { // 优惠券
+      if (this.HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 8)) { // 优惠券
         if (!this.HandlingAfterSalesForm.Solution.CouponList || !this.HandlingAfterSalesForm.Solution.CouponList.length) {
           this.messageBox.failSingleError('提交失败', '请选择优惠券');
           return false;
@@ -950,7 +953,8 @@ export default {
 
     async getQuestionTypeList() {
       // 获取所有问题
-      const res = await this.api.getQuestionList();
+      // const res = await this.api.getQuestionList();
+      const res = await this.api.getOrderAfterSaleQuestionClassList({ searchType: 1, ID: this.paramsData.ProductID });
       if (res.data.Status === 1000) {
         this.QuestionTypeList = res.data.Data;
       }
@@ -1332,7 +1336,7 @@ export default {
                 margin-top: 15px;
                 >.left{
                   min-height: 151px;
-                  // min-width: 630px;
+                  min-width: 547px;
                 }
                 .solution{
                   display: flex;

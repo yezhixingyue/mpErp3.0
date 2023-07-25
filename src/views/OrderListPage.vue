@@ -93,8 +93,9 @@ export default {
       this.handleActionDownload(type);
     },
     ServiceAfterSalesClick(data) {
-      this.ServiceAfterSalesVisible = true;
-      this.ServiceAfterSales = data;
+      // this.ServiceAfterSalesVisible = true;
+      // this.ServiceAfterSales = data;
+      this.$router.push({ name: 'applyAfterSales', params: { ServiceAfterSales: data } });
     },
   },
   mounted() {
