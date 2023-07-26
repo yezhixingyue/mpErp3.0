@@ -6,8 +6,8 @@
         :dataList='filterDataList'
         :filterWords='filterWords'
         :getAddName='getItemAddressName'
+        @setting='onSettingClick'
         @handleAddressItemEdit='handleAddressItemEdit'
-        @handleAddressItemSetting='handleAddressItemSetting'
         @handleAddressItemRemove='handleAddressItemRemove'
        />
       <FactoryManageDialog :visible.sync='dialogVisible' :areaList='allAdAreaTreeList' :itemData='curItemData' @submit="onSubmit" />
@@ -21,10 +21,10 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
-import FactoryManageHeader from '../../components/FactoryManage/FactoryManageHeader.vue';
-import FactoryManageTable from '../../components/FactoryManage/FactoryManageTable.vue';
-import FactoryManageDialog from '../../components/FactoryManage/FactoryManageDialog.vue';
-import recordScrollPositionMixin from '../../assets/js/mixins/recordScrollPositionMixin';
+import FactoryManageHeader from '../../../components/FactoryManage/FactoryManageHeader.vue';
+import FactoryManageTable from '../../../components/FactoryManage/FactoryManageTable.vue';
+import FactoryManageDialog from '../../../components/FactoryManage/FactoryManageDialog.vue';
+import recordScrollPositionMixin from '../../../assets/js/mixins/recordScrollPositionMixin';
 
 export default {
   name: 'FactoryManagePage',
@@ -70,8 +70,17 @@ export default {
       }
       return `${itemData.Address}`;
     },
-    handleAddressItemSetting(itemData) {
-      this.$router.push({ path: `/factoryManagSetup/${itemData.FactoryID}/${itemData.FactoryName}` });
+    onSettingClick(itemData, type) {
+      switch (type) {
+        case 'outsource': // 外发设置
+          this.$router.push({ path: `/factoryOutsourceSetup/${itemData.FactoryID}/${itemData.FactoryName}` });
+          break;
+        case 'account': // 工厂账号设置
+          this.$router.push({ path: `/factoryAccountSetup/${itemData.FactoryID}/${itemData.FactoryName}` });
+          break;
+        default:
+          break;
+      }
     },
     handleAddressItemEdit(itemData) {
       this.curItemData = itemData;

@@ -11,28 +11,52 @@
         :typeList="[['FactoryID', '']]"
         :value='condition.FactoryID'
         label='外协工厂'
+        class="mt-18 mr-30"
+      />
+      <OrderChannelSelector
+        withEmpty
+        :options='CheckFileOrderStatusOptions'
+        :defaultProps="{label: 'Name', value: 'ID'}"
+        :requestFunc='getDataList'
+        :changePropsFunc='setCondition'
+        :typeList="[['CheckFileOrderStatus', '']]"
+        :value='condition.CheckFileOrderStatus'
+        label='外协状态'
         class="mt-18"
       />
     </div>
-    <SearchInputComp
-      class="mt-18"
-      :typeList="[['KeyWords', '']]"
-      title="关键词"
-      placeholder='请输入搜索关键词'
-      :requestFunc='getDataList'
-      :changePropsFunc='setCondition'
-      :word='condition.KeyWords'
-      :searchWatchKey="datas"
-      @reset='() => this.clearCondition()'
-    />
+    <div class="s">
+      <LineDateSelectorComp
+        :changePropsFunc='setCondition'
+        :requestFunc='getDataList'
+        :typeList="[['DateType', ''], ['PlaceDate', 'First'], ['PlaceDate', 'Second']]"
+        :dateValue='condition.DateType'
+        :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+        isFull
+        class="mt-18"
+        label="时间筛选" />
+      <SearchInputComp
+        class="mt-18"
+        :typeList="[['KeyWords', '']]"
+        title="关键词"
+        placeholder='请输入搜索关键词'
+        :requestFunc='getDataList'
+        :changePropsFunc='setCondition'
+        :word='condition.KeyWords'
+        :searchWatchKey="datas"
+        @reset='() => this.clearCondition()'
+      />
+    </div>
   </header>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
+import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import EpCascader from '../../../packages/EpCascader/index.vue';
 import OrderChannelSelector from '../../common/SelectorComps/OrderChannelSelector.vue';
+import { CheckFileOrderStatusEnumList } from '@/views/FactoryManage/ManualOutsourceManage/classType/EnumList';
 
 export default {
   props: {
@@ -61,6 +85,12 @@ export default {
     EpCascader,
     OrderChannelSelector,
     SearchInputComp,
+    LineDateSelectorComp,
+  },
+  data() {
+    return {
+      CheckFileOrderStatusOptions: CheckFileOrderStatusEnumList.filter(it => it.filter),
+    };
   },
   computed: {
     ...mapGetters('common', ['allProductClassifyWithEmpty']),
@@ -84,6 +114,10 @@ export default {
         this.getDataList();
       },
     },
+    UserDefinedTimeIsActive() {
+      return this.condition.DateType === ''
+       && !!this.condition.PlaceDate.First && !!this.condition.PlaceDate.Second;
+    },
   },
   methods: {
     getDataList() {
@@ -104,9 +138,19 @@ export default {
   flex-wrap: wrap;
   padding-bottom: 16px;
   padding-right: 20px;
-  > div.f {
+  > div {
+    width: 100%;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    padding-left: 20px;
+    &.s {
+      justify-content: space-between;
+    }
+
+    .mp-common-comps-ep-cascader-comp-wrap > .title {
+      margin-right: 15px;
+    }
   }
 }
 </style>
