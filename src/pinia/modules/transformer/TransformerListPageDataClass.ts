@@ -69,11 +69,31 @@ export class TransformerListPageDataClass {
   handlePartChange(data: IPartChangeParams) {
     if (!this.curEditItem) return;
     const { IsSelected, PartList } = data;
+
+    const _clearPartInfo = (part: Omit<IPart, 'UseTimes'>) => {
+      const _part = part;
+      _part.DefaultLine = null;
+      _part.LineCount = 0;
+      _part.NumbericInfoCount = 0;
+      _part.SemiFinished = null;
+      _part.UnionMakeupLimitCount = 0;
+      _part.WordsInfoCount = 0;
+      _part.WorkTimesCount = 0;
+      _part.WorkingCount = 0;
+      _part.NeedFolding = false;
+    };
+    if (!this.curEditItem.IsSelected && IsSelected) {
+      _clearPartInfo(this.curEditItem);
+    }
     this.curEditItem.IsSelected = IsSelected;
     const selectedIds = PartList.filter(it => it.IsSelected).map(it => it.ID);
     this.curEditItem.PartList.forEach(p => {
       const part = p;
-      part.IsSelected = selectedIds.includes(part.ID);
+      const bool = selectedIds.includes(part.ID);
+      if (!part.IsSelected && bool) { // 新添加部件 -- 部分信息初始化
+        _clearPartInfo(part);
+      }
+      part.IsSelected = bool;
     });
   }
 

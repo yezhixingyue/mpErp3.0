@@ -8,6 +8,7 @@ import { GeneralMapItemClass } from '@/pinia/modules/transformer/map/GeneralMapI
 import { IAssistMapParams, IFactoryMaterialClass, IGeneralMapParams } from '@/pinia/modules/transformer/map/types';
 import { TransformerListConditionClass } from '@/pinia/modules/transformer/TransformerListConditionClass';
 import { IPartChangeParams, ISemiFinishedSaveParams, IGetWorkingProcedureParams, IGetPropertyListParams, IGetDefaultLineSetupParams } from '@/pinia/modules/transformer/types';
+import { IFactoryAccount } from '@/views/BasicSetup/Factory/Account/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 
 const api = {
@@ -706,6 +707,18 @@ const api = {
   getFactoryProductPriceRemove(ID) { // POST /Api/Factory/ProductPrice/Remove 工厂产品价格删除
     return instance.delete(`/Api/Factory/ProductPrice/Remove?id=${ID}`);
   },
+  /** GET /Api/Factory/Account/List  获取工厂账号列表 */
+  getFactoryAccountList(factoryID: number) {
+    return instance.get<IFactoryAccount[]>('/Api/Factory/Account/List', { params: { factoryID } });
+  },
+  /** POST /Api/Factory/Account/Save  工厂账号保存 */
+  getFactoryAccountSave(data) {
+    return instance.post('/Api/Factory/Account/Save', data);
+  },
+  /** DELETE /Api/Factory/Account/Remove  删除工厂账号 */
+  getFactoryAccountRemove(id: string) {
+    return instance.delete('/Api/Factory/Account/Remove', { params: { id } });
+  },
   getElementSave(data) { // POST /Api/Element/Save  保存界面元素
     return instance.post('/Api/Element/Save', data);
   },
@@ -1304,6 +1317,12 @@ const api = {
   },
   getOutOrderProgress(orderID) { // GET /Api/OutOrder/Progress   外协订单状态
     return instance.get('/Api/OutOrder/Progress', { params: { orderID } });
+  },
+  getOutOrderComfirm(data) { // POST /Api/OutOrder/Comfirm  确认外协
+    return instance.post('/Api/OutOrder/Comfirm', data);
+  },
+  getOutOrderComfirmCancle(data) { // POST /Api/OutOrder/ComfirmCancle  取消外协
+    return instance.post('/Api/OutOrder/ComfirmCancle', data);
   },
   /* 发票管理 api
   ----------------------------------------------------------------------------------- */

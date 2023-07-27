@@ -29,10 +29,10 @@ export default {
     -------------------------------*/
     OrderStatusList: [
       { name: '不限', ID: '' },
-      { name: '待分发', ID: 20 },
-      { name: '已分发', ID: 30 },
-      { name: '已审稿', ID: 40 },
-      { name: '内容已审核', ID: 42 },
+      { name: '待分发', ID: 20, canCancel: true },
+      { name: '已分发', ID: 30, canCancel: true },
+      { name: '已审稿', ID: 40, canCancel: true },
+      { name: '内容已审核', ID: 42, canCancel: true },
       { name: '拼版中', ID: 45 },
       { name: '已拼版', ID: 50 },
       { name: '生产中', ID: 55 },
@@ -42,7 +42,7 @@ export default {
       { name: '已完成', ID: 200 },
       { name: '已取消', ID: 254 },
       { name: '已过期', ID: 255 },
-      { name: '问题件', ID: 35 },
+      { name: '问题件', ID: 35, canCancel: true },
     ],
     orderStatueTitle: '不限',
     /* 订单进度信息

@@ -11,6 +11,21 @@ const routes = { // 基本设置
     icon: 'el-icon-school',
   },
   children: [
+    /*  手动外协
+    ------------------------------------------ */
+    {
+      path: '/manualOutsource',
+      name: 'manualOutsource',
+      meta: {
+        title: '手动外协',
+        pageName: 'ManualOutsourceManagePage',
+        icon: 'el-icon-s-help',
+        PermissionInfo: ['PermissionCheckFileOutOrder', 'HavePomission'],
+        // PermissionInfo: ['Developing', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/FactoryManage/ManualOutsourceManage/ManualOutsourceManagePage.vue'),
+    },
     /*  生产工厂
     ------------------------------------------ */
     {
@@ -23,32 +38,29 @@ const routes = { // 基本设置
         PermissionInfo: ['PermissionSetupFactoryBase', 'HavePomission'],
         requiresAuth: true,
       },
-      component: () => import('../../../views/BasicSetup/FactoryManagePage.vue'),
+      component: () => import('../../../views/BasicSetup/Factory/FactoryManagePage.vue'),
     },
     {
-      path: '/factoryManagSetup/:ID/:factoryName',
-      name: 'factoryManagSetup',
+      path: '/factoryOutsourceSetup/:ID/:factoryName',
+      name: 'factoryOutsourceSetup',
       meta: {
         title: '外发价格',
-        pageName: 'FactoryManagSetupPage',
+        pageName: 'FactoryOutsourceSetup',
         PermissionInfo: ['PermissionSetupFactoryBase', 'HavePomission'],
         requiresAuth: true,
       },
-      component: () => import('../../../views/BasicSetup/FactoryManagSetupPage.vue'),
+      component: () => import('../../../views/BasicSetup/Factory/FactoryOutsourceSetup.vue'),
     },
-    /*  手动外协
-    ------------------------------------------ */
     {
-      path: '/manualOutsource',
-      name: 'manualOutsource',
+      path: '/factoryAccountSetup/:FactoryID/:FactoryName',
+      name: 'factoryAccountSetup',
       meta: {
-        title: '手动外协',
-        pageName: 'ManualOutsourceManagePage',
-        icon: 'el-icon-s-help',
-        PermissionInfo: ['PermissionCheckFileOutOrder', 'HavePomission'],
+        title: '工厂管理 - 账号设置',
+        pageName: 'FactoryAccountSetupPage',
+        PermissionInfo: ['PermissionSetupFactoryBase', 'HavePomission'],
         requiresAuth: true,
       },
-      component: () => import('../../../views/FactoryManage/ManualOutsourceManage/ManualOutsourceManagePage.vue'),
+      component: () => import('../../../views/BasicSetup/Factory/FactoryAccountSetupPage.vue'),
     },
     /*  转换设置
     ------------------------------------------ */
@@ -80,7 +92,11 @@ const routeTree = {
       name: 'factoryManage',
       children: [
         {
-          name: 'factoryManagSetup',
+          name: 'factoryOutsourceSetup',
+          children: [],
+        },
+        {
+          name: 'factoryAccountSetup',
           children: [],
         },
       ],

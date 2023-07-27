@@ -1,5 +1,7 @@
 const { defineConfig } = require('@vue/cli-service');
 
+require('events').EventEmitter.defaultMaxListeners = 20; // 将MaxListeners的限制数增加到20
+
 const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web/';
 
 let proxyUrl = 'http://192.168.3.68:8050';

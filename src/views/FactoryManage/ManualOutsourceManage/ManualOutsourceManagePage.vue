@@ -20,6 +20,7 @@
         ref="oTable"
         @showStatus="onShowStatus"
         @singleOutsource="onSingleOutsourceClick"
+        @comfirmCancle="handleComfirmCancle"
        />
        <!-- 单个订单操作记录弹窗 -->
       <OutsourceRecordDisplayDialog :list="showStatusList" :visible.sync="showStatusVisible" />
@@ -43,12 +44,14 @@
 <script>
 import { mapState } from 'vuex';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+import CommonClassType from '@/store/CommonClassType';
 import ManualOutsourceHeader from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceHeader.vue';
 import ManualOutsourceTable from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceTable.vue';
 import ManualOutsourceFooter from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceFooter.vue';
 import OutsourceRecordDisplayDialog from '../../../components/FactoryModule/ManualOutsourceComps/OutsourceRecordDisplayDialog.vue';
 import ConditionClass from './classType/ConditionClass';
 import OutsourceOrderItemClass from './classType/OutsourceOrderItemClass';
+import { CheckFileOrderStatusEnumObj } from './classType/EnumList.ts';
 
 export default {
   name: 'ManualOutsourceManagePage',
@@ -89,6 +92,8 @@ export default {
     },
     async getList(Page = 1) { // 获取列表数据
       this.condition.Page = Page;
+
+      CommonClassType.setDate(this.condition, 'PlaceDate');
 
       const temp = this.condition.getFilterObj();
 
@@ -142,8 +147,42 @@ export default {
     onManualOutsourceClick() { // 多个选中订单确认外协
       this.handleOutsourceConfirm(this.multipleSelection);
     },
-    handleOutsourceConfirm() { // 确认外协
-      // console.log('handleOutsourceConfirm -- 确认外协 后续待开发', arr);
+    async handleOutsourceConfirm(arr) { // 确认外协
+      if (!arr || arr.length === 0) return;
+      const temp = {
+        OrderList: arr.map(it => it.OrderID),
+      };
+      const resp = await this.api.getOutOrderComfirm(temp).catch(() => null);
+
+      if (resp?.data?.Status === 1000) {
+        const cb = () => {
+          arr.forEach(it => {
+            const _it = it;
+            _it.CheckFileStatus = CheckFileOrderStatusEnumObj.OutsourceComfirm.ID;
+          });
+          if (this.$refs.oTable) {
+            this.$refs.oTable.toggleRowSelection(arr);
+          }
+        };
+        this.messageBox.successSingle('确认外协成功', cb, cb);
+      }
+    },
+    async handleComfirmCancle(arr) { // 取消外协
+      if (!arr || arr.length === 0) return;
+      const temp = {
+        OrderList: arr.map(it => it.OrderID),
+      };
+      const resp = await this.api.getOutOrderComfirmCancle(temp).catch(() => null);
+
+      if (resp?.data?.Status === 1000) {
+        const cb = () => {
+          arr.forEach(it => {
+            const _it = it;
+            _it.CheckFileStatus = CheckFileOrderStatusEnumObj.WaitSendFactory.ID;
+          });
+        };
+        this.messageBox.successSingle('取消成功', cb, cb);
+      }
     },
   },
   mounted() {

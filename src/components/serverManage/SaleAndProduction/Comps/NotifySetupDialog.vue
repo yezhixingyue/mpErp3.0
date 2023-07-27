@@ -17,7 +17,7 @@
       <el-form-item prop="NotifyType" label="通知方式：">
         <el-radio-group v-model="ruleForm.NotifyType">
           <el-radio :label="NotifyTypeEnum.message">短信通知</el-radio>
-          <el-radio :label="NotifyTypeEnum.WeChat">微信通知</el-radio>
+          <el-radio :label="NotifyTypeEnum.WeChat" disabled>微信通知</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item prop="Mobile" label="接收手机号码：">

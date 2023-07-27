@@ -40,7 +40,7 @@
         </li>
         <li v-if="localPermission.CancleOrder">
           <span
-            v-if="[20, 30, 35, 40].includes(scope.row.Status)"
+            v-if="canCancelStatuses.includes(scope.row.Status)"
             @click="onOrderDel(scope.row, scope.$index)">
             <img src="@/assets/images/cancel.png" />取消
           </span>
@@ -76,6 +76,9 @@ export default {
         return this.Permission.PermissionList.PermissionManageOrder.Obj;
       }
       return {};
+    },
+    canCancelStatuses() {
+      return this.OrderStatusList.filter(it => it.canCancel === true).map(it => it.ID);
     },
   },
   components: {
