@@ -22,22 +22,23 @@
         </el-table-column>
         <el-table-column prop="Content" label="文件内容" min-width="146" show-overflow-tooltip></el-table-column>
         <el-table-column prop="FinalPrice" label="成交价" min-width="85" show-overflow-tooltip>
-          <span slot-scope="scope">{{scope.row.FinalPrice ? `${scope.row.FinalPrice}元` : ''}}</span>
+          <span slot-scope="scope">{{scope.row.Funds.FinalPrice ? `${scope.row.Funds.FinalPrice}元` : ''}}</span>
         </el-table-column>
         <el-table-column prop="OrderID" label="运费" min-width="58" show-overflow-tooltip>
-          <span slot-scope="scope">{{scope.row.Freight}}元</span>
+          <span slot-scope="scope">{{scope.row.Funds.Freight}}元</span>
         </el-table-column>
         <el-table-column prop="OrderID" label="总计" min-width="88" show-overflow-tooltip>
           <span slot-scope="scope">
             <b class="is-pink">
-              {{scope.row.Freight + scope.row.FinalPrice}}元
+              {{scope.row.Funds.Freight + scope.row.Funds.FinalPrice}}元
             </b>
           </span>
         </el-table-column>
         <el-table-column prop="OrderID" label="已售后(含运费)" min-width="110" show-overflow-tooltip>
-          <span slot-scope="scope">{{scope.row.AfterSaleAmount || 0}}元</span>
+          <span slot-scope="scope">{{scope.row.Refund || 0}}元</span>
         </el-table-column>
       </el-table>
+
       <div class="apply-after-sales-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm1" label-width="100px" class="demo-ruleForm">
           <el-form-item label="诉求意向：" prop="AppealType">
@@ -152,6 +153,7 @@ import {
 } from 'vuex';
 
 export default {
+  name: 'applyAfterSalesPage',
   data() {
     const validateQuestionTypeList = (rule, value, callback) => {
       if (value?.length === 0) {
