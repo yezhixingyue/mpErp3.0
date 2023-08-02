@@ -37,7 +37,7 @@
         <el-input v-model.trim="ruleForm.Mobile" placeholder="请输入联系电话" maxlength="11" show-word-limit></el-input>
       </el-form-item>
       <el-form-item >
-        <el-checkbox v-model="ruleForm._AutoLink" >
+        <el-checkbox v-model="ruleForm._AutoLink" @change="onAutoLinkChange">
           <span class="ft-12" style="color:#585858">订单自动对接</span>
         </el-checkbox>
       </el-form-item>
@@ -50,6 +50,11 @@
             :value="item.ID">
           </el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item v-if="!ruleForm._AutoLink">
+        <el-checkbox v-model="ruleForm.AutoReceiveOrder" >
+          <span class="ft-12" style="color:#585858">外协自动接单</span>
+        </el-checkbox>
       </el-form-item>
       <!-- <el-form-item label="转换器" prop="Convert.ID" v-if="ruleForm._AutoLink">
         <el-select v-model="ruleForm.Convert.ID" :disabled="loading" placeholder="请选择对应转换器">
@@ -206,6 +211,9 @@ export default {
       // const id = this.ruleForm.Convert.Server.ID;
       // this.getConvertList(id);
       // if (e) this.ruleForm.Convert.ID = '';
+    },
+    onAutoLinkChange() {
+      if (this.ruleForm) this.ruleForm.AutoReceiveOrder = false;
     },
   },
 };

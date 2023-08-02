@@ -26,6 +26,9 @@ export default class FactoryClass {
     },
   }
 
+  /** 外协自动接单 */
+  AutoReceiveOrder = false
+
   _AutoLink = false
 
   constructor(data) {
