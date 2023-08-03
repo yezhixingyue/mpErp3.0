@@ -74,6 +74,9 @@ export default {
     isIndeterminate() {
       return !this.checked && this.multipleSelection.length > 0;
     },
+    checkedFactoryList() {
+      return this.multipleSelection.map(it => it.Factory.ID);
+    },
   },
   methods: {
     handlePageChange(page) {
@@ -91,6 +94,11 @@ export default {
       this.messageBox.warnCancelBox('确认外协选中订单吗 ?', msg, () => {
         this.$emit('manualOutsource');
       }, null, true);
+    },
+  },
+  watch: {
+    checkedFactoryList() {
+      this.radio = '';
     },
   },
 };

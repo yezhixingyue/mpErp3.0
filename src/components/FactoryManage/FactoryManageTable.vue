@@ -25,7 +25,7 @@
     <!-- <el-table-column prop="Convert.Name" label="转换器" min-width="130"> </el-table-column> -->
     <el-table-column label="操作" width="320">
       <div class="menu-list" slot-scope="scope" >
-        <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupPrice" @click="onSettingClick(scope.row, 'account')">
+        <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupAccount" @click="onSettingClick(scope.row, 'account')">
           <i class="el-icon-user-solid is-blue none"></i>账号设置
         </span>
         <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupPrice" @click="onSettingClick(scope.row, 'outsource')">
