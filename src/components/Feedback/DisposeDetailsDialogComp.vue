@@ -40,9 +40,24 @@
               <div class="right">
                 <div class="row" v-for="(item,index) in DisposeDetailsData.AfterSaleQuestions" :key="index">
                   <div class="item">
-                    <div><span v-if="index ===0">问题：</span>
-                      <i style="width:8em;" :style="`margin-left:${index === 0 ? 0 : 3.3}em`">{{QuestionFirstName(item.SecondQuestionType)}}</i>
-                      <i style="text-indent:0em">{{QuestionName(item.SecondQuestionType)}}</i>
+                    <div :style="`padding-left: ${index ===0?0:40}px;`">
+                      <span v-if="index ===0" style="min-width: 3em;">问题：</span>
+                      <el-tooltip
+                      effect="dark"
+                      :disabled="QuestionFirstName(item.FirstQuestionType).length<12"
+                      :content="QuestionFirstName(item.FirstQuestionType)"
+                      placement="top">
+                        <i class="i">{{QuestionFirstName(item.FirstQuestionType)}}</i>
+                      </el-tooltip>
+                      <!-- <i style="width:8em;" :style="`margin-left:${index === 0 ? 0 : 3.3}em`">{{QuestionFirstName(item.FirstQuestionType)}}</i> -->
+                      <el-tooltip
+                      effect="dark"
+                      :disabled="QuestionName(item.SecondQuestionType).length<12"
+                      :content="QuestionName(item.SecondQuestionType)"
+                      placement="top">
+                        <i class="i">{{QuestionName(item.SecondQuestionType)}}</i>
+                      </el-tooltip>
+                      <!-- <i style="text-indent:0em">{{QuestionName(item.SecondQuestionType)}}</i> -->
                     </div>
                   </div>
                   <div class="item">
@@ -80,7 +95,7 @@
                 <template v-for="(SolutionType, SolutionTypeindex) in DisposeDetailsData.Solution.SolutionTypes">
                   <div :key="SolutionTypeindex" class="row line" v-if="SolutionType === 255">
                     <div class="item">
-                      <div><span>解决方案：</span>
+                      <div><span style="min-width: 65px; display: inline-block;">{{SolutionTypeindex ===0?'解决方案：':''}}</span>
                       <!-- 其他 -->
                         其他
                       </div>
@@ -89,7 +104,7 @@
                   <template v-if="DisposeDetailsData.Solution && SolutionType === 8">
                     <div class="row line" v-for="(it,index) in selectedCouponList" :key="`${it.CouponID}${SolutionTypeindex}`">
                       <div class="item" >
-                        <div class="discount-coupon" ><span>{{index ===0?'解决方案：':''}}</span>
+                        <div class="discount-coupon" ><span style="min-width: 65px; display: inline-block;">{{SolutionTypeindex ===0?'解决方案：':''}}</span>
                         <!-- 赠送优惠券 -->
                           <span v-if="index === 0" :style="`text-indent:${index === 0 ? 0 : 5.05}em`">赠送优惠券：</span>
                           <span v-else style="margin-right:11.05em"></span>
@@ -113,7 +128,7 @@
                   </template>
                   <div :key="SolutionTypeindex" class="row line" v-if="SolutionType === 7">
                     <div class="item">
-                      <div><span>解决方案：</span>
+                      <div><span style="min-width: 65px; display: inline-block;">{{SolutionTypeindex ===0?'解决方案：':''}}</span>
                       <!-- 补印 -->
                       <span v-if="SolutionType === 7">
                         补印：款数：<span class="color-red">{{DisposeDetailsData.Solution.KindCount}} &nbsp;</span>款，
@@ -126,7 +141,7 @@
                     <div class="item">
                       <!-- 问题 <span class="color-yellow">描述</span> 问题 <span class="color-red">描述</span> -->
                       <div>
-                        <span>解决方案：</span>
+                        <span style="min-width: 65px; display: inline-block;">{{SolutionTypeindex ===0?'解决方案：':''}}</span>
                         <span>
                           退款：
                         </span>
@@ -200,6 +215,22 @@
                     </div>
                   </div>
                 </template>
+
+                <div class="row line" v-if="DisposeDetailsData.Solution.SolutionTypes.find(it => it === 255)
+                && DisposeDetailsData.Solution.OtherSolutionRemark">
+                  <div class="item">
+                    <div style="text-indent: 5.3em">
+                      其他花费：
+                      <el-tooltip
+                      effect="dark"
+                      :disabled="DisposeDetailsData.Solution.OtherSolutionRemark.length<50"
+                      :content="DisposeDetailsData.Solution.OtherSolutionRemark"
+                      placement="top">
+                        <i class="i" style="text-indent: 0em">{{DisposeDetailsData.Solution.OtherSolutionRemark}}</i>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                </div>
 
                 <div class="row line">
                   <div class="item">
@@ -293,16 +324,21 @@ export default {
     ...mapState('common', ['isLoading', 'DepartmentList']),
     QuestionName() {
       return (id) => {
-        const temp = this.QuestionTypeList.filter(it => it.ID === id);
-        return temp[0]?.Name;
+        let returnData = null;
+        this.QuestionTypeList.forEach(it => {
+          const temp = it.SonClassList.find(i => i.ID === id);
+          if (temp) {
+            returnData = temp;
+          }
+        });
+        return returnData?.Name || '';
       };
     },
     // 根据二级问题找一级问题
     QuestionFirstName() {
       return (id) => {
-        const temp = this.QuestionTypeList.filter(it => it.ID === id);
-        const FirstTemp = this.QuestionTypeList.filter(it => it.ID === temp[0]?.ParentID);
-        return FirstTemp[0]?.Name;
+        const temp = this.QuestionTypeList.find(it => it.ID === id);
+        return temp?.Name || '';
       };
     },
     DepartmentName() {
@@ -317,7 +353,8 @@ export default {
       this.api.getSuccessDetail(this.paramsData.AfterSaleCode).then(res => {
         if (res.data.Status === 1000) {
           this.DisposeDetailsData = res.data.Data;
-          this.getQuestionTypeList();
+          // : this.paramsData.ProductID
+          this.getQuestionTypeList(this.paramsData.ProductID);
           this.getCoupon(res.data.Data.Solution.CouponList);
           this.getPackageListByOrderID(this.paramsData.OrderID);
         }
@@ -338,11 +375,12 @@ export default {
           };
         });
         this.selectedCouponList = couponList.filter(it => it.checked);
+        console.log(CouponList, resp.data.Data);
       }
     },
-    async getQuestionTypeList() {
+    async getQuestionTypeList(ID) {
       // 获取所有问题
-      const res = await this.api.getQuestionList();
+      const res = await this.api.getOrderAfterSaleQuestionClassList({ searchType: 1, ID });
       if (res.data.Status === 1000) {
         this.QuestionTypeList = res.data.Data;
       }

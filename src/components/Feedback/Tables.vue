@@ -144,8 +144,8 @@
           <tr>
             <td>诉求意向</td>
             <td>
-              <span v-if="dataInfo.AfterSale.AppealType === 2">退款</span>
-              <span v-if="dataInfo.AfterSale.AppealType === 3">退款3</span>
+              <span v-if="dataInfo.AfterSale.AppealType === 2">退货/退款</span>
+              <span v-if="dataInfo.AfterSale.AppealType === 3">优惠减款</span>
               <span v-else-if="dataInfo.AfterSale.AppealType === 7">补印</span>
               <span v-else-if="dataInfo.AfterSale.AppealType === 255">其它</span>
               <span v-else></span>
@@ -231,6 +231,10 @@
               </span>
               <!-- 完成 -->
               <span v-else-if="scope.row.LogType === 6">
+                {{scope.row.OperaterRemark}}
+              </span>
+              <!-- 定损确认 -->
+              <span v-else-if="scope.row.LogType === 7">
                 {{scope.row.OperaterRemark}}
               </span>
               <!-- 取消挂起/取消 -->
@@ -450,30 +454,37 @@ export default {
       return '';
     },
     getSolution(solution) {
+      console.log(solution);
       const arr = [];
-      if (solution.SolutionType === 2) {
-        arr.push(`订单退款${solution.RefundAmount}元`);
-        arr.push(`运费退款${solution.RefundFreightAmount}元`);
-      } else if (solution.SolutionType === 7) {
-        arr.push('补印');
-        arr.push(`${solution.KindCount}款`);
-        arr.push(`${solution.Number}${solution.Unit}`);
-      } else if (solution.SolutionType === 8) {
-        arr.push('赠送优惠券');
-        const { CouponList } = solution;
-        if (CouponList && CouponList.length > 0) {
-          CouponList.forEach(it => {
-            const { Number, Amount, MinPayAmount } = it;
-            if (Number && Amount && MinPayAmount) {
-              if (Amount && MinPayAmount) {
-                const text = `满${MinPayAmount}减${Amount}券${Number}张`;
-                arr.push(text);
-              }
-            }
-          });
-        }
+      if (solution.SolutionTypes.find(it => it === 2)) {
+        arr.push('退款');
+        // arr.push(`订单退款${solution.RefundAmount}元`);
+        // arr.push(`运费退款${solution.RefundFreightAmount}元`);
       }
-      return arr.join('--');
+      if (solution.SolutionTypes.find(it => it === 7)) {
+        arr.push('补印');
+        // arr.push(`${solution.KindCount}款`);
+        // arr.push(`${solution.Number}${solution.Unit}`);
+      }
+      if (solution.SolutionTypes.find(it => it === 8)) {
+        arr.push('赠送优惠券');
+        // const { CouponList } = solution;
+        // if (CouponList && CouponList.length > 0) {
+        //   CouponList.forEach(it => {
+        //     const { Number, Amount, MinPayAmount } = it;
+        //     if (Number && Amount && MinPayAmount) {
+        //       if (Amount && MinPayAmount) {
+        //         const text = `满${MinPayAmount}减${Amount}券${Number}张`;
+        //         arr.push(text);
+        //       }
+        //     }
+        //   });
+        // }
+      }
+      if (solution.SolutionTypes.find(it => it === 255)) {
+        arr.push('其他');
+      }
+      return arr.join('、');
     },
     // getSolution(solution) {
     //   const arr = [];

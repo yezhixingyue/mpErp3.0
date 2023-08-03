@@ -2,7 +2,7 @@
   <CommonDialogComp
     width="800px"
     top='12vh'
-    :title="`${this.ID?'编辑':'添加'}责任划分`"
+    :title="`${this.ID?'编辑':'添加'}问题类型`"
     :visible="visible"
     submitText='确定'
     @submit="onSubmit"
@@ -12,8 +12,8 @@
     class="mp-erp-comps-save-order-after-sale-divide-dialog-comp-wrap"
    >
     <div class="lv1-item">
-      <div class="from"><span>责任划分名称：</span>
-        <el-input v-model="DivideName" size="small" placeholder="请输入责任划分名称" maxlength="50" show-word-limit></el-input>
+      <div class="from"><span>问题类型：</span>
+        <el-input v-model="DivideName" size="small" placeholder="请输入问题类型" maxlength="50" show-word-limit></el-input>
       </div>
       <p>产品：</p>
       <ul class="product-list">
@@ -98,7 +98,7 @@ export default {
     onSubmit() {
       console.log(this.ProductIDS.length);
       if (!this.DivideName) {
-        this.messageBox.failSingleError('保存失败', '请输入责任划分名称');
+        this.messageBox.failSingleError('保存失败', '请输入问题类型');
       } else if (!this.ProductIDS.length) {
         this.messageBox.failSingleError('保存失败', '请选择产品');
       } else {

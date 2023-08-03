@@ -25,7 +25,7 @@
         {{scope.row.FinalPrice}}元
       </template>
     </el-table-column>
-    <el-table-column minWidth="70" label="售后类型">
+    <el-table-column show-overflow-tooltip minWidth="70" label="售后类型">
       <template slot-scope="scope">
         <template v-for="(item,i) in scope.row.SolutionTypes" >
           <span :key="i">
@@ -43,12 +43,12 @@
         {{scope.row.ReprintOrderID || "--"}}
       </template>
     </el-table-column>
-    <el-table-column minWidth="72" label="订单退款">
+    <el-table-column show-overflow-tooltip minWidth="72" label="订单退款">
       <template slot-scope="scope">
         {{scope.row.RefundAmount  === null ? '--' : scope.row.RefundAmount + '元'}}
       </template>
     </el-table-column>
-    <el-table-column minWidth="70" label="运费退款">
+    <el-table-column show-overflow-tooltip minWidth="70" label="运费退款">
       <template slot-scope="scope" >
         {{scope.row.RefundFreightAmount === null ? '--' : scope.row.RefundFreightAmount + '元'}}
       </template>
@@ -93,7 +93,7 @@
         <span v-if="scope.row.Terminal === 2">手机端</span>
       </template>
     </el-table-column>
-    <el-table-column
+    <el-table-column show-overflow-tooltip
       class-name='sm-font' prop="CustomerName" minWidth="75" label="下单人"></el-table-column>
     <el-table-column class-name='sm-font is-gray' minWidth="115" label="处理时间">
       <template slot-scope="scope" v-if="scope.row.OperateTime">
@@ -135,12 +135,12 @@
         <span v-else class="not-allowed">
           <img src="@/assets/images/seeEvaluation-disabled.png" alt />查看评价
         </span>
-        <template v-if="localPermission.UpdateQuestion">
+        <template v-if="localPermission.LossConfirm">
           <span v-if="scope.row.AfterSaleStatus === 30" @click="onLossAssessmentClick(scope.row)">
-            <i class="iconfont icon-dingsunqueren"></i> 定损确认
+            <i class="iconfont icon-dingsunqueren"></i> {{scope.row.LossConfirmStatus ? `定损查看` : '定损确认'}}
           </span>
           <span v-else class="not-allowed">
-            <i class="iconfont icon-dingsunqueren"></i> 定损确认
+            <i class="iconfont icon-dingsunqueren"></i> {{scope.row.LossConfirmStatus ? `定损查看` : '定损确认'}}
           </span>
         </template>
       </div>

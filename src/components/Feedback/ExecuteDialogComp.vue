@@ -280,7 +280,7 @@
                         <div class="label select" @click="onCouponSelectClick">
                           选择优惠券
                         </div>
-                        <div class="conent">
+                        <div class="conent selected-coupon">
                           <div v-if="selectedCouponList.length > 0">
                             <span>已选：</span>
                             <ul>
@@ -301,6 +301,19 @@
                             </ul>
                           </div>
                           <div v-else style="margin-top:0px;color:#999999;font-size:12px">暂未选择优惠券</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" v-if="!!HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 255)">
+                      <div class="form-item other-remark">
+                        <div class="label">
+                          其他费用：
+                        </div>
+                        <div class="conent">
+                          <TextareaInput type="textarea"
+                          style="width: 430px;"
+                          placeholder="请输入其他费用描述"
+                          show-word-limit :maxlength="300" v-model.trim="HandlingAfterSalesForm.Solution.OtherSolutionRemark"></TextareaInput>
                         </div>
                       </div>
                     </div>
@@ -1531,6 +1544,17 @@ export default {
                               }
                             }
                           }
+                          &.selected-coupon{
+                            >div{
+                              white-space: nowrap;
+                              overflow: hidden;
+                              text-overflow: ellipsis;
+                              >ul{
+                                flex: 1;
+                                width: 400px;
+                              }
+                            }
+                          }
                         }
                         &.opinion{
                           .el-textarea{
@@ -1547,6 +1571,12 @@ export default {
                               right: 20px;
                               padding-bottom: 3px;
                             }
+                          }
+                        }
+                        &.other-remark{
+                          .label::before{
+                            content: '*';
+                            opacity: 0;
                           }
                         }
                       }

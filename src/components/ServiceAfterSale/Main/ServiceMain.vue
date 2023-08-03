@@ -25,7 +25,7 @@
       :AfterSaleData='AfterSaleData'
       :visible='LossAssessmentVisible'
       @closed="LossAssessmentVisible = false"
-      @submit="LossAssessmentVisible = false"></LossAssessmentDialogComp>
+      @submit="LossAssessmentSubmit"></LossAssessmentDialogComp>
   </div>
 </template>
 
@@ -126,6 +126,11 @@ export default {
     handleLossAssessment(AfterSaleData) {
       this.LossAssessmentVisible = true;
       this.AfterSaleData = AfterSaleData;
+    },
+    // 定损确认
+    LossAssessmentSubmit() {
+      this.LossAssessmentVisible = false;
+      this.handlePageChange(this.obj4RequestServiceList.Page);
     },
   },
 };

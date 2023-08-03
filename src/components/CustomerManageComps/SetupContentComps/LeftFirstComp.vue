@@ -1,7 +1,7 @@
 <template>
   <el-form v-if="ruleForm" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="110px" class="customer-first-ruleForm-wrap"  @submit.native.prevent>
     <el-form-item label="客户简称：" prop="CustomerName" size="small">
-      <el-input v-model.trim="ruleForm.CustomerName" maxlength="12" :disabled='!PermissionObj.EditOther && isEdit' placeholder="客户的简短称呼，方便识别"></el-input>
+      <el-input v-model.trim="ruleForm.CustomerName" maxlength="20" :disabled='!PermissionObj.EditOther && isEdit' placeholder="客户的简短称呼，方便识别"></el-input>
     </el-form-item>
     <el-form-item label="手机号：" prop="Mobile" size="small">
       <el-input v-model.trim="ruleForm.Mobile" maxlength="11" :disabled='!PermissionObj.EditMobile && isEdit' placeholder="手机号将作为客户的登录账号"></el-input>
@@ -129,7 +129,7 @@ export default {
       rules: {
         CustomerName: [
           { required: true, message: '请输入客户简称', trigger: 'blur' },
-          { min: 2, max: 12, message: '长度在 2 到 12 个字符', trigger: 'blur' },
+          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
         ],
         Mobile: [
           { required: true, message: '请输入手机号码', trigger: 'blur' },

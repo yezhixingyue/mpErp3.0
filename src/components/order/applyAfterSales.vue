@@ -35,7 +35,7 @@
           </span>
         </el-table-column>
         <el-table-column prop="OrderID" label="已售后(含运费)" min-width="110" show-overflow-tooltip>
-          <span slot-scope="scope">{{scope.row.Refund || 0}}元</span>
+          <span slot-scope="scope">{{scope.row.Funds.Refund || 0}}元</span>
         </el-table-column>
       </el-table>
 
@@ -43,15 +43,15 @@
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm1" label-width="100px" class="demo-ruleForm">
           <el-form-item label="诉求意向：" prop="AppealType">
             <div class="intention">
-              <span :class="ruleForm.AppealType===7 ? 'action' : ''" @click="ruleForm.AppealType = 7">补印</span>
-              <span :class="ruleForm.AppealType===2 ? 'action' : ''" @click="ruleForm.AppealType = 2">退款2</span>
-              <span :class="ruleForm.AppealType===3 ? 'action' : ''" @click="ruleForm.AppealType = 3">退款3</span>
-              <span :class="ruleForm.AppealType===255 ? 'action' : ''" @click="ruleForm.AppealType = 255">其它</span>
+              <span :class="ruleForm.AppealType===7 ? 'action' : ''" @click="AppealTypeClick(7)">补印</span>
+              <span :class="ruleForm.AppealType===2 ? 'action' : ''" @click="AppealTypeClick(2)">退货/退款</span>
+              <span :class="ruleForm.AppealType===3 ? 'action' : ''" @click="AppealTypeClick(3)">优惠减款</span>
+              <span :class="ruleForm.AppealType===255 ? 'action' : ''" @click="AppealTypeClick(255)">其它</span>
             </div>
           </el-form-item>
 
           <template>
-            <el-form-item class="QuestionTypeList" label="问题类型：" prop="QuestionTypeList" style="margin-bottom:0">
+            <el-form-item class="QuestionTypeList" label="问题类型：" prop="QuestionTypeList" style="margin-bottom:5px">
               <ul class="check-button">
                 <li v-for="(item, index) in ApplyQuestionList"
                   :key="index">
@@ -93,10 +93,12 @@
                 <img width="100%" :src="dialogImageUrl" alt="">
               </el-dialog>
               <!-- <p v-if="!canEdit && fileList.length === 0">未上传照片</p> -->
-              <p class="is-font-12 gray upload-Remark">1、拍照时请将成品10份以上呈平铺或扇形展开，并对产品的包装、标签、整体、问题局部特写等多角度拍摄，为您带来麻烦，深表歉意！</p>
-              <p class="is-font-12 gray upload-Remark">2、照片支持bmp、gif、png、jpg、jpeg，最多可上传9张图片，每张图片大小不超过15M。</p>
-              <p class="is-font-12 gray upload-Remark">3、上传凭证说明:为快速为您解决售后问题，请上传“问题细节、问题多张、产品整体”等至少三张照片。</p>
-              <p class="is-font-12 gray upload-Remark">4、若服务方式为第三方“快递或快运”类订单需补充“快递面单、货物标签、第三方交易详情”等相关凭证;</p>
+              <div class="upload-Remark">
+                <p class="is-font-12 gray">1、拍照时请将成品10份以上呈平铺或扇形展开，并对产品的包装、标签、整体、问题局部特写等多角度拍摄，为您带来麻烦，深表歉意！</p>
+                <p class="is-font-12 gray">2、照片支持bmp、gif、png、jpg、jpeg，最多可上传9张图片，每张图片大小不超过15M。</p>
+                <p class="is-font-12 gray">3、上传凭证说明:为快速为您解决售后问题，请上传“问题细节、问题多张、产品整体”等建议三张图片及以上。</p>
+                <p class="is-font-12 gray">4、若服务方式为第三方“快递或快运”类订单需补充“快递面单、货物标签、第三方交易详情”等相关凭证;</p>
+              </div>
             </el-form-item>
           </template>
         </el-form>
@@ -138,7 +140,7 @@
         class="mp-see-questionShow-comp-wrap"
       >
         <template>
-          {{SeeQuestionData?.Title}}
+          {{SeeQuestionData?.Describe}}
         </template>
       </CommonDialogComp>
     </div>
@@ -209,7 +211,7 @@ export default {
           { required: false, message: '请上传问题图片', trigger: 'change' },
         ],
         AppealType: [
-          { required: true, message: '请选择诉求意向', trigger: 'blur' },
+          { required: true, message: '请选择诉求意向', trigger: 'change' },
         ],
         ContactName: [
           { required: true, message: '请输入联系人', trigger: 'blur' },
@@ -254,8 +256,11 @@ export default {
       this.$refs.ruleForm1.validateField('QuestionTypeList');
       this.$refs.ruleForm1.validateField('QuestionPicList');
     },
+    AppealTypeClick(key) {
+      this.ruleForm.AppealType = key;
+      this.$refs.ruleForm1.validateField('AppealType');
+    },
     onSeeQuestion(item) {
-      console.log(item);
       this.SeeQuestionData = item;
       this.SeeQuestionShow = true;
     },
@@ -323,7 +328,9 @@ export default {
       this.$refs.ruleForm2.validate();
       const MobileReg = /^1[3456789]\d{9}$/;
       const QQRege = /[1-9][0-9]{4,14}/;
-      if (this.ruleForm.QuestionTypeList.length === 0) {
+      if (!this.ruleForm.AppealType) {
+        this.messageBox.failSingleError('提交失败', '请选择诉求意向');
+      } else if (this.ruleForm.QuestionTypeList.length === 0) {
         this.messageBox.failSingleError('提交失败', '请选择问题类型');
       } else if (this.ruleForm.QuestionRemark === '') {
         this.messageBox.failSingleError('提交失败', '请输入问题描述');
@@ -485,7 +492,7 @@ export default {
         }
       }
       .el-form-item__error{
-        top: calc(100% - 5px);
+        top: calc(100% - 3px);
       }
     }
     .el-form-item__label{
@@ -633,8 +640,8 @@ export default {
         top: calc(100% - 95px);
       }
       .upload-Remark{
-        margin-top: -10px;
-        line-height: 2em;
+        // margin-top: -10px;
+        line-height: 1.3em;
       }
     }
     .btn-box {

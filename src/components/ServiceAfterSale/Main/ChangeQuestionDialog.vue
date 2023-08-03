@@ -25,7 +25,7 @@
             </el-select>
             <el-select v-model="item.SecondQuestionType" placeholder="请选择具体问题" size="small">
               <el-option
-                v-for="it in SecondLevelQuestionType(index)"
+                v-for="it in FirstGradeQuestionType.find(FirstGradeQuestion => FirstGradeQuestion.ID === item.FirstQuestionType)?.SonClassList"
                 :key="it.ID"
                 :label="it.Name"
                 :value="it.ID">
@@ -95,7 +95,7 @@ export default {
   computed: {
     ...mapState('common', ['DepartmentList']),
     FirstGradeQuestionType() {
-      return this.QuestionTypeList?.filter(res => res.ParentID === -1);
+      return this.QuestionTypeList?.filter(res => res) || [];
     },
     SecondLevelQuestionType() {
       return (index) => this.QuestionTypeList?.filter(res => res.ParentID === this.from?.AfterSaleQuestions[index].FirstQuestionType);
@@ -156,7 +156,7 @@ export default {
     },
     async getQuestionTypeList() {
       // 所有问题
-      const res = await this.api.getQuestionList();
+      const res = await this.api.getOrderAfterSaleQuestionClassList({ searchType: 1, ID: this.curData.ProductID });
       if (res.data.Status === 1000) {
         this.QuestionTypeList = res.data.Data;
         // 需要用到问题父级id
@@ -168,14 +168,7 @@ export default {
       const res = await this.api.getResultDetail(this.curData.AfterSaleCode);
       if (res.data.Status === 1000) {
         this.from = res.data.Data;
-        if (res.data.Data.AfterSaleQuestions.length) {
-          this.from.AfterSaleQuestions = res.data.Data.AfterSaleQuestions.map(it => {
-            const _it = it;
-            const temp = this.QuestionTypeList.filter(item => item.ID === _it.SecondQuestionType);
-            _it.FirstQuestionType = temp.length ? temp[0].ParentID : -1;
-            return _it;
-          });
-        } else {
+        if (!res.data.Data.AfterSaleQuestions.length) {
           this.onQuestionsAddClick();
         }
         if (!res.data.Data.AfterSaleResponsibilities.length) {

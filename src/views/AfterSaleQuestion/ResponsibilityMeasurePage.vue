@@ -1,15 +1,15 @@
 <template>
   <section class="responsibility-measure-page">
-    <header>
-      <mp-button type="primary" size="small" @click="EditClick()">新增售后问题</mp-button>
+    <header v-if="localPermission.DivideSetup">
+      <mp-button type="primary" size="small" @click="EditClick()">添加问题类型</mp-button>
     </header>
     <div>
       <el-table stripe border fit :data="dataList" style="width: 100%" class="ft-14-table" :max-height="h-40" :height="h-40">
-        <el-table-column prop="DivideName" label="责任划分名称" width="244" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="DivideName" label="问题类型" width="244" show-overflow-tooltip></el-table-column>
         <el-table-column prop="ProductDescribe" label="产品" minWidth="125" show-overflow-tooltip>
-          <!-- <template slot-scope="scope">{{getResponsibilityMeasure(scope.row.ProductIDS)}}</template> -->
+          <template slot-scope="scope">{{getResponsibilityMeasure(scope.row.ProductIDS)}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="279" fixed="right">
+        <el-table-column label="操作" width="279" fixed="right" v-if="localPermission.DivideSetup">
           <div class="is-font-12 btn-wrap" slot-scope="scope">
             <span @click="onPhotoClick(scope.row)">
               <!-- <img src="@/assets/images/detail.png" alt /> -->
@@ -47,7 +47,7 @@ import Count from '@/components/common/Count.vue';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import SaveOrderAfterSaleDivideDialog from '@/components/AfterSaleQuestion/SaveOrderAfterSaleDivideDialog';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
   name: 'FeedbackPage',
@@ -71,7 +71,8 @@ export default {
     };
   },
   computed: {
-    ...mapState('common', ['Permission']),
+    ...mapState('common', ['Permission', 'ProductMultipleClassifyList']),
+    ...mapGetters('common', ['allProductClassifyWithEmpty', 'allProductClassify4CustomerWithEmpty']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionAfterSalesApply?.Obj) {
         return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;
@@ -83,6 +84,31 @@ export default {
     setHeight() {
       const tempHeight = this.getHeight('.responsibility-measure-page > header', 60);
       this.h = tempHeight;
+    },
+    getResponsibilityMeasure(IDS) {
+      // console.log(IDS);
+      // console.log(this.allProductClassifyWithEmpty);
+      const returnData = [];
+      this.allProductClassifyWithEmpty.forEach(lv1it => {
+        const lv1Data = [];
+        lv1it.children.forEach(lv2it => {
+          const list = lv2it.children.filter(lv3it => IDS.find(it => lv3it.ID === it));
+          if (list.length) {
+            lv1Data.push({
+              name: lv2it.ClassName,
+              item: list,
+            });
+          }
+        });
+        if (lv1Data.length) {
+          returnData.push({
+            name: lv1it.ClassName,
+            item: lv1Data,
+          });
+        }
+      });
+      console.log(returnData);
+      return returnData.map(lv1 => `${lv1.name}:${lv1.item.map(lv2 => `${lv2.name}（${lv2.item.map(lv3 => lv3.ClassName)}）`)}`).join('；');
     },
     clearCondition() {
       this.condition = {

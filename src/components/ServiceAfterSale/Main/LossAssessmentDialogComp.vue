@@ -1,15 +1,16 @@
 <template>
   <CommonDialogComp
-    title="定损确认"
+    :title="`定损${Disabled ? '查看' : '确认'}`"
     :visible="visible"
     @cancle="cancle"
     @open='onOpen'
     @closed='closed'
     submitText='保存'
+    :showSubmit="!Disabled"
     cancelText="关闭"
     @submit='submit'
     width='630px'
-    top='3vh'
+    top='13vh'
     class="loss-assessment-dialog"
     >
     <div class="loss-assessment" v-if="this.AfterSaleData">
@@ -29,8 +30,8 @@
             <span>退款</span>
           </h3>
           <p>
-            <span>退到余额：{{this.AfterSaleData.RefundAmount}}元</span>
-            <span>数含运费：{{this.AfterSaleData.RefundFreightAmount}}元</span>
+            <span style="margin-right: 16px;">退到余额：{{this.AfterSaleData.RefundAmount}}元</span>
+            <span>含运费：{{this.AfterSaleData.RefundFreightAmount}}元</span>
           </p>
         </div>
         <div class="result"  v-if="AfterSaleData.SolutionTypes.find(item => item === 8)">
@@ -42,7 +43,7 @@
           </p>
         </div>
       </template>
-      <div>
+      <div v-if="AfterSaleData.SolutionTypes.find(item => item === 255)">
         <h3>
           <span>其他费用</span>
         </h3>
@@ -86,27 +87,35 @@
           </el-input>
         </p>
         <div class="QuestionPicList" :class="{'upload-disabled':Disabled}">
-          <el-upload
-            :disabled="Disabled"
-            :action="'/Api/Upload/Image?type=3'"
-            list-type="picture-card"
-            ref="upload"
-            drag
-            accept='.png,.jpeg,.jpg,.bmp,'
-            :multiple='true'
-            :limit='9'
-            :on-success='handllePictureUploaded'
-            :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove"
-            :before-upload='beforeUpload'
-            :class="{'uploadDisabled':uploadDisabled}"
-            >
-            <i class="el-icon-plus"></i>
-          </el-upload>
+          <div style="height: 90px;">
+            <el-upload
+              v-if="!Disabled"
+              :action="'/Api/Upload/Image?type=3'"
+              list-type="picture-card"
+              ref="upload"
+              drag
+              accept='.png,.jpeg,.jpg,.bmp,'
+              :multiple='true'
+              :limit='5'
+              :on-success='handllePictureUploaded'
+              :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove"
+              :before-upload='beforeUpload'
+              :class="{'uploadDisabled':uploadDisabled}"
+              >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <div class="image-list" v-else>
+              <el-image v-for="it in fromData.LossConfirmPics" :key="it"
+                :src="it"
+                :preview-src-list="fromData.LossConfirmPics">
+              </el-image>
+            </div>
+          </div>
           <el-dialog :visible.sync="dialogVisible" top="8vh" title="查看图片" append-to-body>
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
-          <div class="upload-Remark">
+          <div class="upload-Remark" v-if="!Disabled">
             <p class="is-font-12 gray">上传说明：</p>
             <p class="is-font-12 gray">1.支持上传jpeg、png、jpg、bpm格式的照片</p>
             <p class="is-font-12 gray">2.最多可上传5张照片，单张照片大小不超过15M</p>
@@ -161,7 +170,7 @@ export default {
         if (it.response && it.response.Status === 1000) return it.response.Data.Url; // 此处需额外处理编辑时的已有图片类型
         return '';
       }).filter(it => it);
-      if ((!_list) || _list.length < 9) {
+      if ((!_list) || _list.length < 5) {
         this.uploadDisabled = false;
       } else {
         this.uploadDisabled = true;
@@ -224,6 +233,7 @@ export default {
       this.setUploadDisabled();
     },
     onOpen() {
+      console.log(this.AfterSaleData);
       if (this.AfterSaleData.LossConfirmStatus) {
         this.Disabled = true;
         this.api.getOrderAfterSaleLossConfirmInfo(this.AfterSaleData.AfterSaleCode).then(res => {
@@ -235,6 +245,8 @@ export default {
       } else {
         this.Disabled = false;
         this.fromData.AfterSaleCode = this.AfterSaleData.AfterSaleCode;
+        this.fromData.OtherSolutionRemark = this.AfterSaleData.OtherSolutionRemark;
+        this.fromData.LossAmount = this.AfterSaleData.LossAmount;
       }
     },
     cancle() {
@@ -438,6 +450,14 @@ export default {
           display: flex;
           justify-content: center;
           align-items: center;
+        }
+
+        .image-list{
+          .el-image{
+            width: 71px;
+            height: 71px;
+            margin: 0 8px 8px 0;
+          }
         }
       }
      }

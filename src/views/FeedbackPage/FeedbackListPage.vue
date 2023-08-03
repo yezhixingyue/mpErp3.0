@@ -87,10 +87,10 @@
               <span v-else-if="scope.row.IsHang">详情/解除挂起</span>
               <span v-else>查看详情</span>
             </span>
-            <span @click="onPhotoClick(scope.row)" v-else>
+            <!-- <span @click="onPhotoClick(scope.row)" v-else>
               <img src="@/assets/images/detail.png" alt />
               <span>查看详情</span>
-            </span>
+            </span> -->
           </div>
         </el-table-column>
       </el-table>

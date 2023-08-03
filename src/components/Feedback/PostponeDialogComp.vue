@@ -100,6 +100,8 @@ export default {
         this.messageBox.failSingleError('操作失败', '请输入挂起原因');
       } else if (this.PostponeRuleForm.NextOperateType === 1 && !this.PostponeRuleForm.NextOperateTime) {
         this.messageBox.failSingleError('操作失败', '请选择下次处理时间');
+      } else if (new Date(this.PostponeRuleForm.NextOperateTime).getTime() < Date.now()) {
+        this.messageBox.failSingleError('操作失败', '请选择此刻之后的时间');
       } else {
         this.$emit('submit', this.PostponeRuleForm);
       }

@@ -79,6 +79,28 @@
             :value='obj4RequestServiceList.OperaterID'
             label="处理人"
           />
+            <OrderChannelSelector
+            style="margin-right: 30px"
+            :filterable='true'
+            :options='[{ Title:"不限", ID:"" }, ...DepartmentList]'
+            :requestFunc='getDataList'
+            :changePropsFunc='setCondition4DataList'
+            :typeList="[['ResponsibilityDepID', '']]"
+            :defaultProps="{ label: 'Title', value: 'ID' }"
+            :value='obj4RequestServiceList.ResponsibilityDepID'
+            label="责任部门"
+          />
+            <OrderChannelSelector
+            style="margin-right: 30px"
+            :filterable='true'
+            :options='[{ label:"不限", value:"" },{ label:"未确认", value:"0" },{ label:"已确认", value:"1" }]'
+            :requestFunc='getDataList'
+            :changePropsFunc='setCondition4DataList'
+            :typeList="[['LossConfirmStatus', '']]"
+            :defaultProps="{ label: 'label', value: 'value' }"
+            :value='obj4RequestServiceList.LossConfirmStatus'
+            label="定损状态"
+          />
         </div>
         <div class="s">
           <LineDateSelectorComp
@@ -105,7 +127,9 @@
           />
         </div>
       </li>
-      <li><el-button @click="toResponsibilityMeasurePage" type="primary" size="small" style="margin-bottom: 10px;">管理责任划分标准</el-button></li>
+      <li v-if="localPermission.DivideQuery">
+        <el-button @click="toResponsibilityMeasurePage" type="primary" size="small" style="margin-bottom: 10px;">问题分类管理</el-button>
+      </li>
   </ul>
 </template>
 
@@ -132,7 +156,7 @@ export default {
     EpCascaderByProduct,
   },
   computed: {
-    ...mapState('common', ['userTypeList', 'userRankList']),
+    ...mapState('common', ['Permission', 'userTypeList', 'userRankList', 'DepartmentList']),
     ...mapState('service', ['obj4RequestServiceList', 'tableData']),
     // conditionDate: {
     //   get() {
@@ -147,6 +171,12 @@ export default {
     // },
     UserDefinedTimeIsActive() {
       return this.obj4RequestServiceList.DateType === '' && !!this.obj4RequestServiceList.OperateTime.First && !!this.obj4RequestServiceList.OperateTime.Second;
+    },
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionManageAfterSales?.Obj) {
+        return this.Permission.PermissionList.PermissionManageAfterSales.Obj;
+      }
+      return {};
     },
   },
   data() {
@@ -190,6 +220,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('common/getUserClassify');
+    this.$store.dispatch('common/getAfterSalesDepartmentList');
     this.getCustomerData();
   },
 };
