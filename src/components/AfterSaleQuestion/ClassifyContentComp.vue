@@ -2,7 +2,9 @@
   <section class="mp-erp-common-classify-manage-comp-wrap">
     <LRWidthDragAutoChangeComp leftWidth='45%'>
       <template v-slot:left>
-        <ContentLeft :showSort="false" @setCurEditClassifyData='setCurEditClassifyData' :classifyData='classifyData' :title='title' />
+        <ContentLeft buttonText="管理问题类型"
+          tableLabel="问题类型" rightButtonText="管理问题分类"
+          :showSort="false" @setCurEditClassifyData='setCurEditClassifyData' :classifyData='classifyData' :title='title' />
       </template>
       <template v-slot:right>
         <ContentRight :dataList='curEditClassify' :ParentID='ParentID' :classifyName='curClassify' @goback='onGobackClick' @submit='onRightSubmit' />
@@ -32,7 +34,7 @@ export default {
     },
     title: {
       type: String,
-      default: '产品',
+      default: '问题',
     },
     DivideID: {
       type: String,

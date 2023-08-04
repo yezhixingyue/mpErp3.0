@@ -98,6 +98,16 @@
                       <div><span style="min-width: 65px; display: inline-block;">{{SolutionTypeindex ===0?'解决方案：':''}}</span>
                       <!-- 其他 -->
                         其他
+                        <span v-if="DisposeDetailsData.Solution.OtherSolutionRemark">
+                          ： 其他费用：
+                          <el-tooltip
+                          effect="dark"
+                          :disabled="DisposeDetailsData.Solution.OtherSolutionRemark.length<50"
+                          :content="DisposeDetailsData.Solution.OtherSolutionRemark"
+                          placement="top">
+                            <i class="i" style="text-indent: 0em">{{DisposeDetailsData.Solution.OtherSolutionRemark}}</i>
+                          </el-tooltip>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -215,22 +225,6 @@
                     </div>
                   </div>
                 </template>
-
-                <div class="row line" v-if="DisposeDetailsData.Solution.SolutionTypes.find(it => it === 255)
-                && DisposeDetailsData.Solution.OtherSolutionRemark">
-                  <div class="item">
-                    <div style="text-indent: 5.3em">
-                      其他花费：
-                      <el-tooltip
-                      effect="dark"
-                      :disabled="DisposeDetailsData.Solution.OtherSolutionRemark.length<50"
-                      :content="DisposeDetailsData.Solution.OtherSolutionRemark"
-                      placement="top">
-                        <i class="i" style="text-indent: 0em">{{DisposeDetailsData.Solution.OtherSolutionRemark}}</i>
-                      </el-tooltip>
-                    </div>
-                  </div>
-                </div>
 
                 <div class="row line">
                   <div class="item">

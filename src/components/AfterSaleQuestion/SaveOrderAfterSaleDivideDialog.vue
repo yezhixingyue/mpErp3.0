@@ -9,6 +9,7 @@
     @cancle="onCancle"
     @open='onOpen'
     @closed='onClosed'
+    destroy-on-close
     class="mp-erp-comps-save-order-after-sale-divide-dialog-comp-wrap"
    >
     <div class="lv1-item">
@@ -21,6 +22,7 @@
             v-for="lv1it in ProductClassify" :key="lv1it.ID"
             :item="lv1it"
             ref="lv1"
+            :disabledProducts="disabledProducts"
             :propKey="{key: 'ID',Name: 'ClassName'}">
           </CheckboxLv1>
       </ul>
@@ -47,6 +49,10 @@ export default {
     EditData: {
       type: Object,
       default: () => null,
+    },
+    disabledProducts: {
+      type: Array,
+      default: () => [],
     },
   },
   components: {

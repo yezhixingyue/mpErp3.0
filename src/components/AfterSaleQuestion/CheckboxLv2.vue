@@ -1,6 +1,6 @@
 <template>
   <li class="lv2" v-if="item">
-    <el-checkbox @change="checkChange" v-model="checked" :indeterminate="indeterminate">{{item[propKey.Name]}}</el-checkbox>
+    <el-checkbox :disabled="disabled" @change="checkChange" v-model="checked" :indeterminate="indeterminate">{{item[propKey.Name]}}</el-checkbox>
     <CheckboxLv3
     :List="item.children"
     :propKey="{
@@ -8,6 +8,8 @@
       Name: 'ClassName',
     }"
     ref="lv3"
+    :disabledProducts="disabledProducts"
+    @setDisabled="setDisabled"
     @change="lv3change"/>
   </li>
 </template>
@@ -32,6 +34,10 @@ export default {
         Name: 'ClassName',
       }),
     },
+    disabledProducts: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     CheckboxLv3,
@@ -41,6 +47,7 @@ export default {
       checkList: [],
       Lv3List: [],
       checked: false,
+      disabled: false,
     };
   },
   computed: {
@@ -77,6 +84,10 @@ export default {
     },
     initData() {
       this.$refs.lv3.initData();
+    },
+    setDisabled() {
+      this.disabled = true;
+      this.$emit('setDisabled');
     },
   },
 };

@@ -170,6 +170,7 @@ export default {
         SellCityID: '',
         SellCountyID: '',
         Source: '',
+        ChannelType: '', // 售后渠道
         SolutionType: '',
         RefundPayType: '',
         // initDateText: '今天',

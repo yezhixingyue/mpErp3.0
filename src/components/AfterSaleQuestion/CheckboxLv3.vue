@@ -2,7 +2,8 @@
   <el-checkbox-group v-model="checkList"
   @change="checkChange()"
   >
-    <el-checkbox @change="checkItemChange(item[propKey.key])" v-for="item in List" :key="item[propKey.key]"
+    <el-checkbox :disabled="disabledProducts.some(it => it === item[propKey.key])" @change="checkItemChange(item[propKey.key])"
+    v-for="item in List" :key="item[propKey.key]"
     :label="item[propKey.key]"
     >{{item[propKey.Name]}}</el-checkbox>
   </el-checkbox-group>
@@ -28,6 +29,10 @@ export default {
         key: 'ID',
         Name: 'ClassName',
       }),
+    },
+    disabledProducts: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {
@@ -91,6 +96,11 @@ export default {
       const selectIds = this.ProductIDS.filter(it => allIDs.find(el => el === it));
       this.checkList = selectIds;
       this.$emit('change', this.checkList);
+      const isDisabled = this.disabledProducts.some(it => it === allIDs.find(el => el === it));
+      console.log(isDisabled);
+      if (isDisabled) {
+        this.$emit('setDisabled');
+      }
     },
   },
   // watch: {

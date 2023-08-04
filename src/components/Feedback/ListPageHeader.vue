@@ -110,6 +110,17 @@
         :value='condition.OperaterID'
         label="处理人"
        />
+        <OrderChannelSelector
+        style="margin-right: 30px"
+        :filterable='true'
+        :options='ChannelTypes'
+        :requestFunc='getDataList'
+        :changePropsFunc='setCondition4DataList'
+        :typeList="[['ChannelType', '']]"
+        :defaultProps="{ label: 'name', value: 'ID' }"
+        :value='condition.ChannelType'
+        label="售后渠道"
+       />
       </li>
       <li>
         <LineDateSelectorComp
@@ -209,6 +220,13 @@ export default {
         { name: '不限', ID: '' },
         { name: '原支付方式返还', ID: '0' },
         { name: '退回余额', ID: 1 },
+      ];
+    },
+    ChannelTypes() {
+      return [
+        { name: '不限', ID: '' },
+        { name: '网页端', ID: 0 },
+        { name: '移动端', ID: 1 },
       ];
     },
     conditionDate: {

@@ -5,11 +5,11 @@
     </header>
     <main>
       <p>
-        <el-button class="cancel-blue-btn" @click="onItemClassifyManageClick('root')">管理根分类</el-button>
+        <el-button class="cancel-blue-btn" @click="onItemClassifyManageClick('root')">{{buttonText}}</el-button>
       </p>
       <div class="sort-wrap">
         <p class="sort-title">
-          <span>分类名称</span>
+          <span>{{tableLabel}}</span>
           <span>管理</span>
         </p>
         <draggable class="sort-content" :class="editable?'canMove':''" v-bind="dragOptions" v-model="dataList" v-if="dataList.length > 0 && openList.length > 0"
@@ -18,7 +18,7 @@
             <div class="item-title" @click.self="onActiveItemClick(item.ID)" :class="activeItemID === item.ID ? 'active' : ''"> <!-- 顶部标题 -->
               <span>{{item.ClassName}}</span> <!-- 分类名称 -->
               <div> <!-- 右侧折叠按钮 及 管理子类方法 -->
-                <span :title="item.ClassName" @click="onItemClassifyManageClick(index)"><i class="el-icon-s-tools"></i>管理子类</span>
+                <span :title="item.ClassName" @click="onItemClassifyManageClick(index)"><i class="el-icon-s-tools"></i>{{rightButtonText}}</span>
                 <div @click="onArrowClick(index, item.children.length > 0)"><i v-if="item.children.length > 0" class="el-icon-arrow-right"></i></div>
               </div>
             </div>
@@ -66,6 +66,18 @@ export default {
     showSort: {
       type: Boolean,
       default: true,
+    },
+    buttonText: {
+      type: String,
+      default: '管理根分类',
+    },
+    rightButtonText: {
+      type: String,
+      default: '管理子类',
+    },
+    tableLabel: {
+      type: String,
+      default: '分类名称',
     },
   },
   components: {

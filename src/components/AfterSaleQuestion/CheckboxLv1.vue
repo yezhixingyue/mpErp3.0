@@ -1,7 +1,7 @@
 <template>
   <li class="lv1" v-if="item">
     <p class="openClose">
-      <el-checkbox @change="checkChange" v-model="checked" :indeterminate="indeterminate">{{item[propKey.Name]}}</el-checkbox>
+      <el-checkbox :disabled="disabled" @change="checkChange" v-model="checked" :indeterminate="indeterminate">{{item[propKey.Name]}}</el-checkbox>
       <span @click="openClose = !openClose">{{ !openClose ?'展开':"折叠" }}</span>
     </p>
     <ul v-show="openClose">
@@ -13,6 +13,8 @@
         Name: 'ClassName',
       }"
       ref="lv2"
+      :disabledProducts="disabledProducts"
+      @setDisabled="setDisabled"
       @change="lv2change"/>
     </ul>
   </li>
@@ -38,6 +40,10 @@ export default {
         Name: 'ClassName',
       }),
     },
+    disabledProducts: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     CheckboxLv2,
@@ -48,6 +54,7 @@ export default {
       checked: false,
       indeterminate: false,
       openClose: false,
+      disabled: false,
     };
   },
   computed: {
@@ -106,6 +113,9 @@ export default {
       this.$refs.lv2.forEach(it => {
         it.setCheck(false);
       });
+    },
+    setDisabled() {
+      this.disabled = true;
     },
   },
   async mounted() {

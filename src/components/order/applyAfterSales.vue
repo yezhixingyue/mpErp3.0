@@ -108,7 +108,7 @@
             label-position="left" :model="ruleForm"
             :rules="rules" ref="ruleForm2" label-width="94px" class="demo-ruleForm">
             <el-form-item label="联系人：" prop="ContactName">
-              <el-input v-model="ruleForm.ContactName" maxlength="11"
+              <el-input v-model="ruleForm.ContactName" maxlength="20"
                 show-word-limit placeholder="请输入联系人"></el-input>
             </el-form-item>
 
@@ -186,6 +186,7 @@ export default {
       ruleForm: {
         OrderID: 0, // 订单号
         Source: 1, // 下单类型
+        ChannelType: 0, // 售后渠道
         AppealType: null, // 诉求意向
         QuestionTypeList: [], // 问题类型数组
         QuestionRemark: '', // 问题描述

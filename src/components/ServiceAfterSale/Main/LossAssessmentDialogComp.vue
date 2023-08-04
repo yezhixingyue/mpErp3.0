@@ -12,6 +12,7 @@
     width='630px'
     top='13vh'
     class="loss-assessment-dialog"
+    :class="{'no-footer': Disabled}"
     >
     <div class="loss-assessment" v-if="this.AfterSaleData">
       <template>
@@ -49,27 +50,34 @@
         </h3>
         <p>
           <el-input
+          v-if="!Disabled"
             :disabled="Disabled"
             v-model="fromData.OtherSolutionRemark"
             type="textarea"
             :rows="3"
             placeholder="若产生其他费用，请在此处说明"
-            maxlength="100"
+            maxlength="300"
             show-word-limit
             >
           </el-input>
+          <span v-else>{{ fromData.OtherSolutionRemark }}</span>
         </p>
       </div>
       <div class="loss">
         <h3>
           <span>损失金额</span>
         </h3>
-        <p >
+        <p v-if="!Disabled">
           <el-input :disabled="Disabled" size="small" v-model.number="fromData.LossAmount" placeholder="请输入损失金额"></el-input>
           <span>元</span>
         </p>
+        <p v-else>
+          {{fromData.LossAmount}}
+          <span>元</span>
+        </p>
       </div>
-      <div>
+
+      <div v-if="!Disabled">
         <h3>
           <span>说明</span>
           <i class="is-pink">若解决方案损失发生变化需说明原因并上传相关照片信息</i>
@@ -105,20 +113,28 @@
               >
               <i class="el-icon-plus"></i>
             </el-upload>
-            <div class="image-list" v-else>
-              <el-image v-for="it in fromData.LossConfirmPics" :key="it"
-                :src="it"
-                :preview-src-list="fromData.LossConfirmPics">
-              </el-image>
-            </div>
           </div>
           <el-dialog :visible.sync="dialogVisible" top="8vh" title="查看图片" append-to-body>
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
-          <div class="upload-Remark" v-if="!Disabled">
+          <div class="upload-Remark">
             <p class="is-font-12 gray">上传说明：</p>
             <p class="is-font-12 gray">1.支持上传jpeg、png、jpg、bpm格式的照片</p>
             <p class="is-font-12 gray">2.最多可上传5张照片，单张照片大小不超过15M</p>
+          </div>
+        </div>
+      </div>
+      <div v-else class="explain">
+        <p>
+          <span> <i>{{fromData.LossConfirmTime | format2LangTypeDate}}</i>
+            <i>{{fromData.LossConfirmUserName}}</i>{{ fromData.LossConfirmRemark ||'确认售后定损无误' }}</span>
+        </p>
+        <div class="QuestionPicList" :class="{'upload-disabled':Disabled}">
+          <div class="image-list">
+            <el-image v-for="it in fromData.LossConfirmPics" :key="it"
+              :src="it"
+              :preview-src-list="fromData.LossConfirmPics">
+            </el-image>
           </div>
         </div>
       </div>
@@ -208,6 +224,7 @@ export default {
       return isLt15M;
     },
     initPicList() {
+      if (!this.$refs.upload) return;
       this.$refs.upload.uploadFiles = this.fromData.LossConfirmPics.map((path, i) => ({
         name: '（…）',
         percentage: 100,
@@ -233,7 +250,6 @@ export default {
       this.setUploadDisabled();
     },
     onOpen() {
-      console.log(this.AfterSaleData);
       if (this.AfterSaleData.LossConfirmStatus) {
         this.Disabled = true;
         this.api.getOrderAfterSaleLossConfirmInfo(this.AfterSaleData.AfterSaleCode).then(res => {
@@ -399,6 +415,24 @@ export default {
           }
         }
       }
+      &.explain{
+        background-color: #F5F5F5;
+        border: 1px solid #DCDFE6;
+        padding-left: 10px;
+        margin-top: 20px;
+        >p{
+          padding: 0;
+          // margin: 10px 0;
+          line-height: 30px;
+          i{
+            margin-right: 10px;
+          }
+        }
+        .QuestionPicList{
+          padding-left: 0;
+          margin-top: 0;
+        }
+      }
       .QuestionPicList{
         &.upload-disabled{
           .el-upload-dragger{
@@ -461,6 +495,13 @@ export default {
         }
       }
      }
+   }
+   &.no-footer{
+    .el-dialog__footer{
+      &::after{
+        content:"";
+      }
+    }
    }
  }
  </style>

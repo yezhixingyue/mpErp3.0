@@ -27,7 +27,8 @@
         </el-table-column>
       </el-table>
     </div>
-    <SaveOrderAfterSaleDivideDialog @getList="getDataList(condition.Page)" :EditData.sync="editData" :visible.sync="showEdit"/>
+    <SaveOrderAfterSaleDivideDialog :disabledProducts="disabledProducts"
+    @getList="getDataList(condition.Page)" :EditData.sync="editData" :visible.sync="showEdit"/>
     <footer>
       <el-button size="small" @click="onGoBackClick()" class="go-back">返回</el-button>
       <Count
@@ -62,11 +63,11 @@ export default {
       showEdit: false,
       editData: null,
       dataList: [],
+      disabledProducts: [],
       dataNumber: 0,
       h: 0,
       condition: {
         Page: 1,
-        PageSize: 20,
       },
     };
   },
@@ -74,8 +75,8 @@ export default {
     ...mapState('common', ['Permission', 'ProductMultipleClassifyList']),
     ...mapGetters('common', ['allProductClassifyWithEmpty', 'allProductClassify4CustomerWithEmpty']),
     localPermission() {
-      if (this.Permission?.PermissionList?.PermissionAfterSalesApply?.Obj) {
-        return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;
+      if (this.Permission?.PermissionList?.PermissionManageAfterSales?.Obj) {
+        return this.Permission.PermissionList.PermissionManageAfterSales.Obj;
       }
       return {};
     },
@@ -86,8 +87,6 @@ export default {
       this.h = tempHeight;
     },
     getResponsibilityMeasure(IDS) {
-      // console.log(IDS);
-      // console.log(this.allProductClassifyWithEmpty);
       const returnData = [];
       this.allProductClassifyWithEmpty.forEach(lv1it => {
         const lv1Data = [];
@@ -107,13 +106,11 @@ export default {
           });
         }
       });
-      console.log(returnData);
       return returnData.map(lv1 => `${lv1.name}:${lv1.item.map(lv2 => `${lv2.name}（${lv2.item.map(lv3 => lv3.ClassName)}）`)}`).join('；');
     },
     clearCondition() {
       this.condition = {
         Page: 1,
-        PageSize: 20,
       };
     },
     onGoBackClick() {
@@ -141,9 +138,18 @@ export default {
       this.$router.push({ name: 'QuestionClass', params: { item } });
     },
     EditClick(item) {
+      this.disabledProducts = [];
       if (item) {
         this.editData = item;
+        this.dataList.filter(it => it.ID !== item.ID).forEach(element => {
+          this.disabledProducts.push(...element.ProductIDS);
+        });
+      } else {
+        this.dataList.forEach(element => {
+          this.disabledProducts.push(...element.ProductIDS);
+        });
       }
+      console.log(this.disabledProducts);
       this.showEdit = true;
     },
     DeleteClick(item) {
@@ -154,7 +160,7 @@ export default {
           }
         });
       };
-      this.messageBox.warnCancelBox('确定删除责任划分名称吗 ?', `责任划分名称：[ ${item.DivideName} ]`, handleItemDel, null);
+      this.messageBox.warnCancelBox('确定删除问题类型吗 ?', `问题类型：[ ${item.DivideName} ]`, handleItemDel, null);
     },
 
   },
