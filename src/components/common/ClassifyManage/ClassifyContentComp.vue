@@ -92,12 +92,6 @@ export default {
         this.setCurEditClassifyData([this.classifyData, -1, '根分类']);
       });
     }
-    setTimeout(() => {
-      console.log(this.classifyData);
-      console.log(this.type);
-      console.log(this.fetchData);
-      console.log(this.title);
-    }, 500);
   },
 };
 </script>

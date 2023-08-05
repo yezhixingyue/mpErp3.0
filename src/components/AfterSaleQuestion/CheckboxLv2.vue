@@ -47,7 +47,7 @@ export default {
       checkList: [],
       Lv3List: [],
       checked: false,
-      disabled: false,
+      disabled: true,
     };
   },
   computed: {
@@ -86,7 +86,7 @@ export default {
       this.$refs.lv3.initData();
     },
     setDisabled() {
-      this.disabled = true;
+      this.disabled = false;
       this.$emit('setDisabled');
     },
   },

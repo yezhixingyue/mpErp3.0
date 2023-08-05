@@ -76,28 +76,27 @@ export default {
 
     checkChange() {
       this.$emit('change', this.checkList);
-      const ids = [...this.ProductIDS];
-      this.checkList.forEach(item => {
-        const index = ids.findIndex(it => item === it);
-        if (index === -1) {
-          ids.push(item);
-        } else {
-          ids.splice(index, 1);
-        }
-      });
+      // const ids = [...this.ProductIDS];
+      // this.checkList.forEach(item => {
+      //   const index = ids.findIndex(it => item === it);
+      //   if (index === -1) {
+      //     ids.push(item);
+      //   } else {
+      //     ids.splice(index, 1);
+      //   }
+      // });
     },
     setCheckList(ARR = []) {
-      this.checkList = ARR;
-      this.checkChange();
+      this.checkList = ARR.filter(it => !this.disabledProducts.find(el => el === it));
       this.checkListChange();
+      this.checkChange();
     },
     initData() {
       const allIDs = this.List.map(it => it.ID);
       const selectIds = this.ProductIDS.filter(it => allIDs.find(el => el === it));
       this.checkList = selectIds;
       this.$emit('change', this.checkList);
-      const isDisabled = this.disabledProducts.some(it => it === allIDs.find(el => el === it));
-      console.log(isDisabled);
+      const isDisabled = allIDs.some(it => !this.disabledProducts.find(el => el === it));
       if (isDisabled) {
         this.$emit('setDisabled');
       }

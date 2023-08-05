@@ -51,7 +51,7 @@ import SaveOrderAfterSaleDivideDialog from '@/components/AfterSaleQuestion/SaveO
 import { mapState, mapGetters } from 'vuex';
 
 export default {
-  name: 'FeedbackPage',
+  name: 'ResponsibilityMeasurePage',
   components: {
     Count,
     SaveOrderAfterSaleDivideDialog,

@@ -11,7 +11,7 @@ import ClassifyContentComp from '@/components/AfterSaleQuestion/ClassifyContentC
 import { mapState, mapGetters } from 'vuex';
 
 export default {
-  name: 'ProductClassifyManagePage',
+  name: 'QuestionClassPage',
   components: {
     ClassifyContentComp,
   },

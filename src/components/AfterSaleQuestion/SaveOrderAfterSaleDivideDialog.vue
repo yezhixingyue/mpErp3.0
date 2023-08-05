@@ -4,7 +4,7 @@
     top='12vh'
     :title="`${this.ID?'编辑':'添加'}问题类型`"
     :visible="visible"
-    submitText='确定'
+    submitText='保存'
     @submit="onSubmit"
     @cancle="onCancle"
     @open='onOpen'
@@ -102,7 +102,6 @@ export default {
   methods: {
     ...mapMutations('AfterSaleQuestion', ['ChangeSaveDialogData']),
     onSubmit() {
-      console.log(this.ProductIDS.length);
       if (!this.DivideName) {
         this.messageBox.failSingleError('保存失败', '请输入问题类型');
       } else if (!this.ProductIDS.length) {

@@ -114,10 +114,11 @@
                   <template v-if="DisposeDetailsData.Solution && SolutionType === 8">
                     <div class="row line" v-for="(it,index) in selectedCouponList" :key="`${it.CouponID}${SolutionTypeindex}`">
                       <div class="item" >
-                        <div class="discount-coupon" ><span style="min-width: 65px; display: inline-block;">{{SolutionTypeindex ===0?'解决方案：':''}}</span>
-                        <!-- 赠送优惠券 -->
+                        <div class="discount-coupon" >
+                          <span v-if="index === 0" style="min-width: 65px; display: inline-block;">{{SolutionTypeindex ===0?'解决方案：':''}}</span>
+                          <!-- 赠送优惠券 -->
                           <span v-if="index === 0" :style="`text-indent:${index === 0 ? 0 : 5.05}em`">赠送优惠券：</span>
-                          <span v-else style="margin-right:11.05em"></span>
+                          <span v-else style="margin-right:11.3em"></span>
 
                           <span class="is-pink">{{it.Data.Amount}}元</span><i> - </i>
                           <span class="MinPayAmount"> 满{{it.Data.MinPayAmount}}元使用</span>
@@ -369,7 +370,6 @@ export default {
           };
         });
         this.selectedCouponList = couponList.filter(it => it.checked);
-        console.log(CouponList, resp.data.Data);
       }
     },
     async getQuestionTypeList(ID) {

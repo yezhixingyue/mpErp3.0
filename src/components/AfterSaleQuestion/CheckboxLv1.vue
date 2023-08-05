@@ -54,7 +54,7 @@ export default {
       checked: false,
       indeterminate: false,
       openClose: false,
-      disabled: false,
+      disabled: true,
     };
   },
   computed: {
@@ -115,7 +115,7 @@ export default {
       });
     },
     setDisabled() {
-      this.disabled = true;
+      this.disabled = false;
     },
   },
   async mounted() {

@@ -454,7 +454,6 @@ export default {
       return '';
     },
     getSolution(solution) {
-      console.log(solution);
       const arr = [];
       if (solution.SolutionTypes.find(it => it === 2)) {
         arr.push('退款');
