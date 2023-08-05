@@ -128,7 +128,7 @@
         </div>
       </li>
       <li v-if="localPermission.DivideQuery">
-        <el-button @click="toResponsibilityMeasurePage" type="primary" size="small" style="margin-bottom: 10px;">问题分类管理</el-button>
+        <el-button @click="toResponsibilityMeasurePage" type="primary" size="small" style="margin-bottom: 10px;">管理问题分类</el-button>
       </li>
   </ul>
 </template>

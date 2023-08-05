@@ -917,6 +917,9 @@ export default {
           const cb = () => {
             if (IsSave) {
               this.handleClose();
+              if (this.dataInfo.AfterSale.Status === 0) {
+                this.$emit('changeStatus');
+              }
             } else {
               this.$emit('successSubmit');
             }

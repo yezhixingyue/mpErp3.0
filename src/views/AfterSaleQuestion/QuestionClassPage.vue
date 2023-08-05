@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-question-class-page-wrap">
-    <p><span>管理问题分类：</span><i v-if="this.paramsData">{{ this.paramsData.DivideName }}</i></p>
-    <ClassifyContentComp :classifyData='classifyData' title='产品' v-if="this.paramsData"
+    <p><span>问题分类名称：</span><i v-if="this.paramsData">{{ this.paramsData.DivideName }}</i></p>
+    <ClassifyContentComp :classifyData='classifyData' title='问题' v-if="this.paramsData"
      @goback='onGobackClick' :DivideID="paramsData.ID" @sort='onSortSuccess' :fetchData='fetchClassifyData' />
   </section>
 </template>

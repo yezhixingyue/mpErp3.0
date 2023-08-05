@@ -13,7 +13,7 @@
           <div class="is-font-12 btn-wrap" slot-scope="scope">
             <span @click="onPhotoClick(scope.row)">
               <!-- <img src="@/assets/images/detail.png" alt /> -->
-              <span>管理问题分类</span>
+              <span>管理问题</span>
             </span>
             <span @click="EditClick(scope.row)">
               <!-- <img src="@/assets/images/detail.png" alt /> -->

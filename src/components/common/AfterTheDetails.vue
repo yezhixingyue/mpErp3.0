@@ -73,7 +73,7 @@
       :paramsData='paramsData' :visible="RejectVisible" @submit="RejectSubmit" @cloce="RejectVisible = false"></RejectDialogComp>
       <!-- 执行售后 -->
       <ExecuteDialogComp :dataInfo="DetailData" :paramsData='paramsData' :visible="ExecuteVisible"
-      @successSubmit="ExecuteSuccessSubmit"
+      @successSubmit="ExecuteSuccessSubmit" @changeStatus="changeStatus"
       @cloce="ExecuteVisible = false"></ExecuteDialogComp>
       <!-- 查看处理详情 -->
       <DisposeDetailsDialogComp
@@ -257,6 +257,10 @@ export default {
       sessionStorage.setItem('FeedbackList', true);
       this.onGoBackClick();
       // this.getInitData();
+    },
+    changeStatus() {
+      this.DetailData.AfterSale.Status = 10;
+      sessionStorage.setItem('FeedbackList', true);
     },
     // 查看处理详情
     onDisposeDetailsClick() {
