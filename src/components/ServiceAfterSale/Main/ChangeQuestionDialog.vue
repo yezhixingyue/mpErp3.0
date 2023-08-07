@@ -20,6 +20,7 @@
                 v-for="it in FirstGradeQuestionType"
                 :key="it.ID"
                 :label="it.Name"
+                :disabled="!!oldQuestionType.find(el => el.FirstQuestionType === it.ID)"
                 :value="it.ID">
               </el-option>
             </el-select>
@@ -28,6 +29,7 @@
                 v-for="it in FirstGradeQuestionType.find(FirstGradeQuestion => FirstGradeQuestion.ID === item.FirstQuestionType)?.SonClassList"
                 :key="it.ID"
                 :label="it.Name"
+                :disabled="!!oldQuestionType.find(el => el.SecondQuestionType === it.ID)"
                 :value="it.ID">
               </el-option>
             </el-select>
@@ -107,6 +109,7 @@ export default {
       QuestionList: [],
       QuestionTypeList: null,
       SecondQuestionType: '',
+      oldQuestionType: [],
       from: {
         AfterSaleCode: '',
         AfterSaleQuestions: [
@@ -145,6 +148,7 @@ export default {
     },
     changeQuestions(index) {
       this.from.AfterSaleQuestions[index].SecondQuestionType = '';
+      this.from.AfterSaleQuestions[index].Version = 2;
     },
     async initEditData() { // 数据初始化方法
       if (this.curData) {
@@ -163,6 +167,19 @@ export default {
         this.getResultDetail();
       }
     },
+    async getOldQuestion() {
+      const res = await this.api.getQuestionList();
+      if (res.data.Status === 1000) {
+        this.oldQuestionType.forEach(element => {
+          let pushData = null;
+          pushData = res.data.Data.find(it => it.ID === element.FirstQuestionType);
+          if (pushData) {
+            pushData.SonClassList = [res.data.Data.find(it => it.ID === element.SecondQuestionType)];
+            this.QuestionTypeList = [pushData, ...this.QuestionTypeList];
+          }
+        });
+      }
+    },
     async getResultDetail() {
       // 已有的数据
       const res = await this.api.getResultDetail(this.curData.AfterSaleCode);
@@ -173,6 +190,15 @@ export default {
         }
         if (!res.data.Data.AfterSaleResponsibilities.length) {
           this.onDepartmentAddClick();
+        }
+        this.oldQuestionType = [];
+        this.from.AfterSaleQuestions.forEach(element => {
+          if (element.Version === 1) {
+            this.oldQuestionType.push({ ...element });
+          }
+        });
+        if (this.oldQuestionType.length) {
+          this.getOldQuestion();
         }
       }
     },

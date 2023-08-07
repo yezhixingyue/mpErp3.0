@@ -58,6 +58,9 @@
           <!-- <span v-if="scope.row.NextOperateTime" slot-scope="scope">{{ scope.row.NextOperateTime | format2MiddleLangTypeDate }}</span>
           <span v-else>--</span> -->
         </el-table-column>
+        <el-table-column label="售后渠道" show-overflow-tooltip minWidth="100">
+          <span slot-scope="scope">{{ scope.row.ChannelType === 0 ? '网页端' : '移动端' }}</span>
+        </el-table-column>
         <el-table-column label="服务单来源" show-overflow-tooltip minWidth="100">
           <span slot-scope="scope">{{ scope.row | formatSource(ServerApplyTypeList) }}</span>
           <!-- <span slot-scope="scope">{{ scope.row.Source === 2 ? '自助申请' : '代客申请' }}</span> -->

@@ -51,17 +51,20 @@ export default {
     return {
       curEditClassify: [],
       ParentID: -1,
-      curClassify: '根分类',
+      curClassify: '问题类型',
     };
   },
   methods: {
     setCurEditClassifyData([data, ParentID, classifyName, aaa]) {
-      console.log(data, ParentID, classifyName, aaa);
       const item = { ClassName: '', ParentID, ID: '' };
-      if (ParentID === -1) item.children = [];
+      if (ParentID === -1) {
+        item.children = [];
+        this.curClassify = '问题类型';
+      } else {
+        this.curClassify = classifyName;
+      }
       this.curEditClassify = [...data, item].map(it => ({ ...it, key: this.$utils.getRandomRangeId(10) }));
       this.ParentID = ParentID;
-      this.curClassify = classifyName;
     },
     onGobackClick() {
       this.$emit('goback');
@@ -84,14 +87,14 @@ export default {
   },
   watch: {
     classifyData() {
-      this.setCurEditClassifyData([this.classifyData, -1, '根分类']);
+      this.setCurEditClassifyData([this.classifyData, -1, '问题类型']);
     },
   },
   async mounted() {
     const bool = await this.fetchData();
     if (bool) {
       this.$nextTick(() => {
-        this.setCurEditClassifyData([this.classifyData, -1, '根分类']);
+        this.setCurEditClassifyData([this.classifyData, -1, '问题类型']);
       });
     }
   },

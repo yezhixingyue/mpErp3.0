@@ -79,7 +79,7 @@
             :value='obj4RequestServiceList.OperaterID'
             label="处理人"
           />
-            <OrderChannelSelector
+            <!-- <OrderChannelSelector
             style="margin-right: 30px"
             :filterable='true'
             :options='[{ Title:"不限", ID:"" }, ...DepartmentList]'
@@ -89,7 +89,7 @@
             :defaultProps="{ label: 'Title', value: 'ID' }"
             :value='obj4RequestServiceList.ResponsibilityDepID'
             label="责任部门"
-          />
+          /> -->
             <OrderChannelSelector
             style="margin-right: 30px"
             :filterable='true'

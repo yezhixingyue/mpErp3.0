@@ -42,21 +42,41 @@
                   <div class="item">
                     <div :style="`padding-left: ${index ===0?0:40}px;`">
                       <span v-if="index ===0" style="min-width: 3em;">问题：</span>
-                      <el-tooltip
-                      effect="dark"
-                      :disabled="QuestionFirstName(item.FirstQuestionType).length<12"
-                      :content="QuestionFirstName(item.FirstQuestionType)"
-                      placement="top">
-                        <i class="i">{{QuestionFirstName(item.FirstQuestionType)}}</i>
-                      </el-tooltip>
-                      <!-- <i style="width:8em;" :style="`margin-left:${index === 0 ? 0 : 3.3}em`">{{QuestionFirstName(item.FirstQuestionType)}}</i> -->
-                      <el-tooltip
-                      effect="dark"
-                      :disabled="QuestionName(item.SecondQuestionType).length<12"
-                      :content="QuestionName(item.SecondQuestionType)"
-                      placement="top">
-                        <i class="i">{{QuestionName(item.SecondQuestionType)}}</i>
-                      </el-tooltip>
+                      <template v-if="DisposeDetailsData.AfterSaleQuestions.find(it => it.Version === 1)">
+                        <el-tooltip
+                        effect="dark"
+                        :disabled="oldQuestionType.find(it => it.ID === item.FirstQuestionType).Name.length<12"
+                        :content="oldQuestionType.find(it => it.ID === item.FirstQuestionType).Name"
+                        placement="top">
+                          <i class="i">{{oldQuestionType.find(it => it.ID === item.FirstQuestionType).Name}}</i>
+                        </el-tooltip>
+                        <!-- <i style="width:8em;" :style="`margin-left:${index === 0 ? 0 : 3.3}em`">{{QuestionFirstName(item.FirstQuestionType)}}</i> -->
+                        <el-tooltip
+                        effect="dark"
+                        :disabled="oldQuestionType.find(it => it.ID === item.SecondQuestionType).Name.length<12"
+                        :content="oldQuestionType.find(it => it.ID === item.SecondQuestionType).Name"
+                        placement="top">
+                          <i class="i">{{oldQuestionType.find(it => it.ID === item.SecondQuestionType).Name}}</i>
+                        </el-tooltip>
+                      </template>
+
+                      <template v-else>
+                        <el-tooltip
+                        effect="dark"
+                        :disabled="QuestionFirstName(item.FirstQuestionType).length<12"
+                        :content="QuestionFirstName(item.FirstQuestionType)"
+                        placement="top">
+                          <i class="i">{{QuestionFirstName(item.FirstQuestionType)}}</i>
+                        </el-tooltip>
+                        <!-- <i style="width:8em;" :style="`margin-left:${index === 0 ? 0 : 3.3}em`">{{QuestionFirstName(item.FirstQuestionType)}}</i> -->
+                        <el-tooltip
+                        effect="dark"
+                        :disabled="QuestionName(item.SecondQuestionType).length<12"
+                        :content="QuestionName(item.SecondQuestionType)"
+                        placement="top">
+                          <i class="i">{{QuestionName(item.SecondQuestionType)}}</i>
+                        </el-tooltip>
+                      </template>
                       <!-- <i style="text-indent:0em">{{QuestionName(item.SecondQuestionType)}}</i> -->
                     </div>
                   </div>
@@ -307,6 +327,7 @@ export default {
       imgSrc: null,
       fileList: [],
       DisposeDetailsData: {},
+      oldQuestionType: [],
       serviceImgList: [],
       serviceImgList2Upload: [],
       OrderPackageListTableData: null,
@@ -348,6 +369,14 @@ export default {
       this.api.getSuccessDetail(this.paramsData.AfterSaleCode).then(res => {
         if (res.data.Status === 1000) {
           this.DisposeDetailsData = res.data.Data;
+
+          if (this.DisposeDetailsData.AfterSaleQuestions.find(it => it.Version === 1)) {
+            this.api.getQuestionList().then(QuestionListRes => {
+              if (QuestionListRes.data.Status === 1000) {
+                this.oldQuestionType = QuestionListRes.data.Data;
+              }
+            });
+          }
           // : this.paramsData.ProductID
           this.getQuestionTypeList(this.paramsData.ProductID);
           this.getCoupon(res.data.Data.Solution.CouponList);
