@@ -55,7 +55,7 @@ export default {
     };
   },
   methods: {
-    setCurEditClassifyData([data, ParentID, classifyName, aaa]) {
+    setCurEditClassifyData([data, ParentID, classifyName]) {
       const item = { ClassName: '', ParentID, ID: '' };
       if (ParentID === -1) {
         item.children = [];
