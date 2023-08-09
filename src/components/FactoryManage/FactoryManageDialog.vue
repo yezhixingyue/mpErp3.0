@@ -41,7 +41,7 @@
           <span class="ft-12" style="color:#585858">订单自动对接</span>
         </el-checkbox>
       </el-form-item>
-      <el-form-item label="转换服务器" prop="Convert.Server.ID" v-if="ruleForm._AutoLink">
+      <el-form-item label="转换服务器" prop="Convert.ID" v-show="ruleForm._AutoLink">
         <el-select v-model="ruleForm.Convert.ID" :disabled="loading" placeholder="请选择转换服务器" @change="onServerChange">
           <el-option
             v-for="item in ConvertServerList"
@@ -147,7 +147,7 @@ export default {
         ],
         Convert: {
           ID: [
-            { required: true, message: '请选择转换服务器', trigger: 'change' },
+            { validator: this.validateConvert, message: '请选择转换服务器', trigger: 'change' },
           ],
           // Server: {
           //   ID: [
@@ -163,6 +163,13 @@ export default {
     };
   },
   methods: {
+    validateConvert(rule, value, callback) {
+      if (this.ruleForm && this.ruleForm._AutoLink && !value) {
+        callback(new Error('请选择转换服务器'));
+        return;
+      }
+      callback();
+    },
     onDialogSubmit() {
       if (!this.$refs.ruleForm) return;
       this.$refs.ruleForm.validate((valid) => {

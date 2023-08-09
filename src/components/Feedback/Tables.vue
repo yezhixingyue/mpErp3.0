@@ -24,7 +24,7 @@
             <template><span class="is-pink">￥{{dataInfo.Order.FinalPrice}}</span></template>
           </el-table-column>
         </el-table> -->
-        <header>
+        <header class="header-title-box">
           <p class="mp-common-title-wrap">订单信息</p>
         </header>
         <!-- 订单信息 -->
@@ -112,7 +112,7 @@
           </tr>
         </table>
 
-        <header>
+        <header class="header-title-box">
           <p class="mp-common-title-wrap">服务单信息</p>
         </header>
         <!-- 服务单信息 -->
@@ -197,7 +197,7 @@
 
       <template v-if="dataInfo && dataInfo.AfterSaleLog && dataInfo.AfterSaleLog.length">
         <!--  售后记录 -->
-        <header>
+        <header class="header-title-box">
           <p class="mp-common-title-wrap"> 售后记录</p>
         </header>
         <el-table v-if="dataInfo" stripe border fit :data="dataInfo.AfterSaleLog" style="width: 800px" class="ft-14-table">
@@ -559,7 +559,7 @@ export default {
         height: 60px;
       }
     }
-    header{
+    header.header-title-box{
       padding: 20px 0 15px 0;
     }
     .table{

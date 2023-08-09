@@ -20,10 +20,10 @@ export default class FactoryClass {
   Convert = {
     ID: '',
     Name: '',
-    Server: {
-      ID: '',
-      Name: '',
-    },
+    // Server: {
+    //   ID: '',
+    //   Name: '',
+    // },
   }
 
   /** 外协自动接单 */

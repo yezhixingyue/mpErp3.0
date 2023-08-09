@@ -45,7 +45,7 @@ export const PanelTypeEnums = {
     width: 7,
     KeyOfCount: 'SizeNumber',
     fullName: '尺寸数量检查',
-    tips: '注：文件尺寸检查规则仅匹配一条，优先级数字越小，越优先匹配。',
+    tips: '注：文件尺寸检查规则执行所有匹配项目，按照优先级从高到低依次执行，同一文件匹配多条以优先级高的为准。',
     canAdd: true,
   },
   filePageNumber: {
@@ -57,7 +57,7 @@ export const PanelTypeEnums = {
     partWidth: 9,
     KeyOfCount: 'FilePages',
     fullName: '文件页数检查',
-    tips: '注：文件页数检查规则仅匹配一条，优先级数字越小，越优先匹配。',
+    tips: '注：文件页数检查执行所有匹配项目，按照优先级从高到低依次执行，同一文件匹配多条以优先级高的为准。',
     canAdd: true,
   },
   part: {
