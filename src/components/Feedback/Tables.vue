@@ -144,11 +144,7 @@
           <tr>
             <td>诉求意向</td>
             <td>
-              <span v-if="dataInfo.AfterSale.AppealType === 2">退货/退款</span>
-              <span v-if="dataInfo.AfterSale.AppealType === 3">优惠减款</span>
-              <span v-else-if="dataInfo.AfterSale.AppealType === 7">补印</span>
-              <span v-else-if="dataInfo.AfterSale.AppealType === 255">其它</span>
-              <span v-else></span>
+              <span>{{ getLabelByAppealType(dataInfo.AfterSale.AppealType) }}</span>
             </td>
             <td>问题类型</td>
             <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.length?dataInfo.AfterSale.QuestionTypeTitleList.join('，'):''}}</p></td>
@@ -322,6 +318,7 @@ import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index
 import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
 
 import normalBtn from '@/components/common/normalBtn.vue';
+import { getLabelByAppealType } from './AppealTypeList';
 
 export default {
   mixins: [mixin],
@@ -351,6 +348,7 @@ export default {
       CustomerServerAmount: 0,
       showQuestionRemarkTool: false,
       showOrderRemarkTool: false,
+      getLabelByAppealType,
     };
   },
   computed: {

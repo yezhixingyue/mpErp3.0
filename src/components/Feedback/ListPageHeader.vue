@@ -81,7 +81,7 @@
        />
         <OrderChannelSelector
         style="margin-right: 30px"
-        :options='AppealType'
+        :options='AppealTypeList'
         :requestFunc='getDataList'
         :changePropsFunc='setCondition4DataList'
         :typeList="[['AppealType', '']]"
@@ -160,6 +160,7 @@ import { mapState } from 'vuex';
 import EpCascaderByProduct from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
 
 import EpCascaderByArea from '../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
+import { AppealTypeList } from '@/components/Feedback/AppealTypeList';
 
 export default {
   props: {
@@ -206,15 +207,6 @@ export default {
       const arr = this.FeedbackQuestionList.map(({ ID, Title }) => ({ name: Title, ID }));
       return [{ name: '不限', ID: '' }, ...arr];
     },
-    AppealType() {
-      return [
-        { name: '不限', ID: '' },
-        { name: '退货/退款', ID: 2 },
-        { name: '优惠减款', ID: 3 },
-        { name: '补印', ID: 7 },
-        { name: '其他', ID: 255 },
-      ];
-    },
     RefundPayTypeList() {
       return [
         { name: '不限', ID: '' },
@@ -254,6 +246,7 @@ export default {
         { text: '上月', key: 'lastMonthDate' },
       ],
       staffList: null,
+      AppealTypeList,
     };
   },
   methods: {

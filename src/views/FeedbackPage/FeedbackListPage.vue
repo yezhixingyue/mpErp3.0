@@ -21,7 +21,7 @@
         </el-table-column>
         <el-table-column label="诉求意向" minWidth="80" show-overflow-tooltip>
           <!-- <template slot-scope="scope">{{ scope.row.AppealType | formatAppealType }}</template> -->
-          <template slot-scope="scope">{{ getAppealTypeText(scope.row.AppealType) }}</template>
+          <template slot-scope="scope">{{ getLabelByAppealType(scope.row.AppealType) }}</template>
 
         </el-table-column>
         <el-table-column prop="Remark" label="问题备注" minWidth="130" show-overflow-tooltip>
@@ -117,6 +117,7 @@ import Count from '@/components/common/Count.vue';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import { mapState } from 'vuex';
+import { getLabelByAppealType } from '@/components/Feedback/AppealTypeList';
 
 export default {
   name: 'FeedbackPage',
@@ -178,6 +179,7 @@ export default {
         RefundPayType: '',
         // initDateText: '今天',
       },
+      getLabelByAppealType,
     };
   },
   computed: {
@@ -317,23 +319,6 @@ export default {
           break;
         case 255:
           str = '已取消';
-          break;
-        default:
-          break;
-      }
-      return str;
-    },
-    getAppealTypeText(status) {
-      let str = '';
-      switch (status) {
-        case 2:
-          str = '退款';
-          break;
-        case 7:
-          str = '补印';
-          break;
-        case 255:
-          str = '其他';
           break;
         default:
           break;

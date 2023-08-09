@@ -7,7 +7,7 @@ const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web/';
 let proxyUrl = 'http://192.168.3.68:8050';
 // let proxyUrl = 'http://192.168.3.253';
 // let proxyUrl = 'http://erp.ybz888.com/';
-if (process.env.VUE_APP_BASE_URL && process.env.VUE_APP_BASE_URL === 'test-development-8520') proxyUrl = 'http://192.168.1.92:8051';
+if (process.env.VUE_APP_BASE_URL && process.env.VUE_APP_BASE_URL === 'test-development-8520') proxyUrl = 'http://192.168.1.92:8050';
 
 module.exports = defineConfig({
   transpileDependencies: true,
