@@ -120,6 +120,8 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+@import '@/assets/css/mixins.scss';
+
 .wrap {
   padding-left: 8px;
   background-color: #f5f5f5;
@@ -177,6 +179,9 @@ export default {
     flex: 1;
     overflow: hidden;
     padding-left: 1px;
+    overflow: auto;
+    overflow: overlay;
+    @include scroll;
     .empty-box {
       width: 100%;
       height: 100%;
