@@ -69,6 +69,10 @@ export default {
 </script>
 <style lang='scss'>
 .mp-erp-out-source-record-display-dialog-comp-wrap {
+  .el-dialog__header {
+    height: 20px !important;
+    line-height: 20px !important;
+  }
   .el-dialog__body {
     text-align: center;
     height: 450px;

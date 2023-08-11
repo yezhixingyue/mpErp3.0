@@ -64,6 +64,10 @@ export default class OutsourceOrderItemClass {
     return this.CheckFileStatus === CheckFileOrderStatusEnumObj.OutsourceComfirm.ID;
   }
 
+  get _canForceCancel() {
+    return this.CheckFileStatus === CheckFileOrderStatusEnumObj.HaveSendFactory.ID;
+  }
+
   get _statusText() {
     const t = CheckFileOrderStatusEnumList.find(it => it.ID === this.CheckFileStatus);
     return t ? t.Name : '';

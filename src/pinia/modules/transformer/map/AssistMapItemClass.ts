@@ -3,6 +3,8 @@ import { AssistMappingTypeEnum } from './enum';
 import { IPropertyType } from './types';
 
 export class AssistMapItemClass {
+  ID = ''
+
   ServerID = ''
 
   InstanceID = ''
@@ -20,6 +22,8 @@ export class AssistMapItemClass {
   /** 映射属性列表 文字信息映射等地方用到 */
   TargetProperty: IPropertyType[] = []
 
+  Formula: null | { ID: string, Name: string } = null
+
   // /** 是否为印刷版 */
   // IsPrintPlate = false
 
@@ -29,6 +33,7 @@ export class AssistMapItemClass {
   constructor(data: Partial<AssistMapItemClass>) {
     if (data) {
       restoreInitDataByOrigin(this, data);
+      if (data.Formula) this.Formula = data.Formula;
     }
   }
 }

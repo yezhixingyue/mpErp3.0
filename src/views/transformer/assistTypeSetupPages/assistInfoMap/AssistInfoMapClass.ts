@@ -21,17 +21,19 @@ export class AssistInfoMapClass extends AssistMapDataClass<IAssistInfoLeftType, 
     return t.Target.map(_id => this.rightDataList.find(it => it.ID === _id)).filter(it => it).map(it => it?.Name).join('、') || '无';
   }
 
-  public async saveItem(Target: string[]): Promise<void> {
+  public async saveItem(Target: string[], ID: string): Promise<void> {
     const temp = {
       ServerID: this.ServerID,
       Type: AssistMappingTypeEnum.AssistFile,
       SourceID: this.curEditItem?.ID || '',
       Target,
+      ID,
     };
     const resp = await api.getAssistMappingSave(temp).catch(() => null);
     if (resp?.data.Status === 1000) {
       const cb = () => {
         this.visible = false;
+        if (!ID) temp.ID = resp.data.Data;
         this.handleItemChange(temp);
       };
       MpMessage.success({

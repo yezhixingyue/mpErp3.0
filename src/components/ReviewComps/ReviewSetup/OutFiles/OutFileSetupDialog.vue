@@ -19,6 +19,9 @@
       <el-form-item>
         <p class="tips-box"><i class="el-icon-warning"></i>注：多个词条使用 “ | ” 分隔</p>
         <div>
+          <el-checkbox v-model="ruleForm.CheckContent">审核文件内容</el-checkbox>
+        </div>
+        <div>
           <el-checkbox v-model="ruleForm.IsPDF">PDF格式</el-checkbox>
           <transition name="el-fade-in-linear">
             <el-checkbox v-show="ruleForm.IsPDF" v-model="ruleForm.IsMakeup">需要拼版</el-checkbox>

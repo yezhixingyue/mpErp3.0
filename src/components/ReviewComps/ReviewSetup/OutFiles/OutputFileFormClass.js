@@ -9,6 +9,8 @@ export default class OutputFileFormClass {
 
   IncludeContent = ''
 
+  CheckContent = false
+
   IsPDF = false // 生成提交数据时，需要进行一次封装，当IsPDF为false时， 修改下面2个的值为false 然后再提交
 
   IsMakeup = false // 需要拼版

@@ -59,6 +59,7 @@
       <div class="menus" slot-scope="scope">
         <span class="blue-span" @click="onOutsourceClick(scope.row)" v-if="localPermission.ReceiveOrder && scope.row._canComfirm">确认外协</span>
         <span class="red-span" @click="onOutsourceClick(scope.row)" v-if="localPermission.ReceiveOrder && scope.row._canCancel">取消外协</span>
+        <span class="red-span" @click="onForceCancelClick(scope.row)" v-if="localPermission.ReceiveOrder && scope.row._canForceCancel">强制撤回</span>
         <span class="blue-span ml-15" @click="onStatusDisplayClick(scope.row)">修改记录</span>
       </div>
     </el-table-column>
@@ -128,6 +129,9 @@ export default {
           this.$emit('singleOutsource', item);
         }
       });
+    },
+    onForceCancelClick(item) { // 强制取消 - 在对方已接单 但未完成状态下可以点击
+      this.$emit('forceCancel', [item]);
     },
     onStatusDisplayClick(item) { // 操作记录
       this.$emit('showStatus', item);

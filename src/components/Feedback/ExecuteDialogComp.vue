@@ -70,6 +70,7 @@
                       v-for="it in FirstGradeQuestionType"
                       :key="it.ID"
                       :label="it.Name"
+                      :disabled="!!oldQuestionType.find(el => el.FirstQuestionType === it.ID)"
                       :value="it.ID">
                     </el-option>
                   </el-select>
@@ -79,6 +80,7 @@
                       v-for="it in SecondLevelQuestionType(index)"
                       :key="it.ID"
                       :label="it.Name"
+                      :disabled="!!oldQuestionType.find(el => el.SecondQuestionType === it.ID)"
                       :value="it.ID">
                     </el-option>
                   </el-select>
@@ -456,6 +458,7 @@ export default {
       radio: '',
       UploadDisabled: false,
       QuestionTypeList: null,
+      oldQuestionType: [],
       imgInfo: [],
       imgSrc: null,
       imgRules: [
@@ -527,7 +530,7 @@ export default {
   computed: {
     ...mapState('common', ['isLoading', 'DepartmentList']),
     FirstGradeQuestionType() {
-      return this.QuestionTypeList?.filter(res => res.SonClassList.length);
+      return this.QuestionTypeList?.filter(res => res) || [];
       // return this.QuestionTypeList?.filter(res => res.ParentID === -1);
     },
     // 图片总数量
@@ -535,7 +538,8 @@ export default {
       return [...this.HandlingAfterSalesForm.PassQuestionPicList, ...this.serviceImgList];
     },
     SecondLevelQuestionType() {
-      return (index) => this.QuestionTypeList?.find(res => res.ID === this.HandlingAfterSalesForm.AfterSaleQuestions[index].FirstQuestionType)?.SonClassList;
+      // eslint-disable-next-line max-len
+      return (index) => this.QuestionTypeList?.find(res => res.ID === this.HandlingAfterSalesForm.AfterSaleQuestions[index].FirstQuestionType)?.SonClassList || [];
       // return (index) => this.QuestionTypeList?.filter(res => res.ParentID === this.HandlingAfterSalesForm.AfterSaleQuestions[index].FirstQuestionType);
     },
     fileName() {
@@ -966,7 +970,24 @@ export default {
         this.serviceImgList.splice(i - this.HandlingAfterSalesForm.PassQuestionPicList.length, 1);
       }
     },
-
+    async getOldQuestion() {
+      const res = await this.api.getQuestionList();
+      if (res.data.Status === 1000) {
+        this.oldQuestionType.forEach(element => {
+          let pushData = null;
+          pushData = res.data.Data.find(it => it.ID === element.FirstQuestionType);
+          if (pushData) {
+            const t = this.QuestionTypeList.find(it => it.ID === pushData.ID);
+            if (t) {
+              t.SonClassList = [...t.SonClassList, res.data.Data.find(it => it.ID === element.SecondQuestionType)].filter(it => it);
+            } else {
+              pushData.SonClassList = [res.data.Data.find(it => it.ID === element.SecondQuestionType)].filter(it => it);
+              this.QuestionTypeList = [pushData, ...this.QuestionTypeList];
+            }
+          }
+        });
+      }
+    },
     async getQuestionTypeList() {
       // 获取所有问题
       // const res = await this.api.getQuestionList();
@@ -978,6 +999,7 @@ export default {
     // 一级问题改变
     changeQuestions(index) {
       this.HandlingAfterSalesForm.AfterSaleQuestions[index].SecondQuestionType = '';
+      this.HandlingAfterSalesForm.AfterSaleQuestions[index].Version = 2;
     },
     // 包裹选择
     SelectionPackageChange(val) {
@@ -1051,6 +1073,17 @@ export default {
             this.HandlingAfterSalesForm.Solution.RefundFreightType = 2;
           }
         }
+      }
+
+      this.oldQuestionType = [];
+      this.HandlingAfterSalesForm.AfterSaleQuestions.forEach(element => {
+        if (element.Version === 1 && !this.oldQuestionType
+          .find(it => it.FirstQuestionType === element.FirstQuestionType && it.SecondQuestionType === element.SecondQuestionType)) {
+          this.oldQuestionType.push({ ...element });
+        }
+      });
+      if (this.oldQuestionType.length) {
+        this.getOldQuestion();
       }
     },
   },

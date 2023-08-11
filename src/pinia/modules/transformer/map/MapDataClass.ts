@@ -87,7 +87,7 @@ export abstract class MapDataClass<L, R, P, M> {
    * @returns {Promise<void>}
    * @memberof MapDataClass
    */
-  public abstract saveItem(data: P): Promise<void>
+  public abstract saveItem(data: P, ID: string): Promise<void>
 
   constructor(data: string | TransformerListPageDataPlainType | null) {
     if (typeof data === 'string') {

@@ -16,16 +16,16 @@ export interface IWorkTimesRightType {
   PartID: null | string
 }
 
-export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IWorkTimesRightType, string[]> {
+export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IWorkTimesRightType, null | { ID: string, Name: string }> {
   public getItemMapResult(id: string, mapList: AssistMapItemClass[]) {
     const _mapList = mapList || this.mapDataList;
     const t = _mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);
     if (!t) return '';
     if (typeof t.Value === 'number') return `${t.Value}次`;
-    return t.Target.map(_id => this.rightDataList.find(it => it.ID === _id)).map(it => (it ? `公式：${it.Name}` : '')).filter(it => it).join('、') || '1次';
+    return t.Formula?.Name || '';
   }
 
-  public async saveItem(data: string[] | number): Promise<void> {
+  public async saveItem(data: { ID: string, Name: string } | number, ID: string): Promise<void> {
     const ProductID = this.curPageData?.curEditItem?.ID || '';
     const InstanceID = this.curPageData?.curPart?.ID || ProductID;
     const temp: Partial<AssistMapItemClass> = {
@@ -34,18 +34,20 @@ export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IW
       SourceID: this.curEditItem?.ID || '',
       ProductID,
       InstanceID,
+      ID,
     };
     if (typeof data === 'number') {
       temp.Value = data;
-      temp.Target = [];
+      temp.Formula = null;
     } else {
-      temp.Target = data;
       temp.Value = '';
+      temp.Formula = data;
     }
     const resp = await api.getAssistMappingSave(temp).catch(() => null);
     if (resp?.data.Status === 1000) {
       const cb = () => {
         this.visible = false;
+        if (!ID) temp.ID = resp.data.Data;
         this.handleItemChange(temp);
       };
       MpMessage.success({

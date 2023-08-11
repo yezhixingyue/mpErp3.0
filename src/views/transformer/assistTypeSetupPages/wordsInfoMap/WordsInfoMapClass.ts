@@ -81,7 +81,7 @@ export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IW
     }).join('、') || '无';
   }
 
-  public async saveItem(TargetProperty: IWordsInfoRightType[]): Promise<void> {
+  public async saveItem(TargetProperty: IWordsInfoRightType[], ID: string): Promise<void> {
     const ProductID = this.curPageData?.curEditItem?.ID || '';
     const InstanceID = this.curPageData?.curPart?.ID || ProductID;
     const temp = {
@@ -91,11 +91,13 @@ export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IW
       TargetProperty,
       ProductID,
       InstanceID,
+      ID,
     };
     const resp = await api.getAssistMappingSave(temp).catch(() => null);
     if (resp?.data.Status === 1000) {
       const cb = () => {
         this.visible = false;
+        if (!ID) temp.ID = resp.data.Data;
         this.handleItemChange(temp);
       };
       MpMessage.success({

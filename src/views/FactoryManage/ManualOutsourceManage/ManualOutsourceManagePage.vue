@@ -21,8 +21,11 @@
         @showStatus="onShowStatus"
         @singleOutsource="onSingleOutsourceClick"
         @comfirmCancle="handleComfirmCancle"
+        @forceCancel="handleForceCancel"
        />
-       <!-- 单个订单操作记录弹窗 -->
+      <!-- 强制撤回原因输入弹窗 -->
+      <ForceCancelDialog :visible.sync="forceCancelVisible" @submit="forceCancelSubmit" />
+      <!-- 单个订单操作记录弹窗 -->
       <OutsourceRecordDisplayDialog :list="showStatusList" :visible.sync="showStatusVisible" />
     </main>
     <!-- 底部区域 -->
@@ -49,6 +52,7 @@ import ManualOutsourceHeader from '../../../components/FactoryModule/ManualOutso
 import ManualOutsourceTable from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceTable.vue';
 import ManualOutsourceFooter from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceFooter.vue';
 import OutsourceRecordDisplayDialog from '../../../components/FactoryModule/ManualOutsourceComps/OutsourceRecordDisplayDialog.vue';
+import ForceCancelDialog from '../../../components/FactoryModule/ManualOutsourceComps/ForceCancelDialog.vue';
 import ConditionClass from './classType/ConditionClass';
 import OutsourceOrderItemClass from './classType/OutsourceOrderItemClass';
 import { CheckFileOrderStatusEnumObj } from './classType/EnumList.ts';
@@ -61,6 +65,7 @@ export default {
     ManualOutsourceTable,
     ManualOutsourceFooter,
     OutsourceRecordDisplayDialog,
+    ForceCancelDialog,
   },
   computed: {
     ...mapState('common', ['factoryList', 'Permission']),
@@ -79,7 +84,9 @@ export default {
       loading: false,
       multipleSelection: [], // 多选列表
       showStatusVisible: false,
+      forceCancelVisible: false,
       showStatusList: [],
+      willForceCancelList: [], // 要被强制撤回的订单列表
     };
   },
   methods: {
@@ -158,10 +165,13 @@ export default {
         const cb = () => {
           arr.forEach(it => {
             const _it = it;
-            _it.CheckFileStatus = CheckFileOrderStatusEnumObj.OutsourceComfirm.ID;
+            const factory = this.localFactoryList.find(f => f.FactoryID === _it.Factory.ID);
+            _it.CheckFileStatus = factory && factory.AutoReceiveOrder
+              ? CheckFileOrderStatusEnumObj.HaveSendFactory.ID : CheckFileOrderStatusEnumObj.OutsourceComfirm.ID;
           });
           if (this.$refs.oTable) {
-            this.$refs.oTable.toggleRowSelection(arr);
+            const ids = this.multipleSelection.map(m => m.OrderID);
+            this.$refs.oTable.toggleRowSelection(arr.filter(a => ids.includes(a.OrderID)));
           }
         };
         this.messageBox.successSingle('确认外协成功', cb, cb);
@@ -182,6 +192,28 @@ export default {
           });
         };
         this.messageBox.successSingle('取消成功', cb, cb);
+      }
+    },
+    handleForceCancel(arr) {
+      this.willForceCancelList = arr;
+      this.forceCancelVisible = true;
+    },
+    async forceCancelSubmit(Remark) { // 强制撤销
+      const temp = {
+        Remark,
+        OrderList: this.willForceCancelList.map(it => it.OrderID),
+      };
+      const resp = await this.api.getOutOrderComfirmCancle(temp).catch(() => null);
+
+      if (resp?.data?.Status === 1000) {
+        const cb = () => {
+          this.willForceCancelList.forEach(it => {
+            const _it = it;
+            _it.CheckFileStatus = CheckFileOrderStatusEnumObj.WaitSendFactory.ID;
+          });
+          this.forceCancelVisible = false;
+        };
+        this.messageBox.successSingle('强制撤回成功', cb, cb);
       }
     },
   },

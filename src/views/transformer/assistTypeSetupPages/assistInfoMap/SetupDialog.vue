@@ -57,7 +57,8 @@ const submit = () => {
   if (ids.length > 0) {
     checkList.value = checkList.value.filter(id => ids.includes(id));
   }
-  props.data.saveItem(checkList.value);
+  const t = props.data.mapDataList.find(it => it.SourceID === props.data.curEditItem?.ID || it.SourceID === `${props.data.curEditItem?.ID}`);
+  props.data.saveItem(checkList.value, t?.ID || '');
 };
 
 </script>

@@ -35,6 +35,7 @@ export class GeneralMapItemClass {
 
   constructor(data: Partial<GeneralMapItemClass>) {
     if (data) {
+      console.log(data);
       restoreInitDataByOrigin(this, data);
       if (data.Constraint) {
         this.Constraint = JSON.parse(JSON.stringify(data.Constraint)); // 暂简单处理一下，后续可能会做更细化处理

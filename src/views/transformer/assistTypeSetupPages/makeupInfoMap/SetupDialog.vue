@@ -61,7 +61,8 @@ const submit = () => {
   if (ids.length > 0 && !ids.includes(radio.value)) {
     radio.value = '';
   }
-  props.data.saveItem({ Target: [radio.value] });
+  const t = props.data.mapDataList.find(it => it.SourceID === props.data.curEditItem?.ID || it.SourceID === `${props.data.curEditItem?.ID}`);
+  props.data.saveItem({ Target: [radio.value] }, t?.ID || '');
 };
 
 </script>

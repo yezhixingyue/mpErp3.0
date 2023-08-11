@@ -39,17 +39,19 @@ export class MaterialInfoMapClass extends AssistMapDataClass<IMaterialInfoLeftTy
     return '';
   }
 
-  public async saveItem(Target: string[]): Promise<void> {
+  public async saveItem(Target: string[], ID: string): Promise<void> {
     const temp = {
       ServerID: this.ServerID,
       Type: AssistMappingTypeEnum.Material,
       SourceID: this.curEditItem?.ID || '',
       Target,
+      ID,
     };
     const resp = await api.getAssistMappingSave(temp).catch(() => null);
     if (resp?.data.Status === 1000) {
       const cb = () => {
         this.visible = false;
+        if (!ID) temp.ID = resp.data.Data;
         this.handleItemChange(temp);
       };
       MpMessage.success({

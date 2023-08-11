@@ -11,6 +11,11 @@
   >
     <el-table-column min-width="180px" prop="Name" show-overflow-tooltip label="输出文件名称"></el-table-column>
     <el-table-column min-width="180px" prop="IncludeContent" show-overflow-tooltip label="文件名称包含"></el-table-column>
+    <el-table-column min-width="100px" show-overflow-tooltip label="审核文件内容">
+      <template slot-scope="scope">
+        {{scope.row.CheckContent ? '审核' : '不审核'}}
+      </template>
+    </el-table-column>
     <el-table-column min-width="100px" show-overflow-tooltip label="格式">
       <template slot-scope="scope">
         {{scope.row.IsPDF ? 'PDF' : '不限'}}

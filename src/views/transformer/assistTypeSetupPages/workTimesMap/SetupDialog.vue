@@ -101,7 +101,7 @@ const onOpen = () => {
       isConst.value = true;
       numbericValue.value = t.Value;
     }
-    radio.value = t.Target[0] || '';
+    radio.value = t.Formula?.ID || '';
   } else {
     isConst.value = true;
     numbericValue.value = 1;
@@ -146,10 +146,12 @@ const submit = () => {
       MpMessage.error({ title: '保存失败', msg: '未设置内容' });
       return;
     }
-    data = [data];
+    data = props.data.rightDataList.find(it => it.ID === data);
   }
 
-  props.data.saveItem(data);
+  const t = props.data.mapDataList.find(it => it.SourceID === props.data.curEditItem?.ID || it.SourceID === `${props.data.curEditItem?.ID}`);
+
+  props.data.saveItem(data, t?.ID || '');
 };
 
 </script>

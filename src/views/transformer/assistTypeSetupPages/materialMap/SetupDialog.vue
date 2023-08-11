@@ -96,7 +96,7 @@ const onOpen = () => {
     const ids = props.data.rightDataList.map(it => it.ID);
     if (ids.length > 0 && !ids.includes(radio.value)) {
       Message.error({
-        type: 'error', message: '原映射物料已不存在于现有物料列表中，请重新设置', duration: 0, showClose: true, offset: 150,
+        type: 'error', message: '原映射物料已不存在于现有物料列表中，请重新设置', duration: 3000, showClose: true, offset: 150,
       });
       radio.value = '';
     }
@@ -146,7 +146,8 @@ const submit = () => {
     MpMessage.error({ title: '保存失败', msg: '请选择映射物料' });
     return;
   }
-  props.data.saveItem([id]);
+  const t = props.data.mapDataList.find(it => it.SourceID === props.data.curEditItem?.ID || it.SourceID === `${props.data.curEditItem?.ID}`);
+  props.data.saveItem([id], t?.ID || '');
 };
 
 </script>

@@ -23,12 +23,13 @@ export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, 
     return t.Target.map(_id => this.rightDataList.find(it => it.ID === _id)).filter(it => it).map(it => it?.Name).join('、') || '无';
   }
 
-  public async saveItem({ Target }: { Target: string[] }): Promise<void> {
+  public async saveItem({ Target }: { Target: string[] }, ID: string): Promise<void> {
     const temp: Partial<AssistMapItemClass> = {
       ServerID: this.ServerID,
       Type: AssistMappingTypeEnum.MakeupFile,
       SourceID: this.curEditItem?.ID || '',
       Target: Target.filter(it => it),
+      ID,
     };
 
     if (Target.length === 0) {
@@ -39,6 +40,7 @@ export class MakeupInfoMapClass extends AssistMapDataClass<IMakeupInfoLeftType, 
     if (resp?.data.Status === 1000) {
       const cb = () => {
         this.visible = false;
+        if (!ID) temp.ID = resp.data.Data;
         this.handleItemChange(temp);
       };
       MpMessage.success({
