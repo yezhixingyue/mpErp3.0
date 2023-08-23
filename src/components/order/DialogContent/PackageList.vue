@@ -1,71 +1,213 @@
 <template>
   <div class="order-list-dialog-packagelist-wrap">
-    <div class="package-list-content">
-      <el-table
-        :data="dialogPackageData"
-        stripe
-        border
-        style="width: 100%"
-        :cell-class-name="initStyle"
-        max-height="620px"
-      >
-        <el-table-column width="112px" prop="ID" label="包裹号"></el-table-column>
-        <el-table-column width="155px" prop="Logistics.BillNo" label="运单号"></el-table-column>
-        <el-table-column width="102px" label="产品" show-overflow-tooltip>
-          <template  slot-scope="scope">
-            {{scope.row.Order.ProductName || curOrderProductName}}
-          </template>
-        </el-table-column>
-        <el-table-column width="67" label="产品数量" show-overflow-tooltip>
-          <template  slot-scope="scope">
-            {{scope.row.ProductAmount}}{{scope.row.Order.Unit}}
-          </template>
-        </el-table-column>
-        <el-table-column width="67" label="商品价值">
-          <template  slot-scope="scope">
-            {{scope.row.TotalAmount}}元
-          </template>
-        </el-table-column>
-        <el-table-column width="67" label="代收款">
-          <template  slot-scope="scope">
-            {{scope.row.UnPaidAmount}}元
-          </template>
-        </el-table-column>
-        <el-table-column min-width="67" label="实际运输单位">
-          <template  slot-scope="scope">
-            {{scope.row.UnPaidAmount}}元
-          </template>
-        </el-table-column>
-        <el-table-column width="74" label="状态">
-          <template slot-scope="scope">
-            {{scope.row.Status === 0
-             ? '' : scope.row.Status | formatTransportStatus}}
-          </template>
-        </el-table-column>
-        <el-table-column width="66" prop="handle" label="操作">
-          <template slot-scope="scope">
-            <el-button type="text" @click="onExpressClick(scope.row)">配送进度</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <footer>
-      <ul>
-        <li>
-          <span>合计：</span>
-          <span>包裹数：</span>
-          <span>{{dialogPackageData.length}}包</span>
-        </li>
-        <li>
-          <span>商品价值：</span>
-          <span>{{getWorth(dialogPackageData, 'TotalAmount')}}</span>
-        </li>
-        <li>
-          <span>代收款：</span>
-          <span class="is-origin is-bold">{{getWorth(dialogPackageData, 'UnPaidAmount')}}</span>
-        </li>
-      </ul>
-    </footer>
+    <template v-if="dialogPackageData.BackPackageInfos">
+      <template v-if="dialogPackageData.ExpressBillType === 0"> <!-- 普通面单 -->
+        <div class="package-list-content">
+          <p style="font-size: 16px;font-weight: 700;margin-bottom: 6px;">
+            包裹信息：<span class="is-origin" style="font-size: 12px;font-weight: 300;">
+              注：当前订单为普通电子面单发货</span>
+          </p>
+          <el-table
+            :data="dialogPackageData.BackPackageInfos"
+            stripe
+            border
+            style="width: 100%"
+            :cell-class-name="initStyle"
+            max-height="620px"
+          >
+            <el-table-column width="112px" prop="ID" label="包裹号"></el-table-column>
+            <el-table-column width="155px" prop="Logistics.BillNo" label="运单号">
+            </el-table-column>
+            <el-table-column width="102px" label="产品" show-overflow-tooltip>
+              <template  slot-scope="scope">
+                {{scope.row.Order.ProductName || curOrderProductName}}
+              </template>
+            </el-table-column>
+            <el-table-column width="67" label="产品数量" show-overflow-tooltip>
+              <template  slot-scope="scope">
+                {{scope.row.ProductAmount}}{{scope.row.Order.Unit}}
+              </template>
+            </el-table-column>
+            <el-table-column width="67" label="商品价值">
+              <template  slot-scope="scope">
+                {{scope.row.TotalAmount}}元
+              </template>
+            </el-table-column>
+            <el-table-column width="67" label="代收款">
+              <template  slot-scope="scope">
+                {{scope.row.UnPaidAmount}}元
+              </template>
+            </el-table-column>
+            <el-table-column min-width="67" label="实际运输单位">
+              <template  slot-scope="scope">
+                {{scope.row.Logistics?.ExpressName}}
+              </template>
+            </el-table-column>
+            <el-table-column width="74" label="状态">
+              <template slot-scope="scope">
+                {{scope.row.Status === 0
+                 ? '' : scope.row.Status | formatTransportStatus}}
+              </template>
+            </el-table-column>
+            <el-table-column width="66" prop="handle" label="操作">
+              <template slot-scope="scope">
+                <el-button type="text" @click="onExpressClick(scope.row)">配送进度</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <footer>
+          <ul>
+            <li>
+              <span>合计：</span>
+              <span>包裹数：</span>
+              <span>{{dialogPackageData.BackPackageInfos.length}}包</span>
+            </li>
+            <li>
+              <span>商品价值：</span>
+              <span>{{getWorth(dialogPackageData.BackPackageInfos, 'TotalAmount')}}</span>
+            </li>
+            <li>
+              <span>代收款：</span>
+              <span class="is-origin is-bold">{{getWorth(dialogPackageData.BackPackageInfos, 'UnPaidAmount')}}</span>
+            </li>
+          </ul>
+        </footer>
+      </template>
+      <template v-else> <!-- 子母单面单 -->
+        <div class="package-list-content">
+          <p style="font-size: 16px;font-weight: 700;margin-bottom: 6px;">
+            包裹信息：<span class="is-origin" style="font-size: 12px;font-weight: 300;">
+              注：当前订单包含子母单发货
+            </span>
+          </p>
+          <el-table
+            :data="dialogPackageData.BackPackageInfos"
+            stripe
+            border
+            style="width: 100%"
+            max-height="620px"
+          >
+            <el-table-column width="112px" prop="ID" label="包裹号"></el-table-column>
+            <el-table-column width="102px" label="产品" show-overflow-tooltip>
+              <template  slot-scope="scope">
+                {{scope.row.Order.ProductName || curOrderProductName}}
+              </template>
+            </el-table-column>
+            <el-table-column width="67" label="产品数量" show-overflow-tooltip>
+              <template  slot-scope="scope">
+                {{scope.row.ProductAmount}}{{scope.row.Order.Unit}}
+              </template>
+            </el-table-column>
+            <el-table-column width="67" label="商品价值">
+              <template  slot-scope="scope">
+                {{scope.row.TotalAmount}}元
+              </template>
+            </el-table-column>
+            <el-table-column width="67" label="代收款">
+              <template  slot-scope="scope">
+                {{scope.row.UnPaidAmount}}元
+              </template>
+            </el-table-column>
+            <el-table-column min-width="67" label="实际运输单位">
+              <template  slot-scope="scope">
+                {{scope.row.Logistics?.ExpressName}}
+              </template>
+            </el-table-column>
+            <el-table-column width="74" label="状态">
+              <template slot-scope="scope">
+                {{scope.row.Status === 0
+                 ? '' : scope.row.Status | formatTransportStatus}}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <footer>
+          <ul>
+            <li>
+              <span>合计：</span>
+              <span>包裹数：</span>
+              <span>{{dialogPackageData.BackPackageInfos.length}}包</span>
+            </li>
+            <li>
+              <span>商品价值：</span>
+              <span>{{getWorth(dialogPackageData.BackPackageInfos, 'TotalAmount')}}</span>
+            </li>
+            <li>
+              <span>代收款：</span>
+              <span class="is-origin is-bold">{{getWorth(dialogPackageData.BackPackageInfos, 'UnPaidAmount')}}</span>
+            </li>
+          </ul>
+        </footer>
+        <div class="package-list-content">
+          <p style="font-size: 16px;font-weight: 700;margin-bottom: 6px;">运单信息：</p>
+          <el-table
+            :data="dialogPackageData.PackageBills"
+            stripe
+            border
+            style="width: 100%"
+            max-height="620px"
+          >
+            <el-table-column width="155px" prop="BillNo" label="运单号">
+              <template slot-scope="scope">
+                {{ scope.row.BillNo }}
+              </template>
+            </el-table-column>
+            <el-table-column width="102px" label="运单包裹数量">
+              <template  slot-scope="scope">
+                <el-popover
+                  placement="top"
+                  trigger="hover"
+                  :content="scope.row.ChildBillNo.join('、')">
+                  <span slot="reference">{{scope.row.ChildBillNo.length}}</span>
+                </el-popover>
+              </template>
+            </el-table-column>
+            <el-table-column width="102px" label="产品" show-overflow-tooltip>
+              <template slot-scope>
+                {{dialogPackageData.Order.ProductName || curOrderProductName}}
+              </template>
+            </el-table-column>
+            <el-table-column min-width="67" label="实际运输单位">
+              <template  slot-scope="scope">
+                {{scope.row.ExpressName}}
+              </template>
+            </el-table-column>
+            <el-table-column width="74" label="状态">
+              <template slot-scope="scope">
+                {{scope.row.Status === 0
+                 ? '' : scope.row.Status | formatTransportStatus}}
+              </template>
+            </el-table-column>
+            <el-table-column width="66" prop="handle" label="操作">
+              <template slot-scope="scope">
+                <el-button type="text" @click="onExpressClick(
+                  {ID:dialogPackageData.BackPackageInfos[0].ID,
+                    Logistics:{ID:scope.row.ID}}
+                  )">配送进度</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <footer>
+          <ul>
+            <li>
+              <span>合计：</span>
+              <span>快件数：</span>
+              <span>{{dialogPackageData.PackageBills.length}}个</span>
+            </li>
+            <!-- <li>
+              <span>商品价值：</span>
+              <span>{{getWorth(dialogPackageData.PackageBills, 'TotalAmount')}}</span>
+            </li>
+            <li>
+              <span>代收款：</span>
+              <span class="is-origin is-bold">{{getWorth(dialogPackageData.PackageBills, 'UnPaidAmount')}}</span>
+            </li> -->
+          </ul>
+        </footer>
+      </template>
+    </template>
     <CommonDialogComp
       :visible="visible"
       v-if="visible"
@@ -127,6 +269,15 @@ export default {
     showCrtl() {
       return this.$route.name !== 'feedback';
     },
+    listData() {
+      const returnlist = [];
+      this.dialogPackageData.forEach(item => {
+        item.Bills.forEach(it => {
+          returnlist.push({ ...item, BillsNo: it.Name });
+        });
+      });
+      return returnlist;
+    },
     list() {
       if (!this.dataList) return [];
       const arr = [];
@@ -175,23 +326,25 @@ export default {
       });
       return `${worth.toFixed(1)}元`;
     },
-    async getExpressDetail(id) {
+    async getExpressDetail(id, ExressID) {
       if (!id || id === this.curPackageID) return;
       this.dataList = [];
       let key = true;
       this.loading = true;
-      const res = await this.api.getPackageProgress(id).catch(() => { key = false; });
+      const res = await this.api.getPackageProgress(id, ExressID).catch(() => { key = false; });
       this.loading = false;
       if (key && res && res.data.Status === 1000) {
         this.dataList = res.data.Data;
         this.curPackageID = id;
       }
     },
-    onExpressClick({ ID, Logistics: { BillNo } }) {
-      console.log(BillNo);
-      this.BillNo = BillNo;
+    onExpressClick({ ID, Logistics, BillNo: haveSunBillNo }) {
+      this.BillNo = Logistics?.BillNo || haveSunBillNo;
+      // if (!Logistics?.BillNo) {
+      //   this.BillNo = haveSunBillNo;
+      // }
       this.visible = true;
-      this.getExpressDetail(ID);
+      this.getExpressDetail(ID, Logistics?.ID);
     },
     handleBeforeDiaClose() {
       this.visible = false;
@@ -233,7 +386,7 @@ export default {
   margin: 0 auto;
   margin-top: 25px;
   height: 660px;
-
+  overflow-y: auto;
   .package-list-content {
     .el-table {
       .el-table__header-wrapper {
@@ -305,6 +458,7 @@ export default {
 
   > footer {
     padding-top: 20px;
+    padding-bottom: 20px;
     color: $--color-text-table;
     > ul {
       display: flex;

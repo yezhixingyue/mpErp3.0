@@ -137,16 +137,16 @@ export default {
           break;
         case 'second': // 包裹列表 - 双页
           if (this.$route.name === 'orderManage' || this.$route.name === 'FeedbackInfo' || this.$route.name === 'ServiceInfo') {
-            if (this.dialogPackageData.length === 0
-              || this.dialogPackageData[0].Order.OrderID !== this.curOrderID
+            if (this.dialogPackageData?.BackPackageInfos?.length === 0
+              || this.dialogPackageData?.Order?.OrderID !== this.curOrderID
               || new Date().getTime() - this.packageListDateByOrderSetTime > this.requestDuration) {
               await this.getPackageListByOrderID().catch((error) => {
                 key = false;
                 this.handleCatchError(error);
               });
             }
-          } else if (this.dialogPackageData.length === 0
-           || this.curExpressID !== this.dialogPackageData[0].Logistics.ID
+          } else if (this.dialogPackageData?.BackPackageInfos?.length === 0
+          //  || this.curExpressID !== this.dialogPackageData[0].Logistics.ID
            || new Date().getTime() - this.packageListDateByexpressSetTime > this.requestDuration) {
             await this.getPackageListByExressID().catch((error) => {
               key = false;

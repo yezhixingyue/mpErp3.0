@@ -134,7 +134,7 @@ export default {
     isShowServiceDia: false,
     /* 弹窗 -- 包裹列表表格数据
     -------------------------------*/
-    dialogPackageData: [],
+    dialogPackageData: {},
     /* 弹窗 -- 包裹配送进度数据
     -------------------------------*/
     expressProgressData: null,
@@ -350,9 +350,7 @@ export default {
       state.orderListData[index].Status = status;
     },
     changeAllowAfterSaleOrderListData(state, [index, status]) {
-      console.log(index, status);
       state.orderListData[index].AllowAfterSale = status;
-      console.log(state.orderListData[index].AllowAfterSale);
     },
     /* 设置订单列表数据加载状态
     -------------------------------*/
@@ -524,7 +522,7 @@ export default {
     async getPackageListByExressID({ state, commit }) { // 通过运单号获取包裹列表
       const res = await api.getPackageListByExressID(state.curExpressID);
       if (res.data.Status === 1000) {
-        commit('setDialogPackageData', res.data.Data);
+        commit('setDialogPackageData', { BackPackageInfos: res.data.Data, Order: {}, PackageBills: [], ExpressBillType: 0 });
         commit('setPackageListDateByexpressSetTime', new Date().getTime());
       } else {
         throw new Error(res.data.Message);
