@@ -32,7 +32,10 @@
         </header>
         <main>
           <div class="left-table">
-            <EditDiaLeftTable :tableData='OrderPackageListTableData' :select='false' />
+            <EditDiaLeftTable
+            :otherPackageNo="OrderPackageListTableData?.PackageBills.filter(it => it.ExpressBillType === 1).map(it => it.BillNo) || []"
+            :tableData='OrderPackageListTableData?.BackPackageInfos
+            .filter(item => this.DisposeDetailsData.AfterSalePackages.some(packItem => packItem.PackageID === item.ID)) || []' :select='false' />
           </div>
           <div class="right-submit-wrap" v-if="DisposeDetailsData">
             <div class="tab-row">
@@ -458,7 +461,7 @@ export default {
     async getPackageListByOrderID(orderId) {
       const res = await this.api.getPackageListByOrderID(orderId);
       if (res.data.Status === 1000) {
-        const temp = res.data.Data.filter(item => this.DisposeDetailsData.AfterSalePackages.some(packItem => packItem.PackageID === item.ID));
+        const temp = res.data.Data;
         this.OrderPackageListTableData = temp;
       }
     },

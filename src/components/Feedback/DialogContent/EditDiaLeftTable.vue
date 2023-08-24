@@ -16,6 +16,15 @@
       <template slot-scope="scope">{{ scope.row.ID }}</template>
     </el-table-column>
     <el-table-column prop="Logistics.BillNo" show-overflow-tooltip label="运单号" width="196">
+      <template slot-scope="scope">
+        {{ scope.row.Logistics?.BillNo }}
+        <template v-if="scope.row.Logistics?.BillNo && otherPackageNo.length">
+          、
+        </template>
+        <template v-if="otherPackageNo.length">
+          {{otherPackageNo.join('、')}}
+        </template>
+      </template>
     </el-table-column>
     <el-table-column prop="ProductAmount" label="产品数量" sortable min-width="108"></el-table-column>
     <el-table-column
@@ -37,6 +46,10 @@ export default {
       default: () => [],
     },
     SelectionData: {
+      type: Array,
+      default: () => [],
+    },
+    otherPackageNo: {
       type: Array,
       default: () => [],
     },

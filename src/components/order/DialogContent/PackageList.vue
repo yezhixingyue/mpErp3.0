@@ -17,15 +17,25 @@
           >
             <el-table-column width="112px" prop="ID" label="包裹号"></el-table-column>
             <el-table-column width="155px" prop="Logistics.BillNo" label="运单号">
+              <template  slot-scope="scope">
+                {{scope.row.Logistics.BillNo}}
+                <template v-if="scope.row.Logistics?.BillNo &&
+                 dialogPackageData.PackageBills.filter(it => it.ExpressBillType === 1).map(it => it.BillNo).length">
+                  、
+                </template>
+                <template v-if="dialogPackageData.PackageBills.filter(it => it.ExpressBillType === 1).map(it => it.BillNo).length">
+                  {{dialogPackageData.PackageBills.filter(it => it.ExpressBillType === 1).map(it => it.BillNo).join('、')}}
+                </template>
+              </template>
             </el-table-column>
             <el-table-column width="102px" label="产品" show-overflow-tooltip>
               <template  slot-scope="scope">
-                {{scope.row.Order.ProductName || curOrderProductName}}
+                {{scope.row.Order.ProductName || dialogPackageData.Order.ProductName|| curOrderProductName}}
               </template>
             </el-table-column>
             <el-table-column width="67" label="产品数量" show-overflow-tooltip>
               <template  slot-scope="scope">
-                {{scope.row.ProductAmount}}{{scope.row.Order.Unit}}
+                {{scope.row.ProductAmount}}{{scope.row.Order.Unit || dialogPackageData.Order.Unit}}
               </template>
             </el-table-column>
             <el-table-column width="67" label="商品价值">
@@ -90,13 +100,13 @@
           >
             <el-table-column width="112px" prop="ID" label="包裹号"></el-table-column>
             <el-table-column width="102px" label="产品" show-overflow-tooltip>
-              <template  slot-scope="scope">
-                {{scope.row.Order.ProductName || curOrderProductName}}
+              <template  slot-scope>
+                {{dialogPackageData.Order.ProductName || curOrderProductName}}
               </template>
             </el-table-column>
             <el-table-column width="67" label="产品数量" show-overflow-tooltip>
               <template  slot-scope="scope">
-                {{scope.row.ProductAmount}}{{scope.row.Order.Unit}}
+                {{scope.row.ProductAmount}}{{dialogPackageData.Order.Unit}}
               </template>
             </el-table-column>
             <el-table-column width="67" label="商品价值">
@@ -158,8 +168,8 @@
                 <el-popover
                   placement="top"
                   trigger="hover"
-                  :content="scope.row.ChildBillNo.join('、')">
-                  <span slot="reference">{{scope.row.ChildBillNo.length}}</span>
+                  :content="scope.row.ChildBillNo.length?scope.row.ChildBillNo.join('、'):scope.row.BillNo">
+                  <span slot="reference">{{scope.row.PackageCount}}个</span>
                 </el-popover>
               </template>
             </el-table-column>

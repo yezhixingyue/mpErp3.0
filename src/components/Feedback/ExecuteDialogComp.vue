@@ -55,7 +55,8 @@
         <main>
           <div class="left-table">
             <EditDiaLeftTable :SelectionData="AfterSalePackages"
-            :tableData='OrderPackageListTableData' @SelectionChange='SelectionPackageChange' />
+            :otherPackageNo="OrderPackageListTableData?.PackageBills.filter(it => it.ExpressBillType === 1).map(it => it.BillNo) || []"
+            :tableData='OrderPackageListTableData?.BackPackageInfos||[]' @SelectionChange='SelectionPackageChange' />
           </div>
           <div class="right-submit-wrap">
             <div class="questions">
@@ -1032,7 +1033,7 @@ export default {
         this.ReprintIsUpload = res.data.Data.ReprintIsUpload;
         // 回显包裹
         // 过滤出保存的包裹id对应的包裹数据
-        this.AfterSalePackages = this.OrderPackageListTableData
+        this.AfterSalePackages = this.OrderPackageListTableData.BackPackageInfos
           .filter(TableDataItem => this.HandlingAfterSalesForm.AfterSalePackages
             .some(Packages => TableDataItem.ID === Packages.PackageID));
         // 回显问题

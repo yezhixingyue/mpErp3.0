@@ -10,6 +10,7 @@
           导出Excel表格
           <i class="el-icon-download"></i>
         </span> -->
+        <DownLoadExcelComp :configObj="configObj2" title="导出财务报表" v-if="localPermission.FinanceExportExcel" />
         <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
       </Count>
       <ServiceDetailDialog />
@@ -65,6 +66,19 @@ export default {
         fileDefaultName: '售后单列表',
         fileDate: this.obj4RequestServiceList.OperateTime,
         downFunc: data => this.api.getServicesListData2Excel(data),
+      };
+    },
+    configObj2() {
+      return {
+        condition: this.obj4RequestServiceList,
+        count: this.totalCount,
+        fileDefaultName: '售后单列表',
+        fileDate: this.obj4RequestServiceList.OperateTime,
+        downFunc: data => {
+          const _obj = { ...data };
+          _obj.LossConfirmStatus = 1;
+          this.api.getServicesListData2Excel(_obj);
+        },
       };
     },
   },
