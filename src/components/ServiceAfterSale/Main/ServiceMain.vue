@@ -59,7 +59,7 @@ export default {
       }
       return {};
     },
-    configObj() {
+    configObj2() {
       return {
         condition: this.obj4RequestServiceList,
         count: this.totalCount,
@@ -68,17 +68,16 @@ export default {
         downFunc: data => this.api.getServicesListData2Excel(data),
       };
     },
-    configObj2() {
+    configObj() {
+      // 非财务使用导出需限制定损完成
+      const _obj = { ...this.obj4RequestServiceList };
+      _obj.LossConfirmStatus = 1;
       return {
-        condition: this.obj4RequestServiceList,
+        condition: _obj,
         count: this.totalCount,
         fileDefaultName: '售后单列表',
         fileDate: this.obj4RequestServiceList.OperateTime,
-        downFunc: data => {
-          const _obj = { ...data };
-          _obj.LossConfirmStatus = 1;
-          this.api.getServicesListData2Excel(_obj);
-        },
+        downFunc: data => this.api.getServicesListData2Excel(data),
       };
     },
   },

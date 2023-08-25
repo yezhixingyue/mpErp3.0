@@ -58,7 +58,7 @@
                 {{scope.row.UnPaidAmount}}元
               </template>
             </el-table-column>
-            <el-table-column min-width="77" label="实际运输单位">
+            <el-table-column min-width="77" label="实际运输单位" show-overflow-tooltip>
               <template  slot-scope="scope">
                 {{scope.row.Logistics?.ExpressName}}
               </template>
