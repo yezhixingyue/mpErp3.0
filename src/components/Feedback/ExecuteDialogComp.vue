@@ -531,7 +531,7 @@ export default {
   computed: {
     ...mapState('common', ['isLoading', 'DepartmentList']),
     FirstGradeQuestionType() {
-      return this.QuestionTypeList?.filter(res => res) || [];
+      return this.QuestionTypeList?.filter(res => res && res.SonClassList.length) || [];
       // return this.QuestionTypeList?.filter(res => res.ParentID === -1);
     },
     // 图片总数量

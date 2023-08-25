@@ -4,7 +4,7 @@
       <template v-if="dialogPackageData.ExpressBillType === 0"> <!-- 普通面单 -->
         <div class="package-list-content">
           <p style="font-size: 16px;font-weight: 700;margin-bottom: 6px;">
-            包裹信息：<span class="is-origin" style="font-size: 12px;font-weight: 300;">
+            包裹信息：<span v-if="dialogPackageData.Order" class="is-origin" style="font-size: 12px;font-weight: 300;">
               注：当前订单为普通电子面单发货</span>
           </p>
           <el-table
@@ -15,8 +15,8 @@
             :cell-class-name="initStyle"
             max-height="620px"
           >
-            <el-table-column width="112px" prop="ID" label="包裹号"></el-table-column>
-            <el-table-column width="155px" prop="Logistics.BillNo" label="运单号">
+            <el-table-column width="102px" prop="ID" label="包裹号"></el-table-column>
+            <el-table-column width="125px" prop="Logistics.BillNo" label="运单号" show-overflow-tooltip>
               <template  slot-scope="scope">
                 {{scope.row.Logistics.BillNo}}
                 <template v-if="scope.row.Logistics?.BillNo &&
@@ -28,7 +28,17 @@
                 </template>
               </template>
             </el-table-column>
-            <el-table-column width="102px" label="产品" show-overflow-tooltip>
+            <el-table-column width="92px" prop="Logistics.BillNo" label="运单包裹数量">
+              <template  slot-scope="scope">
+                <el-popover
+                  placement="top"
+                  trigger="hover"
+                  :content="scope.row.Logistics?.ChildBillNos?.length?scope.row.Logistics?.ChildBillNos.join('、'):scope.row.Logistics?.BillNo">
+                  <span slot="reference">{{scope.row.Logistics?.ChildBillNos?.length || 1}}个</span>
+                </el-popover>
+              </template>
+            </el-table-column>
+            <el-table-column width="90px" label="产品" show-overflow-tooltip>
               <template  slot-scope="scope">
                 {{scope.row.Order.ProductName || dialogPackageData.Order.ProductName|| curOrderProductName}}
               </template>
@@ -43,17 +53,17 @@
                 {{scope.row.TotalAmount}}元
               </template>
             </el-table-column>
-            <el-table-column width="67" label="代收款">
+            <el-table-column width="57" label="代收款">
               <template  slot-scope="scope">
                 {{scope.row.UnPaidAmount}}元
               </template>
             </el-table-column>
-            <el-table-column min-width="67" label="实际运输单位">
+            <el-table-column min-width="77" label="实际运输单位">
               <template  slot-scope="scope">
                 {{scope.row.Logistics?.ExpressName}}
               </template>
             </el-table-column>
-            <el-table-column width="74" label="状态">
+            <el-table-column width="64" label="状态">
               <template slot-scope="scope">
                 {{scope.row.Status === 0
                  ? '' : scope.row.Status | formatTransportStatus}}

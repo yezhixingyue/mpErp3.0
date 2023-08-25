@@ -50,6 +50,17 @@ module.exports = defineConfig({
   configureWebpack: {
     devtool: process.env.NODE_ENV === 'development' ? 'source-map' : false,
   },
+  // ==== 处理图标乱码 向下
+  css: {
+    loaderOptions: {
+      sass: { // 这里开始是新增的配置
+        sassOptions: {
+          outputStyle: 'expanded',
+        },
+      },
+    },
+  },
+  // ==== 处理图标乱码 向上
   pwa: {
     iconPaths: {
       faviconSVG: 'favicon.ico',

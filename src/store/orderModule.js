@@ -522,7 +522,7 @@ export default {
     async getPackageListByExressID({ state, commit }) { // 通过运单号获取包裹列表
       const res = await api.getPackageListByExressID(state.curExpressID);
       if (res.data.Status === 1000) {
-        commit('setDialogPackageData', { BackPackageInfos: res.data.Data, Order: {}, PackageBills: [], ExpressBillType: 0 });
+        commit('setDialogPackageData', { BackPackageInfos: res.data.Data, PackageBills: [], ExpressBillType: 0 });
         commit('setPackageListDateByexpressSetTime', new Date().getTime());
       } else {
         throw new Error(res.data.Message);
