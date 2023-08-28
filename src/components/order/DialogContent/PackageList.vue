@@ -28,7 +28,7 @@
                 </template>
               </template>
             </el-table-column>
-            <el-table-column width="92px" prop="Logistics.BillNo" label="运单包裹数量">
+            <el-table-column width="92px" prop="Logistics.BillNo" label="运单包裹数量" v-if="!dialogPackageData.Order">
               <template  slot-scope="scope">
                 <el-popover
                   placement="top"
