@@ -229,7 +229,7 @@
               <span v-else-if="scope.row.LogType === 6">
                 {{scope.row.OperaterRemark}}
               </span>
-              <!-- 定损确认 -->
+              <!-- 复核确认 -->
               <span v-else-if="scope.row.LogType === 7">
                 {{scope.row.OperaterRemark}}
               </span>

@@ -1011,7 +1011,7 @@ export default {
     },
     // 获取包裹列表
     async getPackageListByOrderID(orderId) {
-      const res = await this.api.getPackageListByOrderID(orderId);
+      const res = await this.api.getPackagesByOrderID(orderId);
       if (res.data.Status === 1000) {
         this.OrderPackageListTableData = res.data.Data;
       }

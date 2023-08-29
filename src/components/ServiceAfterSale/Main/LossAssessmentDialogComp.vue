@@ -1,6 +1,6 @@
 <template>
   <CommonDialogComp
-    :title="`定损${Disabled ? '查看' : '确认'}`"
+    :title="`复核${Disabled ? '查看' : '确认'}`"
     :visible="visible"
     @cancle="cancle"
     @open='onOpen'

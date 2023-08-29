@@ -608,7 +608,7 @@ export default {
     /* 根据订单号获取该单包含的包裹列表 -- 售后单中使用 getPackageListByOrderID
     -------------------------------*/
     async getPackageListByOrderID({ commit }, orderId) {
-      const res = await api.getPackageListByOrderID(orderId);
+      const res = await api.getPackagesByOrderID(orderId);
       if (res.data.Status === 1000) commit('setOrderPackageListTableData', res.data.Data);
     },
     async getServiceDetail({ commit }, aferSalesID) {

@@ -21,7 +21,7 @@
       :visible='seeEstimateVisible'
       @closed="seeEstimateVisible = false"
       @submit="seeEstimateVisible = false"></SeeEstimateDialogComp>
-      <!-- 定损确认 -->
+      <!-- 复核确认 -->
       <LossAssessmentDialogComp
       :AfterSaleData='AfterSaleData'
       :visible='LossAssessmentVisible'
@@ -69,7 +69,7 @@ export default {
       };
     },
     configObj() {
-      // 非财务使用导出需限制定损完成
+      // 非财务使用导出需限制复核完成
       const _obj = { ...this.obj4RequestServiceList };
       _obj.LossConfirmStatus = 1;
       return {
@@ -140,7 +140,7 @@ export default {
       this.LossAssessmentVisible = true;
       this.AfterSaleData = AfterSaleData;
     },
-    // 定损确认
+    // 复核确认
     LossAssessmentSubmit() {
       this.LossAssessmentVisible = false;
       this.handlePageChange(this.obj4RequestServiceList.Page);

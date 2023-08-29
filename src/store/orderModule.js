@@ -529,7 +529,7 @@ export default {
       }
     },
     async getPackageListByOrderID({ state, commit }) { // 通过订单号获取包裹列表
-      const res = await api.getPackageListByOrderID(state.curOrderID);
+      const res = await api.getPackagesByOrderID(state.curOrderID);
       if (res.data.Status === 1000) {
         commit('setDialogPackageData', res.data.Data);
         commit('setPackageListDateByOrderSetTime', new Date().getTime());

@@ -99,7 +99,7 @@
             :typeList="[['LossConfirmStatus', '']]"
             :defaultProps="{ label: 'label', value: 'value' }"
             :value='obj4RequestServiceList.LossConfirmStatus'
-            label="定损状态"
+            label="复核状态"
           />
         </div>
         <div class="s">

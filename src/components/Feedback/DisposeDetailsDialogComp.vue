@@ -459,7 +459,7 @@ export default {
     submitServiceOrder() {
     },
     async getPackageListByOrderID(orderId) {
-      const res = await this.api.getPackageListByOrderID(orderId);
+      const res = await this.api.getPackagesByOrderID(orderId);
       if (res.data.Status === 1000) {
         const temp = res.data.Data;
         this.OrderPackageListTableData = temp;

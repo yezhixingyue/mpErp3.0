@@ -111,7 +111,7 @@
         {{scope.row.Score ? `${scope.row.Score}星` : '--'}}
       </template>
     </el-table-column>
-    <el-table-column prop="OperaterUserName" minWidth="75" label="定损状态" fixed="right">
+    <el-table-column prop="OperaterUserName" minWidth="75" label="复核状态" fixed="right">
       <template slot-scope="scope">
         {{scope.row.LossConfirmStatus ? `已确认` : '未确认'}}
       </template>
@@ -137,10 +137,10 @@
         </span>
         <template v-if="localPermission.LossConfirm">
           <span v-if="scope.row.AfterSaleStatus === 30" @click="onLossAssessmentClick(scope.row)">
-            <i class="iconfont icon-dingsunqueren"></i> {{scope.row.LossConfirmStatus ? `定损查看` : '定损确认'}}
+            <i class="iconfont icon-dingsunqueren"></i> {{scope.row.LossConfirmStatus ? `复核查看` : '复核确认'}}
           </span>
           <span v-else class="not-allowed">
-            <i class="iconfont icon-dingsunqueren"></i> {{scope.row.LossConfirmStatus ? `定损查看` : '定损确认'}}
+            <i class="iconfont icon-dingsunqueren"></i> {{scope.row.LossConfirmStatus ? `复核查看` : '复核确认'}}
           </span>
         </template>
       </div>

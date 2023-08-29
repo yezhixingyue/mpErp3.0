@@ -164,6 +164,9 @@ const api = {
   getPackageListByOrderID(orderID) { // GET /Api/Order/PackageList 通过订单号获取包裹列表
     return instance.get(`/Api/Order/PackageList?orderID=${orderID}`);
   },
+  getPackagesByOrderID(orderID) { // GET Api/Order/Packages 通过订单号获取包裹列表（新）
+    return instance.get(`/Api/Order/Packages?orderID=${orderID}`);
+  },
   getPackageListByExressID(expressID) { // GET /Api/Express/PackageList 通过运单号获取包裹列表
     return instance.get(`/Api/Express/PackageList?expressID=${expressID}`);
   },
@@ -1495,8 +1498,8 @@ const api = {
   // getProductFormulaList(data: IGetFormulaParams) { // POST /Api/ProductFormula/List 获取公式列表  - 转换设置
   //   return instance.post('/Api/ProductFormula/List', data);
   // },
-  getPackageProgress(packageID, expressID) { // GET /Api/Package/Progress 通过包裹号查询包裹配送进度
-    return instance.get(`/Api/Package/Progress?packageID=${packageID}&expressID=${expressID}`, { closeLoading: true });
+  getPackageProgress(packageID, expressID) { // GET /Api/Package/ExpressProgress 通过包裹号查询包裹配送进度
+    return instance.get(`/Api/Package/ExpressProgress?packageID=${packageID}&expressID=${expressID}`, { closeLoading: true });
   },
   // 售后问题相关
   // searchType 0责任ID,1产品ID
@@ -1516,11 +1519,11 @@ const api = {
   getOrderAfterSaleDivideRemove(ID) { // GET /Api/OrderAfterSale/Divide/Remove 售后责任划分标准删除
     return instance.delete(`/Api/OrderAfterSale/Divide/Remove?id=${ID}`);
   },
-  // 定损
-  getOrderAfterSaleLossConfirmInfo(afterSaleCode) { // GET /Api/OrderAfterSale/LossConfirmInfo 定损详情
+  // 复核
+  getOrderAfterSaleLossConfirmInfo(afterSaleCode) { // GET /Api/OrderAfterSale/LossConfirmInfo 复核详情
     return instance.get(`/Api/OrderAfterSale/LossConfirmInfo?afterSaleCode=${afterSaleCode}`);
   },
-  getOrderAfterSaleLossConfirm(data) { // GET /Api/OrderAfterSale/LossConfirm 定损
+  getOrderAfterSaleLossConfirm(data) { // GET /Api/OrderAfterSale/LossConfirm 复核
     return instance.post('/Api/OrderAfterSale/LossConfirm', data);
   },
 };
