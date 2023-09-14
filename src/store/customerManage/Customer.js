@@ -116,6 +116,12 @@ export default class Customer {
 
   ShopIDString = ''
 
+  CustomerFreezeInfo = {
+    FreezeName: '',
+    FreezeDescribe: '',
+    FreezeTime: '',
+  }
+
   constructor(data) {
     restoreInitDataByOrigin(this, data);
     if (data && Object.prototype.toString.call(data) === '[object Object]') {

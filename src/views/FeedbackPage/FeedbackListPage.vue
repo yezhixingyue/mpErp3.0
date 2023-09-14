@@ -367,6 +367,10 @@ export default {
     line-height: 36px;
     font-size: 14px;
   }
+  .el-table__fixed-header-wrapper thead tr th .cell {
+    line-height: 36px;
+    font-size: 14px;
+  }
   .mp-common-comps-order-channel-selector-wrap{
     >header{
       width: 6em;

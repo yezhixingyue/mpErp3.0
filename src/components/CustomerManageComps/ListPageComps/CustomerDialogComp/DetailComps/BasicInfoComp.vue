@@ -53,7 +53,22 @@
           'is-success': customer.Status === CustomerStatusEnum.Nomal.ID,
           'is-pink': customer.Status === CustomerStatusEnum.Freezed.ID,
           'is-gray': customer.Status === CustomerStatusEnum.Deleted.ID,
-        }">{{customer.Status | formatStatus}}</span>
+        }">{{customer.Status | formatStatus}}
+          <i v-if="customer.Status === CustomerStatusEnum.Freezed.ID">
+            （{{customer.CustomerFreezeInfo.FreezeName }} {{ customer.CustomerFreezeInfo.FreezeTime | format2LangTypeDate }}）
+          </i>
+        </span>
+      </li>
+      <li style="margin: -10px 0; ">
+        <label></label>
+        <span style="display: flex;">
+          <!-- {{customer.CustomerFreezeInfo.FreezeDescribe }} -->
+          <el-tooltip effect="dark" :content="customer.CustomerFreezeInfo.FreezeDescribe" placement="top">
+            <span>
+              {{customer.CustomerFreezeInfo.FreezeDescribe }}
+            </span>
+          </el-tooltip>
+        </span>
       </li>
     </ul>
     <div class="footer">
@@ -64,6 +79,26 @@
        :disabled="customer.Status === CustomerStatusEnum.Deleted.ID || disabled">
         {{isFreezed ? '解除冻结' : '冻结'}}
       </el-button>
+      <CommonDialogComp
+        width="500px"
+        top='30vh'
+        title="冻结用户"
+        :visible="freezeVisible"
+        @cancle="onCancle"
+        @submit="onSubmit"
+        class="freeze-dialog"
+      >
+        <p><img src="@/assets/images/warn.png" alt="">确定要冻结用户吗？</p>
+        <div class="form">
+          <div class="form-item">
+            <i>客户姓名:</i><span style="font-weight: 400;">{{this.customer.CustomerName}}（{{this.customer.CustomerSN}}）</span>
+          </div>
+          <div class="form-item required">
+            <i>冻结原因:</i><el-input v-model.trim="CheckDescribe"
+            :rows="6" type="textarea" placeholder="请在此输入客户冻结原因..." maxlength="100" show-word-limit></el-input>
+          </div>
+        </div>
+      </CommonDialogComp>
     </div>
   </li>
 </template>
@@ -71,6 +106,7 @@
 <script>
 import { getNameFromListByIDs } from '@/assets/js/utils/util';
 import { CustomerStatusEnum, CustomerStatusEnumList } from '../../../../../store/customerManage/Enums';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 
 export default {
   props: {
@@ -88,9 +124,14 @@ export default {
       return getNameFromListByIDs(status, CustomerStatusEnumList) || '--';
     },
   },
+  components: {
+    CommonDialogComp,
+  },
   data() {
     return {
       CustomerStatusEnum,
+      CheckDescribe: '',
+      freezeVisible: false,
     };
   },
   computed: {
@@ -106,25 +147,40 @@ export default {
       if (this.customer.Status === CustomerStatusEnum.Nomal.ID) { // 冻结用户
         title = '确定要冻结用户吗？';
         msg = `冻结用户：${this.customer.CustomerName}`;
+        this.CheckDescribe = '';
+        this.freezeVisible = true;
       } else if (this.isFreezed) { // 解冻
         title = '确定要解除冻结用户吗？';
         msg = `解除冻结用户：${this.customer.CustomerName}`;
-      }
-      if (title && msg) {
-        this.messageBox.warnCancelBox(title, msg, () => {
-          const Status = this.isFreezed ? CustomerStatusEnum.Nomal.ID : CustomerStatusEnum.Freezed.ID;
-          this.handleFreezedOrNot(Status);
-        }, null);
+        if (title && msg) {
+          this.messageBox.warnCancelBox(title, msg, () => {
+            const Status = this.isFreezed ? CustomerStatusEnum.Nomal.ID : CustomerStatusEnum.Freezed.ID;
+            this.handleFreezedOrNot(Status);
+          }, null);
+        }
       }
     },
-    async handleFreezedOrNot(Status) { // 冻结与解冻操作
+    onCancle() { // 冻结取消
+      this.freezeVisible = false;
+    },
+    onSubmit() { // 冻结确定
+      if (!this.CheckDescribe) {
+        this.messageBox.failSingleError('保存失败', '请输入冻结原因');
+        return;
+      }
+      this.freezeVisible = false;
+      const Status = this.isFreezed ? CustomerStatusEnum.Nomal.ID : CustomerStatusEnum.Freezed.ID;
+      this.handleFreezedOrNot(Status, this.CheckDescribe);
+    },
+
+    async handleFreezedOrNot(Status, CheckDescribe = '') { // 冻结与解冻操作
       if (!this.customer || !this.customer.CustomerID || (!Status && Status !== 0)) return;
-      const temp = { CustomerID: this.customer.CustomerID, Status };
+      const temp = { CustomerID: this.customer.CustomerID, Status, CheckDescribe };
       const resp = await this.api.getCustomerChangeStatus(temp).catch(() => null);
       if (resp && resp.data.Status === 1000) {
         const title = this.isFreezed ? '解冻成功' : '冻结成功';
         const cb = () => {
-          this.$emit('changeStatus', Status);
+          this.$emit('changeStatus');
         };
         this.messageBox.successSingle(title, cb, cb);
       }
@@ -140,6 +196,57 @@ export default {
     > li {
       label {
         min-width: 5em !important;
+      }
+    }
+  }
+  .freeze-dialog{
+    .el-dialog__header{
+      height: 20px;
+      padding: 0;
+      .el-dialog__title{
+        display: none;
+      }
+      &::after{
+        width: 0;
+      }
+    }
+    .el-dialog__body{
+      padding: 0 84px;
+      color: #444444;
+      font-weight: 700;
+      >p{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        img{
+          width: 45px;
+          height: 45px;
+          margin-right: 10px;
+        }
+      }
+      >.form{
+        .form-item{
+          display: flex;
+          margin-top: 20px;
+          i{
+            min-width: 68px;
+            text-align: right;
+            margin-right: 4px;
+          }
+          .el-input__count{
+            font-weight: 400;
+          }
+          &.required{
+            i{
+              margin-top: 6px;
+              &::before{
+                content: '*';
+                color: red;
+              }
+            }
+          }
+        }
       }
     }
   }

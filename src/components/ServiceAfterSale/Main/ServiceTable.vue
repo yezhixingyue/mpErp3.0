@@ -224,7 +224,7 @@ export default {
         }
       }
     }
-      .el-table__header-wrapper{
+      .el-table__header-wrapper,.el-table__fixed-header-wrapper{
       .el-table__header{
         tr {
           th{

@@ -10,7 +10,7 @@
     fit
     style="width: 100%"
    >
-    <el-table-column prop="Type.Name" label="物料类型" width="260"></el-table-column>
+    <el-table-column prop="Type.InternalName" label="物料类型" width="260"></el-table-column>
     <el-table-column prop="MaterialText" label="物料"  min-width="240" show-overflow-tooltip></el-table-column>
     <el-table-column label="操作" min-width="380" class-name='menu-column'>
       <div class="menu-list" slot-scope="scope">

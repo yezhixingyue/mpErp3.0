@@ -13,7 +13,7 @@
             border
             style="width: 100%"
             :cell-class-name="initStyle"
-            max-height="620px"
+            max-height="584px"
           >
             <el-table-column width="102px" prop="ID" label="包裹号"></el-table-column>
             <el-table-column width="125px" prop="Logistics.BillNo" label="运单号" show-overflow-tooltip>

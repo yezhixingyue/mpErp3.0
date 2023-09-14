@@ -8,6 +8,9 @@ export default class LogisticItem {
   // 分类 自建|物流|快递等
   Type = ''
 
+  // 可用平台 拼多多订单|淘宝订单|京东订单|线下订单
+  PlatformTypes = []
+
   // 是否启用
   IsEnabled = false
 

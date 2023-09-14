@@ -14,13 +14,24 @@
     <!-- <el-table-column type="index" width="60" label="排序">
       <span slot-scope="scope" :class="(curMoveIndex === scope.$index) && sorting ? 'just-now-move-index' : ''">{{scope.$index + 1}}</span>
     </el-table-column> -->
-    <el-table-column prop="Name" label="名称" min-width="160" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="_TypeContent" label="类型" width="100" show-overflow-tooltip></el-table-column>
-    <el-table-column label="启用状态" width="100" show-overflow-tooltip>
+    <el-table-column prop="Name" label="名称" min-width="150" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="_TypeContent" label="类型" width="90" show-overflow-tooltip></el-table-column>
+    <el-table-column label="启用状态" width="90" show-overflow-tooltip>
       <span slot-scope="scope" :class="scope.row.IsEnabled ? 'is-success' : 'is-pink'">{{scope.row._EnableContent}}</span>
     </el-table-column>
-    <el-table-column prop="_PriceRecord" label="价格记录" width="180" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="_PrintedSheetContent" label="关联快印仓" min-width="180" show-overflow-tooltip></el-table-column>
+    <el-table-column label="可用电商平台" width="150" show-overflow-tooltip>
+      <span slot-scope="scope">
+        <template v-for="(it, i) in scope.row.PlatformTypes">
+          {{ i<1?'':'、' }}
+          <i v-if="it === 0" :key="it">线下订单</i>
+          <i v-if="it === 1" :key="it">淘宝订单</i>
+          <i v-if="it === 2" :key="it">京东订单</i>
+          <i v-if="it === 3" :key="it">拼多多订单</i>
+        </template>
+      </span>
+    </el-table-column>
+    <el-table-column prop="_PriceRecord" label="价格记录" width="150" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="_PrintedSheetContent" label="关联快印仓" min-width="160" show-overflow-tooltip></el-table-column>
     <el-table-column prop="_RelationContent" label="关联快递打单" min-width="180" show-overflow-tooltip></el-table-column>
     <el-table-column prop="_StationContent" label="关联物流配送" width="150" show-overflow-tooltip></el-table-column>
     <!-- <el-table-column label="" min-width="50" class-name="blank"></el-table-column>
@@ -30,7 +41,7 @@
         <span class="blue-span" @click="onStationLinkClick(scope.row)">关联物流配送</span>
       </div>
     </el-table-column> -->
-    <el-table-column label="操作" width="540" v-if="localPermission.Setup" class-name="ctrl">
+    <el-table-column label="操作" width="510" v-if="localPermission.Setup" class-name="ctrl">
       <div slot-scope="scope" class='menus'>
         <span class="blue-span" @click="onPrintedSheetLinkClick(scope.row)">关联快印仓</span>
         <span class="blue-span" @click="onRelationLinkClick(scope.row)">关联快递打单</span>
@@ -310,7 +321,7 @@ export default {
             text-align: right;
             padding-right: 15px;
             > span {
-              margin-right: 28px;
+              margin-right: 18px;
               font-size: 12px;
             }
             .ctrl-menus-container {

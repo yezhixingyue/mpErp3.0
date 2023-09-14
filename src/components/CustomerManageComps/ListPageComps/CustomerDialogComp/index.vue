@@ -138,11 +138,9 @@ export default {
       }
       this.loading = false;
     },
-    handleChangeStatus(Status) { // 冻结及解冻
+    handleChangeStatus() { // 冻结及解冻
       if (!this.customer) return;
-      this.customer.Status = Status;
-      this.$store.commit('customerManage/setCustomerItemStatusChange', [this.customer.CustomerID, Status]);
-      this.isGetList = true;
+      this.getCustomerData();
     },
     handleRecharge(increment) { // 充值及退款
       this.customer.FundInfo.Amount = +this.customer.FundInfo.Amount + +increment;

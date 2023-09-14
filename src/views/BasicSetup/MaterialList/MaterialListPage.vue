@@ -9,8 +9,8 @@
       <el-select v-model="type" filterable placeholder="请选择" size="small">
         <el-option
           v-for="(item, i) in options"
-          :key="item.Name + i + item.ID"
-          :label="item.Name"
+          :key="item.InternalName + i + item.ID"
+          :label="item.InternalName"
           :value="item.ID">
         </el-option>
       </el-select>
@@ -50,7 +50,7 @@ export default {
     ...mapState('basicSet', ['MaterialTypeList']),
     ...mapState('common', ['Permission']),
     options() {
-      const item = { ID: '', Name: '不限' };
+      const item = { ID: '', InternalName: '不限' };
       if (!this.MaterialTypeList) return [item];
       return [item, ...this.MaterialTypeList];
     },

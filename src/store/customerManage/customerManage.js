@@ -46,6 +46,10 @@ export default {
       const t = state.customerDataList.find(it => it.CustomerID === CustomerID);
       if (t) t.Status = Status;
     },
+    setCustomerItemCustomerFreezeInfoChange(state, [CustomerID, CustomerFreezeInfo]) { // 修改客户状态 冻结|解冻
+      const t = state.customerDataList.find(it => it.CustomerID === CustomerID);
+      if (t) t.CustomerFreezeInfo = CustomerFreezeInfo;
+    },
     setCustomerItemAmountChange(state, [CustomerID, increment]) { // 充值扣款操作
       const t = state.customerDataList.find(it => it.CustomerID === CustomerID);
       if (t) t.FundInfo.Amount = +t.FundInfo.Amount + +increment;

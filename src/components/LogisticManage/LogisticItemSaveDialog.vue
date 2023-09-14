@@ -17,9 +17,14 @@
         <el-input v-model="ruleForm.Name" maxlength="12" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="分类:" prop="Type">
-        <el-radio-group v-model="ruleForm.Type" :disabled="!!editData">
+        <el-radio-group v-model="ruleForm.Type" :disabled="!!editData" >
           <el-radio :label="it.ID" v-for="it in logisticTypeEnumList" :key='it.ID'>{{it.Name}}</el-radio>
         </el-radio-group>
+      </el-form-item>
+      <el-form-item label="可用平台:" prop="PlatformTypes" style="height: 60px;">
+        <el-checkbox-group v-model="ruleForm.PlatformTypes" :disabled="!!editData" style="width: 360px;">
+          <el-checkbox :label="it.ID" v-for="it in logisticAAAEnumList" :key='it.ID'>{{it.Name}}</el-checkbox>
+        </el-checkbox-group>
       </el-form-item>
       <el-form-item label="是否启用:" prop="IsEnabled">
         <el-switch v-model="ruleForm.IsEnabled"></el-switch>
@@ -63,8 +68,17 @@ export default {
         Type: [
           { required: true, message: '请选择分类', trigger: 'change' },
         ],
+        PlatformTypes: [
+          { required: true, message: '请选择可用平台', trigger: 'change' },
+        ],
       },
       logisticTypeEnumList,
+      logisticAAAEnumList: [
+        { ID: 0, Name: '线下订单' },
+        { ID: 1, Name: '淘宝订单' },
+        { ID: 2, Name: '京东订单' },
+        { ID: 3, Name: '拼多多订单' },
+      ],
     };
   },
   computed: {

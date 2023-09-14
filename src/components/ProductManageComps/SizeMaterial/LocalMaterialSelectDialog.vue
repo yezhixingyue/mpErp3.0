@@ -16,8 +16,8 @@
           <div>
             <span v-for="it in typeList" :key='`aside${it.ID}`'
             :class="{ active: activeType===it.ID, disabled: !canSelectTypeIDList.includes(it.ID) }"
-            @click="onLabelClick(it)" :title='it.Name'>
-              {{it.Name}}
+            @click="onLabelClick(it)" :title='it.InternalName'>
+              {{it.InternalName}}
             </span>
           </div>
         </el-scrollbar>
