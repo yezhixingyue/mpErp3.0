@@ -142,7 +142,7 @@ export default {
           break;
         case InvoiceStatusEnums.haveMaked.ID:
           if (InvoiceType === InvoiceTypeEnums.special.ID) {
-            label = '详情/邮寄';
+            label = '详情';
           }
           break;
         default:

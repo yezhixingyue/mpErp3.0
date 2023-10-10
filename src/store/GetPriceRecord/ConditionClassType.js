@@ -32,5 +32,9 @@ export default class RecordListConditonClass {
 
   Terminal = '';
 
+  CustomerType= {
+    First: '',
+    Second: '',
+  }
   // initDateText = '今天';
 }

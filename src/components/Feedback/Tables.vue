@@ -85,7 +85,7 @@
           </tr>
           <tr>
             <td>客户名称</td>
-            <td>{{dataInfo.Order.CustomerName}}
+            <td style="line-height: 2em;">{{dataInfo.Order.CustomerName}}
               已售后 <span class="number">{{dataInfo.Order.CustomerAfterSaleNumber}} </span> 次
               <span class="details" @click="onDetailClick('customer')">详情</span></td>
             <td>总金额</td>
@@ -607,6 +607,7 @@ export default {
             p{
               line-height: 2em;
               padding: .5em 0;
+              word-wrap: break-word;
             }
             .img{
               display: flex;

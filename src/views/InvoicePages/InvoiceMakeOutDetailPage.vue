@@ -1,14 +1,14 @@
 <template>
   <section class="mp-erp-invoice-make-out-detail-page-wrap">
     <ApplyDetailContent v-if="detailData" :detailData="detailData" @through="onThroughClick" ref="oDetailContentDom" />
-    <InvoiceMailFormComp v-if="pendingMail" ref="oMailWrap" @submit="submitMail" />
+    <!-- <InvoiceMailFormComp v-if="pendingMail" ref="oMailWrap" @submit="submitMail" /> -->
     <InvoiceRejectDialog v-if="pendingCheck||isMakingUp" :visible.sync="rejectVisible" :rejectType="rejectType" :invoiceID="invoiceID" @submit="submitReject" />
     <footer v-if="detailData">
       <el-button v-if="pendingCheck" type="primary" @click="onThroughClick">审核通过</el-button>
       <el-button v-if="pendingCheck" class="cancel-blue-btn" @click="onRejectClick('reject')">驳回</el-button>
       <el-button v-if="isMakingUp" type="primary" @click="onMakeoutlick">开票完成</el-button>
       <el-button v-if="isMakingUp" class="cancel-blue-btn" @click="onRejectClick('cancel')">取消</el-button>
-      <el-button v-if="pendingMail" type="primary" @click="$refs.oMailWrap.submitForm()">提交</el-button>
+      <!-- <el-button v-if="pendingMail" type="primary" @click="$refs.oMailWrap.submitForm()">提交</el-button> -->
       <el-button class="cancel-blue-btn" @click="goback">返回</el-button>
     </footer>
   </section>
@@ -19,7 +19,7 @@ import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMi
 import ApplyDetailContent from '../../packages/InvoiceComps/ApplyDetailContent/index.vue';
 import InvoiceHandlerClass from '../../store/invoice/InvoiceHandlerClass';
 import { InvoiceStatusEnums, InvoiceTypeEnums } from '../../packages/InvoiceComps/enums';
-import InvoiceMailFormComp from '../../components/InvoiceComps/Detail/InvoiceMailFormComp';
+// import InvoiceMailFormComp from '../../components/InvoiceComps/Detail/InvoiceMailFormComp';
 import InvoiceRejectDialog from '../../components/InvoiceComps/Detail/InvoiceRejectDialog.vue';
 
 export default {
@@ -27,7 +27,7 @@ export default {
   mixins: [recordScrollPositionMixin('main.page-wrap')],
   components: {
     ApplyDetailContent,
-    InvoiceMailFormComp,
+    // InvoiceMailFormComp,
     InvoiceRejectDialog,
   },
   data() {

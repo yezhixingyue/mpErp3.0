@@ -88,7 +88,7 @@ export default {
   methods: {
     getSubmitInfo() {
       const { Rule, Value, Unit, UnitType } = this;
-      if (!Value && !this.Formula) {
+      if (Value === '' && Value === null && !this.Formula) {
         this.messageBox.failSingleError('保存失败', '请设置损耗数量');
         return null;
       }

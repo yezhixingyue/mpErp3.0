@@ -19,6 +19,25 @@
         :CountyID="condition4RecordList.SellArea.CountyID"
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
       />
+      <order-channel-selector
+        :options="userTypeList"
+        :requestFunc="getRecordList"
+        :changePropsFunc="setRequestObj"
+        :typeList="[['CustomerType', 'First']]"
+        :value="condition4RecordList.CustomerType.First"
+        :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
+        label="用户"
+      />
+      <order-channel-selector
+        :showLabel="false"
+        :options="userRankList"
+        :requestFunc="getRecordList"
+        :changePropsFunc="setRequestObj"
+        :typeList="[['CustomerType', 'Second']]"
+        :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
+        :value="condition4RecordList.CustomerType.Second"
+        label=""
+      />
       <MinMaxNum
         class="mr-12"
         :getList="getRecordList"
@@ -83,7 +102,7 @@ export default {
   },
   computed: {
     ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataList']),
-    ...mapState('common', ['selfHelpOrderTypeList']),
+    ...mapState('common', ['selfHelpOrderTypeList', 'userTypeList', 'userRankList']),
     UserDefinedTimeIsActive() {
       return this.condition4RecordList.DateType === ''
        && !!this.condition4RecordList.CalculateDate.First && !!this.condition4RecordList.CalculateDate.Second;
@@ -126,6 +145,7 @@ export default {
   mounted() {
     this.clearRequestObj();
     this.getRecordList();
+    this.$store.dispatch('common/getUserClassify');
   },
 };
 </script>
