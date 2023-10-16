@@ -100,10 +100,10 @@ export default {
     },
     getDefaultFactory(list) {
       const t = list.find(it => it.IsDefault);
-      return t ? t.Factory.FactoryName : '';
+      return t && t.Factory ? t.Factory.FactoryName : '';
     },
     getUnDefaultFactory(list) {
-      const _list = list.filter(it => !it.IsDefault).map(it => it.Factory.FactoryName);
+      const _list = list.filter(it => !it.IsDefault).map(it => it.Factory?.FactoryName).filter(n => n);
       return _list.join('、');
     },
     getConditionText(list) {
