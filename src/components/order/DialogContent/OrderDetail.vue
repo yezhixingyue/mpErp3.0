@@ -166,7 +166,13 @@
                       'is-completed':showData.Status===200,
                       'is-origin':showData.Status!==10&&showData.Status!==200,
                     }"
-                    >{{showData.Status | formatStatus}} </span>
+                    >{{showData.Status | formatStatus}}</span>
+                    <span class="blue-span is-font-size-12 ml-6" v-if="showProdProgress" @click="onProdProgressClick">
+                      <!-- <i class="el-icon-s-promotion is-font-size-14"></i> -->
+                      <!-- <i> (</i> -->
+                      查看工厂进度
+                      <!-- <i>)</i> -->
+                    </span>
                     <el-tooltip
                     class="item"
                     effect="dark"
@@ -292,7 +298,7 @@ export default {
     },
   },
   computed: {
-    ...mapState('orderModule', ['orderDetailData']),
+    ...mapState('orderModule', ['orderDetailData', 'OrderStatusList', 'orderListData']),
     ...mapState('common', ['userTypeList', 'userRankList', 'Permission']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionManageOrder?.Obj) {
@@ -364,6 +370,14 @@ export default {
       }
       return '';
     },
+    showProdProgress() {
+      if (this.$route.name === 'orderManage' && this.OrderStatusList.filter(it => it.canProdProgress).map(it => it.ID).includes(this.showData.Status)) {
+        const row = this.orderListData.find(it => it.OrderID === this.showData.OrderID);
+        console.log('showProdProgress', row);
+        return row?.IsAutoConvert;
+      }
+      return false;
+    },
   },
   components: {
     // normalBtn,
@@ -418,6 +432,9 @@ export default {
     },
     getPartShowList(DisplayOrderList, ProductParams) {
       return ShowProductDetail.getDisplayContentFromPartDataByDetailData(DisplayOrderList, ProductParams);
+    },
+    onProdProgressClick() { // 查看工厂进度
+      this.$emit('prodProgress');
     },
   },
 };

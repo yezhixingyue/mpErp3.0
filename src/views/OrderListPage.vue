@@ -25,7 +25,10 @@
         </span>
      </Count>
     </div>
-    <OrderListDialog />
+    <OrderListDialog @prodProgress="onProdProgressClick" />
+    <!-- 工厂进度弹窗 -->
+    <NodePicDialog v-if="orderDetailData"
+     :visible="processVisible" @update:visible="(val) => processVisible = val" :targetID="orderDetailData.OrderID" :item="null" :targetType="2" />
     <!-- 申请售后弹窗 -->
     <ServiceAfterSalesDialog :visible='ServiceAfterSalesVisible'
     :ServiceAfterSales="ServiceAfterSales" @close='ServiceAfterSalesVisible=false; ServiceAfterSales = null;'
@@ -40,6 +43,7 @@ import ServiceAfterSalesDialog from '@/components/order/Main/ServiceAfterSalesDi
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import Table from '@/components/order/Main/Table2.vue';
 import Count from '@/components/common/Count.vue';
+import NodePicDialog from '@/components/common/NodePicDialog/NodePicDialog.vue';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
@@ -48,11 +52,12 @@ export default {
     Count,
     OrderListDialog,
     ServiceAfterSalesDialog,
+    NodePicDialog,
     // ServiceDialog: () => import(/* webpackChunkName: "async" */ '@/components/order/DialogContent/ServiceDialog.vue'),
   },
   mixins: [recordScrollPositionMixin('.order-list-page-wrap .el-table__body-wrapper')],
   computed: {
-    ...mapState('orderModule', ['orderTotalCount', 'orderTotalAmount', 'isTableLoading', 'objForOrderList', 'orderListData']),
+    ...mapState('orderModule', ['orderTotalCount', 'orderTotalAmount', 'isTableLoading', 'objForOrderList', 'orderListData', 'orderDetailData']),
     ...mapGetters('timeSelectModule', ['TodayDate']),
     ...mapState('common', ['Permission']),
     localPermission() {
@@ -68,6 +73,7 @@ export default {
     return {
       ServiceAfterSalesVisible: false,
       ServiceAfterSales: null,
+      processVisible: false,
     };
   },
   methods: {
@@ -96,6 +102,10 @@ export default {
       // this.ServiceAfterSalesVisible = true;
       // this.ServiceAfterSales = data;
       this.$router.push({ name: 'applyAfterSales', params: { ServiceAfterSales: data } });
+    },
+    onProdProgressClick() {
+      console.log('onProdProgressClick');
+      this.processVisible = true;
     },
   },
   mounted() {

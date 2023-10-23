@@ -195,12 +195,12 @@ export default {
   }
 }
 
-  .el-tooltip__popper {
-    max-width: 400px;
-    line-height: 180%;
-    // white-space: pre;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 16px;
-  }
+.el-tooltip__popper {
+  max-width: 400px;
+  line-height: 180%;
+  // white-space: pre;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 16px;
+}
 </style>

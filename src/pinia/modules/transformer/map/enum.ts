@@ -53,25 +53,25 @@ export enum FixedType {
 
 export enum UseModuleEnum {
   /** 合拼禁用限制 */
-  UnionMakeupLimit = 21,
+  UnionMakeupLimit = 52,
   /** 生产线映射 */
-  NormalLine = 21,
+  NormalLine = 52,
   /** 工序映射 */
-  NormalWorking = 21,
+  NormalWorking = 52,
   /** 组合生产线映射 */
-  UnionLine = 21,
+  UnionLine = 52,
   /** 组合工序映射 */
-  UnionWorking = 21,
+  UnionWorking = 52,
   // /** 贴序 帖标映射 */
-  // SheetIndex = 21,
+  // SheetIndex = 52,
   // /** 爬移映射 */
-  // Move = 21,
+  // Move = 52,
   // /** 叼口映射 */
-  // FeedEdge = 21,
+  // FeedEdge = 52,
   // /** 铣背映射 */
-  // Milling = 21,
+  // Milling = 52,
   /** 转换设置 - 其它设置 帖标、爬移、叼口、铣背共用 */
-  otherSetupGeneral = 21,
+  otherSetupGeneral = 52,
 }
 
 /** 爬移类型枚举 */

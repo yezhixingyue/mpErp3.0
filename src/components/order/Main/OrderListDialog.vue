@@ -23,7 +23,7 @@
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane v-if="showDetail" label="订单详情" name="first">
-          <OrderDetail v-if="!isLoading" showDownload />
+          <OrderDetail v-if="!isLoading" showDownload @prodProgress="onProdProgressClick" />
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane  v-if="canShowExpressList" label="包裹列表" name="second">
@@ -175,6 +175,9 @@ export default {
     },
     beforeClose() {
       this.setOrderListDialogHide();
+    },
+    onProdProgressClick() { // 查看工厂进度
+      this.$emit('prodProgress');
     },
   },
   mounted() {

@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 // eslint-disable-next-line import/no-cycle
 import instance from '@/api/axios';
+import { IOrderFlowchartNode } from '@/components/common/NodePicDialog/js/types';
 import { GetLogOptions } from '@/components/LogComp/types/LogConditionClass';
 import { AssistMapItemClass } from '@/pinia/modules/transformer/map/AssistMapItemClass';
 import { AssistInfoTypeEnum } from '@/pinia/modules/transformer/map/enum';
@@ -26,6 +27,11 @@ const api = {
   },
   getOrderList(data) { // 获取客户订单列表（后台）
     return instance.post('/Api/Order/List', data); // /Api/Customer/OrderList
+  },
+  /** 销售端获取订单生产流程接口：/Api/Order/ProduceProcess  GET 参数：orderID */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getOrderProduceProcess(orderID, targetType = 2) {
+    return instance.get<IOrderFlowchartNode[]>('/Api/Order/ProduceProcess', { params: { orderID, targetType } });
   },
   getCustomerInfo(customerID) { // 获取客户信息
     return instance.get(`/Api/OrderAfterSale/CustomerInfo?customerID=${customerID}`);
@@ -1414,6 +1420,15 @@ const api = {
   },
   getConvertServerNotifyReceiveSetup(data: Partial<SaleAndProductionListItemPlainType>) { // POST /Api/ConvertServer/NotifyReceiveSetup  转换器转换失败通知设置
     return instance.post('/Api/ConvertServer/NotifyReceiveSetup', data);
+  },
+  /* 转换异常订单列表
+  ------------------------------- */
+  getConvertExceptionOrderList(data) { // POST /Api/ConvertException/List  排程异常列表
+    return instance.post('/Api/ConvertException/List', data);
+  },
+  // POST /Api/ConvertException/Deal  订单转换异常处理
+  getConvertExceptionDeal(List: number[]) {
+    return instance.post('/Api/ConvertException/Deal', { List });
   },
   /* 转换设置
   ------------------------------- */

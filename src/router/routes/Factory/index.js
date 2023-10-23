@@ -62,6 +62,20 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/BasicSetup/Factory/FactoryAccountSetupPage.vue'),
     },
+    /*  转换失败订单列表
+    ------------------------------------------ */
+    {
+      path: '/convertExceptionOrderList',
+      name: 'convertExceptionOrderList',
+      meta: {
+        title: '转换异常',
+        pageName: 'ConvertExceptionOrderListPage',
+        icon: 'iconfont icon-shengchanyichang',
+        PermissionInfo: ['PermissionCheckFileConvertion', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('@/views/FactoryManage/ConvertExceptionOrderList/ConvertExceptionOrderListPage.vue'),
+    },
     /*  转换设置
     ------------------------------------------ */
     ...transformerRoutes.routes,
@@ -102,6 +116,12 @@ const routeTree = {
       ],
     },
     ...transformerRoutes.routeTree,
+    /*  转换失败订单列表
+    ------------------------------------------ */
+    {
+      name: 'convertExceptionOrderList',
+      children: [],
+    },
   ],
 };
 
