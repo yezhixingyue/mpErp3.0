@@ -128,7 +128,7 @@ export default {
         padding-right: 15px;
       }
       .el-form-item__content {
-        height: 30px;
+        max-height: 60px;
         line-height: 30px;
         color: #585858;
         .el-input {
