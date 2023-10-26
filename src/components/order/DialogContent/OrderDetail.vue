@@ -371,11 +371,11 @@ export default {
       return '';
     },
     showProdProgress() {
-      if (this.$route.name === 'orderManage' && this.OrderStatusList.filter(it => it.canProdProgress).map(it => it.ID).includes(this.showData.Status)) {
-        const row = this.orderListData.find(it => it.OrderID === this.showData.OrderID);
-        console.log('showProdProgress', row);
-        return row?.IsAutoConvert;
-      }
+      // if (this.$route.name === 'orderManage' && this.OrderStatusList.filter(it => it.canProdProgress).map(it => it.ID).includes(this.showData.Status)) {
+      //   const row = this.orderListData.find(it => it.OrderID === this.showData.OrderID);
+      //   console.log('showProdProgress', row);
+      //   return row?.IsAutoConvert;
+      // }
       return false;
     },
   },
