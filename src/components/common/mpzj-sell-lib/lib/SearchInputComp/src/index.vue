@@ -56,7 +56,7 @@ export default {
       type: String,
     },
     searchWatchKey: {
-      default: 0,
+      // default: 0,
     },
     spaceBetween: {
       type: Boolean,
