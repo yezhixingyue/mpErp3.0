@@ -68,7 +68,8 @@
           <span>损失金额</span>
         </h3>
         <p v-if="!Disabled">
-          <el-input :disabled="Disabled" size="small" v-model.number="fromData.LossAmount" placeholder="请输入损失金额"></el-input>
+          <el-input :disabled="Disabled" oninput="value=value.replace(/^([0-9-]\d*\.?\d{0,2})?.*$/,'$1')"
+          size="small" v-model="fromData.LossAmount" placeholder="请输入损失金额"></el-input>
           <span>元</span>
         </p>
         <p v-else>
