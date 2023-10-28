@@ -19,7 +19,7 @@
     <el-table-column label="启用状态" width="90" show-overflow-tooltip>
       <span slot-scope="scope" :class="scope.row.IsEnabled ? 'is-success' : 'is-pink'">{{scope.row._EnableContent}}</span>
     </el-table-column>
-    <el-table-column label="可用电商平台" width="150" show-overflow-tooltip>
+    <el-table-column label="可用平台" width="150" show-overflow-tooltip>
       <span slot-scope="scope">
         <template v-for="(it, i) in scope.row.PlatformTypes">
           {{ i<1?'':'、' }}
