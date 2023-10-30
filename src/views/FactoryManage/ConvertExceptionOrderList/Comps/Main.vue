@@ -8,7 +8,7 @@
       <el-table-column width="120px" prop="OrderID" label="订单编号" />
       <el-table-column width="220px" prop="Server.Name" label="转换器" />
       <!-- '情况说明'列 如果需要靠左对齐时，在下面行上添加右侧属性以设置列的类名： class-name="content" -->
-      <el-table-column min-width="150px" prop="Content" label="情况说明" />
+      <el-table-column min-width="150px" prop="Content" show-overflow-tooltip label="情况说明" />
       <el-table-column width="160px" prop="_CreateTime" label="异常时间" />
       <el-table-column width="125px" prop="_HaveDeal" label="处理状态" />
       <el-table-column width="210px" prop="_DealContent" label="处理时间（处理人）" />
