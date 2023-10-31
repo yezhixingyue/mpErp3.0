@@ -1207,9 +1207,9 @@ const api = {
    * @param {*} thirdID 第三方快递ID
    * @returns
    */
-  getLogisticsBindExpress(data) { // POST /Api/Logistics/BindExpress  关联第三方快递
-    return instance.post('/Api/Logistics/BindExpress', data);
-  },
+  // getLogisticsBindExpress(data) { // POST /Api/Logistics/BindExpress  关联第三方快递
+  //   return instance.post('/Api/Logistics/BindExpress', data);
+  // },
   getLogisticsBindExpressPrint(data) { // POST /Api/Logistics/BindExpressPrint  关联第三方快递(快印仓)
     return instance.post('/Api/Logistics/BindExpressPrint', data);
   },

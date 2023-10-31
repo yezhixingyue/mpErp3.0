@@ -623,16 +623,16 @@ export default {
         commit('setExpressProductList', resp.data.Data);
       }
     },
-    async getLogisticsBindExpress({ commit }, { item, callback }) { // 编辑与新增
-      const resp = await api.getLogisticsBindExpress(item).catch(() => null);
-      if (resp && resp.data.Status === 1000) {
-        const cb = () => {
-          commit('setLogisticItemChange', { item, ID: resp.data.Data });
-          if (callback && typeof callback === 'function') callback();
-        };
-        messageBox.successSingle('快递打单关联成功', cb, cb);
-      }
-    },
+    // async getLogisticsBindExpress({ commit }, { item, callback }) { // 编辑与新增
+    //   const resp = await api.getLogisticsBindExpress(item).catch(() => null);
+    //   if (resp && resp.data.Status === 1000) {
+    //     const cb = () => {
+    //       commit('setLogisticItemChange', { item, ID: resp.data.Data });
+    //       if (callback && typeof callback === 'function') callback();
+    //     };
+    //     messageBox.successSingle('快递打单关联成功', cb, cb);
+    //   }
+    // },
     async getLogisticsBindExpressPrint({ commit }, { item, callback }) { // 编辑与新增
       const resp = await api.getLogisticsBindExpressPrint(item).catch(() => null);
       if (resp && resp.data.Status === 1000) {

@@ -28,12 +28,12 @@
         :edit-data="curEditItem"
         @submit="onPrintedSheetLinkSubmit"
        />
-      <LogisticItemLinkRelationDialog
+      <!-- <LogisticItemLinkRelationDialog
         :visible.sync="relationLinkVisible"
         :ThirdPlatExpressList='ThirdPlatExpressList'
         :edit-data="curEditItem"
         @submit="onRelationLinkSubmit"
-       />
+       /> -->
     </main>
     <footer v-if="localPermission.Setup">
       <template v-if="!sorting">
@@ -52,7 +52,7 @@ import { mapState } from 'vuex';
 import LogisticTableComp from '../../components/LogisticManage/LogisticTableComp.vue';
 import LogisticItemSaveDialog from '../../components/LogisticManage/LogisticItemSaveDialog.vue';
 import LogisticItemLinkStationDialog from '../../components/LogisticManage/LogisticItemLinkStationDialog.vue';
-import LogisticItemLinkRelationDialog from '../../components/LogisticManage/LogisticItemLinkRelationDialog.vue';
+// import LogisticItemLinkRelationDialog from '../../components/LogisticManage/LogisticItemLinkRelationDialog.vue';
 import LogisticItemLinkPrintedSheetDialog from '../../components/LogisticManage/LogisticItemLinkPrintedSheetDialog.vue';
 
 export default {
@@ -61,7 +61,7 @@ export default {
     LogisticTableComp,
     LogisticItemSaveDialog,
     LogisticItemLinkStationDialog,
-    LogisticItemLinkRelationDialog,
+    // LogisticItemLinkRelationDialog,
     LogisticItemLinkPrintedSheetDialog,
   },
   data() {
@@ -129,12 +129,12 @@ export default {
       };
       this.$store.dispatch('basicSet/getLogisticsBindExpressPrint', { item, callback });
     },
-    onRelationLinkSubmit(item) { // 关联快递打单提交
-      const callback = () => {
-        this.relationLinkVisible = false;
-      };
-      this.$store.dispatch('basicSet/getLogisticsBindExpress', { item, callback });
-    },
+    // onRelationLinkSubmit(item) { // 关联快递打单提交
+    //   const callback = () => {
+    //     this.relationLinkVisible = false;
+    //   };
+    //   this.$store.dispatch('basicSet/getLogisticsBindExpress', { item, callback });
+    // },
     onStationLinkClick(item) { // 点击关联物流配送网点
       this.curEditItem = item;
       this.stationLinkVisible = true;

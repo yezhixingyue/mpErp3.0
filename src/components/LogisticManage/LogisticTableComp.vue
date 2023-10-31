@@ -32,7 +32,7 @@
     </el-table-column>
     <el-table-column prop="_PriceRecord" label="价格记录" width="150" show-overflow-tooltip></el-table-column>
     <el-table-column prop="_PrintedSheetContent" label="关联快印仓" min-width="160" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="_RelationContent" label="关联快递打单" min-width="180" show-overflow-tooltip></el-table-column>
+    <!-- <el-table-column prop="_RelationContent" label="关联快递打单" min-width="180" show-overflow-tooltip></el-table-column> -->
     <el-table-column prop="_StationContent" label="关联物流配送" width="150" show-overflow-tooltip></el-table-column>
     <!-- <el-table-column label="" min-width="50" class-name="blank"></el-table-column>
     <el-table-column label="" width="185" v-if="localPermission.Setup">
@@ -41,10 +41,10 @@
         <span class="blue-span" @click="onStationLinkClick(scope.row)">关联物流配送</span>
       </div>
     </el-table-column> -->
-    <el-table-column label="操作" width="510" v-if="localPermission.Setup" class-name="ctrl">
+    <el-table-column label="操作" width="410" v-if="localPermission.Setup" class-name="ctrl">
       <div slot-scope="scope" class='menus'>
         <span class="blue-span" @click="onPrintedSheetLinkClick(scope.row)">关联快印仓</span>
-        <span class="blue-span" @click="onRelationLinkClick(scope.row)">关联快递打单</span>
+        <!-- <span class="blue-span" @click="onRelationLinkClick(scope.row)">关联快递打单</span> -->
         <span class="blue-span" @click="onStationLinkClick(scope.row)">关联物流配送</span>
         <CtrlMenus
           @setup='onSetupPriceClick(scope.row)'
