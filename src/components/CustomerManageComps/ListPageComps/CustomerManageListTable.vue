@@ -31,7 +31,7 @@
     </el-table-column>
     <el-table-column label="所属销售区域" prop="locationContent" width="144" show-overflow-tooltip></el-table-column>
     <el-table-column label="经营地址" prop="SellAddressContent" width="100" show-overflow-tooltip></el-table-column>
-    <el-table-column label="三方店铺" width="90" prop="ShopName" class-name='is-success' show-overflow-tooltip></el-table-column>
+    <!-- <el-table-column label="三方店铺" width="90" prop="ShopName" class-name='is-success' show-overflow-tooltip></el-table-column> -->
     <el-table-column label="认证状态" width="72" show-overflow-tooltip>
       <template slot-scope="scope" >{{scope.row.AuthStatus | formatAuthStatus}}</template>
     </el-table-column>
@@ -148,7 +148,7 @@ export default {
       return [
         'detail',
         this.PermissionObj.SetPrice ? 'setup' : '',
-        this.PermissionObj.BindShop ? 'setup2' : '',
+        // this.PermissionObj.BindShop ? 'setup2' : '',
         this.hasEditPermission ? 'edit' : '',
         this.PermissionObj.Delete ? 'del' : '',
       ].filter(it => it);
@@ -159,9 +159,9 @@ export default {
         if (!this.PermissionObj.SetPrice) {
           num -= 80;
         }
-        if (!this.PermissionObj.BindShop) {
-          num -= 80;
-        }
+        // if (!this.PermissionObj.BindShop) {
+        num -= 80;
+        // }
         if (!this.PermissionObj.Delete) {
           num -= 50;
         }
