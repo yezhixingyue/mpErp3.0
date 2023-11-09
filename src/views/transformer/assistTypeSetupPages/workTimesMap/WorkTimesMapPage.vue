@@ -12,7 +12,7 @@
         border
         style="width: 100%">
         <el-table-column prop="Name" label="工序" width="315" show-overflow-tooltip align="center" header-align="center" ></el-table-column>
-        <el-table-column prop="Name" label="作业次数 (未设置默认为1)" width="315" show-overflow-tooltip align="center" header-align="center">
+        <el-table-column label="作业次数 (未设置默认为1)" width="315" show-overflow-tooltip align="center" header-align="center">
           <template #default="scope">
             <span class="p-names">{{data.getItemMapResult(scope.row.ID, data.mapDataList)}}</span>
           </template>

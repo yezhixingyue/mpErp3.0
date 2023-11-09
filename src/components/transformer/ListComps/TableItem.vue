@@ -8,6 +8,8 @@
           @click="onClick(menuTypeEnum.UnionLine)">组合生产线映射 ({{props.item.UnionLineCount}})</span>
         <span :class="{hide: selectedPartList.length < 0}" class="blue-span" v-if="HavePomission"
           @click="onClick(menuTypeEnum.UnionWorking)">组合工序映射 ({{props.item.UnionWorkingCount}})</span>
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.WorkTimes)">作业次数 ({{props.item.UnionWorkTimesCount}})</span>
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.WordsInfo)">文字信息映射 ({{props.item.UnionWordsInfoCount}})</span>
         <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.NumbericInfo)">数值映射 ({{props.item.UnionNumbericInfoCount}})</span>
         <span @click="onHideClick" class="arrow" :class="{disabled:selectedPartList.length===0}">
           {{displayPart ? '隐藏' : '展开'}}

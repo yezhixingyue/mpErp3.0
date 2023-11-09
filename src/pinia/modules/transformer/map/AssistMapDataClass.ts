@@ -45,11 +45,19 @@ export abstract class AssistMapDataClass<L, R, P> extends MapDataClass<L, R, P, 
         if (target) {
           switch (temp.Type) {
             case AssistMappingTypeEnum.WordsInfo:
-              target.WordsInfoCount += 1;
+              if (this.curPageData.curInstance) {
+                target.WordsInfoCount += 1;
+              } else {
+                this.curPageData.curEditItem.UnionWordsInfoCount += 1; // 数值映射需多考虑一种情况：在非产品或部件实例上的数值映射
+              }
               break;
 
             case AssistMappingTypeEnum.WorkTimes:
-              target.WorkTimesCount += 1;
+              if (this.curPageData.curInstance) {
+                target.WorkTimesCount += 1;
+              } else {
+                this.curPageData.curEditItem.UnionWorkTimesCount += 1; // 数值映射需多考虑一种情况：在非产品或部件实例上的数值映射
+              }
               break;
 
             case AssistMappingTypeEnum.Numberic:

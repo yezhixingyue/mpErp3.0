@@ -83,7 +83,7 @@ export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IW
 
   public async saveItem(TargetProperty: IWordsInfoRightType[], ID: string): Promise<void> {
     const ProductID = this.curPageData?.curEditItem?.ID || '';
-    const InstanceID = this.curPageData?.curPart?.ID || ProductID;
+    const InstanceID = this.curPageData?.curInstance?.ID || undefined;
     const temp = {
       ServerID: this.ServerID,
       Type: AssistMappingTypeEnum.WordsInfo,
@@ -119,7 +119,7 @@ export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IW
     const temp = {
       ServerID: this.ServerID,
       ProductID: this.curPageData?.curEditItem?.ID || '',
-      InstanceID: this.curPageData?.curPart?.ID || this.curPageData?.curEditItem?.ID || '',
+      InstanceID: this.curPageData?.curInstance?.ID || undefined,
       NoteType: AssistInfoTypeEnum.text,
     };
     const resp = await api.getWorkingProcedureWordAssistantList(temp).catch(() => null);
@@ -150,7 +150,7 @@ export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IW
    */
   protected async getMapList() {
     const ProductID = this.curPageData?.curEditItem?.ID || '';
-    const InstanceID = this.curPageData?.curPart?.ID || ProductID;
+    const InstanceID = this.curPageData?.curInstance?.ID || undefined;
     const temp = {
       ServerID: this.ServerID,
       Type: AssistMappingTypeEnum.WordsInfo,

@@ -27,7 +27,7 @@ export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IW
 
   public async saveItem(data: { ID: string, Name: string } | number, ID: string): Promise<void> {
     const ProductID = this.curPageData?.curEditItem?.ID || '';
-    const InstanceID = this.curPageData?.curPart?.ID || ProductID;
+    const InstanceID = this.curPageData?.curInstance?.ID || undefined;
     const temp: Partial<AssistMapItemClass> = {
       ServerID: this.ServerID,
       Type: AssistMappingTypeEnum.WorkTimes,
@@ -69,7 +69,7 @@ export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IW
     const data = {
       ServerID: this.ServerID,
       ProductID: this.curPageData?.curEditItem?.ID || '',
-      InstanceID: this.curPageData?.curPart?.ID || this.curPageData?.curEditItem?.ID || '',
+      InstanceID: this.curPageData?.curInstance?.ID || undefined,
       OnlyShowNormal: true,
       Page: 1,
       PageSize: 10000,
@@ -105,7 +105,7 @@ export class WorkTimesMapClass extends AssistMapDataClass<IWorkTimesLeftType, IW
    */
   protected async getMapList() {
     const ProductID = this.curPageData?.curEditItem?.ID || '';
-    const InstanceID = this.curPageData?.curPart?.ID || ProductID;
+    const InstanceID = this.curPageData?.curInstance?.ID || undefined;
     const temp = {
       ServerID: this.ServerID,
       Type: AssistMappingTypeEnum.WorkTimes,

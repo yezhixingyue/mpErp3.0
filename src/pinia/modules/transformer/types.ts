@@ -78,6 +78,10 @@ export interface IProduct extends Omit<IPart, 'UseTimes'> {
   UnionWorkingCount: number
   /** 组合 - 数值信息映射条数 */
   UnionNumbericInfoCount: number
+  /** 组合 - 作业映射条数 */
+  UnionWorkTimesCount: number
+  /** 组合 - 文字信息映射条数 */
+  UnionWordsInfoCount: number
   PartList: IPart[]
 }
 
