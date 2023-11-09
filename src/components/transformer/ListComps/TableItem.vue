@@ -4,13 +4,16 @@
       <div class="name">{{getProductName(props.item)}}</div>
       <div class="right">
         <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.partSetup)">选择产品部件 ({{selectedPartList.length}})</span>
-        <span :class="{hide: selectedPartList.length < 0}" class="blue-span" v-if="HavePomission"
+        <span :class="{hide: selectedPartList.length < 0, disabled: !selectedPartList.length}" class="blue-span" v-if="HavePomission"
           @click="onClick(menuTypeEnum.UnionLine)">组合生产线映射 ({{props.item.UnionLineCount}})</span>
-        <span :class="{hide: selectedPartList.length < 0}" class="blue-span" v-if="HavePomission"
+        <span :class="{hide: selectedPartList.length < 0, disabled: !selectedPartList.length}" class="blue-span" v-if="HavePomission"
           @click="onClick(menuTypeEnum.UnionWorking)">组合工序映射 ({{props.item.UnionWorkingCount}})</span>
-        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.WorkTimes)">作业次数 ({{props.item.UnionWorkTimesCount}})</span>
-        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.WordsInfo)">文字信息映射 ({{props.item.UnionWordsInfoCount}})</span>
-        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.NumbericInfo)">数值映射 ({{props.item.UnionNumbericInfoCount}})</span>
+        <span class="blue-span" :class="{disabled:!selectedPartList.length}" v-if="HavePomission"
+         @click="onClick(menuTypeEnum.WorkTimes)">作业次数 ({{props.item.UnionWorkTimesCount}})</span>
+        <span class="blue-span" :class="{disabled:!selectedPartList.length}" v-if="HavePomission"
+         @click="onClick(menuTypeEnum.WordsInfo)">文字信息映射 ({{props.item.UnionWordsInfoCount}})</span>
+        <span class="blue-span" :class="{disabled:!selectedPartList.length}" v-if="HavePomission"
+         @click="onClick(menuTypeEnum.NumbericInfo)">数值映射 ({{props.item.UnionNumbericInfoCount}})</span>
         <span @click="onHideClick" class="arrow" :class="{disabled:selectedPartList.length===0}">
           {{displayPart ? '隐藏' : '展开'}}
           <i class="el-icon-caret-bottom" v-show="!displayPart"></i>
@@ -67,6 +70,7 @@ const HavePomission = computed(() => props.UserDetail && props.UserDetail.Permis
 // });
 
 const onClick = (type: menuTypeEnum, PartID?: string) => {
+  if (selectedPartList.value.length === 0 && type !== menuTypeEnum.partSetup) return;
   // if (type === menuTypeEnum.UnionLine || type === menuTypeEnum.UnionWorking) {
   //   if (selectedPartList.value.length < 1) {
   //     onHideClick();
