@@ -47,19 +47,21 @@
                       <span v-if="index ===0" style="min-width: 3em;">问题：</span>
                       <template v-if="DisposeDetailsData.AfterSaleQuestions.find(it => it.Version === 1)">
                         <el-tooltip
+                        v-if="item.FirstQuestionType"
                         effect="dark"
-                        :disabled="oldQuestionType.find(it => it.ID === item.FirstQuestionType).Name.length<12"
-                        :content="oldQuestionType.find(it => it.ID === item.FirstQuestionType).Name"
+                        :disabled="oldQuestionType.find(it => it.ID === item.FirstQuestionType)?.Name.length<12"
+                        :content="oldQuestionType.find(it => it.ID === item.FirstQuestionType)?.Name"
                         placement="top">
-                          <i class="i">{{oldQuestionType.find(it => it.ID === item.FirstQuestionType).Name}}</i>
+                          <i class="i">{{oldQuestionType.find(it => it.ID === item.FirstQuestionType)?.Name}}</i>
                         </el-tooltip>
                         <!-- <i style="width:8em;" :style="`margin-left:${index === 0 ? 0 : 3.3}em`">{{QuestionFirstName(item.FirstQuestionType)}}</i> -->
                         <el-tooltip
                         effect="dark"
-                        :disabled="oldQuestionType.find(it => it.ID === item.SecondQuestionType).Name.length<12"
-                        :content="oldQuestionType.find(it => it.ID === item.SecondQuestionType).Name"
+                        v-if="item.SecondQuestionType"
+                        :disabled="oldQuestionType.find(it => it.ID === item.SecondQuestionType)?.Name.length<12"
+                        :content="oldQuestionType.find(it => it.ID === item.SecondQuestionType)?.Name"
                         placement="top">
-                          <i class="i">{{oldQuestionType.find(it => it.ID === item.SecondQuestionType).Name}}</i>
+                          <i class="i">{{oldQuestionType.find(it => it.ID === item.SecondQuestionType)?.Name}}</i>
                         </el-tooltip>
                       </template>
 
