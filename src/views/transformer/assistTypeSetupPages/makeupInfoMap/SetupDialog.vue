@@ -16,7 +16,8 @@
     <div class="c">
       <mp-empty v-if="data.rightDataList.length === 0" />
       <el-radio-group v-model="radio">
-        <el-radio class="check-item" v-for="it in data.rightDataList" :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-radio>
+        <el-radio class="check-item" v-for="it in data.rightDataList" :disabled="disabledList.includes(it.ID)"
+         :key="it.ID" :label="it.ID" :title="it.Name">{{it.Name}}</el-radio>
       </el-radio-group>
     </div>
   </CommonDialogComp>
@@ -41,10 +42,13 @@ const localVisible = computed({
 });
 
 const radio = ref('');
+const disabledList = ref<string[]>([]);
 
 const onOpen = () => {
   const t = props.data.mapDataList.find(it => it.SourceID === props.data.curEditItem?.ID || it.SourceID === `${props.data.curEditItem?.ID}`);
   radio.value = t && t.Target && t.Target.length > 0 ? t.Target[0] || '' : '';
+
+  disabledList.value = props.data.mapDataList.map(it => it.Target[0]).filter(it => it && it !== radio.value);
 };
 
 const cancel = () => {
