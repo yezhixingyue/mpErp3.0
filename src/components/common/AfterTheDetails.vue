@@ -25,9 +25,10 @@
             >驳回</el-button>
           </template>
         </template>
-        <el-button  class="cancel-blue-btn" @click="onDisposeDetailsClick" key="查看处理详情"
+        <!-- <el-button  class="cancel-blue-btn" @click="onDisposeDetailsClick" key="查看处理详情"
         v-if="DetailData.AfterSale.Status === 30"
-        >查看处理详情</el-button>
+        >查看处理详情</el-button> -->
+        <div v-if="DetailData.AfterSale.Status === 30" style="display: inline-block; width: 700px;"></div>
         <el-button class="cancel-blue-btn" @click="onGoBackClick"><i></i> 返回</el-button>
       </footer>
       <transition name="el-fade-in-linear">
@@ -54,9 +55,10 @@
             >驳回</el-button>
           </template>
         </template>
-        <el-button  class="cancel-blue-btn" @click="onDisposeDetailsClick" key="查看处理详情"
+        <!-- <el-button  class="cancel-blue-btn" @click="onDisposeDetailsClick" key="查看处理详情"
         v-if="DetailData.AfterSale.Status === 30"
-        >查看处理详情</el-button>
+        >查看处理详情</el-button> -->
+        <div v-if="DetailData.AfterSale.Status === 30" style="display: inline-block; width: 700px;"></div>
         <el-button class="cancel-blue-btn" @click="onGoBackClick"><i></i> 返回</el-button>
       </footer>
       </transition>
@@ -290,6 +292,9 @@ export default {
         this.handleScroll(this.oPage[0]);
       });
     },
+  },
+  activated() {
+    this.isFootFixed = true;
   },
   mounted() {
     this.paramsData = this.$route.params.paramsData;

@@ -266,6 +266,7 @@
           <el-table-column prop="OperaterUserName" label="操作人" width="321" show-overflow-tooltip></el-table-column>
         </el-table>
       </template> -->
+      <DisposeDetailsComp v-if="paramsData && dataInfo && dataInfo.AfterSale.Status === 30" :dataInfo = "dataInfo" :paramsData = "paramsData" />
 
       <!-- 查看订单详情 -->
     <!-- <OrderListDialog @DialogHide='orderListDialogData.orderListDialogShow=false' :orderListDialogData="orderListDialogData"/> -->
@@ -316,6 +317,7 @@
 import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index';
 // import OrderListDialog from '@/components/Feedback/OrderListDialog.vue';
 import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
+import DisposeDetailsComp from './DisposeDetailsComp.vue';
 
 import normalBtn from '@/components/common/normalBtn.vue';
 import { getLabelByAppealType } from './AppealTypeList';
@@ -324,6 +326,7 @@ export default {
   mixins: [mixin],
   name: 'tables',
   components: {
+    DisposeDetailsComp,
     OrderListDialog,
     normalBtn,
   },
@@ -455,63 +458,18 @@ export default {
       const arr = [];
       if (solution.SolutionTypes.find(it => it === 2)) {
         arr.push('退款');
-        // arr.push(`订单退款${solution.RefundAmount}元`);
-        // arr.push(`运费退款${solution.RefundFreightAmount}元`);
       }
       if (solution.SolutionTypes.find(it => it === 7)) {
         arr.push('补印');
-        // arr.push(`${solution.KindCount}款`);
-        // arr.push(`${solution.Number}${solution.Unit}`);
       }
       if (solution.SolutionTypes.find(it => it === 8)) {
         arr.push('赠送优惠券');
-        // const { CouponList } = solution;
-        // if (CouponList && CouponList.length > 0) {
-        //   CouponList.forEach(it => {
-        //     const { Number, Amount, MinPayAmount } = it;
-        //     if (Number && Amount && MinPayAmount) {
-        //       if (Amount && MinPayAmount) {
-        //         const text = `满${MinPayAmount}减${Amount}券${Number}张`;
-        //         arr.push(text);
-        //       }
-        //     }
-        //   });
-        // }
       }
       if (solution.SolutionTypes.find(it => it === 255)) {
         arr.push('其他');
       }
       return arr.join('、');
     },
-    // getSolution(solution) {
-    //   const arr = [];
-    //   if (solution.Type === 2) {
-    //     arr.push(`订单减款${solution.Refund}元`);
-    //     arr.push(`运费减款${solution.RefundFreight}元`);
-    //   } else if (solution.Type === 7) {
-    //     arr.push('补印');
-    //     arr.push(`${solution.KindCount}款`);
-    //     arr.push(`${solution.Number}${this.orderData.ProductParams.Attributes.Unit}`);
-    //   } else if (solution.Type === 8) {
-    //     arr.push('赠送优惠券');
-    //     const { CouponList } = solution;
-    //     if (CouponList && CouponList.length > 0) {
-    //       CouponList.forEach(it => {
-    //         const { Number, CouponInfo } = it;
-    //         if (Number && CouponInfo.Data) {
-    //           const { MinPayAmount, Amount } = CouponInfo.Data;
-    //           if (Amount && MinPayAmount) {
-    //             const text = `满${MinPayAmount}减${Amount}券${Number}张`;
-    //             arr.push(text);
-    //           }
-    //         }
-    //       });
-    //     }
-    //     // arr.push(`${solution.KindCount}款`);
-    //     // arr.push(`${solution.Number}${this.orderData.ProductParams.Attributes.Unit}`);
-    //   }
-    //   return arr.join('--');
-    // },
     getLossAmount(LossAmount) {
       if (LossAmount > 0) {
         return `-${LossAmount}元`;

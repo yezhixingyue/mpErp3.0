@@ -1053,7 +1053,11 @@ export default {
         // 回显优惠券
         // 思路：把选中的标记 手动调用一下选择优惠券确定
         if (afterSaleSuccessInfo.Solution.CouponList && afterSaleSuccessInfo.Solution.CouponList.length) {
-          this.handleCouponDialogOpen(afterSaleSuccessInfo.Solution.CouponList);
+          await this.handleCouponDialogOpen(afterSaleSuccessInfo.Solution.CouponList);
+          if (!this.selectedCouponList.length) {
+            // 保存的优惠券已失效
+            this.messageBox.warnSingleError('保存的优惠券已失效，请重新选择优惠券');
+          }
         }
         // 回显图片
         this.serviceImgList = this.HandlingAfterSalesForm.SolutionQuestionPicList || [];
