@@ -453,7 +453,7 @@ export default {
   position: relative;
   > header {
     flex: none;
-    height: 218px;
+    height: 248px;
     background-color: #fff;
     padding: 0px 20px;
     padding-top: 30px;

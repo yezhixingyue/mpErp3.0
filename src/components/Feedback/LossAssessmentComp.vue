@@ -33,7 +33,7 @@
       <div class="remark-input" v-if="!Disabled">
         <h3>
           <span>说明：</span>
-          <i>若解决方案损失发生变化需说明原因并上传相关照片信息</i>
+          <i>若解决方案损失发生变化需说明原因并可上传相关照片信息</i>
         </h3>
         <p>
           <el-input
@@ -248,6 +248,8 @@ export default {
     SaveClick() {
       if (this.fromData.LossAmount === '' || this.fromData.LossAmount === null) {
         this.messageBox.failSingleError('提交失败', '请输入损失金额');
+      } else if (this.fromData.LossAmount !== this.AfterSaleData.LossAmount && !this.fromData.LossConfirmRemark) {
+        this.messageBox.failSingleError('提交失败', '损失金额发生变化，请说明原因和理由');
       } else {
         this.SaveDialogVisible = true;
       }

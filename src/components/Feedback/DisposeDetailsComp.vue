@@ -33,7 +33,7 @@
                   <el-tooltip
                   v-if="item.FirstQuestionType"
                   effect="dark"
-                  :disabled="oldQuestionType.find(it => it.ID === item.FirstQuestionType)?.Name.length<12"
+                  :disabled="oldQuestionType.find(it => it.ID === item.FirstQuestionType)?.Name.length<11"
                   :content="oldQuestionType.find(it => it.ID === item.FirstQuestionType)?.Name"
                   placement="top">
                     <i class="i">{{oldQuestionType.find(it => it.ID === item.FirstQuestionType)?.Name}}</i>
@@ -41,7 +41,7 @@
                   <el-tooltip
                   effect="dark"
                   v-if="item.SecondQuestionType"
-                  :disabled="oldQuestionType.find(it => it.ID === item.SecondQuestionType)?.Name.length<12"
+                  :disabled="oldQuestionType.find(it => it.ID === item.SecondQuestionType)?.Name.length<11"
                   :content="oldQuestionType.find(it => it.ID === item.SecondQuestionType)?.Name"
                   placement="top">
                     <i class="i">{{oldQuestionType.find(it => it.ID === item.SecondQuestionType)?.Name}}</i>
@@ -50,14 +50,14 @@
                 <template v-else>
                   <el-tooltip
                   effect="dark"
-                  :disabled="QuestionFirstName(item.FirstQuestionType).length<12"
+                  :disabled="QuestionFirstName(item.FirstQuestionType).length<11"
                   :content="QuestionFirstName(item.FirstQuestionType)"
                   placement="top">
                     <i class="i">{{QuestionFirstName(item.FirstQuestionType)}}</i>
                   </el-tooltip>
                   <el-tooltip
                   effect="dark"
-                  :disabled="QuestionName(item.SecondQuestionType).length<12"
+                  :disabled="QuestionName(item.SecondQuestionType).length<11"
                   :content="QuestionName(item.SecondQuestionType)"
                   placement="top">
                     <i class="i">{{QuestionName(item.SecondQuestionType)}}</i>
@@ -68,7 +68,7 @@
                 （<span>备注：</span>
                 <el-tooltip
                 effect="dark"
-                :disabled="item.Remark.length<25"
+                :disabled="item.Remark.length<22"
                 :content="item.Remark"
                 placement="top">
                   <i class="i">{{item.Remark}}</i>
@@ -95,7 +95,7 @@
             <template v-for="(SolutionType, SolutionTypeindex) in DisposeDetailsData.Solution.SolutionTypes">
               <div :key="SolutionTypeindex" class="row line" v-if="SolutionType === 255">
                 <div class="item">
-                  <div>
+                  <div style="display: block;">
                   <!-- 其他 -->
                     其他
                     <span v-if="DisposeDetailsData.Solution.OtherSolutionRemark">
@@ -222,13 +222,7 @@
             </template>
             <div>
               处理意见：
-              <el-tooltip
-              effect="dark"
-              :disabled="DisposeDetailsData.Solution.Opinion.length<50"
-              :content="DisposeDetailsData.Solution.Opinion"
-              placement="top">
-                <i class="i" style="text-indent: 0em">{{DisposeDetailsData.Solution.Opinion}}</i>
-              </el-tooltip>
+              <i class="i" style="text-indent: 0em">{{DisposeDetailsData.Solution.Opinion}}</i>
             </div>
           </div>
         </td>
@@ -424,13 +418,32 @@ export default {
             }
             >.item{
               &.question{
-                width: 16em;
+                width: 24em;
+                min-width: 24em;
+                display: flex;
                 i{
                   margin-right: 1em;
+                  -webkit-line-clamp: 1;
+                  display: -webkit-box;
+                  -webkit-box-orient: vertical;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  flex: 1;
                 }
               }
               &.remark{
                 color: #AEAEAE;
+                display: flex;
+                >span{
+                  min-width: 3em;
+                }
+                i{
+                  -webkit-line-clamp: 1;
+                  display: -webkit-box;
+                  -webkit-box-orient: vertical;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                }
               }
             }
           }
@@ -470,7 +483,7 @@ export default {
               .refund-sess {
                 flex: 1;
                 text-align: right;
-                padding-right: 390px;
+                padding-right: 300px;
                 font-size: 11px;
               }
               > .i {
