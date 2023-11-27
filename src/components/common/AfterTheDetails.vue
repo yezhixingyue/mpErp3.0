@@ -333,7 +333,7 @@ export default {
         left: 231px;
         background-color: #fff;
         box-shadow: 0px 0px 14px 0px rgba(136, 136, 136, 0.3);
-        width: calc(100vw - 186px - 90px);
+        width: calc(100vw - 186px - 90px - 15px);
         min-width: 900px;
         padding-top: 20px;
         padding-right: 40px;
