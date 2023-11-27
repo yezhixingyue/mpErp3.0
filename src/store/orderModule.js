@@ -608,9 +608,9 @@ export default {
       const { OrderID } = state.orderDetailData;
       if (!OrderID) return;
       const _obj = { OrderID, FilePath };
-      const res = await api.setOrderReCheckFile(_obj);
+      const res = await api.setOrderReCheckFile(_obj).catch(() => null);
 
-      if (res.data.Status === 1000) {
+      if (res && res.data.Status === 1000) {
         // 成功
         // let msg = '已更换订单文件';
         // if (!FilePath) msg = '未更换订单文件';

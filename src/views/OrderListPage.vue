@@ -25,7 +25,7 @@
         </span>
      </Count>
     </div>
-    <OrderListDialog @prodProgress="onProdProgressClick" />
+    <OrderListDialog @prodProgress="onProdProgressClick" @anewUpload="onAnewUploadClick" />
     <!-- 工厂进度弹窗 -->
     <NodePicDialog v-if="orderDetailData"
      :visible="processVisible" @update:visible="(val) => processVisible = val" :targetID="orderDetailData.OrderID" :item="null" :targetType="2" />
@@ -34,6 +34,8 @@
     :ServiceAfterSales="ServiceAfterSales" @close='ServiceAfterSalesVisible=false; ServiceAfterSales = null;'
     @success="ServiceAfterSalesSuccess"></ServiceAfterSalesDialog>
     <!-- <ServiceDialog key="order-list-page" className='show-black' /> -->
+    <!-- 重新上传文件再审稿弹窗 -->
+    <AnewUploadDialog :visible.sync="AnewUploadVisible" />
   </div>
 </template>
 
@@ -45,6 +47,7 @@ import Table from '@/components/order/Main/Table2.vue';
 import Count from '@/components/common/Count.vue';
 import NodePicDialog from '@/components/common/NodePicDialog/NodePicDialog.vue';
 import { mapState, mapGetters, mapActions } from 'vuex';
+import AnewUploadDialog from '@/components/order/Main/AnewUploadDialog/AnewUploadDialog.vue';
 
 export default {
   components: {
@@ -53,6 +56,7 @@ export default {
     OrderListDialog,
     ServiceAfterSalesDialog,
     NodePicDialog,
+    AnewUploadDialog,
     // ServiceDialog: () => import(/* webpackChunkName: "async" */ '@/components/order/DialogContent/ServiceDialog.vue'),
   },
   mixins: [recordScrollPositionMixin('.order-list-page-wrap .el-table__body-wrapper')],
@@ -74,6 +78,7 @@ export default {
       ServiceAfterSalesVisible: false,
       ServiceAfterSales: null,
       processVisible: false,
+      AnewUploadVisible: false,
     };
   },
   methods: {
@@ -104,8 +109,10 @@ export default {
       this.$router.push({ name: 'applyAfterSales', params: { ServiceAfterSales: data } });
     },
     onProdProgressClick() {
-      console.log('onProdProgressClick');
       this.processVisible = true;
+    },
+    onAnewUploadClick() { // 重新上传文件再审稿
+      this.AnewUploadVisible = true;
     },
   },
   mounted() {

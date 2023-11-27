@@ -202,7 +202,9 @@
                     <a :href="showData.FilePath" target="_blank" class="link download">下载订单文件</a>
                   </li>
                   <li class="btn-box" v-if="showData.Status===35 && $route.name === 'orderManage'" :class="{hiddenFileUpload: !showData.FileCase}">
-                    <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc" v-if="showData.FileCase" :CustomerID='showData.Customer.CustomerID' />
+                    <!-- <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc"
+                     v-if="showData.FileCase" :CustomerID='showData.Customer.CustomerID' /> -->
+                    <div class="ft-12" v-if="showData.FileCase" @click="onAnewUploadClick">重新上传文件再审稿</div>
                     <el-button type="primary" @click="handleReview">{{showData.FileCase ? '文件没问题' : '该订单无文件'}},重新审稿</el-button>
                   </li>
                   <li class="right-flex-wrap file-content-wrap">
@@ -277,7 +279,7 @@
 <script>
 import { mapState } from 'vuex';
 // import normalBtn from '@/components/common/normalBtn.vue';
-import UploadComp4BreakPoint from '@/components/common/UploadComp/UploadComp4BreakPoint.vue';
+// import UploadComp4BreakPoint from '@/components/common/UploadComp/UploadComp4BreakPoint.vue';
 import ShowProductDetail from '@/assets/js/TypeClass/ShowProductDetail';
 import OrderDetailDisplayItem from '@/packages/OrderDetailDisplayItem';
 import OrderDetailPriceBox from '@/packages/OrderDetailPriceBox';
@@ -381,7 +383,7 @@ export default {
   },
   components: {
     // normalBtn,
-    UploadComp4BreakPoint,
+    // UploadComp4BreakPoint,
     OrderDetailDisplayItem,
     OrderDetailPriceBox,
   },
@@ -435,6 +437,9 @@ export default {
     },
     onProdProgressClick() { // 查看工厂进度
       this.$emit('prodProgress');
+    },
+    onAnewUploadClick() { // 重新上传文件再审稿
+      this.$emit('anewUpload');
     },
   },
 };
@@ -787,8 +792,11 @@ export default {
           margin-right: 13px;
           width: 9em;
           display: inline-block;
-          padding: 0 11px 0 11px;
+          padding: 0 9px;
           background-color: #fff;
+          border: 1px solid;
+          cursor: pointer;
+          user-select: none;
           color: #428dfa !important;
           border-color: #428dfa !important;
           border-radius: 6px;
