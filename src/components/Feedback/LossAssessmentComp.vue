@@ -248,7 +248,7 @@ export default {
     SaveClick() {
       if (this.fromData.LossAmount === '' || this.fromData.LossAmount === null) {
         this.messageBox.failSingleError('提交失败', '请输入损失金额');
-      } else if (this.fromData.LossAmount !== this.AfterSaleData.LossAmount && !this.fromData.LossConfirmRemark) {
+      } else if (Number(this.fromData.LossAmount) !== Number(this.AfterSaleData.LossAmount) && !this.fromData.LossConfirmRemark) {
         this.messageBox.failSingleError('提交失败', '损失金额发生变化，请说明原因和理由');
       } else {
         this.SaveDialogVisible = true;
