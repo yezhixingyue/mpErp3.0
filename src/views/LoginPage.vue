@@ -61,6 +61,7 @@
 <script>
 import { Base64 } from 'js-base64';
 import TokenClass from '@/assets/js/utils/tokenManage';
+import { WikiHandler } from '@/assets/js/TypeClass/WikiHandler';
 
 export default {
   data() {
@@ -84,12 +85,24 @@ export default {
       if (res.data.Status === 1000 && res.data.Data) {
         const targetProtocol = this.ruleForm.Position === 0 ? 'http:' : 'https:';
         const { origin, pathname, protocol } = window.location;
+
         if (protocol === targetProtocol) {
           TokenClass.setToken(res.data.Data);
-          window.location = window.location.pathname;
+          window.location.reload();
           return;
         }
-        const url = `${origin}${pathname}#/pathFromClient?url=/&token=${res.data.Data}`.replace(protocol, targetProtocol);
+
+        let _hash = `url=/&token=${res.data.Data}`;
+
+        // 跳转wiki 针对性处理
+        if (this.$router.currentRoute.query.toWiki === 'true') {
+          const { target, siteType } = this.$router.currentRoute.query;
+          if (target && siteType) {
+            _hash += `&${WikiHandler.generateQueryString(this.$router.currentRoute.query)}`;
+          }
+        }
+
+        const url = `${origin}${pathname}#/pathFromClient?${_hash}`.replace(protocol, targetProtocol);
         window.location = url;
       }
     },

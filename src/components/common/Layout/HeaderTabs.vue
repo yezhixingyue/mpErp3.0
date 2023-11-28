@@ -98,6 +98,7 @@ import { throttle } from '@/assets/js/utils/throttle';
 import TokenClass from '@/assets/js/utils/tokenManage';
 // import sortable from '../../../assets/js/mixins/Sortable/Sortable';
 import ChangePwdDialog from './ChangePwdDialog.vue';
+import { WikiHandler } from '@/assets/js/TypeClass/WikiHandler';
 
 export default {
   components: {
@@ -250,7 +251,8 @@ export default {
     onDocClick(target) {
       if (!this.Permission) return;
       const siteType = 1;
-      window.open(`http://file.ybz888.com:7006/init?token=${this.Permission.Token}&siteType=${siteType}&target=${target}`);
+      // window.open(`http://file.ybz888.com:7006/init?token=${this.Permission.Token}&siteType=${siteType}&target=${target}`);
+      WikiHandler.toWikiPageWithToken({ token: this.Permission.Token, siteType, target });
     },
     handleLogoutClick() { // 退出
       this.messageBox.warnCancelNullMsg('确定退出登录吗?', () => {
