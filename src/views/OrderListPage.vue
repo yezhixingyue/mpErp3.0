@@ -1,6 +1,9 @@
 <template>
   <div class="order-list-page-wrap">
-    <Table @ServiceAfterSalesClick="ServiceAfterSalesClick"/>
+    <Table @ServiceAfterSalesClick="ServiceAfterSalesClick"
+    @CancelProductionClick="CancelProductionClick"
+    @TerminateProductionClick="TerminateProductionClick"
+    />
     <div class="footer">
       <div class="is-font-size-14" v-if="localPermission.DisplayTotalAmount">
         <span class="is-primary is-bold">总金额:</span>
@@ -30,9 +33,19 @@
     <NodePicDialog v-if="orderDetailData"
      :visible="processVisible" @update:visible="(val) => processVisible = val" :targetID="orderDetailData.OrderID" :item="null" :targetType="2" />
     <!-- 申请售后弹窗 -->
-    <ServiceAfterSalesDialog :visible='ServiceAfterSalesVisible'
+    <!-- <ServiceAfterSalesDialog :visible='ServiceAfterSalesVisible'
     :ServiceAfterSales="ServiceAfterSales" @close='ServiceAfterSalesVisible=false; ServiceAfterSales = null;'
-    @success="ServiceAfterSalesSuccess"></ServiceAfterSalesDialog>
+    @success="ServiceAfterSalesSuccess"></ServiceAfterSalesDialog> -->
+    <ConfirmCancellationDialog :visible='ConfirmCancellationVisible'
+    :OrderData="CancelProductionData"
+    @close="ConfirmCancellationVisible = false"
+    @yes="CancelProduction"
+    ></ConfirmCancellationDialog>
+    <TerminateProductionDialog :visible='TerminateProductionVisible'
+    :OrderData="CancelProductionData"
+    @close="TerminateProductionVisible = false"
+    @yes="CancelProduction"
+    ></TerminateProductionDialog>
     <!-- <ServiceDialog key="order-list-page" className='show-black' /> -->
   </div>
 </template>
@@ -40,6 +53,8 @@
 <script>
 import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
 import ServiceAfterSalesDialog from '@/components/order/Main/ServiceAfterSalesDialog.vue';
+import ConfirmCancellationDialog from '@/components/order/Main/ConfirmCancellationDialog.vue';
+import TerminateProductionDialog from '@/components/order/Main/TerminateProductionDialog/index.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import Table from '@/components/order/Main/Table2.vue';
 import Count from '@/components/common/Count.vue';
@@ -51,8 +66,10 @@ export default {
     Table,
     Count,
     OrderListDialog,
-    ServiceAfterSalesDialog,
+    // ServiceAfterSalesDialog,
     NodePicDialog,
+    ConfirmCancellationDialog,
+    TerminateProductionDialog,
     // ServiceDialog: () => import(/* webpackChunkName: "async" */ '@/components/order/DialogContent/ServiceDialog.vue'),
   },
   mixins: [recordScrollPositionMixin('.order-list-page-wrap .el-table__body-wrapper')],
@@ -74,10 +91,16 @@ export default {
       ServiceAfterSalesVisible: false,
       ServiceAfterSales: null,
       processVisible: false,
+      ConfirmCancellationVisible: false,
+      TerminateProductionVisible: false,
+      // 要被取消生产的订单
+      CancelProductionData: null,
+      // 要被取消生产的index
+      CancelProductionIndex: null,
     };
   },
   methods: {
-    ...mapActions('orderModule', ['getOrderTableData', 'getOrderListData2Excel']),
+    ...mapActions('orderModule', ['delTargetOrder', 'getOrderTableData', 'getOrderListData2Excel']),
     handlePageChange(page) {
       this.getOrderTableData({ page, type: 'get' });
     },
@@ -97,6 +120,23 @@ export default {
         return;
       }
       this.handleActionDownload(type);
+    },
+    // 取消生产
+    CancelProduction() {
+      this.ConfirmCancellationVisible = false;
+      this.delTargetOrder(this.CancelProductionIndex);
+    },
+    // 取消生产点击 =》 弹框提示
+    CancelProductionClick(index, Order) {
+      this.CancelProductionData = Order;
+      this.CancelProductionIndex = index;
+      this.ConfirmCancellationVisible = true;
+    },
+    // 停止生产点击 =》 弹框提示
+    TerminateProductionClick(index, Order) {
+      this.CancelProductionData = Order;
+      this.CancelProductionIndex = index;
+      this.TerminateProductionVisible = true;
     },
     ServiceAfterSalesClick(data) {
       // this.ServiceAfterSalesVisible = true;

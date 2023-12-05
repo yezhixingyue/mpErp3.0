@@ -182,7 +182,7 @@ export default {
   data() {
     return {
       // eslint-disable-next-line max-len
-      dateList: [{ name: '全部', ID: 'all' }, { name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
+      dateList: [{ name: '今天', ID: 'today' }, { name: '昨天', ID: 'yesterday' }, { name: '前天', ID: 'beforeyesterday' }, { name: '本月', ID: 'curMonth' }, { name: '上月', ID: 'lastMonth' }],
       AfterSaleType: [
         { label: '不限', value: '' },
         { label: '退款', value: 2 },

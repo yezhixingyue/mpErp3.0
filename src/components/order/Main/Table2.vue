@@ -39,6 +39,7 @@
           </span>
         </li>
         <li v-if="localPermission.CancleOrder">
+          <!-- v-if="(canCancelStatuses.includes(scope.row.Status) || localPermission.CancleOrder)" -->
           <span
             v-if="canCancelStatuses.includes(scope.row.Status)"
             @click="onOrderDel(scope.row, scope.$index)">
@@ -107,6 +108,14 @@ export default {
     onOrderDel(data, index) {
       this.setOrderID2Del(data.OrderID);
       this.open(index, data.OrderID);
+      // 已生产
+      // if (data.Status >= 55) {
+      //   console.log('已生产');
+      //   this.$emit('TerminateProductionClick', index, data);
+      // } else {
+      //   this.setOrderID2Del(data.OrderID);
+      //   this.$emit('CancelProductionClick', index, data);
+      // }
     },
     setStateStyle(Status) {
       if ((Status === 254 || Status === 255)) return 'is-cancel';

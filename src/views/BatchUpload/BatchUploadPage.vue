@@ -10,6 +10,7 @@
       />
       <hr />
       <AddressChangeComp
+       :ExpressTip='ExpressTip'
        :customer='customer'
        :UseSameAddress='UseSameAddress'
        :switchUseSameAddDisabled='canSelectList.length > 0'
@@ -140,6 +141,7 @@ export default {
       preCreateOriginDataList: [], // 预下单原始列表数据，预下单确认后使用该列表数据生成订单
       PreCreateData: null, // 预下单数据（服务器返回数据）
       ShowProductDetail,
+      ExpressTip: '',
     };
   },
   computed: {
@@ -301,8 +303,9 @@ export default {
           this.messageBox.failSingle(`${text}共有${failedList.length}个文件报价失败`);
         }
       }
+      const _successedList = successedList.map(it => ({ ...it, Express: it.result.Express || it.Express }));
       this.failedList.push(...failedList);
-      this.successedList.push(...successedList);
+      this.successedList.push(..._successedList);
     },
     /**
      * 下部区域： 文件上传、删除、选择等操作
@@ -430,10 +433,17 @@ export default {
       }
       return '';
     },
+    async getExpressTip() {
+      const resp = await this.api.getExpressTip().catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        this.ExpressTip = resp.data.Data;
+      }
+    },
   },
   async created() {
     this.getAccept();
     this.$store.dispatch('common/getExpressList');
+    this.getExpressTip();
   },
 };
 </script>

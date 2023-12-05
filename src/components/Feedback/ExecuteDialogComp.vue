@@ -769,8 +769,9 @@ export default {
     },
     // 余额退款的最大值限制
     RefundBalanceChange() {
-      const maxNum = this.dataInfo.Order.SurplusOrderBalance
+      let maxNum = this.dataInfo.Order.SurplusOrderBalance
       + (this.HandlingAfterSalesForm.Solution.RefundFreightType === 1 ? this.dataInfo.Order.SurplusFreightAmount : 0);
+      maxNum = Math.round(maxNum * 10000) / 10000;
       if (this.HandlingAfterSalesForm.Solution.RefundBalance > maxNum) {
         this.HandlingAfterSalesForm.Solution.RefundBalance = maxNum;
       }
@@ -778,8 +779,9 @@ export default {
     },
     // 印豆退款的最大值限制
     RefundPrintBeanChange() {
-      const maxNum = this.dataInfo.Order.SurplusOrderPrintBean
+      let maxNum = this.dataInfo.Order.SurplusOrderPrintBean
       + (this.HandlingAfterSalesForm.Solution.RefundFreightType === 3 ? this.dataInfo.Order.SurplusFreightPrintBean : 0);
+      maxNum = Math.round(maxNum * 10000) / 10000;
       if (this.HandlingAfterSalesForm.Solution.RefundPrintBean > maxNum) {
         this.HandlingAfterSalesForm.Solution.RefundPrintBean = maxNum;
       }

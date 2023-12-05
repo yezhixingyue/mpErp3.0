@@ -2,7 +2,8 @@
   <section class="FeedbackInfoPage" >
     <div class="FeedbackInfoPage-main" id="feedbackinfopage" >
       <Tables :dataInfo="DetailData" :paramsData="paramsData"></Tables>
-      <footer v-if="DetailData">
+      <footer v-if="DetailData" :class="isFootFixed?'FootFixed':''"
+      :style="paramsData && dataInfo && dataInfo.AfterSale.Status === 30 ? 'min-width: calc(800px + 50px + 800px);' : ''">
         <template v-if="localPermission.Operate">
           <el-button :disabled='isDisabled'  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
           v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
@@ -32,7 +33,7 @@
         <el-button class="cancel-blue-btn" @click="onGoBackClick"><i></i> 返回</el-button>
       </footer>
       <transition name="el-fade-in-linear">
-      <footer v-if="DetailData" v-show="isFootFixed" class="FootFixed">
+      <!-- <footer v-if="DetailData" v-show="isFootFixed" class="FootFixed">
         <template v-if="localPermission.Operate">
           <el-button :disabled='isDisabled' class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
           v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
@@ -55,12 +56,9 @@
             >驳回</el-button>
           </template>
         </template>
-        <!-- <el-button  class="cancel-blue-btn" @click="onDisposeDetailsClick" key="查看处理详情"
-        v-if="DetailData.AfterSale.Status === 30"
-        >查看处理详情</el-button> -->
         <div v-if="DetailData.AfterSale.Status === 30" style="display: inline-block; width: 700px;"></div>
         <el-button class="cancel-blue-btn" @click="onGoBackClick"><i></i> 返回</el-button>
-      </footer>
+      </footer> -->
       </transition>
     </div>
     <div class="dialogs" v-if="paramsData">
@@ -300,7 +298,7 @@ export default {
     this.paramsData = this.$route.params.paramsData;
     this.getInitData();
     this.oBottomWidth = document.getElementById('feedbackinfopage');
-    this.oPage = document.getElementsByClassName('page-wrap');
+    this.oPage = document.getElementsByClassName('FeedbackInfoPage-main');
     this.oPage[0].addEventListener('scroll', this.cScroll);
     this.$nextTick(() => {
       this.handleScroll(this.oPage[0]);
@@ -313,13 +311,14 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 30px 45px;
+  padding: 0 20px;
   background-color: #F8F8F8;
-  min-height: 100%;
+  max-height: 100%;
   >.FeedbackInfoPage-main{
+    position: relative;
+    overflow: auto;
     background-color: #fff;
     width: 100%;
-    position: relative;
     min-width: 900px;
     > footer {
       flex: none;
@@ -327,18 +326,15 @@ export default {
       text-align: left;
       padding-top: 40px;
       padding-left: 40px;
+      position: sticky;
       &.FootFixed{
-        position: fixed;
+        position: sticky;
         bottom: 0;
-        left: 231px;
         background-color: #fff;
         box-shadow: 0px 0px 14px 0px rgba(136, 136, 136, 0.3);
-        width: calc(100vw - 186px - 90px - 15px);
-        min-width: 900px;
         padding-top: 20px;
         padding-right: 40px;
         box-sizing: border-box;
-        margin-right: 45px;
         z-index: 2;
       }
       .cancel-blue-btn {
