@@ -13,7 +13,7 @@
     </div>
     <span v-if="isMultiple && !hidden">{{operatContent}}</span>
     <div v-if="isMultiple && !hidden" class="multiple-select">
-      <div class="multiple" v-if="localOptionList.length >= 4 || [46, 47, 52].includes(PropertyData.FixedType)">
+      <div class="multiple" v-if="localOptionList.length >= 4 || [46, 47, 53].includes(PropertyData.FixedType)">
         <span class="blue-span" @click="onSelectDialogClick">选择</span>
         <div class="show-text" :title="showSelectedText">{{showSelectedText}}</div>
         <CheckboxDialogComp v-if="!(ValueType === 6 && PropertyData.Type === 5)"
@@ -142,7 +142,7 @@ export default {
       if (this.PropertyData.FixedType === 47) {
         return 'product';
       }
-      if (this.PropertyData.FixedType === 52) {
+      if (this.PropertyData.FixedType === 53) {
         return 'sellArea';
       }
       return 'area';
@@ -151,14 +151,14 @@ export default {
       if (this.PropertyData.FixedType === 47) {
         return this.productLevel2;
       }
-      if (this.PropertyData.FixedType === 52) {
+      if (this.PropertyData.FixedType === 53) {
         return this.sellAreaLevel2;
       }
       return this.areaLevel2;
     },
     checkList: {
       get() {
-        if ([46, 47, 52].includes(this.PropertyData.FixedType)) {
+        if ([46, 47, 53].includes(this.PropertyData.FixedType)) {
           if (Array.isArray(this.valueList) && this.valueList.length > 0) {
             return this.valueList.filter((it) => it && it.Value).map((it) => JSON.parse(it.Value)).filter((it) => it);
           }
@@ -171,7 +171,7 @@ export default {
         return this.isMultiple ? [] : '';
       },
       set(val) {
-        if ([46, 47, 52].includes(this.PropertyData.FixedType)) {
+        if ([46, 47, 53].includes(this.PropertyData.FixedType)) {
           const valueList = val.map((it) => ({ Value: JSON.stringify(it) }));
           this.$emit('update:valueList', valueList);
           return;
@@ -194,7 +194,7 @@ export default {
       if (this.PropertyData.FixedType === 47) {
         return getTreeTextDisplayContent(this.checkList, this.allProductClassify || [], this.treeType);
       }
-      if (this.PropertyData.FixedType === 52) {
+      if (this.PropertyData.FixedType === 53) {
         return getTreeTextDisplayContent(this.checkList, this.allAreaTreeList || [], this.treeType);
       }
       if (this.ValueType !== 6) {
@@ -219,7 +219,7 @@ export default {
   },
   methods: {
     onSelectDialogClick() {
-      if ([46, 47, 52].includes(this.PropertyData.FixedType)) this.areaVisible = true;
+      if ([46, 47, 53].includes(this.PropertyData.FixedType)) this.areaVisible = true;
       else if (this.ValueType === 6 && this.PropertyData.Type === 5) this.materialVisible = true;
       else this.propVisibel = true;
     },
@@ -244,7 +244,7 @@ export default {
     //   this.$store.dispatch('common/getProductClassifyData');
     //   this.$store.dispatch('common/getAllProductNames');
     // }
-    // if (this.PropertyData.FixedType === 52) {
+    // if (this.PropertyData.FixedType === 53) {
     //   this.$store.dispatch('common/getAreaList');
     // }
   },
