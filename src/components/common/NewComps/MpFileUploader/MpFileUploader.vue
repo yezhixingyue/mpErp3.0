@@ -103,6 +103,7 @@ const onInputChange = () => { // DragEvent  InputEvent
   if (props.disabled || !oInput.value) return;
 
   handleFileChange(oInput.value.files);
+  oInput.value.value = '';
 };
 
 const dropover = ref(false);
@@ -208,14 +209,20 @@ const ondrop = (e: DragEvent) => {
 
   &.disabled {
     border-width: 2px;
-    border-color: #eee !important;
+    // border-color: #eee !important;
     cursor: not-allowed;
-    * {
-      color: #cbcbcb !important;
-    }
-    img {
-      filter: grayscale(1);
-      opacity: 0.4;
+    user-select: none;
+    // pointer-events: none;
+    // * {
+    //   color: #cbcbcb !important;
+    // }
+    // img {
+    //   filter: grayscale(1);
+    //   opacity: 0.4;
+    // }
+
+    .list-content > .clear {
+      pointer-events: none;
     }
   }
 }

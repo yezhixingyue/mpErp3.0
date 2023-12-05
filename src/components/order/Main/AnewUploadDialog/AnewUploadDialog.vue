@@ -22,7 +22,7 @@
             <h4>上传文件：</h4>
             <span class="remark">支持文件类型：{{ accept }}</span>
           </div>
-          <span class="menu">
+          <span class="menu" @click="fileList = []">
             <img src="@/assets/images/clearFile-gray.png" alt="">
             <img class="active" src="@/assets/images/clearFile-pink.png" alt="">
             清空文件
@@ -30,9 +30,13 @@
         </div>
 
         <div class="select-file-area">
-          <MpFileUploader :accept="accept" multiple :width="610" :height="215" :fileList.sync="fileList">
+          <MpFileUploader :accept="accept" multiple :width="610" :height="215" :fileList.sync="fileList" :disabled="localFileListData?.loading">
             <ul v-if="localFileListData">
-              <FileItemComp v-for="it in localFileListData.list" :key="it.key" :item="it" @change="(bool) => it.isPrintFile = bool" />
+              <FileItemComp v-for="it in localFileListData.list" :key="it.key"
+                :item="it"
+                :listLoading="localFileListData.loading"
+                @change="(bool) => it.isPrintFile = bool"
+              />
             </ul>
           </MpFileUploader>
         </div>
@@ -47,9 +51,12 @@ import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import MpFileUploader from '@/components/common/NewComps/MpFileUploader/MpFileUploader.vue';
 import { FileListClass } from './FileListClass';
 import FileItemComp from './FileItemComp.vue';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 const props = defineProps<{
   visible: boolean,
+  CustomerID: string,
+  handerFunc:(args: unknown[]) => Promise<boolean>
 }>();
 
 const emit = defineEmits(['update:visible']);
@@ -63,7 +70,7 @@ const localVisible = computed({
   },
 });
 
-const accept = '.jpg,.jpeg,.cdr,.pdf,.ai,.zip,.rar,.7z';
+const accept = '.jpg,.jpeg,.png,.cdr,.pdf,.ai,.zip,.rar,.7z';
 
 const localFileListData = ref<FileListClass | null>(null);
 
@@ -72,7 +79,8 @@ const fileList = computed({
     return localFileListData.value?.list.map(it => it.file) || [];
   },
   set(list: File[]) {
-    localFileListData.value = new FileListClass(list);
+    if (localFileListData.value?.loading) return;
+    localFileListData.value = new FileListClass(list, props.CustomerID);
   },
 });
 
@@ -88,9 +96,14 @@ const closed = () => {
 };
 
 const submit = () => {
-  // successFunc(fileName) {
-  //   this.$store.dispatch('orderModule/setOrderReCheckFile', fileName);
-  // },
+  if (!props.CustomerID) return;
+
+  if (!localFileListData.value || localFileListData.value.list.length === 0) {
+    MpMessage.error({ title: '请先上传文件' });
+    return;
+  }
+
+  localFileListData.value.submit(props.handerFunc, cancel);
 };
 
 </script>
@@ -185,10 +198,10 @@ const submit = () => {
 
     :deep(.el-dialog) {
       user-select: none;
-      pointer-events: none;
+      // pointer-events: none;
 
       &::after {
-        content: '';
+        // content: '';
         position: absolute;
         left: 0;
         top: 0;
@@ -196,6 +209,10 @@ const submit = () => {
         bottom: 0;
         background-color: rgba($color: #fff, $alpha: 0.1);
         z-index: 9;
+      }
+
+      .el-dialog__footer, .menu {
+        pointer-events: none;
       }
     }
   }

@@ -604,9 +604,9 @@ export default {
       }
     },
     async setOrderReCheckFile({ state, commit }, FilePath) {
-      if (!state.orderDetailData) return;
+      if (!state.orderDetailData) return false;
       const { OrderID } = state.orderDetailData;
-      if (!OrderID) return;
+      if (!OrderID) return false;
       const _obj = { OrderID, FilePath };
       const res = await api.setOrderReCheckFile(_obj).catch(() => null);
 
@@ -615,7 +615,10 @@ export default {
         // let msg = '已更换订单文件';
         // if (!FilePath) msg = '未更换订单文件';
         messageBox.successSingle('已提交至审稿部门', () => commit('afterOrderReCheckFile', OrderID), () => commit('afterOrderReCheckFile', OrderID), true);
+        return true;
       }
+
+      return false;
     },
   },
 };

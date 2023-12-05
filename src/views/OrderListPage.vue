@@ -35,7 +35,7 @@
     @success="ServiceAfterSalesSuccess"></ServiceAfterSalesDialog>
     <!-- <ServiceDialog key="order-list-page" className='show-black' /> -->
     <!-- 重新上传文件再审稿弹窗 -->
-    <AnewUploadDialog :visible.sync="AnewUploadVisible" />
+    <AnewUploadDialog :visible.sync="AnewUploadVisible" :CustomerID="orderDetailData?.Customer?.CustomerID || ''" :handerFunc="AnewUploadHanderFunc" />
   </div>
 </template>
 
@@ -113,6 +113,9 @@ export default {
     },
     onAnewUploadClick() { // 重新上传文件再审稿
       this.AnewUploadVisible = true;
+    },
+    AnewUploadHanderFunc(list) {
+      return this.$store.dispatch('orderModule/setOrderReCheckFile', list);
     },
   },
   mounted() {
