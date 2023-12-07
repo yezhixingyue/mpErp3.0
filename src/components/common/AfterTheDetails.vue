@@ -3,7 +3,7 @@
     <div class="FeedbackInfoPage-main" id="feedbackinfopage" >
       <Tables :dataInfo="DetailData" :paramsData="paramsData"></Tables>
       <footer v-if="DetailData" :class="isFootFixed?'FootFixed':''"
-      :style="paramsData && dataInfo && dataInfo.AfterSale.Status === 30 ? 'min-width: calc(800px + 50px + 800px);' : ''">
+      :style="DetailData && DetailData.AfterSale.Status === 30 ? 'min-width: calc(800px + 50px + 800px);' : ''">
         <template v-if="localPermission.Operate">
           <el-button :disabled='isDisabled'  class="cancel-blue-btn" @click="onGrelievePostponeClick" key="解除挂起"
           v-if="DetailData.AfterSale.Status === 10 && DetailData.AfterSale.IsHang"
@@ -324,17 +324,15 @@ export default {
       flex: none;
       height: 65px;
       text-align: left;
-      padding-top: 40px;
+      padding-top: 20px;
       padding-left: 40px;
+      margin-top: 20px;
+      box-sizing: border-box;
       position: sticky;
+      bottom: 0;
       &.FootFixed{
-        position: sticky;
-        bottom: 0;
         background-color: #fff;
         box-shadow: 0px 0px 14px 0px rgba(136, 136, 136, 0.3);
-        padding-top: 20px;
-        padding-right: 40px;
-        box-sizing: border-box;
         z-index: 2;
       }
       .cancel-blue-btn {

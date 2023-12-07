@@ -4,15 +4,23 @@
         @changeQuestion='handleChangeQuestion'
         @LossAssessment='handleLossAssessment'
         @seeEstimate='handleSeeEstimate' />
-      <Count :watchPage='obj4RequestServiceList.Page'
-       :handlePageChange='handlePageChange' :count='totalCount' :showLoading='isShowLoadingMore'>
-        <!-- <span class="is-blue" @click="handleDownloadClick">
-          导出Excel表格
-          <i class="el-icon-download"></i>
-        </span> -->
-        <DownLoadExcelComp :configObj="configObj2" title="导出财务报表" v-if="localPermission.FinanceExportExcel" />
-        <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
-      </Count>
+
+      <div class="footer">
+        <p class="is-font-size-14">
+          <span class="is-primary is-bold">损失总金额: </span>
+          <span class="is-pink is-font-size-16 is-bold">{{ TotalLossAmount }}</span>
+          元
+        </p>
+        <Count :watchPage='obj4RequestServiceList.Page'
+         :handlePageChange='handlePageChange' :count='totalCount' :showLoading='isShowLoadingMore'>
+          <!-- <span class="is-blue" @click="handleDownloadClick">
+            导出Excel表格
+            <i class="el-icon-download"></i>
+          </span> -->
+          <DownLoadExcelComp :configObj="configObj2" title="导出财务报表" v-if="localPermission.FinanceExportExcel" />
+          <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
+        </Count>
+      </div>
       <ServiceDetailDialog />
       <ChangeQuestionDialog :visible.sync="changeQuestionVisible" :curData="curData" />
       <!-- 查看售后评价 -->
@@ -51,7 +59,7 @@ export default {
     LossAssessmentDialogComp,
   },
   computed: {
-    ...mapState('service', ['isShowLoadingMore', 'totalCount', 'obj4RequestServiceList', 'tableData']),
+    ...mapState('service', ['isShowLoadingMore', 'TotalLossAmount', 'totalCount', 'obj4RequestServiceList', 'tableData']),
     ...mapState('common', ['Permission']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionManageAfterSales?.Obj) {
@@ -154,6 +162,17 @@ export default {
 .mp-service-page-main-wrap{
   // border: 1px solid #e6e6e6;
   box-sizing: border-box;
+  >.footer{
+    >p{
+      width: 350px;
+      margin-left: 20px;
+    }
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    flex-wrap: nowrap;
+  }
   > .count-wrap {
     > .is-blue {
       margin-left: 60px;

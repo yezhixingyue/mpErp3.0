@@ -24,14 +24,14 @@
         <li>
           <span class="label">扣除损失金额:</span>
           <span class="value">
-            <el-input size="small" placeholder="请输入损失金额"></el-input>
+            <el-input size="small" v-model="AmountValue" placeholder="请输入损失金额"></el-input>
             元
           </span>
         </li>
         <li>
           <span class="label">订单已付款不足时:</span>
           <span class="value">
-            <el-radio-group>
+            <el-radio-group v-model="PaymentMethodValue">
               <el-radio :label="3">优先扣除账户余额，不足部分扫码支付</el-radio>
               <el-radio :label="6">使用扫码支付</el-radio>
             </el-radio-group>
@@ -45,10 +45,40 @@
 
 <script>
 export default {
+  props: {
+    Amount: {
+      type: Number,
+    },
+    PaymentMethod: {
+      type: Number,
+    },
+  },
   methods: {
     refresh() {
       this.$emit('refresh');
     },
+  },
+  computed: {
+    AmountValue: {
+      get() {
+        return this.Amount;
+      },
+      set(val) {
+        console.log(val);
+        this.$emit('AmountChange', val);
+      },
+    },
+    PaymentMethodValue: {
+      get() {
+        return this.PaymentMethod;
+      },
+      set(val) {
+        this.$emit('PaymentMethodChange', val);
+      },
+    },
+  },
+  mounted() {
+    console.log(this.Amount);
   },
 };
 </script>

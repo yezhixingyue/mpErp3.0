@@ -22,7 +22,9 @@
         </div>
         <div class="right-from" style="width: 507px;">
           <h3>已生产完成3款（共6款）</h3>
-          <rightFromBox :list="tableList" />
+          <rightFromBox :list="tableList" @AmountChange="(val) => Amount = val"
+            @PaymentMethodChange="(val) => PaymentMethod = val"
+            :Amount="Amount" :PaymentMethod="PaymentMethod"/>
         </div>
       </div>
       <div class="confirm-cancellation-btns">
@@ -63,6 +65,8 @@ export default {
       dialogVisible: false,
       tableList: [],
       formValue: {},
+      Amount: 2,
+      PaymentMethod: 3,
     };
   },
   methods: {

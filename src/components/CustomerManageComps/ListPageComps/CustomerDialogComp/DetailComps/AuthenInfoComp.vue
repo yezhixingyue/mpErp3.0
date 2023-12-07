@@ -489,6 +489,9 @@ export default {
         width: 320px;
         height: 150px;
         overflow: hidden;
+        .el-upload-list__item-status-label{
+          display: none;
+        }
         .el-upload-dragger{
           width: 100%;
           height: 100%;

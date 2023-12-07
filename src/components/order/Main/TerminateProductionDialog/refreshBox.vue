@@ -3,7 +3,7 @@
   <hr color="#DCDFE6" size="1px">
   <p>
     <span>生产取消方式</span>
-    <el-button type="text" @click="refresh"><i class="el-icon-refresh"></i>文字按钮</el-button>
+    <el-button type="text" @click="refresh"><i class="el-icon-refresh"></i>刷新信息</el-button>
   </p>
   <hr color="#DCDFE6" size="1px">
 </div>
