@@ -897,6 +897,9 @@ const api = {
   getExpressUseableCompanyList(data) { // POST /Api/Express/UseableCompanyList  获取可用快递和物流公司列表
     return instance.post('/Api/Express/UseableCompanyList', data, { closeLoading: true });
   },
+  getExpressTip() { // POST /Api/Express/Tip  获取物流公司可用快递
+    return instance.get('/Api/Express/Tip');
+  },
   getAddressIDList(data) { // 查询地址ID
     return instance.get(`/Api/District/List?parentID=${data}`, { closeLoading: true });
   },

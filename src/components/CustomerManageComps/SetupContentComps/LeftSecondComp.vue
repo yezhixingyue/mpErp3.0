@@ -5,7 +5,7 @@
        v-model="ruleForm.AuthenInfo.SellArea" :allAreaDataList='allAdAreaTreeList' :disabled="!PermissionObj.EditArea && isEdit" />
     </el-form-item>
     <el-form-item prop="AuthenInfo.DetailAddress" size="small">
-      <el-input v-model.trim="ruleForm.AuthenInfo.DetailAddress" maxlength="30" :disabled="!PermissionObj.EditArea && isEdit"
+      <el-input v-model.trim="ruleForm.AuthenInfo.DetailAddress" maxlength="60" :disabled="!PermissionObj.EditArea && isEdit"
        class="detail-input" show-word-limit placeholder="在此输入详细地址"></el-input>
     </el-form-item>
     <el-form-item size="small" label="配送地址：">
@@ -98,7 +98,7 @@ export default {
           ],
           DetailAddress: [
             { required: true, message: '请输入详细地址', trigger: 'blur' },
-            { max: 30, message: '请控制在30个字符以内', trigger: 'blur' },
+            { max: 60, message: '请控制在60个字符以内', trigger: 'blur' },
           ],
         },
       },

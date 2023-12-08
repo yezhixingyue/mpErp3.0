@@ -1,29 +1,6 @@
 <template>
     <main class="feed-tables">
-      <div>
-        <!-- 商品信息 -->
-        <!-- <header>
-          <p class="mp-common-title-wrap">商品信息</p>
-        </header>
-
-        <el-table v-if="dataInfo" stripe border fit :data="[dataInfo.Order.Product]" style="width: 800px" class="ft-14-table">
-          <el-table-column prop="ProductName" label="商品名称" minWidth="192" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="Content" label="文件内容" minWidth="194" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.Content}}</template>
-          </el-table-column>
-          <el-table-column prop="CustomerType" label="数量" minWidth="108" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.ProductAmount}}{{scope.row.Unit}}{{scope.row.KindCount}}款</template>
-          </el-table-column>
-          <el-table-column label="尺寸" prop="ProductName" minWidth="103" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.SizeList.join('，')}}</template>
-          </el-table-column>
-          <el-table-column prop="Order" label="工艺" minWidth="103" show-overflow-tooltip>
-            <span class="is-gray" slot-scope="scope">{{scope.row.CraftList.join('，') }}</span>
-          </el-table-column>
-          <el-table-column label="价格合计" minWidth="90" show-overflow-tooltip>
-            <template><span class="is-pink">￥{{dataInfo.Order.FinalPrice}}</span></template>
-          </el-table-column>
-        </el-table> -->
+      <div class="left">
         <header class="header-title-box">
           <p class="mp-common-title-wrap">订单信息</p>
         </header>
@@ -149,20 +126,10 @@
             <td>问题类型</td>
             <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.length?dataInfo.AfterSale.QuestionTypeTitleList.join('，'):''}}</p></td>
           </tr>
-          <!-- <tr>
-            <td>问题类型</td>
-            <td><p>{{dataInfo.AfterSale.QuestionTypeTitleList.length?dataInfo.AfterSale.QuestionTypeTitleList.join('，'):''}}</p></td>
-          </tr> -->
           <tr>
             <td>问题描述</td>
             <td colspan="3">
               <p>{{dataInfo.AfterSale.QuestionRemark}}</p>
-              <!-- <p ref="QuestionRemarkCopy" style="position:absolute;overflow: hidden;height:0px;padding:0;">{{dataInfo.AfterSale.QuestionRemark}}</p>
-              <p ref="QuestionRemark" class="textarea" style="overflow: hidden;height:0px;padding:0;">{{dataInfo.AfterSale.QuestionRemark}}</p>
-              <el-tooltip v-show="showQuestionRemarkTool" class="item" effect="dark" :content="dataInfo.AfterSale.QuestionRemark" placement="top">
-                <p class="textarea">{{dataInfo.AfterSale.QuestionRemark}}</p>
-              </el-tooltip>
-              <p v-show="!showQuestionRemarkTool" class="textarea">{{dataInfo.AfterSale.QuestionRemark}}</p> -->
             </td>
           </tr>
           <tr>
@@ -176,96 +143,53 @@
             </td>
           </tr>
         </table>
+        <template v-if="dataInfo && dataInfo.AfterSaleLog && dataInfo.AfterSaleLog.length">
+          <!--  售后记录 -->
+          <header class="header-title-box">
+            <p class="mp-common-title-wrap"> 售后记录</p>
+          </header>
+          <el-table v-if="dataInfo" stripe border fit :data="dataInfo.AfterSaleLog" style="width: 800px" class="ft-14-table">
+            <el-table-column prop="ProductName" label="操作时间 " width="167" show-overflow-tooltip>
+              <template slot-scope="scope">{{scope.row.CreateTime | formatDate}}</template>
+            </el-table-column>
+            <el-table-column prop="OperaterUserName" label="操作人" width="140" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="LogTypeName" label="操作类型" width="140" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="OperaterRemark" label="备注" width="352" show-overflow-tooltip>
+              <template slot-scope="scope">
+                <!-- 挂起 -->
+                <span v-if="scope.row.LogType === 1">
+                  因{{scope.row.OperaterRemark}}挂起，下次处理时间：
+                  <span v-if="scope.row.NextOperateType">
+                    {{scope.row.NextOperateTime | formatDate}}
+                  </span>
+                  <span v-else>暂不确定</span>，
+                  <span>{{scope.row.RemarkIsShow?'客户可见':'客户不可见'}}</span>
+                </span>
+                <!-- 转交 -->
+                <span v-else-if="scope.row.LogType === 3">
+                  因{{scope.row.OperaterRemark}}转{{scope.row.NextOperaterUserName }}处理
+                </span>
+                <!-- 驳回 -->
+                <span v-else-if="scope.row.LogType === 5">
+                  {{scope.row.OperaterRemark}}
+                </span>
+                <!-- 完成 -->
+                <span v-else-if="scope.row.LogType === 6">
+                  {{scope.row.OperaterRemark}}
+                </span>
+                <!-- 复核确认 -->
+                <span v-else-if="scope.row.LogType === 7">
+                  {{scope.row.OperaterRemark}}
+                </span>
+                <!-- 取消挂起/取消 -->
+                <span v-else></span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
       </div>
 
-      <!--  转交记录 -->
-      <!-- <template v-if="DeliverToList && DeliverToList.length">
-        <header>
-          <p class="mp-common-title-wrap"> 转交记录</p>
-        </header>
-        <el-table v-if="dataInfo" stripe border fit :data="DeliverToList" style="width: 642px" class="ft-14-table">
-          <el-table-column prop="ProductName" label="操作时间" width="160" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.CreateTime | formatDate}}</template>
-          </el-table-column>
-          <el-table-column prop="NextOperaterUserName " label="操作人" width="160" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="OperaterRemark" label="转交原因" width="161" show-overflow-tooltip>
-          </el-table-column>
-          <el-table-column label="转交人" prop="OperaterUserName" width="160" show-overflow-tooltip>
-          </el-table-column>
-        </el-table>
-      </template> -->
-
-      <template v-if="dataInfo && dataInfo.AfterSaleLog && dataInfo.AfterSaleLog.length">
-        <!--  售后记录 -->
-        <header class="header-title-box">
-          <p class="mp-common-title-wrap"> 售后记录</p>
-        </header>
-        <el-table v-if="dataInfo" stripe border fit :data="dataInfo.AfterSaleLog" style="width: 800px" class="ft-14-table">
-          <el-table-column prop="ProductName" label="操作时间 " width="167" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.CreateTime | formatDate}}</template>
-          </el-table-column>
-          <el-table-column prop="OperaterUserName" label="操作人" width="140" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="LogTypeName" label="操作类型" width="140" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="OperaterRemark" label="备注" width="352" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <!-- 挂起 -->
-              <span v-if="scope.row.LogType === 1">
-                因{{scope.row.OperaterRemark}}挂起，下次处理时间：
-                <span v-if="scope.row.NextOperateType">
-                  {{scope.row.NextOperateTime | formatDate}}
-                </span>
-                <span v-else>暂不确定</span>，
-                <span>{{scope.row.RemarkIsShow?'客户可见':'客户不可见'}}</span>
-              </span>
-              <!-- 转交 -->
-              <span v-else-if="scope.row.LogType === 3">
-                因{{scope.row.OperaterRemark}}转{{scope.row.NextOperaterUserName }}处理
-              </span>
-              <!-- 驳回 -->
-              <span v-else-if="scope.row.LogType === 5">
-                {{scope.row.OperaterRemark}}
-              </span>
-              <!-- 完成 -->
-              <span v-else-if="scope.row.LogType === 6">
-                {{scope.row.OperaterRemark}}
-              </span>
-              <!-- 复核确认 -->
-              <span v-else-if="scope.row.LogType === 7">
-                {{scope.row.OperaterRemark}}
-              </span>
-              <!-- 取消挂起/取消 -->
-              <span v-else></span>
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
-      <!--  驳回记录 -->
-      <!-- <template v-if="RejectList && RejectList.length">
-        <header>
-          <p class="mp-common-title-wrap"> 驳回记录</p>
-        </header>
-        <el-table v-if="dataInfo" stripe border fit :data="RejectList" style="width: 642px" class="ft-14-table">
-          <el-table-column prop="ProductName" label="驳回时间" width="177" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.CreateTime | formatDate}}</template>
-          </el-table-column>
-          <el-table-column prop="OperaterUserName" label="操作人" width="196" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="OperaterRemark" label="驳回原因" width="268" show-overflow-tooltip>
-          </el-table-column>
-        </el-table>
-      </template> -->
-
-      <!--  取消记录 -->
-      <!-- <template v-if="CancelList && CancelList.length">
-        <header>
-          <p class="mp-common-title-wrap"> 取消记录</p>
-        </header>
-        <el-table v-if="dataInfo" stripe border fit :data="CancelList" style="width: 642px" class="ft-14-table">
-          <el-table-column prop="ProductName" label="取消时间" width="320" show-overflow-tooltip>
-            <template slot-scope="scope">{{scope.row.CreateTime | formatDate}}</template>
-          </el-table-column>
-          <el-table-column prop="OperaterUserName" label="操作人" width="321" show-overflow-tooltip></el-table-column>
-        </el-table>
-      </template> -->
+      <DisposeDetailsComp v-if="paramsData && dataInfo && dataInfo.AfterSale.Status === 30" :dataInfo = "dataInfo" :paramsData = "paramsData" />
 
       <!-- 查看订单详情 -->
     <!-- <OrderListDialog @DialogHide='orderListDialogData.orderListDialogShow=false' :orderListDialogData="orderListDialogData"/> -->
@@ -316,6 +240,7 @@
 import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index';
 // import OrderListDialog from '@/components/Feedback/OrderListDialog.vue';
 import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
+import DisposeDetailsComp from './DisposeDetailsComp.vue';
 
 import normalBtn from '@/components/common/normalBtn.vue';
 import { getLabelByAppealType } from './AppealTypeList';
@@ -324,6 +249,7 @@ export default {
   mixins: [mixin],
   name: 'tables',
   components: {
+    DisposeDetailsComp,
     OrderListDialog,
     normalBtn,
   },
@@ -455,63 +381,18 @@ export default {
       const arr = [];
       if (solution.SolutionTypes.find(it => it === 2)) {
         arr.push('退款');
-        // arr.push(`订单退款${solution.RefundAmount}元`);
-        // arr.push(`运费退款${solution.RefundFreightAmount}元`);
       }
       if (solution.SolutionTypes.find(it => it === 7)) {
         arr.push('补印');
-        // arr.push(`${solution.KindCount}款`);
-        // arr.push(`${solution.Number}${solution.Unit}`);
       }
       if (solution.SolutionTypes.find(it => it === 8)) {
         arr.push('赠送优惠券');
-        // const { CouponList } = solution;
-        // if (CouponList && CouponList.length > 0) {
-        //   CouponList.forEach(it => {
-        //     const { Number, Amount, MinPayAmount } = it;
-        //     if (Number && Amount && MinPayAmount) {
-        //       if (Amount && MinPayAmount) {
-        //         const text = `满${MinPayAmount}减${Amount}券${Number}张`;
-        //         arr.push(text);
-        //       }
-        //     }
-        //   });
-        // }
       }
       if (solution.SolutionTypes.find(it => it === 255)) {
         arr.push('其他');
       }
       return arr.join('、');
     },
-    // getSolution(solution) {
-    //   const arr = [];
-    //   if (solution.Type === 2) {
-    //     arr.push(`订单减款${solution.Refund}元`);
-    //     arr.push(`运费减款${solution.RefundFreight}元`);
-    //   } else if (solution.Type === 7) {
-    //     arr.push('补印');
-    //     arr.push(`${solution.KindCount}款`);
-    //     arr.push(`${solution.Number}${this.orderData.ProductParams.Attributes.Unit}`);
-    //   } else if (solution.Type === 8) {
-    //     arr.push('赠送优惠券');
-    //     const { CouponList } = solution;
-    //     if (CouponList && CouponList.length > 0) {
-    //       CouponList.forEach(it => {
-    //         const { Number, CouponInfo } = it;
-    //         if (Number && CouponInfo.Data) {
-    //           const { MinPayAmount, Amount } = CouponInfo.Data;
-    //           if (Amount && MinPayAmount) {
-    //             const text = `满${MinPayAmount}减${Amount}券${Number}张`;
-    //             arr.push(text);
-    //           }
-    //         }
-    //       });
-    //     }
-    //     // arr.push(`${solution.KindCount}款`);
-    //     // arr.push(`${solution.Number}${this.orderData.ProductParams.Attributes.Unit}`);
-    //   }
-    //   return arr.join('--');
-    // },
     getLossAmount(LossAmount) {
       if (LossAmount > 0) {
         return `-${LossAmount}元`;
@@ -548,9 +429,15 @@ export default {
   .feed-tables {
     flex: 1;
     box-sizing: border-box;
-    padding: 0 40px;
+    padding: 0 20px;
     background-color: #fff;
-    min-width: 900px;
+    display: flex;
+    >.left, .dispose-details-comp{
+      display: inline-block;
+    }
+    >.left{
+      margin-right: 30px;
+    }
     .el-table{
       .has-gutter{
         height: 36px;

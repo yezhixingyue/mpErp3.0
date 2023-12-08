@@ -11,6 +11,18 @@
       <!-- 产品|部件名称 -->
       <SingleElementItem v-model="PartFalseWords" :showHidden='false' :hidden='hidden'  />
 
+      <!-- 物料  ? -->
+      <p class="part-title">物料</p>
+      <SingleElement :ElementData='MaterialFalseWords' :hidden='hidden' @change="onNameDataChange($event, 'material')" />
+
+      <!-- 尺寸组 -->
+      <p class="part-title" v-if="itemData.SizeGroup">尺寸组 --</p>
+      <div>
+        <SingleElementGroup
+         key="SizeGroup" isSizeGroup v-if="itemData.SizeGroup"
+         :group='itemData.SizeGroup.GroupInfo' :hidden='hidden' @change="onNameDataChange($event, 'SizeGroup')" />
+      </div>
+
       <!-- 元素 -->
       <p class="part-title" v-if="itemData.ElementList.length > 0">元素 --</p>
       <div>
@@ -27,17 +39,6 @@
         <SingleCraft v-for="craft in itemData.CraftList" :key="craft.ID" :craft='craft' :hidden='hidden' @change="onNameDataChange($event, 'craft')" />
       </div>
 
-      <!-- 尺寸组 -->
-      <p class="part-title" v-if="itemData.SizeGroup">尺寸组 --</p>
-      <div>
-        <SingleElementGroup
-         key="SizeGroup" isSizeGroup v-if="itemData.SizeGroup"
-         :group='itemData.SizeGroup.GroupInfo' :hidden='hidden' @change="onNameDataChange($event, 'SizeGroup')" />
-      </div>
-
-      <!-- 物料  ? -->
-      <p class="part-title">物料</p>
-      <SingleElement :ElementData='MaterialFalseWords' :hidden='hidden' @change="onNameDataChange($event, 'material')" />
     </main>
   </section>
 </template>

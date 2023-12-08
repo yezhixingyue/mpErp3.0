@@ -769,8 +769,9 @@ export default {
     },
     // 余额退款的最大值限制
     RefundBalanceChange() {
-      const maxNum = this.dataInfo.Order.SurplusOrderBalance
+      let maxNum = this.dataInfo.Order.SurplusOrderBalance
       + (this.HandlingAfterSalesForm.Solution.RefundFreightType === 1 ? this.dataInfo.Order.SurplusFreightAmount : 0);
+      maxNum = Math.round(maxNum * 10000) / 10000;
       if (this.HandlingAfterSalesForm.Solution.RefundBalance > maxNum) {
         this.HandlingAfterSalesForm.Solution.RefundBalance = maxNum;
       }
@@ -778,8 +779,9 @@ export default {
     },
     // 印豆退款的最大值限制
     RefundPrintBeanChange() {
-      const maxNum = this.dataInfo.Order.SurplusOrderPrintBean
+      let maxNum = this.dataInfo.Order.SurplusOrderPrintBean
       + (this.HandlingAfterSalesForm.Solution.RefundFreightType === 3 ? this.dataInfo.Order.SurplusFreightPrintBean : 0);
+      maxNum = Math.round(maxNum * 10000) / 10000;
       if (this.HandlingAfterSalesForm.Solution.RefundPrintBean > maxNum) {
         this.HandlingAfterSalesForm.Solution.RefundPrintBean = maxNum;
       }
@@ -1053,7 +1055,11 @@ export default {
         // 回显优惠券
         // 思路：把选中的标记 手动调用一下选择优惠券确定
         if (afterSaleSuccessInfo.Solution.CouponList && afterSaleSuccessInfo.Solution.CouponList.length) {
-          this.handleCouponDialogOpen(afterSaleSuccessInfo.Solution.CouponList);
+          await this.handleCouponDialogOpen(afterSaleSuccessInfo.Solution.CouponList);
+          if (!this.selectedCouponList.length) {
+            // 保存的优惠券已失效
+            this.messageBox.warnSingleError('保存的优惠券已失效，请重新选择优惠券');
+          }
         }
         // 回显图片
         this.serviceImgList = this.HandlingAfterSalesForm.SolutionQuestionPicList || [];

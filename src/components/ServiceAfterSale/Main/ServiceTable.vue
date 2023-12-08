@@ -116,7 +116,7 @@
         {{scope.row.LossConfirmStatus ? `已确认` : '未确认'}}
       </template>
     </el-table-column>
-    <el-table-column label-class-name='menu-header' prop="handle" width="360" label="操作" fixed="right">
+    <el-table-column label-class-name='menu-header' prop="handle" width="260" label="操作" fixed="right">
       <div class="handle-menus-wrap"  slot-scope="scope">
         <span @click="jump2ServiceDetail(scope.row)">
           <img src="@/assets/images/detail.png" alt />查看详情
@@ -135,14 +135,14 @@
         <span v-else class="not-allowed">
           <img src="@/assets/images/seeEvaluation-disabled.png" alt />查看评价
         </span>
-        <template v-if="localPermission.LossConfirm">
+        <!-- <template v-if="localPermission.LossConfirm">
           <span v-if="scope.row.AfterSaleStatus === 30" @click="onLossAssessmentClick(scope.row)">
             <i class="iconfont icon-dingsunqueren"></i> {{scope.row.LossConfirmStatus ? `复核查看` : '复核确认'}}
           </span>
           <span v-else class="not-allowed">
             <i class="iconfont icon-dingsunqueren"></i> {{scope.row.LossConfirmStatus ? `复核查看` : '复核确认'}}
           </span>
-        </template>
+        </template> -->
       </div>
     </el-table-column>
     <div slot="empty">

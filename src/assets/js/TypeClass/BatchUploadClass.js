@@ -216,7 +216,22 @@ export default class BatchUpload {
         key: it.key,
         IgnoreRiskLevel,
       };
-      if (it.result.Address?.OutPlateSN) temp.OutPlate = { First: 1, Second: it.result.Address.OutPlateSN };
+      if (it.result.Address?.OutPlateSN) {
+        let First = 1;
+        const jd = /(^\d{12}$)/;
+        const taobao = /(^\d{19}$)/;
+        const pdd = /(^\d{6}-\d{15}$)/;
+        if (taobao.test(it.result.Address.OutPlateSN)) {
+          First = 1;
+        }
+        if (jd.test(it.result.Address.OutPlateSN)) {
+          First = 2;
+        }
+        if (pdd.test(it.result.Address.OutPlateSN)) {
+          First = 3;
+        }
+        temp.OutPlate = { First, Second: it.result.Address.OutPlateSN };
+      }
       return temp;
     });
     return {

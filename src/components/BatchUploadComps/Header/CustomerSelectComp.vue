@@ -93,7 +93,9 @@ export default {
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  padding-bottom: 22px;
+  // padding-bottom: 22px;
+  margin-top: -11px;
+  margin-bottom: 11px;
   > li {
     white-space: nowrap;
     &.search {
@@ -108,6 +110,7 @@ export default {
       display: flex;
       max-width: 325px;
       overflow: hidden;
+      line-height: 30px;
       > span {
         flex: none;
         &:first-of-type {
@@ -119,9 +122,11 @@ export default {
     }
     &.level {
       margin-right: 24px;
+      line-height: 30px;
     }
     &.area {
       margin-right: 35px;
+      line-height: 30px;
     }
   }
 }

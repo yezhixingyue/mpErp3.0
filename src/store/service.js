@@ -125,6 +125,9 @@ export default {
     -------------------------------*/
     isShowLoadingMore: false,
     canLoadingMore: false,
+    /* 售后单列表页面 -- 列表数据总损失金额 TotalLossAmount
+    -------------------------------*/
+    TotalLossAmount: 0,
     /* 售后单列表页面 -- 列表数据总条数 totalCount
     -------------------------------*/
     totalCount: 0,
@@ -245,6 +248,11 @@ export default {
     },
     setCanLoadingMore(state, bool) {
       state.canLoadingMore = bool;
+    },
+    /* 售后单列表页面 -- 设置列表数据总损失金额 TotalLossAmount
+    -------------------------------*/
+    setTotalLossAmount(state, Amount) {
+      state.TotalLossAmount = Amount;
     },
     /* 售后单列表页面 -- 设置列表数据总条数 totalCount
     -------------------------------*/
@@ -533,8 +541,9 @@ export default {
       const res = await api.getOrderAfterSaleManageList(temp);
       commit('setServiceDataLoading', false);
       if (!res.data.Data && res.data.Status !== 1000) return;
-      const tableData = res.data.Data;
+      const tableData = res.data.Data.OrderAfterSaleManages;
       commit('setTotalCount', res.data.DataNumber);
+      commit('setTotalLossAmount', res.data.Data.TotalLossAmount);
       commit(method, tableData);
       commit('setIsShowLoadingMore', false);
       if (state.tableData.length < state.totalCount) commit('setCanLoadingMore', true);

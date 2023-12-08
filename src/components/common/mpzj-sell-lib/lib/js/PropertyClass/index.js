@@ -221,7 +221,7 @@ export default class PropertyClass {
       const _name = DisplayContent ? DisplayContent.replace(/\[|\]/g, '') : '';
       let _val = '';
       if (ValueList) {
-        if ([41, 46, 47, 52].includes(FixedType)) {
+        if ([41, 46, 47, 53].includes(FixedType)) {
           if (FixedType === 41) {
             _val = ValueList[0].Value ? ValueList[0].Value.split('T')[0] : '';
           } else if (Array.isArray(ValueList) && ValueList.length > 0) {
@@ -232,7 +232,7 @@ export default class PropertyClass {
             if (FixedType === 47) {
               _val = getTreeTextDisplayContent(vals, allProductClassify, 'product');
             }
-            if (FixedType === 52) {
+            if (FixedType === 53) {
               _val = getTreeTextDisplayContent(vals, allSellAreaTreeList, 'sellArea');
             }
           }

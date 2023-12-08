@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import { WikiHandler } from '../assets/js/TypeClass/WikiHandler';
 import messageBox from '../assets/js/utils/message';
 import store from '../store';
 import TokenClass from '../assets/js/utils/tokenManage';
@@ -112,14 +113,39 @@ const handleRouterEach = (_router) => {
       const { url, token } = to.query;
       if (url && token) {
         TokenClass.setToken(token);
-        next({
-          path: url,
-          query: {},
-        });
+
+        const _query = to.query.toWiki ? { ...to.query } : {};
+        delete _query.url;
+        delete _query.token;
+
+        next({ path: url, query: _query });
         return;
       }
     }
+
     const token = TokenClass.getToken();
+
+    if (to.query.toWiki || to.path === '/appendTokenForWiki') {
+      const { siteType, target } = to.query;
+      if (siteType && target) {
+        if (!token || token === to.query.token) {
+          TokenClass.removeToken();
+          const query = { ...to.query, toWiki: 'true' };
+          delete query.token;
+          // 前往登录页面 - 登录成功后再跳转回文档页面
+          if (to.name === 'login' && to.query.toWiki) {
+            next();
+          } else {
+            next({ query: { ...query, toWiki: 'true' }, name: 'login' });
+          }
+        } else { // 有token - 跳转回文档页面
+          console.log(2, token);
+          WikiHandler.toWikiPageWithToken({ ...to.query, token }, true);
+        }
+        return;
+      }
+    }
+
     if (to.matched.some(record => record.meta.requiresAuth)) { // 2.2 判断要去往的页面中有无token要求，如果无则跳转否则则进入判
       if (to.name === 'login') { // 2.3 登录页面不考虑，直接跳转
         if (token) { // 如果有token 不允许跳转
@@ -157,7 +183,7 @@ const handleRouterEach = (_router) => {
     } else if (to.name === 'login' && token) {
       next({ name: 'home' });
     } else {
-      TokenClass.removeToken();
+      // TokenClass.removeToken();
       NextHandler(from, to, next);
     }
   });

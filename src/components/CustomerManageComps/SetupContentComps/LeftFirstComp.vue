@@ -129,7 +129,7 @@ export default {
       rules: {
         CustomerName: [
           { required: true, message: '请输入客户简称', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
         ],
         Mobile: [
           { required: true, message: '请输入手机号码', trigger: 'blur' },
