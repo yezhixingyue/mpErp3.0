@@ -52,7 +52,7 @@
 
 <script>
 import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
-import ServiceAfterSalesDialog from '@/components/order/Main/ServiceAfterSalesDialog.vue';
+// import ServiceAfterSalesDialog from '@/components/order/Main/ServiceAfterSalesDialog.vue';
 import ConfirmCancellationDialog from '@/components/order/Main/ConfirmCancellationDialog.vue';
 import TerminateProductionDialog from '@/components/order/Main/TerminateProductionDialog/index.vue';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
