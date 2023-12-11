@@ -123,8 +123,12 @@ export default {
     },
     // 取消生产
     CancelProduction() {
-      this.ConfirmCancellationVisible = false;
-      this.delTargetOrder(this.CancelProductionIndex);
+      this.TerminateProductionVisible = false;
+      this.messageBox.successSingle(
+        '取消成功',
+        this.getOrderTableData,
+        this.getOrderTableData,
+      );
     },
     // 取消生产点击 =》 弹框提示
     CancelProductionClick(index, Order) {

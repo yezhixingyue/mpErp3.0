@@ -45,6 +45,20 @@ const api = {
   cancelStaffOrder({ OrderID, closeTip = false }) { // 取消客户订单(接单员)
     return instance.delete(`/Api/Order/Cancle?OrderID=${OrderID}`, { closeTip });
   },
+
+  getOrderProductionInfo(OrderID) { // 获取订单生产信息
+    return instance.get(`/Api/Order/ProductionInfo?orderID=${OrderID}`);
+  },
+  getOrderProductionStopQuery(data) { // POST /Api/Order/ProductionStop/Query
+    return instance.post('/Api/Order/ProductionStop/Query', data);
+  },
+  getOrderProductionStopSave(data) { // POST /Api/Order/ProductionStop/Save
+    return instance.post('/Api/Order/ProductionStop/Save', data);
+  },
+  getOrderProductionStopPay(data) { // POST /Api/Order/ProductionStop/Pay
+    return instance.post('/Api/Order/ProductionStop/Pay', data);
+  },
+
   getOrderListData2Excel(data, type = 'normal') { // POST /Api/OrderList/Excel  ---- 财务用 [finance]   /Api/PackageList/Excel --- 普通方式 [normal]
     if (type === 'finance') {
       return instance.post('/Api/OrderList/Excel', data, { responseType: 'arraybuffer' }); // 财务
