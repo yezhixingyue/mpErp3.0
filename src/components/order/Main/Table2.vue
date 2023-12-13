@@ -118,7 +118,7 @@ export default {
       // }
     },
     setStateStyle(Status) {
-      if ((Status === 254 || Status === 255)) return 'is-cancel';
+      if ((Status === 253 || Status === 254 || Status === 255)) return 'is-cancel';
       if (Status === 10) return 'is-pending';
       if (Status === 200) return 'is-completed';
       return '';

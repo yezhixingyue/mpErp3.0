@@ -44,7 +44,7 @@
     <TerminateProductionDialog :visible='TerminateProductionVisible'
     :OrderData="CancelProductionData"
     @close="TerminateProductionVisible = false"
-    @yes="CancelProduction"
+    @yes="TerminateProduction"
     ></TerminateProductionDialog>
     <!-- <ServiceDialog key="order-list-page" className='show-black' /> -->
   </div>
@@ -121,14 +121,24 @@ export default {
       }
       this.handleActionDownload(type);
     },
-    // 取消生产
-    CancelProduction() {
+    // 停止生产
+    TerminateProduction() {
       this.TerminateProductionVisible = false;
       this.messageBox.successSingle(
         '取消成功',
         this.getOrderTableData,
         this.getOrderTableData,
       );
+    },
+    // 取消生产
+    CancelProduction() {
+      this.delTargetOrder(this.CancelProductionIndex);
+      this.ConfirmCancellationVisible = false;
+      // this.messageBox.successSingle(
+      //   '取消成功',
+      //   this.getOrderTableData,
+      //   this.getOrderTableData,
+      // );
     },
     // 取消生产点击 =》 弹框提示
     CancelProductionClick(index, Order) {

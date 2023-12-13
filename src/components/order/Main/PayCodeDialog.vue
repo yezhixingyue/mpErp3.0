@@ -78,7 +78,7 @@ export default {
     async openRollPoling() {
       // 轮询付款状态
       // this.rollPoling = false;
-      const res = await this.api.PollingPayStatus(this.PayCodeData.PayCode);
+      const res = await this.api.getPayResult(this.PayCodeData.PayCode);
       if (res.data.Status === 1000) {
         if (res.data.Data === 'True') this.rollPoling = true;
       }
