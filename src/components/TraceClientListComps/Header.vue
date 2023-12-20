@@ -1,15 +1,6 @@
 <template>
   <header class="mp-erp-get-price-record-page-header-comp-wrap">
     <div style="justify-content: flex-start;">
-      <EpCascaderByProduct
-      class="mr-12"
-      :getList="getRecordList"
-      :setCondition="setRequestObj"
-      :First="condition4RecordList.ProductClass.First"
-      :Second="condition4RecordList.ProductClass.Second"
-      :ProductID="condition4RecordList.ProductID"
-      :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]"
-      />
       <EpCascaderByArea
         class="mr-12"
         :getList="getRecordList"
@@ -26,7 +17,7 @@
         :typeList="[['CustomerType', 'First']]"
         :value="condition4RecordList.CustomerType.First"
         :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
-        label="用户"
+        label="客户"
       />
       <order-channel-selector
         :showLabel="false"
@@ -38,35 +29,8 @@
         :value="condition4RecordList.CustomerType.Second"
         label=""
       />
-      <MinMaxNum
-        class="mr-12"
-        :getList="getRecordList"
-        :setCondition="setRequestObj"
-        :First="condition4RecordList.Amount.First"
-        :Second="condition4RecordList.Amount.Second"
-        :typeList="[['Amount', 'First'],['Amount', 'Second']]"
-       />
     </div>
     <div>
-      <LineDateSelectorComp
-        :changePropsFunc='setRequestObj'
-        :requestFunc='getRecordList'
-        :typeList="[['DateType', ''], ['CalculateDate', 'First'], ['CalculateDate', 'Second']]"
-        :dateValue='condition4RecordList.DateType'
-        :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
-        :dateList="dateList"
-        isFull
-        label="时间筛选" />
-
-      <OrderChannelSelector
-        :options='selfHelpOrderTypeList'
-        :requestFunc='getRecordList'
-        :changePropsFunc='setRequestObj'
-        :typeList="[['Terminal', '']]"
-        :value='condition4RecordList.Terminal'
-        label="状态="
-        isRadio
-       />
       <SearchInputComp
         :typeList="[['KeyWords', '']]"
         :requestFunc='getRecordList'
@@ -74,7 +38,7 @@
         :word='condition4RecordList.KeyWords'
         @reset='clearRequestObj'
         title="关键词"
-        placeholder="请输入搜索关键词"
+        placeholder="请输入客户名称/编号"
         :searchWatchKey="RecordDataList" />
     </div>
   </header>
@@ -82,22 +46,16 @@
 
 <script>
 import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
-import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState } from 'vuex';
-import EpCascaderByProduct from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
-import MinMaxNum from '../../common/min-max-Num.vue';
-import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
+import EpCascaderByArea from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
   components: {
     SearchInputComp,
-    LineDateSelectorComp,
     OrderChannelSelector,
     EpCascaderByArea,
-    EpCascaderByProduct,
-    MinMaxNum,
     // ElDateRangeSelector,
   },
   computed: {

@@ -20,6 +20,7 @@ import layout from './layout';
 import basicSet from './basicSet';
 import packageModule from './package';
 import PriceRecord from './GetPriceRecord/GetPriceRecord';
+import TraceClientList from './GetPriceRecord/TraceClientList';
 import periodManage from './Period/periodManage';
 import companyManage from './companyManage/companyManage';
 import customerManage from './customerManage/customerManage';
@@ -54,6 +55,7 @@ export default new Vuex.Store({
     basicSet,
     packageModule,
     PriceRecord,
+    TraceClientList,
     periodManage,
     companyManage,
     customerManage,

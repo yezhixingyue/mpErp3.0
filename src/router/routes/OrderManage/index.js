@@ -48,6 +48,42 @@ const routes = { // 客户订单管理
       component: () => import('../../../views/GetPriceRecord/index.vue'),
     },
     {
+      path: '/TraceClientList',
+      name: 'TraceClientList',
+      meta: {
+        title: '追踪客户列表',
+        icon: 'el-icon-edit-outline el-icon',
+        pageName: 'TraceClientListPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
+      },
+      component: () => import('../../../views/TraceClientList/index.vue'),
+    },
+    {
+      path: '/CommunicationRecord',
+      name: 'CommunicationRecord',
+      meta: {
+        title: '沟通记录',
+        icon: 'el-icon-edit-outline el-icon',
+        pageName: 'GetPriceRecordListPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
+      },
+      component: () => import('../../../views/GetPriceRecord/index.vue'),
+    },
+    {
+      path: '/TraceRecord',
+      name: 'TraceRecord',
+      meta: {
+        title: '追踪记录',
+        icon: 'el-icon-edit-outline el-icon',
+        pageName: 'GetPriceRecordListPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
+      },
+      component: () => import('../../../views/GetPriceRecord/index.vue'),
+    },
+    {
       path: '/BatchUpload',
       name: 'BatchUpload',
       meta: {
