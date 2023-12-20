@@ -71,7 +71,7 @@ export default {
           this.timeRemaining -= 1;
         } else {
           clearInterval(tiemr);
-          this.timeRemaining = 0;
+          this.close();
         }
       }, 1000);
     },

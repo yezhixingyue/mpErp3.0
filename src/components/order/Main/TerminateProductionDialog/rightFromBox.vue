@@ -24,11 +24,11 @@
         <li>
           <span class="label">扣除损失金额:</span>
           <span class="value">
-            <el-input size="small" v-model="AmountValue" placeholder="请输入损失金额"></el-input>
+            <el-input size="small" oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]" v-model="AmountValue" placeholder="请输入损失金额"></el-input>
             元
           </span>
         </li>
-        <li>
+        <li style="margin-top: 10px;">
           <span class="label">订单已付款不足时:</span>
           <span class="value">
             <el-radio-group v-model="PaymentMethodValue">
@@ -46,8 +46,11 @@
 <script>
 export default {
   props: {
-    Amount: {
-      type: Number,
+    Amount: (props, propName) => {
+      if (!Number(props[propName])) {
+        return new Error('输入了非数字');
+      }
+      return true;
     },
     PaymentMethod: {
       type: Number,
@@ -70,7 +73,6 @@ export default {
         return this.Amount;
       },
       set(val) {
-        console.log(val);
         this.$emit('AmountChange', val);
       },
     },
@@ -82,9 +84,6 @@ export default {
         this.$emit('PaymentMethodChange', val);
       },
     },
-  },
-  mounted() {
-    console.log(this.Amount);
   },
 };
 </script>

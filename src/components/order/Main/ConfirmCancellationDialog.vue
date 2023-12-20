@@ -130,6 +130,7 @@ export default {
             text-align: right;
           }
           p{
+            line-height: 18px;
             i+i{
               margin-left: 5px;
             }
