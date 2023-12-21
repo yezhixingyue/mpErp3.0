@@ -18,7 +18,7 @@
     <el-table-column prop="Size" show-overflow-tooltip min-width="80" label="尺寸"/>
     <el-table-column prop="WorkingList" show-overflow-tooltip min-width="90" label="数量">
       <span slot-scope="scope">
-        {{ scope.row.WorkingList.join('、') }}
+        已做：{{ scope.row.WorkingList.join('、') }}
       </span>
     </el-table-column>
   </el-table>

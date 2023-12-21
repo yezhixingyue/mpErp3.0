@@ -106,18 +106,18 @@ export default {
     },
     CanclePay() {
       if (this.key) {
-        this.api.getOrderProductionStopCancelPay(this.OrderID);
+        this.api.getOrderProductionStopCancelPay(this.OrderID, this.PayCodeData.PayCode);
         this.key = false;
       }
     },
     close() {
-      this.$emit('close');
       this.CanclePay();
+      this.$emit('close');
       this.timeRemaining = 0;
       // 关闭轮询
     },
     open() {
-      this.timeRemaining = 299;
+      this.timeRemaining = 70;
       this.openTimer(); // 定时器
       this.openRollPoling(); // 轮询
       this.key = true;

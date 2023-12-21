@@ -55,8 +55,8 @@ const api = {
   getOrderProductionStopSave(data) { // POST /Api/Order/ProductionStop/Save
     return instance.post('/Api/Order/ProductionStop/Save', data);
   },
-  getOrderProductionStopCancelPay(OrderID) { // 生产中止取消支付
-    return instance.put(`/Api/Order/ProductionStop/CancelPay?orderID=${OrderID}`);
+  getOrderProductionStopCancelPay(OrderID, payCode) { // 生产中止取消支付
+    return instance.put(`/Api/Order/ProductionStop/CancelPay?orderID=${OrderID}&payCode=${payCode}`);
   },
   getOrderProductionStopPay(data) { // POST /Api/Order/ProductionStop/Pay
     return instance.post('/Api/Order/ProductionStop/Pay', data);

@@ -97,7 +97,7 @@ export default {
     refreshTime() {
       clearInterval(this.timer);
       this.isOverTime = false;
-      const num = 3000;
+      const num = 1000 * 60 * 5;
       this.timer = setTimeout(() => {
         this.isOverTime = true;
       }, num);
