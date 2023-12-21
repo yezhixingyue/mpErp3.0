@@ -32,7 +32,7 @@
         <el-button @click="close">取消</el-button>
       </div>
       <PayCodeDialog :visible="PayCodeVisible" @close='PayCodeDialogClose'
-        :PayCodeData="PayCodeData" @seccess="paySeccess"/>
+        :PayCodeData="PayCodeData" :OrderID="OrderData.OrderID" @seccess="paySeccess"/>
     </div>
     <div v-else class="no-data">
       <p>{{initLoading?'':'未获取到生产数据'}}</p>
@@ -88,6 +88,7 @@ export default {
   methods: {
     paySeccess() {
       this.submit();
+      this.PayCodeDialogClose();
     },
     PayCodeDialogClose() {
       this.PayCodeVisible = false;
@@ -147,6 +148,7 @@ export default {
       }
     },
     open() {
+      // this.api.getOrderProductionStopCancelPay(this.OrderData.OrderID);
       this.refreshTime();
       this.initData();
     },

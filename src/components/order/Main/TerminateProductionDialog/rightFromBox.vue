@@ -7,6 +7,10 @@
           <span class="value">{{ OrderData.Funds.FinalPrice }}元</span>
         </li>
         <li>
+          <span class="label">运费:</span>
+          <span class="value" v-if="orderInfo">{{ orderInfo.Order.Freight }}元</span>
+        </li>
+        <li>
           <span class="label">已付金额:</span>
           <span class="value" v-if="orderInfo">{{ orderInfo.Order.PaidAmount }}元</span>
         </li>

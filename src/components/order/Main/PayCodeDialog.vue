@@ -48,11 +48,15 @@ export default {
     PayCodeData: {
       type: Object,
     },
+    OrderID: {
+      type: Number,
+    },
   },
   data() {
     return {
       timeRemaining: 300,
       rollPoling: false,
+      key: true,
     };
   },
   computed: {
@@ -78,9 +82,16 @@ export default {
     async openRollPoling() {
       // 轮询付款状态
       // this.rollPoling = false;
-      const res = await this.api.getPayResult(this.PayCodeData.PayCode);
-      if (res.data.Status === 1000) {
-        if (res.data.Data === 'True') this.rollPoling = true;
+      const res = await this.api.getPayResultExtend(this.PayCodeData.PayCode, this.OrderID);
+      if (res.data.Status !== 9037) {
+        if (res.data.Status === 1000) {
+          this.rollPoling = true;
+        } else if (res.data.Status === 1100) {
+          this.messageBox.failSingleError('操作失败', `[ ${res.data.Message} ]`, () => null, () => null);
+          return;
+        } else {
+          return;
+        }
       }
 
       if (this.rollPoling) {
@@ -93,8 +104,15 @@ export default {
         }, 2000);
       }
     },
+    CanclePay() {
+      if (this.key) {
+        this.api.getOrderProductionStopCancelPay(this.OrderID);
+        this.key = false;
+      }
+    },
     close() {
       this.$emit('close');
+      this.CanclePay();
       this.timeRemaining = 0;
       // 关闭轮询
     },
@@ -102,7 +120,11 @@ export default {
       this.timeRemaining = 299;
       this.openTimer(); // 定时器
       this.openRollPoling(); // 轮询
+      this.key = true;
     },
+  },
+  unmounted() {
+    this.CanclePay();
   },
 };
 </script>

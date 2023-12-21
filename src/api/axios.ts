@@ -25,7 +25,7 @@ let requestNum = 0;
 let loadingInstance;
 const getShowLoading = (config) => { // 查看当前请求是否需要展示弹窗
   let showLoading = true;
-  const arr = ['/Api/PaymentOrder/PayResult', '/Api/Upload/File', '/Api/PaymentOrder/Create',
+  const arr = ['/Api/PaymentOrder/PayResult', '/Api/ProductionStop/PayResult', '/Api/Upload/File', '/Api/PaymentOrder/Create',
     '/Api/FileNode', '/Api/FileServer']; // 不需要展示loading的api地址
   if (config && config.url) {
     for (let i = 0; i < arr.length; i += 1) {
@@ -95,6 +95,7 @@ const handleResponse = (response) => {
     '/Api/InvoiceManage/ExportExcel',
     '/Api/CheckFile/Statistics/Excel',
     '/Api/Order/ProductionStop/Save',
+    '/Api/ProductionStop/PayResult',
   ];
   const _statusList2NotNeed2Toast = [1000, 9062, 8044, 1100];
   // 包含以上的状态码 或 以上的请求路径  不会弹窗报错  其余以外都会报错出来
