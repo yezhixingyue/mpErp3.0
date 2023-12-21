@@ -38,14 +38,15 @@
         :value="condition4RecordList.CustomerType.Second"
         label=""
       />
-      <MinMaxNum
-        class="mr-12"
-        :getList="getRecordList"
-        :setCondition="setRequestObj"
-        :First="condition4RecordList.Amount.First"
-        :Second="condition4RecordList.Amount.Second"
-        :typeList="[['Amount', 'First'],['Amount', 'Second']]"
-       />
+      <order-channel-selector
+        :options="userTypeList"
+        :requestFunc="getRecordList"
+        :changePropsFunc="setRequestObj"
+        :typeList="[['CustomerType', 'First']]"
+        :value="condition4RecordList.CustomerType.First"
+        :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
+        label="状态"
+      />
     </div>
     <div>
       <LineDateSelectorComp
@@ -57,16 +58,6 @@
         :dateList="dateList"
         isFull
         label="时间筛选" />
-
-      <OrderChannelSelector
-        :options='selfHelpOrderTypeList'
-        :requestFunc='getRecordList'
-        :changePropsFunc='setRequestObj'
-        :typeList="[['Terminal', '']]"
-        :value='condition4RecordList.Terminal'
-        label="状态="
-        isRadio
-       />
       <SearchInputComp
         :typeList="[['KeyWords', '']]"
         :requestFunc='getRecordList'
@@ -87,7 +78,6 @@ import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannel
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState } from 'vuex';
 import EpCascaderByProduct from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
-import MinMaxNum from '@/components/common/min-max-Num.vue';
 import EpCascaderByArea from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
@@ -97,7 +87,6 @@ export default {
     OrderChannelSelector,
     EpCascaderByArea,
     EpCascaderByProduct,
-    MinMaxNum,
     // ElDateRangeSelector,
   },
   computed: {
@@ -121,7 +110,7 @@ export default {
   },
   data() {
     return {
-      dateList: [{ name: '今日报价', ID: 'today' }, { name: '昨日报价', ID: 'yesterday' }, { name: '本周报价', ID: 'curWeek' }, { name: '上周报价', ID: 'lastWeek' }],
+      dateList: [{ name: '今日添加', ID: 'today' }, { name: '昨日添加', ID: 'yesterday' }, { name: '本周添加', ID: 'curWeek' }, { name: '上周添加', ID: 'lastWeek' }],
       dateMenus: [
         { text: '今天', key: 'TodayDate' },
         { text: '昨天', key: 'YesterdayDate' },

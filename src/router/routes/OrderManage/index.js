@@ -65,11 +65,11 @@ const routes = { // 客户订单管理
       meta: {
         title: '沟通记录',
         icon: 'el-icon-edit-outline el-icon',
-        pageName: 'GetPriceRecordListPage',
+        pageName: 'CommunicationRecordPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
       },
-      component: () => import('../../../views/GetPriceRecord/index.vue'),
+      component: () => import('../../../views/CommunicationRecord/index.vue'),
     },
     {
       path: '/TraceRecord',
@@ -81,7 +81,7 @@ const routes = { // 客户订单管理
         requiresAuth: true,
         PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
       },
-      component: () => import('../../../views/GetPriceRecord/index.vue'),
+      component: () => import('../../../views/TraceRecord/index.vue'),
     },
     {
       path: '/BatchUpload',
