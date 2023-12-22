@@ -10,48 +10,9 @@
     class="mp-erp-get-price-record-page-main-table-comp-wrap ft-14-table"
   >
     <el-table-column
-      label="产品"
-      minWidth="176"
-      show-overflow-tooltip
-    >
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.ProductParams.Attributes | getProductName
-      }}</span>
-    </el-table-column>
-    <el-table-column
-      prop="Customer.CustomerName"
-      label="规格"
-      minWidth="248"
-      show-overflow-tooltip
-    ></el-table-column>
-    <el-table-column
-      label="原价"
-      width="88"
-      show-overflow-tooltip
-    >
-      <template slot-scope="scope">{{ scope.row.Funds.OriginalPrice }}元</template>
-    </el-table-column>
-    <el-table-column
-      label="成交价"
-      width="101"
-      show-overflow-tooltip
-    >
-      <template slot-scope="scope">{{ scope.row.Funds.FinalPrice }}元</template>
-    </el-table-column>
-    <el-table-column label="报价时间" show-overflow-tooltip width="136">
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.CreateTime | format2MiddleLangTypeDate
-      }}</span>
-    </el-table-column>
-    <el-table-column label="状态" show-overflow-tooltip width="88">
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.CreateTime | format2MiddleLangTypeDate
-      }}</span>
-    </el-table-column>
-    <el-table-column
       prop="Customer.CustomerName"
       label="客户"
-      minWidth="148"
+      minWidth="224"
       show-overflow-tooltip
     ></el-table-column>
     <el-table-column
@@ -64,17 +25,56 @@
       </span>
     </el-table-column>
     <el-table-column
-      prop="Customer.Mobile"
       label="客户等级分类"
-      width="144"
+      minWidth="184"
+      show-overflow-tooltip
+    >
+      <span class="is-gray" slot-scope="scope">{{
+        scope.row.ProductParams.Attributes | getProductName
+      }}</span>
+    </el-table-column>
+    <el-table-column
+      prop="Customer.CustomerName"
+      label="客户等级分类"
+      minWidth="136"
+      show-overflow-tooltip
     ></el-table-column>
     <el-table-column
-      label="报价编号"
+      label="QQ"
+      width="103"
+      show-overflow-tooltip
+    >
+      <template slot-scope="scope">{{ scope.row.Funds.OriginalPrice }}元</template>
+    </el-table-column>
+    <el-table-column
+      label="今日联系次数"
+      width="124"
+      show-overflow-tooltip
+    >
+      <template slot-scope="scope">{{ scope.row.Funds.FinalPrice }}元</template>
+    </el-table-column>
+    <el-table-column label="今日联系次数" show-overflow-tooltip width="164">
+      <span class="is-gray" slot-scope="scope">{{
+        scope.row.CreateTime | format2MiddleLangTypeDate
+      }}</span>
+    </el-table-column>
+    <el-table-column label="未完成跟踪订单" show-overflow-tooltip width="118">
+      <span class="is-gray" slot-scope="scope">{{
+        scope.row.CreateTime | format2MiddleLangTypeDate
+      }}</span>
+    </el-table-column>
+    <el-table-column
+      prop="Customer.Mobile"
+      label="最近一次沟通（方式/时间）"
+      width="215"
+    ></el-table-column>
+    <el-table-column
+      label="最近一次沟通备注"
       prop="Customer.QQ"
-      width="156"
+      width="152"
     >
     </el-table-column>
-    <el-table-column label="操作" minWidth="126" show-overflow-tooltip>
+    <el-table-column label="操作" minWidth="127" show-overflow-tooltip>
       <div class="is-font-12 btn-wrap" slot-scope="scope">
         <span @click="onDetaClick(scope.row)">
           <img src="@/assets/images/detail.png" alt />详情

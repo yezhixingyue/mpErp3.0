@@ -77,7 +77,7 @@ const routes = { // 客户订单管理
       meta: {
         title: '追踪记录',
         icon: 'el-icon-edit-outline el-icon',
-        pageName: 'GetPriceRecordListPage',
+        pageName: 'TraceRecordPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
       },

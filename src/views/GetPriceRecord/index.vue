@@ -3,7 +3,6 @@
     <Header />
     <main class="mp-erp-get-price-record-page-main-comp-wrap">
       <Table @detail='onDetailClick' />
-      <DetailDialog v-model="visible" :detailData='detailData' />
     </main>
     <footer>
       <Count
@@ -12,7 +11,6 @@
        :count='RecordDataNumber'
        :pageSize='30'
        >
-       <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
       </Count>
     </footer>
   </section>
@@ -22,8 +20,6 @@
 import Header from '@/components/GetPriceRecordComps/Header';
 import Table from '@/components/GetPriceRecordComps/Main/Table';
 import Count from '@/components/common/Count.vue';
-import DetailDialog from '@/components/GetPriceRecordComps/Main/DetailDialog';
-import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
 import CommonClassType from '@/store/CommonClassType';
 import { mapState } from 'vuex';
 
@@ -55,12 +51,9 @@ export default {
     Header,
     Table,
     Count,
-    DetailDialog,
-    DownLoadExcelComp,
   },
   data() {
     return {
-      visible: false,
       detailData: null,
     };
   },
@@ -70,7 +63,6 @@ export default {
     },
     onDetailClick(data) {
       this.detailData = data;
-      this.visible = true;
     },
   },
 };

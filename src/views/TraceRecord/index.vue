@@ -3,7 +3,6 @@
     <Header />
     <main class="mp-erp-get-price-record-page-main-comp-wrap">
       <Table @detail='onDetailClick' />
-      <DetailDialog v-model="visible" :detailData='detailData' />
     </main>
     <footer>
       <Count
@@ -20,17 +19,16 @@
 
 <script>
 import Header from '@/components/TraceRecordComps/Header';
-import Table from '@/components/GetPriceRecordComps/Main/Table';
+import Table from '@/components/TraceRecordComps/Table.vue';
 import Count from '@/components/common/Count.vue';
-import DetailDialog from '@/components/GetPriceRecordComps/Main/DetailDialog';
 import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
 import CommonClassType from '@/store/CommonClassType';
 import { mapState } from 'vuex';
 
 export default {
-  name: 'GetPriceRecordListPage',
+  name: 'TraceRecordPage',
   computed: {
-    ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataNumber']),
+    ...mapState('TraceRecord', ['condition4RecordList', 'RecordDataNumber']),
     ...mapState('common', ['Permission']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
@@ -55,22 +53,19 @@ export default {
     Header,
     Table,
     Count,
-    DetailDialog,
     DownLoadExcelComp,
   },
   data() {
     return {
-      visible: false,
       detailData: null,
     };
   },
   methods: {
     handlePageChange(page) {
-      this.$store.dispatch('PriceRecord/getRecordList', page);
+      this.$store.dispatch('TraceRecord/getRecordList', page);
     },
     onDetailClick(data) {
       this.detailData = data;
-      this.visible = true;
     },
   },
 };

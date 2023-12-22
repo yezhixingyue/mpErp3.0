@@ -10,8 +10,23 @@
     class="mp-erp-get-price-record-page-main-table-comp-wrap ft-14-table"
   >
     <el-table-column
+      prop="Customer.CustomerName"
+      label="来源（报价编号）"
+      minWidth="152"
+      show-overflow-tooltip
+    ></el-table-column>
+    <el-table-column
       label="产品"
-      minWidth="176"
+      minWidth="235"
+      show-overflow-tooltip
+    >
+      <span class="is-gray" slot-scope="scope">
+        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+      </span>
+    </el-table-column>
+    <el-table-column
+      label="规格"
+      minWidth="248"
       show-overflow-tooltip
     >
       <span class="is-gray" slot-scope="scope">{{
@@ -20,61 +35,46 @@
     </el-table-column>
     <el-table-column
       prop="Customer.CustomerName"
-      label="规格"
-      minWidth="248"
+      label="价格"
+      minWidth="48"
       show-overflow-tooltip
     ></el-table-column>
     <el-table-column
-      label="原价"
-      width="88"
+      label="状态"
+      width="68"
       show-overflow-tooltip
     >
       <template slot-scope="scope">{{ scope.row.Funds.OriginalPrice }}元</template>
     </el-table-column>
     <el-table-column
-      label="成交价"
-      width="101"
+      label="备注"
+      width="108"
       show-overflow-tooltip
     >
       <template slot-scope="scope">{{ scope.row.Funds.FinalPrice }}元</template>
     </el-table-column>
-    <el-table-column label="报价时间" show-overflow-tooltip width="136">
+    <el-table-column label="最近一次改变状态（操作人）" show-overflow-tooltip width="222">
       <span class="is-gray" slot-scope="scope">{{
         scope.row.CreateTime | format2MiddleLangTypeDate
       }}</span>
     </el-table-column>
-    <el-table-column label="状态" show-overflow-tooltip width="88">
+    <el-table-column label="添加时间" show-overflow-tooltip width="136">
       <span class="is-gray" slot-scope="scope">{{
         scope.row.CreateTime | format2MiddleLangTypeDate
       }}</span>
-    </el-table-column>
-    <el-table-column
-      prop="Customer.CustomerName"
-      label="客户"
-      minWidth="148"
-      show-overflow-tooltip
-    ></el-table-column>
-    <el-table-column
-      label="销售区域"
-      minWidth="136"
-      show-overflow-tooltip
-    >
-      <span class="is-gray" slot-scope="scope">
-        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
-      </span>
     </el-table-column>
     <el-table-column
       prop="Customer.Mobile"
-      label="客户等级分类"
-      width="144"
+      label="客户（编号）"
+      width="184"
     ></el-table-column>
     <el-table-column
-      label="报价编号"
+      label="销售区域"
       prop="Customer.QQ"
       width="156"
     >
     </el-table-column>
-    <el-table-column label="操作" minWidth="126" show-overflow-tooltip>
+    <el-table-column label="操作" minWidth="127" show-overflow-tooltip>
       <div class="is-font-12 btn-wrap" slot-scope="scope">
         <span @click="onDetaClick(scope.row)">
           <img src="@/assets/images/detail.png" alt />详情

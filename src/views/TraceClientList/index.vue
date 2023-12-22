@@ -17,14 +17,14 @@
 
 <script>
 import Header from '@/components/TraceClientListComps/Header.vue';
-import Table from '@/components/GetPriceRecordComps/Main/Table';
+import Table from '@/components/TraceClientListComps/Table.vue';
 import Count from '@/components/common/Count.vue';
 import { mapState } from 'vuex';
 
 export default {
   name: 'TraceClientListPage',
   computed: {
-    ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataNumber']),
+    ...mapState('TraceClientList', ['condition4RecordList', 'RecordDataNumber']),
     ...mapState('common', ['Permission']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
@@ -40,17 +40,15 @@ export default {
   },
   data() {
     return {
-      visible: false,
       detailData: null,
     };
   },
   methods: {
     handlePageChange(page) {
-      this.$store.dispatch('PriceRecord/getRecordList', page);
+      this.$store.dispatch('TraceClientList/getRecordList', page);
     },
     onDetailClick(data) {
       this.detailData = data;
-      this.visible = true;
     },
   },
 };
