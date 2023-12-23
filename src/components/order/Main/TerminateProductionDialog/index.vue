@@ -87,8 +87,9 @@ export default {
   },
   methods: {
     paySeccess() {
-      this.submit();
+      // this.submit();
       this.PayCodeDialogClose();
+      this.$emit('yes');
     },
     PayCodeDialogClose() {
       this.PayCodeVisible = false;
