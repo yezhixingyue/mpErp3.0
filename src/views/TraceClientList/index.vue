@@ -8,7 +8,7 @@
       <Count
        :watchPage='condition4RecordList.Page'
        :handlePageChange='handlePageChange'
-       :count='RecordDataNumber'
+       :count='TraceClientListDataNumber'
        :pageSize='30'
        ></Count>
     </footer>
@@ -24,7 +24,7 @@ import { mapState } from 'vuex';
 export default {
   name: 'TraceClientListPage',
   computed: {
-    ...mapState('TraceClientList', ['condition4RecordList', 'RecordDataNumber']),
+    ...mapState('TraceClientList', ['condition4RecordList', 'TraceClientListDataNumber']),
     ...mapState('common', ['Permission']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
@@ -45,10 +45,15 @@ export default {
   },
   methods: {
     handlePageChange(page) {
-      this.$store.dispatch('TraceClientList/getRecordList', page);
+      this.$store.dispatch('TraceClientList/getTraceClientList', page);
     },
     onDetailClick(data) {
       this.detailData = data;
+      const paramsData = {
+        customerID: data.Customer.CustomerID,
+        customerInfo: data.Customer,
+      };
+      this.$router.push({ name: 'TraceClientListDetail', params: paramsData });
     },
   },
 };

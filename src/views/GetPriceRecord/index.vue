@@ -63,6 +63,12 @@ export default {
     },
     onDetailClick(data) {
       this.detailData = data;
+      const paramsData = {
+        customerID: data.Customer.CustomerID,
+        customerInfo: data.Customer,
+        quotation: data,
+      };
+      this.$router.push({ name: 'GetPriceRecordDetail', params: paramsData });
     },
   },
 };

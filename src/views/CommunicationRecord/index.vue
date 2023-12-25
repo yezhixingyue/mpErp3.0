@@ -8,7 +8,7 @@
       <Count
        :watchPage='condition4RecordList.Page'
        :handlePageChange='handlePageChange'
-       :count='RecordDataNumber'
+       :count='CommunicationRecordNumber'
        :pageSize='30'
        >
        <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
@@ -28,7 +28,7 @@ import { mapState } from 'vuex';
 export default {
   name: 'CommunicationRecordPage',
   computed: {
-    ...mapState('CommunicationRecord', ['condition4RecordList', 'RecordDataNumber']),
+    ...mapState('CommunicationRecord', ['condition4RecordList', 'CommunicationRecordNumber']),
     ...mapState('common', ['Permission']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
@@ -42,10 +42,10 @@ export default {
     configObj() {
       return {
         condition: this.condition,
-        count: this.RecordDataNumber,
+        count: this.CommunicationRecordNumber,
         fileDefaultName: '报价记录',
         fileDate: this.condition4RecordList.CalculateDate,
-        downFunc: data => this.api.getCalculatePriceRecordListExcel(data),
+        downFunc: data => this.api.getCustomerCommunicateLogListExcel(data),
       };
     },
   },
@@ -62,10 +62,15 @@ export default {
   },
   methods: {
     handlePageChange(page) {
-      this.$store.dispatch('CommunicationRecord/getRecordList', page);
+      this.$store.dispatch('CommunicationRecord/getCommunicationRecordList', page);
     },
     onDetailClick(data) {
       this.detailData = data;
+      const paramsData = {
+        customerID: data.Customer.CustomerID,
+        customerInfo: data.Customer,
+      };
+      this.$router.push({ name: 'CommunicationRecordDetail', params: paramsData });
     },
   },
 };

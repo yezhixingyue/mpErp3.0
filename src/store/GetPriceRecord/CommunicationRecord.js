@@ -1,7 +1,7 @@
 import CommonClassType from '@/store/CommonClassType';
 import api from '../../api';
 
-class RecordListConditonClass {
+class CommunicationRecordConditonClass {
   Page = 1; // 页码
 
   KeyWords = ''; // 关键词 (活动名称)
@@ -10,43 +10,40 @@ class RecordListConditonClass {
 
   DateType = 'today';
 
-  CalculateDate = {
+  CommunicateTime = {
     First: '',
     Second: '',
   }
 
   SellArea = { // 销售区域
     RegionalID: '',
+    CountyID: '',
     CityID: '',
     SellArea: '',
   }
-
-  ProductID = '';
-
-  ProductClass = { // 产品
-    First: '',
-    Second: '',
-  }
-
-  Amount = { // 成交价
-    First: '',
-    Second: '',
-  }
-
-  Terminal = '';
 
   CustomerType= {
     First: '',
     Second: '',
   }
-  // initDateText = '今天';
+
+  CommunicateType= ''
+
+  OperatorID= ''
+
+  FieldType= 1
+
+  Order= {
+    First: '',
+    Second: '',
+  }
 }
 export default {
   namespaced: true,
   state: {
-    condition4RecordList: new RecordListConditonClass(),
-    RecordDataList: [],
-    RecordDataNumber: 0,
+    condition4RecordList: new CommunicationRecordConditonClass(),
+    CommunicationRecordList: [],
+    CommunicationRecordNumber: 0,
     loading: false,
   },
   getters: {
@@ -61,29 +58,29 @@ export default {
     /** 重置清除请求对象信息
      ---------------------------------------- */
     clearCondition4RecordList(state) {
-      state.condition4RecordList = new RecordListConditonClass();
+      state.condition4RecordList = new CommunicationRecordConditonClass();
     },
     transformCondition4RecordListDate(state) {
-      CommonClassType.setDate(state.condition4RecordList, 'CalculateDate');
+      CommonClassType.setDate(state.condition4RecordList, 'CommunicateTime');
     },
-    setRecordDataList(state, { Data, DataNumber }) {
-      state.RecordDataList = Data;
-      if (DataNumber || DataNumber === 0) state.RecordDataNumber = DataNumber;
+    setCommunicationRecordList(state, { Data, DataNumber }) {
+      state.CommunicationRecordList = Data;
+      if (DataNumber || DataNumber === 0) state.CommunicationRecordNumber = DataNumber;
     },
     setLoading(state, bool) {
       state.loading = bool;
     },
   },
   actions: {
-    async getRecordList({ state, commit }, page = 1) {
+    async getCommunicationRecordList({ state, commit }, page = 1) {
       commit('setCondition4RecordList', [['Page', ''], page]);
       commit('transformCondition4RecordListDate');
       const temp = CommonClassType.filter(state.condition4RecordList, true);
-      commit('setRecordDataList', { Data: [], DataNumber: undefined });
+      commit('setCommunicationRecordList', { Data: [], DataNumber: undefined });
       commit('setLoading', true);
-      const resp = await api.getCalculatePriceRecordList(temp).catch(() => {});
+      const resp = await api.getCustomerCommunicateLogList(temp).catch(() => {});
       if (resp && resp.data.Status === 1000) {
-        commit('setRecordDataList', resp.data);
+        commit('setCommunicationRecordList', resp.data);
       }
       commit('setLoading', false);
     },

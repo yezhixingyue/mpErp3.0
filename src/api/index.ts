@@ -74,6 +74,30 @@ const api = {
   getCalculatePriceRecordListExcel(data) { // POST /Api/CalculatePrice/Excel 导出报价记录Excel
     return instance.post('/Api/CalculatePrice/Excel', data, { responseType: 'arraybuffer' });
   },
+  getCustomerTrackList(data) { // POST /Api/CustomerTrack/List  追踪客户列表
+    return instance.post('/Api/CustomerTrack/List', data);
+  },
+  getCustomerCommunicateLogList(data) { // POST /Api/CustomerCommunicateLog/List  沟通记录列表
+    return instance.post('/Api/CustomerCommunicateLog/List', data);
+  },
+  getCustomerCommunicateLogListExcel(data) { // POST /Api/CustomerCommunicateLog/Excel 导出沟通记录Excel
+    return instance.post('/Api/CustomerCommunicateLog/Excel', data, { responseType: 'arraybuffer' });
+  },
+  getCustomerTrackLogList(data) { // POST /Api/CustomerTrackLog/List  追踪记录列表
+    return instance.post('/Api/CustomerTrackLog/List', data);
+  },
+  getCustomerTrackLogListExcel(data) { // POST /Api/CustomerTrackLog/Excel 导出追踪记录Excel
+    return instance.post('/Api/CustomerTrackLog/Excel', data, { responseType: 'arraybuffer' });
+  },
+  getCustomerTrackDetail(customerID) { // 客户追踪信息
+    return instance.get(`/Api/CustomerTrack/Detail?customerID=${customerID}`);
+  },
+  getCustomerTrackLogSave(data) { // 添加客户追踪记录
+    return instance.post('/Api/CustomerTrackLog/Save', data);
+  },
+  getCustomerTrackLogCancel(quotationNumber) { // 报价单作废
+    return instance.get(`/Api/CustomerTrackLog/Cancel?quotationNumber=${quotationNumber}`);
+  },
 
   /* 付款列表部分api
    ----------------------------------------------------------------------------------- */

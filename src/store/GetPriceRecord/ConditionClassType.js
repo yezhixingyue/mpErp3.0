@@ -14,6 +14,7 @@ export default class RecordListConditonClass {
 
   SellArea = { // 销售区域
     RegionalID: '',
+    CountyID: '',
     CityID: '',
     SellArea: '',
   }
@@ -37,4 +38,9 @@ export default class RecordListConditonClass {
     Second: '',
   }
   // initDateText = '今天';
+
+  Order= {
+    First: '',
+    Second: '',
+  }
 }

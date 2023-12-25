@@ -52,7 +52,7 @@
       <LineDateSelectorComp
         :changePropsFunc='setRequestObj'
         :requestFunc='getRecordList'
-        :typeList="[['DateType', ''], ['CalculateDate', 'First'], ['CalculateDate', 'Second']]"
+        :typeList="[['DateType', ''], ['CommunicateTime', 'First'], ['CommunicateTime', 'Second']]"
         :dateValue='condition4RecordList.DateType'
         :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
         :dateList="dateList"
@@ -67,7 +67,7 @@
         @reset='clearRequestObj'
         title="报价编号"
         placeholder="请输入报价编号"
-        :searchWatchKey="RecordDataList" />
+        :searchWatchKey="CommunicationRecordList" />
     </div>
   </header>
 </template>
@@ -89,20 +89,20 @@ export default {
     // ElDateRangeSelector,
   },
   computed: {
-    ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataList']),
+    ...mapState('CommunicationRecord', ['condition4RecordList', 'CommunicationRecordList']),
     ...mapState('common', ['selfHelpOrderTypeList', 'userTypeList', 'userRankList']),
     UserDefinedTimeIsActive() {
       return this.condition4RecordList.DateType === ''
-       && !!this.condition4RecordList.CalculateDate.First && !!this.condition4RecordList.CalculateDate.Second;
+       && !!this.condition4RecordList.CommunicateTime.First && !!this.condition4RecordList.CommunicateTime.Second;
     },
     conditionDate: {
       get() {
-        return [this.condition4RecordList.CalculateDate.First, this.condition4RecordList.CalculateDate.Second];
+        return [this.condition4RecordList.CommunicateTime.First, this.condition4RecordList.CommunicateTime.Second];
       },
       set(newVal) {
         const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
-        this.setRequestObj([['CalculateDate', 'First'], key]);
-        this.setRequestObj([['CalculateDate', 'Second'], value]);
+        this.setRequestObj([['CommunicateTime', 'First'], key]);
+        this.setRequestObj([['CommunicateTime', 'Second'], value]);
         this.getRecordList();
       },
     },
@@ -121,13 +121,13 @@ export default {
   },
   methods: {
     getRecordList() {
-      this.$store.dispatch('PriceRecord/getRecordList');
+      this.$store.dispatch('CommunicationRecord/getCommunicationRecordList');
     },
     setRequestObj(e) {
-      this.$store.commit('PriceRecord/setCondition4RecordList', e);
+      this.$store.commit('CommunicationRecord/setCondition4RecordList', e);
     },
     clearRequestObj() {
-      this.$store.commit('PriceRecord/clearCondition4RecordList');
+      this.$store.commit('CommunicationRecord/clearCondition4RecordList');
     },
   },
   mounted() {

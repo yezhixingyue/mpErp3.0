@@ -3,7 +3,7 @@
     stripe
     border
     fit
-    :data="RecordDataList"
+    :data="CommunicationRecordList"
     style="width: 100%"
     :max-height="h"
     :height="h"
@@ -76,7 +76,7 @@ import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMi
 
 export default {
   computed: {
-    ...mapState('PriceRecord', ['RecordDataList', 'RecordDataNumber', 'loading']),
+    ...mapState('CommunicationRecord', ['CommunicationRecordList', 'loading']),
   },
   mixins: [tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   filters: {

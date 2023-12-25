@@ -48,6 +48,17 @@ const routes = { // 客户订单管理
       component: () => import('../../../views/GetPriceRecord/index.vue'),
     },
     {
+      path: '/GetPriceRecordDetail',
+      name: 'GetPriceRecordDetail',
+      meta: {
+        title: '报价记录',
+        pageName: 'GetPriceRecordDetailPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
+      },
+      component: () => import('../../../views/GetPriceRecord/detail.vue'),
+    },
+    {
       path: '/TraceClientList',
       name: 'TraceClientList',
       meta: {
@@ -58,6 +69,17 @@ const routes = { // 客户订单管理
         PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
       },
       component: () => import('../../../views/TraceClientList/index.vue'),
+    },
+    {
+      path: '/TraceClientListDetail',
+      name: 'TraceClientListDetail',
+      meta: {
+        title: '报价记录',
+        pageName: 'TraceClientListDetailPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
+      },
+      component: () => import('../../../views/TraceClientList/detail.vue'),
     },
     {
       path: '/CommunicationRecord',
@@ -72,6 +94,17 @@ const routes = { // 客户订单管理
       component: () => import('../../../views/CommunicationRecord/index.vue'),
     },
     {
+      path: '/CommunicationRecordDetail',
+      name: 'CommunicationRecordDetail',
+      meta: {
+        title: '报价记录',
+        pageName: 'CommunicationRecordDetailPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
+      },
+      component: () => import('../../../views/CommunicationRecord/detail.vue'),
+    },
+    {
       path: '/TraceRecord',
       name: 'TraceRecord',
       meta: {
@@ -82,6 +115,17 @@ const routes = { // 客户订单管理
         PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
       },
       component: () => import('../../../views/TraceRecord/index.vue'),
+    },
+    {
+      path: '/TraceRecordDetail',
+      name: 'TraceRecordDetail',
+      meta: {
+        title: '报价记录',
+        pageName: 'TraceRecordDetailPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
+      },
+      component: () => import('../../../views/TraceRecord/detail.vue'),
     },
     {
       path: '/BatchUpload',
@@ -253,7 +297,22 @@ const routeTree = {
       children: [
         { name: 'applyAfterSales', children: [] },
       ] },
-    { name: 'GetPriceRecord', children: [] },
+    { name: 'GetPriceRecord',
+      children: [
+        { name: 'GetPriceRecordDetail', children: [] },
+      ] },
+    { name: 'TraceClientList',
+      children: [
+        { name: 'TraceClientListDetail', children: [] },
+      ] },
+    { name: 'CommunicationRecord',
+      children: [
+        { name: 'CommunicationRecordDetail', children: [] },
+      ] },
+    { name: 'TraceRecord',
+      children: [
+        { name: 'TraceRecordDetail', children: [] },
+      ] },
     { name: 'BatchUpload', children: [] },
     /*  运单管理
     ------------------------------------------ */

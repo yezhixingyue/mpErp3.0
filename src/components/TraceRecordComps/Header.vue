@@ -3,47 +3,47 @@
     <div style="justify-content: flex-start;">
       <EpCascaderByProduct
       class="mr-12"
-      :getList="getRecordList"
+      :getList="getCustomerTrackLogList"
       :setCondition="setRequestObj"
-      :First="condition4RecordList.ProductClass.First"
-      :Second="condition4RecordList.ProductClass.Second"
-      :ProductID="condition4RecordList.ProductID"
-      :typeList="[['ProductClass', 'First'],['ProductClass', 'Second'],['ProductID', '']]"
+      :First="condition4TraceRecordList.Product.ClassID"
+      :Second="condition4TraceRecordList.Product.TypeID"
+      :ProductID="condition4TraceRecordList.ProductID"
+      :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
       />
       <EpCascaderByArea
         class="mr-12"
-        :getList="getRecordList"
+        :getList="getCustomerTrackLogList"
         :setCondition="setRequestObj"
-        :RegionalID="condition4RecordList.SellArea.RegionalID"
-        :CityID="condition4RecordList.SellArea.CityID"
-        :CountyID="condition4RecordList.SellArea.CountyID"
+        :RegionalID="condition4TraceRecordList.SellArea.RegionalID"
+        :CityID="condition4TraceRecordList.SellArea.CityID"
+        :CountyID="condition4TraceRecordList.SellArea.CountyID"
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
       />
       <order-channel-selector
         :options="userTypeList"
-        :requestFunc="getRecordList"
+        :requestFunc="getCustomerTrackLogList"
         :changePropsFunc="setRequestObj"
         :typeList="[['CustomerType', 'First']]"
-        :value="condition4RecordList.CustomerType.First"
+        :value="condition4TraceRecordList.CustomerType.First"
         :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
         label="客户"
       />
       <order-channel-selector
         :showLabel="false"
         :options="userRankList"
-        :requestFunc="getRecordList"
+        :requestFunc="getCustomerTrackLogList"
         :changePropsFunc="setRequestObj"
         :typeList="[['CustomerType', 'Second']]"
         :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
-        :value="condition4RecordList.CustomerType.Second"
+        :value="condition4TraceRecordList.CustomerType.Second"
         label=""
       />
       <order-channel-selector
         :options="userTypeList"
-        :requestFunc="getRecordList"
+        :requestFunc="getCustomerTrackLogList"
         :changePropsFunc="setRequestObj"
         :typeList="[['CustomerType', 'First']]"
-        :value="condition4RecordList.CustomerType.First"
+        :value="condition4TraceRecordList.CustomerType.First"
         :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
         label="状态"
       />
@@ -51,22 +51,22 @@
     <div>
       <LineDateSelectorComp
         :changePropsFunc='setRequestObj'
-        :requestFunc='getRecordList'
-        :typeList="[['DateType', ''], ['CalculateDate', 'First'], ['CalculateDate', 'Second']]"
-        :dateValue='condition4RecordList.DateType'
+        :requestFunc='getCustomerTrackLogList'
+        :typeList="[['DateType', ''], ['AddTime', 'First'], ['AddTime', 'Second']]"
+        :dateValue='condition4TraceRecordList.DateType'
         :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
         :dateList="dateList"
         isFull
         label="时间筛选" />
       <SearchInputComp
         :typeList="[['KeyWords', '']]"
-        :requestFunc='getRecordList'
+        :requestFunc='getCustomerTrackLogList'
         :changePropsFunc='setRequestObj'
-        :word='condition4RecordList.KeyWords'
+        :word='condition4TraceRecordList.KeyWords'
         @reset='clearRequestObj'
         title="报价编号"
         placeholder="请输入报价编号"
-        :searchWatchKey="RecordDataList" />
+        :searchWatchKey="TraceRecordList" />
     </div>
   </header>
 </template>
@@ -90,21 +90,21 @@ export default {
     // ElDateRangeSelector,
   },
   computed: {
-    ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataList']),
+    ...mapState('TraceRecord', ['condition4TraceRecordList', 'TraceRecordList']),
     ...mapState('common', ['selfHelpOrderTypeList', 'userTypeList', 'userRankList']),
     UserDefinedTimeIsActive() {
-      return this.condition4RecordList.DateType === ''
-       && !!this.condition4RecordList.CalculateDate.First && !!this.condition4RecordList.CalculateDate.Second;
+      return this.condition4TraceRecordList.DateType === ''
+       && !!this.condition4TraceRecordList.AddTime.First && !!this.condition4TraceRecordList.AddTime.Second;
     },
     conditionDate: {
       get() {
-        return [this.condition4RecordList.CalculateDate.First, this.condition4RecordList.CalculateDate.Second];
+        return [this.condition4TraceRecordList.AddTime.First, this.condition4TraceRecordList.AddTime.Second];
       },
       set(newVal) {
         const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
-        this.setRequestObj([['CalculateDate', 'First'], key]);
-        this.setRequestObj([['CalculateDate', 'Second'], value]);
-        this.getRecordList();
+        this.setRequestObj([['AddTime', 'First'], key]);
+        this.setRequestObj([['AddTime', 'Second'], value]);
+        this.getCustomerTrackLogList();
       },
     },
   },
@@ -121,19 +121,19 @@ export default {
     };
   },
   methods: {
-    getRecordList() {
-      this.$store.dispatch('PriceRecord/getRecordList');
+    getCustomerTrackLogList() {
+      this.$store.dispatch('TraceRecord/getCustomerTrackLogList');
     },
     setRequestObj(e) {
-      this.$store.commit('PriceRecord/setCondition4RecordList', e);
+      this.$store.commit('TraceRecord/setCondition4List', e);
     },
     clearRequestObj() {
-      this.$store.commit('PriceRecord/clearCondition4RecordList');
+      this.$store.commit('TraceRecord/clearCondition4List');
     },
   },
   mounted() {
     this.clearRequestObj();
-    this.getRecordList();
+    this.getCustomerTrackLogList();
     this.$store.dispatch('common/getUserClassify');
   },
 };

@@ -39,7 +39,7 @@
         @reset='clearRequestObj'
         title="关键词"
         placeholder="请输入客户名称/编号"
-        :searchWatchKey="RecordDataList" />
+        :searchWatchKey="TraceClientList" />
     </div>
   </header>
 </template>
@@ -59,45 +59,25 @@ export default {
     // ElDateRangeSelector,
   },
   computed: {
-    ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataList']),
+    ...mapState('TraceClientList', ['condition4RecordList', 'TraceClientList']),
     ...mapState('common', ['selfHelpOrderTypeList', 'userTypeList', 'userRankList']),
     UserDefinedTimeIsActive() {
       return this.condition4RecordList.DateType === ''
        && !!this.condition4RecordList.CalculateDate.First && !!this.condition4RecordList.CalculateDate.Second;
     },
-    conditionDate: {
-      get() {
-        return [this.condition4RecordList.CalculateDate.First, this.condition4RecordList.CalculateDate.Second];
-      },
-      set(newVal) {
-        const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
-        this.setRequestObj([['CalculateDate', 'First'], key]);
-        this.setRequestObj([['CalculateDate', 'Second'], value]);
-        this.getRecordList();
-      },
-    },
   },
   data() {
-    return {
-      dateList: [{ name: '今日报价', ID: 'today' }, { name: '昨日报价', ID: 'yesterday' }, { name: '本周报价', ID: 'curWeek' }, { name: '上周报价', ID: 'lastWeek' }],
-      dateMenus: [
-        { text: '今天', key: 'TodayDate' },
-        { text: '昨天', key: 'YesterdayDate' },
-        { text: '前天', key: 'BeforeYesterdayTimeDate' },
-        { text: '本周', key: 'curWeekDate' },
-        { text: '上周', key: 'lastWeekDate' },
-      ],
-    };
+    return {};
   },
   methods: {
     getRecordList() {
-      this.$store.dispatch('PriceRecord/getRecordList');
+      this.$store.dispatch('TraceClientList/getTraceClientList');
     },
     setRequestObj(e) {
-      this.$store.commit('PriceRecord/setCondition4RecordList', e);
+      this.$store.commit('TraceClientList/setCondition4RecordList', e);
     },
     clearRequestObj() {
-      this.$store.commit('PriceRecord/clearCondition4RecordList');
+      this.$store.commit('TraceClientList/clearCondition4RecordList');
     },
   },
   mounted() {

@@ -6,9 +6,9 @@
     </main>
     <footer>
       <Count
-       :watchPage='condition4RecordList.Page'
+       :watchPage='condition4TraceRecordList.Page'
        :handlePageChange='handlePageChange'
-       :count='RecordDataNumber'
+       :count='TraceRecordDataNumber'
        :pageSize='30'
        >
        <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
@@ -28,7 +28,7 @@ import { mapState } from 'vuex';
 export default {
   name: 'TraceRecordPage',
   computed: {
-    ...mapState('TraceRecord', ['condition4RecordList', 'RecordDataNumber']),
+    ...mapState('TraceRecord', ['condition4TraceRecordList', 'TraceRecordDataNumber']),
     ...mapState('common', ['Permission']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
@@ -37,15 +37,15 @@ export default {
       return {};
     },
     condition() {
-      return CommonClassType.filter(this.condition4RecordList, true);
+      return CommonClassType.filter(this.condition4TraceRecordList, true);
     },
     configObj() {
       return {
         condition: this.condition,
-        count: this.RecordDataNumber,
-        fileDefaultName: '报价记录',
-        fileDate: this.condition4RecordList.CalculateDate,
-        downFunc: data => this.api.getCalculatePriceRecordListExcel(data),
+        count: this.TraceRecordDataNumber,
+        fileDefaultName: '追踪记录',
+        fileDate: this.condition4TraceRecordList.AddTime,
+        downFunc: data => this.api.getCustomerTrackLogListExcel(data),
       };
     },
   },
@@ -62,10 +62,15 @@ export default {
   },
   methods: {
     handlePageChange(page) {
-      this.$store.dispatch('TraceRecord/getRecordList', page);
+      this.$store.dispatch('TraceRecord/getCustomerTrackLogList', page);
     },
     onDetailClick(data) {
       this.detailData = data;
+      const paramsData = {
+        customerID: data.Customer.CustomerID,
+        customerInfo: data.Customer,
+      };
+      this.$router.push({ name: 'TraceRecordDetail', params: paramsData });
     },
   },
 };
