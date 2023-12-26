@@ -134,8 +134,14 @@ export default {
       });
     },
     confirm() {
+      const reg = /(^\d*[0-9]\d*(\.\d{1,2})?$)|0\.(\d?[0-9]|[0-9]\d?)$/;
+      // const reg = /(^\d*[1-9]\d*(\.\d{1,2})?$)|0\.(\d?[1-9]|[1-9]\d?)$/;
       if (this.Amount === '' || this.Amount === null) {
         this.messageBox.failSingleError('提交失败', '请输入扣除损失金额');
+        return;
+      }
+      if (!reg.test(this.Amount)) {
+        this.messageBox.failSingleError('提交失败', '扣除损失金额金额必须为大于0的数字且最多允许2位小数');
         return;
       }
       const cb = () => {

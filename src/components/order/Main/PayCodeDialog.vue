@@ -83,7 +83,7 @@ export default {
       // 轮询付款状态
       // this.rollPoling = false;
       const res = await this.api.getPayResultExtend(this.PayCodeData.PayCode, this.OrderID);
-      if (res.data.Status !== 9037) {
+      if (res.data.Status !== 9015) {
         if (res.data.Status === 1000) {
           this.rollPoling = true;
         } else if (res.data.Status === 1100) {
