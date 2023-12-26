@@ -29,23 +29,16 @@
         :value="condition4RecordList.CustomerType.Second"
         label=""
       />
-      <OrderChannelSelector
-        :options='selfHelpOrderTypeList'
-        :requestFunc='getRecordList'
-        :changePropsFunc='setRequestObj'
-        :typeList="[['Terminal', '']]"
-        :value='condition4RecordList.Terminal'
-        label="沟通方式="
-        isRadio
-       />
-      <order-channel-selector
-        :options="userTypeList"
-        :requestFunc="getRecordList"
-        :changePropsFunc="setRequestObj"
-        :typeList="[['CustomerType', 'First']]"
-        :value="condition4RecordList.CustomerType.First"
-        :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
-        label="沟通人"
+    <staff-selector
+      title="沟通人"
+      needlimit
+      isLineStyle
+      showArrow
+      :remote="false"
+      :changePropsFunc='setRequestObj'
+      :requestFunc='getRecordList'
+      :typeList="[['OrderTaker', '']]"
+      :value="condition4RecordList.CustomerType.First"
       />
     </div>
     <div>
@@ -58,7 +51,15 @@
         :dateList="dateList"
         isFull
         label="时间筛选" />
-
+      <OrderChannelSelector
+        :options='selfHelpOrderTypeList'
+        :requestFunc='getRecordList'
+        :changePropsFunc='setRequestObj'
+        :typeList="[['Terminal', '']]"
+        :value='condition4RecordList.Terminal'
+        label="沟通方式="
+        isRadio
+       />
       <SearchInputComp
         :typeList="[['KeyWords', '']]"
         :requestFunc='getRecordList'
@@ -76,6 +77,7 @@
 import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
+import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState } from 'vuex';
 import EpCascaderByArea from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
@@ -86,6 +88,7 @@ export default {
     LineDateSelectorComp,
     OrderChannelSelector,
     EpCascaderByArea,
+    StaffSelector,
     // ElDateRangeSelector,
   },
   computed: {

@@ -11,10 +11,14 @@
   >
     <el-table-column
       prop="Customer.CustomerName"
-      label="客户"
+      label="客户（编号）"
       minWidth="224"
       show-overflow-tooltip
-    ></el-table-column>
+    >
+      <span slot-scope="scope">
+        {{scope.row.Customer.CustomerName}}（{{scope.row.Customer.CustomerSN}}）
+      </span>
+    </el-table-column>
     <el-table-column
       label="销售区域"
       minWidth="136"
@@ -29,48 +33,52 @@
       minWidth="184"
       show-overflow-tooltip
     >
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.ProductParams.Attributes | getProductName
-      }}</span>
+      <span class="is-gray" slot-scope="scope">
+        {{`${(scope.row.Type && scope.row.Type.Second) || ''}${(scope.row.Grade && scope.row.Grade.Second) || ''}`}}
+      </span>
     </el-table-column>
     <el-table-column
-      prop="Customer.CustomerName"
-      label="客户等级分类"
+      prop="Customer.Mobile"
+      label="联系电话"
       minWidth="136"
       show-overflow-tooltip
     ></el-table-column>
     <el-table-column
+      prop="Customer.QQ"
       label="QQ"
       width="103"
       show-overflow-tooltip
-    >
-      <template slot-scope="scope">{{ scope.row.Funds.OriginalPrice }}元</template>
-    </el-table-column>
+    ></el-table-column>
     <el-table-column
+      prop="TodayCommunicateCount"
       label="今日联系次数"
       width="124"
       show-overflow-tooltip
-    >
-      <template slot-scope="scope">{{ scope.row.Funds.FinalPrice }}元</template>
-    </el-table-column>
-    <el-table-column label="今日联系次数" show-overflow-tooltip width="164">
+    ></el-table-column>
+    <el-table-column label="下次沟通时间" show-overflow-tooltip width="164">
       <span class="is-gray" slot-scope="scope">{{
-        scope.row.CreateTime | format2MiddleLangTypeDate
+        scope.row.NextCommunicateTime
       }}</span>
     </el-table-column>
     <el-table-column label="未完成跟踪订单" show-overflow-tooltip width="118">
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.CreateTime | format2MiddleLangTypeDate
-      }}</span>
+      <span slot-scope="scope">{{
+        scope.row.UnFinishTrackCount
+      }} 个</span>
     </el-table-column>
     <el-table-column
       prop="Customer.Mobile"
       label="最近一次沟通（方式/时间）"
       width="215"
-    ></el-table-column>
+    >
+      <span slot-scope="scope">
+        {{ scope.row.Operator.OperatorName }}
+        （{{ scope.row.LastCommunicateType ? '电话' : 'QQ' }}
+        {{ scope.row.LastCommunicateTime | format2MiddleLangTypeDate }}）
+      </span>
+    </el-table-column>
     <el-table-column
       label="最近一次沟通备注"
-      prop="Customer.QQ"
+      prop="LastCommunicateRemark"
       width="152"
     >
     </el-table-column>

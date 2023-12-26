@@ -98,6 +98,12 @@ const api = {
   getCustomerTrackLogCancel(quotationNumber) { // 报价单作废
     return instance.get(`/Api/CustomerTrackLog/Cancel?quotationNumber=${quotationNumber}`);
   },
+  getCustomerCommunicateLogSave(data) { // 添加客户沟通记录
+    return instance.post('/Api/CustomerCommunicateLog/Save', data);
+  },
+  getCustomerTrackLogChangeStatus(data) { // 添加客户追踪记录改变状态
+    return instance.post('/Api/CustomerTrackLog/ChangeStatus', data);
+  },
 
   /* 付款列表部分api
    ----------------------------------------------------------------------------------- */

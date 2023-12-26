@@ -44,7 +44,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="备注（选填）：" required>
+      <el-form-item label="备注（选填）：">
         <TextareaInput
         v-model.trim="TrackLogData.TrackRemark" show-word-limit :maxlength="300" placeholder="请输入备注" autocomplete="off"></TextareaInput>
       </el-form-item>
@@ -57,6 +57,7 @@
 import CommonDialogComp from '@/packages/CommonDialogComp';
 import TextareaInput from '@/components/common/TextareaInput';
 import EpCascaderByProduct from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
+import { mapActions } from 'vuex';
 
 export default {
   props: {
@@ -98,6 +99,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions('TraceClientInfo', ['getCustomerTrackDetail']),
     setRequestObj([[key1, key2], value]) {
       this.TrackLogData[key1][key2] = value;
     },
@@ -105,13 +107,19 @@ export default {
       this.$emit('cloce');
     },
     onSubmit() {
-      console.log(this.TrackLogData);
-      if (!this.TrackLogData.NextOperater) {
-        this.messageBox.failSingleError('操作失败', '请选择转交人');
-      } else if (!this.TrackLogData.Reason) {
-        this.messageBox.failSingleError('操作失败', '请输入转交原因');
+      if (!this.TrackLogData.Product.ClassID && !this.TrackLogData.Product.TypeID && !this.TrackLogData.Product.ProductID) {
+        this.messageBox.failSingleError('操作失败', '请选择产品');
+      } else if (!this.TrackLogData.Spec) {
+        this.messageBox.failSingleError('操作失败', '请输入规格说明');
+      } else if (this.TrackLogData.FinalPrice === '' || this.TrackLogData.FinalPrice === null) {
+        this.messageBox.failSingleError('操作失败', '请输入价格');
       } else {
-        this.$emit('submit', this.TrackLogData);
+        this.api.getCustomerTrackLogSave(this.TrackLogData).then(res => {
+          if (res.data.Status === 1000) {
+            this.onCancle();
+            this.getCustomerTrackDetail(this.customerID);
+          }
+        });
       }
     },
     onOpen() {

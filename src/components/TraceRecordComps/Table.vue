@@ -14,52 +14,56 @@
       label="来源（报价编号）"
       minWidth="152"
       show-overflow-tooltip
-    ></el-table-column>
+    >
+      <span slot-scope="scope">
+        {{scope.row.QuotationNumber || ''}}
+      </span>
+    </el-table-column>
     <el-table-column
       label="产品"
       minWidth="235"
       show-overflow-tooltip
     >
-      <span class="is-gray" slot-scope="scope">
-        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+      <span slot-scope="scope">
+        {{ scope.row.ProductClass.Name }}
+        {{ scope.row.ProductType.Name }}
+        {{ scope.row.Product.Name }}
       </span>
     </el-table-column>
     <el-table-column
+      prop="Spec"
       label="规格"
       minWidth="248"
       show-overflow-tooltip
-    >
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.ProductParams.Attributes | getProductName
-      }}</span>
-    </el-table-column>
+    ></el-table-column>
     <el-table-column
-      prop="Customer.CustomerName"
+      prop="FinalPrice"
       label="价格"
       minWidth="48"
       show-overflow-tooltip
-    ></el-table-column>
-    <el-table-column
+      ></el-table-column>
+      <el-table-column
       label="状态"
       width="68"
       show-overflow-tooltip
-    >
-      <template slot-scope="scope">{{ scope.row.Funds.OriginalPrice }}元</template>
+      >
+      <template slot-scope="scope">{{ scope.row.TrackStatus }}元</template>
     </el-table-column>
     <el-table-column
+      prop="TrackRemark"
       label="备注"
       width="108"
       show-overflow-tooltip
-    >
-      <template slot-scope="scope">{{ scope.row.Funds.FinalPrice }}元</template>
-    </el-table-column>
+    ></el-table-column>
     <el-table-column label="最近一次改变状态（操作人）" show-overflow-tooltip width="222">
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.CreateTime | format2MiddleLangTypeDate
-      }}</span>
+      <span slot-scope="scope">{{
+        scope.row.ChangeStatusTime | format2MiddleLangTypeDate
+      }}（{{
+        scope.row.Operator.OperatorName
+      }}）</span>
     </el-table-column>
     <el-table-column label="添加时间" show-overflow-tooltip width="136">
-      <span class="is-gray" slot-scope="scope">{{
+      <span slot-scope="scope">{{
         scope.row.CreateTime | format2MiddleLangTypeDate
       }}</span>
     </el-table-column>
@@ -67,12 +71,19 @@
       prop="Customer.Mobile"
       label="客户（编号）"
       width="184"
-    ></el-table-column>
+    >
+      <span slot-scope="scope">
+        {{scope.row.Customer.CustomerName}}（{{scope.row.Customer.CustomerSN}}）
+      </span>
+    </el-table-column>
     <el-table-column
       label="销售区域"
       prop="Customer.QQ"
       width="156"
     >
+      <span class="is-gray" slot-scope="scope">
+        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+      </span>
     </el-table-column>
     <el-table-column label="操作" minWidth="127" show-overflow-tooltip>
       <div class="is-font-12 btn-wrap" slot-scope="scope">

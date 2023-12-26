@@ -10,17 +10,21 @@
     class="mp-erp-get-price-record-page-main-table-comp-wrap ft-14-table"
   >
     <el-table-column
-      prop="Customer.CustomerName"
+      prop="Customer.CreateTime"
       label="沟通时间"
       minWidth="196"
       show-overflow-tooltip
-    ></el-table-column>
+    >
+      <span slot-scope="scope">
+        {{scope.row.CreateTime | format2MiddleLangTypeDate}}
+      </span>
+    </el-table-column>
     <el-table-column
       label="沟通人"
       minWidth="122"
       show-overflow-tooltip
     >
-      <span class="is-gray" slot-scope="scope">
+      <span slot-scope="scope">
         {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
       </span>
     </el-table-column>
@@ -29,12 +33,12 @@
       minWidth="96"
       show-overflow-tooltip
     >
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.ProductParams.Attributes | getProductName
+      <span slot-scope="scope">{{
+        scope.row.CommunicateType ? '电话' : 'QQ'
       }}</span>
     </el-table-column>
     <el-table-column
-      prop="Customer.CustomerName"
+      prop="CommunicateRemark"
       label="沟通备注"
       minWidth="296"
       show-overflow-tooltip
@@ -44,17 +48,19 @@
       width="282"
       show-overflow-tooltip
     >
-      <template slot-scope="scope">{{ scope.row.Funds.FinalPrice }}元</template>
+      <span slot-scope="scope">
+        {{scope.row.Customer.CustomerName}}（{{scope.row.Customer.CustomerSN}}）
+      </span>
     </el-table-column>
     <el-table-column label="销售区域" show-overflow-tooltip width="296">
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.CreateTime | format2MiddleLangTypeDate
-      }}</span>
+      <span slot-scope="scope">
+        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+      </span>
     </el-table-column>
     <el-table-column label="客户等级分类" show-overflow-tooltip width="272">
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.CreateTime | format2MiddleLangTypeDate
-      }}</span>
+      <span slot-scope="scope">
+        {{`${(scope.row.Type && scope.row.Type.Second) || ''}${(scope.row.Grade && scope.row.Grade.Second) || ''}`}}
+      </span>
     </el-table-column>
     <el-table-column label="操作" minWidth="127" show-overflow-tooltip>
       <div class="is-font-12 btn-wrap" slot-scope="scope">

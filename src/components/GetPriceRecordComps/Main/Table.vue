@@ -23,7 +23,13 @@
       label="规格"
       minWidth="248"
       show-overflow-tooltip
-    ></el-table-column>
+    >
+      <span class="is-gray" slot-scope="scope">
+        {{ scope.row.ProductParams.Attributes.ProductAmount }}{{ scope.row.ProductParams.Attributes.Unit }}
+        {{ scope.row.ProductParams.Attributes.KindCount }}款 {{ scope.row.ProductParams.Size.DisplayContent }}
+        {{ scope.row.ProductParams.Attributes.DisplayName }}
+      </span>
+    </el-table-column>
     <el-table-column
       label="原价"
       width="88"
@@ -44,8 +50,8 @@
       }}</span>
     </el-table-column>
     <el-table-column label="状态" show-overflow-tooltip width="88">
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.CreateTime | format2MiddleLangTypeDate
+      <span slot-scope="scope">{{
+        PriceRecordStatus.find(it => it.value === scope.row.TrackStatus)?.label
       }}</span>
     </el-table-column>
     <el-table-column
@@ -53,7 +59,11 @@
       label="客户"
       minWidth="148"
       show-overflow-tooltip
-    ></el-table-column>
+    >
+      <span slot-scope="scope">
+        {{scope.row.Customer.CustomerName}}（{{scope.row.Customer.CustomerSN}}）
+      </span>
+    </el-table-column>
     <el-table-column
       label="销售区域"
       minWidth="136"
@@ -67,10 +77,14 @@
       prop="Customer.Mobile"
       label="客户等级分类"
       width="144"
-    ></el-table-column>
+    >
+      <span class="is-gray" slot-scope="scope">
+        {{`${(scope.row.Type && scope.row.Type.Second) || ''}${(scope.row.Grade && scope.row.Grade.Second) || ''}`}}
+      </span>
+    </el-table-column>
     <el-table-column
       label="报价编号"
-      prop="Customer.QQ"
+      prop="QuotationNumber"
       width="156"
     >
     </el-table-column>
@@ -93,6 +107,12 @@ import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
+  props: {
+    PriceRecordStatus: {
+      type: Array,
+      default: () => [],
+    },
+  },
   computed: {
     ...mapState('PriceRecord', ['RecordDataList', 'RecordDataNumber', 'loading']),
   },

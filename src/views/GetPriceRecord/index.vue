@@ -1,8 +1,8 @@
 <template>
   <section class="mp-erp-get-price-record-page-containner">
-    <Header />
+    <Header :PriceRecordStatus="PriceRecordStatus"/>
     <main class="mp-erp-get-price-record-page-main-comp-wrap">
-      <Table @detail='onDetailClick' />
+      <Table :PriceRecordStatus="PriceRecordStatus" @detail='onDetailClick' />
     </main>
     <footer>
       <Count
@@ -55,6 +55,12 @@ export default {
   data() {
     return {
       detailData: null,
+      PriceRecordStatus: [
+        { label: '不限', value: '' },
+        { label: '未处理', value: 0 },
+        { label: '已追踪', value: 1 },
+        { label: '作废', value: 2 },
+      ],
     };
   },
   methods: {

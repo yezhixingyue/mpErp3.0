@@ -22,7 +22,7 @@
           <td>979701921</td>
         </tr>
       </table>
-      <p class="next-communication-time">下一次沟通时间：<span>{{ CustomerTrackDetail?.NextCommunicateTime }}</span></p>
+      <p class="next-communication-time">下一次沟通时间：<span>{{ CustomerTrackDetail?.NextCommunicateTime | format2MiddleLangTypeDate }}</span></p>
     </div>
     <div class="content-item">
       <p class="common-item-title">近30天沟通记录: <span class="number-contacts">今日已联系 {{ CustomerTrackDetail?.TodayCommunicateCount }} 次</span></p>
@@ -31,7 +31,8 @@
         border
         fit
         :data="CustomerTrackDetail?.CustomerCommunicateLogs || []"
-        style="width: 640px"
+        max-height="400px"
+        style="width: 640px;"
         class="record-communication-table mp-erp-get-price-record-page-main-table-comp-wrap ft-14-table"
       >
         <el-table-column
@@ -39,9 +40,13 @@
           label="时间"
           minWidth="129"
           show-overflow-tooltip
-          ></el-table-column>
+          >
+          <span slot-scope="scope">{{
+            scope.row.CreateTime | format2MiddleLangTypeDate
+          }}</span>
+        </el-table-column>
           <el-table-column
-          prop="Operator "
+          prop="Operator"
           label="沟通人"
           minWidth="123"
           show-overflow-tooltip
@@ -52,7 +57,7 @@
           show-overflow-tooltip
         >
           <span class="is-gray" slot-scope="scope">{{
-            scope.row.CommunicateType
+            scope.row.CommunicateType ? 'QQ' : '电话'
           }}</span>
         </el-table-column>
         <el-table-column
@@ -61,19 +66,21 @@
           minWidth="277"
           show-overflow-tooltip
         ></el-table-column>
-        <div slot="empty">
-          <span v-show="!loading">暂无数据</span>
-        </div>
       </el-table>
       <p class="add-record-communication-btn">
-        <el-button>+添加沟通记录</el-button>
+        <el-button class="linear-btn" @click="addRecordCommunicationVisible = true">+添加沟通记录</el-button>
       </p>
     </div>
+    <recordCommunicationDialogComp
+    :customerID="customerID"
+    :visible="addRecordCommunicationVisible"
+    @cloce="addRecordCommunicationVisible = false"/>
   </section>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import recordCommunicationDialogComp from './recordCommunicationDialogComp';
 
 export default {
   props: {
@@ -81,12 +88,17 @@ export default {
       type: Object,
       default: null,
     },
+    customerID: {
+      type: String,
+      default: '',
+    },
   },
   components: {
+    recordCommunicationDialogComp,
   },
   data() {
     return {
-      loading: false,
+      addRecordCommunicationVisible: false,
     };
   },
   computed: {
@@ -120,6 +132,9 @@ export default {
   .record-communication-table{
     margin-top: 10px;
     margin-left: 13px;
+    .el-table__body-wrapper{
+      overflow-y: auto;
+    }
   }
   .add-record-communication-btn{
     width: 640px;

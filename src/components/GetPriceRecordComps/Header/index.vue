@@ -48,25 +48,27 @@
        />
     </div>
     <div>
-      <LineDateSelectorComp
-        :changePropsFunc='setRequestObj'
-        :requestFunc='getRecordList'
-        :typeList="[['DateType', ''], ['CalculateDate', 'First'], ['CalculateDate', 'Second']]"
-        :dateValue='condition4RecordList.DateType'
-        :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
-        :dateList="dateList"
-        isFull
-        label="时间筛选" />
-
-      <OrderChannelSelector
-        :options='selfHelpOrderTypeList'
-        :requestFunc='getRecordList'
-        :changePropsFunc='setRequestObj'
-        :typeList="[['Terminal', '']]"
-        :value='condition4RecordList.Terminal'
-        label="状态="
-        isRadio
-       />
+      <p class="left-box">
+        <LineDateSelectorComp
+          :changePropsFunc='setRequestObj'
+          :requestFunc='getRecordList'
+          :typeList="[['DateType', ''], ['CalculateDate', 'First'], ['CalculateDate', 'Second']]"
+          :dateValue='condition4RecordList.DateType'
+          :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+          :dateList="dateList"
+          isFull
+          label="时间筛选" />
+        <OrderChannelSelector
+          :options='PriceRecordStatus'
+          :requestFunc='getRecordList'
+          :changePropsFunc='setRequestObj'
+          :typeList="[['Terminal', '']]"
+          :value='condition4RecordList.Terminal'
+          :defaultProps="{label: 'label',value: 'value'}"
+          label="状态"
+          isRadio
+         />
+      </p>
       <SearchInputComp
         :typeList="[['KeyWords', '']]"
         :requestFunc='getRecordList'
@@ -91,6 +93,12 @@ import MinMaxNum from '@/components/common/min-max-Num.vue';
 import EpCascaderByArea from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
+  props: {
+    PriceRecordStatus: {
+      type: Array,
+      default: () => [],
+    },
+  },
   components: {
     SearchInputComp,
     LineDateSelectorComp,
@@ -153,6 +161,19 @@ export default {
 .mp-erp-get-price-record-page-header-comp-wrap {
   padding: 20px 0;
   background-color: #fff;
+  .left-box{
+    display: flex;
+    flex-wrap: wrap;
+    .mp-line-date-selector-wrap{
+      min-width: 630px;
+    }
+    .mp-common-comps-order-channel-selector-wrap{
+      padding-top: 18px;
+      main{
+        display: flex;
+      }
+    }
+  }
   > div {
     display: flex;
     align-items: center;

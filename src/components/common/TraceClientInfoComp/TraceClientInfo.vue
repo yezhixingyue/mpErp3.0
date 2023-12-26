@@ -2,12 +2,16 @@
   <section class="trace-client-info-comp">
     <header class="nav"><span @click="onGoBackClick">报价记录</span> > 详情</header>
     <main class="trace-client-info-box">
-      <Left :CustomerTrackDetail="CustomerTrackDetail"/>
+      <Left :CustomerTrackDetail="CustomerTrackDetail"
+      :customerID="customerID"
+      />
       <div class="line"></div>
       <Right
         :CustomerTrackDetail="CustomerTrackDetail"
         :customerID="customerID"
-        :quotation="quotation"/>
+        :quotation="quotation"
+        @setTrackStatus="ChangeTrackStatus"
+        />
     </main>
     <footer>
       <el-button @click="onGoBackClick">返回</el-button>
@@ -16,7 +20,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import Left from './left.vue';
 import Right from './right.vue';
 
@@ -28,7 +32,6 @@ export default {
   data() {
     return {
       loading: false,
-      CustomerTrackDetail: null,
       customerID: null,
       customerInfo: null,
       quotation: null,
@@ -36,6 +39,7 @@ export default {
   },
   computed: {
     ...mapState('common', ['Permission']),
+    ...mapState('TraceClientInfo', ['CustomerTrackDetail']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionAfterSalesApply?.Obj) {
         return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;
@@ -44,28 +48,33 @@ export default {
     },
   },
   methods: {
+    ...mapActions('TraceClientInfo', ['getCustomerTrackDetail']),
+    ChangeTrackStatus(status) {
+      if (this.quotation) {
+        this.quotation.TrackStatus = status;
+      }
+    },
     onGoBackClick() {
       this.$goback();
     },
-    getCustomerTrackDetail(customerID) {
-      this.api.getCustomerTrackDetail(customerID).then(res => {
-        if (res.data.Status === 1000) {
-          this.CustomerTrackDetail = res.data.Data;
-        }
-      });
-    },
+    // getCustomerTrackDetail(customerID) {
+    //   this.api.getCustomerTrackDetail(customerID).then(res => {
+    //     if (res.data.Status === 1000) {
+    //       this.CustomerTrackDetail = res.data.Data;
+    //     }
+    //   });
+    // },
   },
   created() {
     const { customerID, customerInfo, quotation } = this.$route.params;
-    console.log(customerID, customerInfo, quotation);
     if (customerID) {
       this.customerID = customerID;
     }
     if (customerInfo) {
-      this.customerInfo = customerInfo;
+      this.customerInfo = { ...customerInfo };
     }
     if (quotation) {
-      this.quotation = quotation;
+      this.quotation = { ...quotation };
     }
     this.getCustomerTrackDetail(customerID);
   },
@@ -80,6 +89,14 @@ export default {
   border-left: 12px solid #f5f5f5;
   height: 100%;
   padding-left: 20px;
+  .el-button.linear-btn{
+    background: linear-gradient(to right, #26bcf9, #35dff9);
+    border: none;
+    color: #fff;
+    &:hover{
+      opacity: 0.88;
+    }
+  }
   >.nav{
     padding-top: 15px;
     font-size: 12px;
