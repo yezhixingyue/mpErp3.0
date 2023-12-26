@@ -141,7 +141,7 @@ export default {
         return;
       }
       if (!reg.test(this.Amount)) {
-        this.messageBox.failSingleError('提交失败', '扣除损失金额金额必须为大于0的数字且最多允许2位小数');
+        this.messageBox.failSingleError('提交失败', '请正确输入扣除损失金额');
         return;
       }
       const cb = () => {
