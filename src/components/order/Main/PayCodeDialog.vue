@@ -118,7 +118,7 @@ export default {
     },
     open() {
       this.rollPoling = false;
-      this.timeRemaining = 70;
+      this.timeRemaining = 299;
       this.openTimer(); // 定时器
       this.openRollPoling(); // 轮询
       this.key = true;
