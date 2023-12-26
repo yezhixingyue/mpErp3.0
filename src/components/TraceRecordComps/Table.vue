@@ -81,8 +81,8 @@
       prop="Customer.QQ"
       width="156"
     >
-      <span class="is-gray" slot-scope="scope">
-        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+      <span slot-scope="scope">
+        {{scope.row.Customer.SellArea?.RegionalName}}{{scope.row.Customer.SellArea?.CityName}}{{scope.row.Customer.SellArea?.CountyName}}
       </span>
     </el-table-column>
     <el-table-column label="操作" minWidth="127" show-overflow-tooltip>

@@ -25,7 +25,7 @@
       show-overflow-tooltip
     >
       <span slot-scope="scope">
-        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+        {{scope.row.Operator.OperatorName}}
       </span>
     </el-table-column>
     <el-table-column
@@ -54,7 +54,7 @@
     </el-table-column>
     <el-table-column label="销售区域" show-overflow-tooltip width="296">
       <span slot-scope="scope">
-        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+        {{scope.row.Customer.SellArea?.RegionalName}}{{scope.row.Customer.SellArea?.CityName}}{{scope.row.Customer.SellArea?.CountyName}}
       </span>
     </el-table-column>
     <el-table-column label="客户等级分类" show-overflow-tooltip width="272">

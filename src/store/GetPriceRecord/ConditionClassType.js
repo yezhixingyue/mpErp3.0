@@ -31,7 +31,7 @@ export default class RecordListConditonClass {
     Second: '',
   }
 
-  Terminal = '';
+  TrackStatus = '';
 
   CustomerType= {
     First: '',

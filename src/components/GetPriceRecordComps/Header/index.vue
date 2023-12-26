@@ -62,8 +62,8 @@
           :options='PriceRecordStatus'
           :requestFunc='getRecordList'
           :changePropsFunc='setRequestObj'
-          :typeList="[['Terminal', '']]"
-          :value='condition4RecordList.Terminal'
+          :typeList="[['TrackStatus', '']]"
+          :value='condition4RecordList.TrackStatus'
           :defaultProps="{label: 'label',value: 'value'}"
           label="状态"
           isRadio

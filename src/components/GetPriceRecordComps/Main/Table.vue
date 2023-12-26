@@ -14,7 +14,7 @@
       minWidth="176"
       show-overflow-tooltip
     >
-      <span class="is-gray" slot-scope="scope">{{
+      <span slot-scope="scope">{{
         scope.row.ProductParams.Attributes | getProductName
       }}</span>
     </el-table-column>
@@ -24,7 +24,7 @@
       minWidth="248"
       show-overflow-tooltip
     >
-      <span class="is-gray" slot-scope="scope">
+      <span slot-scope="scope">
         {{ scope.row.ProductParams.Attributes.ProductAmount }}{{ scope.row.ProductParams.Attributes.Unit }}
         {{ scope.row.ProductParams.Attributes.KindCount }}款 {{ scope.row.ProductParams.Size.DisplayContent }}
         {{ scope.row.ProductParams.Attributes.DisplayName }}
@@ -45,12 +45,12 @@
       <template slot-scope="scope">{{ scope.row.Funds.FinalPrice }}元</template>
     </el-table-column>
     <el-table-column label="报价时间" show-overflow-tooltip width="136">
-      <span class="is-gray" slot-scope="scope">{{
+      <span slot-scope="scope">{{
         scope.row.CreateTime | format2MiddleLangTypeDate
       }}</span>
     </el-table-column>
     <el-table-column label="状态" show-overflow-tooltip width="88">
-      <span slot-scope="scope">{{
+      <span :class="{ 'is-pink':scope.row.TrackStatus === 0}" slot-scope="scope">{{
         PriceRecordStatus.find(it => it.value === scope.row.TrackStatus)?.label
       }}</span>
     </el-table-column>
@@ -69,7 +69,7 @@
       minWidth="136"
       show-overflow-tooltip
     >
-      <span class="is-gray" slot-scope="scope">
+      <span slot-scope="scope">
         {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
       </span>
     </el-table-column>
@@ -78,7 +78,7 @@
       label="客户等级分类"
       width="144"
     >
-      <span class="is-gray" slot-scope="scope">
+      <span slot-scope="scope">
         {{`${(scope.row.Type && scope.row.Type.Second) || ''}${(scope.row.Grade && scope.row.Grade.Second) || ''}`}}
       </span>
     </el-table-column>

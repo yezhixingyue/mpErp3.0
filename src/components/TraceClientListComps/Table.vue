@@ -24,8 +24,8 @@
       minWidth="136"
       show-overflow-tooltip
     >
-      <span class="is-gray" slot-scope="scope">
-        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+      <span slot-scope="scope">
+        {{scope.row.Customer.SellArea?.RegionalName}}{{scope.row.Customer.SellArea?.CityName}}{{scope.row.Customer.SellArea?.CountyName}}
       </span>
     </el-table-column>
     <el-table-column
@@ -33,7 +33,7 @@
       minWidth="184"
       show-overflow-tooltip
     >
-      <span class="is-gray" slot-scope="scope">
+      <span slot-scope="scope">
         {{`${(scope.row.Type && scope.row.Type.Second) || ''}${(scope.row.Grade && scope.row.Grade.Second) || ''}`}}
       </span>
     </el-table-column>
@@ -56,7 +56,7 @@
       show-overflow-tooltip
     ></el-table-column>
     <el-table-column label="下次沟通时间" show-overflow-tooltip width="164">
-      <span class="is-gray" slot-scope="scope">{{
+      <span slot-scope="scope">{{
         scope.row.NextCommunicateTime
       }}</span>
     </el-table-column>
