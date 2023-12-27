@@ -31,17 +31,14 @@
           <span  @click="ServiceAfterSalesClick(scope.row)" v-if="scope.row.AllowAfterSale">
             <img src="@/assets/images/service.png" />售后
           </span>
-          <!-- <span  @click="jump2Service(scope.row)" v-if="scope.row.AllowAfterSales">
-            <img src="@/assets/images/service.png" />售后a
-          </span> -->
           <span v-else class="disbaled">
             <img src="@/assets/images/servicestop.png" />售后
           </span>
         </li>
-        <li v-if="localPermission.CancleOrder">
+        <li v-if="localPermission.CancleOrder || localPermission.ProductionStop">
           <!-- v-if="(canCancelStatuses.includes(scope.row.Status) || localPermission.CancleOrder)" -->
           <span
-            v-if="canCancelStatuses.includes(scope.row.Status)"
+            v-if="canCancelStatuses.includes(scope.row.Status) || (scope.row.Status === 55 && scope.row.IsAutoConvert && localPermission.ProductionStop)"
             @click="onOrderDel(scope.row, scope.$index)">
             <img src="@/assets/images/cancel.png" />取消
           </span>
@@ -106,16 +103,15 @@ export default {
       this.$emit('ServiceAfterSalesClick', data);
     },
     onOrderDel(data, index) {
-      this.setOrderID2Del(data.OrderID);
-      this.open(index, data.OrderID);
-      // 已生产
-      // if (data.Status >= 55) {
-      //   console.log('已生产');
-      //   this.$emit('TerminateProductionClick', index, data);
-      // } else {
-      //   this.setOrderID2Del(data.OrderID);
-      //   this.$emit('CancelProductionClick', index, data);
-      // }
+      // this.setOrderID2Del(data.OrderID);
+      // this.open(index, data.OrderID);
+      // 生产中
+      if (data.Status === 55) {
+        this.$emit('TerminateProductionClick', index, data);
+      } else {
+        this.setOrderID2Del(data.OrderID);
+        this.$emit('CancelProductionClick', index, data);
+      }
     },
     setStateStyle(Status) {
       if ((Status === 253 || Status === 254 || Status === 255)) return 'is-cancel';

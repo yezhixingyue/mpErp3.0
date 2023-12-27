@@ -116,6 +116,7 @@ export default {
       .order-info{
         flex: 1;
         margin-top: 27px;
+        padding-right: 30px;
         >li + li{
           margin-top: 5px;
         }
@@ -130,6 +131,7 @@ export default {
             text-align: right;
           }
           p{
+            line-height: 18px;
             i+i{
               margin-left: 5px;
             }

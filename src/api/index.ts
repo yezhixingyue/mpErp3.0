@@ -55,6 +55,9 @@ const api = {
   getOrderProductionStopSave(data) { // POST /Api/Order/ProductionStop/Save
     return instance.post('/Api/Order/ProductionStop/Save', data);
   },
+  getOrderProductionStopCancelPay(OrderID, payCode) { // 生产中止取消支付
+    return instance.put(`/Api/Order/ProductionStop/CancelPay?orderID=${OrderID}&payCode=${payCode}`);
+  },
   getOrderProductionStopPay(data) { // POST /Api/Order/ProductionStop/Pay
     return instance.post('/Api/Order/ProductionStop/Pay', data);
   },
@@ -301,6 +304,9 @@ const api = {
   },
   getPayResult(payCode, type = 11) { // GET /Api/PaymentOrder/PayResult 查询付款结果
     return instance.get('/Api/PaymentOrder/PayResult', { params: { payCode, type } });
+  },
+  getPayResultExtend(payCode, orderID) { // GET /Api/ProductionStop/PayResult 查询付款结果 (取消生产扫码用)
+    return instance.get('/Api/ProductionStop/PayResult', { params: { payCode, orderID } });
   },
   getPaymentData2Excel(data) { // POST /Api/PaymentOrder/Excel
     return instance.post('/Api/PaymentOrder/Excel', data, { responseType: 'arraybuffer' });

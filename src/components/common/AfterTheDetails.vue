@@ -311,7 +311,7 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 0 20px;
+  // padding: 0 20px;
   background-color: #F8F8F8;
   max-height: 100%;
   >.FeedbackInfoPage-main{

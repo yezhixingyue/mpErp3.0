@@ -17,8 +17,8 @@
       <formTableComp :list="ProductionInfo.PlateList" :formValue="formValue" @changeValue="data => formValue[data.ID] = data.value"/>
       <div class="from-box">
         <div class="left-tible" style="width: 507px;">
-          <h3>其他11块已裁切，如若取消，未做工序会一并取消</h3>
-          <pieceTableComp :list="tableList" />
+          <h3>其他{{ProductionInfo?.ChunkList.length}}块已裁切，如若取消，未做工序会一并取消</h3>
+          <pieceTableComp :OrderData="OrderData" :list="ProductionInfo.ChunkList" />
         </div>
         <div class="right-from" style="width: 507px;">
           <h3>已生产完成{{ProductionInfo.FinishedKindCount}}款（共{{OrderData.KindCount}}款）</h3>
@@ -32,10 +32,10 @@
         <el-button @click="close">取消</el-button>
       </div>
       <PayCodeDialog :visible="PayCodeVisible" @close='PayCodeDialogClose'
-        :PayCodeData="PayCodeData" @seccess="paySeccess"/>
+        :PayCodeData="PayCodeData" :OrderID="OrderData.OrderID" @seccess="paySeccess"/>
     </div>
     <div v-else class="no-data">
-      <p>未获取到生产数据</p>
+      <p>{{initLoading?'':'未获取到生产数据'}}</p>
       <el-button @click="close">关闭</el-button>
     </div>
   </el-dialog>
@@ -70,10 +70,11 @@ export default {
   },
   data() {
     return {
+      initLoading: false,
       dialogVisible: false,
       tableList: [],
       formValue: {},
-      Amount: 0,
+      Amount: null,
       PaymentMethod: 0,
       PayCodeVisible: false,
       PayCodeData: null,
@@ -86,7 +87,9 @@ export default {
   },
   methods: {
     paySeccess() {
-      this.submit();
+      // this.submit();
+      this.PayCodeDialogClose();
+      this.$emit('yes');
     },
     PayCodeDialogClose() {
       this.PayCodeVisible = false;
@@ -95,7 +98,7 @@ export default {
     refreshTime() {
       clearInterval(this.timer);
       this.isOverTime = false;
-      const num = 3000;
+      const num = 1000 * 60 * 5;
       this.timer = setTimeout(() => {
         this.isOverTime = true;
       }, num);
@@ -107,30 +110,12 @@ export default {
     },
     submit() {
       const _temp = {
+        ID: this.ProductionInfo.ID,
         OrderID: this.OrderData.OrderID,
         PayCode: this.PayCodeData?.PayCode || '',
         StopLossAmount: this.Amount,
         PayType: this.PaymentMethod,
-        PlateList: [
-          // {
-          //   ID: '"00000000-0000-0000-0000-000000000000"',
-          //   Code: 0,
-          //   Material: '"string"',
-          //   Size: '"string"',
-          //   Number: 0,
-          //   ChunkCount: 0,
-          //   ChunkList: [
-          //     {
-          //       Number: 0,
-          //       Size: '"string"'
-          //     }
-          //   ],
-          //   WorkingList: [
-          //     string
-          //   ],
-          //   IsWholePlate: true
-          // }
-        ],
+        PlateList: [],
       };
       _temp.PlateList = this.ProductionInfo.PlateList.map(it => ({ ...it, IsWholePlate: this.formValue[it.ID] === 2 }));
       // 请求取消接口
@@ -149,6 +134,16 @@ export default {
       });
     },
     confirm() {
+      const reg = /(^\d*[0-9]\d*(\.\d{1,2})?$)|0\.(\d?[0-9]|[0-9]\d?)$/;
+      // const reg = /(^\d*[1-9]\d*(\.\d{1,2})?$)|0\.(\d?[1-9]|[1-9]\d?)$/;
+      if (this.Amount === '' || this.Amount === null) {
+        this.messageBox.failSingleError('提交失败', '请输入扣除损失金额');
+        return;
+      }
+      if (!reg.test(this.Amount)) {
+        this.messageBox.failSingleError('提交失败', '请正确输入扣除损失金额');
+        return;
+      }
       const cb = () => {
         this.refreshTime();
         this.initData();
@@ -160,14 +155,17 @@ export default {
       }
     },
     open() {
+      // this.api.getOrderProductionStopCancelPay(this.OrderData.OrderID);
       this.refreshTime();
       this.initData();
     },
     initData() {
+      this.initLoading = true;
       Promise.all([
         this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).catch(() => {}),
         this.api.getOrderProductionInfo(this.OrderData.OrderID).catch(() => {}),
       ]).then(([ProductionStopQueryRes, ProductionInfoRes]) => {
+        this.initLoading = false;
         if (ProductionStopQueryRes.data.Status === 1000 && ProductionInfoRes.data.Status === 1000) {
           this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
           this.ProductionInfo = ProductionInfoRes.data.Data;
@@ -178,7 +176,8 @@ export default {
         });
         this.formValue = { ...tempValue };
       }).catch((err) => {
-        console.log(err);
+        this.initLoading = false;
+        throw new Error(err);
       });
       // this.tableList = [
       //   { ID: 101 },
