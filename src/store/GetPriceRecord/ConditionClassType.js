@@ -3,7 +3,7 @@ export default class RecordListConditonClass {
 
   KeyWords = ''; // 关键词 (活动名称)
 
-  PageSize = 30; // 页容量
+  PageSize = 20; // 页容量
 
   DateType = 'today';
 

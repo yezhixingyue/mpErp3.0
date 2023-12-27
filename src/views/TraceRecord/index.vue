@@ -9,7 +9,7 @@
        :watchPage='condition4TraceRecordList.Page'
        :handlePageChange='handlePageChange'
        :count='TraceRecordDataNumber'
-       :pageSize='30'
+       :pageSize='condition4TraceRecordList.PageSize'
        >
        <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
       </Count>

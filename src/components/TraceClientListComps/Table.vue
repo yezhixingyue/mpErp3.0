@@ -34,7 +34,9 @@
       show-overflow-tooltip
     >
       <span slot-scope="scope">
-        {{`${(scope.row.Type && scope.row.Type.Second) || ''}${(scope.row.Grade && scope.row.Grade.Second) || ''}`}}
+        {{ userTypeList.find(it => it.CategoryID === scope.row.Customer.Type.First)?.CategoryName }}-{{
+          userRankList.find(it => it.CategoryID === scope.row.Customer.Grade.First)?.CategoryName
+        }}
       </span>
     </el-table-column>
     <el-table-column
@@ -57,7 +59,7 @@
     ></el-table-column>
     <el-table-column label="下次沟通时间" show-overflow-tooltip width="164">
       <span slot-scope="scope">{{
-        scope.row.NextCommunicateTime
+        scope.row.NextCommunicateTime | getNextCommunicateTime
       }}</span>
     </el-table-column>
     <el-table-column label="未完成跟踪订单" show-overflow-tooltip width="118">
@@ -96,6 +98,7 @@
 </template>
 
 <script>
+import { format2MiddleLangTypeDateFunc2 } from '@/assets/js/filters/filters';
 import { mapState } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
@@ -103,6 +106,7 @@ import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMi
 export default {
   computed: {
     ...mapState('TraceClientList', ['TraceClientList', 'loading']),
+    ...mapState('common', ['userTypeList', 'userRankList']),
   },
   mixins: [tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   filters: {
@@ -117,10 +121,17 @@ export default {
       }
       return DisplayName;
     },
-    getCraftTextList(craftList) {
-      if (craftList.length === 0) return '';
-      const _list = craftList.map(it => it.Attributes.DisplayName);
-      return _list.join(' ');
+    getNextCommunicateTime(time) {
+      if (!time) return '无需沟通';
+      const NextDate = new Date(time);
+      const nowDate = new Date();
+      const hms = `${NextDate.getHours()}:${NextDate.getMinutes()}`;
+      if (nowDate.getDate() === NextDate.getDate()
+      && nowDate.getMonth() === NextDate.getMonth()
+      && nowDate.getFullYear() === NextDate.getFullYear()) {
+        return `今天 ${hms}`;
+      }
+      return this.formatLangTypeDateFunc(time);
     },
   },
   methods: {
@@ -131,6 +142,9 @@ export default {
     },
     onDetaClick(data) {
       this.$emit('detail', data);
+    },
+    formatLangTypeDateFunc(data) {
+      format2MiddleLangTypeDateFunc2(data);
     },
   },
 };

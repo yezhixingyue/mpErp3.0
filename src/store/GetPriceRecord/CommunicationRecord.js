@@ -6,7 +6,7 @@ class CommunicationRecordConditonClass {
 
   KeyWords = ''; // 关键词 (活动名称)
 
-  PageSize = 30; // 页容量
+  PageSize = 20; // 页容量
 
   DateType = 'today';
 
@@ -47,6 +47,9 @@ export default {
     loading: false,
   },
   getters: {
+    getCommunicationRecordPage(state) {
+      return state.condition4RecordList.Page;
+    },
   },
   mutations: {
     /** 设置请求列表数据的对象信息

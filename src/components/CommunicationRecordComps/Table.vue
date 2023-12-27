@@ -59,7 +59,9 @@
     </el-table-column>
     <el-table-column label="客户等级分类" show-overflow-tooltip width="272">
       <span slot-scope="scope">
-        {{`${(scope.row.Type && scope.row.Type.Second) || ''}${(scope.row.Grade && scope.row.Grade.Second) || ''}`}}
+        {{ userTypeList.find(it => it.CategoryID === scope.row.Customer.Type.First)?.CategoryName }}-{{
+          userRankList.find(it => it.CategoryID === scope.row.Customer.Grade.First)?.CategoryName
+        }}
       </span>
     </el-table-column>
     <el-table-column label="操作" minWidth="127" show-overflow-tooltip>
@@ -83,6 +85,7 @@ import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMi
 export default {
   computed: {
     ...mapState('CommunicationRecord', ['CommunicationRecordList', 'loading']),
+    ...mapState('common', ['userTypeList', 'userRankList']),
   },
   mixins: [tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   filters: {

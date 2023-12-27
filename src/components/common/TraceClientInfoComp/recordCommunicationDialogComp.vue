@@ -62,7 +62,7 @@
 
 <script>
 import CommonDialogComp from '@/packages/CommonDialogComp';
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   props: {
@@ -94,6 +94,7 @@ export default {
   },
   methods: {
     ...mapMutations('TraceClientInfo', ['addCustomerCommunicateLogs']),
+    ...mapGetters('CommunicationRecord', ['getCommunicationRecordPage']),
     setRequestObj([[key1, key2], value]) {
       this.AddCommunicateData[key1][key2] = value;
     },
@@ -110,16 +111,17 @@ export default {
       } else {
         this.AddCommunicateData.NextCommunicateTime = this.date ? `${this.date}T${this.time}` : '';
         this.api.getCustomerCommunicateLogSave(this.AddCommunicateData).then(res => {
-          if (res.data.Status) {
+          if (res.data.Status === 1000) {
             const nowDate = new Date();
             const hms = `${nowDate.getHours()}-${nowDate.getMinutes()}-${nowDate.getSeconds()}`;
-            // this.AddCommunicateData
             const addItem = {
               CreateTime: `${nowDate.getFullYear()}-${nowDate.getMonth()}-${nowDate.getDate()}T${hms}`,
               CommunicateType: this.AddCommunicateData.CommunicateType,
               CommunicateRemark: this.AddCommunicateData.CommunicateRemark,
             };
             this.addCustomerCommunicateLogs(addItem);
+            // this.getCustomerTrackDetail(this.customerID);
+            this.$store.dispatch('CommunicationRecord/getCommunicationRecordList', this.getCommunicationRecordPage);
             this.onCancle();
           }
         });

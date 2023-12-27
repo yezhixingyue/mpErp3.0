@@ -79,7 +79,9 @@
       width="144"
     >
       <span slot-scope="scope">
-        {{`${(scope.row.Type && scope.row.Type.Second) || ''}${(scope.row.Grade && scope.row.Grade.Second) || ''}`}}
+        {{ userTypeList.find(it => it.CategoryID === scope.row.Customer.Type.First)?.CategoryName }}-{{
+          userRankList.find(it => it.CategoryID === scope.row.Customer.Grade.First)?.CategoryName
+        }}
       </span>
     </el-table-column>
     <el-table-column
@@ -115,6 +117,7 @@ export default {
   },
   computed: {
     ...mapState('PriceRecord', ['RecordDataList', 'RecordDataNumber', 'loading']),
+    ...mapState('common', ['userTypeList', 'userRankList']),
   },
   mixins: [tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   filters: {

@@ -9,7 +9,7 @@
        :watchPage='condition4RecordList.Page'
        :handlePageChange='handlePageChange'
        :count='CommunicationRecordNumber'
-       :pageSize='30'
+       :pageSize='condition4RecordList.PageSize'
        >
        <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
       </Count>

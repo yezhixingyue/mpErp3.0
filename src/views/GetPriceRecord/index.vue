@@ -9,7 +9,7 @@
        :watchPage='condition4RecordList.Page'
        :handlePageChange='handlePageChange'
        :count='RecordDataNumber'
-       :pageSize='30'
+       :pageSize='condition4RecordList.PageSize'
        >
       </Count>
     </footer>
