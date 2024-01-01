@@ -32,6 +32,7 @@
         :typeList="[['DateType', ''], ['PlaceDate', 'First'], ['PlaceDate', 'Second']]"
         :dateValue='condition.DateType'
         :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+        :dateList="dateList"
         isFull
         class="mt-18"
         label="时间筛选" />
@@ -90,6 +91,14 @@ export default {
   data() {
     return {
       CheckFileOrderStatusOptions: CheckFileOrderStatusEnumList.filter(it => it.filter),
+      dateList: [
+        // { name: '近7天异常', ID: 'last7Date' },
+        { name: '今天', ID: 'today' },
+        { name: '昨天', ID: 'yesterday' },
+        { name: '前天', ID: 'beforeyesterday' },
+        { name: '本月', ID: 'curMonth' },
+        { name: '上月', ID: 'lastMonth' },
+      ],
     };
   },
   computed: {
