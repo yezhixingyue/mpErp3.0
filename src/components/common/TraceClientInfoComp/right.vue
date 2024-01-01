@@ -2,7 +2,7 @@
   <section class="trace-client-info-comp-right">
     <div class="content-item" v-if="quotation">
       <p class="common-item-title">当前报价单：</p>
-      <p class="product-name">{{quotation.ProductParams.Attributes | getProductName}}<span>{{ quotation.CreateTime | format2MiddleLangTypeDate }}</span></p>
+      <p class="product-name">{{quotation.ProductParams.Attributes | getProductName}}<span> {{ quotation.CreateTime | format2MiddleLangTypeDate }}</span></p>
       <table class="price-sheet-table table-common-style">
         <tr>
           <td>原价：</td>
@@ -15,15 +15,15 @@
           <td>
             {{ quotation.ProductParams.Attributes.ProductAmount }}{{ quotation.ProductParams.Attributes.Unit }}
             {{ quotation.ProductParams.Attributes.KindCount }}款 {{ quotation.ProductParams.Size.DisplayContent }}
-            {{ quotation.ProductParams.Attributes.DisplayName }}
+            {{ getCraftTextList(quotation.ProductParams.CraftList) }}
           </td>
           <td>
-            <template>
+            <template v-if="!quotation.TrackStatus">
               规格说明：
             </template>
           </td>
           <td class="description">
-            <template >
+            <template v-if="!quotation.TrackStatus">
               <el-input size="small" v-model="Spec" placeholder="请输入规格说明"></el-input>
             </template>
           </td>
@@ -31,8 +31,10 @@
       </table>
       <p class="handle-btns-box">
         <template v-if="!quotation.TrackStatus">
-          <el-button @click="traceClick" class="linear-btn">追踪</el-button>
-          <el-button @click="cancellationClick">作废</el-button>
+          <template v-if="localPermission.OperateTrackLog">
+            <el-button @click="traceClick" class="linear-btn">追踪</el-button>
+            <el-button @click="cancellationClick">作废</el-button>
+          </template>
         </template>
         <template v-else>
           <span v-if="quotation.TrackStatus === 1" class="have-tracked"><img src="@/assets/images/have-tracked.png" alt="">已追踪</span>
@@ -81,11 +83,6 @@ export default {
       }
       return DisplayName;
     },
-    getCraftTextList(craftList) {
-      if (craftList.length === 0) return '';
-      const _list = craftList.map(it => it.Attributes.DisplayName);
-      return _list.join(' ');
-    },
   },
   props: {
     CustomerTrackDetail: {
@@ -110,39 +107,26 @@ export default {
     return {
       addTraceVisible: false,
       Spec: '',
-      TrackStatusList: [
-        {
-          label: '未知',
-          value: 0,
-        },
-        {
-          label: '未定稿',
-          value: 10,
-        },
-        {
-          label: '比价中',
-          value: 20,
-        },
-        {
-          label: '对接给市场',
-          value: 30,
-        },
-        {
-          label: '已下单',
-          value: 50,
-        },
-        {
-          label: '单已飞',
-          value: 255,
-        },
-      ],
     };
   },
   computed: {
+    ...mapState('TraceRecord', ['TrackStatusList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
+        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     ...mapActions('TraceClientInfo', ['getCustomerTrackDetail']),
     ...mapMutations('PriceRecord', ['setTrackStatus']),
+    getCraftTextList(craftList) {
+      if (craftList.length === 0) return '';
+      const _list = craftList.map(it => it.Attributes.DisplayName);
+      return _list.join(' ');
+    },
     handlePageChange(page) {
       this.$store.dispatch('TraceClientInfo/getCustomerTrackDetail', page);
     },
@@ -167,7 +151,9 @@ export default {
       this.api.getCustomerTrackLogSave(TrackLog).then(res => {
         if (res.data.Status === 1000) {
           this.$emit('setTrackStatus', 1);
-          this.setTrackStatus(1);
+          this.setTrackStatus({
+            QuotationNumber: this.quotation.QuotationNumber, Status: 1,
+          });
           this.getCustomerTrackDetail(this.customerID);
         }
       });
@@ -179,7 +165,9 @@ export default {
       this.api.getCustomerTrackLogCancel(this.quotation.QuotationNumber).then(res => {
         if (res.data.Status === 1000) {
           this.$emit('setTrackStatus', 2);
-          this.setTrackStatus(2);
+          this.setTrackStatus({
+            QuotationNumber: this.quotation.QuotationNumber, Status: 2,
+          });
         }
       });
     },
@@ -188,7 +176,7 @@ export default {
     if (this.quotation) {
       this.Spec = `${this.quotation.ProductParams.Attributes.ProductAmount}${this.quotation.ProductParams.Attributes.Unit} ${
         this.quotation.ProductParams.Attributes.KindCount
-      }款 ${this.quotation.ProductParams.Size.DisplayContent} ${this.quotation.ProductParams.Attributes.DisplayName}`;
+      }款 ${this.quotation.ProductParams.Size.DisplayContent} ${this.getCraftTextList(this.quotation.ProductParams.CraftList)}`;
     }
   },
 };
@@ -240,6 +228,7 @@ export default {
     font-size: 12px;
     color: #26BCF9;
     margin-left: 10px;
+    cursor: pointer;
   }
   .record-communication-table{
     margin-top: 10px;

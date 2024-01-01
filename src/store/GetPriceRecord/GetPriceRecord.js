@@ -35,6 +35,7 @@ export default {
       state.RecordDataList.forEach((element, index) => {
         if (element.QuotationNumber === QuotationNumber) {
           state.RecordDataList[index].TrackStatus = Status;
+          console.log(state.RecordDataList[index].TrackStatus);
         }
       });
     },

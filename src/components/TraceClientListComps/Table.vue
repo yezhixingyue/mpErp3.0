@@ -7,7 +7,7 @@
     style="width: 100%"
     :max-height="h"
     :height="h"
-    class="mp-erp-get-price-record-page-main-table-comp-wrap ft-14-table"
+    class="mp-erp-trace-client-list-page-main-table-comp-wrap ft-14-table"
   >
     <el-table-column
       prop="Customer.CustomerName"
@@ -50,7 +50,13 @@
       label="QQ"
       width="103"
       show-overflow-tooltip
-    ></el-table-column>
+    >
+      <span slot-scope="scope">
+        <a rel="nofollow" target="_blank" :href="`tencent://message/?uin=${scope.row.Customer.QQ}&amp;Site=名片之家&amp;Menu=yes`" class='is-blue'>
+          <span>{{ scope.row.Customer.QQ }}</span>
+        </a>
+      </span>
+    </el-table-column>
     <el-table-column
       prop="TodayCommunicateCount"
       label="今日联系次数"
@@ -86,7 +92,7 @@
     </el-table-column>
     <el-table-column label="操作" minWidth="127" show-overflow-tooltip>
       <div class="is-font-12 btn-wrap" slot-scope="scope">
-        <span @click="onDetaClick(scope.row)">
+        <span @click="onDetaClick(scope.row)" v-if="localPermission.TrackDetail">
           <img src="@/assets/images/detail.png" alt />详情
         </span>
       </div>
@@ -106,7 +112,13 @@ import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMi
 export default {
   computed: {
     ...mapState('TraceClientList', ['TraceClientList', 'loading']),
-    ...mapState('common', ['userTypeList', 'userRankList']),
+    ...mapState('common', ['Permission', 'userTypeList', 'userRankList']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
+        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
+      }
+      return {};
+    },
   },
   mixins: [tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   filters: {
@@ -131,26 +143,23 @@ export default {
       && nowDate.getFullYear() === NextDate.getFullYear()) {
         return `今天 ${hms}`;
       }
-      return this.formatLangTypeDateFunc(time);
+      return format2MiddleLangTypeDateFunc2(time);
     },
   },
   methods: {
     setHeight() {
-      // const tempHeight = this.getHeight('.mp-erp-get-price-record-page-main-comp-wrap', 0);
-      const oDom = document.querySelector('.mp-erp-get-price-record-page-main-comp-wrap'); // 未使用通用方式获取高度
+      // const tempHeight = this.getHeight('.mp-erp-trace-client-list-page-main-comp-wrap', 0);
+      const oDom = document.querySelector('.mp-erp-trace-client-list-page-main-comp-wrap'); // 未使用通用方式获取高度
       if (oDom) this.h = oDom.offsetHeight;
     },
     onDetaClick(data) {
       this.$emit('detail', data);
     },
-    formatLangTypeDateFunc(data) {
-      format2MiddleLangTypeDateFunc2(data);
-    },
   },
 };
 </script>
 <style lang='scss'>
-.mp-erp-get-price-record-page-main-table-comp-wrap {
+.mp-erp-trace-client-list-page-main-table-comp-wrap {
   width: 100%;
   .el-table__header-wrapper thead tr th .cell {
     line-height: 36px;

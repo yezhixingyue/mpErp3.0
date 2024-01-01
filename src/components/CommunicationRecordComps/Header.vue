@@ -1,5 +1,5 @@
 <template>
-  <header class="mp-erp-get-price-record-page-header-comp-wrap">
+  <header class="mp-erp-communication-record-page-header-comp-wrap">
     <div style="justify-content: flex-start;">
       <EpCascaderByArea
         class="mr-12"
@@ -29,17 +29,28 @@
         :value="condition4RecordList.CustomerType.Second"
         label=""
       />
-    <staff-selector
-      title="沟通人"
-      needlimit
-      isLineStyle
-      showArrow
-      :remote="false"
-      :changePropsFunc='setRequestObj'
-      :requestFunc='getRecordList'
-      :typeList="[['OrderTaker', '']]"
-      :value="condition4RecordList.CustomerType.First"
-      />
+      <OrderChannelSelector
+        class="communicate-type"
+        :options='communicationMode'
+        :requestFunc='getRecordList'
+        :changePropsFunc='setRequestObj'
+        :typeList="[['CommunicateType', '']]"
+        :value='condition4RecordList.CommunicateType'
+        :defaultProps="{ label: 'label', value: 'value' }"
+        label="沟通方式"
+        isRadio
+       />
+      <staff-selector
+        title="沟通人"
+        needlimit
+        isLineStyle
+        showArrow
+        :remote="false"
+        :changePropsFunc='setRequestObj'
+        :requestFunc='getRecordList'
+        :typeList="[['OperatorID', '']]"
+        :value="condition4RecordList.OperatorID"
+        />
     </div>
     <div>
       <LineDateSelectorComp
@@ -51,15 +62,6 @@
         :dateList="dateList"
         isFull
         label="时间筛选" />
-      <OrderChannelSelector
-        :options='selfHelpOrderTypeList'
-        :requestFunc='getRecordList'
-        :changePropsFunc='setRequestObj'
-        :typeList="[['Terminal', '']]"
-        :value='condition4RecordList.Terminal'
-        label="沟通方式="
-        isRadio
-       />
       <SearchInputComp
         :typeList="[['KeyWords', '']]"
         :requestFunc='getRecordList'
@@ -93,7 +95,7 @@ export default {
   },
   computed: {
     ...mapState('CommunicationRecord', ['condition4RecordList', 'CommunicationRecordList']),
-    ...mapState('common', ['selfHelpOrderTypeList', 'userTypeList', 'userRankList']),
+    ...mapState('common', ['userTypeList', 'userRankList']),
     UserDefinedTimeIsActive() {
       return this.condition4RecordList.DateType === ''
        && !!this.condition4RecordList.CommunicateTime.First && !!this.condition4RecordList.CommunicateTime.Second;
@@ -112,6 +114,7 @@ export default {
   },
   data() {
     return {
+      communicationMode: [{ label: '不限', value: '' }, { label: '电话', value: 0 }, { label: 'QQ', value: 1 }],
       dateList: [{ name: '今日沟通', ID: 'today' }, { name: '昨日沟通', ID: 'yesterday' }, { name: '本周沟通', ID: 'curWeek' }, { name: '上周沟通', ID: 'lastWeek' }],
       dateMenus: [
         { text: '今天', key: 'TodayDate' },
@@ -141,7 +144,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-get-price-record-page-header-comp-wrap {
+.mp-erp-communication-record-page-header-comp-wrap {
   padding: 20px 0;
   background-color: #fff;
   > div {
@@ -155,8 +158,19 @@ export default {
     >div{
       height: 30px;
     }
+    >.mp-common-comps-search-box{
+      >.mp-search-box-btn, >.el-input, >.text{
+        display: none;
+      }
+    }
     .mp-line-date-selector-wrap {
       margin-top: 18px;
+    }
+    .communicate-type{
+      margin: 0 20px;
+      >main{
+        display: flex;
+      }
     }
     .mp-common-comps-el-date-range-selector-comp-wrap, .mp-common-comps-search-box {
       margin-top: 0px;

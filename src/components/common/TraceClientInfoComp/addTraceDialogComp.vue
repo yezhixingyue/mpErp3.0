@@ -32,7 +32,7 @@
         v-model.trim="TrackLogData.Spec" show-word-limit :maxlength="300" placeholder="请输入规格说明" autocomplete="off"></TextareaInput>
       </el-form-item>
       <el-form-item label="价格：" required class="final-price">
-        <el-input v-model.trim="TrackLogData.FinalPrice" size="small"></el-input><span>元</span>
+        <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]" v-model="TrackLogData.FinalPrice" size="small"></el-input><span>元</span>
       </el-form-item>
       <el-form-item label="状态：" required>
         <el-select v-model="TrackLogData.TrackStatus" size="small" placeholder="请选择">
@@ -57,7 +57,7 @@
 import CommonDialogComp from '@/packages/CommonDialogComp';
 import TextareaInput from '@/components/common/TextareaInput';
 import EpCascaderByProduct from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   props: {
@@ -84,7 +84,7 @@ export default {
       loading: false,
       TrackLogData: {
         CustomerID: this.customerID,
-        QuotationNumber: 0,
+        QuotationNumber: '',
         Product: {
           ClassID: 0,
           TypeID: 0,
@@ -98,6 +98,9 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapGetters('TraceRecord', ['getTraceRecordPage']),
+  },
   methods: {
     ...mapActions('TraceClientInfo', ['getCustomerTrackDetail']),
     setRequestObj([[key1, key2], value]) {
@@ -107,17 +110,21 @@ export default {
       this.$emit('cloce');
     },
     onSubmit() {
+      const reg = /(^\d*[0-9]\d*(\.\d{1,2})?$)|0\.(\d?[0-9]|[0-9]\d?)$/;
       if (!this.TrackLogData.Product.ClassID && !this.TrackLogData.Product.TypeID && !this.TrackLogData.Product.ProductID) {
         this.messageBox.failSingleError('操作失败', '请选择产品');
       } else if (!this.TrackLogData.Spec) {
         this.messageBox.failSingleError('操作失败', '请输入规格说明');
       } else if (this.TrackLogData.FinalPrice === '' || this.TrackLogData.FinalPrice === null) {
         this.messageBox.failSingleError('操作失败', '请输入价格');
+      } if (!reg.test(this.TrackLogData.FinalPrice)) {
+        this.messageBox.failSingleError('操作失败', '请输入正确的价格');
       } else {
         this.api.getCustomerTrackLogSave(this.TrackLogData).then(res => {
           if (res.data.Status === 1000) {
             this.onCancle();
             this.getCustomerTrackDetail(this.customerID);
+            this.$store.dispatch('TraceRecord/getCustomerTrackLogList', this.getTraceRecordPage);
           }
         });
       }
@@ -125,7 +132,7 @@ export default {
     onOpen() {
       this.TrackLogData = {
         CustomerID: this.customerID,
-        QuotationNumber: 0,
+        // QuotationNumber: '',
         Product: {
           ClassID: 0,
           TypeID: 0,

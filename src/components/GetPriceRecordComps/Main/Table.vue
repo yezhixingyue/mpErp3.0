@@ -27,7 +27,7 @@
       <span slot-scope="scope">
         {{ scope.row.ProductParams.Attributes.ProductAmount }}{{ scope.row.ProductParams.Attributes.Unit }}
         {{ scope.row.ProductParams.Attributes.KindCount }}款 {{ scope.row.ProductParams.Size.DisplayContent }}
-        {{ scope.row.ProductParams.Attributes.DisplayName }}
+        {{ scope.row.ProductParams.CraftList | getCraftTextList }}
       </span>
     </el-table-column>
     <el-table-column
@@ -70,7 +70,7 @@
       show-overflow-tooltip
     >
       <span slot-scope="scope">
-        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+        {{scope.row.Customer.SellArea?.RegionalName}}{{scope.row.Customer.SellArea?.CityName}}{{scope.row.Customer.SellArea?.CountyName}}
       </span>
     </el-table-column>
     <el-table-column
@@ -92,7 +92,7 @@
     </el-table-column>
     <el-table-column label="操作" minWidth="126" show-overflow-tooltip>
       <div class="is-font-12 btn-wrap" slot-scope="scope">
-        <span @click="onDetaClick(scope.row)">
+        <span @click="onDetaClick(scope.row)" v-if="localPermission.TrackDetail">
           <img src="@/assets/images/detail.png" alt />详情
         </span>
       </div>
@@ -117,7 +117,13 @@ export default {
   },
   computed: {
     ...mapState('PriceRecord', ['RecordDataList', 'RecordDataNumber', 'loading']),
-    ...mapState('common', ['userTypeList', 'userRankList']),
+    ...mapState('common', ['Permission', 'userTypeList', 'userRankList']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
+        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
+      }
+      return {};
+    },
   },
   mixins: [tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   filters: {

@@ -10,6 +10,7 @@
        :handlePageChange='handlePageChange'
        :count='RecordDataNumber'
        :pageSize='condition4RecordList.PageSize'
+       center
        >
       </Count>
     </footer>
@@ -27,13 +28,6 @@ export default {
   name: 'GetPriceRecordListPage',
   computed: {
     ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataNumber']),
-    ...mapState('common', ['Permission']),
-    localPermission() {
-      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
-        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
-      }
-      return {};
-    },
     condition() {
       return CommonClassType.filter(this.condition4RecordList, true);
     },

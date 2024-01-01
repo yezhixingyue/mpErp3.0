@@ -4,6 +4,7 @@
     <main class="trace-client-info-box">
       <Left :CustomerTrackDetail="CustomerTrackDetail"
       :customerID="customerID"
+      :customerInfo="customerInfo"
       />
       <div class="line"></div>
       <Right
@@ -41,8 +42,8 @@ export default {
     ...mapState('common', ['Permission']),
     ...mapState('TraceClientInfo', ['CustomerTrackDetail']),
     localPermission() {
-      if (this.Permission?.PermissionList?.PermissionAfterSalesApply?.Obj) {
-        return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;
+      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
+        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
       }
       return {};
     },
@@ -156,10 +157,14 @@ export default {
   }
   >footer{
     // height: 133px;
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    min-width: 1685px;
     .el-button{
       margin-bottom: 20px;
       margin-top: 30px;
-      margin-left: 700px;
+      margin-left: 650px;
       width: 120px;
       height: 35px;
       padding: 0;

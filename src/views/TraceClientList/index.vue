@@ -1,7 +1,7 @@
 <template>
-  <section class="mp-erp-get-price-record-page-containner">
+  <section class="mp-erp-trace-client-list-page-containner">
     <Header />
-    <main class="mp-erp-get-price-record-page-main-comp-wrap">
+    <main class="mp-erp-trace-client-list-page-main-comp-wrap">
       <Table @detail='onDetailClick' />
     </main>
     <footer>
@@ -25,13 +25,6 @@ export default {
   name: 'TraceClientListPage',
   computed: {
     ...mapState('TraceClientList', ['condition4RecordList', 'TraceClientListDataNumber']),
-    ...mapState('common', ['Permission']),
-    localPermission() {
-      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
-        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
-      }
-      return {};
-    },
   },
   components: {
     Header,
@@ -59,7 +52,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-get-price-record-page-containner {
+.mp-erp-trace-client-list-page-containner {
   background-color: #f5f5f5;
   height: 100%;
   padding: 0 10px;

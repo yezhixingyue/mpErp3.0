@@ -7,7 +7,7 @@
     style="width: 100%"
     :max-height="h"
     :height="h"
-    class="mp-erp-get-price-record-page-main-table-comp-wrap ft-14-table"
+    class="mp-erp-trace-record-page-main-table-comp-wrap ft-14-table"
   >
     <el-table-column
       prop="Customer.CustomerName"
@@ -41,13 +41,15 @@
       label="价格"
       minWidth="48"
       show-overflow-tooltip
-      ></el-table-column>
+      >
+      <template slot-scope="scope">{{ scope.row.FinalPrice }}元</template>
+    </el-table-column>
       <el-table-column
       label="状态"
       width="68"
       show-overflow-tooltip
       >
-      <template slot-scope="scope">{{ scope.row.TrackStatus }}元</template>
+      <template slot-scope="scope">{{ TrackStatusList.find(it => it.value === scope.row.TrackStatus)?.label }}</template>
     </el-table-column>
     <el-table-column
       prop="TrackRemark"
@@ -87,7 +89,7 @@
     </el-table-column>
     <el-table-column label="操作" minWidth="127" show-overflow-tooltip>
       <div class="is-font-12 btn-wrap" slot-scope="scope">
-        <span @click="onDetaClick(scope.row)">
+        <span @click="onDetaClick(scope.row)" v-if="localPermission.TrackDetail">
           <img src="@/assets/images/detail.png" alt />详情
         </span>
       </div>
@@ -105,7 +107,14 @@ import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMi
 
 export default {
   computed: {
-    ...mapState('TraceRecord', ['TraceRecordList', 'RecordDataNumber', 'loading']),
+    ...mapState('TraceRecord', ['TraceRecordList', 'RecordDataNumber', 'TrackStatusList', 'loading']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
+        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
+      }
+      return {};
+    },
   },
   mixins: [tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   filters: {
@@ -128,8 +137,8 @@ export default {
   },
   methods: {
     setHeight() {
-      // const tempHeight = this.getHeight('.mp-erp-get-price-record-page-main-comp-wrap', 0);
-      const oDom = document.querySelector('.mp-erp-get-price-record-page-main-comp-wrap'); // 未使用通用方式获取高度
+      // const tempHeight = this.getHeight('.mp-erp-trace-record-page-main-comp-wrap', 0);
+      const oDom = document.querySelector('.mp-erp-trace-record-page-main-comp-wrap'); // 未使用通用方式获取高度
       if (oDom) this.h = oDom.offsetHeight;
     },
     onDetaClick(data) {
@@ -139,7 +148,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-get-price-record-page-main-table-comp-wrap {
+.mp-erp-trace-record-page-main-table-comp-wrap {
   width: 100%;
   .el-table__header-wrapper thead tr th .cell {
     line-height: 36px;

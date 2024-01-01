@@ -1,5 +1,5 @@
 <template>
-  <header class="mp-erp-get-price-record-page-header-comp-wrap">
+  <header class="mp-erp-trace-client-list-page-header-comp-wrap">
     <div style="justify-content: flex-start;">
       <EpCascaderByArea
         class="mr-12"
@@ -88,9 +88,12 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-get-price-record-page-header-comp-wrap {
+.mp-erp-trace-client-list-page-header-comp-wrap {
   padding: 20px 0;
   background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   > div {
     display: flex;
     align-items: center;
@@ -107,7 +110,7 @@ export default {
     }
     .mp-common-comps-el-date-range-selector-comp-wrap, .mp-common-comps-search-box {
       margin-top: 0px;
-      padding-top: 18px;
+      // padding-top: 18px;
       height: 30px;
     }
   }

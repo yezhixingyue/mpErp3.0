@@ -6,10 +6,20 @@
     </li>
     <li class="table-item" v-for="(item) in CustomerTrackLogs" :key="item.CustomerID">
       <ul>
-        <li :style="`width: ${it.width};`" :class="it.class" v-for="it in tableData" :key="it.label">{{it.valueFun(item)}}</li>
-        <li :style="`width: 88px;`"><span @click="setStatusClick(item)" style="color: #26BCF9;">设置状态</span></li>
+        <li :style="`width: ${it.width};`" :class="it.class" v-for="it in tableData" :key="it.label">
+          <el-tooltip :disabled="!it.maxLength || it.valueFun(item).length < it.maxLength" effect="dark" :content="it.valueFun(item)" placement="top">
+            <span>{{it.valueFun(item)}}</span>
+          </el-tooltip>
+        </li>
+        <li :style="`width: 88px;`">
+          <span v-if="localPermission.OperateTrackLog" @click="setStatusClick(item)" style="color: #26BCF9; cursor: pointer;">设置状态</span>
+        </li>
       </ul>
-      <p>{{item.Spec}}</p>
+      <p> <span class="is-gray">规格说明：</span>
+        <el-tooltip :disabled="item.Spec.length < 65" effect="dark" :content="item.Spec" placement="top">
+          <span>{{item.Spec}}</span>
+        </el-tooltip>
+      </p>
     </li>
     <li class="empty table-item" v-if="!CustomerTrackLogs.length">
       暂无数据
@@ -29,7 +39,7 @@
     <template>
       <el-form :model="ChangeStatusData" status-icon ref="ruleForm" label-width="129px" label-position="right">
         <p>
-          不干胶标签-平张特材标签-平张特材标签
+          {{ [editData?.ProductClass.Name, editData?.ProductType.Name, editData?.Product.Name].filter(el => el).join('-')}}
         </p>
         <el-form-item label="规格说明：" class="specification">
           {{editData?.Spec}}
@@ -85,25 +95,27 @@ export default {
         {
           label: '来源',
           width: '137px',
-          valueFun: it => it.QuotationNumber || '',
-          maxLength: 3,
+          valueFun: it => `${it.QuotationNumber === '0' ? '' : it.QuotationNumber || ''}`,
         },
         {
           label: '产品',
           width: '157px',
-          valueFun: it => `${it.ProductClass.Name}-${it.ProductType.Name}-${it.Product.Name}`,
-          maxLength: 3,
+          valueFun: it => {
+            const temp = [it.ProductClass.Name, it.ProductType.Name, it.Product.Name].filter(el => el);
+            return temp.join('-');
+          },
+          maxLength: 12,
         },
         {
           label: '价格',
           width: '62px',
-          valueFun: it => it.FinalPrice,
-          maxLength: 3,
+          valueFun: it => `${it.FinalPrice}元`,
+          maxLength: 7,
           class: 'is-pink',
         },
         {
           label: '状态',
-          width: '69px',
+          width: '70px',
           valueFun: it => {
             const temp = this.TrackStatusList.filter(item => item.value === it.TrackStatus);
             if (temp.length) {
@@ -111,25 +123,22 @@ export default {
             }
             return '';
           },
-          maxLength: 3,
         },
         {
           label: '备注',
-          width: '98px',
+          width: '97px',
           valueFun: it => it.TrackRemark,
-          maxLength: 3,
+          maxLength: 7,
         },
         {
           label: '最近一次改变状态（操作人）',
           width: '192px',
           valueFun: it => `${formatDateForDisplay(it.ChangeStatusTime)} (${it.Operator.OperatorName})`,
-          maxLength: 3,
         },
         {
           label: '添加时间',
           width: '117px',
           valueFun: it => formatDateForDisplay(it.CreateTime),
-          maxLength: 3,
         },
         // {
         //   label: '操作',
@@ -148,6 +157,13 @@ export default {
     };
   },
   computed: {
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
+        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
+      }
+      return {};
+    },
   },
   methods: {
     ...mapActions('TraceClientInfo', ['getCustomerTrackDetail']),
@@ -190,7 +206,7 @@ export default {
   border: 1px solid #E5E5E5;
   margin-left: 13px;
   margin-top: 10px;
-  // max-height: 400px;
+  max-width: 937px;
   overflow-y: auto;
   .set-status-dialog-comp{
     .el-dialog__body{
@@ -202,6 +218,7 @@ export default {
           font-size: 14px;
           font-weight: 700;
           margin-top: 15px;
+          padding-left: 60px;
         }
         .el-form-item{
           font-size: 12px;
@@ -266,11 +283,24 @@ export default {
     }
     >ul{
       display: flex;
+      >li{
+        box-sizing: border-box;
+        padding: 0 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
     >p{
       border-top: 1px solid #E5E5E5;
       text-align: left;
       text-indent: 70px;
+      box-sizing: border-box;
+      padding: 0 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 920px;
     }
   }
   >.empty{

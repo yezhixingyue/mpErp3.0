@@ -49,8 +49,37 @@ export default {
     TraceRecordList: [],
     TraceRecordDataNumber: 0,
     loading: false,
+    TrackStatusList: [
+      {
+        label: '未知',
+        value: 0,
+      },
+      {
+        label: '未定稿',
+        value: 10,
+      },
+      {
+        label: '比价中',
+        value: 20,
+      },
+      {
+        label: '对接给市场',
+        value: 30,
+      },
+      {
+        label: '已下单',
+        value: 50,
+      },
+      {
+        label: '单已飞',
+        value: 255,
+      },
+    ],
   },
   getters: {
+    getTraceRecordPage(state) {
+      return state.condition4TraceRecordList.Page;
+    },
   },
   mutations: {
     /** 设置请求列表数据的对象信息

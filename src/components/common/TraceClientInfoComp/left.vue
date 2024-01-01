@@ -5,27 +5,41 @@
       <table class="user-info table-common-style">
         <tr>
           <td>客户名称：</td>
-          <td>东翔广告</td>
+          <td>{{customerInfo?.CustomerName}}</td>
           <td>客户编号：</td>
-          <td>豫R0027086</td>
+          <td>{{customerInfo?.CustomerSN}}</td>
         </tr>
         <tr>
           <td>销售区域：</td>
-          <td>豫南南阳市卧龙区</td>
+          <!-- <td>{{customerInfo?.SellArea.RegionalName}}</td> -->
+          <td>{{customerInfo?.SellArea?.RegionalName}}{{customerInfo?.SellArea?.CityName}}{{customerInfo?.SellArea?.CountyName}}</td>
           <td>客户等级分类：</td>
-          <td>特立尊享-个体门店</td>
+          <td>
+            {{ userTypeList.find(it => it.CategoryID === customerInfo.Type.First)?.CategoryName }}-{{
+              userRankList.find(it => it.CategoryID === customerInfo.Grade.First)?.CategoryName
+            }}
+          </td>
         </tr>
         <tr>
           <td>联系电话：</td>
-          <td>15837762333</td>
+          <td>{{customerInfo?.Mobile}}</td>
           <td>联系QQ：</td>
-          <td>979701921</td>
+          <td>
+            <a rel="nofollow" target="_blank" :href="`tencent://message/?uin=${customerInfo?.QQ}&amp;Site=名片之家&amp;Menu=yes`" class='is-blue'>
+              <span>{{ customerInfo?.QQ }}</span>
+            </a>
+          </td>
         </tr>
       </table>
-      <p class="next-communication-time">下一次沟通时间：<span>{{ CustomerTrackDetail?.NextCommunicateTime | format2MiddleLangTypeDate }}</span></p>
+      <p class="next-communication-time">
+        <template v-if="CustomerTrackDetail?.NextCommunicateTime">
+          下一次沟通时间：
+        </template>
+        <span>{{ CustomerTrackDetail?.NextCommunicateTime | format2MiddleLangTypeDate }}</span>
+      </p>
     </div>
     <div class="content-item">
-      <p class="common-item-title">近30天沟通记录: <span class="number-contacts">今日已联系 {{ CustomerTrackDetail?.TodayCommunicateCount }} 次</span></p>
+      <p class="common-item-title">近30天沟通记录: <span class="number-contacts">今日已联系 {{ CustomerTrackDetail?.TodayCommunicateCount || 0 }} 次</span></p>
       <el-table
         stripe
         border
@@ -33,7 +47,7 @@
         :data="CustomerTrackDetail?.CustomerCommunicateLogs || []"
         max-height="400px"
         style="width: 640px;"
-        class="record-communication-table mp-erp-get-price-record-page-main-table-comp-wrap ft-14-table"
+        class="record-communication-table ft-14-table"
       >
         <el-table-column
           prop="CreateTime"
@@ -46,7 +60,7 @@
           }}</span>
         </el-table-column>
           <el-table-column
-          prop="Operator"
+          prop="Operator.OperatorName"
           label="沟通人"
           minWidth="123"
           show-overflow-tooltip
@@ -56,7 +70,7 @@
           minWidth="88"
           show-overflow-tooltip
         >
-          <span class="is-gray" slot-scope="scope">{{
+          <span slot-scope="scope">{{
             scope.row.CommunicateType ? 'QQ' : '电话'
           }}</span>
         </el-table-column>
@@ -68,7 +82,7 @@
         ></el-table-column>
       </el-table>
       <p class="add-record-communication-btn">
-        <el-button class="linear-btn" @click="addRecordCommunicationVisible = true">+添加沟通记录</el-button>
+        <el-button v-if="localPermission.AddCommunicateLog" class="linear-btn" @click="addRecordCommunicationVisible = true">+添加沟通记录</el-button>
       </p>
     </div>
     <recordCommunicationDialogComp
@@ -88,6 +102,10 @@ export default {
       type: Object,
       default: null,
     },
+    customerInfo: {
+      type: Object,
+      default: null,
+    },
     customerID: {
       type: String,
       default: '',
@@ -102,8 +120,18 @@ export default {
     };
   },
   computed: {
+    ...mapState('common', ['userTypeList', 'userRankList']),
+    ...mapState('common', ['Permission']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
+        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
+      }
+      return {};
+    },
   },
   methods: {
+  },
+  mounted() {
   },
 };
 </script>
@@ -130,6 +158,10 @@ export default {
     margin-left: 10px;
   }
   .record-communication-table{
+    .el-table__header-wrapper thead tr th .cell {
+      line-height: 36px;
+      font-size: 14px;
+    }
     margin-top: 10px;
     margin-left: 13px;
     .el-table__body-wrapper{

@@ -1,7 +1,7 @@
 <template>
-  <section class="mp-erp-get-price-record-page-containner">
+  <section class="mp-erp-communication-record-page-containner">
     <Header />
-    <main class="mp-erp-get-price-record-page-main-comp-wrap">
+    <main class="mp-erp-communication-record-page-main-comp-wrap">
       <Table @detail='onDetailClick' />
     </main>
     <footer>
@@ -10,8 +10,9 @@
        :handlePageChange='handlePageChange'
        :count='CommunicationRecordNumber'
        :pageSize='condition4RecordList.PageSize'
+       center
        >
-       <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
+       <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportCommunicateExcel" />
       </Count>
     </footer>
   </section>
@@ -76,7 +77,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-.mp-erp-get-price-record-page-containner {
+.mp-erp-communication-record-page-containner {
   background-color: #f5f5f5;
   height: 100%;
   padding: 0 10px;
@@ -97,10 +98,17 @@ export default {
   > footer {
     flex: none;
     height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    background-color: #fff;
+    >.count-wrap{
+      padding-left: 273px;
+      >.mp-pagination-wrap{
+        flex: 1;
+        text-align: center;
+      }
+      >.count{
+        position: relative;
+        right: 0;
+      }
+    }
   }
 }
 </style>

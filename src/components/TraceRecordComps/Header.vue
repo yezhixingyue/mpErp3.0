@@ -39,12 +39,12 @@
         label=""
       />
       <order-channel-selector
-        :options="userTypeList"
+        :options="[{label: '不限', value: ''}, ...TrackStatusList]"
         :requestFunc="getCustomerTrackLogList"
         :changePropsFunc="setRequestObj"
-        :typeList="[['CustomerType', 'First']]"
-        :value="condition4TraceRecordList.CustomerType.First"
-        :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
+        :typeList="[['TrackStatus', '']]"
+        :value="condition4TraceRecordList.TrackStatus"
+        :defaultProps="{ label: 'label', value: 'value' }"
         label="状态"
       />
     </div>
@@ -90,7 +90,7 @@ export default {
     // ElDateRangeSelector,
   },
   computed: {
-    ...mapState('TraceRecord', ['condition4TraceRecordList', 'TraceRecordList']),
+    ...mapState('TraceRecord', ['condition4TraceRecordList', 'TraceRecordList', 'TrackStatusList']),
     ...mapState('common', ['selfHelpOrderTypeList', 'userTypeList', 'userRankList']),
     UserDefinedTimeIsActive() {
       return this.condition4TraceRecordList.DateType === ''
