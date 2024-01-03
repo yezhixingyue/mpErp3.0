@@ -57,7 +57,7 @@
 import CommonDialogComp from '@/packages/CommonDialogComp';
 import TextareaInput from '@/components/common/TextareaInput';
 import EpCascaderByProduct from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
   props: {
@@ -100,6 +100,7 @@ export default {
   },
   computed: {
     ...mapGetters('TraceRecord', ['getTraceRecordPage']),
+    ...mapState('TraceClientList', ['condition4RecordList']),
   },
   methods: {
     ...mapActions('TraceClientInfo', ['getCustomerTrackDetail']),
@@ -125,6 +126,7 @@ export default {
             this.onCancle();
             this.getCustomerTrackDetail(this.customerID);
             this.$store.dispatch('TraceRecord/getCustomerTrackLogList', this.getTraceRecordPage);
+            this.$store.dispatch('TraceClientList/getTraceClientList', this.condition4RecordList.Page);
           }
         });
       }

@@ -7,7 +7,7 @@
       :setCondition="setRequestObj"
       :First="condition4TraceRecordList.Product.ClassID"
       :Second="condition4TraceRecordList.Product.TypeID"
-      :ProductID="condition4TraceRecordList.ProductID"
+      :ProductID="condition4TraceRecordList.Product.ProductID"
       :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
       />
       <EpCascaderByArea

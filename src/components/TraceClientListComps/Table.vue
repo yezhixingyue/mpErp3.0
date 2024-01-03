@@ -21,7 +21,7 @@
     </el-table-column>
     <el-table-column
       label="销售区域"
-      minWidth="136"
+      minWidth="190"
       show-overflow-tooltip
     >
       <span slot-scope="scope">
@@ -30,7 +30,7 @@
     </el-table-column>
     <el-table-column
       label="客户等级分类"
-      minWidth="184"
+      minWidth="130"
       show-overflow-tooltip
     >
       <span slot-scope="scope">
@@ -79,15 +79,18 @@
       width="215"
     >
       <span slot-scope="scope">
-        {{ scope.row.Operator.OperatorName }}
-        （{{ scope.row.LastCommunicateType ? '电话' : 'QQ' }}
-        {{ scope.row.LastCommunicateTime | format2MiddleLangTypeDate }}）
+        <template v-if="scope.row.Operator.OperatorName">
+          {{ scope.row.Operator.OperatorName }}
+          （{{ scope.row.LastCommunicateType ? 'QQ' : '电话' }}
+          {{ scope.row.LastCommunicateTime | format2MiddleLangTypeDate }}）
+        </template>
       </span>
     </el-table-column>
     <el-table-column
       label="最近一次沟通备注"
       prop="LastCommunicateRemark"
       width="152"
+      show-overflow-tooltip
     >
     </el-table-column>
     <el-table-column label="操作" minWidth="127" show-overflow-tooltip>
@@ -137,7 +140,7 @@ export default {
       if (!time) return '无需沟通';
       const NextDate = new Date(time);
       const nowDate = new Date();
-      const hms = `${NextDate.getHours()}:${NextDate.getMinutes()}`;
+      const hms = `${NextDate.getHours()}:${NextDate.getMinutes() < 10 ? `0${NextDate.getMinutes()}` : NextDate.getMinutes()}`;
       if (nowDate.getDate() === NextDate.getDate()
       && nowDate.getMonth() === NextDate.getMonth()
       && nowDate.getFullYear() === NextDate.getFullYear()) {

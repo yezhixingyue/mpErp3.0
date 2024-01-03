@@ -64,7 +64,7 @@
 
 <script>
 import CommonDialogComp from '@/packages/CommonDialogComp';
-import { mapMutations, mapGetters, mapActions } from 'vuex';
+import { mapMutations, mapGetters, mapActions, mapState } from 'vuex';
 
 export default {
   props: {
@@ -101,6 +101,7 @@ export default {
   },
   computed: {
     ...mapGetters('CommunicationRecord', ['getCommunicationRecordPage']),
+    ...mapState('TraceClientList', ['condition4RecordList']),
   },
   methods: {
     ...mapMutations('TraceClientInfo', ['addCustomerCommunicateLogs']),
@@ -132,6 +133,7 @@ export default {
             // this.addCustomerCommunicateLogs(addItem);
             this.getCustomerTrackDetail(this.customerID);
             this.$store.dispatch('CommunicationRecord/getCommunicationRecordList', this.getCommunicationRecordPage);
+            this.$store.dispatch('TraceClientList/getTraceClientList', this.condition4RecordList.Page);
             this.onCancle();
           }
         });

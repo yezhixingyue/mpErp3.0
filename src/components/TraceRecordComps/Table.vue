@@ -73,6 +73,7 @@
       prop="Customer.Mobile"
       label="客户（编号）"
       width="184"
+      show-overflow-tooltip
     >
       <span slot-scope="scope">
         {{scope.row.Customer.CustomerName}}（{{scope.row.Customer.CustomerSN}}）
@@ -82,6 +83,7 @@
       label="销售区域"
       prop="Customer.QQ"
       width="156"
+      show-overflow-tooltip
     >
       <span slot-scope="scope">
         {{scope.row.Customer.SellArea?.RegionalName}}{{scope.row.Customer.SellArea?.CityName}}{{scope.row.Customer.SellArea?.CountyName}}

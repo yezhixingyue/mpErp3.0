@@ -158,6 +158,7 @@ export default {
   },
   computed: {
     ...mapState('common', ['Permission']),
+    ...mapState('TraceClientList', ['condition4RecordList']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
         return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
@@ -193,6 +194,7 @@ export default {
           if (res.data.Status === 1000) {
             this.getCustomerTrackDetail(this.customerID);
             this.$store.dispatch('TraceRecord/getCustomerTrackLogList', this.getTraceRecordPage);
+            this.$store.dispatch('TraceClientList/getTraceClientList', this.condition4RecordList.Page);
             this.onCancle();
           }
         });
@@ -279,6 +281,9 @@ export default {
     border-top: 1px solid #E5E5E5;
     line-height: 45px;
     font-size: 12px;
+    &:last-of-type{
+      border-bottom: 1px solid #E5E5E5;
+    }
     &:nth-child(2n-1){
       background-color: #F5F5F5;
     }
