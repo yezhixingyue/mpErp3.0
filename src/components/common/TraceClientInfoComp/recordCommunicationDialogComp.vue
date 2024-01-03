@@ -14,7 +14,8 @@
    <template>
     <el-form :model="AddCommunicateData" status-icon ref="ruleForm" label-width="82px" class="add-trace-ruleForm" label-position="left">
       <el-form-item label="沟通备注：">
-        <el-input size="small" v-model="AddCommunicateData.CommunicateRemark" placeholder="选填，可填写除订单追踪之外的一些记录"></el-input>
+        <el-input size="small" v-model="AddCommunicateData.CommunicateRemark"
+        placeholder="选填，可填写除订单追踪之外的一些记录" maxlength="100" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="沟通方式：" required>
         <el-radio-group v-model="AddCommunicateData.CommunicateType">
@@ -39,7 +40,8 @@
               type="date"
               format="yyyy/MM/dd"
               value-format="yyyy-MM-dd"
-              placeholder="年/月/日">
+              placeholder="年/月/日"
+              :picker-options="pickerOptions">
             </el-date-picker>
             <el-time-select
               class="select-time"
@@ -89,6 +91,11 @@ export default {
         NextCommunicateTime: '',
         CommunicateType: 0,
         CommunicateRemark: '',
+      },
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7;
+        },
       },
     };
   },

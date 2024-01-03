@@ -39,7 +39,7 @@
     <el-table-column
       prop="FinalPrice"
       label="价格"
-      minWidth="48"
+      minWidth="83"
       show-overflow-tooltip
       >
       <template slot-scope="scope">{{ scope.row.FinalPrice }}元</template>
@@ -57,14 +57,14 @@
       width="108"
       show-overflow-tooltip
     ></el-table-column>
-    <el-table-column label="最近一次改变状态（操作人）" show-overflow-tooltip width="222">
+    <el-table-column label="最近一次改变状态（操作人）" show-overflow-tooltip width="200">
       <span slot-scope="scope">{{
         scope.row.ChangeStatusTime | format2MiddleLangTypeDate
       }}（{{
         scope.row.Operator.OperatorName
       }}）</span>
     </el-table-column>
-    <el-table-column label="添加时间" show-overflow-tooltip width="136">
+    <el-table-column label="添加时间" show-overflow-tooltip width="123">
       <span slot-scope="scope">{{
         scope.row.CreateTime | format2MiddleLangTypeDate
       }}</span>

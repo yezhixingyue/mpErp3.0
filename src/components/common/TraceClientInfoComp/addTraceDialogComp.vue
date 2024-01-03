@@ -46,7 +46,7 @@
       </el-form-item>
       <el-form-item label="备注（选填）：">
         <TextareaInput
-        v-model.trim="TrackLogData.TrackRemark" show-word-limit :maxlength="300" placeholder="请输入备注" autocomplete="off"></TextareaInput>
+        v-model.trim="TrackLogData.TrackRemark" show-word-limit :maxlength="100" placeholder="请输入备注" autocomplete="off"></TextareaInput>
       </el-form-item>
     </el-form>
    </template>
@@ -117,7 +117,7 @@ export default {
         this.messageBox.failSingleError('操作失败', '请输入规格说明');
       } else if (this.TrackLogData.FinalPrice === '' || this.TrackLogData.FinalPrice === null) {
         this.messageBox.failSingleError('操作失败', '请输入价格');
-      } if (!reg.test(this.TrackLogData.FinalPrice)) {
+      } else if (!reg.test(this.TrackLogData.FinalPrice)) {
         this.messageBox.failSingleError('操作失败', '请输入正确的价格');
       } else {
         this.api.getCustomerTrackLogSave(this.TrackLogData).then(res => {

@@ -58,7 +58,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注（选填）：">
-          <el-input v-model="ChangeStatusData.TrackRemark" size="small"></el-input>
+          <el-input v-model="ChangeStatusData.TrackRemark" size="small" maxlength="100" show-word-limit></el-input>
         </el-form-item>
       </el-form>
     </template>
@@ -192,6 +192,7 @@ export default {
         this.api.getCustomerTrackLogChangeStatus(this.ChangeStatusData).then(res => {
           if (res.data.Status === 1000) {
             this.getCustomerTrackDetail(this.customerID);
+            this.$store.dispatch('TraceRecord/getCustomerTrackLogList', this.getTraceRecordPage);
             this.onCancle();
           }
         });
