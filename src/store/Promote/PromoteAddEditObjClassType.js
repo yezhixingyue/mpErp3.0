@@ -1,5 +1,15 @@
 /* eslint-disable max-len */
 
+const getTempPeriodList = () => [
+  { Label: '时间段', Value: '', StartTime: '', EndTime: '' }, // 按天时间段
+  { Label: '周一', Value: '1', isChecked: false, StartTime: '', EndTime: '' }, // 周一
+  { Label: '周二', Value: '2', isChecked: false, StartTime: '', EndTime: '' },
+  { Label: '周三', Value: '3', isChecked: false, StartTime: '', EndTime: '' },
+  { Label: '周四', Value: '4', isChecked: false, StartTime: '', EndTime: '' },
+  { Label: '周五', Value: '5', isChecked: false, StartTime: '', EndTime: '' },
+  { Label: '周六', Value: '6', isChecked: false, StartTime: '', EndTime: '' },
+  { Label: '周日', Value: '0', isChecked: false, StartTime: '', EndTime: '' }, // 周日
+];
 export default class PromoteAddObj {
     PromoteID = ''; // 新增活动时不传，修改活动时传
 
@@ -15,16 +25,7 @@ export default class PromoteAddObj {
 
     PeriodType = 0 // 0 天 1 周
 
-    PeriodList = [
-      { Label: '时间段', Value: '', StartTime: '', EndTime: '' }, // 按天时间段
-      { Label: '周一', Value: 1, isChecked: false, StartTime: '', EndTime: '' }, // 周一
-      { Label: '周二', Value: 2, isChecked: false, StartTime: '', EndTime: '' },
-      { Label: '周三', Value: 3, isChecked: false, StartTime: '', EndTime: '' },
-      { Label: '周四', Value: 4, isChecked: false, StartTime: '', EndTime: '' },
-      { Label: '周五', Value: 5, isChecked: false, StartTime: '', EndTime: '' },
-      { Label: '周六', Value: 6, isChecked: false, StartTime: '', EndTime: '' },
-      { Label: '周日', Value: 7, isChecked: false, StartTime: '', EndTime: '' }, // 周日
-    ]
+    PeriodList = getTempPeriodList()
 
     // ValidStartTime = 'T00:00:00.000Z' // 活动开始时间
     ValidStartTime = '' // 活动开始时间
@@ -120,18 +121,12 @@ export default class PromoteAddObj {
         _ProductList[i1].PropertyList = [];
         _ProductList[i1].IsIncludeIncreasedProduct = level1.IsIncludeIncreasedProduct || false;
       });
-      const _PeriodList = [
-        { Label: '时间段', Value: '', StartTime: '', EndTime: '' }, // 按天时间段
-        { Label: '周一', Value: 1, isChecked: false, StartTime: '', EndTime: '' }, // 周一
-        { Label: '周二', Value: 2, isChecked: false, StartTime: '', EndTime: '' },
-        { Label: '周三', Value: 3, isChecked: false, StartTime: '', EndTime: '' },
-        { Label: '周四', Value: 4, isChecked: false, StartTime: '', EndTime: '' },
-        { Label: '周五', Value: 5, isChecked: false, StartTime: '', EndTime: '' },
-        { Label: '周六', Value: 6, isChecked: false, StartTime: '', EndTime: '' },
-        { Label: '周日', Value: 7, isChecked: false, StartTime: '', EndTime: '' }, // 周日
-      ];
+
+      const _PeriodList = getTempPeriodList();
+
       obj.PeriodList.forEach(it => {
-        const t = _PeriodList.find(_it => _it.Value === it.Value || (!_it.Value && !it.Value));
+        const t = _PeriodList.find(_it => `${_it.Value}` === `${it.Value}` || (_it.Value === '' && it.Value === null));
+
         if (t) {
           t.isChecked = true;
           t.StartTime = it.StartTime;
