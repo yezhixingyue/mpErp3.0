@@ -15,7 +15,7 @@
       show-overflow-tooltip
     >
       <span slot-scope="scope">{{
-        scope.row.ProductParams.Attributes | getProductName
+        scope.row.Product.Name
       }}</span>
     </el-table-column>
     <el-table-column
@@ -25,9 +25,10 @@
       show-overflow-tooltip
     >
       <span slot-scope="scope">
-        {{ scope.row.ProductParams.Attributes.ProductAmount }}{{ scope.row.ProductParams.Attributes.Unit }}
+        {{ scope.row.Product.Spec }}
+        <!-- {{ scope.row.ProductParams.Attributes.ProductAmount }}{{ scope.row.ProductParams.Attributes.Unit }}
         {{ scope.row.ProductParams.Attributes.KindCount }}款 {{ scope.row.ProductParams.Size.DisplayContent }}
-        {{ scope.row.ProductParams.CraftList | getCraftTextList }}
+        {{ scope.row.ProductParams.CraftList | getCraftTextList }} -->
       </span>
     </el-table-column>
     <el-table-column

@@ -71,7 +71,7 @@ export default {
         value: 50,
       },
       {
-        label: '单已飞',
+        label: '已流失',
         value: 255,
       },
     ],

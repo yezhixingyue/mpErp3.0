@@ -2,7 +2,7 @@
   <section class="trace-client-info-comp-right">
     <div class="content-item" v-if="quotation">
       <p class="common-item-title">当前报价单：</p>
-      <p class="product-name">{{quotation.ProductParams.Attributes | getProductName}}<span> {{ quotation.CreateTime | format2MiddleLangTypeDate }}</span></p>
+      <p class="product-name">{{quotation.Product.Name}}<span> {{ quotation.CreateTime | format2MiddleLangTypeDate }}</span></p>
       <table class="price-sheet-table table-common-style">
         <tr>
           <td>原价：</td>
@@ -12,10 +12,16 @@
         </tr>
         <tr>
           <td>原规格说明：</td>
-          <td>
-            {{ quotation.ProductParams.Attributes.ProductAmount }}{{ quotation.ProductParams.Attributes.Unit }}
+          <td class="spec">
+            <div>
+              <el-tooltip :disabled="quotation.Product.Spec.length < 65" effect="dark" :content="quotation.Product.Spec" placement="top">
+                <span>{{quotation.Product.Spec}}</span>
+              </el-tooltip>
+            </div>
+            <!-- {{ quotation.Spec }} -->
+            <!-- {{ quotation.ProductParams.Attributes.ProductAmount }}{{ quotation.ProductParams.Attributes.Unit }}
             {{ quotation.ProductParams.Attributes.KindCount }}款 {{ quotation.ProductParams.Size.DisplayContent }}
-            {{ getCraftTextList(quotation.ProductParams.CraftList) }}
+            {{ getCraftTextList(quotation.ProductParams.CraftList) }} -->
           </td>
           <td>
             <template v-if="!quotation.TrackStatus">
@@ -71,19 +77,6 @@ import addTraceDialogComp from './addTraceDialogComp';
 import { formatListItemCraft } from '@/assets/js/filters/filters';
 
 export default {
-  filters: {
-    getProductName(Attributes) {
-      if (!Attributes) return '';
-      const { DisplayName, ClassList } = Attributes;
-      if (!ClassList) return DisplayName;
-      const t = ClassList.find(it => it.Type === 1);
-      if (t) {
-        const { FirstLevel, SecondLevel } = t;
-        return `${FirstLevel.Name}-${SecondLevel.Name}-${DisplayName}`;
-      }
-      return DisplayName;
-    },
-  },
   props: {
     CustomerTrackDetail: {
       type: Object,
@@ -140,7 +133,7 @@ export default {
         Product: {
           ClassID: 0,
           TypeID: 0,
-          ProductID: this.quotation.ProductParams.ProductID,
+          ProductID: this.quotation.Product.ID,
           ProductName: '',
         },
         FinalPrice: this.quotation.Funds.FinalPrice,
@@ -174,9 +167,10 @@ export default {
   },
   mounted() {
     if (this.quotation) {
-      this.Spec = `${this.quotation.ProductParams.Attributes.ProductAmount}${this.quotation.ProductParams.Attributes.Unit} ${
-        this.quotation.ProductParams.Attributes.KindCount
-      }款 ${this.quotation.ProductParams.Size.DisplayContent} ${this.getCraftTextList(this.quotation.ProductParams.CraftList)}`;
+      this.Spec = this.quotation.Product.Spec;
+      // this.Spec = `${this.quotation.ProductParams.Attributes.ProductAmount}${this.quotation.ProductParams.Attributes.Unit} ${
+      //   this.quotation.ProductParams.Attributes.KindCount
+      // }款 ${this.quotation.ProductParams.Size.DisplayContent} ${this.getCraftTextList(this.quotation.ProductParams.CraftList)}`;
     }
   },
 };
@@ -210,6 +204,20 @@ export default {
     >tr{
       td:nth-child(2){
         width: 310px;
+      }
+      .spec{
+        >div{
+          display: flex;
+          align-items: center;
+        }
+        span{
+          display: inline-block;
+          line-height: 40px;
+          width: 269px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
   }
