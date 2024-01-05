@@ -14,7 +14,7 @@
           <td>原规格说明：</td>
           <td class="spec">
             <div>
-              <el-tooltip :disabled="quotation.Product.Spec.length < 65" effect="dark" :content="quotation.Product.Spec" placement="top">
+              <el-tooltip :disabled="quotation.Product.Spec.length < 20" effect="dark" :content="quotation.Product.Spec" placement="top">
                 <span>{{quotation.Product.Spec}}</span>
               </el-tooltip>
             </div>
