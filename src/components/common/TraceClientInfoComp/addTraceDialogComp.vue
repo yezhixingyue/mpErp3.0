@@ -29,7 +29,7 @@
       </el-form-item>
       <el-form-item label="规格说明：" required>
         <TextareaInput
-        v-model.trim="TrackLogData.Spec" show-word-limit :maxlength="300" placeholder="请输入规格说明" autocomplete="off"></TextareaInput>
+        v-model.trim="TrackLogData.Spec" show-word-limit :maxlength="600" placeholder="请输入规格说明" autocomplete="off"></TextareaInput>
       </el-form-item>
       <el-form-item label="价格：" required class="final-price">
         <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]" v-model="TrackLogData.FinalPrice" size="small"></el-input><span>元</span>
