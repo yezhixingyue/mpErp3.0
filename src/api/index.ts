@@ -1594,6 +1594,16 @@ const api = {
   getOrderAfterSaleLossConfirm(data) { // GET /Api/OrderAfterSale/LossConfirm 复核
     return instance.post('/Api/OrderAfterSale/LossConfirm', data);
   },
+  // 证书审核
+  getCustomerCertificateCheck(data) { // GET /Api/Customer/Certificate/Check 证书审核
+    return instance.post('/Api/Customer/Certificate/Check', data);
+  },
+  getCustomerCertificateUnCheck() { // GET /Api/Customer/Certificate/UnCheck 未审核证书
+    return instance.get('/Api/Customer/Certificate/UnCheck');
+  },
+  getCustomerCertificateManageList(data) { // GET /Api/Customer/Certificate/ManageList 证书管理列表
+    return instance.post('/Api/Customer/Certificate/ManageList', data);
+  },
 };
 
 export default api;

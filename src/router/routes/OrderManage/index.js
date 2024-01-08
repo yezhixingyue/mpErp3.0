@@ -189,6 +189,32 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../views/CustomerManage/CustomerManageSetupPage.vue'),
     },
+    /*  证书管理
+    ------------------------------------------ */
+    {
+      path: '/CertificateList',
+      name: 'CertificateList',
+      meta: {
+        title: '证书管理',
+        icon: 'iconfont icon-kehuguanli',
+        pageName: 'CertificateListPage',
+        PermissionInfo: ['PermissionManageCustomer', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CertificateManage/CertificateManageListPage.vue'),
+    },
+    {
+      path: '/AuditCertificate',
+      name: 'AuditCertificate',
+      meta: {
+        title: '审核证书',
+        icon: 'iconfont icon-kehuguanli',
+        pageName: 'AuditCertificatePage',
+        PermissionInfo: ['PermissionManageCustomer', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CertificateManage/AuditCertificatePage.vue'),
+    },
     /*  统计分析
     ------------------------------------------ */
     ...StatisticAnalyseRoutes.routes,
