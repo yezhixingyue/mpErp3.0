@@ -208,6 +208,7 @@ export default {
   },
   created() {
     this.getInitItemData();
+    this.$store.dispatch('common/fetchAdAreaList');
   },
 };
 </script>

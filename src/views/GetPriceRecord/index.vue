@@ -1,18 +1,17 @@
 <template>
   <section class="mp-erp-get-price-record-page-containner">
-    <Header />
+    <Header :PriceRecordStatus="PriceRecordStatus"/>
     <main class="mp-erp-get-price-record-page-main-comp-wrap">
-      <Table @detail='onDetailClick' />
-      <DetailDialog v-model="visible" :detailData='detailData' />
+      <Table :PriceRecordStatus="PriceRecordStatus" @detail='onDetailClick' />
     </main>
     <footer>
       <Count
        :watchPage='condition4RecordList.Page'
        :handlePageChange='handlePageChange'
        :count='RecordDataNumber'
-       :pageSize='30'
+       :pageSize='condition4RecordList.PageSize'
+       center
        >
-       <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportExcel" />
       </Count>
     </footer>
   </section>
@@ -22,8 +21,6 @@
 import Header from '@/components/GetPriceRecordComps/Header';
 import Table from '@/components/GetPriceRecordComps/Main/Table';
 import Count from '@/components/common/Count.vue';
-import DetailDialog from '@/components/GetPriceRecordComps/Main/DetailDialog';
-import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
 import CommonClassType from '@/store/CommonClassType';
 import { mapState } from 'vuex';
 
@@ -31,13 +28,6 @@ export default {
   name: 'GetPriceRecordListPage',
   computed: {
     ...mapState('PriceRecord', ['condition4RecordList', 'RecordDataNumber']),
-    ...mapState('common', ['Permission']),
-    localPermission() {
-      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
-        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
-      }
-      return {};
-    },
     condition() {
       return CommonClassType.filter(this.condition4RecordList, true);
     },
@@ -55,13 +45,16 @@ export default {
     Header,
     Table,
     Count,
-    DetailDialog,
-    DownLoadExcelComp,
   },
   data() {
     return {
-      visible: false,
       detailData: null,
+      PriceRecordStatus: [
+        { label: '不限', value: '' },
+        { label: '未处理', value: 0 },
+        { label: '已追踪', value: 1 },
+        { label: '作废', value: 2 },
+      ],
     };
   },
   methods: {
@@ -70,7 +63,12 @@ export default {
     },
     onDetailClick(data) {
       this.detailData = data;
-      this.visible = true;
+      const paramsData = {
+        customerID: data.Customer.CustomerID,
+        customerInfo: data.Customer,
+        quotation: data,
+      };
+      this.$router.push({ name: 'GetPriceRecordDetail', params: paramsData });
     },
   },
 };

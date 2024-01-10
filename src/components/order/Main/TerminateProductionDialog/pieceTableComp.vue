@@ -8,10 +8,19 @@
     :data="list"
     style="width: 100%; border-right: 1px solid #e5e5e5"
   >
-    <el-table-column prop="ID" min-width="110" label="大版ID"/>
-    <el-table-column prop="ID" min-width="80" label="物料"/>
-    <el-table-column prop="ID" min-width="60" label="尺寸"/>
-    <el-table-column prop="ID" min-width="79" label="数量"/>
+    <el-table-column prop="Code" min-width="80" label="大版ID"/>
+    <el-table-column prop="Number" show-overflow-tooltip min-width="80" label="物料">
+      <span slot-scope="scope">
+        {{ scope.row.Number }}
+        {{ OrderData?.Unit }}
+      </span>
+    </el-table-column>
+    <el-table-column prop="Size" show-overflow-tooltip min-width="80" label="尺寸"/>
+    <el-table-column prop="WorkingList" show-overflow-tooltip min-width="90" label="数量">
+      <span slot-scope="scope">
+        已做：{{ scope.row.WorkingList.join('、') }}
+      </span>
+    </el-table-column>
   </el-table>
 </template>
 
@@ -20,6 +29,9 @@ export default {
   props: {
     list: {
       type: Array,
+    },
+    OrderData: {
+      type: Object,
     },
   },
 };

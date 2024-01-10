@@ -5,6 +5,7 @@
     :list="localProductList"
     :fiexdWidth="fiexdWidth"
     :title="title"
+    :withEmpty="withEmpty"
     v-model="EpCascaderProductValue"
    />
 </template>
@@ -52,6 +53,10 @@ export default {
     useCustomer: {
       type: Boolean,
       default: false,
+    },
+    withEmpty: {
+      type: Boolean,
+      default: true,
     },
   },
   components: {

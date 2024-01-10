@@ -41,6 +41,7 @@ export default {
       { name: '已入库', ID: 70, canProdProgress: true },
       { name: '已发货', ID: 80, canProdProgress: true },
       { name: '已完成', ID: 200, canProdProgress: true },
+      { name: '终止生产', ID: 253 },
       { name: '已取消', ID: 254 },
       { name: '已过期', ID: 255 },
       { name: '问题件', ID: 35, canCancel: true },

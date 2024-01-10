@@ -3,6 +3,7 @@ import ProductCraftManageModuleRoutes from './ProductCraftManageModuleRoutes';
 import PriceStrategyRoutes from './PriceStrategy';
 import FinanceRoutes from './Finance';
 import OrderManageRoutes from './OrderManage';
+import TraceGetPriceRoutes from './TraceGetPrice';
 import MaterialRoutes from './Material';
 import BasicSetRoutes from './BasicSet';
 import ProducePeriodRoutes from './ProducePeriod';
@@ -33,6 +34,7 @@ const routes = [
     component: () => import('../../views/LoginPage.vue'),
   },
   OrderManageRoutes.routes,
+  TraceGetPriceRoutes.routes,
   FinanceRoutes.routes,
   ReviewManage.routes,
   PriceStrategyRoutes.routes, // 价格策略
@@ -62,6 +64,7 @@ const routes = [
 
 const routeTree = [
   OrderManageRoutes.routeTree,
+  TraceGetPriceRoutes.routeTree,
   FinanceRoutes.routeTree,
   PriceStrategyRoutes.routeTree,
   ProductCraftManageModuleRoutes.routeTree,

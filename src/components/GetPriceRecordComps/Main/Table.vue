@@ -10,90 +10,91 @@
     class="mp-erp-get-price-record-page-main-table-comp-wrap ft-14-table"
   >
     <el-table-column
-      prop="Customer.CustomerSN"
-      label="客户编号"
-      width="110"
-    ></el-table-column>
-    <el-table-column
-      prop="Customer.CustomerName"
-      label="客户"
-      minWidth="160"
-      show-overflow-tooltip
-    ></el-table-column>
-    <el-table-column
-      label="销售区域"
-      minWidth="160"
+      label="产品"
+      minWidth="176"
       show-overflow-tooltip
     >
-      <span class="is-gray" slot-scope="scope">
-        {{scope.row.Customer.Location?.RegionalName}}{{scope.row.Customer.Location?.CityName}}{{scope.row.Customer.Location?.CountyName}}
+      <span slot-scope="scope">{{
+        scope.row.Product.Name
+      }}</span>
+    </el-table-column>
+    <el-table-column
+      prop="Customer.CustomerName"
+      label="规格"
+      minWidth="248"
+      show-overflow-tooltip
+    >
+      <span slot-scope="scope">
+        {{ scope.row.Product.Spec }}
+        <!-- {{ scope.row.ProductParams.Attributes.ProductAmount }}{{ scope.row.ProductParams.Attributes.Unit }}
+        {{ scope.row.ProductParams.Attributes.KindCount }}款 {{ scope.row.ProductParams.Size.DisplayContent }}
+        {{ scope.row.ProductParams.CraftList | getCraftTextList }} -->
       </span>
     </el-table-column>
     <el-table-column
-      prop="Customer.Mobile"
-      label="联系电话"
-      width="120"
-    ></el-table-column>
-    <el-table-column
-      label="QQ"
-      prop="Customer.QQ"
-      width="110"
-    >
-    </el-table-column>
-    <el-table-column
-      label="产品"
-      minWidth="260"
-      show-overflow-tooltip
-    >
-      <span class="is-gray" slot-scope="scope">{{
-        scope.row.ProductParams.Attributes | getProductName
-      }}</span>
-    </el-table-column>
-    <el-table-column label="数量" width="120" show-overflow-tooltip>
-      <template slot-scope="scope">{{
-        scope.row.ProductParams.Attributes | formarProductAmount
-      }}</template>
-    </el-table-column>
-    <el-table-column label="尺寸" prop="ProductParams.Size.DisplayContent" width="110" show-overflow-tooltip>
-    </el-table-column>
-    <el-table-column
-      prop="Remark"
-      label="工艺"
-      width="110"
-      show-overflow-tooltip
-    >
-      <template slot-scope="scope">{{ scope.row.ProductParams.CraftList | getCraftTextList }}</template>
-    </el-table-column>
-    <el-table-column
       label="原价"
-      width="100"
+      width="88"
       show-overflow-tooltip
     >
       <template slot-scope="scope">{{ scope.row.Funds.OriginalPrice }}元</template>
     </el-table-column>
     <el-table-column
       label="成交价"
-      width="100"
+      width="101"
       show-overflow-tooltip
     >
       <template slot-scope="scope">{{ scope.row.Funds.FinalPrice }}元</template>
     </el-table-column>
-    <el-table-column
-      label="报价方式"
-      width="85"
-      show-overflow-tooltip
-    >
-      <template slot-scope="scope">{{ scope.row.Terminal | formatTerminalType }}</template>
-    </el-table-column>
-    <el-table-column label="报价时间" show-overflow-tooltip width="135">
-      <span class="is-gray" slot-scope="scope">{{
+    <el-table-column label="报价时间" show-overflow-tooltip width="136">
+      <span slot-scope="scope">{{
         scope.row.CreateTime | format2MiddleLangTypeDate
       }}</span>
     </el-table-column>
-    <el-table-column label="操作" minWidth="160" show-overflow-tooltip>
+    <el-table-column label="状态" show-overflow-tooltip width="88">
+      <span :class="{ 'is-pink':scope.row.TrackStatus === 0}" slot-scope="scope">{{
+        PriceRecordStatus.find(it => it.value === scope.row.TrackStatus)?.label
+      }}</span>
+    </el-table-column>
+    <el-table-column
+      prop="Customer.CustomerName"
+      label="客户"
+      minWidth="148"
+      show-overflow-tooltip
+    >
+      <span slot-scope="scope">
+        {{scope.row.Customer.CustomerName}}（{{scope.row.Customer.CustomerSN}}）
+      </span>
+    </el-table-column>
+    <el-table-column
+      label="销售区域"
+      minWidth="136"
+      show-overflow-tooltip
+    >
+      <span slot-scope="scope">
+        {{scope.row.Customer.SellArea?.RegionalName}}{{scope.row.Customer.SellArea?.CityName}}{{scope.row.Customer.SellArea?.CountyName}}
+      </span>
+    </el-table-column>
+    <el-table-column
+      prop="Customer.Mobile"
+      label="客户等级分类"
+      width="144"
+    >
+      <span slot-scope="scope">
+        {{ userTypeList.find(it => it.CategoryID === scope.row.Customer.Type.First)?.CategoryName }}-{{
+          userRankList.find(it => it.CategoryID === scope.row.Customer.Grade.First)?.CategoryName
+        }}
+      </span>
+    </el-table-column>
+    <el-table-column
+      label="报价编号"
+      prop="QuotationNumber"
+      width="156"
+    >
+    </el-table-column>
+    <el-table-column label="操作" minWidth="126" show-overflow-tooltip>
       <div class="is-font-12 btn-wrap" slot-scope="scope">
-        <span @click="onDetaClick(scope.row)">
-          <img src="@/assets/images/detail.png" alt />查看详情
+        <span @click="onDetaClick(scope.row)" v-if="localPermission.TrackDetail">
+          <img src="@/assets/images/detail.png" alt />详情
         </span>
       </div>
     </el-table-column>
@@ -109,8 +110,21 @@ import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
+  props: {
+    PriceRecordStatus: {
+      type: Array,
+      default: () => [],
+    },
+  },
   computed: {
     ...mapState('PriceRecord', ['RecordDataList', 'RecordDataNumber', 'loading']),
+    ...mapState('common', ['Permission', 'userTypeList', 'userRankList']),
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionCalculateRecord?.Obj) {
+        return this.Permission.PermissionList.PermissionCalculateRecord.Obj;
+      }
+      return {};
+    },
   },
   mixins: [tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   filters: {

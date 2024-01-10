@@ -56,7 +56,14 @@
         scope.row.Operator ? scope.row.Operator.StaffName : ''
       }}</template>
     </el-table-column>
-    <el-table-column prop="OrderIDString" label="订单号" min-width="100" show-overflow-tooltip>
+    <el-table-column prop="OrderIDString" label="订单号" min-width="100">
+      <template slot-scope="scope">
+        <el-tooltip class="item" effect="dark" :content="scope.row.OrderIDString" placement="left">
+          <span>
+            {{ scope.row.OrderIDString }}
+          </span>
+        </el-tooltip>
+      </template>
     </el-table-column>
     <div slot="empty">
       <span v-show="!isBalanceDataLoading">暂无数据</span>

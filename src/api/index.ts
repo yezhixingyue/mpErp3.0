@@ -45,6 +45,23 @@ const api = {
   cancelStaffOrder({ OrderID, closeTip = false }) { // 取消客户订单(接单员)
     return instance.delete(`/Api/Order/Cancle?OrderID=${OrderID}`, { closeTip });
   },
+
+  getOrderProductionInfo(OrderID) { // 获取订单生产信息
+    return instance.get(`/Api/Order/ProductionInfo?orderID=${OrderID}`);
+  },
+  getOrderProductionStopQuery(data) { // POST /Api/Order/ProductionStop/Query
+    return instance.post('/Api/Order/ProductionStop/Query', data);
+  },
+  getOrderProductionStopSave(data) { // POST /Api/Order/ProductionStop/Save
+    return instance.post('/Api/Order/ProductionStop/Save', data);
+  },
+  getOrderProductionStopCancelPay(OrderID, payCode) { // 生产中止取消支付
+    return instance.put(`/Api/Order/ProductionStop/CancelPay?orderID=${OrderID}&payCode=${payCode}`);
+  },
+  getOrderProductionStopPay(data) { // POST /Api/Order/ProductionStop/Pay
+    return instance.post('/Api/Order/ProductionStop/Pay', data);
+  },
+
   getOrderListData2Excel(data, type = 'normal') { // POST /Api/OrderList/Excel  ---- 财务用 [finance]   /Api/PackageList/Excel --- 普通方式 [normal]
     if (type === 'finance') {
       return instance.post('/Api/OrderList/Excel', data, { responseType: 'arraybuffer' }); // 财务
@@ -59,6 +76,36 @@ const api = {
   },
   getCalculatePriceRecordListExcel(data) { // POST /Api/CalculatePrice/Excel 导出报价记录Excel
     return instance.post('/Api/CalculatePrice/Excel', data, { responseType: 'arraybuffer' });
+  },
+  getCustomerTrackList(data) { // POST /Api/CustomerTrack/List  追踪客户列表
+    return instance.post('/Api/CustomerTrack/List', data);
+  },
+  getCustomerCommunicateLogList(data) { // POST /Api/CustomerCommunicateLog/List  沟通记录列表
+    return instance.post('/Api/CustomerCommunicateLog/List', data);
+  },
+  getCustomerCommunicateLogListExcel(data) { // POST /Api/CustomerCommunicateLog/Excel 导出沟通记录Excel
+    return instance.post('/Api/CustomerCommunicateLog/Excel', data, { responseType: 'arraybuffer' });
+  },
+  getCustomerTrackLogList(data) { // POST /Api/CustomerTrackLog/List  追踪记录列表
+    return instance.post('/Api/CustomerTrackLog/List', data);
+  },
+  getCustomerTrackLogListExcel(data) { // POST /Api/CustomerTrackLog/Excel 导出追踪记录Excel
+    return instance.post('/Api/CustomerTrackLog/Excel', data, { responseType: 'arraybuffer' });
+  },
+  getCustomerTrackDetail(customerID) { // 客户追踪信息
+    return instance.get(`/Api/CustomerTrack/Detail?customerID=${customerID}`);
+  },
+  getCustomerTrackLogSave(data) { // 添加客户追踪记录
+    return instance.post('/Api/CustomerTrackLog/Save', data);
+  },
+  getCustomerTrackLogCancel(quotationNumber) { // 报价单作废
+    return instance.get(`/Api/CustomerTrackLog/Cancel?quotationNumber=${quotationNumber}`);
+  },
+  getCustomerCommunicateLogSave(data) { // 添加客户沟通记录
+    return instance.post('/Api/CustomerCommunicateLog/Save', data);
+  },
+  getCustomerTrackLogChangeStatus(data) { // 添加客户追踪记录改变状态
+    return instance.post('/Api/CustomerTrackLog/ChangeStatus', data);
   },
 
   /* 付款列表部分api
@@ -257,6 +304,9 @@ const api = {
   },
   getPayResult(payCode, type = 11) { // GET /Api/PaymentOrder/PayResult 查询付款结果
     return instance.get('/Api/PaymentOrder/PayResult', { params: { payCode, type } });
+  },
+  getPayResultExtend(payCode, orderID) { // GET /Api/ProductionStop/PayResult 查询付款结果 (取消生产扫码用)
+    return instance.get('/Api/ProductionStop/PayResult', { params: { payCode, orderID } });
   },
   getPaymentData2Excel(data) { // POST /Api/PaymentOrder/Excel
     return instance.post('/Api/PaymentOrder/Excel', data, { responseType: 'arraybuffer' });
@@ -1543,6 +1593,16 @@ const api = {
   },
   getOrderAfterSaleLossConfirm(data) { // GET /Api/OrderAfterSale/LossConfirm 复核
     return instance.post('/Api/OrderAfterSale/LossConfirm', data);
+  },
+  // 证书审核
+  getCustomerCertificateCheck(data) { // GET /Api/Customer/Certificate/Check 证书审核
+    return instance.post('/Api/Customer/Certificate/Check', data);
+  },
+  getCustomerCertificateUnCheck() { // GET /Api/Customer/Certificate/UnCheck 未审核证书
+    return instance.get('/Api/Customer/Certificate/UnCheck');
+  },
+  getCustomerCertificateManageList(data) { // GET /Api/Customer/Certificate/ManageList 证书管理列表
+    return instance.post('/Api/Customer/Certificate/ManageList', data);
   },
 };
 

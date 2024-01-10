@@ -1,0 +1,30 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "127833704",
+      "name": "沟通记录",
+      "font_class": "goutongjilu",
+      "unicode": "e679",
+      "unicode_decimal": 59001
+    },
+    {
+      "icon_id": "127833705",
+      "name": "追踪客户列表",
+      "font_class": "zhuizongkehuliebiao",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
+      "icon_id": "127833703",
+      "name": "追踪记录",
+      "font_class": "zhuizongjilu",
+      "unicode": "e678",
+      "unicode_decimal": 59000
+    }
+  ]
+}

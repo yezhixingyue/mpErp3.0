@@ -26,7 +26,7 @@
         :typeList="[['CustomerType', 'First']]"
         :value="condition4RecordList.CustomerType.First"
         :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
-        label="用户"
+        label="客户"
       />
       <order-channel-selector
         :showLabel="false"
@@ -46,35 +46,37 @@
         :Second="condition4RecordList.Amount.Second"
         :typeList="[['Amount', 'First'],['Amount', 'Second']]"
        />
-      <OrderChannelSelector
-        :options='selfHelpOrderTypeList'
-        :requestFunc='getRecordList'
-        :changePropsFunc='setRequestObj'
-        :typeList="[['Terminal', '']]"
-        :value='condition4RecordList.Terminal'
-        label="报价方式"
-        isRadio
-       />
     </div>
     <div>
-      <LineDateSelectorComp
-        :changePropsFunc='setRequestObj'
-        :requestFunc='getRecordList'
-        :typeList="[['DateType', ''], ['CalculateDate', 'First'], ['CalculateDate', 'Second']]"
-        :dateValue='condition4RecordList.DateType'
-        :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
-        :dateList="dateList"
-        isFull
-        label="时间筛选" />
-      <!-- <ElDateRangeSelector v-model="conditionDate" :max-span="366" :menus="dateMenus" :condition="condition4RecordList" /> -->
+      <p class="left-box">
+        <LineDateSelectorComp
+          :changePropsFunc='setRequestObj'
+          :requestFunc='getRecordList'
+          :typeList="[['DateType', ''], ['CalculateDate', 'First'], ['CalculateDate', 'Second']]"
+          :dateValue='condition4RecordList.DateType'
+          :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+          :dateList="dateList"
+          isFull
+          label="时间筛选" />
+        <OrderChannelSelector
+          :options='PriceRecordStatus'
+          :requestFunc='getRecordList'
+          :changePropsFunc='setRequestObj'
+          :typeList="[['TrackStatus', '']]"
+          :value='condition4RecordList.TrackStatus'
+          :defaultProps="{label: 'label',value: 'value'}"
+          label="状态"
+          isRadio
+         />
+      </p>
       <SearchInputComp
         :typeList="[['KeyWords', '']]"
         :requestFunc='getRecordList'
         :changePropsFunc='setRequestObj'
         :word='condition4RecordList.KeyWords'
         @reset='clearRequestObj'
-        title="关键词"
-        placeholder="请输入搜索关键词"
+        title="报价编号"
+        placeholder="请输入报价编号"
         :searchWatchKey="RecordDataList" />
     </div>
   </header>
@@ -86,11 +88,17 @@ import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSele
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState } from 'vuex';
-import EpCascaderByProduct from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
-import MinMaxNum from '../../common/min-max-Num.vue';
-import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
+import EpCascaderByProduct from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
+import MinMaxNum from '@/components/common/min-max-Num.vue';
+import EpCascaderByArea from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
+  props: {
+    PriceRecordStatus: {
+      type: Array,
+      default: () => [],
+    },
+  },
   components: {
     SearchInputComp,
     LineDateSelectorComp,
@@ -153,6 +161,19 @@ export default {
 .mp-erp-get-price-record-page-header-comp-wrap {
   padding: 20px 0;
   background-color: #fff;
+  .left-box{
+    display: flex;
+    flex-wrap: wrap;
+    .mp-line-date-selector-wrap{
+      min-width: 630px;
+    }
+    .mp-common-comps-order-channel-selector-wrap{
+      padding-top: 18px;
+      main{
+        display: flex;
+      }
+    }
+  }
   > div {
     display: flex;
     align-items: center;

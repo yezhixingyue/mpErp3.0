@@ -31,6 +31,14 @@ export default {
       state.RecordDataList = Data;
       if (DataNumber || DataNumber === 0) state.RecordDataNumber = DataNumber;
     },
+    setTrackStatus(state, { QuotationNumber, Status }) {
+      state.RecordDataList.forEach((element, index) => {
+        if (element.QuotationNumber === QuotationNumber) {
+          state.RecordDataList[index].TrackStatus = Status;
+          console.log(state.RecordDataList[index].TrackStatus);
+        }
+      });
+    },
     setLoading(state, bool) {
       state.loading = bool;
     },

@@ -3,7 +3,7 @@ export default class RecordListConditonClass {
 
   KeyWords = ''; // 关键词 (活动名称)
 
-  PageSize = 30; // 页容量
+  PageSize = 20; // 页容量
 
   DateType = 'today';
 
@@ -14,6 +14,7 @@ export default class RecordListConditonClass {
 
   SellArea = { // 销售区域
     RegionalID: '',
+    CountyID: '',
     CityID: '',
     SellArea: '',
   }
@@ -30,11 +31,16 @@ export default class RecordListConditonClass {
     Second: '',
   }
 
-  Terminal = '';
+  TrackStatus = '';
 
   CustomerType= {
     First: '',
     Second: '',
   }
   // initDateText = '今天';
+
+  Order= {
+    First: '',
+    Second: '',
+  }
 }

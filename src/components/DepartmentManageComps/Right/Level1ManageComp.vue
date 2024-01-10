@@ -228,7 +228,7 @@ export default {
         // 选择了大区
         if (this.areaList.filter(item => item.ID === ParentID).length) {
           returnArr.push({
-            ClassName: `所有${this.areaList.filter(item => item.ID === ParentID)[0].ClassName}`,
+            ClassName: `所有${this.areaList.filter(item => item.ID === ParentID && item.Level === 1)[0].ClassName}`,
             ID: -666,
           });
         } else {
@@ -248,7 +248,7 @@ export default {
         // 选择了大区
         if (this.areaList.filter(item => item.ID === ParentID).length) {
           returnArr.push({
-            ClassName: `所有${this.areaList.filter(item => item.ID === ParentID)[0].ClassName}`,
+            ClassName: `所有${this.areaList.filter(item => item.ID === ParentID && item.Level === 2)[0].ClassName}`,
             ID: -666,
           });
         } else {
