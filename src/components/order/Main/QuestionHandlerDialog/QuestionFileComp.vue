@@ -18,10 +18,10 @@
 
 <script setup lang='ts'>
 import { computed } from 'vue';
-import { FileItemClass } from './FileItemClass';
+import { QuestionFileClass } from './QuestionFileClass';
 
 const props = defineProps<{
-  item: FileItemClass
+  item: QuestionFileClass
   listLoading: boolean
 }>();
 

@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import { Message } from 'element-ui';
 import { formatListItemSize, formatListItemCraft } from '@/assets/js/filters/filters';
 import titleComp from './title.vue';
 import formTableComp from './formTableComp.vue';

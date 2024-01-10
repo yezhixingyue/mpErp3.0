@@ -204,8 +204,10 @@
                   <li class="btn-box" v-if="showData.Status===35 && $route.name === 'orderManage'" :class="{hiddenFileUpload: !showData.FileCase}">
                     <!-- <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc"
                      v-if="showData.FileCase" :CustomerID='showData.Customer.CustomerID' /> -->
-                    <div class="ft-12" v-if="showData.FileCase" @click="onAnewUploadClick">重新上传文件再审稿</div>
-                    <el-button type="primary" @click="handleReview">{{showData.FileCase ? '文件没问题' : '该订单无文件'}},重新审稿</el-button>
+                    <div class="ft-12" v-if="showData.FileCase" @click="onAnewUploadClick">解决审稿问题</div>
+                    <el-button type="primary" @click="handleReview">
+                      <!-- {{showData.FileCase ? '文件没问题' : '该订单无文件'}} -->
+                      没问题,重新审稿</el-button>
                   </li>
                   <li class="right-flex-wrap file-content-wrap">
                     <span class="text-title">文件内容：</span>
@@ -804,6 +806,7 @@ export default {
           line-height: 28px;
           transition:  0.2s;
           position: relative;
+          text-align: center;
           &:hover {
             color: #35dff9!important;
             border-color: #35dff9 !important;

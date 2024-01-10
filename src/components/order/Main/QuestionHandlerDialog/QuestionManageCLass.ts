@@ -1,13 +1,31 @@
 import { MpMessage } from '@/assets/js/utils/MpMessage';
-import { FileItemClass } from './FileItemClass';
+import { QuestionFileClass } from './QuestionFileClass';
 
-export class FileListClass {
-  list: FileItemClass[]
+/** 问题件处理相关类 */
+export class QuestionManageCLass {
+  CustomerID: string
+
+  list: QuestionFileClass[]
+
+  /** 旧的证书ID */
+  oldCertificate: string
+
+  /** 新选择的证书ID */
+  newCertificate = ''
 
   loading = false
 
-  constructor(fileList: File[], CustomerID: string) {
-    this.list = fileList.map(file => new FileItemClass(file, CustomerID));
+  constructor(fileList: File[], CustomerID: string, oldCertificate: string) {
+    this.CustomerID = CustomerID;
+    this.oldCertificate = oldCertificate;
+    this.updateFileList(fileList);
+
+    // 获取证书列表数据
+  }
+
+  /** 更新选择文件 */
+  public updateFileList(fileList: File[]) {
+    this.list = fileList.map(file => new QuestionFileClass(file, this.CustomerID));
   }
 
   /** 内部方法：执行文件上传 */
@@ -46,7 +64,7 @@ export class FileListClass {
     }
 
     // 需要获取上传结果 拿到文件名等信息
-    const list = this.list.map(it => ({ UniqueName: it.UniqueName, isPrintFile: it.isPrintFile }));
+    const list = this.list.map(it => ({ UniqueName: it.UniqueName, isPrintFile: it.isPrintFile, FileSize: it.file.size }));
 
     // 提交
     const result = await handerFunc(list);

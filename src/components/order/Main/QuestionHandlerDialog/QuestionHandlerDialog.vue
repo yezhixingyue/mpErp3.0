@@ -13,7 +13,7 @@
   >
     <div class="main-area">
       <div class="header">
-        <h2>上传文件</h2>
+        <h2>上传文件/选择证书</h2>
       </div>
 
       <div class="content">
@@ -22,7 +22,7 @@
             <h4>上传文件：</h4>
             <span class="remark">支持文件类型：{{ accept }}</span>
           </div>
-          <span class="menu" @click="fileList = []">
+          <span class="menu" v-show="fileList.length" @click="fileList = []">
             <img src="@/assets/images/clearFile-gray.png" alt="">
             <img class="active" src="@/assets/images/clearFile-pink.png" alt="">
             清空文件
@@ -32,7 +32,7 @@
         <div class="select-file-area">
           <MpFileUploader :accept="accept" multiple :width="610" :height="215" :fileList.sync="fileList" :disabled="localFileListData?.loading">
             <ul v-if="localFileListData">
-              <FileItemComp v-for="it in localFileListData.list" :key="it.key"
+              <QuestionFileComp v-for="it in localFileListData.list" :key="it.key"
                 :item="it"
                 :listLoading="localFileListData.loading"
                 @change="(bool) => it.isPrintFile = bool"
@@ -49,8 +49,8 @@
 import { computed, ref } from 'vue';
 import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import MpFileUploader from '@/components/common/NewComps/MpFileUploader/MpFileUploader.vue';
-import { FileListClass } from './FileListClass';
-import FileItemComp from './FileItemComp.vue';
+import { QuestionManageCLass } from './QuestionManageCLass';
+import QuestionFileComp from './QuestionFileComp.vue';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 const props = defineProps<{
@@ -72,7 +72,7 @@ const localVisible = computed({
 
 const accept = '.jpg,.jpeg,.png,.cdr,.pdf,.ai,.zip,.rar,.7z';
 
-const localFileListData = ref<FileListClass | null>(null);
+const localFileListData = ref<QuestionManageCLass | null>(null);
 
 const fileList = computed({
   get() {
@@ -80,12 +80,12 @@ const fileList = computed({
   },
   set(list: File[]) {
     if (localFileListData.value?.loading) return;
-    localFileListData.value = new FileListClass(list, props.CustomerID);
+    localFileListData.value.updateFileList(list);
   },
 });
 
 const onOpen = () => {
-  localFileListData.value = null;
+  localFileListData.value = new QuestionManageCLass([], props.CustomerID, '');
 };
 
 const cancel = () => {

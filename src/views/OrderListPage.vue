@@ -48,7 +48,7 @@
     ></TerminateProductionDialog>
     <!-- <ServiceDialog key="order-list-page" className='show-black' /> -->
     <!-- 重新上传文件再审稿弹窗 -->
-    <AnewUploadDialog :visible.sync="AnewUploadVisible" :CustomerID="orderDetailData?.Customer?.CustomerID || ''" :handerFunc="AnewUploadHanderFunc" />
+    <QuestionHandlerDialog :visible.sync="AnewUploadVisible" :CustomerID="orderDetailData?.Customer?.CustomerID || ''" :handerFunc="AnewUploadHanderFunc" />
   </div>
 </template>
 
@@ -62,7 +62,7 @@ import Table from '@/components/order/Main/Table2.vue';
 import Count from '@/components/common/Count.vue';
 import NodePicDialog from '@/components/common/NodePicDialog/NodePicDialog.vue';
 import { mapState, mapGetters, mapActions } from 'vuex';
-import AnewUploadDialog from '@/components/order/Main/AnewUploadDialog/AnewUploadDialog.vue';
+import QuestionHandlerDialog from '@/components/order/Main/QuestionHandlerDialog/QuestionHandlerDialog.vue';
 
 export default {
   components: {
@@ -71,7 +71,7 @@ export default {
     OrderListDialog,
     // ServiceAfterSalesDialog,
     NodePicDialog,
-    AnewUploadDialog,
+    QuestionHandlerDialog,
     ConfirmCancellationDialog,
     TerminateProductionDialog,
     // ServiceDialog: () => import(/* webpackChunkName: "async" */ '@/components/order/DialogContent/ServiceDialog.vue'),

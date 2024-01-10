@@ -1,6 +1,6 @@
 import breakPointUpload, { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 
-export class FileItemClass {
+export class QuestionFileClass {
   file:File
 
   percentage = 0
