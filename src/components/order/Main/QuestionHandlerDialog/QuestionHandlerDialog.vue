@@ -54,6 +54,7 @@
           <span class="blue-span underline btn" :class="{active:!!localManageData.newCertificate}" @click="selectVisible=true">
             <i class="el-icon-circle-check"></i>重新选择证书</span>
           <span class="is-bold text" :title="localManageData.newCertificateName">{{ localManageData.newCertificateName }}</span>
+          <span class="clear blue-span" v-show="localManageData.newCertificate" @click="clear">清除</span>
         </div>
 
         <CertificateSelectDialog
@@ -121,6 +122,10 @@ const closed = () => {
 };
 
 const selectVisible = ref(false);
+
+const clear = () => {
+  localManageData.value.newCertificate = '';
+};
 
 const submit = () => {
   if (!props.CustomerID || !localManageData.value) return;
@@ -240,6 +245,12 @@ const submit = () => {
               }
             }
           }
+
+          .clear {
+            font-size: 12px;
+            position: relative;
+            top: -1px;
+          }
         }
 
         > h4, > div {
@@ -254,6 +265,11 @@ const submit = () => {
             overflow: hidden;
             text-overflow: ellipsis;
           }
+        }
+
+        .content .text {
+          flex: 0 1 auto;
+          margin-right: 10px;
         }
       }
     }
