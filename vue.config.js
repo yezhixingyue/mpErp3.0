@@ -41,7 +41,7 @@ module.exports = defineConfig({
         changeOrigin: true, // 开启代理
       },
       '/Certificate': { // 代理正式图片地址
-        target: proxyUrl,
+        target: 'http://192.168.1.92:8050',
         ws: true, // 开启websockets
         changeOrigin: true, // 开启代理
       },

@@ -71,10 +71,8 @@
 
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex';
-import Count from '@/components/common/Count.vue';
 import trackRecordTable from './trackRecordTable';
 import addTraceDialogComp from './addTraceDialogComp';
-import { formatListItemCraft } from '@/assets/js/filters/filters';
 
 export default {
   props: {

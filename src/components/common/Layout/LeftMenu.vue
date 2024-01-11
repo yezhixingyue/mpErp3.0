@@ -2,6 +2,14 @@
   <div class="mp-erp-layout-left-menu-comp-wrap" :class="isCollapse ? 'collapsed':'unfold'">
     <div class="logo-box" @click="onMenuItemClick(homeRouteInfo, '0')">
       <img src="@/assets/images/logo.png" alt="" class="broad" width="127px" height="31px">
+      <span class="internet">
+          <template v-if="!isIntranet">
+            当前为外网环境
+          </template>
+          <template v-else>
+            当前为内网环境
+          </template>
+        </span>
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu :default-active="defaultActive" :default-openeds='defaultOpeneds' background-color="#222B3A" :collapse="isCollapse"
@@ -64,6 +72,7 @@ export default {
       },
       isCollapse: false,
       showLoginout: true,
+      isIntranet: true,
     };
   },
   methods: {
@@ -221,6 +230,7 @@ export default {
   },
   mounted() {
     this.getShowMenuList();
+    this.isIntranet = !window.location.protocol.startsWith('https');
   },
 };
 </script>
@@ -245,11 +255,16 @@ export default {
       cursor: pointer;
       background-color: rgb(25, 31, 42);
       width: 100%;
-      height: 47px;
+      height: 62px;
       box-sizing: border-box;
       text-align: center;
-      line-height: 47px;
       padding: 6px;
+
+      .internet {
+        color: #888e99;
+        font-size: 12px;
+        display: block;
+      }
     }
     .el-menu {
       border: none;

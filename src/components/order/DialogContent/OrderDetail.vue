@@ -426,8 +426,8 @@ export default {
     },
     handleReview() { // 不传文件重新提交审稿
       this.messageBox.warnCancelBox(
-        '确认文件没问题吗?',
-        '[ 文件未更改，审稿人员将重新审核当前文件 ]',
+        '确认该问题件订单没问题吗?',
+        '[ 未做更改，审稿人员将重新审核当前订单 ]',
         () => this.$store.dispatch('orderModule/setOrderReCheckFile', ''),
       );
     },

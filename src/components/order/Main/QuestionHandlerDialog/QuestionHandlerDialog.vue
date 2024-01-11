@@ -2,21 +2,22 @@
   <CommonDialogComp
     width="660px"
     :visible.sync="localVisible"
-    :submitText="localFileListData && localFileListData.loading ? '正在上传...' : '确定'"
+    :submitText="localManageData && localManageData.loading ? '正在上传...' : '保存'"
     @open="onOpen"
     @submit="submit"
     @cancle="cancel"
     @closed="closed"
     class="dialog anew-upload-dialog"
-    :class="{uploading: localFileListData && localFileListData.loading}"
-    top="20vh"
+    :class="{uploading: localManageData && localManageData.loading}"
+    top="15vh"
   >
     <div class="main-area">
       <div class="header">
         <h2>上传文件/选择证书</h2>
       </div>
 
-      <div class="content">
+      <!-- 文件上传 -->
+      <div class="upload-box">
         <div class="title">
           <div class="l">
             <h4>上传文件：</h4>
@@ -30,16 +31,38 @@
         </div>
 
         <div class="select-file-area">
-          <MpFileUploader :accept="accept" multiple :width="610" :height="215" :fileList.sync="fileList" :disabled="localFileListData?.loading">
-            <ul v-if="localFileListData">
-              <QuestionFileComp v-for="it in localFileListData.list" :key="it.key"
+          <MpFileUploader :accept="accept" multiple :width="610" :height="215" :fileList.sync="fileList" :disabled="localManageData?.loading">
+            <ul v-if="localManageData">
+              <QuestionFileComp v-for="it in localManageData.list" :key="it.key"
                 :item="it"
-                :listLoading="localFileListData.loading"
+                :listLoading="localManageData.loading"
                 @change="(bool) => it.isPrintFile = bool"
               />
             </ul>
           </MpFileUploader>
         </div>
+      </div>
+
+      <!-- 证书选择 -->
+      <div class="certificate-box" v-if="localManageData && localManageData.oldCertificate">
+        <h4>
+          <span class="is-bold">选择证书：</span>
+          <span class="gray text" :title="localManageData.oldCertificateName">{{ localManageData.oldCertificateName || '' }}</span>
+        </h4>
+
+        <div class="content">
+          <span class="blue-span underline btn" :class="{active:!!localManageData.newCertificate}" @click="selectVisible=true">
+            <i class="el-icon-circle-check"></i>重新选择证书</span>
+          <span class="is-bold text" :title="localManageData.newCertificateName">{{ localManageData.newCertificateName }}</span>
+        </div>
+
+        <CertificateSelectDialog
+         :id.sync="localManageData.newCertificate"
+         :visible.sync="selectVisible"
+         :CertificateList="localManageData.CertificateList"
+         :CertificateTypeList="CertificateTypeList"
+         @refresh="() => localManageData.getCustomerCertificateAll()"
+         />
       </div>
     </div>
   </CommonDialogComp>
@@ -51,12 +74,14 @@ import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import MpFileUploader from '@/components/common/NewComps/MpFileUploader/MpFileUploader.vue';
 import { QuestionManageCLass } from './QuestionManageCLass';
 import QuestionFileComp from './QuestionFileComp.vue';
-import { MpMessage } from '@/assets/js/utils/MpMessage';
+import CertificateSelectDialog from './CertificateSelectDialog.vue';
 
 const props = defineProps<{
   visible: boolean,
   CustomerID: string,
-  handerFunc:(args: unknown[]) => Promise<boolean>
+  CertificateID: string,
+  CertificateTypeList: { label: string, value: '' | number }[]
+  handerFunc:(args) => Promise<boolean>
 }>();
 
 const emit = defineEmits(['update:visible']);
@@ -72,20 +97,20 @@ const localVisible = computed({
 
 const accept = '.jpg,.jpeg,.png,.cdr,.pdf,.ai,.zip,.rar,.7z';
 
-const localFileListData = ref<QuestionManageCLass | null>(null);
+const localManageData = ref<QuestionManageCLass | null>(null);
 
 const fileList = computed({
   get() {
-    return localFileListData.value?.list.map(it => it.file) || [];
+    return localManageData.value?.list.map(it => it.file) || [];
   },
   set(list: File[]) {
-    if (localFileListData.value?.loading) return;
-    localFileListData.value.updateFileList(list);
+    if (localManageData.value?.loading) return;
+    localManageData.value.updateFileList(list);
   },
 });
 
 const onOpen = () => {
-  localFileListData.value = new QuestionManageCLass([], props.CustomerID, '');
+  localManageData.value = new QuestionManageCLass([], props.CustomerID, props.CertificateID);
 };
 
 const cancel = () => {
@@ -95,15 +120,12 @@ const cancel = () => {
 const closed = () => {
 };
 
+const selectVisible = ref(false);
+
 const submit = () => {
-  if (!props.CustomerID) return;
+  if (!props.CustomerID || !localManageData.value) return;
 
-  if (!localFileListData.value || localFileListData.value.list.length === 0) {
-    MpMessage.error({ title: '请先上传文件' });
-    return;
-  }
-
-  localFileListData.value.submit(props.handerFunc, cancel);
+  localManageData.value.submit(props.handerFunc, cancel);
 };
 
 </script>
@@ -115,7 +137,7 @@ const submit = () => {
     display: none;
   }
   :deep(.el-dialog__body) {
-    height: 280px;
+    height: 340px;
     padding: 20px 25px;
 
     .main-area {
@@ -131,7 +153,7 @@ const submit = () => {
         }
       }
 
-      > .content {
+      > .upload-box {
         > .title {
           display: flex;
           align-items: center;
@@ -148,11 +170,11 @@ const submit = () => {
             h4 {
               font-weight: 700;
               flex: none;
-              &::before {
-                content: '*';
-                display: inline-block;
-                color: #ff3769;
-              }
+              // &::before {
+              //   content: '*';
+              //   display: inline-block;
+              //   color: #ff3769;
+              // }
             }
             .remark {
               color: #888;
@@ -190,12 +212,54 @@ const submit = () => {
           }
         }
       }
+
+      > .certificate-box {
+        padding-top: 20px;
+
+        .content {
+          padding-top: 10px;
+          padding-left: 5em;
+
+          .btn {
+            margin-right: 50px;
+            i {
+              margin-right: 4px;
+              display: none;
+            }
+
+            &::after {
+              bottom: -1px;
+            }
+
+            &.active {
+              i {
+                display: inline-block;
+              }
+              &::after {
+                left: 17px;
+              }
+            }
+          }
+        }
+
+        > h4, > div {
+          display: flex;
+          align-items: center;
+          > span {
+            flex: none;
+          }
+          .text {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
     }
   }
 
   &.uploading {
-    color: red;
-
     :deep(.el-dialog) {
       user-select: none;
       // pointer-events: none;

@@ -198,16 +198,42 @@
   cursor: pointer;
   user-select: none;
   transition: color 0.05s;
+  
+  &.underline {
+    position: relative;
+    &::after {
+      content: '';
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      position: absolute;
+      background-color: #26bcf9;
+    }
+  }
+
   &:hover {
     color: #428dfa !important;
+
+    &.underline::after {
+      background-color: #428dfa;
+    }
   }
   &:active {
     color: #35dff9 !important;
+
+    &.underline::after {
+      background-color: #35dff9;
+    }
   }
   &.disabled, &:disabled {
     color: #cbcbcb !important;
     pointer-events: none;
     cursor: default;
+
+    &.underline::after {
+      background-color: #cbcbcb;
+    }
   }
 }
 .red-span {
@@ -586,8 +612,8 @@ button.border-blue-btn {
 }
 
 .el-radio__inner::after {
-  width: 7px;
-  height: 7px;
+  width: 8px !important;
+  height: 8px !important;
 }
 
 @for $num from 0 through 100 {

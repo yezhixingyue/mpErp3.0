@@ -37,9 +37,6 @@
 </template>
 
 <script>
-import { Message } from 'element-ui';
-import { formatListItemSize, formatListItemCraft } from '@/assets/js/filters/filters';
-
 export default {
   props: {
     visible: {

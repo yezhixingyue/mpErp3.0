@@ -48,7 +48,13 @@
     ></TerminateProductionDialog>
     <!-- <ServiceDialog key="order-list-page" className='show-black' /> -->
     <!-- 重新上传文件再审稿弹窗 -->
-    <QuestionHandlerDialog :visible.sync="AnewUploadVisible" :CustomerID="orderDetailData?.Customer?.CustomerID || ''" :handerFunc="AnewUploadHanderFunc" />
+    <QuestionHandlerDialog
+     :visible.sync="AnewUploadVisible"
+     :CustomerID="orderDetailData?.Customer?.CustomerID || ''"
+     :CertificateID="CertificateID"
+     :CertificateTypeList="CertificateType"
+     :handerFunc="AnewUploadHanderFunc"
+     />
   </div>
 </template>
 
@@ -80,12 +86,19 @@ export default {
   computed: {
     ...mapState('orderModule', ['orderTotalCount', 'orderTotalAmount', 'isTableLoading', 'objForOrderList', 'orderListData', 'orderDetailData']),
     ...mapGetters('timeSelectModule', ['TodayDate']),
-    ...mapState('common', ['Permission']),
+    ...mapState('common', ['Permission', 'CertificateType']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionManageOrder?.Obj) {
         return this.Permission.PermissionList.PermissionManageOrder.Obj;
       }
       return {};
+    },
+    CertificateID() {
+      if (this.orderDetailData && this.orderDetailData.CertificateFileList && this.orderDetailData.CertificateFileList.length) {
+        return this.orderDetailData.CertificateFileList[0];
+      }
+
+      return '';
     },
     // ...mapGetters('layout', ['curTabPagesNameList']),
     // ...mapState
@@ -166,10 +179,12 @@ export default {
       this.processVisible = true;
     },
     onAnewUploadClick() { // 重新上传文件再审稿
+      console.log(this.orderDetailData);
       this.AnewUploadVisible = true;
     },
-    AnewUploadHanderFunc(list) {
-      return this.$store.dispatch('orderModule/setOrderReCheckFile', list);
+    AnewUploadHanderFunc(data) {
+      console.log(data);
+      return this.$store.dispatch('orderModule/setOrderReCheckFile', data);
     },
   },
   mounted() {

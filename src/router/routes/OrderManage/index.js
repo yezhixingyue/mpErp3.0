@@ -44,6 +44,7 @@ const routes = { // 客户订单管理
         icon: 'iconfont icon-shangchuan',
         pageName: 'OrderBatchUploadPage',
         requiresAuth: true,
+        hiddenItem: true,
         PermissionInfo: ['PermissionPlateOrder', 'Obj', 'BatchUpload'],
       },
       component: () => import('../../../views/BatchUpload/BatchUploadPage.vue'),
