@@ -65,9 +65,21 @@
       width="236"
       show-overflow-tooltip
     >
-      <span slot-scope="scope">{{
+      <template slot-scope="scope">
+        <template v-if="scope.row.CheckStatus === 0">
+          <p class="is-orgin">未审核</p>
+        </template>
+        <template v-if="scope.row.CheckStatus === 1">
+          已审核
+        </template>
+        <div v-if="scope.row.CheckStatus === 2">
+          <p style="line-height: 1em; font-size: 12px;" class="is-pink">审核失败</p>
+          <p style="line-height: 1em; font-size: 11px;margin-top: 5px;" class="is-pink">{{scope.row.CheckRemark}}</p>
+        </div>
+      </template>
+      <!-- <span slot-scope="scope">{{
         CheckStatus.find(it => it.value === scope.row.CheckStatus).label
-      }}</span>
+      }}</span> -->
     </el-table-column>
     <el-table-column label="添加时间" show-overflow-tooltip width="176">
       <span slot-scope="scope">{{
@@ -144,6 +156,11 @@ export default {
   }
   .el-image + .el-image{
     margin-left: 10px;
+  }
+  p{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 </style>
