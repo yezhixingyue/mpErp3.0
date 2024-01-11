@@ -6,6 +6,13 @@
   "description": "mpzj后台管理系统图标集合",
   "glyphs": [
     {
+      "icon_id": "8353908",
+      "name": "其他服务",
+      "font_class": "qitafuwu",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
       "icon_id": "33041597",
       "name": "转换异常",
       "font_class": "shengchanyichang",

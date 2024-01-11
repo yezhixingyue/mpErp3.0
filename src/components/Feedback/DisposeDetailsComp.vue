@@ -245,7 +245,6 @@ import {
 } from 'vuex';
 import EditDiaLeftTable from '@/components/Feedback/DialogContent/EditDiaLeftTable.vue';
 import LossAssessmentComp from '@/components/Feedback/LossAssessmentComp.vue';
-import LoadingComp from '@/components/common/LoadingComp.vue';
 
 export default {
   components: {

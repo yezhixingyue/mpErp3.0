@@ -604,19 +604,24 @@ export default {
         };
       }
     },
-    async setOrderReCheckFile({ state, commit }, FilePath) {
-      if (!state.orderDetailData) return;
+    async setOrderReCheckFile({ state, commit }, dialogData) {
+      if (!state.orderDetailData) return false;
       const { OrderID } = state.orderDetailData;
-      if (!OrderID) return;
-      const _obj = { OrderID, FilePath };
-      const res = await api.setOrderReCheckFile(_obj);
+      if (!OrderID) return false;
 
-      if (res.data.Status === 1000) {
+      console.log('dialogData', dialogData);
+
+      const _obj = typeof dialogData === 'object' ? { ...dialogData, OrderID } : { OrderID };
+      console.log(_obj, typeof dialogData === 'object');
+      const res = await api.setOrderReCheckFile(_obj).catch(() => null);
+
+      if (res && res.data.Status === 1000) {
         // 成功
-        // let msg = '已更换订单文件';
-        // if (!FilePath) msg = '未更换订单文件';
         messageBox.successSingle('已提交至审稿部门', () => commit('afterOrderReCheckFile', OrderID), () => commit('afterOrderReCheckFile', OrderID), true);
+        return true;
       }
+
+      return false;
     },
   },
 };

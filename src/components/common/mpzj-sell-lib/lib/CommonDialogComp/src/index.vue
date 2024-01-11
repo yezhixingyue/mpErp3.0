@@ -7,6 +7,7 @@
     :top='top'
     v-dialogDrag
     :modal='false'
+    :append-to-body="appendBody"
     @open='onOpen'
     @opened='onOpened'
     @close='onClose'
@@ -105,6 +106,10 @@ export default {
       default: false,
     },
     showClear: {
+      type: Boolean,
+      default: false,
+    },
+    appendBody: {
       type: Boolean,
       default: false,
     },
