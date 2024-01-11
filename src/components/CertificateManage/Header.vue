@@ -11,6 +11,15 @@
         label="证书类型"
       />
       <order-channel-selector
+        :options="CertificateStatus"
+        :requestFunc="getCustomerTrackLogList"
+        :changePropsFunc="setRequestObj"
+        :typeList="[['CertificateStatus', '']]"
+        :value="getCertificateCondition.CertificateStatus"
+        :defaultProps="{ label: 'label', value: 'value' }"
+        label="证书状态"
+      />
+      <order-channel-selector
         :options="CheckStatus"
         :requestFunc="getCustomerTrackLogList"
         :changePropsFunc="setRequestObj"
@@ -18,15 +27,6 @@
         :value="getCertificateCondition.CheckStatus"
         :defaultProps="{ label: 'label', value: 'value' }"
         label="审核状态"
-      />
-      <order-channel-selector
-        :options="CertificateStatus"
-        :requestFunc="getCustomerTrackLogList"
-        :changePropsFunc="setRequestObj"
-        :typeList="[['CertificateStatus', '']]"
-        :value="getCertificateCondition.CertificateStatus"
-        :defaultProps="{ label: 'label', value: 'value' }"
-        label="状态"
       />
     </div>
     <SearchInputComp

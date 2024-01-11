@@ -40,7 +40,7 @@
     </el-table-column>
     <el-table-column
       prop="CertificateStatus"
-      label="状态"
+      label="证书状态"
       minWidth="108"
       show-overflow-tooltip
       >
@@ -48,10 +48,9 @@
         CertificateStatus.find(it => it.value === scope.row.CertificateStatus).label
       }}</span>
     </el-table-column>
-      <el-table-column
+    <el-table-column
       label="缩略图"
-      width="182"
-      >
+      width="182">
       <template slot-scope="scope">
         <div style="display: flex; justify-content: center;">
           <el-image :preview-src-list="scope.row.CertificatePics" style="width: 40px; height: 40px;"

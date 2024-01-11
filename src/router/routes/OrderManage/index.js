@@ -196,7 +196,7 @@ const routes = { // 客户订单管理
       name: 'CertificateList',
       meta: {
         title: '证书管理',
-        icon: 'iconfont icon-kehuguanli',
+        icon: 'iconfont icon-zhengshuguanli',
         pageName: 'CertificateListPage',
         PermissionInfo: ['PermissionManageCustomer', 'HavePomission'],
         requiresAuth: true,
@@ -208,7 +208,7 @@ const routes = { // 客户订单管理
       name: 'AuditCertificate',
       meta: {
         title: '审核证书',
-        icon: 'iconfont icon-kehuguanli',
+        icon: 'iconfont icon-shenhezhengshu',
         pageName: 'AuditCertificatePage',
         PermissionInfo: ['PermissionManageCustomer', 'HavePomission'],
         requiresAuth: true,
