@@ -47,18 +47,18 @@
       submitText='确定'
       :visible.sync="AuditFailureVisible"
       @submit="AuditFailure"
-      @cancle="AuditFailureVisible = false"
+      @cancle="onCancle"
       class="audit-failure-dialog"
     >
       <main>
         <el-form label-width="107px">
           <el-form-item label="原因模板：" size="small">
-            <el-select v-model="CauseTemplate" placeholder="请选择" size="small">
+            <el-select v-model="CauseTemplate" @change="CauseTemplateChange" placeholder="请选择" size="small">
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="item in CertificateNoPassReason"
+                :key="item.ReasonID"
+                :label="item.Reason"
+                :value="item.ReasonID">
               </el-option>
             </el-select>
           </el-form-item>
@@ -90,12 +90,23 @@ export default {
     return {
       CauseTemplate: '',
       CertificateUnCheck: null,
+      CertificateNoPassReason: null,
       passTheAuditVisible: false,
       AuditFailureVisible: false,
       CheckRemark: '',
     };
   },
   methods: {
+    // 不通过原因模板
+    getCertificateNoPassReason() {
+      this.api.getCustomerCertificateNoPassReason().then(res => {
+        if (res.data.Status === 1000) {
+          if (res.data.Data) {
+            this.CertificateNoPassReason = res.data.Data;
+          }
+        }
+      });
+    },
     getCertificateUnCheck() {
       this.api.getCustomerCertificateUnCheck().then(res => {
         if (res.data.Status === 1000) {
@@ -134,9 +145,21 @@ export default {
         this.messageBox.failSingleError('保存失败', '请输入不通过原因');
       }
     },
+    onCancle() {
+      this.AuditFailureVisible = false;
+      this.CheckRemark = '';
+      this.CauseTemplate = '';
+    },
+    CauseTemplateChange() {
+      const temp = this.CertificateNoPassReason.find(it => it.ReasonID === this.CauseTemplate);
+      if (temp) {
+        this.CheckRemark = temp.Reason;
+      }
+    },
   },
   mounted() {
     this.getCertificateUnCheck();
+    this.getCertificateNoPassReason();
   },
 };
 </script>

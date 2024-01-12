@@ -1607,6 +1607,9 @@ const api = {
   getCustomerCertificateAll(CustomerID: string) { // /Api/Customer/Certificate/All 获取客户证书列表
     return instance.post('/Api/Customer/Certificate/All', { CustomerID });
   },
+  getCustomerCertificateNoPassReason() { // GET /Api/Customer/Certificate/NoPassReason 审核不通过原因模板
+    return instance.get('/Api/Customer/Certificate/NoPassReason');
+  },
 };
 
 export default api;
