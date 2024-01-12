@@ -457,6 +457,29 @@ export default {
       PageTips: 1, // 忽略页面提示（ 加入购物车默认忽略 ）
       All: 2, // 忽略所有提示
     },
+    // 证书类型
+    CertificateType: [
+      {
+        label: '不限',
+        value: '',
+      },
+      {
+        label: '商标注册证',
+        value: 0,
+      },
+      {
+        label: '营业执照',
+        value: 1,
+      },
+      {
+        label: '印刷委托书',
+        value: 2,
+      },
+      {
+        label: '合同/授权证明',
+        value: 3,
+      },
+    ],
   },
   getters: {
     /* 配送方式相关

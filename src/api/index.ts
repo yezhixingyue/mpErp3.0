@@ -68,8 +68,8 @@ const api = {
     }
     return instance.post('/Api/PackageList/Excel', data, { responseType: 'arraybuffer' }); // 普通方式
   },
-  setOrderReCheckFile({ OrderID, FilePath = '' }) { // POST /Api/Order/ReCheckFile
-    return instance.post('/Api/Order/ReCheckFile', { OrderID, UniqueName: FilePath });
+  setOrderReCheckFile(data) { // POST /Api/Order/ReCheckFile
+    return instance.post('/Api/Order/ReCheckFile', data);
   },
   getCalculatePriceRecordList(data) { // POST /Api/CalculatePrice/RecordList  获取报价记录
     return instance.post('/Api/CalculatePrice/RecordList', data);
@@ -1593,6 +1593,22 @@ const api = {
   },
   getOrderAfterSaleLossConfirm(data) { // GET /Api/OrderAfterSale/LossConfirm 复核
     return instance.post('/Api/OrderAfterSale/LossConfirm', data);
+  },
+  // 证书审核
+  getCustomerCertificateCheck(data) { // GET /Api/Customer/Certificate/Check 证书审核
+    return instance.post('/Api/Customer/Certificate/Check', data);
+  },
+  getCustomerCertificateUnCheck() { // GET /Api/Customer/Certificate/UnCheck 未审核证书
+    return instance.get('/Api/Customer/Certificate/UnCheck');
+  },
+  getCustomerCertificateManageList(data) { // GET /Api/Customer/Certificate/ManageList 证书管理列表
+    return instance.post('/Api/Customer/Certificate/ManageList', data);
+  },
+  getCustomerCertificateAll(CustomerID: string) { // /Api/Customer/Certificate/All 获取客户证书列表
+    return instance.post('/Api/Customer/Certificate/All', { CustomerID });
+  },
+  getCustomerCertificateNoPassReason() { // GET /Api/Customer/Certificate/NoPassReason 审核不通过原因模板
+    return instance.get('/Api/Customer/Certificate/NoPassReason');
   },
 };
 

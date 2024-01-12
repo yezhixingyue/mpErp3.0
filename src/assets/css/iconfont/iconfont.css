@@ -1,11 +1,11 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3470998 */
-  src: url('iconfont.eot?t=1697622231201'); /* IE9 */
-  src: url('iconfont.eot?t=1697622231201#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('iconfont.woff2?t=1697622231201') format('woff2'),
-       url('iconfont.woff?t=1697622231201') format('woff'),
-       url('iconfont.ttf?t=1697622231201') format('truetype'),
-       url('iconfont.svg?t=1697622231201#iconfont') format('svg');
+  src: url('iconfont.eot?t=1704938776626'); /* IE9 */
+  src: url('iconfont.eot?t=1704938776626#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('iconfont.woff2?t=1704938776626') format('woff2'),
+       url('iconfont.woff?t=1704938776626') format('woff'),
+       url('iconfont.ttf?t=1704938776626') format('truetype'),
+       url('iconfont.svg?t=1704938776626#iconfont') format('svg');
 }
 
 .iconfont {
@@ -14,6 +14,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-qitafuwu:before {
+  content: "\e63c";
 }
 
 .icon-shengchanyichang:before {

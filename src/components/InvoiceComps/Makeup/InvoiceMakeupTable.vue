@@ -14,8 +14,8 @@
     <el-table-column width="120px" prop="CustomerName" show-overflow-tooltip label="客户"></el-table-column>
     <el-table-column width="120px" prop="_TitleName" show-overflow-tooltip label="抬头名称"></el-table-column>
     <el-table-column width="150px" prop="CreditCode" show-overflow-tooltip label="统一社会信用代码"></el-table-column>
-    <el-table-column width="125px" prop="RegisteredAddress" show-overflow-tooltip label="注册地址"></el-table-column>
-    <el-table-column width="120px" prop="RegisteredTelephone" show-overflow-tooltip label="注册电话"></el-table-column>
+    <!-- <el-table-column width="125px" prop="RegisteredAddress" show-overflow-tooltip label="注册地址"></el-table-column>
+    <el-table-column width="120px" prop="RegisteredTelephone" show-overflow-tooltip label="注册电话"></el-table-column> -->
     <el-table-column width="100px" prop="OpeningBank" show-overflow-tooltip label="开户银行"></el-table-column>
     <el-table-column width="150px" prop="BankAccount" show-overflow-tooltip label="银行账号"></el-table-column>
     <el-table-column width="85px" prop="ReceiverName" show-overflow-tooltip label="收票人"></el-table-column>

@@ -44,6 +44,7 @@ const routes = { // 客户订单管理
         icon: 'iconfont icon-shangchuan',
         pageName: 'OrderBatchUploadPage',
         requiresAuth: true,
+        hiddenItem: true,
         PermissionInfo: ['PermissionPlateOrder', 'Obj', 'BatchUpload'],
       },
       component: () => import('../../../views/BatchUpload/BatchUploadPage.vue'),
@@ -188,6 +189,32 @@ const routes = { // 客户订单管理
         requiresAuth: true,
       },
       component: () => import('../../../views/CustomerManage/CustomerManageSetupPage.vue'),
+    },
+    /*  证书管理
+    ------------------------------------------ */
+    {
+      path: '/CertificateList',
+      name: 'CertificateList',
+      meta: {
+        title: '证书管理',
+        icon: 'iconfont icon-zhengshuguanli',
+        pageName: 'CertificateListPage',
+        PermissionInfo: ['PermissionCertificate', 'Obj', 'Query'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CertificateManage/CertificateManageListPage.vue'),
+    },
+    {
+      path: '/AuditCertificate',
+      name: 'AuditCertificate',
+      meta: {
+        title: '审核证书',
+        icon: 'iconfont icon-shenhezhengshu',
+        pageName: 'AuditCertificatePage',
+        PermissionInfo: ['PermissionCertificate', 'Obj', 'Check'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CertificateManage/AuditCertificatePage.vue'),
     },
     /*  统计分析
     ------------------------------------------ */

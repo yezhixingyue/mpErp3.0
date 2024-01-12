@@ -25,8 +25,6 @@
 </template>
 
 <script>
-import { Message } from 'element-ui';
-
 export default {
   props: {
     list: {

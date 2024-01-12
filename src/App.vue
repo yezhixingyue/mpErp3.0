@@ -2,7 +2,7 @@
   <div id="app">
     <LeftMenu v-if="key" ref="oLeft" />
     <section>
-      <HeaderTabs v-if="key" @downtime='handlePathChange' />
+      <HeaderTabs v-if="key" @openPage='handlePathChange' />
       <main class="page-wrap">
         <router-view />
       </main>

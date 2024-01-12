@@ -14,8 +14,8 @@
     <el-table-column width="120px" prop="Mobile" show-overflow-tooltip label="手机号码"></el-table-column>
     <el-table-column min-width="160px" prop="EnterpriseName" show-overflow-tooltip label="企业名称"></el-table-column>
     <el-table-column min-width="170px" prop="CreditCode" show-overflow-tooltip label="统一社会信用代码"></el-table-column>
-    <el-table-column min-width="150px" prop="RegisteredAddress" show-overflow-tooltip label="注册地址"></el-table-column>
-    <el-table-column width="150px" prop="RegisteredTelephone" show-overflow-tooltip label="注册电话"></el-table-column>
+    <!-- <el-table-column min-width="150px" prop="RegisteredAddress" show-overflow-tooltip label="注册地址"></el-table-column>
+    <el-table-column width="150px" prop="RegisteredTelephone" show-overflow-tooltip label="注册电话"></el-table-column> -->
     <el-table-column width="135px" prop="OpeningBank" show-overflow-tooltip label="开户银行"></el-table-column>
     <el-table-column width="160px" prop="BankAccount" show-overflow-tooltip label="银行账号"></el-table-column>
     <el-table-column width="135px" show-overflow-tooltip label="审核通过时间">

@@ -56,17 +56,20 @@
         <li @click="onCloseAllClick">关闭所有</li>
       </ul>
       <div class="user">
-        <span class="internet" style="top: -1px;position: relative;">
-          <template v-if="!isIntranet">
-            <i class="iconfont icon-waibuwangluohuanjing"></i>
-            当前为外部网络环境
-          </template>
-          <template v-else>
-            <i class="iconfont icon-neibuwangluohuanjing"></i>
-            当前为内部网络环境
-          </template>
-        </span>
-        <span class="menu ft-12 mr-18" v-if="showFileCheck" @click="handleFileCheck"> <i class="iconfont icon-pindianjiancha ft-16"></i> 检查文件内容</span>
+        <!-- <span class="menu ft-12 mr-18" v-if="showFileCheck" @click="handleFileCheck"> <i class="iconfont icon-pindianjiancha ft-16"></i> 检查文件内容</span> -->
+        <el-dropdown trigger="click" v-if="Permission && (showBatchUpload || showFileCheck)" @command='onCommand' class="mr-15">
+          <span class="el-dropdown-link">
+            <i class="iconfont icon-qitafuwu ft-18"></i>
+            <span>其他设置</span>
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown" class="mp-erp-user-drop-down-wrap">
+            <el-dropdown-item v-if="showFileCheck" command='checkFile'>
+              <i class="iconfont icon-pindianjiancha"></i>检查文件内容</el-dropdown-item>
+            <el-dropdown-item v-if="showBatchUpload" command='batchUpload'>
+              <i class="iconfont icon-shangchuan ft-13 ml-2"></i>批量上传</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-dropdown trigger="click" v-if="Permission" @command='onCommand'>
           <span class="el-dropdown-link">
             <i class="el-icon-user"></i>
@@ -135,6 +138,13 @@ export default {
     showFileCheck() {
       if (this.Permission && this.Permission.PermissionList && this.Permission.PermissionList.PermissionCheckFileContent) {
         return this.Permission.PermissionList.PermissionCheckFileContent.HavePomission;
+      }
+
+      return false;
+    },
+    showBatchUpload() {
+      if (this.Permission && this.Permission.PermissionList && this.Permission.PermissionList.PermissionPlateOrder) {
+        return this.Permission.PermissionList.PermissionPlateOrder.Obj.BatchUpload;
       }
 
       return false;
@@ -240,7 +250,16 @@ export default {
           this.visible4ChangePassword = true;
           break;
         case 'downtime': // 停机维护
-          this.handleDownTimeClick();
+          this.handleOpenPageClick('downtimeManage');
+          break;
+
+        case 'checkFile': // 检查文件内容
+          this.handleFileCheck();
+          break;
+
+        case 'batchUpload': // 批量上传
+          // this.$router.push('/BatchUpload');
+          this.handleOpenPageClick('BatchUpload');
           break;
 
         default:
@@ -260,9 +279,9 @@ export default {
         this.$router.replace('/login');
       });
     },
-    handleDownTimeClick() { // 停机维护点击事件
-      if (this.$route.name === 'downtimeManage') return;
-      this.$emit('downtime', 'downtimeManage');
+    handleOpenPageClick(routeName) { // 停机维护点击事件
+      if (this.$route.name === routeName) return;
+      this.$emit('openPage', routeName);
     },
     handleFileCheck() {
       window.open('/checkFileContent');
@@ -296,7 +315,7 @@ export default {
     padding-top: 8px;
     position: relative;
     // padding-bottom: 2px;
-    padding-right: 460px;
+    padding-right: 260px;
     width: 100%;
     box-sizing: border-box;
     background-color: #191F2A;
@@ -435,7 +454,7 @@ export default {
       position: absolute;
       flex: none;
       text-align: right;
-      width: 460px;
+      width: 260px;
       right: 0;
       top: 0;
       bottom: 0;
@@ -499,17 +518,6 @@ export default {
           color: #428dfa;
         }
       }
-
-      .internet {
-        color: #888e99;
-        margin-right: 50px;
-        font-size: 13px;
-        img {
-          vertical-align: -2px;
-          margin-right: 2px;
-          filter: grayscale(1);
-        }
-      }
     }
 
     > .menus {
@@ -560,8 +568,8 @@ export default {
   width: 130px !important;
   .el-dropdown-menu__item {
     line-height: 32px;
-    padding: 0 20px;
-    padding-left: 23px;
+    padding: 0 15px;
+    padding-left: 18px;
     margin: 0;
     i {
       font-weight: 700;
