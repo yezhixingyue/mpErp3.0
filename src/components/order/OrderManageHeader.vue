@@ -77,6 +77,7 @@
           :dateValue='objForOrderList.DateType'
           :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
           :dateList="dateList"
+          minDate="2022-01-01 00:00:00"
           isFull
           label="时间筛选" />
         <!-- <ElDateRangeSelector v-model="conditionDate" :menus="dateMenus" :max-span="366" :condition="objForOrderList" initText='今天' /> -->

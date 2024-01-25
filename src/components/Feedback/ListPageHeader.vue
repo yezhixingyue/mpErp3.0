@@ -130,6 +130,7 @@
           :typeList="[['DateType', ''], ['Date', 'First'], ['Date', 'Second']]"
           :dateValue='condition.DateType'
           :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+          minDate="2022-01-01 00:00:00"
           label="申请时间"
           :dateList="dateList"
         />
