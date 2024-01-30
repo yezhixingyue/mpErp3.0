@@ -274,7 +274,10 @@ export default {
         if (!this.canLoadContentTableData) {
           this.canLoadContentTableData = true;
         } else {
-          return this.$store.dispatch('priceManage/getPriceTableList', this.SolutionID);
+          return this.$store.dispatch(
+            'priceManage/getPriceTableList',
+            [this.ProductID, this.isQuotationPage, this.SolutionID, PriceID, this.CraftPriceID],
+          );
         }
         return null;
       };
@@ -328,7 +331,6 @@ export default {
     // eslint-disable-next-line no-unused-vars
     onTableItemExport(data) { // 表格导出
       if (!data || !data.ID) return;
-      // console.log('onTableItemExport tableID', data.ID, 'ProductID:', this.ProductID, data, this.curSolutionItem, this.PriceName);
       const params = { tableID: data.ID, productID: this.ProductID };
       handleExcelDownload(params, this.api.getPriceTableExport, `费用表导出（${this.PriceName}-${this.curSolutionItem.ShowName}）`);
     },

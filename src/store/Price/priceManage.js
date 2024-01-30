@@ -344,12 +344,33 @@ export default {
     setPriceItemPropertyList(state, list) {
       state.PriceItemPropertyList = list;
     },
-    setPriceTableList(state, list) { // 设置价格表数据 工艺费和价格表通用
+    setPriceTableList(state, [list, info]) { // 设置价格表数据 工艺费和价格表通用
       state.PriceTableList = list;
+
+      if (!info) return;
+
+      const [ProductID, isQuotationPage, SolutionID, PriceID, CraftPriceID] = info;
+      const target1 = state.PriceManageList.find(it => it.ID === ProductID); // 目标产品
+      if (target1) {
+        const target2 = target1.PriceList.find(it => it.ID === PriceID); // 目标价格条目
+        const setFunc = (_list) => {
+          const _t = _list.find(it => it.ID === SolutionID);
+          if (_t) _t.TableNumber = list.length;
+        };
+        if (isQuotationPage) setFunc(target2.PriceTableList);
+        if (isQuotationPage) setFunc(state.curPriceItem.PriceTableList);
+        else {
+          const target3 = target2.CraftPriceList.find(it => it.ID === CraftPriceID);
+          const curPriceItemTarget3 = state.curPriceItem.CraftPriceList.find(it => it.ID === CraftPriceID);
+          if (target3) setFunc(target3.PriceTableList);
+          if (curPriceItemTarget3) setFunc(curPriceItemTarget3.PriceTableList);
+        }
+      }
     },
     setPriceTableListItemChange(state, [data, ID, isQuotationPage, ProductID, CraftPriceID]) { // 价格表编辑 | 添加
       if (!data.ID) { // 新增
         const temp = new PriceTableClass({ ...data, ID });
+        if (!state.PriceTableList) state.PriceTableList = [];
         state.PriceTableList.unshift(temp);
         // 下面为在解决方案下方表格添加时对产品数据中的TableNumber进行修改 对其进行+1操作
         const target1 = state.PriceManageList.find(it => it.ID === ProductID); // 目标产品
@@ -672,11 +693,11 @@ export default {
         commit('setQuotationResultPropertyList', list);
       }
     },
-    async getPriceTableList({ commit }, SolutionID) {
-      commit('setPriceTableList', []);
+    async getPriceTableList({ commit }, [ProductID, isQuotationPage, SolutionID, PriceID, CraftPriceID]) {
+      commit('setPriceTableList', [[]]);
       const resp = await api.getPriceTableList(SolutionID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
-        commit('setPriceTableList', resp.data.Data);
+        commit('setPriceTableList', [resp.data.Data, [ProductID, isQuotationPage, SolutionID, PriceID, CraftPriceID]]);
       }
     },
     async getResultFormulaList({ commit }, data) { // 获取结果公式列表数据
