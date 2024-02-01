@@ -126,7 +126,7 @@ export default {
   data() {
     return {
       // eslint-disable-next-line max-len
-      dateList: [{ name: '全部', ID: 'all' }, { name: '今日发货', ID: 'today' }, { name: '昨日发货', ID: 'yesterday' }, { name: '本月发货', ID: 'curMonth' }, { name: '上月发货', ID: 'lastMonth' }],
+      dateList: [{ name: '今日发货', ID: 'today' }, { name: '昨日发货', ID: 'yesterday' }, { name: '前日发货', ID: 'beforeyesterday' }, { name: '本月发货', ID: 'curMonth' }, { name: '上月发货', ID: 'lastMonth' }],
     };
   },
   methods: {
