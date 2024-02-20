@@ -137,7 +137,7 @@ export default {
           { pattern: MobileReg, message: '手机号码格式不正确', trigger: 'blur' },
         ],
         QQ: [
-          { required: true, message: '请输入QQ号码', trigger: 'blur' },
+          // { required: true, message: '请输入QQ号码', trigger: 'blur' },
           { min: 5, max: 11, message: 'QQ长度应在5 - 11位之间', trigger: 'blur' },
           { pattern: /^\d+$/, message: 'QQ应为纯数字组成', trigger: 'blur' },
         ],
