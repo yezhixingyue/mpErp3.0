@@ -159,6 +159,11 @@ export default class BatchUpload {
       }
     };
     const uploadResult = await breakPointUpload(item.file, item.uniqueName, onUploadProgressFunc);
+
+    if (Math.random() < 0.6) {
+      uploadResult.status = false;
+    }
+
     if (uploadResult && uploadResult.status === true) {
       _item.uploadStatus = 'success'; // 上传成功 继续向后面进行
     } else {
@@ -286,13 +291,27 @@ export default class BatchUpload {
     loadingInstance.text = '文件正在上传...';
     const uploadedList = await Promise.all(list.map(it => this.getFileUploadBySingle(it)));
     // 3. 判断文件上传结果中是否存在不成功的项目，如果有则return
-    const i = uploadedList.findIndex(it => !it || (typeof it === 'object' && it.status === false));
-    if (i > -1) {
-      const msg = uploadedList.length === 1 ? '文件上传失败' : '部分文件上传失败，请检查';
-      messageBox.failSingleError('上传失败', msg);
-      loadingInstance.close();
-      return;
+    // const i = uploadedList.findIndex(it => !it || (typeof it === 'object' && it.status === false));
+    // if (i > -1) {
+    //   const msg = uploadedList.length === 1 ? '文件上传失败' : '部分文件上传失败，请检查';
+    //   messageBox.failSingleError('上传失败', msg);
+    //   loadingInstance.close();
+    //   return;
+    // }
+
+    const failList = uploadedList.filter(it => !it || (typeof it === 'object' && it.status === false));
+    if (failList.length > 0) {
+      // eslint-disable-next-line no-param-reassign
+      list = list.filter(it => it.uploadStatus === 'success');
+
+      if (list.length === 0) {
+        const msg = uploadedList.length === 1 ? '文件上传失败' : '全部文件上传失败，请检查';
+        messageBox.failSingleError('上传失败', msg);
+        loadingInstance.close();
+        return;
+      }
     }
+
     // 4. 生成提交数据列表
     loadingInstance.text = '正在提交，请稍候...';
     const temp = this.generateCommitData(list, basicObj);
@@ -311,7 +330,7 @@ export default class BatchUpload {
     // 7. 清除已选列表中已上传文件
     if (isSuccess) {
       const cb = () => {
-        if (handleSuccessFunc) handleSuccessFunc(list, resp.data.Data);
+        if (handleSuccessFunc) handleSuccessFunc(list, resp.data.Data, failList.length);
       };
       // messageBox.successSingle('下单成功', cb, cb);
       cb();
