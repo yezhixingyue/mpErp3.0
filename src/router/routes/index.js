@@ -10,6 +10,7 @@ import ProducePeriodRoutes from './ProducePeriod';
 import CompanyManageRoutes from './CompanyManage';
 import ReviewManage from './ReviewManage';
 import FactoryManage from './Factory';
+import OpenPlatformManage from './OpenPlatformManage';
 
 const routes = [
   { // 首页
@@ -44,7 +45,7 @@ const routes = [
   FactoryManage.routes,
   BasicSetRoutes.routes,
   CompanyManageRoutes.routes,
-
+  OpenPlatformManage.routes,
   { // 无权限页
     path: '/notauth',
     name: 'notauth',
@@ -74,6 +75,7 @@ const routeTree = [
   CompanyManageRoutes.routeTree,
   ReviewManage.routeTree,
   FactoryManage.routeTree,
+  OpenPlatformManage.routeTree,
 ];
 
 export default {
