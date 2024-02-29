@@ -78,6 +78,7 @@ export default {
         { ID: 1, Name: '淘宝订单' },
         { ID: 2, Name: '京东订单' },
         { ID: 3, Name: '拼多多订单' },
+        { ID: 4, Name: '抖店订单' },
       ],
     };
   },

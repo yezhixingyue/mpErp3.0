@@ -27,6 +27,7 @@
           <i v-if="it === 1" :key="it">淘宝订单</i>
           <i v-if="it === 2" :key="it">京东订单</i>
           <i v-if="it === 3" :key="it">拼多多订单</i>
+          <i v-if="it === 4" :key="it">抖店订单</i>
         </template>
       </span>
     </el-table-column>
