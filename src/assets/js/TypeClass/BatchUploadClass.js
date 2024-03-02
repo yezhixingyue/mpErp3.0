@@ -11,6 +11,19 @@ import breakPointUpload, { getUniqueFileName } from '../upload/UploadFileByBreak
  * @class BatchUpload
  */
 export default class BatchUpload {
+  static getErrorMsg(resp, defaultMsg = '请求失败') {
+    if (resp && resp.data && resp.data.Message && resp.data.Status !== 1000) return resp.data.Message;
+
+    if (resp && resp.message === 'Network Error') {
+      return '网络错误';
+    }
+    if (resp && resp.message && resp.message.includes('timeout')) {
+      return '网络超时';
+    }
+
+    return defaultMsg;
+  }
+
   /**
    * 单个文件解析
    *
@@ -42,8 +55,9 @@ export default class BatchUpload {
       ...basicObj,
       FileList: [{ Second: file.name }],
     };
-    const resp = await api.getFileNameAnalysis(temp).catch(() => null);
-    if (resp && resp.data.Status === 1000 && resp.data.Data.length === 1 && resp.data.Data[0]?.IsAnalysisSucceed && resp.data.Data[0]?.HavePrice === true) {
+    const resp = await api.getFileNameAnalysis(temp).catch((err) => err);
+    if (resp && resp.data && resp.data.Status === 1000
+       && resp.data.Data.length === 1 && resp.data.Data[0]?.IsAnalysisSucceed && resp.data.Data[0]?.HavePrice === true) {
       return {
         file,
         result: resp.data.Data[0],
@@ -62,7 +76,7 @@ export default class BatchUpload {
         },
       };
     }
-    let error = resp && resp.data && resp.data.Message && resp.data.Status !== 1000 ? resp.data.Message : '文件解析失败';
+    let error = this.getErrorMsg(resp, '文件解析失败');
     if (resp && resp.data.Status === 1000 && resp.data.Data.length === 1 && resp.data.Data[0]?.Message) error = resp.data.Data[0].Message;
     const errorStatus = resp && resp.data && resp.data.Status && resp.data.Status !== 1000 ? resp.data.Status : 0;
     return {
@@ -159,10 +173,6 @@ export default class BatchUpload {
       }
     };
     const uploadResult = await breakPointUpload(item.file, item.uniqueName, onUploadProgressFunc);
-
-    if (Math.random() < 0.6) {
-      uploadResult.status = false;
-    }
 
     if (uploadResult && uploadResult.status === true) {
       _item.uploadStatus = 'success'; // 上传成功 继续向后面进行
