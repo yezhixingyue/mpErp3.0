@@ -50,7 +50,12 @@
        @itemUpload='handleItemUpload'
        @multipleSelect='handleMultipleSelect'
        @droped='onDroped' />
-      <QrCodeForPayDialogComp v-model="QrCodeVisible" :payInfoData="payInfoData" @success='handlePaidSuccess' payType='21' showPayGroup showPayDescription />
+      <QrCodeForPayDialogComp v-model="QrCodeVisible" :payInfoData="payInfoData" @success='handlePaidSuccess' payType='21' showPayGroup showPayDescription>
+        <div class="pay-info-box">
+          <span>本次支付包含 <i>{{ successResult.number }}</i> 个已成功上传的订单</span>
+          <span v-if="successResult.errNum">；另有 <i>{{ successResult.errNum }}</i> 个订单上传失败，请稍候再试。</span>
+        </div>
+      </QrCodeForPayDialogComp>
       <PreCreateDialog
         :visible.sync="preCreateVisible"
         :subExpressList='subExpressList'
@@ -142,6 +147,10 @@ export default {
       PreCreateData: null, // 预下单数据（服务器返回数据）
       ShowProductDetail,
       ExpressTip: '',
+      successResult: { // 上传文件及订单提交相关结果
+        number: 0,
+        errNum: 0,
+      },
     };
   },
   computed: {
@@ -370,6 +379,19 @@ export default {
     //   BatchUploadClass.BatchUploadFiles(list, this.basicObj, this.handleSubmitSuccess);
     // },
     async handleBatchUploadFiles(list) { // 执行单个文件上传或批量上传 （使用同一个方法） -- 在最终下单前 在客户界面 需进行预下单弹窗确认
+      const _usePreCreate = false; // 是否使用预下单
+
+      if (!_usePreCreate) { // 不使用预下单
+        const temp = {
+          ...this.basicObj,
+          PayInFull: true,
+          UsePrintBean: false,
+        };
+        BatchUploadClass.BatchUploadFiles(list, temp, this.handleSubmitSuccess);
+
+        return;
+      }
+
       // 预下单
       const t = list.find(it => it.uploadStatus === 'fail' && it.error === '文件找不到');
       if (t) {
@@ -410,15 +432,21 @@ export default {
         });
       }
     },
-    handleSubmitSuccess(list, resp) { // 创建订单成功后的回调函数，打开支付窗口
+    handleSubmitSuccess(list, resp, errLen) { // 创建订单成功后的回调函数，打开支付窗口
       this.cbToClearSuccessItem(list);
       this.getCustomerBalance();
+
+      this.successResult.number = list.length;
+      this.successResult.errNum = errLen;
+
       if (resp) {
         this.payInfoData = resp;
         this.QrCodeVisible = true;
-      } else {
-        this.messageBox.successSingle('下单成功');
+        return;
       }
+
+      const msg = errLen ? `共有${list.length}个订单下单成功，另有${errLen}个订单文件上传失败` : undefined;
+      this.messageBox.successSingle('下单成功', undefined, undefined, true, msg);
     },
     handlePaidSuccess() {
       this.messageBox.successSingle('下单并支付成功');
@@ -596,6 +624,22 @@ export default {
     padding-top: 13px;
     box-sizing: border-box;
     box-shadow: 0px 9px 38px 0px rgba(211, 211, 211, 0.54);
+  }
+
+  .pay-info-box {
+    background-color: #FFEBF0;
+    line-height: 33px;
+    margin-top: 16px;
+    color: #ff3769;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 20px;
+    min-width: 350px;
+    display: inline-block;
+
+    i {
+      font-size: 16px;
+    }
   }
 }
 </style>
