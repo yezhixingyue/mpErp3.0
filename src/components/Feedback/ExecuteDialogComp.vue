@@ -362,6 +362,11 @@
             type="text" placeholder="请输入损失金额">
           <span>元</span>
         </div>
+        <el-checkbox v-if="(HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 2) ||
+          HandlingAfterSalesForm.Solution.SolutionTypes.find(it => it === 7)) &&
+        (dataInfo.Order.Status === 55 || dataInfo.Order.Status === 60)" v-model="HandlingAfterSalesForm.IsProduceEnd">
+          终止生产
+        </el-checkbox>
         <div class="btns">
           <normalBtn @click.native="handleClose" title="取消" />
           <normalBtn @click.native="submitServiceOrder(true)" title="保存" class="white"/>
@@ -585,6 +590,7 @@ export default {
         SolutionQuestionPicList: [],
         PassQuestionPicList: [],
         Opinion: '',
+        IsProduceEnd: false,
         LossAmount: '',
         AfterSaleQuestions: [],
         AfterSaleResponsibilities: [],
@@ -1093,6 +1099,9 @@ export default {
         this.getOldQuestion();
       }
     },
+  },
+  mounted() {
+    console.log(this.HandlingAfterSalesForm.Solution.SolutionTypes);
   },
   watch: {
     visible(newVal) {
@@ -1636,6 +1645,9 @@ export default {
                           margin-right: -3px;
                         }
                       }
+                    }
+                    .stop-production{
+                      padding-left: 60px;
                     }
                   }
                 }
