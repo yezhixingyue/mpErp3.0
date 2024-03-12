@@ -32,6 +32,9 @@
         <div class="select-box">
           <!-- v-show='canSelectFile' -->
           <FileSelectComp @change="handleFileChange" v-show="customer" :disabled="!canSelectFile" :accept='accept' :selectTitle='selectTitle' ref="oFileBox" />
+          <el-tooltip class="item" effect="dark" content="勾选此处则下单时弹出订单信息复核弹窗，确认后再进行提交。" placement="top-start">
+            <el-checkbox v-show="customer" class="legal" style="margin-right: 20px;" v-model="needToastPreDialog" label="">弹窗确认后再提交</el-checkbox>
+          </el-tooltip>
           <FailListComp :failed-list="failedList" width="720" :offset='122' />
         </div>
       </div>
@@ -94,6 +97,7 @@ import BatchUploadFooterComp from '@/packages/BatchUploadComps/Footer/BatchUploa
 import QrCodeForPayDialogComp from '@/packages/QrCodeForPayDialogComp';
 import AddressChangeComp from '@/packages/BatchUploadComps/Header/AddressChangeComp.vue';
 import FailListComp from '@/packages/BatchUploadComps/Main/FailListComp';
+import LocalCatchHandler from '@/assets/js/LocalCatchHandler';
 import PreCreateDialog from '../../packages/PreCreateDialog';
 
 export default {
@@ -151,11 +155,22 @@ export default {
         number: 0,
         errNum: 0,
       },
+      notToastPreDialog: false, // 是否不弹出直接提交
     };
   },
   computed: {
-    ...mapState('common', ['RiskWarningTipsTypes']),
+    ...mapState('common', ['RiskWarningTipsTypes', 'Permission']),
     ...mapGetters('common', ['subExpressList']),
+    needToastPreDialog: {
+      get() {
+        return !this.notToastPreDialog;
+      },
+      set(newVal) {
+        if (!this.Permission?.StaffID) return;
+        LocalCatchHandler.setFieldFromLocalStorage(this.Permission.StaffID, 'notToastPreDialog', !newVal);
+        this.notToastPreDialog = !newVal;
+      },
+    },
     canSelectFile() { // 是否允许选择产品（）
       if (!this.Product.ProductID && this.Product.isSingle) return false;
       if (!this.customer || !this.customer.CustomerID) return false;
@@ -379,9 +394,9 @@ export default {
     //   BatchUploadClass.BatchUploadFiles(list, this.basicObj, this.handleSubmitSuccess);
     // },
     async handleBatchUploadFiles(list) { // 执行单个文件上传或批量上传 （使用同一个方法） -- 在最终下单前 在客户界面 需进行预下单弹窗确认
-      const _usePreCreate = false; // 是否使用预下单
+      // const _usePreCreate = false; // 是否使用预下单
 
-      if (!_usePreCreate) { // 不使用预下单
+      if (this.notToastPreDialog) { // 不使用预下单
         const temp = {
           ...this.basicObj,
           PayInFull: true,
@@ -472,6 +487,12 @@ export default {
     this.getAccept();
     this.$store.dispatch('common/getExpressList');
     this.getExpressTip();
+  },
+  mounted() {
+    if (this.Permission?.StaffID) {
+      const _localCatchVal = LocalCatchHandler.getFieldFromLocalStorage(this.Permission.StaffID, 'notToastPreDialog');
+      if (_localCatchVal) this.notToastPreDialog = true;
+    }
   },
 };
 </script>
