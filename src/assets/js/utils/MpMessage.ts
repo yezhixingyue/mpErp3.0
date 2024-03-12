@@ -8,6 +8,8 @@ interface Ioptions {
   onCancel?: () => void
   dangerouslyUseHTMLString?: boolean
   danger?: false // 仅 warn 时有效
+  success?: boolean // 仅 warn 时有效
+  warn?: boolean // 仅 warn 时有效
 }
 
 export const MpMessage = {
@@ -32,14 +34,18 @@ export const MpMessage = {
    */
   warn(options: Ioptions) {
     const {
-      title, msg, onOk, onCancel, dangerouslyUseHTMLString, danger,
+      title, msg, onOk, onCancel, dangerouslyUseHTMLString, danger, success, warn,
     } = options;
+
+    let className = '';
+    if (success) className = 'success';
+    if (warn) className = 'warn';
 
     if (msg) {
       if (danger) {
         message.dangerCancelBox(title, msg, onOk, onCancel, dangerouslyUseHTMLString);
       } else {
-        message.warnCancelBox(title, msg, onOk, onCancel, dangerouslyUseHTMLString);
+        message.warnCancelBox(title, msg, onOk, onCancel, dangerouslyUseHTMLString, className);
       }
     } else message.warnCancelNullMsg(title, onOk, onCancel, dangerouslyUseHTMLString);
   },

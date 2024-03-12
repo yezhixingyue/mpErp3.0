@@ -136,4 +136,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss">
+.tox-tinymce-aux {
+  z-index: 8888 !important;
+}
 </style>

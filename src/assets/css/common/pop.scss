@@ -196,6 +196,17 @@
             }
         }
     }
+
+    &.success .el-message-box__header{
+        >.el-message-box__title{
+            > span{
+                &::before{
+                    color: #52C41A;
+                }
+            }
+        }
+    }
+
     @include reverse-btn;
 }
 
@@ -239,6 +250,31 @@
 // 订单列表删除弹框样式，样式中确定和取消按键反向相反  且为 warn 类型       类名：mp-order-del-pop-reverse-warn
 .el-message-box.mp-order-del-pop-reverse-warn {
     @include reverse-warn;
+
+    &.warn {
+        .el-message-box__header{
+            >.el-message-box__title{
+                > span{
+                    color: #F4A307;
+
+                }
+            }
+        }
+    }
+
+    &.success {
+        .el-message-box__header{
+            >.el-message-box__title{
+                > span{
+                    color: #52C41A;
+                    &::before{
+                        background-image: url('../images/warn-success.png') !important;
+                    }
+
+                }
+            }
+        }
+    }
 }
 // MessageBox({
 //     showClose: true,

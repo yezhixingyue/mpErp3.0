@@ -1610,6 +1610,44 @@ const api = {
   getCustomerCertificateNoPassReason() { // GET /Api/Customer/Certificate/NoPassReason 审核不通过原因模板
     return instance.get('/Api/Customer/Certificate/NoPassReason');
   },
+  /* 开发平台
+  ------------------------------- */
+  /** POST /Api/Developer/List  开发者列表 */
+  getDeveloperList(data) {
+    return instance.post('/Api/Developer/List', data);
+  },
+  /** PUT /Api/Developer/Checked  开发者账号审核通过 */
+  getDeveloperChecked(developerID: string) {
+    return instance.put('/Api/Developer/Checked', null, { params: { developerID } });
+  },
+  /** POST /Api/Developer/Refuse  开发者账号审核不通过 */
+  getDeveloperRefuse(data: object) {
+    return instance.post('/Api/Developer/Refuse', data);
+  },
+  /** PUT /Api/Developer/Lock   锁定/解锁开发者账号 */
+  getDeveloperLock(developerID: string, isLock: boolean) {
+    return instance.put('/Api/Developer/Lock', null, { params: { developerID, isLock } });
+  },
+  /** POST /Api/Developer/NoticeList  开发者消息列表 */
+  getDeveloperNoticeList(data) {
+    return instance.post('/Api/Developer/NoticeList', data);
+  },
+  /** POST /Api/Developer/NoticeSend  发送消息 */
+  getDeveloperNoticeSend(data) {
+    return instance.post('/Api/Developer/NoticeSend', data);
+  },
+  /** GET /Api/Developer/Find  获取开发者信息 */
+  getDeveloperFind(mobile: string) {
+    return instance.get('/Api/Developer/Find', { params: { mobile } });
+  },
+  /** DELETE /Api/Developer/NoticeRemove  删除消息 */
+  getDeveloperNoticeRemove(noticeID: string) {
+    return instance.delete('/Api/Developer/NoticeRemove', { params: { noticeID } });
+  },
+  /** POST /Api/Application/List 应用列表 */
+  getApplicationList(data) {
+    return instance.post('/Api/Application/List', data);
+  },
 };
 
 export default api;

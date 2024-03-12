@@ -67,14 +67,14 @@ function warnSingleError(msg, successFunc, failFunc, title = '注意', text = '�
  * @param {*} failFunc
  */
 // eslint-disable-next-line default-param-last
-function warnCancelBox(title = '确定取消此订单吗 ?', msg, successFunc, failFunc, dangerouslyUseHTMLString = false) {
+function warnCancelBox(title = '确定取消此订单吗 ?', msg, successFunc, failFunc, dangerouslyUseHTMLString = false, className) {
   MessageBox({
     showClose: true,
     message: msg,
     type: 'success ',
     confirmButtonText: '确定',
     title,
-    customClass: 'mp-order-del-pop-reverse-warn',
+    customClass: `mp-order-del-pop-reverse-warn ${className}`,
     showCancelButton: true,
     cancelButtonText: '取消',
     dangerouslyUseHTMLString,

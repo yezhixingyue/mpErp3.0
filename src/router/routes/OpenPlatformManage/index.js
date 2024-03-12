@@ -13,16 +13,16 @@ const routes = { // 审稿
     /*  文档编辑
     ------------------------------------------ */
     {
-      path: '/docManage',
-      name: 'docManage',
+      path: '/developerList',
+      name: 'developerList',
       meta: {
-        title: '帮助文档管理',
+        title: '开发者账号',
         icon: 'el-icon-s-data',
-        pageName: 'DocManagePage',
+        pageName: 'DeveloperListManagePage',
         // PermissionInfo: ['PermissionCheckFileStastics', 'HavePomission'],
         requiresAuth: true,
       },
-      component: () => import('../../../views/OpenPlatform/DocManage/DocManagePage.vue'),
+      component: () => import('../../../views/OpenPlatform/DeveloperListManage/DeveloperListManagePage.vue'),
     },
     /*  消息管理
     ------------------------------------------ */
@@ -38,6 +38,34 @@ const routes = { // 审稿
       },
       component: () => import('../../../views/OpenPlatform/NoticeManage/NoticeManagePage.vue'),
     },
+    /*  文档编辑
+    ------------------------------------------ */
+    {
+      path: '/docManage',
+      name: 'docManage',
+      meta: {
+        title: '帮助文档管理',
+        icon: 'el-icon-s-data',
+        pageName: 'DocManagePage',
+        // PermissionInfo: ['PermissionCheckFileStastics', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/OpenPlatform/DocManage/DocManagePage.vue'),
+    },
+    /*  应用列表
+    ------------------------------------------ */
+    {
+      path: '/appList',
+      name: 'appList',
+      meta: {
+        title: '应用列表',
+        icon: 'el-icon-s-data',
+        pageName: 'AppListManagePage',
+        // PermissionInfo: ['PermissionCheckFileStastics', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/OpenPlatform/AppList/AppListManagePage.vue'),
+    },
   ],
 };
 
@@ -49,6 +77,18 @@ const routeTree = {
     ------------------------------------------ */
     {
       name: 'docManage',
+      children: [],
+    },
+    {
+      name: 'developerList',
+      children: [],
+    },
+    {
+      name: 'noticeManage',
+      children: [],
+    },
+    {
+      name: 'appList',
       children: [],
     },
   ],
