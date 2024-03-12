@@ -17,7 +17,7 @@ const routes = { // 审稿
       name: 'developerList',
       meta: {
         title: '开发者账号',
-        icon: 'el-icon-s-data',
+        icon: 'icon-kaifazhezhanghao iconfont',
         pageName: 'DeveloperListManagePage',
         // PermissionInfo: ['PermissionCheckFileStastics', 'HavePomission'],
         requiresAuth: true,
@@ -31,7 +31,7 @@ const routes = { // 审稿
       name: 'noticeManage',
       meta: {
         title: '消息管理',
-        icon: 'el-icon-s-data',
+        icon: 'icon-xiaoxiguanli iconfont',
         pageName: 'NoticeManagePage',
         // PermissionInfo: ['PermissionCheckFileStastics', 'HavePomission'],
         requiresAuth: true,
@@ -45,7 +45,7 @@ const routes = { // 审稿
       name: 'docManage',
       meta: {
         title: '帮助文档管理',
-        icon: 'el-icon-s-data',
+        icon: 'icon-bangzhuwendangguanli iconfont',
         pageName: 'DocManagePage',
         // PermissionInfo: ['PermissionCheckFileStastics', 'HavePomission'],
         requiresAuth: true,
@@ -59,7 +59,7 @@ const routes = { // 审稿
       name: 'appList',
       meta: {
         title: '应用列表',
-        icon: 'el-icon-s-data',
+        icon: 'icon-yingyongliebiao iconfont',
         pageName: 'AppListManagePage',
         // PermissionInfo: ['PermissionCheckFileStastics', 'HavePomission'],
         requiresAuth: true,

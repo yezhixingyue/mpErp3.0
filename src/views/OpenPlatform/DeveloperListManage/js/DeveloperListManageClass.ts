@@ -105,4 +105,16 @@ export class DeveloperListManageClass {
       });
     }
   }
+
+  /** 重置密码 */
+  async resetPwd(row: ReturnType<typeof getDeveloperTableList>) {
+    const resp = await api.getDeveloperResetPassword(row.ID).catch(() => null);
+
+    if (resp && resp.data.Status === 1000) {
+      MpMessage.success({
+        title: '密码重置成功',
+        msg: `[ ${resp.data.Message} ]`,
+      });
+    }
+  }
 }

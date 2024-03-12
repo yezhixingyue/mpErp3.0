@@ -1648,6 +1648,10 @@ const api = {
   getApplicationList(data) {
     return instance.post('/Api/Application/List', data);
   },
+  /** PUT /Api/Developer/ResetPassword  重置开发者密码 */
+  getDeveloperResetPassword(developerID: string) {
+    return instance.put('/Api/Developer/ResetPassword', null, { params: { developerID } });
+  },
 };
 
 export default api;

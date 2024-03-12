@@ -8,7 +8,8 @@
      @getList="() => localDeveloperPageData.getList()"
      />
 
-    <Main :list="localDeveloperPageData.list" :loading="localDeveloperPageData.loading" @resolve="handleResolve" @reject="handleReject" @lock="handleLock" />
+    <Main :list="localDeveloperPageData.list" :loading="localDeveloperPageData.loading"
+     @resolve="handleResolve" @reject="handleReject" @lock="handleLock" @resetPwd="handleResetPwd" />
 
     <footer>
       <MpPagination center
@@ -41,6 +42,10 @@ const handleReject = (row: ReturnType<typeof getDeveloperTableList>, Remark: str
 
 const handleLock = (row: ReturnType<typeof getDeveloperTableList>) => {
   localDeveloperPageData.value.lock(row);
+};
+
+const handleResetPwd = (row: ReturnType<typeof getDeveloperTableList>) => {
+  localDeveloperPageData.value.resetPwd(row);
 };
 
 onMounted(() => {

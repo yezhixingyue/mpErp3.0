@@ -47,5 +47,10 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 70px 1fr 70px;
+
+  > footer {
+    padding-top: 8px;
+    box-sizing: border-box;
+  }
 }
 </style>

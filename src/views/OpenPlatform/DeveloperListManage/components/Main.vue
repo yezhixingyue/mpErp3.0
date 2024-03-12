@@ -8,21 +8,21 @@
       <el-table-column width="100px" prop="_TypeText" label="账号类型" />
       <el-table-column width="100px" prop="Mobile" label="手机号码" />
       <el-table-column width="220px" prop="_ContactsText" show-overflow-tooltip label="技术联系人" />
-      <el-table-column width="140px" prop="_CreateTime" label="注册时间" />
+      <el-table-column width="130px" prop="_CreateTime" label="注册时间" />
       <el-table-column width="85px" prop="_StatusText" label="状态">
         <template #default="scope">
           <span :class="scope.row._StatusClass" :title="scope.row._Remark">{{ scope.row._StatusText }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100px" prop="Checker" label="审核人" />
-      <el-table-column width="140px" prop="_CheckTime" label="审核时间" />
-      <el-table-column width="120px" prop="_AppNumber" label="应用数量" />
+      <el-table-column width="85px" prop="Checker" label="审核人" />
+      <el-table-column width="130px" prop="_CheckTime" label="审核时间" />
+      <el-table-column width="80px" prop="_AppNumber" label="应用数量" />
       <el-table-column width="85px" label="锁定状态">
         <template #default="scope">
           <span class="is-pink" v-if="scope.row.IsLock">已锁定</span>
         </template>
       </el-table-column>
-      <el-table-column min-width="200px" label="操作">
+      <el-table-column min-width="280px" label="操作">
         <template #default="scope">
           <div class="menus">
             <span class="blue-span" @click="onCheckClick(scope.row)" v-if="scope.row.Status === DeveloperStatusEnum.Apply">
@@ -43,6 +43,11 @@
             <span class="green-span" @click="onLockClick(scope.row)" v-if="scope.row.Status === DeveloperStatusEnum.Checked && scope.row.IsLock">
               <img src='@/assets/images/unlock.png' alt="">
               <i>解锁</i>
+            </span>
+
+            <span class="blue-span" @click="onPwdResetClick(scope.row)">
+              <img src='@/assets/images/reset-pwd.png' width="15px" height="15px" alt="">
+              <i>重置密码</i>
             </span>
           </div>
         </template>
@@ -93,7 +98,7 @@ const props = defineProps<{
   loading: boolean
 }>();
 
-const emit = defineEmits(['reject', 'resolve', 'lock']);
+const emit = defineEmits(['reject', 'resolve', 'lock', 'resetPwd']);
 
 const localTableList = computed(() => props.list.map(it => getDeveloperTableList(it)));
 
@@ -133,6 +138,17 @@ const onLockClick = (row: ReturnType<typeof getDeveloperTableList>) => { // 解�
     },
     success: row.IsLock === true,
     warn: row.IsLock === false,
+  });
+};
+
+const onPwdResetClick = (row: ReturnType<typeof getDeveloperTableList>) => { // 解锁 | 锁定
+  MpMessage.warn({
+    title: '确定重置该账号密码吗 ?',
+    msg: `[ ${row.Name} ]`,
+    onOk: () => {
+      emit('resetPwd', row);
+    },
+    warn: true,
   });
 };
 </script>
@@ -178,16 +194,19 @@ const onLockClick = (row: ReturnType<typeof getDeveloperTableList>) => { // 解�
       .menus {
         display: flex;
         align-items: center;
-        padding-left: 15%;
+        justify-content: center;
+        // padding-left: 5%;
         > span {
           display: flex;
           align-items: center;
+          margin-left: 20px;
           img {
             margin-right: 6px;
           }
 
           &:first-of-type {
-            margin-right: 30px;
+            margin-left: 0;
+            // margin-right: 30px;
             i {
               width: 4em;
               text-align: left;
