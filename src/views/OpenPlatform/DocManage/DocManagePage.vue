@@ -1,31 +1,26 @@
 <template>
   <section class="open-platform-doc-manage-wrap">
-    <iframe id="open-doc-manage" title="open-doc-manage" :src="iframeUrl" width="100%" height="100%" frameborder="0" @click="onclick"></iframe>
+    <aside>
+      <!-- 左侧分类管理 -->
+      <LeftClassListManage />
+    </aside>
+
+    <main>
+      <!-- 右侧文章列表 -->
+      右侧文章列表
+    </main>
   </section>
 </template>
 
 <script setup lang='ts'>
-import { WikiHandler } from '@/assets/js/TypeClass/WikiHandler';
-import TokenClass from '@/assets/js/utils/tokenManage';
 import { onMounted, ref } from 'vue';
+import LeftClassListManage from './components/LeftClassListManage/Index.vue';
+import { DocManageClass } from './js/DocManageClass';
 
-const iframeUrl = ref('');
-
-const onclick = () => {
-  console.log('onclick iframe');
-};
+const localPageData = ref(new DocManageClass());
 
 onMounted(() => {
-  const token = TokenClass.getToken();
-
-  if (token) {
-    const siteType = 5;
-    const target = 'manage';
-
-    const _url = WikiHandler.getJumpUrl({ token, siteType, target });
-
-    iframeUrl.value = _url;
-  }
+  localPageData.value.getClassList();
 });
 
 </script>
@@ -38,10 +33,20 @@ export default {
 
 <style scoped lang='scss'>
 .open-platform-doc-manage-wrap {
-  height: 99%;
+  height: 100%;
   width: 100%;
+  min-width: 1360px;
   box-sizing: border-box;
-  padding-left: 8px;
   background-color: #eee;
+  padding-left: 8px;
+
+  display: grid;
+  grid-template-columns: 540px 1fr;
+  grid-template-rows: 1fr;
+
+  > aside, > main {
+    background-color: #fff;
+    padding-top: 30px;
+  }
 }
 </style>

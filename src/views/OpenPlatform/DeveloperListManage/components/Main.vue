@@ -22,7 +22,7 @@
           <span class="is-pink" v-if="scope.row.IsLock">已锁定</span>
         </template>
       </el-table-column>
-      <el-table-column min-width="280px" label="操作">
+      <el-table-column min-width="270px" label="操作">
         <template #default="scope">
           <div class="menus">
             <span class="blue-span" @click="onCheckClick(scope.row)" v-if="scope.row.Status === DeveloperStatusEnum.Apply">
