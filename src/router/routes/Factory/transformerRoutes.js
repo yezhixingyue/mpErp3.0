@@ -122,6 +122,30 @@ const routes = [
     component: () => import('@/views/transformer/assistTypeSetupPages/UnionMakeupLimit/UnionMakeupLimitSetupPage.vue'),
   },
   {
+    path: '/numericalCodeAutoMakeupList',
+    name: 'numericalCodeAutoMakeupList',
+    meta: {
+      title: '数码自动拼版设置',
+      hideMenu: true,
+      pageName: 'NumericalCodeAutoMakeupListPage',
+      // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+      requiresAuth: true,
+    },
+    component: () => import('@/views/transformer/assistTypeSetupPages/NumericalCodeAutoMakeup/NumericalCodeAutoMakeupListPage.vue'),
+  },
+  {
+    path: '/numericalCodeAutoMakeupSetup',
+    name: 'numericalCodeAutoMakeupSetup',
+    meta: {
+      title: '数码自动拼版设置',
+      hideMenu: true,
+      pageName: 'NumericalCodeAutoMakeupSetupPage',
+      // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+      requiresAuth: true,
+    },
+    component: () => import('@/views/transformer/assistTypeSetupPages/NumericalCodeAutoMakeup/NumericalCodeAutoMakeupSetupPage.vue'),
+  },
+  {
     path: '/otherLimitList',
     name: 'otherLimitList',
     meta: {
@@ -212,6 +236,12 @@ const routeTree = [
         name: 'unionMakeupLimitList',
         children: [
           { name: 'unionMakeupLimitSetup', children: [] },
+        ],
+      },
+      {
+        name: 'numericalCodeAutoMakeupList',
+        children: [
+          { name: 'numericalCodeAutoMakeupSetup', children: [] },
         ],
       },
       {

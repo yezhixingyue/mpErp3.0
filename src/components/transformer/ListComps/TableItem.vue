@@ -32,6 +32,7 @@
         <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.WordsInfo, it.ID)">文字信息映射 ({{it.WordsInfoCount}})</span>
         <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.NumbericInfo, it.ID)">数值映射 ({{it.NumbericInfoCount}})</span>
         <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.UnionMakeupLimit, it.ID)">合拼设置 ({{it.UnionMakeupLimitCount}})</span>
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.NumericalCodeAutoMakeup, it.ID)">数码自动拼版 ({{it.AutoImpositionCount}})</span>
         <span class="blue-span" v-if="HavePomission">
           <i @click="onClick(menuTypeEnum.OtherSetup, it.ID)">其它设置：</i>
           <i class="gray">{{ it.NeedFolding ? '需要折手' : '不需要折手' }}</i>
@@ -115,6 +116,7 @@ const selectedPartList = computed(() => {
       NumbericInfoCount: props.item.NumbericInfoCount,
       SemiFinished: props.item.SemiFinished,
       UnionMakeupLimitCount: props.item.UnionMakeupLimitCount,
+      AutoImpositionCount: props.item.AutoImpositionCount,
       WordsInfoCount: props.item.WordsInfoCount,
       WorkTimesCount: props.item.WorkTimesCount,
       WorkingCount: props.item.WorkingCount,
@@ -146,7 +148,7 @@ const onHideClick = () => {
 .item {
   margin-bottom: 15px;
   font-size: 12px;
-  min-width: 1300px;
+  min-width: 1550px;
   color: #444;
   > dt {
     height: 44px;
