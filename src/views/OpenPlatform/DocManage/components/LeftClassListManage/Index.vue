@@ -1,8 +1,8 @@
 <template>
   <div class="mp-erp-doc-manage-left-class-list-manage-comp-wrap">
-    <SearchInput :value="words" @change="e => words = e" />
+    <SearchInput :value="keywords" @change="e => keywords = e" />
 
-    <span class="add">新增一级分类</span>
+    <span class="add" @click="handleItemSave(null)">新增一级分类</span>
 
     <div class="table">
       <h4 class="header">
@@ -10,108 +10,139 @@
         <span class="m">操作</span>
       </h4>
 
-      <div class="list">
-        <ClassTreeItem v-for="it in list" :key="it.id" :item="it" />
+      <div class="list mp-scroll-wrap">
+        <div ref="oDiv">
+          <ClassTreeItem
+            v-for="(it, i) in pageData.class.classTreeList" :key="it.id"
+            :item="it"
+            :keywords="keywords"
+            :maxLevel="ManageClassList.config.maxLevel"
+            :arrowUp="i > 0"
+            :arrowDown="i < pageData.class.classTreeList.length - 1"
+            :curClassId="pageData.curClassId"
+            @command="oncommand"
+            />
+        </div>
+        <p class="not-match" v-if="pageData.class.list.length && keywords && divHeight === 0">当前搜索词为：{{ keywords }}，暂无符合数据</p>
+        <!-- <p class="not-match" >暂无数据</p> -->
+        <p class="not-match" v-if="pageData.class.list.length === 0 && !pageData.class.loading">暂无数据，快去添加分类吧！</p>
       </div>
     </div>
+
+    <!-- 分类新增|编辑 -->
+    <EditDialog :visible.sync="editData.visible" :editData="editData" />
+
+    <!-- 移动分类 -->
+    <MoveDialog :visible.sync="moveVisible" :classList="pageData.class.list" :mova-class="moveTarget" @submit="onmove" />
   </div>
 </template>
 
 <script setup lang='ts'>
-import { ref } from 'vue';
+import { onActivated, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import SearchInput from './SearchInput.vue';
 import ClassTreeItem from './ClassTreeItem.vue';
+import { DocManageClass } from '../../js/DocManageClass';
+import EditDialog from './EditDialog/EditDialog.vue';
+import { IClassTreeItem, IDocClass } from '../../js/types';
+import { CommandType, IClassEditData } from './type';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
+import MoveDialog from '../MoveDialog/Index.vue';
+import { ManageClassList } from '../../js/ManageClassList';
 
-const list = [
-  {
-    id: 58,
-    categoryName: '一级分类1',
-    categoryLevel: 1,
-    categoryParentID: -1,
-    categoryOrder: 1,
-    children: [
-      {
-        id: 62,
-        categoryName: '二级分类1',
-        categoryLevel: 2,
-        categoryParentID: 58,
-        categoryOrder: 1,
-      },
-    ],
-  },
-  {
-    id: 59,
-    categoryName: '一级分类2',
-    categoryLevel: 1,
-    categoryParentID: -1,
-    categoryOrder: 2,
-    children: [
-      {
-        id: 63,
-        categoryName: '二级分类2',
-        categoryLevel: 2,
-        categoryParentID: 58,
-        categoryOrder: 1,
-      },
-      {
-        id: 163,
-        categoryName: '二级分类2-2',
-        categoryLevel: 2,
-        categoryParentID: 58,
-        categoryOrder: 1,
-      },
-    ],
-  },
-  {
-    id: 60,
-    categoryName: '一级分类3',
-    categoryLevel: 1,
-    categoryParentID: -1,
-    categoryOrder: 3,
-    children: [
-      {
-        id: 63,
-        categoryName: '二级分类3-1',
-        categoryLevel: 2,
-        categoryParentID: 59,
-        categoryOrder: 1,
-      },
-      {
-        id: 64,
-        categoryName: '二级分类3-2',
-        categoryLevel: 2,
-        categoryParentID: 60,
-        categoryOrder: 1,
-      },
-      {
-        id: 163,
-        categoryName: '二级分类3-3',
-        categoryLevel: 2,
-        categoryParentID: 59,
-        categoryOrder: 1,
-      },
-      {
-        id: 164,
-        categoryName: '二级分类3-4',
-        categoryLevel: 2,
-        categoryParentID: 60,
-        categoryOrder: 1,
-      },
-    ],
-  },
-];
+const props = defineProps({
+  pageData: DocManageClass,
+});
 
-const cb = () => {
-  try {
-    console.log('is try trigger');
-  } catch {
-    console.log('is catch trigger');
+const keywords = ref('');
+
+const editData = ref<IClassEditData>({
+  visible: false,
+  item: null,
+  ParentItem: null,
+  classList: [],
+});
+
+/** 新增|编辑 */
+const handleItemSave = (item: null | IDocClass, ParentItem: null | IDocClass = null) => {
+  editData.value.item = item;
+  editData.value.ParentItem = ParentItem;
+  editData.value.classList = props.pageData.class.list;
+  editData.value.visible = true;
+};
+
+/** 移动至其他分类 */
+const moveVisible = ref(false);
+const moveTarget = ref<null | IClassTreeItem>(null);
+
+const oncommand = (type: CommandType, item: IClassTreeItem) => {
+  switch (type) {
+    case 'switch':
+      props.pageData.switchClass(item.id);
+      break;
+
+    case 'create':
+      handleItemSave(null, item);
+      break;
+
+    case 'edit':
+      handleItemSave(item);
+      break;
+
+    case 'up':
+      props.pageData.class.exchange(item, -1);
+      break;
+
+    case 'down':
+      props.pageData.class.exchange(item, 1);
+      break;
+
+    case 'move':
+      moveTarget.value = item;
+      moveVisible.value = true;
+      break;
+    case 'remove':
+      MpMessage.warn({
+        title: '确定删除该分类吗 ?',
+        msg: `分类名称：[ ${item.categoryName} ]`,
+        onOk: () => props.pageData.class.remove(item),
+      });
+      break;
+
+    default:
+      break;
   }
 };
 
-const words = ref('fen');
+const onmove = async (item: IDocClass) => { // 移动至其他分类
+  if (!moveTarget.value) return;
+  const bool = await props.pageData.class.move2Other(moveTarget.value, item.id);
+  if (bool) {
+    moveVisible.value = false;
+  }
+};
 
-cb();
+const oDiv = ref<HTMLDivElement>();
+const divHeight = ref(0);
+
+const resizeObserver = new ResizeObserver(entries => {
+  if (entries[0]) {
+    divHeight.value = entries[0].contentRect.height;
+  }
+});
+
+onMounted(() => {
+  resizeObserver.observe(oDiv.value);
+});
+onActivated(() => {
+  resizeObserver.observe(oDiv.value);
+});
+
+onUnmounted(() => {
+  resizeObserver.disconnect();
+});
+onDeactivated(() => {
+  resizeObserver.disconnect();
+});
 
 </script>
 
@@ -119,7 +150,6 @@ cb();
 .mp-erp-doc-manage-left-class-list-manage-comp-wrap {
   width: 100%;
   height: 100%;
-  max-height: 100%;
   padding: 0 30px;
   box-sizing: border-box;
   border-right: 1px solid #d5d5d5;
@@ -127,16 +157,18 @@ cb();
   flex-direction: column;
   font-size: 14px;
   color: #444;
+  padding-bottom: 30px;
 
-  > * {
+  >* {
     flex: none;
   }
 
   .add {
     display: flex;
     align-items: center;
+    width: 110px;
     line-height: 18px;
-    padding: 15px 0;
+    margin: 15px 0;
     cursor: pointer;
     transition: color 0.2s ease-in-out;
     user-select: none;
@@ -173,6 +205,7 @@ cb();
       align-items: center;
       font-weight: 700;
       background-color: #f5f5f5;
+
       .n {
         flex: 1;
         margin-left: 20px;
@@ -180,15 +213,22 @@ cb();
 
       .m {
         flex: none;
-        width: 240px;
+        width: 210px;
         text-align: center;
       }
     }
 
-    > .list {
+    >.list {
       flex: 1;
       overflow: auto;
       overflow: overlay;
+      padding-right: 10px;
+      box-sizing: border-box;
+      .not-match {
+        padding: 15px 20px;
+        font-size: 13px;
+        color: #989898;
+      }
     }
   }
 }

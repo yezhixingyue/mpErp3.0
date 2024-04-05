@@ -94,7 +94,7 @@ export default {
       if (resp) { //  保存成功
         const func = () => {
           this.dialogVisible = false;
-          this.$store.commit('common/setFactoryChange', { type: isAdd ? 'add' : 'edit', data: resp });
+          this.$store.commit('common/setFactoryChange', { type: isAdd ? 'add' : 'edit', data: { ...resp, ProductNumber: editData.ProductNumber } });
         };
         this.messageBox.successSingle(`${keyword}成功!`, func, func);
       }

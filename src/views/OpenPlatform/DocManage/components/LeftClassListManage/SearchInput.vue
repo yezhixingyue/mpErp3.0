@@ -1,7 +1,7 @@
 <template>
   <div class="search-box">
     <el-input v-model.trim="content" ref="oInp" :disabled="disabled" :class="{blue: isBlue}"
-     :placeholder="placeholder || '请输入分类关键字'" maxlength="20" @keyup.enter="onSearchClick" clearable @clear='onSearchClick'>
+     :placeholder="placeholder || '请输入分类关键字'" maxlength="20" @keyup.enter.native="onSearchClick" clearable @clear='onSearchClick'>
       <template #append>
         <el-button class="blue-button" @click="onSearchClick" :disabled="disabled">
           <i class="el-icon-search"></i>

@@ -2,12 +2,12 @@
   <section class="open-platform-doc-manage-wrap">
     <aside>
       <!-- 左侧分类管理 -->
-      <LeftClassListManage />
+      <LeftClassListManage :page-data="localPageData" />
     </aside>
 
     <main>
       <!-- 右侧文章列表 -->
-      右侧文章列表
+      <RightArticleList :page-data="localPageData" />
     </main>
   </section>
 </template>
@@ -15,12 +15,13 @@
 <script setup lang='ts'>
 import { onMounted, ref } from 'vue';
 import LeftClassListManage from './components/LeftClassListManage/Index.vue';
+import RightArticleList from './components/RightArticleList/RightArticleList.vue';
 import { DocManageClass } from './js/DocManageClass';
 
 const localPageData = ref(new DocManageClass());
 
 onMounted(() => {
-  localPageData.value.getClassList();
+  localPageData.value.init();
 });
 
 </script>
@@ -47,6 +48,8 @@ export default {
   > aside, > main {
     background-color: #fff;
     padding-top: 30px;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 }
 </style>

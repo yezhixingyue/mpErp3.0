@@ -1,21 +1,26 @@
-import { docApi } from '@/api/doc';
-import { IDocClass } from './types';
+import { ManageClassList } from './ManageClassList';
+import { ManageArticleList } from './ManageArticleList';
 
 /** 帮助文档管理类 */
 export class DocManageClass {
-  classList: IDocClass[] = []
+  curClassId: '' | number = ''
 
-  articleList = []
+  class = new ManageClassList()
 
-  loading = false
+  article = new ManageArticleList()
 
-  async getClassList() {
-    const resp = await docApi.getClassList().catch(() => null);
-
-    console.log(resp);
+  /** 切换文章分类 */
+  switchClass(id: number) {
+    if (this.curClassId === id) return;
+    this.curClassId = id;
+    this.article.getList(id);
   }
 
-  async getArticleList() {
-    console.log('getArticleList');
+  async init() {
+    await this.class.getList();
+
+    if (this.class.classTreeList.length > 0) {
+      this.switchClass(this.class.classTreeList[0].id);
+    }
   }
 }

@@ -1,3 +1,5 @@
+import { DocTypeEnum } from './enum';
+
 /** 帮助文档文字类型接口类型 */
 export interface IDocClass {
   id: number
@@ -11,5 +13,22 @@ export interface IDocClass {
 }
 
 export interface IClassTreeItem extends IDocClass {
-  children?: IClassTreeItem[]
+  children: IClassTreeItem[]
+  /** 深度 */
+  deep:number
+}
+
+/** 文章接口类型 */
+export interface IArticle {
+  id: string
+  categoryID: number
+  helpdocuTitle: string
+  helpdocuContent: string
+  helpdocuType: DocTypeEnum
+  helpdocuURL: string
+  helpdocuCreatdate: string
+  helpdocuEditdate?: string
+  helpdocuOrder: number
+  internalID: string
+  directory: string
 }
