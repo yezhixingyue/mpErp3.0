@@ -16,11 +16,16 @@
           </el-select>
         </div>
       </div>
+      <div>
+        <DownLoadExcelComp title="导出Excel" :configObj="configObj" />
+      </div>
     </Count>
   </footer>
 </template>
 
 <script>
+import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
+import CommonClassType from '@/store/CommonClassType';
 import Count from '../../common/Count.vue';
 
 export default {
@@ -56,6 +61,7 @@ export default {
   },
   components: {
     Count,
+    DownLoadExcelComp,
   },
   data() {
     return {
@@ -76,6 +82,16 @@ export default {
     },
     checkedFactoryList() {
       return this.multipleSelection.map(it => it.Factory.ID);
+    },
+    configObj() { // 导出Excel条件对象
+      return {
+        condition: CommonClassType.filter(this.condition, true),
+        count: this.dataNumber,
+        fileDefaultName: '手动外协列表',
+        // fileDate: '',
+        showDateByFile: false,
+        downFunc: data => this.api.getFactoryOrderOrderExcel(data),
+      };
     },
   },
   methods: {

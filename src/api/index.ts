@@ -1371,6 +1371,10 @@ const api = {
   getOutOrderList(condition) { // POST /Api/OutOrder/List   外协订单列表
     return instance.post('/Api/OutOrder/List', condition);
   },
+  /** /Api/Factory/Order/OrderExcel 导出表格 */
+  getFactoryOrderOrderExcel(condition) {
+    return instance.post('/Api/Factory/Order/OrderExcel', condition, { closeTip: true, responseType: 'arraybuffer' });
+  },
   getOutOrderChangeFactory(data) { // POST /Api/OutOrder/ChangeFactory    修改外协工厂
     return instance.post('/Api/OutOrder/ChangeFactory', data);
   },
