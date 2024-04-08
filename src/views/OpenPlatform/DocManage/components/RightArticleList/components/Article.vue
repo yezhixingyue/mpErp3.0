@@ -12,29 +12,38 @@
       </div>
 
       <div class="menus">
-        <div class="menu history">查看修改历史</div>
-        <div class="menu edit">编辑</div>
-        <div class="menu view">浏览</div>
-        <el-dropdown trigger="click" placement="bottom">
-          <div class="menu move">移动</div>
-          <el-dropdown-menu slot="dropdown" class="mp-doc-menu-dropdown">
-            <el-dropdown-item command="down">
-              移动到第几条
-            </el-dropdown-item>
-            <el-dropdown-item command="move">移动到其他分类</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <div class="menu history" @click="oncommond('history')">查看修改历史</div>
+        <div class="menu edit" @click="oncommond('edit')">编辑</div>
+        <div class="menu view" @click="oncommond('view')">浏览</div>
+        <el-popover placement="bottom" trigger="click" @show="onPopoverShow" popper-class="hide-animation">
+          <div class="move-content">
+            <div class="close">
+              <i class="el-icon-close blue-span" @click="closePopover"></i>
+            </div>
+             <div class="first">
+              <span>1. 移动至 第</span>
+              <el-input v-model.trim.number="moveVal" size="mini" maxlength="4" class="input" @keyup.enter.native="onmoveclick"></el-input>
+              <span>条</span>
+              <el-button type="primary" size="mini" @click="onmoveclick" :disabled="!/^\d+$/.test(moveVal)">确定</el-button>
+             </div>
+             <div class="second">
+              <span>2. </span>
+              <span class="blue-span" @click="onmove2outclick">移动至其他分类</span>
+             </div>
+          </div>
+          <div slot="reference" class="menu move">移动</div>
+        </el-popover>
         <div class="menu remove" @click="onRemoveClick">删除</div>
-        <div class="menu copy">复制</div>
+        <div class="menu copy" @click="oncommond('copy')">复制</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang='ts'>
-import { IArticle } from '../../../js/types';
+import { ArticleCommandType, IArticle } from '../../../js/types';
 import { DocTypeEnumList } from '../../../js/enum';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { getDateFormat } from '@/assets/js/utils/util';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
 
@@ -48,14 +57,35 @@ const displayCollection = computed(() => ({
   type: DocTypeEnumList.find(it => it.ID === props.item.helpdocuType),
 }));
 
-const oncommond = (type: 'remove' | 'view' | 'edit' | 'copy' | 'history') => {
-  console.log(type, props.item);
+const moveVal = ref('');
+
+const onPopoverShow = () => {
+  moveVal.value = '';
+};
+
+const closePopover = () => { // 关闭移动弹窗
+  document.body.click();
+};
+
+const onmoveclick = () => {
+  if (!/^\d+$/.test(moveVal.value)) return;
+
+  emit('command', 'move', props.item, moveVal.value);
+  closePopover();
+};
+
+const onmove2outclick = () => {
+  oncommond('move2out');
+  closePopover();
+};
+
+const oncommond = (type: ArticleCommandType) => {
   emit('command', type, props.item);
 };
 
 const onRemoveClick = () => {
   MpMessage.warn({
-    title: '删除后不可恢复，确认继续删除吗？',
+    title: '删除后不可恢复，确认删除吗？',
     msg: `文章名称：[ ${props.item.helpdocuTitle} ]`,
     onOk: () => { oncommond('remove'); },
   });
@@ -185,5 +215,43 @@ const onRemoveClick = () => {
       }
     }
   }
+
+}
+
+.move-content {
+  font-size: 12px;
+  padding-bottom: 10px;
+  span {
+    letter-spacing: 0.5px;
+  }
+  .first {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    padding-bottom: 18px;
+
+    .input {
+      margin: 0 6px;
+      width: 60px;
+    }
+
+    button {
+      margin-left: 10px;
+    }
+  }
+
+  .close {
+    text-align: right;
+    padding-bottom: 12px;
+    i {
+      font-size: 15px;
+    }
+  }
+}
+</style>
+
+<style>
+.hide-animation {
+  transition: none;
 }
 </style>

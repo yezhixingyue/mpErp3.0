@@ -51,6 +51,9 @@ const routes = { // 审稿
         requiresAuth: true,
       },
       component: () => import('../../../views/OpenPlatform/DocManage/DocManagePage.vue'),
+      children: [
+
+      ],
     },
     /*  应用列表
     ------------------------------------------ */

@@ -32,3 +32,5 @@ export interface IArticle {
   internalID: string
   directory: string
 }
+
+export type ArticleCommandType = 'remove' | 'view' | 'edit' | 'copy' | 'history' | 'move2out' | 'move';

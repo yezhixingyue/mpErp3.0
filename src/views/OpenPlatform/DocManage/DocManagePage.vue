@@ -51,5 +51,6 @@ export default {
     box-sizing: border-box;
     overflow: hidden;
   }
+
 }
 </style>

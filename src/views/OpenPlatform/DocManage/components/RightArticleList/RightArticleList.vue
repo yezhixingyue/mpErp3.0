@@ -8,7 +8,7 @@
       <Empty v-if="!pageData.article.loading && !pageData.article.listNumber" />
 
       <!-- 文章列表 -->
-      <Article v-for="it in pageData.article.list" :key="it.id" :item="it" />
+      <Article v-for="it in pageData.article.list" :key="it.id" :item="it" @command="oncommand" />
     </main>
     <footer>
       footer 分页
@@ -21,10 +21,16 @@
 import { DocManageClass } from '../../js/DocManageClass';
 import Empty from './components/Empty.vue';
 import Article from './components/Article.vue';
+import { ArticleCommandType, IArticle } from '../../js/types';
 
 defineProps({
   pageData: DocManageClass,
 });
+
+const oncommand = (type: ArticleCommandType, item: IArticle, moveVal?: number) => { // moveVal 仅移动次序时有值
+  console.log('oncommand', type, item, moveVal);
+};
+
 </script>
 
 <style scoped lang='scss'>
