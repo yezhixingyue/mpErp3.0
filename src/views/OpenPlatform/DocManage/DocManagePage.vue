@@ -8,17 +8,19 @@
     <main>
       <!-- 右侧文章列表 -->
       <RightArticleList :page-data="localPageData" />
+
     </main>
   </section>
 </template>
 
 <script setup lang='ts'>
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import LeftClassListManage from './components/LeftClassListManage/Index.vue';
 import RightArticleList from './components/RightArticleList/RightArticleList.vue';
 import { DocManageClass } from './js/DocManageClass';
+import { localPageData } from './js/store';
 
-const localPageData = ref(new DocManageClass());
+localPageData.value = new DocManageClass();
 
 onMounted(() => {
   localPageData.value.init();

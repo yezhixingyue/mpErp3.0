@@ -46,6 +46,7 @@ import 'tinymce/plugins/quickbars/plugin.min.js';
 import {
   onBeforeUnmount, onMounted, ref,
 } from 'vue';
+import { upload } from './utils';
 
 const props = defineProps<{
   modelValue: string,
@@ -66,11 +67,12 @@ const initEditor = () => { // 富文本编辑器初始化
     language_url: `${publicPath}/tinymce/langs/zh_CN.js`,
     skin_url: `${publicPath}/tinymce/skins/ui/oxide`,
     content_css: `${publicPath}/tinymce/skins/content/default/content.css`,
-    menubar: false,
+    menubar: true,
     placeholder: '请在此输入内容...',
     toolbarSticky: false,
     image_title: true,
-    file_picker_types: 'file image media',
+    // file_picker_types: 'file image media',
+    file_picker_types: 'image',
     image_advtab: true,
     image_description: false,
     height: props.h || '100%',
@@ -91,11 +93,50 @@ const initEditor = () => { // 富文本编辑器初始化
     quickbars_selection_toolbar: 'bold italic forecolor backcolor | quicklink h2 h3 blockquote quicktable lineheight',
     media_poster: false,
     default_link_target: '_blank',
+    file_picker_callback(callback, value, meta) {
+      // if (!['image', 'file', 'media'].includes(meta.filetype)) return;
+      if (!['image'].includes(meta.filetype)) return;
+
+      let accept = '';
+      let api: 'getImgUpload' | 'getMediaUpload' | 'getFileUpload' = 'getImgUpload';
+      const maxSize = 4 * 1024 * 1024;
+
+      // if (meta.filetype === 'file') {
+      //   accept = '.zip';
+      //   api = 'getFileUpload';
+      //   maxSize = 100 * 1024 * 1024;
+      // }
+      // if (meta.filetype === 'media') {
+      //   accept = '.mp4';
+      //   api = 'getMediaUpload';
+      //   maxSize = 500 * 1024 * 1024;
+      // }
+      if (meta.filetype === 'image') {
+        accept = '.bmp, .jpeg, .png, .jpg';
+        api = 'getImgUpload';
+      }
+
+      const input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', accept);
+      input.onchange = async () => {
+        const file = input.files ? input.files[0] : null;
+        if (!file) return;
+
+        const result = await upload(file, api, accept, maxSize);
+
+        if (result) {
+          callback(result, { title: file.name, content: file.name, text: file.name.replace(/\.\w+$/, '') });
+        }
+      };
+
+      input.click();
+    },
     video_template_callback(data: { width: string; height: string; poster?: string; source: string; }) {
       return `<video width="${data.width}" height="${data.height}"${data.poster ? ` poster="${data.poster}"` : ''} controls="controls" src="${data.source}"></video>`;
     },
-    // toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent pagebreak lineheight blockquote |  numlist bullist checklist | forecolor backcolor casechange permanentpen formatpainter removeformat | | charmap  | fullscreen  preview | insertfile image media pageembed link anchor codesample | a11ycheck ltr rtl | showcomments addcomment toc',
-    toolbar: 'bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify |  numlist bullist checklist | forecolor backcolor casechange permanentpen formatpainter | link',
+    toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent pagebreak lineheight blockquote |  numlist bullist checklist | forecolor backcolor casechange permanentpen formatpainter removeformat | | charmap  | fullscreen  preview | insertfile image media pageembed link anchor codesample | a11ycheck ltr rtl | showcomments addcomment toc',
+    // toolbar: 'bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify |  numlist bullist checklist | forecolor backcolor casechange permanentpen formatpainter | link',
     plugins: `print preview paste importcss searchreplace autolink autosave 
          directionality code visualblocks visualchars fullscreen image link media codesample
           table charmap hr anchor toc insertdatetime advlist lists wordcount

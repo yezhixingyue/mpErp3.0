@@ -2,7 +2,7 @@
   <el-dialog
     :title="title"
     :visible.sync="dialogVisible"
-    :close-on-click-modal='false'
+    :close-on-click-modal='closeOnClickModal'
     :width="width"
     :top='top'
     v-dialogDrag
@@ -116,6 +116,10 @@ export default {
     clearText: {
       type: String,
       default: '清除',
+    },
+    closeOnClickModal: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

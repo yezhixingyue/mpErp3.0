@@ -26,7 +26,9 @@ export interface IArticle {
   helpdocuContent: string
   helpdocuType: DocTypeEnum
   helpdocuURL: string
+  creatorName: string
   helpdocuCreatdate: string
+  operatorName?: string
   helpdocuEditdate?: string
   helpdocuOrder: number
   internalID: string
@@ -34,3 +36,12 @@ export interface IArticle {
 }
 
 export type ArticleCommandType = 'remove' | 'view' | 'edit' | 'copy' | 'history' | 'move2out' | 'move';
+
+export interface IArticleHistory {
+  id: number
+  operateType: string
+  helpdocuID: string
+  operateRemark: string
+  operateTime: string
+  operatorName: string
+}

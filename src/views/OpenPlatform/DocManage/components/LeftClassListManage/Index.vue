@@ -33,7 +33,7 @@
     <EditDialog :visible.sync="editData.visible" :editData="editData" />
 
     <!-- 移动分类 -->
-    <MoveDialog :visible.sync="moveVisible" :classList="pageData.class.list" :mova-class="moveTarget" @submit="onmove" />
+    <MoveDialog :visible.sync="moveVisible" :classList="pageData.class.list" :move-class="moveTarget" @submit="onmove" />
   </div>
 </template>
 

@@ -27,4 +27,28 @@ export const docApi = {
   getCategoryMoveCategoryToParent(id: number, targetID: number) {
     return instance.put('/Api/Category/MoveCategoryToParent', null, { params: { id, targetID } });
   },
+  /** 文章保存  POST /Api/Article/SaveArticle */
+  getArticleSaveArticle(data) {
+    return instance.post<IArticle>('/Api/Article/SaveArticle', data);
+  },
+  /** 文章删除 DELETE /Api/Article/DeleteArticle */
+  getArticleDeleteArticle(articleID: string) {
+    return instance.delete('/Api/Article/DeleteArticle', { params: { articleID } });
+  },
+  /** 文章移动次序 PUT /Api/Article/AdjustArticleOrder */
+  getArticleAdjustArticleOrder(id: string, newOrder: number) {
+    return instance.put('/Api/Article/AdjustArticleOrder', null, { params: { id, newOrder } });
+  },
+  /** 文章移动其他分类 PUT /Api/Article/MoveArticleToCategory  */
+  getArticleMoveArticleToCategory(id: string, targetCategoryID: number) {
+    return instance.put('/Api/Article/MoveArticleToCategory', null, { params: { id, targetCategoryID } });
+  },
+  /** 文章复制 POST /Api/Article/CopyArticle */
+  getArticleCopyArticle(articleId: string, categoryId: number) {
+    return instance.post('/Api/Article/CopyArticle', null, { params: { articleId, categoryId } });
+  },
+  /** GET /Api/Log/GetArticleLogs 获取文章历史记录 */
+  getLogGetArticleLogs(articleID: string, Page: number, Limit: number) {
+    return instance.get('/Api/Log/GetArticleLogs', { params: { articleID, Page, Limit } });
+  },
 };

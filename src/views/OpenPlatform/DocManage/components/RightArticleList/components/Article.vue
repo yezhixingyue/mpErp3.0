@@ -7,14 +7,14 @@
 
     <div class="workbench">
       <div class="date">
-        <span >创建：张三 <i class="ml-4">{{ getDateFormat(item.helpdocuCreatdate) }}</i></span>
-        <span v-if="item.helpdocuEditdate" >编辑：张三 <i class="ml-4">{{ getDateFormat(item.helpdocuEditdate) }}</i></span>
+        <span >创建：{{ item.creatorName }} <i class="ml-4">{{ getDateFormat(item.helpdocuCreatdate) }}</i></span>
+        <span v-if="item.helpdocuEditdate" >编辑：{{ item.operatorName }} <i class="ml-4">{{ getDateFormat(item.helpdocuEditdate) }}</i></span>
       </div>
 
       <div class="menus">
         <div class="menu history" @click="oncommond('history')">查看修改历史</div>
         <div class="menu edit" @click="oncommond('edit')">编辑</div>
-        <div class="menu view" @click="oncommond('view')">浏览</div>
+        <!-- <div class="menu view" @click="oncommond('view')">浏览</div> -->
         <el-popover placement="bottom" trigger="click" @show="onPopoverShow" popper-class="hide-animation">
           <div class="move-content">
             <div class="close">
@@ -24,7 +24,7 @@
               <span>1. 移动至 第</span>
               <el-input v-model.trim.number="moveVal" size="mini" maxlength="4" class="input" @keyup.enter.native="onmoveclick"></el-input>
               <span>条</span>
-              <el-button type="primary" size="mini" @click="onmoveclick" :disabled="!/^\d+$/.test(moveVal)">确定</el-button>
+              <el-button type="primary" size="mini" @click="onmoveclick" :disabled="!/^\d+$/.test(moveVal) || +moveVal <= 0">确定</el-button>
              </div>
              <div class="second">
               <span>2. </span>
@@ -49,6 +49,7 @@ import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 const props = defineProps<{
   item: IArticle
+  listNumber: number
 }>();
 
 const emit = defineEmits(['command']);
@@ -69,6 +70,10 @@ const closePopover = () => { // 关闭移动弹窗
 
 const onmoveclick = () => {
   if (!/^\d+$/.test(moveVal.value)) return;
+  if (+moveVal.value > props.listNumber) {
+    MpMessage.error({ title: '移动失败', msg: '要移动的次序超出范围' });
+    return;
+  }
 
   emit('command', 'move', props.item, moveVal.value);
   closePopover();
@@ -157,7 +162,7 @@ const onRemoveClick = () => {
       display: flex;
       align-items: center;
       justify-content: space-around;
-      width: 450px;
+      width: 360px;
       padding: 0 30px;
 
       .menu {

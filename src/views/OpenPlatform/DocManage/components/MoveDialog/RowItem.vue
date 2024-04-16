@@ -48,8 +48,8 @@ export default {
   box-sizing: border-box;
 
   .content {
-    height: 26px;
-    line-height: 26px;
+    height: 28px;
+    line-height: 28px;
     padding-left: 20px;
     margin: 2px 0;
     display: grid;

@@ -3,5 +3,5 @@ export class ManageArticleCondition {
 
   Page = 1
 
-  Limit = 20
+  Limit = 10
 }

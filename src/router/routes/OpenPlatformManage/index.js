@@ -51,9 +51,16 @@ const routes = { // 审稿
         requiresAuth: true,
       },
       component: () => import('../../../views/OpenPlatform/DocManage/DocManagePage.vue'),
-      children: [
-
-      ],
+    },
+    {
+      path: '/articleManage/:type',
+      name: 'articleManage',
+      meta: {
+        title: '管理文章',
+        pageName: 'ManageArticlePage',
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/OpenPlatform/DocManage/children/ManageArticlePage/ManageArticlePage.vue'),
     },
     /*  应用列表
     ------------------------------------------ */
@@ -80,7 +87,9 @@ const routeTree = {
     ------------------------------------------ */
     {
       name: 'docManage',
-      children: [],
+      children: [
+        { name: 'articleManage', children: [] },
+      ],
     },
     {
       name: 'developerList',

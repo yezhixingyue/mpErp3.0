@@ -1,11 +1,11 @@
 {
   "name": "mpzj",
-  "version": "0.1.0",
+  "version": "3.1.000",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --port 8368",
     "serve.test": "vue-cli-service serve --port 8520 --mode test8050",
-    "build": "vue-cli-service build",
+    "build": "node update_version.js && vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
