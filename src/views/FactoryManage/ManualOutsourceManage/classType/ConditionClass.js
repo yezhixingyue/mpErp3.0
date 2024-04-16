@@ -21,6 +21,10 @@ export default class ConditionClass {
 
   DateType = 'today'
 
+  CustomerType = '' // 客户类型
+
+  Checker = '' // 审稿人
+
   Page = 1
 
   PageSize = 20
