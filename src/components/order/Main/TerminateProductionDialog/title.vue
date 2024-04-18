@@ -3,7 +3,7 @@
     <div class="title">
       <img src="@/assets/images/danger.png" alt="">
       <div>
-        订单生产中，取消将产生损失，如若取消，请完善相关信息后提交
+        {{OrderData?.IsOwnFactory ? '自主工厂' : '外协工厂'}}订单生产中，取消将产生损失，如若取消，请完善相关信息后提交
       </div>
     </div>
     <ul class="order-info"  v-if="OrderData">
