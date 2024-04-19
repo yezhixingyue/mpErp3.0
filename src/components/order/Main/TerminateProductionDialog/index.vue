@@ -33,7 +33,7 @@
         <el-button @click="confirm" type="primary" class="yes">提交</el-button>
         <el-button @click="close">取消</el-button>
       </div>
-      <PayCodeDialog :visible="PayCodeVisible" @close='PayCodeDialogClose'
+      <PayCodeDialog :visible="PayCodeVisible" @closeSuperiors='close' @close='PayCodeDialogClose'
         :PayCodeData="PayCodeData" :OrderID="OrderData?.OrderID" @seccess="paySeccess"/>
     </div>
     <!-- <div v-else class="no-data">
