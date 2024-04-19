@@ -13,7 +13,7 @@
     <!-- 内容区域 -->
     <div class="content">
       <span>备注：</span>
-      <el-input type="textarea" :rows="6" placeholder="请输入备注" v-model.trim="remark"></el-input>
+      <el-input type="textarea" :rows="6" placeholder="请输入备注" v-model.trim="remark" maxlength="100" show-word-limit></el-input>
     </div>
   </CommonDialogComp>
 </template>

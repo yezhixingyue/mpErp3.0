@@ -709,6 +709,7 @@ export default {
   }
 }
 .mp-erp-header-username-tooltip-popper-box {
-  background: #555 !important;
+  background: rgb(25, 31, 42) !important;
+  background: rgb(34, 43, 58) !important;
 }
 </style>

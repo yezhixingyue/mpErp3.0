@@ -41,6 +41,7 @@ import { ArticleForm } from './ruleForm';
 import { goBackLastPage } from '@/router';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
 import RemarkDialog from './RemarkDialog.vue';
+import { docBaseURL } from '@/api/doc/instance';
 
 const props = defineProps<{
   currentArticle: null | IArticle
@@ -50,7 +51,7 @@ const props = defineProps<{
 const ruleForm = ref(new ArticleForm(props.classId, props.currentArticle));
 
 const goback = () => {
-  if (props.currentArticle && ruleForm.value.helpdocuContent !== props.currentArticle.helpdocuContent) {
+  if (props.currentArticle && ruleForm.value.helpdocuContent !== props.currentArticle.helpdocuContent.replaceAll('mpzj_origin_domain_address', docBaseURL)) {
     MpMessage.warn({
       title: '是否放弃修改',
       msg: '返回后当前页面已修改内容将不会保存，是否返回?',
@@ -88,6 +89,7 @@ const goback = () => {
       border-radius: 4px;
       margin-left: 20px;
       font-size: 13px;
+      line-height: 28px;
     }
   }
 

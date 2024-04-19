@@ -2,7 +2,9 @@
   <div class="article">
     <div class="title">
       <span class="tag" v-if="displayCollection.type" :class="displayCollection.type.className">{{ displayCollection.type.Name }}</span>
-      <h2>{{ item.helpdocuTitle }}</h2>
+      <h2>
+        <a :href="`${docClientURL}?id=${item.id}`" target="_blank" rel="noopener noreferrer">{{ item.helpdocuTitle }}</a>
+      </h2>
     </div>
 
     <div class="workbench">
@@ -46,6 +48,7 @@ import { DocTypeEnumList } from '../../../js/enum';
 import { computed, ref } from 'vue';
 import { getDateFormat } from '@/assets/js/utils/util';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { docClientURL } from '@/api/doc/instance';
 
 const props = defineProps<{
   item: IArticle
@@ -137,6 +140,14 @@ const onRemoveClick = () => {
       font-weight: 700;
       font-size: 16px;
       max-width: 80%;
+
+      a {
+        color: inherit;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
   }
 

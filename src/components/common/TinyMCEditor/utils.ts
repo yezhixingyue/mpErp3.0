@@ -1,4 +1,5 @@
 import { docApi } from '@/api/doc';
+import { docBaseURL } from '@/api/doc/instance';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 /** 图片、视频、文件上传 */
@@ -17,7 +18,7 @@ export const upload = async (file: File, apiKey: 'getImgUpload' | 'getMediaUploa
   const resp = await docApi[apiKey](file).catch(() => null);
 
   if (resp?.data.Status === 1000) {
-    return resp.data.Data;
+    return docBaseURL + resp.data.Data;
   }
 
   return null;

@@ -1,4 +1,5 @@
 import { docApi } from '@/api/doc';
+import { docBaseURL } from '@/api/doc/instance';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
 import { goBackLastPage } from '@/router';
 import { DocTypeEnum } from '@/views/OpenPlatform/DocManage/js/enum';
@@ -29,7 +30,8 @@ export class ArticleForm {
       this.helpdocuType = data.helpdocuType;
 
       if (data.helpdocuType === DocTypeEnum.doc) {
-        this.helpdocuContent = data.helpdocuContent;
+        // this.helpdocuContent = data.helpdocuContent;
+        this.helpdocuContent = data.helpdocuContent.replaceAll('mpzj_origin_domain_address', docBaseURL);
       } else {
         this.helpdocuURL = data.helpdocuURL || '';
         this.internalID = data.internalID && data.internalID !== '00000000-0000-0000-0000-000000000000' ? data.internalID : '';
@@ -65,11 +67,13 @@ export class ArticleForm {
 
       const _url = new URL(this.helpdocuURL);
 
-      const searchParams = _url.hash.split('?')[1]?.replace('?', '').split('&').map(it => ({
+      const _content = [_url.hash, _url.search].filter(it => it)[0] || '';
+
+      const searchParams = _content.split('?')[1]?.replace('?', '').split('&').map(it => ({
         [it.split('=')[0]]: it.split('=')[1],
       }));
 
-      const t = searchParams.find(it => it.id);
+      const t = searchParams?.find(it => it.id) || '';
       if (t && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(`${t.id}`)) {
         this.internalID = t.id;
       }
@@ -113,6 +117,8 @@ export class ArticleForm {
       temp.helpdocuContent = '';
     } else {
       temp.helpdocuURL = '';
+      // 替换三方资源
+      temp.helpdocuContent = temp.helpdocuContent.replaceAll(docBaseURL, 'mpzj_origin_domain_address');
     }
 
     return temp;

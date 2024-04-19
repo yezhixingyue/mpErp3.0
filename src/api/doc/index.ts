@@ -51,4 +51,10 @@ export const docApi = {
   getLogGetArticleLogs(articleID: string, Page: number, Limit: number) {
     return instance.get('/Api/Log/GetArticleLogs', { params: { articleID, Page, Limit } });
   },
+  /** 图片上传 POST /Api/Article/UploadImage */
+  getImgUpload(file: File) { // 图片上传
+    const formData = new FormData();
+    formData.append('file', file);
+    return instance.post('/Api/Article/UploadImage', formData);
+  },
 };
