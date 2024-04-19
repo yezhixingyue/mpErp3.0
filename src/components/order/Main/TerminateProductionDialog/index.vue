@@ -15,15 +15,15 @@
     <div class="dialog-main">
       <titleComp :OrderData="OrderData"/>
       <refreshBox v-if="OrderData?.IsOwnFactory" @refresh="refresh"/>
-      <formTableComp v-if="OrderData?.IsOwnFactory"
+      <formTableComp v-if="OrderData?.IsOwnFactory && ProductionInfo"
       :list="ProductionInfo.PlateList" :formValue="formValue" @changeValue="data => formValue[data.ID] = data.value"/>
       <div class="from-box" :style="'height: auto;'">
-        <div class="left-tible" v-if="OrderData?.IsOwnFactory" style="width: 507px;">
+        <div class="left-tible" v-if="OrderData?.IsOwnFactory && ProductionInfo" style="width: 507px;">
           <h3>其他{{ProductionInfo?.ChunkList.length}}块已裁切，如若取消，未做工序会一并取消</h3>
           <pieceTableComp :OrderData="OrderData" :list="ProductionInfo.ChunkList" />
         </div>
         <div class="right-from" style="width: 507px;">
-          <h3 v-if="OrderData?.IsOwnFactory">已生产完成{{ProductionInfo.FinishedKindCount}}款（共{{OrderData.KindCount}}款）</h3>
+          <h3 v-if="OrderData?.IsOwnFactory && ProductionInfo">已生产完成{{ProductionInfo.FinishedKindCount}}款（共{{OrderData.KindCount}}款）</h3>
           <rightFromBox :orderInfo="ProductionStopQuery" :OrderData="OrderData" @AmountChange="(val) => Amount = val"
             @PaymentMethodChange="(val) => PaymentMethod = val"
             :Amount="Amount" :PaymentMethod="PaymentMethod"/>
@@ -168,7 +168,7 @@ export default {
     },
     initData() {
       this.initLoading = true;
-      if (this.OrderData.IsAutoConvert) {
+      if (this.OrderData.IsOwnSystem) {
         Promise.all([
           this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).catch(() => {}),
           this.api.getOrderProductionInfo(this.OrderData.OrderID).catch(() => {}),
