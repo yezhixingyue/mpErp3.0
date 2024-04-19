@@ -22,6 +22,10 @@
           </el-card>
         </el-timeline-item>
       </el-timeline>
+      <div v-if="list.length === 0">
+        <img width="59px" height="48px" src="@/assets/images/null.png" alt="">
+        <p class="ft-12 mt-10 is-gray">暂无数据</p>
+      </div>
     </div>
   </CommonDialogComp>
 </template>

@@ -19,6 +19,7 @@
         v-model="multipleSelection"
         ref="oTable"
         @showStatus="onShowStatus"
+        @download="download"
         @singleOutsource="onSingleOutsourceClick"
         @comfirmCancle="handleComfirmCancle"
         @forceCancel="handleForceCancel"
@@ -146,6 +147,27 @@ export default {
       if (resp?.data?.Status === 1000) {
         this.showStatusList = resp.data.Data || [];
         this.showStatusVisible = true;
+      }
+    },
+    async download(arr) { // 下载文件
+      const temp = { OrderList: arr.map(it => it.OrderID) };
+
+      const resp = await this.api.getOutOrderDownload(temp).catch(() => null);
+
+      if (resp?.data.Status === 1000) {
+        resp.data.Data.forEach((it) => {
+          const iframe = document.createElement('iframe');
+
+          iframe.src = it.FilePath;
+          iframe.style.display = 'none';
+          iframe.style.height = '0px';
+
+          document.body.appendChild(iframe);
+
+          setTimeout(() => {
+            iframe.remove();
+          }, 60 * 1000);
+        });
       }
     },
     onSingleOutsourceClick(item) { // 单个订单确认外协

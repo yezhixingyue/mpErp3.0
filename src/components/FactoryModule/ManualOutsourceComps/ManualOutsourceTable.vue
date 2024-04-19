@@ -61,6 +61,7 @@
         <span class="red-span" @click="onOutsourceClick(scope.row)" v-if="localPermission.ReceiveOrder && scope.row._canCancel">取消外协</span>
         <span class="red-span" @click="onForceCancelClick(scope.row)" v-if="localPermission.ReceiveOrder && scope.row._canForceCancel">强制撤回</span>
         <span class="blue-span ml-15" @click="onStatusDisplayClick(scope.row)">修改记录</span>
+        <span class="blue-span ml-15" @click="onDownloadClick(scope.row)">下载</span>
       </div>
     </el-table-column>
     <div slot="empty">
@@ -136,6 +137,9 @@ export default {
     onStatusDisplayClick(item) { // 操作记录
       this.$emit('showStatus', item);
     },
+    onDownloadClick(item) { // 下载文件
+      this.$emit('download', [item]);
+    },
   },
 };
 </script>
@@ -180,7 +184,7 @@ export default {
       }
       .menus {
         text-align: right;
-        padding-right: 25px;
+        padding-right: 8px;
       }
     }
     &.left {
