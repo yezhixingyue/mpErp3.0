@@ -1,8 +1,8 @@
 <template>
   <el-dialog
-    top="calc(50vh - 392px)"
+    :top="`${OrderData?.IsOwnFactory ? 'calc(50vh - 392px)' : 'calc(50vh - 260px)'}`"
     :visible="visible"
-    width="1270px"
+    :width="`${OrderData?.IsOwnFactory ? '1270px' : '900px'}`"
     :modal='false'
     @close='close'
     @open='open'
@@ -10,18 +10,20 @@
     v-dialogDrag
     :close-on-click-modal='false'
     class="terminate-production-dialog"
+    :class="{IsOwnFactory: !OrderData?.IsOwnFactory}"
   >
-    <div class="dialog-main" v-if="ProductionInfo">
+    <div class="dialog-main">
       <titleComp :OrderData="OrderData"/>
-      <refreshBox @refresh="refresh"/>
-      <formTableComp :list="ProductionInfo.PlateList" :formValue="formValue" @changeValue="data => formValue[data.ID] = data.value"/>
-      <div class="from-box">
-        <div class="left-tible" style="width: 507px;">
+      <refreshBox v-if="OrderData?.IsOwnFactory" @refresh="refresh"/>
+      <formTableComp v-if="OrderData?.IsOwnFactory && ProductionInfo"
+      :list="ProductionInfo.PlateList" :formValue="formValue" @changeValue="data => formValue[data.ID] = data.value"/>
+      <div class="from-box" :style="'height: auto;'">
+        <div class="left-tible" v-if="OrderData?.IsOwnFactory && ProductionInfo" style="width: 507px;">
           <h3>其他{{ProductionInfo?.ChunkList.length}}块已裁切，如若取消，未做工序会一并取消</h3>
           <pieceTableComp :OrderData="OrderData" :list="ProductionInfo.ChunkList" />
         </div>
         <div class="right-from" style="width: 507px;">
-          <h3>已生产完成{{ProductionInfo.FinishedKindCount}}款（共{{OrderData.KindCount}}款）</h3>
+          <h3 v-if="OrderData?.IsOwnFactory && ProductionInfo">已生产完成{{ProductionInfo.FinishedKindCount}}款（共{{OrderData.KindCount}}款）</h3>
           <rightFromBox :orderInfo="ProductionStopQuery" :OrderData="OrderData" @AmountChange="(val) => Amount = val"
             @PaymentMethodChange="(val) => PaymentMethod = val"
             :Amount="Amount" :PaymentMethod="PaymentMethod"/>
@@ -31,13 +33,13 @@
         <el-button @click="confirm" type="primary" class="yes">提交</el-button>
         <el-button @click="close">取消</el-button>
       </div>
-      <PayCodeDialog :visible="PayCodeVisible" @close='PayCodeDialogClose'
-        :PayCodeData="PayCodeData" :OrderID="OrderData.OrderID" @seccess="paySeccess"/>
+      <PayCodeDialog :visible="PayCodeVisible" @closeSuperiors='close' @close='PayCodeDialogClose'
+        :PayCodeData="PayCodeData" :OrderID="OrderData?.OrderID" @seccess="paySeccess"/>
     </div>
-    <div v-else class="no-data">
+    <!-- <div v-else class="no-data">
       <p>{{initLoading?'':'未获取到生产数据'}}</p>
       <el-button @click="close">关闭</el-button>
-    </div>
+    </div> -->
   </el-dialog>
 </template>
 
@@ -109,14 +111,16 @@ export default {
     },
     submit() {
       const _temp = {
-        ID: this.ProductionInfo.ID,
+        ID: this.ProductionInfo?.ID || '',
         OrderID: this.OrderData.OrderID,
         PayCode: this.PayCodeData?.PayCode || '',
         StopLossAmount: this.Amount,
         PayType: this.PaymentMethod,
         PlateList: [],
       };
-      _temp.PlateList = this.ProductionInfo.PlateList.map(it => ({ ...it, IsWholePlate: this.formValue[it.ID] === 2 }));
+      if (this.OrderData?.IsOwnFactory) {
+        _temp.PlateList = this.ProductionInfo.PlateList.map(it => ({ ...it, IsWholePlate: this.formValue[it.ID] === 2 }));
+      }
       // 请求取消接口
       this.api.getOrderProductionStopSave(_temp).then(res => {
         if (res.data.Status === 1000) {
@@ -137,6 +141,10 @@ export default {
       // const reg = /(^\d*[1-9]\d*(\.\d{1,2})?$)|0\.(\d?[1-9]|[1-9]\d?)$/;
       if (this.Amount === '' || this.Amount === null) {
         this.messageBox.failSingleError('提交失败', '请输入扣除损失金额');
+        return;
+      }
+      if (Number(this.Amount) > 999999) {
+        this.messageBox.failSingleError('提交失败', '请输入小于一百万的扣除损失金额');
         return;
       }
       if (!reg.test(this.Amount)) {
@@ -160,24 +168,36 @@ export default {
     },
     initData() {
       this.initLoading = true;
-      Promise.all([
-        this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).catch(() => {}),
-        this.api.getOrderProductionInfo(this.OrderData.OrderID).catch(() => {}),
-      ]).then(([ProductionStopQueryRes, ProductionInfoRes]) => {
-        this.initLoading = false;
-        if (ProductionStopQueryRes.data.Status === 1000 && ProductionInfoRes.data.Status === 1000) {
-          this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
-          this.ProductionInfo = ProductionInfoRes.data.Data;
-        }
-        const tempValue = {};
-        this.ProductionInfo.PlateList.forEach(element => {
-          tempValue[element.ID] = this.formValue[element.ID] || 1;
+      if (this.OrderData.IsOwnFactory) {
+        Promise.all([
+          this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).catch(() => {}),
+          this.api.getOrderProductionInfo(this.OrderData.OrderID).catch(() => {}),
+        ]).then(([ProductionStopQueryRes, ProductionInfoRes]) => {
+          this.initLoading = false;
+          if (ProductionStopQueryRes.data.Status === 1000 && ProductionInfoRes.data.Status === 1000) {
+            this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
+            this.ProductionInfo = ProductionInfoRes.data.Data;
+          }
+          const tempValue = {};
+          this.ProductionInfo.PlateList.forEach(element => {
+            tempValue[element.ID] = this.formValue[element.ID] || 1;
+          });
+          this.formValue = { ...tempValue };
+        }).catch((err) => {
+          this.initLoading = false;
+          throw new Error(err);
         });
-        this.formValue = { ...tempValue };
-      }).catch((err) => {
-        this.initLoading = false;
-        throw new Error(err);
-      });
+      } else {
+        this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).then((ProductionStopQueryRes) => {
+          this.initLoading = false;
+          if (ProductionStopQueryRes.data.Status === 1000) {
+            this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
+          }
+        }).catch((err) => {
+          this.initLoading = false;
+          throw new Error(err);
+        });
+      }
       // this.tableList = [
       //   { ID: 101 },
       //   { ID: 102 },
@@ -205,6 +225,13 @@ export default {
 
 <style lang='scss'>
 .terminate-production-dialog{
+  &.IsOwnFactory{
+    >.el-dialog--center{
+      >.el-dialog__body{
+        height: 510px;
+      }
+    }
+  }
   >.el-dialog--center{
     >.el-dialog__header{
       display: none;

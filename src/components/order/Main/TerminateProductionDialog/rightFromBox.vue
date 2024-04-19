@@ -1,5 +1,5 @@
 <template>
-  <div class="right-from-box">
+  <div class="right-from-box" :class="{center:!OrderData?.IsOwnFactory}">
     <div>
       <ul class="left">
         <li>
@@ -96,6 +96,14 @@ export default {
 .right-from-box{
   color: #444444;
   margin-top: -10px;
+  &.center{
+    >div{
+      justify-content: center
+    }
+    >p{
+      text-align: center;
+    }
+  }
   >p{
     color: #888888;
     margin-top: 3px;

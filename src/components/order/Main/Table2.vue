@@ -38,7 +38,7 @@
         <li v-if="localPermission.CancleOrder || localPermission.ProductionStop">
           <!-- v-if="(canCancelStatuses.includes(scope.row.Status) || localPermission.CancleOrder)" -->
           <span
-            v-if="canCancelStatuses.includes(scope.row.Status) || (scope.row.Status === 55 && scope.row.IsAutoConvert && localPermission.ProductionStop)"
+            v-if="canCancelStatuses.includes(scope.row.Status) || (scope.row.Status === 55 && scope.row.IsOwnSystem && localPermission.ProductionStop)"
             @click="onOrderDel(scope.row, scope.$index)">
             <img src="@/assets/images/cancel.png" />取消
           </span>
