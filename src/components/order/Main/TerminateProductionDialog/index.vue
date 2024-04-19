@@ -168,7 +168,7 @@ export default {
     },
     initData() {
       this.initLoading = true;
-      if (this.OrderData.IsOwnSystem) {
+      if (this.OrderData.IsOwnFactory) {
         Promise.all([
           this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).catch(() => {}),
           this.api.getOrderProductionInfo(this.OrderData.OrderID).catch(() => {}),
