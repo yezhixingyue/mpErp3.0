@@ -143,6 +143,10 @@ export default {
         this.messageBox.failSingleError('提交失败', '请输入扣除损失金额');
         return;
       }
+      if (Number(this.Amount) > 999999) {
+        this.messageBox.failSingleError('提交失败', '请输入小于一百万的扣除损失金额');
+        return;
+      }
       if (!reg.test(this.Amount)) {
         this.messageBox.failSingleError('提交失败', '请正确输入扣除损失金额');
         return;
