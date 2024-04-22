@@ -1390,6 +1390,10 @@ const api = {
   getOutOrderComfirmCancle(data) { // POST /Api/OutOrder/ComfirmCancle  取消外协
     return instance.post('/Api/OutOrder/ComfirmCancle', data);
   },
+  /** 文件下载 */
+  getOutOrderDownload(data: object) { // POST /Api/OutOrder/Download  手动外协下载
+    return instance.post('/Api/OutOrder/Download', data);
+  },
   /* 发票管理 api
   ----------------------------------------------------------------------------------- */
   // ----- 发票类别管理 ↓
