@@ -28,15 +28,17 @@ export default {
     /* 订单状态相关
     -------------------------------*/
     OrderStatusList: [
+      // canStopProduction 终止生产
+      // canCancelInMyFactory 取消订单非s2b平台
       { name: '不限', ID: '' },
-      { name: '待分发', ID: 20, canCancel: true },
-      { name: '已分发', ID: 30, canCancel: true },
-      { name: '已审稿', ID: 40, canCancel: true },
-      { name: '内容已审核', ID: 42, canCancel: true },
-      { name: '已发至工厂', ID: 43, canCancel: true, canProdProgress: true },
-      { name: '拼版中', ID: 45, canProdProgress: true },
-      { name: '已拼版', ID: 50, canProdProgress: true },
-      { name: '生产中', ID: 55, canProdProgress: true },
+      { name: '待分发', ID: 20, canCancel: true, canCancelInMyFactory: true },
+      { name: '已分发', ID: 30, canCancel: true, canCancelInMyFactory: true },
+      { name: '已审稿', ID: 40, canCancel: true, canCancelInMyFactory: true },
+      { name: '内容已审核', ID: 42, canCancel: true, canCancelInMyFactory: true },
+      { name: '已发至工厂', ID: 43, canCancel: true, canStopProduction: true, canProdProgress: true },
+      { name: '拼版中', ID: 45, canStopProduction: true, canProdProgress: true },
+      { name: '已拼版', ID: 50, canStopProduction: true, canProdProgress: true },
+      { name: '生产中', ID: 55, canStopProduction: true, canProdProgress: true },
       { name: '已生产', ID: 60, canProdProgress: true },
       { name: '已入库', ID: 70, canProdProgress: true },
       { name: '已发货', ID: 80, canProdProgress: true },
