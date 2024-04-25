@@ -46,7 +46,7 @@ export default {
       { name: '终止生产', ID: 253 },
       { name: '已取消', ID: 254 },
       { name: '已过期', ID: 255 },
-      { name: '问题件', ID: 35, canCancel: true },
+      { name: '问题件', ID: 35, canCancel: true, canCancelInMyFactory: true },
     ],
     orderStatueTitle: '不限',
     /* 订单进度信息
