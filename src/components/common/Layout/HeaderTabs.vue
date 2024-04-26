@@ -693,7 +693,7 @@ export default {
     box-sizing: border-box;
     padding-left: 15px;
     line-height: 16px;
-    color: #fff;
+    color: #eee;
     .position {
       min-height: 102px;
     }
