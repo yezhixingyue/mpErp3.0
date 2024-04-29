@@ -26,7 +26,7 @@ export default class TableBodyItemClass {
         return {
           ...it,
           key: Math.random().toString(16).slice(-10),
-          DataList: [...it.DataList, { KindCount, OrderCount, TotalAmount, StaffID: '', TypeID: -1 }],
+          DataList: [...it.DataList, { KindCount, OrderCount, TotalAmount: +(TotalAmount.toFixed(1)), StaffID: '', TypeID: -1 }],
         };
       });
     // 添加组及组合计信息
