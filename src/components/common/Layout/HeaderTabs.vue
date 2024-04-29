@@ -81,7 +81,7 @@
                 </div>
                 <div class="version">
                   <p class="mb-2">当前版本：</p>
-                  <p>{{ VERSION }}</p>
+                  <p style="letter-spacing: 1px;">{{ VERSION }}</p>
                 </div>
               </div>
             </div>
