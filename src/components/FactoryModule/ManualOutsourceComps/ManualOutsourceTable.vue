@@ -30,7 +30,7 @@
     </el-table-column>
     <el-table-column width="110px" prop="Factory.Name" show-overflow-tooltip label="原外协工厂"></el-table-column>
     <el-table-column width="150px" show-overflow-tooltip label="更换外协工厂" class-name="el-box">
-      <el-select :disabled="!localPermission.ChangeFactory || !scope.row._canComfirm"
+      <el-select :disabled="!localPermission.ChangeFactory || !scope.row._canComfirm" filterable
        :value="scope.row.Factory.ID" placeholder="请选择" slot-scope="scope" @change="(e) => scope.row.changeFactory(e)" size="mini">
         <el-option v-for="it in factorys" :key="it.FactoryID" :label="it.FactoryName" :value="it.FactoryID"></el-option>
       </el-select>
