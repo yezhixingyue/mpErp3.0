@@ -6,7 +6,7 @@
         <!-- <AreaSelector /> -->
         <!-- <ProductSelector /> -->
         <EpCascaderByArea
-          class="mr-12"
+          class="mr-12 mb-20"
           :getList="getDataList"
           :setCondition="setOrderManageRequestObj"
           :RegionalID="objForOrderList.SellArea.RegionalID"
@@ -15,7 +15,7 @@
           :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
         />
         <EpCascaderByProduct
-          class="mr-12"
+          class="mr-12 mb-20"
           :getList="getDataList"
           :setCondition="setOrderManageRequestObj"
           :First="objForOrderList.ProductClass.First"
