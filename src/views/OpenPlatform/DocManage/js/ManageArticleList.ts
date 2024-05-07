@@ -29,7 +29,7 @@ export class ManageArticleList {
     this.loading = false;
 
     if (resp?.data.Status === 1000) {
-      this.list = resp.data.Data;
+      this.list = resp.data.Data || [];
       this.listNumber = resp.data.DataNumber;
     }
   }
@@ -67,7 +67,7 @@ export class ManageArticleList {
       this.list.splice(i, 1);
 
       // 移动到了其它页
-      if (index > this.condition.Page * this.condition.Limit || index < (this.condition.Page - 1) * this.condition.Limit) {
+      if (index >= this.condition.Page * this.condition.Limit || index < (this.condition.Page - 1) * this.condition.Limit) {
         Message({ showClose: true, message: '移动成功，已移动至其他页面', type: 'success' });
       } else {
         // 在当前页面内移动

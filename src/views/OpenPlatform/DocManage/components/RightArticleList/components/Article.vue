@@ -24,7 +24,7 @@
             </div>
              <div class="first">
               <span>1. 移动至 第</span>
-              <el-input v-model.trim.number="moveVal" size="mini" maxlength="4" class="input" @keyup.enter.native="onmoveclick"></el-input>
+              <el-input v-model.trim.number="moveVal" ref="inp" size="mini" maxlength="4" class="input" @keyup.enter.native="onmoveclick"></el-input>
               <span>条</span>
               <el-button type="primary" size="mini" @click="onmoveclick" :disabled="!/^\d+$/.test(moveVal) || +moveVal <= 0">确定</el-button>
              </div>
@@ -45,7 +45,7 @@
 <script setup lang='ts'>
 import { ArticleCommandType, IArticle } from '../../../js/types';
 import { DocTypeEnumList } from '../../../js/enum';
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { getDateFormat } from '@/assets/js/utils/util';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
 import { docClientURL } from '@/api/doc/instance';
@@ -62,9 +62,11 @@ const displayCollection = computed(() => ({
 }));
 
 const moveVal = ref('');
-
-const onPopoverShow = () => {
+const inp = ref<HTMLInputElement>();
+const onPopoverShow = async () => {
   moveVal.value = '';
+  await nextTick();
+  if (inp.value) inp.value.focus();
 };
 
 const closePopover = () => { // 关闭移动弹窗
