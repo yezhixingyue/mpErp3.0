@@ -9,6 +9,7 @@
       title="Key"
       placeholder="请输入要查找的Key"
       :searchWatchKey="list"
+      clearable
       />
     <SearchInputComp
       :typeList="[['KeyWords', '']]"
@@ -19,6 +20,7 @@
       title="关键词"
       placeholder="请输入应用名称、所属账号关键字"
       :searchWatchKey="list"
+      clearable
       />
   </header>
 </template>
@@ -52,7 +54,7 @@ const getList = () => {
 
   :deep(.mp-common-comps-search-box) {
     .el-input {
-      width: 240px;
+      width: 270px;
     }
   }
 }

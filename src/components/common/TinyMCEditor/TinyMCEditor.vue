@@ -182,4 +182,11 @@ onBeforeUnmount(() => {
 .tox-tinymce-aux {
   z-index: 8888 !important;
 }
+
+.tox-tinymce-aux + .el-message-box__wrapper {
+  z-index: 8889 !important;
+}
+.tox-tinymce-aux + .el-message-box__wrapper + .v-modal {
+  z-index: 8888 !important;
+}
 </style>

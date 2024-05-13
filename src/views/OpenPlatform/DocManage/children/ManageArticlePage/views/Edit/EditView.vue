@@ -51,8 +51,8 @@ const props = defineProps<{
 const ruleForm = ref(new ArticleForm(props.classId, props.currentArticle));
 
 const goback = () => {
-  if (props.currentArticle && props.currentArticle.helpdocuType === DocTypeEnum.doc && props.currentArticle.helpdocuContent
-   && ruleForm.value.helpdocuContent !== props.currentArticle.helpdocuContent.replaceAll('mpzj_origin_domain_address', docBaseURL)) {
+  if (ruleForm.value._itemData && ruleForm.value._itemData.helpdocuType === DocTypeEnum.doc && ruleForm.value._itemData.helpdocuContent
+   && ruleForm.value.helpdocuContent !== ruleForm.value._itemData.helpdocuContent.replaceAll('mpzj_origin_domain_address', docBaseURL)) {
     MpMessage.warn({
       title: '是否放弃修改',
       msg: '返回后当前页面已修改内容将不会保存，是否返回?',

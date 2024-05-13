@@ -21,8 +21,10 @@ export class ArticleForm {
 
   internalID = ''
 
-  constructor(categoryID: number, data: IArticle | null) {
-    this.categoryID = categoryID;
+  _itemData: IArticle | null = null
+
+  _initialEditData(data: IArticle | null) {
+    this._itemData = data;
 
     if (data) {
       this.id = data.id;
@@ -30,13 +32,17 @@ export class ArticleForm {
       this.helpdocuType = data.helpdocuType;
 
       if (data.helpdocuType === DocTypeEnum.doc) {
-        // this.helpdocuContent = data.helpdocuContent;
         this.helpdocuContent = data.helpdocuContent.replaceAll('mpzj_origin_domain_address', docBaseURL);
       } else {
         this.helpdocuURL = data.helpdocuURL || '';
         this.internalID = data.internalID && data.internalID !== '00000000-0000-0000-0000-000000000000' ? data.internalID : '';
       }
     }
+  }
+
+  constructor(categoryID: number, data: IArticle | null) {
+    this.categoryID = categoryID;
+    this._initialEditData(data);
   }
 
   _remarkVisible = false // 仅编辑时需要设置备注
@@ -134,7 +140,7 @@ export class ArticleForm {
       // 1. 关闭弹窗
       if (this._remarkVisible) this._remarkVisible = false;
 
-      const cb = () => {
+      const cb = (goback: boolean) => {
         // 2. 对数据的修改
         if (this.id) { // 编辑
           const i = localPageData.value.article.list.findIndex(it => it.id === this.id);
@@ -147,10 +153,17 @@ export class ArticleForm {
         }
 
         // 3. 路由页面的返回
-        goBackLastPage();
+        if (goback) {
+          goBackLastPage();
+        } else {
+          this._initialEditData(resp.data.Data);
+        }
       };
 
-      MpMessage.success({ title, onOk: cb, onCancel: cb });
+      // MpMessage.success({ title, onOk: cb, onCancel: cb });
+      MpMessage.warn({
+        title, msg: '是否继续编辑 ?', onOk: () => cb(false), onCancel: () => cb(true), success: true, confirmButtonText: '继续编辑', cancelButtonText: '返回列表',
+      });
     }
   }
 }

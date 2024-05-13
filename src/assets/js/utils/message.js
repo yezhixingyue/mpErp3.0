@@ -9,11 +9,12 @@ import Vue from 'vue';
  * @param {*} successFunc
  * @param {*} failFunc
  */
-function failSingle(msg, successFunc, failFunc) {
+function failSingle(msg, successFunc, failFunc, dangerouslyUseHTMLString, confirmButtonText) {
   MessageBox({
     showClose: true,
-    confirmButtonText: '确定',
+    confirmButtonText: confirmButtonText || '确定',
     title: msg,
+    dangerouslyUseHTMLString,
     customClass: 'mp-order-del-pop-reverse-warn-null fail',
   }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
 }
@@ -27,14 +28,15 @@ function failSingle(msg, successFunc, failFunc) {
  * @param {*} failFunc
  */
 // eslint-disable-next-line default-param-last
-function failSingleError(title = '出错啦 ！', msg, successFunc, failFunc) {
+function failSingleError(title = '出错啦 ！', msg, successFunc, failFunc, dangerouslyUseHTMLString, confirmButtonText) {
   MessageBox({
     showClose: true,
     message: msg,
     type: 'fail ',
-    confirmButtonText: '关闭',
+    confirmButtonText: confirmButtonText || '关闭',
     title,
     customClass: 'mp-order-del-pop-reverse-fail',
+    dangerouslyUseHTMLString,
   }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
 }
 
@@ -67,16 +69,16 @@ function warnSingleError(msg, successFunc, failFunc, title = '注意', text = '�
  * @param {*} failFunc
  */
 // eslint-disable-next-line default-param-last
-function warnCancelBox(title = '确定取消此订单吗 ?', msg, successFunc, failFunc, dangerouslyUseHTMLString = false, className) {
+function warnCancelBox(title = '确定取消此订单吗 ?', msg, successFunc, failFunc, dangerouslyUseHTMLString = false, className, confirmButtonText, cancelButtonText) {
   MessageBox({
     showClose: true,
     message: msg,
     type: 'success ',
-    confirmButtonText: '确定',
+    confirmButtonText: confirmButtonText || '确定',
     title,
     customClass: `mp-order-del-pop-reverse-warn ${className}`,
     showCancelButton: true,
-    cancelButtonText: '取消',
+    cancelButtonText: cancelButtonText || '取消',
     dangerouslyUseHTMLString,
   }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
 }
@@ -88,12 +90,13 @@ function warnCancelBox(title = '确定取消此订单吗 ?', msg, successFunc, f
  * @param {*} successFunc
  * @param {*} failFunc
  */
-function warnCancelNullMsg(title, successFunc, failFunc) {
+function warnCancelNullMsg(title, successFunc, failFunc, dangerouslyUseHTMLString, confirmButtonText, cancelButtonText) {
   MessageBox({
     showClose: true,
-    confirmButtonText: '确定',
+    confirmButtonText: confirmButtonText || '确定',
     showCancelButton: true,
-    cancelButtonText: '取消',
+    cancelButtonText: cancelButtonText || '取消',
+    dangerouslyUseHTMLString,
     title,
     customClass: 'mp-order-del-pop-reverse-warn-null',
   }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
@@ -107,15 +110,16 @@ function warnCancelNullMsg(title, successFunc, failFunc) {
  * @param {*} failFunc
  * @param {boolean} [canCloseOnPressEscape=true]
  */
-function successSingle(title, successFunc, failFunc, canCloseOnPressEscape = true, msg = '') {
+function successSingle(title, successFunc, failFunc, dangerouslyUseHTMLString, confirmButtonText, canCloseOnPressEscape = true, msg = '') {
   let customClass = 'mp-order-del-pop-success';
   if (!msg) customClass = `${customClass} none-msg`;
   MessageBox({
     showClose: true,
-    confirmButtonText: '确定',
+    confirmButtonText: confirmButtonText || '确定',
     title,
     message: msg,
     closeOnPressEscape: canCloseOnPressEscape,
+    dangerouslyUseHTMLString,
     customClass,
   }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
 }

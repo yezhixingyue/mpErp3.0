@@ -7,9 +7,11 @@ interface Ioptions {
   onOk?: () => void
   onCancel?: () => void
   dangerouslyUseHTMLString?: boolean
-  danger?: false // 仅 warn 时有效
+  // danger?: false // 仅 warn 时有效
   success?: boolean // 仅 warn 时有效
   warn?: boolean // 仅 warn 时有效
+  confirmButtonText?: string
+  cancelButtonText?: string // 仅 warn 时有效
 }
 
 export const MpMessage = {
@@ -20,11 +22,11 @@ export const MpMessage = {
    */
   error(options: Ioptions) {
     const {
-      title, msg, onOk, onCancel, dangerouslyUseHTMLString,
+      title, msg, onOk, onCancel, dangerouslyUseHTMLString, confirmButtonText,
     } = options;
 
-    if (msg) message.failSingleError(title, msg, onOk, onCancel, dangerouslyUseHTMLString);
-    else message.failSingle(title, onOk, onCancel, dangerouslyUseHTMLString);
+    if (msg) message.failSingleError(title, msg, onOk, onCancel, dangerouslyUseHTMLString, confirmButtonText);
+    else message.failSingle(title, onOk, onCancel, dangerouslyUseHTMLString, confirmButtonText);
   },
 
   /**
@@ -34,7 +36,7 @@ export const MpMessage = {
    */
   warn(options: Ioptions) {
     const {
-      title, msg, onOk, onCancel, dangerouslyUseHTMLString, danger, success, warn,
+      title, msg, onOk, onCancel, dangerouslyUseHTMLString, success, warn, confirmButtonText, cancelButtonText,
     } = options;
 
     let className = '';
@@ -42,12 +44,13 @@ export const MpMessage = {
     if (warn) className = 'warn';
 
     if (msg) {
-      if (danger) {
-        message.dangerCancelBox(title, msg, onOk, onCancel, dangerouslyUseHTMLString);
-      } else {
-        message.warnCancelBox(title, msg, onOk, onCancel, dangerouslyUseHTMLString, className);
-      }
-    } else message.warnCancelNullMsg(title, onOk, onCancel, dangerouslyUseHTMLString);
+      // if (danger) {
+      //   message.dangerCancelBox(title, msg, onOk, onCancel, dangerouslyUseHTMLString);
+      // } else {
+      //   message.warnCancelBox(title, msg, onOk, onCancel, dangerouslyUseHTMLString, className);
+      // }
+      message.warnCancelBox(title, msg, onOk, onCancel, dangerouslyUseHTMLString, className, confirmButtonText, cancelButtonText);
+    } else message.warnCancelNullMsg(title, onOk, onCancel, dangerouslyUseHTMLString, confirmButtonText, cancelButtonText);
   },
 
   /**
@@ -57,12 +60,12 @@ export const MpMessage = {
    */
   success(options: Ioptions) {
     const {
-      title, msg, onOk, onCancel, dangerouslyUseHTMLString,
+      title, msg, onOk, onCancel, dangerouslyUseHTMLString, confirmButtonText,
     } = options;
 
     const canCloseOnPressEscape = true;
 
-    message.successSingle(title, onOk, onCancel, canCloseOnPressEscape, msg, dangerouslyUseHTMLString);
+    message.successSingle(title, onOk, onCancel, dangerouslyUseHTMLString, confirmButtonText, canCloseOnPressEscape, msg);
   },
 
   dialogSuccess(options: Ioptions) {

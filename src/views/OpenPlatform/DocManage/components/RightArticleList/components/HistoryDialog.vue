@@ -25,7 +25,7 @@
         <el-table-column width="150px" prop="operatorName" show-overflow-tooltip label="员工姓名"></el-table-column>
         <el-table-column width="110px" prop="operateType" show-overflow-tooltip label="操作项"></el-table-column>
         <el-table-column min-width="150px" prop="operateRemark" show-overflow-tooltip label="备注"></el-table-column>
-        <el-table-column width="150px" prop="operateTime" show-overflow-tooltip label="强退时间"></el-table-column>
+        <el-table-column width="150px" prop="operateTime" show-overflow-tooltip label="操作时间"></el-table-column>
         <div slot="empty">
           <span v-if="ruleForm && !ruleForm.listNumber && !ruleForm.loading">暂无数据</span>
         </div>

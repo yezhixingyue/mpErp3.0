@@ -44,8 +44,8 @@ const routes = [
   MaterialRoutes.routes,
   FactoryManage.routes,
   BasicSetRoutes.routes,
-  CompanyManageRoutes.routes,
   OpenPlatformManage.routes,
+  CompanyManageRoutes.routes,
   { // 无权限页
     path: '/notauth',
     name: 'notauth',
