@@ -9,6 +9,8 @@ let proxyUrl = 'http://192.168.2.238:8050';
 // let proxyUrl = 'http://erp.ybz888.com/';
 if (process.env.VUE_APP_BASE_URL && process.env.VUE_APP_BASE_URL === 'test-development-8520') proxyUrl = 'http://192.168.1.92:8050';
 
+process.env.VUE_APP_VERSION = require('./package.json').version;
+
 module.exports = defineConfig({
   transpileDependencies: true,
   publicPath,

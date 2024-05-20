@@ -6,8 +6,11 @@
       v-model.trim='inpVal'
       spellcheck="false"
       :placeholder="placeholder"
+      :clearable="clearable"
       size="mini"
       type="text"
+      :class="{clearable}"
+      @clear="clear"
     />
     <button class="mp-search-box-btn" @click="onKeyWordSubmit">
       <!-- <i class="el-icon-search"></i> -->
@@ -62,6 +65,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    clearable: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -78,6 +85,14 @@ export default {
     onResetBtn() {
       this.$emit('reset');
       this.requestFunc();
+      this.inpVal = '';
+    },
+    clear() {
+      if (this.word) {
+        this.changePropsFunc([this.typeList[0], '']);
+        this.requestFunc();
+      }
+
       this.inpVal = '';
     },
   },
@@ -118,6 +133,10 @@ export default {
         font-size: 12px;
         color: #cbcbcb;
       }
+    }
+
+    &.clearable > input {
+      padding-right: 28px;
     }
   }
   // > input {

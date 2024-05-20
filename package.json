@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve --port 8368",
     "serve.test": "vue-cli-service serve --port 8520 --mode test8050",
-    "build": "vue-cli-service build",
+    "build": "node update_version.js && vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
@@ -31,6 +31,7 @@
     "sha1-file": "^2.0.0",
     "sortable": "^2.0.0",
     "sortablejs": "^1.15.0",
+    "tinymce": "^5.7.0",
     "uuid": "^3.4.0",
     "vue": "^2.7.10",
     "vue-class-component": "^7.2.3",
