@@ -6,6 +6,34 @@
   "description": "mpzj后台管理系统图标集合",
   "glyphs": [
     {
+      "icon_id": "39380797",
+      "name": "开发者账号",
+      "font_class": "kaifazhezhanghao",
+      "unicode": "e673",
+      "unicode_decimal": 58995
+    },
+    {
+      "icon_id": "39380874",
+      "name": "帮助文档管理",
+      "font_class": "bangzhuwendangguanli",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "39380875",
+      "name": "应用列表",
+      "font_class": "yingyongliebiao",
+      "unicode": "e674",
+      "unicode_decimal": 58996
+    },
+    {
+      "icon_id": "39380877",
+      "name": "消息管理",
+      "font_class": "xiaoxiguanli",
+      "unicode": "e670",
+      "unicode_decimal": 58992
+    },
+    {
       "icon_id": "8353908",
       "name": "其他服务",
       "font_class": "qitafuwu",

@@ -315,7 +315,8 @@ export const getIsOrNotHasRepeatItemInArray = list => {
   return len1 > len2;
 };
 
-export const getFormatDateString = (date) => {
+/** 获取服务器返回格式时间字符串 */
+export const getFormatDateString = (date?: string | Date) => {
   const _date = date ? new Date(date) : new Date();
   const y = _date.getFullYear();
   const m = `0${_date.getMonth() + 1}`.slice(-2);

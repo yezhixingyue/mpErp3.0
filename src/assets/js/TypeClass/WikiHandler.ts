@@ -7,16 +7,25 @@ export class WikiHandler {
     return queryString;
   }
 
-  static toWikiPageWithToken(query: { [key: string]: string | number }, replace = false) {
+  static getJumpUrl(query: { [key: string]: string | number }) { // 获取要跳转的wiki页面地址
     const { token, siteType, target } = query;
-    if (!token || (!siteType && siteType !== 0) || !target) return;
+    if (!token || (!siteType && siteType !== 0) || !target) return '';
 
     const queryString = this.generateQueryString(query);
+
+    return `${WIKI_ADDRESS}/init?${queryString}`;
+  }
+
+  static toWikiPageWithToken(query: { [key: string]: string | number }, replace = false) { // 跳转至wiki页面
+    const _url = this.getJumpUrl(query);
+
+    if (!_url) return;
+
     if (replace) {
-      window.location.replace(`${WIKI_ADDRESS}/init?${queryString}`);
+      window.location.replace(_url);
       return;
     }
 
-    window.open(`${WIKI_ADDRESS}/init?${queryString}`);
+    window.open(_url);
   }
 }
