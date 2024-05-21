@@ -33,6 +33,7 @@ import cashback from './cashback/cashback';
 import invoice from './invoice/invoiceStore';
 import review from './review/reviewStore';
 import AfterSaleQuestion from './AfterSaleQuestion';
+import AfterSale from './AfterSale';
 
 Vue.use(Vuex);
 
@@ -71,5 +72,6 @@ export default new Vuex.Store({
     invoice,
     review,
     AfterSaleQuestion,
+    AfterSale,
   },
 });

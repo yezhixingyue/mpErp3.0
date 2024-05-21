@@ -165,6 +165,87 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../views/FeedbackPage/FeedbackInfoPage.vue'),
     },
+    /*  新售后列表
+    ------------------------------------------ */
+    {
+      path: '/AfterSalesList',
+      name: 'AfterSalesList',
+      meta: {
+        title: '售后列表',
+        icon: 'iconfont icon-shouhoushenqingliebiao',
+        pageName: 'AfterSalesListPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+      },
+      component: () => import('../../../views/AfterSales/AfterSalesListPage.vue'),
+    },
+    /*  售后详情
+    ------------------------------------------ */
+    {
+      path: '/AfterSalesInfo',
+      name: 'AfterSalesInfo',
+      meta: {
+        title: '售后详情',
+        pageName: 'AfterSalesInfoPage',
+        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/AfterSales/AfterSalesInfoPage.vue'),
+    },
+    /*  责任划分
+    ------------------------------------------ */
+    {
+      path: '/ResponsibilityMeasureList',
+      name: 'ResponsibilityMeasureList',
+      meta: {
+        title: '责任划分',
+        icon: 'iconfont icon-shouhoushenqingliebiao',
+        pageName: 'ResponsibilityMeasureListPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+      },
+      component: () => import('../../../views/AfterSales/ResponsibilityMeasureList.vue'),
+    },
+    /*  责任划分详情
+    ------------------------------------------ */
+    {
+      path: '/ResponsibilityMeasureInfo',
+      name: 'ResponsibilityMeasureInfo',
+      meta: {
+        title: '责任划分详情',
+        pageName: 'ResponsibilityMeasurePage',
+        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/AfterSales/ResponsibilityMeasureInfoPage.vue'),
+    },
+    /*  责任确认
+    ------------------------------------------ */
+    {
+      path: '/LiabilityRecognitionList',
+      name: 'LiabilityRecognitionList',
+      meta: {
+        title: '责任确认',
+        icon: 'iconfont icon-shouhoushenqingliebiao',
+        pageName: 'LiabilityRecognitionListPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+      },
+      component: () => import('../../../views/AfterSales/LiabilityRecognitionList.vue'),
+    },
+    /*  责任确认详情
+    ------------------------------------------ */
+    {
+      path: '/LiabilityRecognitionInfo',
+      name: 'LiabilityRecognitionInfo',
+      meta: {
+        title: '责任确认详情',
+        pageName: 'LiabilityRecognitionPage',
+        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/AfterSales/LiabilityRecognitionInfoPage.vue'),
+    },
     /*  客户管理
     ------------------------------------------ */
     {
@@ -249,6 +330,27 @@ const routeTree = {
           children: [
             { name: 'QuestionClass', children: [] },
           ] },
+      ],
+    },
+    /*  售后列表
+    ------------------------------------------ */
+    { name: 'AfterSalesList',
+      children: [
+        { name: 'AfterSalesInfo', children: [] },
+      ],
+    },
+    /*  责任划分详情
+    ------------------------------------------ */
+    { name: 'ResponsibilityMeasureList',
+      children: [
+        { name: 'ResponsibilityMeasureInfo', children: [] },
+      ],
+    },
+    /*  责任确认详情
+    ------------------------------------------ */
+    { name: 'LiabilityRecognitionList',
+      children: [
+        { name: 'LiabilityRecognitionInfo', children: [] },
       ],
     },
     /*  未付款订单
