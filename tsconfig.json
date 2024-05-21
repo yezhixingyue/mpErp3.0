@@ -40,7 +40,7 @@
     "src/assets/js/directive/loadMore.js",
     "src/assets/js/property/index.ts",
     "src/router/index.js",
-    "src/router/handleRouterEach.js", "src/router/routes/OpenPlatformManage/index.js",
+    "src/router/handleRouterEach.js", "src/router/routes/OpenPlatformManage/index.js", "src/assets/js/setup.js",
   ],
   "exclude": [
     "node_modules"

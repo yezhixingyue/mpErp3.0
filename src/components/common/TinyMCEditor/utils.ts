@@ -1,5 +1,5 @@
 import { docApi } from '@/api/doc';
-import { docBaseURL } from '@/api/doc/instance';
+import { docBaseURL } from '@/assets/js/setup';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 /** 图片、视频、文件上传 */
