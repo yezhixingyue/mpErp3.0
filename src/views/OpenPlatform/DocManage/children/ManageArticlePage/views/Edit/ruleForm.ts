@@ -1,6 +1,6 @@
 import { docApi } from '@/api/doc';
-import { docBaseURL } from '@/assets/js/setup';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { docBaseURL } from '@/config';
 import { goBackLastPage } from '@/router';
 import { DocTypeEnum } from '@/views/OpenPlatform/DocManage/js/enum';
 import { localPageData } from '@/views/OpenPlatform/DocManage/js/store';

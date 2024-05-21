@@ -69,7 +69,6 @@ export class DeveloperListManageClass {
   async refuse(row: ReturnType<typeof getDeveloperTableList>, Remark: string, cb: () => void) {
     const temp = { ID: row.ID, Remark };
     const resp = await api.getDeveloperRefuse(temp).catch(() => null);
-    console.log('row', row.AppNumber);
     if (resp?.data.Status === 1000) {
       const callback = () => {
         cb();

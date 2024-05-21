@@ -139,7 +139,6 @@ const handleRouterEach = (_router) => {
             next({ query: { ...query, toWiki: 'true' }, name: 'login' });
           }
         } else { // 有token - 跳转回文档页面
-          console.log(2, token);
           WikiHandler.toWikiPageWithToken({ ...to.query, token }, true);
         }
         return;

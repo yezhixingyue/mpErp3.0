@@ -11,11 +11,11 @@
 import DocViewer from '@/views/OpenPlatform/NoticeManage/components/DocViewer.vue';
 import { IArticle } from '../../../js/types';
 
-const props = defineProps<{
+defineProps<{
   article: IArticle
 }>();
 
-console.log('预览页面 article:', props.article);
+// console.log('预览页面 article:', props.article);
 // const iframe = ref<HTMLIFrameElement>();
 
 // onMounted(() => {

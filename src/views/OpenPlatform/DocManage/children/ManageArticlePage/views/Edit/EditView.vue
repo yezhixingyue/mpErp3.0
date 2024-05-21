@@ -41,7 +41,7 @@ import { ArticleForm } from './ruleForm';
 import { goBackLastPage } from '@/router';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
 import RemarkDialog from './RemarkDialog.vue';
-import { docBaseURL } from '@/assets/js/setup';
+import { docBaseURL } from '@/config';
 
 const props = defineProps<{
   currentArticle: null | IArticle

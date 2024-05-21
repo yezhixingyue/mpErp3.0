@@ -1,6 +1,6 @@
 import { docApi } from '@/api/doc';
-import { docBaseURL } from '@/assets/js/setup';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { docBaseURL } from '@/config';
 
 /** 图片、视频、文件上传 */
 export const upload = async (file: File, apiKey: 'getImgUpload' | 'getMediaUpload' | 'getFileUpload', accept: string, maxSize: number) => {

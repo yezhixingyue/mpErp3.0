@@ -48,7 +48,7 @@ import { DocTypeEnumList } from '../../../js/enum';
 import { computed, nextTick, ref } from 'vue';
 import { getDateFormat } from '@/assets/js/utils/util';
 import { MpMessage } from '@/assets/js/utils/MpMessage';
-import { docClientURL } from '@/assets/js/setup';
+import { docClientURL } from '@/config';
 
 const props = defineProps<{
   item: IArticle
