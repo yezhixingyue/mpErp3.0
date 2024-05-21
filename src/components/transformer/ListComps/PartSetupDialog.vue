@@ -77,7 +77,7 @@ export default {
     totalPartList() {
       let list = this.item && Array.isArray(this.item.PartList) ? [...this.item.PartList] : [];
       list.unshift({ ...this.item, Name: '产品' });
-      console.log(list);
+
       list = list.map(it => {
         let _setupNumber = 0;
         const {

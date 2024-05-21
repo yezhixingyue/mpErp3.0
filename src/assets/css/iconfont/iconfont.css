@@ -1,11 +1,11 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3470998 */
-  src: url('iconfont.eot?t=1704938776626'); /* IE9 */
-  src: url('iconfont.eot?t=1704938776626#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('iconfont.woff2?t=1704938776626') format('woff2'),
-       url('iconfont.woff?t=1704938776626') format('woff'),
-       url('iconfont.ttf?t=1704938776626') format('truetype'),
-       url('iconfont.svg?t=1704938776626#iconfont') format('svg');
+  src: url('iconfont.eot?t=1710231030014'); /* IE9 */
+  src: url('iconfont.eot?t=1710231030014#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('iconfont.woff2?t=1710231030014') format('woff2'),
+       url('iconfont.woff?t=1710231030014') format('woff'),
+       url('iconfont.ttf?t=1710231030014') format('truetype'),
+       url('iconfont.svg?t=1710231030014#iconfont') format('svg');
 }
 
 .iconfont {
@@ -14,6 +14,22 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-kaifazhezhanghao:before {
+  content: "\e673";
+}
+
+.icon-bangzhuwendangguanli:before {
+  content: "\e677";
+}
+
+.icon-yingyongliebiao:before {
+  content: "\e674";
+}
+
+.icon-xiaoxiguanli:before {
+  content: "\e670";
 }
 
 .icon-qitafuwu:before {

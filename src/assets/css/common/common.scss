@@ -7,6 +7,13 @@
   }
 }
 
+
+.keywords-hit {
+  color: #fff;
+  font-style: normal;
+  background-color: #26BCF9;
+}
+
 /* 表格部分公共样式
 -------------------------------*/
  .mp-common-table-styles {
@@ -252,6 +259,23 @@
     cursor: default;
   }
 }
+.green-span {
+  color: #52C41A !important;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.05s;
+  &:hover {
+    color: lighten($color: #52C41A, $amount: 10) !important;
+  }
+  &:active {
+    color: darken($color: #52C41A, $amount: 8) !important;
+  }
+  &.disabled, &:disabled {
+    color: #cbcbcb !important;
+    pointer-events: none;
+    cursor: default;
+  }
+}
 
 .el-radio__inner {
   background-color: #fff !important;
@@ -341,7 +365,7 @@
   }
 }
 
-.cancel-blue-btn {
+.cancel-blue-btn, .blue {
   color: #26bcf9;
   border-color: #26bcf9;
   width: 100px;

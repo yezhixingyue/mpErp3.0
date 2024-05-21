@@ -611,10 +611,8 @@ export default {
       const { OrderID } = state.orderDetailData;
       if (!OrderID) return false;
 
-      console.log('dialogData', dialogData);
-
       const _obj = typeof dialogData === 'object' ? { ...dialogData, OrderID } : { OrderID };
-      console.log(_obj, typeof dialogData === 'object');
+
       const res = await api.setOrderReCheckFile(_obj).catch(() => null);
 
       if (res && res.data.Status === 1000) {

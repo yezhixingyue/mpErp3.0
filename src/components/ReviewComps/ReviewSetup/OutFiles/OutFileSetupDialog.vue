@@ -147,7 +147,7 @@ export default {
   .output-ruleForm {
     margin-left: 20px;
     margin-right: 40px;
-    height: 350px;
+    height: 360px;
     input {
       border-radius: 3px;
     }

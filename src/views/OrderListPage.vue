@@ -179,11 +179,9 @@ export default {
       this.processVisible = true;
     },
     onAnewUploadClick() { // 重新上传文件再审稿
-      console.log(this.orderDetailData);
       this.AnewUploadVisible = true;
     },
     AnewUploadHanderFunc(data) {
-      console.log(data);
       return this.$store.dispatch('orderModule/setOrderReCheckFile', data);
     },
   },
