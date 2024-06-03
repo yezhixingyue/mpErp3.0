@@ -11,8 +11,10 @@ import { TransformerListConditionClass } from '@/pinia/modules/transformer/Trans
 import { IPartChangeParams, ISemiFinishedSaveParams, IGetWorkingProcedureParams, IGetPropertyListParams, IGetDefaultLineSetupParams } from '@/pinia/modules/transformer/types';
 import { IFactoryAccount } from '@/views/BasicSetup/Factory/Account/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
+import { baseSetupApis } from './modules/BaseSetup';
 
 const api = {
+  ...baseSetupApis,
   /* 订单列表部分api
    ------------------------------------------------------------------------------------ */
   getVersionValid(data) { // 缓存版本对比 ---  暂用于获取企业类型    POST
@@ -754,9 +756,9 @@ const api = {
   getFactoryRemove(factoryID) { // 工厂删除
     return instance.delete(`/Api/Factory/Remove?factoryID=${factoryID}`);
   },
-  getFactoryProductPriceList(factoryID) { // GET /Api/Factory/ProductPrice/List 获取工厂产品价格列表
-    return instance.get(`/Api/Factory/ProductPrice/List?factoryID=${factoryID}`);
-  },
+  // getFactoryProductPriceList(factoryID) { // GET /Api/Factory/ProductPrice/List 获取工厂产品价格列表
+  //   return instance.get(`/Api/Factory/ProductPrice/List?factoryID=${factoryID}`);
+  // },
   getProductPriceList(productID) { // GET /Api/ProductPrice/List
     return instance.get(`/Api/ProductPrice/List?productID=${productID}`);
   },
@@ -765,6 +767,10 @@ const api = {
   },
   getFactoryProductPriceRemove(ID) { // POST /Api/Factory/ProductPrice/Remove 工厂产品价格删除
     return instance.delete(`/Api/Factory/ProductPrice/Remove?id=${ID}`);
+  },
+  // POST /Api/Factory/ProductPrice/List  获取工厂产品价格列表
+  getFactoryProductPriceList(condition) {
+    return instance.post('/Api/Factory/ProductPrice/List', condition);
   },
   /** GET /Api/Factory/Account/List  获取工厂账号列表 */
   getFactoryAccountList(factoryID: number) {
@@ -1366,32 +1372,35 @@ const api = {
   getConvertList(id) { // GET /Api/Convert/List    获取转换器列表
     return instance.get('/Api/Convert/List', { params: { id } });
   },
-  /* 手动外协 api
+  /* 手动外购 api
   ----------------------------------------------------------------------------------- */
-  getOutOrderList(condition) { // POST /Api/OutOrder/List   外协订单列表
+  getOutOrderList(condition) { // POST /Api/OutOrder/List   外购订单列表
     return instance.post('/Api/OutOrder/List', condition);
   },
   /** /Api/Factory/Order/OrderExcel 导出表格 */
   getFactoryOrderOrderExcel(condition) {
     return instance.post('/Api/Factory/Order/OrderExcel', condition, { closeTip: true, responseType: 'arraybuffer' });
   },
-  getOutOrderChangeFactory(data) { // POST /Api/OutOrder/ChangeFactory    修改外协工厂
+  getOutOrderChangeFactory(data) { // POST /Api/OutOrder/ChangeFactory    修改外购工厂
     return instance.post('/Api/OutOrder/ChangeFactory', data);
   },
   getOutOrderChangePrice(orderID, price) { // PUT /Api/OutOrder/ChangePrice   修改订单价格
     return instance.put('/Api/OutOrder/ChangePrice', null, { params: { orderID, price }, closeTip: true });
   },
-  getOutOrderProgress(orderID) { // GET /Api/OutOrder/Progress   外协订单状态
+  getOutOrderProgress(orderID) { // GET /Api/OutOrder/Progress   外购订单状态
     return instance.get('/Api/OutOrder/Progress', { params: { orderID } });
   },
-  getOutOrderComfirm(data) { // POST /Api/OutOrder/Comfirm  确认外协
+  getOutOrderComfirm(data) { // POST /Api/OutOrder/Comfirm  确认外购
     return instance.post('/Api/OutOrder/Comfirm', data);
   },
-  getOutOrderComfirmCancle(data) { // POST /Api/OutOrder/ComfirmCancle  取消外协
+  getOutOrderReceive(data) { // POST /Api/OutOrder/Receive  确认接单
+    return instance.post('/Api/OutOrder/Receive', data);
+  },
+  getOutOrderComfirmCancle(data) { // POST /Api/OutOrder/ComfirmCancle  取消外购
     return instance.post('/Api/OutOrder/ComfirmCancle', data);
   },
   /** 文件下载 */
-  getOutOrderDownload(data: object) { // POST /Api/OutOrder/Download  手动外协下载
+  getOutOrderDownload(data: object) { // POST /Api/OutOrder/Download  手动外购下载
     return instance.post('/Api/OutOrder/Download', data);
   },
   /* 发票管理 api

@@ -23,6 +23,14 @@ export default (domStr) => ({
     setTimeout(() => {
       oDom.scrollTop = this.SCROLL_Y;
       oDom.scrollLeft = this.SCROLL_X;
-    }, 2);
+    }, 20);
+    setTimeout(() => {
+      oDom.scrollTop = this.SCROLL_Y;
+      oDom.scrollLeft = this.SCROLL_X;
+    }, 50);
+    setTimeout(() => {
+      oDom.scrollTop = this.SCROLL_Y;
+      oDom.scrollLeft = this.SCROLL_X;
+    }, 200);
   },
 });

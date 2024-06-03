@@ -5,7 +5,7 @@
       <el-pagination
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        hide-on-single-page
+        :hide-on-single-page="!displayOnSinglePage"
         :page-size="pageSize"
         :pager-count='5'
         layout="prev, pager, next, jumper"
@@ -13,7 +13,7 @@
       </el-pagination>
     </div>
     <slot></slot>
-    <span class="count">共检索出<i>{{count}}</i>条记录</span>
+    <span class="count" v-if="showTotal">共检索出<i>{{count}}</i>条记录</span>
   </div>
 </template>
 
@@ -55,6 +55,14 @@ export default {
     center: {
       type: Boolean,
       default: false,
+    },
+    displayOnSinglePage: {
+      type: Boolean,
+      default: false,
+    },
+    showTotal: {
+      type: Boolean,
+      default: true,
     },
   },
   watch: {

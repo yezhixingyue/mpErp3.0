@@ -51,11 +51,11 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item v-if="!ruleForm._AutoLink">
+      <!-- <el-form-item v-if="!ruleForm._AutoLink">
         <el-checkbox v-model="ruleForm.AutoReceiveOrder" >
-          <span class="ft-12" style="color:#585858">外协自动接单</span>
+          <span class="ft-12" style="color:#585858">外购自动接单</span>
         </el-checkbox>
-      </el-form-item>
+      </el-form-item> -->
       <!-- <el-form-item label="转换器" prop="Convert.ID" v-if="ruleForm._AutoLink">
         <el-select v-model="ruleForm.Convert.ID" :disabled="loading" placeholder="请选择对应转换器">
           <el-option

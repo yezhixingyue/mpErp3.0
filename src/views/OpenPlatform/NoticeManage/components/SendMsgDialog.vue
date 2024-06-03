@@ -53,7 +53,7 @@ import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import SimpleTinyMCEditor from '@/components/common/TinyMCEditor/SimpleTinyMCEditor.vue';
 import { SendMsgRuleForm } from '../js/SendMsgRuleForm';
 import { DeveloperNoticeTargetEnum } from '../js/enum';
-import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { dialogSuccess } from '@/assets/js/utils/MpMessage';
 
 const props = defineProps<{
   visible: boolean,
@@ -89,10 +89,9 @@ const submit = async () => {
     cancel();
   };
 
-  MpMessage.dialogSuccess({
+  dialogSuccess({
     title: '发送成功',
     onOk: cb,
-    onCancel: cb,
   });
 };
 

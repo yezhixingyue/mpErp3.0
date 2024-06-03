@@ -162,7 +162,7 @@ export class ArticleForm {
 
       // MpMessage.success({ title, onOk: cb, onCancel: cb });
       MpMessage.warn({
-        title, msg: '是否继续编辑 ?', onOk: () => cb(false), onCancel: () => cb(true), success: true, confirmButtonText: '继续编辑', cancelButtonText: '返回列表',
+        title, msg: '是否继续编辑 ?', onOk: () => cb(false), onCancel: () => cb(true), confirmButtonText: '继续编辑', cancelButtonText: '返回列表',
       });
     }
   }

@@ -10,24 +10,39 @@
       @getList="getList"
      />
     <main>
+      <!-- 操作按钮列表 -->
+      <Buttons
+       :list="datas"
+       :condition="condition"
+       :multipleSelection="multipleSelection"
+       :selectableStatuses="selectableStatuses"
+       :localPermission="localPermission"
+       @checkAll="handleCheckAll"
+       @download="download"
+       @BatchSendFactory="onBatchSendFactoryClick"
+       @BatchHelpOrder="onBatchHelpOrderClick"
+       />
+
       <!-- 表格 -->
       <ManualOutsourceTable
         :list="datas"
         :loading="loading"
         :factorys="localFactoryList"
         :localPermission="localPermission"
+        :selectableStatuses="selectableStatuses"
         v-model="multipleSelection"
         ref="oTable"
         @showStatus="onShowStatus"
         @download="download"
         @singleOutsource="onSingleOutsourceClick"
+        @helpOrder="getOutOrderReceive"
         @comfirmCancle="handleComfirmCancle"
         @forceCancel="handleForceCancel"
        />
       <!-- 强制撤回原因输入弹窗 -->
       <ForceCancelDialog :visible.sync="forceCancelVisible" @submit="forceCancelSubmit" />
       <!-- 单个订单操作记录弹窗 -->
-      <OutsourceRecordDisplayDialog :list="showStatusList" :visible.sync="showStatusVisible" />
+      <DetailRecordDialog :item="currentItem" :visible.sync="showStatusVisible" />
     </main>
     <!-- 底部区域 -->
     <ManualOutsourceFooter
@@ -40,7 +55,8 @@
       :changeMultipleFactory="handleChangeMultipleFactory"
       @getList="getList"
       @checkAll="handleCheckAll"
-      @manualOutsource="onManualOutsourceClick"
+      @manualOutsource="onBatchSendFactoryClick"
+      @changePageSize="changePageSize"
      />
   </section>
 </template>
@@ -50,22 +66,25 @@ import { mapState } from 'vuex';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 import CommonClassType from '@/store/CommonClassType';
 import ManualOutsourceHeader from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceHeader.vue';
+import Buttons from '../../../components/FactoryModule/ManualOutsourceComps/Buttons.vue';
 import ManualOutsourceTable from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceTable.vue';
 import ManualOutsourceFooter from '../../../components/FactoryModule/ManualOutsourceComps/ManualOutsourceFooter.vue';
-import OutsourceRecordDisplayDialog from '../../../components/FactoryModule/ManualOutsourceComps/OutsourceRecordDisplayDialog.vue';
+// import OutsourceRecordDisplayDialog from '../../../components/FactoryModule/ManualOutsourceComps/OutsourceRecordDisplayDialog.vue';
 import ForceCancelDialog from '../../../components/FactoryModule/ManualOutsourceComps/ForceCancelDialog.vue';
+import DetailRecordDialog from '../../../components/FactoryModule/ManualOutsourceComps/DetailRecordDialog.vue';
 import ConditionClass from './classType/ConditionClass';
 import OutsourceOrderItemClass from './classType/OutsourceOrderItemClass';
-import { CheckFileOrderStatusEnumObj } from './classType/EnumList.ts';
+import { CheckFileOrderStatusEnumObj, CheckFileOrderStatusEnumList } from './classType/EnumList.ts';
 
 export default {
   name: 'ManualOutsourceManagePage',
   mixins: [recordScrollPositionMixin('.mp-erp-factory-manual-out-source-manage-page-wrap .el-table__body-wrapper')],
   components: {
     ManualOutsourceHeader,
+    Buttons,
     ManualOutsourceTable,
     ManualOutsourceFooter,
-    OutsourceRecordDisplayDialog,
+    DetailRecordDialog,
     ForceCancelDialog,
   },
   computed: {
@@ -75,6 +94,24 @@ export default {
     },
     localFactoryList() {
       return this.factoryList.filter(it => !it.Convert);
+    },
+    selectableStatuses() { // 当前可以勾选的状态列表
+      const ids = CheckFileOrderStatusEnumList.map(it => it.ID); // 全部状态
+
+      if (this.multipleSelection.length > 0) {
+        return [this.multipleSelection[0].CheckFileStatus];
+        // if (this.multipleSelection[0].CheckFileStatus === CheckFileOrderStatusEnumObj.WaitSendFactory.ID) { // 可外购
+        //   return [CheckFileOrderStatusEnumObj.WaitSendFactory.ID];
+        // }
+
+        // if (this.multipleSelection[0].CheckFileStatus === CheckFileOrderStatusEnumObj.OutsourceComfirm.ID) { // 可接单
+        //   return [CheckFileOrderStatusEnumObj.OutsourceComfirm.ID];
+        // }
+
+        // return ids.filter(id => ![CheckFileOrderStatusEnumObj.WaitSendFactory.ID, CheckFileOrderStatusEnumObj.OutsourceComfirm.ID].includes(id));
+      }
+
+      return ids;
     },
   },
   data() {
@@ -88,6 +125,7 @@ export default {
       forceCancelVisible: false,
       showStatusList: [],
       willForceCancelList: [], // 要被强制撤回的订单列表
+      currentItem: null,
     };
   },
   methods: {
@@ -143,14 +181,16 @@ export default {
     },
     async onShowStatus(item) { // 查看状态
       if (!item || !item.OrderID) return;
-      const resp = await this.api.getOutOrderProgress(item.OrderID).catch(() => null);
-      if (resp?.data?.Status === 1000) {
-        this.showStatusList = resp.data.Data || [];
-        this.showStatusVisible = true;
-      }
+      this.currentItem = item;
+      this.showStatusVisible = true;
+      // const resp = await this.api.getOutOrderProgress(item.OrderID).catch(() => null);
+      // if (resp?.data?.Status === 1000) {
+      //   this.showStatusList = resp.data.Data || [];
+      //   this.showStatusVisible = true;
+      // }
     },
     async download(arr) { // 下载文件
-      const temp = { OrderList: arr.map(it => it.OrderID) };
+      const temp = { OrderList: arr.map(it => ({ OrderID: it.OrderID, Describe: it.Describe })) };
 
       const resp = await this.api.getOutOrderDownload(temp).catch(() => null);
 
@@ -170,13 +210,20 @@ export default {
         });
       }
     },
-    onSingleOutsourceClick(item) { // 单个订单确认外协
-      this.handleOutsourceConfirm([item]);
+    onSingleOutsourceClick(item) { // 单个订单确认外购
+      this.handleOutsourceConfirm([item], true);
     },
-    onManualOutsourceClick() { // 多个选中订单确认外协
+    onBatchSendFactoryClick() { // 多个选中订单确认外购
       this.handleOutsourceConfirm(this.multipleSelection);
     },
-    async handleOutsourceConfirm(arr) { // 确认外协
+    onBatchHelpOrderClick() { // 批量接单
+      this.getOutOrderReceive(this.multipleSelection);
+    },
+    changePageSize(PageSize) {
+      this.condition.PageSize = PageSize;
+      this.getList();
+    },
+    async handleOutsourceConfirm(arr, isSingle = false) { // 确认外购
       if (!arr || arr.length === 0) return;
       const temp = {
         OrderList: arr.map(it => it.OrderID),
@@ -187,19 +234,40 @@ export default {
         const cb = () => {
           arr.forEach(it => {
             const _it = it;
-            const factory = this.localFactoryList.find(f => f.FactoryID === _it.Factory.ID);
-            _it.CheckFileStatus = factory && factory.AutoReceiveOrder
-              ? CheckFileOrderStatusEnumObj.HaveSendFactory.ID : CheckFileOrderStatusEnumObj.OutsourceComfirm.ID;
+            _it.CheckFileStatus = CheckFileOrderStatusEnumObj.OutsourceComfirm.ID;
           });
-          if (this.$refs.oTable) {
+          if (this.$refs.oTable && isSingle) {
             const ids = this.multipleSelection.map(m => m.OrderID);
             this.$refs.oTable.toggleRowSelection(arr.filter(a => ids.includes(a.OrderID)));
           }
         };
-        this.messageBox.successSingle('确认外协成功', cb, cb);
+        this.messageBox.successSingle(isSingle ? '外购成功' : '批量外购成功', cb, cb);
       }
     },
-    async handleComfirmCancle(arr) { // 取消外协
+    async getOutOrderReceive(arr, isSingle = false) { // 确认接单
+      console.log('arr', arr);
+      if (!arr || arr.length === 0) return;
+      const temp = {
+        OrderList: arr.map(it => it.OrderID),
+      };
+      console.log(123);
+      const resp = await this.api.getOutOrderReceive(temp).catch(() => null);
+
+      if (resp?.data?.Status === 1000) {
+        const cb = () => {
+          arr.forEach(it => {
+            const _it = it;
+            _it.CheckFileStatus = CheckFileOrderStatusEnumObj.HaveSendFactory.ID;
+          });
+          if (this.$refs.oTable && isSingle) {
+            const ids = this.multipleSelection.map(m => m.OrderID);
+            this.$refs.oTable.toggleRowSelection(arr.filter(a => ids.includes(a.OrderID)));
+          }
+        };
+        this.messageBox.successSingle(isSingle ? '接单成功' : '批量接单成功', cb, cb);
+      }
+    },
+    async handleComfirmCancle(arr) { // 取消外购 -- 作废
       if (!arr || arr.length === 0) return;
       const temp = {
         OrderList: arr.map(it => it.OrderID),
@@ -255,14 +323,20 @@ export default {
   padding-left: 8px;
   background: #f6f6f6;
   box-sizing: border-box;
+
   > main {
     flex: 1;
     background: #fff;
     margin-top: 10px;
+    overflow: hidden;
+    padding-left: 20px;
   }
+
   > footer {
-    min-height: 65px;
+    flex: none;
+    height: 65px;
   }
+
   > header, > footer {
     flex: none;
     background: #fff;
