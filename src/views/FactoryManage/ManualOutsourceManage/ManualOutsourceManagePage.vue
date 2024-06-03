@@ -139,7 +139,7 @@ export default {
     async getList(Page = 1) { // 获取列表数据
       this.condition.Page = Page;
 
-      CommonClassType.setDate(this.condition, 'PlaceDate');
+      CommonClassType.setDate(this.condition, 'PayTime');
 
       const temp = this.condition.getFilterObj();
 

@@ -51,7 +51,7 @@
       <LineDateSelectorComp
         :changePropsFunc='setCondition'
         :requestFunc='getDataList'
-        :typeList="[['DateType', ''], ['PlaceDate', 'First'], ['PlaceDate', 'Second']]"
+        :typeList="[['DateType', ''], ['PayTime', 'First'], ['PayTime', 'Second']]"
         :dateValue='condition.DateType'
         :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
         :dateList="dateList"
@@ -150,7 +150,7 @@ export default {
     },
     UserDefinedTimeIsActive() {
       return this.condition.DateType === ''
-       && !!this.condition.PlaceDate.First && !!this.condition.PlaceDate.Second;
+       && !!this.condition.PayTime.First && !!this.condition.PayTime.Second;
     },
   },
   methods: {
