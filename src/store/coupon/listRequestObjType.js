@@ -24,6 +24,10 @@ export default class ListRequestObjType {
 
   UseStatus = '' // 可使用状态 枚举列表
 
+  UseNewCustomer = false // 是否新人券
+
+  NewCustomerCoupon = false // 是否新人券
+
   FieldType = 1 // 值传几
 
   Page = 1
@@ -60,6 +64,8 @@ export default class ListRequestObjType {
     _obj.UseStatus = ''; // 可使用状态 枚举列表
 
     _obj.FieldType = 1; // 值传几
+
+    _obj.UseNewCustomer = false; // 是否新人券
 
     _obj.Page = 1;
 

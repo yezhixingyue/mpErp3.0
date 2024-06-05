@@ -68,6 +68,7 @@
           title="使用状态"
         />
         <div>
+          <el-checkbox v-model="NewCustomerCoupon">新人券</el-checkbox>
           <StaffSelector
             class="first-section"
             needlimit
@@ -145,6 +146,15 @@ export default {
         this.setCondition2ListData([['UseStatus', ''], newVal]);
       },
     },
+    NewCustomerCoupon: {
+      get() {
+        return this.condition2ListData.NewCustomerCoupon;
+      },
+      set(newVal) {
+        this.setCondition2ListData([['NewCustomerCoupon', ''], newVal]);
+        this.getCouponList();
+      },
+    },
   },
   methods: {
     ...mapMutations('couponStore', ['setCondition2ListData', 'clearCondition2ListData']),
@@ -220,6 +230,11 @@ export default {
             &.second-section {
               margin-right: 45px;
             }
+          }
+          >.el-checkbox{
+            line-height: 25px;
+            margin-top: 20px;
+            margin-right: 10px;
           }
         }
       }
