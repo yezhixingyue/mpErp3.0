@@ -72,14 +72,14 @@ export class PriceSetupRuleForm implements IFactoryProductPrice {
 
     if (this._radio === PriceSetupTypeEnum.PriceOption) {
       if (!this.Price.ID) {
-        MpMessage.error({ title: '保存失败', msg: '请选择外购报价方案' });
+        MpMessage.error({ title: '保存失败', msg: '请选择外购价格' });
         return null;
       }
 
       const t = this._PriceOptionList.find(it => it.ID === this.Price.ID);
 
       if (!t) { // 报价方案在列表中寻找不到
-        MpMessage.error({ title: '保存失败', msg: '当前选中的报价方案在下拉列表中无法找到' });
+        MpMessage.error({ title: '保存失败', msg: '当前选中价格在下拉列表中无法找到' });
         return null;
       }
 

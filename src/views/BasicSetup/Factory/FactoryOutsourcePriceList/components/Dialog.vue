@@ -10,7 +10,7 @@
           <span>按成交价折扣 <el-input @focus="onFocus" v-model.number="ruleForm.Discount" size="small" maxlength="4"></el-input> %</span>
         </el-radio>
         <el-radio :label="PriceSetupTypeEnum.PriceOption">
-          <span>选择外购报价方案</span>
+          <span>选择外购价格</span>
         </el-radio>
       </el-radio-group>
 

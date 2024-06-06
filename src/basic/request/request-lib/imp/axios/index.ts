@@ -11,7 +11,6 @@ export const getRequestor = () => {
       return error.response;
     }
     if (axios.isCancel(error)) {
-      console.log('error', error);
       throw new Error('请求被取消');
     }
 

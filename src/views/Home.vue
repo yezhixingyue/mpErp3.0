@@ -15,11 +15,33 @@
       <span>，开始今天的工作吧！</span>
       <!-- <i>!</i> -->
     </header>
+    <!-- <main style="display: flex;">
+      <div style="display: flex;flex-direction: column;border: 1px solid;">
+        <AreaText />
+        <AreaText />
+        <AreaText />
+        <AreaText />
+        <AreaText />
+        <AreaText />
+        <AreaText />
+        <AreaText />
+        <AreaText />
+        <AreaText />
+      </div>
+      <div style="border: 1px solid;">
+        <AreaText isArea style="height: 300px;" />
+      </div>
+    </main> -->
   </section>
 </template>
 
 <script>
+// import AreaText from '@/components/common/AreaText.vue';
+
 export default {
+  components: {
+    // AreaText,
+  },
   data() {
     return {
       dateString: '',
