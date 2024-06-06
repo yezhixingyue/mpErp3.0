@@ -1,11 +1,11 @@
-import { INewMessageOptions } from './type';
+import type { IMessageCoreOptions } from './type';
 
 /** 参数归一化 */
 export const normalizeOptions = (
-  title: INewMessageOptions | string,
+  title: IMessageCoreOptions | string,
   msg?: string,
-  onOk?: INewMessageOptions['onOk'],
-  onCancel?: INewMessageOptions['onCancel'],
+  onOk?: IMessageCoreOptions['onOk'],
+  onCancel?: IMessageCoreOptions['onCancel'],
 ) => {
   const _options = typeof title === 'object' ? title : null;
 

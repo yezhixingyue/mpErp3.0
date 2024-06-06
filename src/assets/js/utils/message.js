@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { MessageBox } from 'element-ui';
 import Vue from 'vue';
-import { MyMessageBox } from '@/assets/js/utils/NewMessage';
+import { MyMessage } from '@/basic/message';
 
 /**
  * 警告提示框 --- 不含内容，只有标题 单按钮
@@ -18,7 +18,7 @@ function failSingle(msg, successFunc, failFunc, dangerouslyUseHTMLString, confir
   //   dangerouslyUseHTMLString,
   //   customClass: 'mp-order-del-pop-reverse-warn-null fail',
   // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
-  MyMessageBox.error({
+  MyMessage.error({
     title: msg,
     dangerouslyUseHTMLString,
     confirmButtonText: confirmButtonText || '确定',
@@ -46,7 +46,7 @@ function failSingleError(title = '出错啦 ！', msg, successFunc, failFunc, da
   //   customClass: 'mp-order-del-pop-reverse-fail',
   //   dangerouslyUseHTMLString,
   // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
-  MyMessageBox.error({
+  MyMessage.error({
     title,
     msg,
     dangerouslyUseHTMLString,
@@ -74,7 +74,7 @@ function warnSingleError(msg, successFunc, failFunc, title = '注意', text = '�
   //   title,
   //   customClass: 'mp-order-del-pop-reverse-warn',
   // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
-  MyMessageBox.error({
+  MyMessage.error({
     title,
     msg,
     confirmButtonText: text || '确定',
@@ -104,7 +104,7 @@ function warnCancelBox(title = '确定取消此订单吗 ?', msg, successFunc, f
   //   cancelButtonText: cancelButtonText || '取消',
   //   dangerouslyUseHTMLString,
   // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
-  MyMessageBox.warn({
+  MyMessage.warn({
     title,
     msg,
     confirmButtonText: confirmButtonText || '确定',
@@ -132,7 +132,7 @@ function warnCancelNullMsg(title, successFunc, failFunc, dangerouslyUseHTMLStrin
   //   title,
   //   customClass: 'mp-order-del-pop-reverse-warn-null',
   // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
-  MyMessageBox.warn({
+  MyMessage.warn({
     title,
     confirmButtonText: confirmButtonText || '确定',
     cancelButtonText: cancelButtonText || '取消',
@@ -162,7 +162,7 @@ function successSingle(title, successFunc, failFunc, dangerouslyUseHTMLString, c
   //   dangerouslyUseHTMLString,
   //   customClass,
   // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
-  MyMessageBox.success({
+  MyMessage.success({
     title,
     msg,
     confirmButtonText: confirmButtonText || '确定',
