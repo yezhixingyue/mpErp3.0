@@ -114,7 +114,7 @@ export default {
     ...mapMutations('orderModule', ['setOrderListDialogShow', 'setOrderListDialogHide', 'setCurOrderStatus', 'setCurOrderProductName', 'setIsDelPopShowTrue', 'setOrderID2Del', 'setOrderListData', 'setOrderTotalCount', 'setCurOrderID', 'setIsShowServiceDiaTrue', 'setIsShowServiceDiaFail']),
     ...mapMutations('service', ['clearServiceFormInfo']),
     ...mapMutations('common', ['setIsLoading']),
-    ...mapActions('orderModule', ['delTargetOrder', 'getOrderDetail', 'selectOrderProgress', 'getServiceOrderHistory']),
+    ...mapActions('orderModule', ['delTargetOrder', 'getOrderDetail', 'getServiceOrderHistory']),
     ...mapActions('orderModule', { getPackageListByOrderID2OrderModule: 'getPackageListByOrderID' }),
     ...mapActions('service', ['getQuestionTypeList', 'getPackageListByOrderID']),
     setHeight() {

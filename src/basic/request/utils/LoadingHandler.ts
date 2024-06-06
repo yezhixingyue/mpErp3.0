@@ -1,4 +1,5 @@
 import { Loading } from 'element-ui';
+import store from '../../../store';
 // import 'element-plus/es/components/loading/style/css';
 
 export class LoadingHandler {
@@ -7,6 +8,7 @@ export class LoadingHandler {
   private loadingInstance: ReturnType<(typeof Loading)['service']> | null = null
 
   display() {
+    if ((store.state as { common: { isLoading: boolean } }).common.isLoading) return;
     this.count += 1;
     this.loadingInstance = Loading.service({
       lock: true,
@@ -18,6 +20,7 @@ export class LoadingHandler {
   }
 
   hidden() {
+    if ((store.state as { common: { isLoading: boolean } }).common.isLoading) return;
     this.count -= 1;
     if (this.count < 0) this.count = 0;
     if (this.count === 0 && this.loadingInstance) this.loadingInstance.close();

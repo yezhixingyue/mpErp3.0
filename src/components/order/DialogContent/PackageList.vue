@@ -325,7 +325,6 @@ export default {
   },
   methods: {
     ...mapMutations('orderModule', ['setCurOrderID', 'setIsShowServiceDiaTrue', 'setIsShowServiceDiaFail']),
-    ...mapMutations('common', ['setIsLoading']),
     ...mapMutations('service', ['clearServiceFormInfo']),
     ...mapActions('orderModule', ['getOrderDetail', 'getServiceOrderHistory']),
     ...mapActions('service', ['getQuestionTypeList', 'getPackageListByOrderID', 'getPayPackageByOrder']),
@@ -360,9 +359,6 @@ export default {
     },
     onExpressClick({ ID, Logistics, BillNo: haveSunBillNo }) {
       this.BillNo = Logistics?.BillNo || haveSunBillNo;
-      // if (!Logistics?.BillNo) {
-      //   this.BillNo = haveSunBillNo;
-      // }
       this.visible = true;
       this.getExpressDetail(ID, Logistics?.ID);
     },
@@ -370,31 +366,6 @@ export default {
       this.visible = false;
       this.BillNo = '';
     },
-    // async jump2Service(data) {
-    //   let key = true;
-    //   this.setIsLoading(true);
-    //   this.clearServiceFormInfo();
-    //   this.setCurOrderID(data.OrderID);
-    //   this.setIsShowServiceDiaTrue();
-    //   await Promise.all(
-    //     [
-    //       this.getQuestionTypeList(),
-    //       this.getOrderDetail(),
-    //       this.getPackageListByOrderID(data.OrderID),
-    //       this.getServiceOrderHistory(),
-    //       this.getPayPackageByOrder(data.OrderID),
-    //       // this.$store.dispatch('service/getPayPackageByOrder', data.OrderID),
-    //     ],
-    //   ).catch((error) => {
-    //     key = false;
-    //     this.messageBox.handleLoadingError(
-    //       error,
-    //       () => { this.setIsShowServiceDiaFail(); this.setIsLoading(false); },
-    //       () => { this.setIsShowServiceDiaFail(); this.setIsLoading(false); },
-    //     );
-    //   });
-    //   if (key) this.setIsLoading(false);
-    // },
   },
 };
 </script>
