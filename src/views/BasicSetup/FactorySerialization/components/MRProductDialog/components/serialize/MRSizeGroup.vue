@@ -14,7 +14,7 @@
 
 <script setup lang='ts'>
 import { IMRSizeGroup } from '@/views/BasicSetup/FactorySerialization/js/types';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import MRElementList from './MRElementList.vue';
 
 const props = defineProps<{
@@ -22,6 +22,13 @@ const props = defineProps<{
 }>();
 
 const localSizeGroup = computed(() => props.SizeGroup);
+
+watch(() => localSizeGroup.value.IsShow, (val) => { // 在禁用时，清除勾选数据
+  if (!val) {
+    localSizeGroup.value.IsShowName = false;
+    localSizeGroup.value.IsShowGenerateName = false;
+  }
+});
 </script>
 
 <style scoped lang='scss'>

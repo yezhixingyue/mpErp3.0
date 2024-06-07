@@ -15,32 +15,22 @@
       <span>，开始今天的工作吧！</span>
       <!-- <i>!</i> -->
     </header>
-    <!-- <main style="display: flex;">
-      <div style="display: flex;flex-direction: column;border: 1px solid;">
-        <AreaText />
-        <AreaText />
-        <AreaText />
-        <AreaText />
-        <AreaText />
-        <AreaText />
-        <AreaText />
-        <AreaText />
-        <AreaText />
-        <AreaText />
-      </div>
-      <div style="border: 1px solid;">
-        <AreaText isArea style="height: 300px;" />
-      </div>
-    </main> -->
+    <main style="display: flex;display: none;">
+      <AreaTextInputList style="width: 320px;margin: 0 10px;" />
+      <TextArea style="height: 300px;" />
+      <TextArea style="height: 300px;margin-left: 10px;" />
+    </main>
   </section>
 </template>
 
 <script>
-// import AreaText from '@/components/common/AreaText.vue';
+import TextArea from '@/components/common/AreaText/AreaText.vue';
+import AreaTextInputList from '@/components/common/AreaText/AreaTextInputList.vue';
 
 export default {
   components: {
-    // AreaText,
+    AreaTextInputList,
+    TextArea,
   },
   data() {
     return {

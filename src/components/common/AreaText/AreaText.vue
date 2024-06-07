@@ -1,18 +1,13 @@
 <template>
-  <div :class="isArea ? 'area' : ''">
-    <input v-if="!isArea" class="wrap" v-model="inputVal" ref="oArea" @keydown="onkeydown" />
-    <div v-else class="area-box">
-      <textarea class="wrap" v-model="inputVal" ref="oArea" @keydown="onkeydown" />
+  <div class="area-wrap">
+    <div class="area-box">
+      <textarea class="area" v-model="inputVal" ref="oArea" @keydown="onkeydown" />
     </div>
   </div>
 </template>
 
 <script setup lang='ts'>
 import { nextTick, ref } from 'vue';
-
-defineProps<{
-  isArea?: boolean
-}>();
 
 const inputVal = ref('');
 const oArea = ref<HTMLTextAreaElement>();
@@ -40,42 +35,42 @@ const onkeydown = async (e: KeyboardEvent) => {
 </script>
 
 <style scoped lang='scss'>
-.wrap {
-  // height: 300px;
-  width: 200px;
-  outline: none;
-  line-height: 30px;
-  border: none;
-  padding: 0;
-  background-color: #ccc;
-}
+$lineHeight: 30px;
 
-.area {
-  background-color: #ccc;
-
+.area-wrap {
   position: relative;
+  width: 100%;
+  height: 100%;
 
   .area-box {
+    width: 100%;
     height: 100%;
     z-index: 9;
     background-color: rgba($color: #000, $alpha: 0);
     position: relative;
 
-    textarea {
-      height: 100%;
+    .area {
+      width: 100% !important;
+      height: 100% !important;
+      outline: none;
+      border: 1px solid #cbcbcb;
       background-color: rgba($color: #000, $alpha: 0);
+      line-height: $lineHeight;
+      padding: 0 10px;
+      box-sizing: border-box;
+      white-space: nowrap;
     }
   }
 
   &::before {
     content: '';
+    position: absolute;
+    z-index: 0;
+
     left: 0;
     right: 0;
-    position: absolute;
     top: 0;
-    height: 30px;
-    background-color: #f40;
-    z-index: 0;
+    height: $lineHeight;
   }
 }
 </style>

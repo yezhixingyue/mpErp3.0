@@ -27,7 +27,7 @@
 <script setup lang='ts'>
 import { ElementTypeEnum } from '@/views/BasicSetup/FactorySerialization/js/enum';
 import { IMRElement } from '@/views/BasicSetup/FactorySerialization/js/types';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 const props = defineProps<{
   Element: IMRElement
@@ -43,6 +43,23 @@ if (!props.isRoot) {
   localElement.value.IsShow = true;
   // localElement.value.IsShowName = false;
 }
+
+watch(() => localDisabled.value, (val) => { // 在禁用时，清除勾选数据
+  if (val) {
+    localElement.value.IsShowName = false;
+
+    if (localElement.value.Type === ElementTypeEnum.Option && localElement.value.OptionList?.length > 0) {
+      localElement.value.OptionList.forEach(it => {
+        const _it = it;
+        _it.IsShowName = false;
+      });
+    }
+
+    if (localElement.value.Type === ElementTypeEnum.Switch) {
+      localElement.value.IsShowWord = false;
+    }
+  }
+});
 </script>
 
 <style scoped lang='scss'>

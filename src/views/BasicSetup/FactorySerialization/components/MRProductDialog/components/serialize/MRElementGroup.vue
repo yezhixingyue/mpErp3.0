@@ -13,7 +13,7 @@
 
 <script setup lang='ts'>
 import { IMRElementGroup } from '@/views/BasicSetup/FactorySerialization/js/types';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import MRElementList from './MRElementList.vue';
 
 const props = defineProps<{
@@ -29,6 +29,12 @@ if (!props.isRoot) {
   localGroup.value.IsShow = true;
   localGroup.value.IsShowName = false;
 }
+
+watch(() => localDisabled.value, (val) => { // 在禁用时，清除勾选数据
+  if (val) {
+    localGroup.value.IsShowName = false;
+  }
+});
 </script>
 
 <style scoped lang='scss'>

@@ -18,7 +18,7 @@
 
 <script setup lang='ts'>
 import { IMRCraft } from '@/views/BasicSetup/FactorySerialization/js/types';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import MRElementList from './MRElementList.vue';
 import MRElementGroupList from './MRElementGroupList.vue';
 
@@ -29,6 +29,13 @@ const props = defineProps<{
 const localCraft = computed(() => props.Craft);
 
 const hasList = computed(() => props.Craft.ElementList.length || props.Craft.GroupList.length);
+
+watch(() => localCraft.value.IsShow, (val) => { // 在禁用时，清除勾选数据
+  if (!val) {
+    localCraft.value.IsShowName = false;
+  }
+});
+
 </script>
 
 <style scoped lang='scss'>
