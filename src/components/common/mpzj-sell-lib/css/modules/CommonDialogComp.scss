@@ -40,8 +40,19 @@
     }
   }
 
-  // .el-dialog__body {
-  // }
+  .el-dialog__body {
+
+    .close-btn {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      &:hover {
+        color: #26bcf9;
+      }
+    }
+  }
 
   .el-dialog__footer {
     display: flex;
@@ -125,4 +136,11 @@
       }
     }
   }
+  &.hideHeader {
+    .el-dialog__header {
+      display: none;
+    }
+
+  }
+  
 }

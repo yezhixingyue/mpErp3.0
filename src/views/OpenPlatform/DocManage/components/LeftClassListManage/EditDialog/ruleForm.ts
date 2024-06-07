@@ -1,6 +1,6 @@
 import { docApi } from '@/api/doc';
 import { IClassEditData } from '../type';
-import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { dialogSuccess } from '@/assets/js/utils/MpMessage';
 
 /** 新增|编辑分类 */
 export class ClassSaveRuleForm {
@@ -46,7 +46,7 @@ export class ClassSaveRuleForm {
         this._data.classList.push(resp.data.Data);
       }
       this._data.visible = false;
-      MpMessage.dialogSuccess({ title: this._data.item ? '编辑成功' : '添加成功' });
+      dialogSuccess({ title: this._data.item ? '编辑成功' : '添加成功' });
     }
   }
 }

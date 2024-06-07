@@ -1,6 +1,6 @@
 import { docApi } from '@/api/doc';
 import { IDocClass, IClassTreeItem } from './types';
-import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { dialogSuccess, MpMessage } from '@/assets/js/utils/MpMessage';
 
 export class ManageClassList {
   /** 分类列表数据 */
@@ -73,7 +73,7 @@ export class ManageClassList {
         this.list.splice(i, 1, resp.data.Data);
       }
 
-      MpMessage.dialogSuccess({ title: '移动成功' });
+      dialogSuccess({ title: '移动成功' });
 
       return true;
     }

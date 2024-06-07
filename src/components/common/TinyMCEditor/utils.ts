@@ -18,7 +18,7 @@ export const upload = async (file: File, apiKey: 'getImgUpload' | 'getMediaUploa
   const resp = await docApi[apiKey](file).catch(() => null);
 
   if (resp?.data.Status === 1000) {
-    return docBaseURL + resp.data.Data;
+    return `${docBaseURL + resp.data.Data}?time=${Date.now()}`;
   }
 
   return null;

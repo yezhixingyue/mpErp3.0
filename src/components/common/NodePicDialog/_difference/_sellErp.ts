@@ -170,7 +170,7 @@ interface IEquipmentBaseInfo {
   GroupID: string
   /** 设备组名称 */
   GroupName: string
-  /** 是否外协工厂 */
+  /** 是否外购工厂 */
   IsExternalFactory: boolean
 }
 

@@ -113,7 +113,8 @@
 <script>
 import { mapMutations, mapState } from 'vuex';
 import { throttle } from '@/assets/js/utils/throttle';
-import TokenClass from '@/assets/js/utils/tokenManage';
+// import TokenClass from '@/assets/js/utils/tokenManage';
+import { logout } from '../../../basic/logout';
 // import sortable from '../../../assets/js/mixins/Sortable/Sortable';
 import ChangePwdDialog from './ChangePwdDialog.vue';
 import { WikiHandler } from '@/assets/js/TypeClass/WikiHandler';
@@ -300,8 +301,9 @@ export default {
     },
     handleLogoutClick() { // 退出
       this.messageBox.warnCancelNullMsg('确定退出登录吗?', () => {
-        TokenClass.removeToken();
-        this.$router.replace('/login');
+        // TokenClass.removeToken();
+        // this.$router.replace('/login');
+        logout();
       });
     },
     handleOpenPageClick(routeName) { // 停机维护点击事件

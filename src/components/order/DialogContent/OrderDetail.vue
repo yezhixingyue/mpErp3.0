@@ -1,5 +1,5 @@
 <template>
-  <div class="order-list-dialog-orderdetail-wrap">
+  <div class="order-list-dialog-orderdetail-wrap" :class="{onlyDetail}">
     <template v-if="showData">
       <div class="orderdetail-left is-shadow">
         <header class="bottom-line">
@@ -10,13 +10,13 @@
         </header>
         <article class="product-content">
           <section class="product-header">
-            <OrderDetailDisplayItem :ShowData='ProductShowData' />
+            <OrderDetailDisplayItem :ShowData='ProductShowData' :hiddenFactory="hiddenFactory" />
           </section>
           <section class="unit">  <!-- 部件信息 -->
             <OrderDetailDisplayItem v-for="(it, i) in PartShowDataList" :ShowData='it' :key="it.Name" :class="{border: i > 0}" :showBorder='i > 0' />
           </section>
         </article>
-        <footer v-if="!isCalculate">
+        <footer v-if="!isCalculate && !onlyDetail">
           <!-- <ul>
             <li>
               <span>原价：</span>
@@ -68,7 +68,7 @@
           <OrderDetailPriceBox :OrderData='showData' />
         </footer>
       </div>
-      <ul class="orderdetail-right">
+      <ul class="orderdetail-right" v-if="!onlyDetail">
         <li class="customer-info is-shadow">
           <header class="bottom-line">
             <i>
@@ -300,6 +300,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    onlyDetail: {
+      type: Boolean,
+      default: false,
+    },
+    hiddenFactory: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapState('orderModule', ['orderDetailData', 'OrderStatusList', 'orderListData']),
@@ -349,7 +357,7 @@ export default {
         if (Array.isArray(it.List)) {
           it.List.forEach((part, index) => {
             const ContentList = this.getPartShowList(it.Attributes.DisplayOrderList, part);
-            const Name = it.List.length > 1 && index > 0 ? `${it.Attributes.Name}${index + 1}` : it.Attributes.Name;
+            const Name = it.List.length > 1 ? `${it.Attributes.Name}${index + 1}` : it.Attributes.Name;
             const temp = {
               Name,
               Type: 'Part',
@@ -862,6 +870,27 @@ export default {
   }
   li.prop-list-wrap {
     margin-bottom: 0;
+  }
+
+  &.onlyDetail {
+    width: 100%;
+    height: auto;
+    margin: 0;
+
+    .orderdetail-left {
+      width: 100%;
+      box-shadow: none;
+
+      > header {
+        &::after {
+          display: none;
+        }
+      }
+
+      .product-content {
+        height: auto;
+      }
+    }
   }
 }
 </style>

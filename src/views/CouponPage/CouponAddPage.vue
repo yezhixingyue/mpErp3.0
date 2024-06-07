@@ -102,7 +102,7 @@ export default {
     > .right {
       flex: none;
       width: 60%;
-      min-width: 590px;
+      min-width: 740px;
       border-left: 1px solid #eee;
     }
     .mp-common-comps-tree-comp-wrap > .content > .el-tree > .el-tree-node

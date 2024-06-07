@@ -83,6 +83,10 @@ export default class Condition2CouponSaveClassType {
 
     MaxReceiveNumber = ''; // 客户最大领取数量
 
+    UseNewCustomer = false; // 是否新人券
+
+    SendNumber = ''; // 新人券数量
+
     constructor(data) {
       if (data) {
         this.backfill(data);
@@ -161,6 +165,10 @@ export default class Condition2CouponSaveClassType {
       //   showError('请添加活动商品');
       //   return false;
       // }
+      if (obj.UseNewCustomer && !obj.SendNumber) {
+        showError('请输入新人券发放数量');
+        return false;
+      }
       if (obj.OrderTypeList.length === 0) {
         showError('请选择下单渠道');
         return false;
