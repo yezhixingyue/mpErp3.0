@@ -58,7 +58,7 @@ const onDownloadClick = () => {
   if (props.multipleSelection.length === 0) return;
 
   MpMessage.warn({
-    title: '批量外购提醒!',
+    title: '批量下载提醒!',
     msg: `当前选中<i class="is-pink">${props.multipleSelection.length}个</i>订单，确定是否下载`,
     onOk: () => {
       emit('download', props.multipleSelection);
@@ -69,7 +69,7 @@ const onSendFactoryClick = () => {
   if (props.multipleSelection.length === 0) return;
 
   MpMessage.warn({
-    title: '批量下载提醒!',
+    title: '批量外购提醒!',
     msg: `当前选中<i class="is-pink">${props.multipleSelection.length}个</i>订单，将外购给指定工厂`,
     onOk: () => {
       emit('BatchSendFactory');

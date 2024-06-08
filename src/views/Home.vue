@@ -15,22 +15,19 @@
       <span>，开始今天的工作吧！</span>
       <!-- <i>!</i> -->
     </header>
-    <main style="display: flex;display: none;">
-      <AreaTextInputList style="width: 320px;margin: 0 10px;" />
-      <TextArea style="height: 300px;" />
-      <TextArea style="height: 300px;margin-left: 10px;" />
+    <main style="display: none;">
+    <!-- <main> -->
+      <TestAreaText />
     </main>
   </section>
 </template>
 
 <script>
-import TextArea from '@/components/common/AreaText/AreaText.vue';
-import AreaTextInputList from '@/components/common/AreaText/AreaTextInputList.vue';
+import TestAreaText from '@/components/common/AreaText/TestAreaText.vue';
 
 export default {
   components: {
-    AreaTextInputList,
-    TextArea,
+    TestAreaText,
   },
   data() {
     return {
