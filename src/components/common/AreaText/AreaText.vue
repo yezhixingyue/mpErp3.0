@@ -1,46 +1,83 @@
 <template>
-  <div class="area-wrap" :class="localIndex >= 0 ? `top-${top}` : ''">
-    <div class="area-box">
-      <textarea v-model="localInputVal" ref="oArea" @keydown="onkeydown" @blur="localIndex = -1" />
-    </div>
+  <div class="area-wrap">
+    <textarea
+      ref="oArea"
+      v-model="localVal"
+      @keydown="onkeydown"
+      @blur="setIndex(-1)"
+      @scroll="onscroll"
+      @mouseenter="isHover = true"
+      @mouseleave="isHover = false"
+    />
+    <div class="bar" :style="`top:${top}px`" v-show="index >= 0"></div>
   </div>
 </template>
 
 <script setup lang='ts'>
-import { computed, nextTick, onActivated, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
-import { NEW_LINE_CHAR, TAB_CHAR } from './utils';
+import { computed, nextTick, ref } from 'vue';
+import { useScroll, useSelectionChange } from './hooks';
+import { TAB_CHAR } from './utils';
 
 const props = defineProps<{
   index: number
+  scrollTop: number
+  value: string
 }>();
 
-const emit = defineEmits(['update:index']);
+const emit = defineEmits(['update:value', 'update:index', 'update:scrollTop', 'lineChange']);
 
-const localInputVal = ref('1\n2\n3\n5\n6\n4\n7\n8\n9\n0');
-
-const localIndex = computed({
+const localVal = computed({
   get() {
-    return props.index;
+    return props.value;
   },
-  set(val) {
-    emit('update:index', val);
+  async set(val: string) {
+    const oldVal = props.value;
+
+    emit('update:value', val);
+
+    // 输入内容发生改变 且是自身触发
+    if (document.activeElement !== oArea.value) return;
+
+    const newLineCount = val.split('\n').length;
+    const oldLineCount = oldVal.split('\n').length;
+
+    if (newLineCount === oldLineCount) return; // 行数没有发生变化
+
+    await nextTick();
+
+    onselectionchange();
+
+    await nextTick();
+
+    emit('lineChange', newLineCount - oldLineCount);
   },
 });
 
 const lineHeight = 30;
-const top = computed(() => lineHeight * localIndex.value);
+const top = computed(() => lineHeight * props.index - props.scrollTop);
 
 const oArea = ref<HTMLTextAreaElement>();
 
-const onkeydown = async (e: KeyboardEvent) => {
-  if (e.code !== 'Tab') return;
+const setScrollTop = (num: number) => emit('update:scrollTop', num);
+const setIndex = (num: number) => {
+  emit('update:index', num);
+  setScrollTop(oArea.value.scrollTop);
+};
+
+const { isHover, onscroll } = useScroll(oArea, props, setScrollTop);
+const { onselectionchange } = useSelectionChange(oArea, localVal, setIndex);
+
+const onkeydown = async (e: KeyboardEvent) => { // Tab事件
+  if (e.key !== 'Tab') {
+    return;
+  }
 
   const _index = oArea.value.selectionStart;
   if (typeof _index !== 'number') return;
 
-  const newVal = localInputVal.value.slice(0, _index) + TAB_CHAR + localInputVal.value.slice(_index);
+  const newVal = localVal.value.slice(0, _index) + TAB_CHAR + localVal.value.slice(_index);
 
-  localInputVal.value = newVal;
+  localVal.value = newVal;
 
   await nextTick();
 
@@ -50,30 +87,6 @@ const onkeydown = async (e: KeyboardEvent) => {
   e.preventDefault();
 };
 
-const onselectionchange = () => {
-  if (document.activeElement !== oArea.value) return;
-
-  // 获取当前正处于第几行位置
-  const reg = new RegExp(NEW_LINE_CHAR, 'g');
-
-  const _index = oArea.value.selectionStart; // 当前光标所处位置
-  const _leftContent = localInputVal.value.slice(0, _index);
-
-  localIndex.value = _leftContent.match(reg)?.length || 0;
-};
-
-onMounted(() => {
-  document.addEventListener('selectionchange', onselectionchange);
-});
-onUnmounted(() => {
-  document.removeEventListener('selectionchange', onselectionchange);
-});
-onActivated(() => {
-  document.addEventListener('selectionchange', onselectionchange);
-});
-onDeactivated(() => {
-  document.removeEventListener('selectionchange', onselectionchange);
-});
 </script>
 
 <style scoped lang='scss'>
@@ -84,55 +97,46 @@ $rowActiveBg: lighten(#26bcf9, 32);
   position: relative;
   width: 100%;
   height: 100%;
-  // overflow: hidden;
+  overflow: hidden;
 
-  .area-box {
-    width: 100%;
-    height: 100%;
+  textarea {
+    width: 100% !important;
+    height: 100% !important;
+    outline: none;
+    border: 1px solid #cbcbcb;
     z-index: 9;
     background-color: rgba($color: #000, $alpha: 0);
     position: relative;
+    line-height: $lineHeight;
+    padding: 0 10px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: overlay;
 
-    textarea {
-      width: 100% !important;
-      height: 100% !important;
-      outline: none;
-      border: 1px solid #cbcbcb;
-      background-color: rgba($color: #000, $alpha: 0);
-      line-height: $lineHeight;
-      padding: 0 10px;
-      box-sizing: border-box;
-      white-space: nowrap;
-      overflow: overlay;
-      &::-webkit-scrollbar{
-        width: 6px;
-        height: 8px;
-      }
-      &::-webkit-scrollbar-thumb {
-        background-color: rgba(0,0,0, .25);
-        border-radius: 3px;
-        transition: background-color 0.1s ease-in-out;
-        &:hover {
-          background-color: rgba($color: #000, $alpha: 0.4);
-        }
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, .25);
+      border-radius: 3px;
+      transition: background-color 0.1s ease-in-out;
+
+      &:hover {
+        background-color: rgba($color: #000, $alpha: 0.4);
       }
     }
   }
 
-  &::before {
-    content: '';
+  .bar {
     position: absolute;
     z-index: 0;
 
     left: 0;
     right: 0;
     height: $lineHeight;
-  }
-}
-@for $num from 0 through 1000 {
-  .top-#{$num}.area-wrap::before {
-    top: #{$num}px;
     background-color: $rowActiveBg;
-  };
+  }
 }
 </style>

@@ -82,7 +82,7 @@ const routes = { // 基本设置
         title: '制作需求设置',
         icon: 'icon-zhizuoxuqiushezhi iconfont',
         pageName: 'FactorySerialization4OutPage',
-        // PermissionInfo: ['PermissionSetupFactoryBase', 'HavePomission'],
+        PermissionInfo: ['PermissionSetupFactoryBase', 'Obj', 'MRSetup'],
         requiresAuth: true,
       },
       component: () => import('../../../views/BasicSetup/FactorySerialization/FactorySerialization4OutPage.vue'),
