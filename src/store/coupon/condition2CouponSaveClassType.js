@@ -260,8 +260,10 @@ export default class Condition2CouponSaveClassType {
 
       this.ProductClassList = data.ProductClassList;
 
-      const { IsCustomerReceive, MaxReceiveNumber } = data;
+      const { IsCustomerReceive, MaxReceiveNumber, SendNumber, UseNewCustomer } = data;
       this.IsCustomerReceive = IsCustomerReceive || false;
       this.MaxReceiveNumber = (MaxReceiveNumber || MaxReceiveNumber === 0) ? MaxReceiveNumber : '';
+      this.UseNewCustomer = UseNewCustomer;
+      this.SendNumber = (SendNumber || SendNumber === 0) ? SendNumber : '';
     }
 }
