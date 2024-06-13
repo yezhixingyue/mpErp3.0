@@ -131,7 +131,7 @@
     <el-table-column width="300px" label="操作">
       <ul class="handle-menus" slot-scope="scope">
         <li class="stop-box" v-if="localPermission.Generate">
-          <span class="is-list-btn" v-if="!scope.row.IsCustomerReceive && !scope.row.Data.UseNewCustomer"
+          <span class="is-list-btn" v-if="!scope.row.IsCustomerReceive && !scope.row.UseNewCustomer"
            @click="onGenerateCoupons(scope.row, scope.$index, scope.row.ProductString ? scope.row.ProductString.split('\n') : [])">
             <img src="@/assets/images/edit-icon.png" alt />手动生成
           </span>
