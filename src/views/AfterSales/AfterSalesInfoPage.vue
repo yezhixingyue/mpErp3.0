@@ -9,6 +9,7 @@
           <CustomerAppealComp/>
           <OrderDetailsComp/>
         </div>
+        <ScheduleComp/>
       </div>
       <AfterSalesSolutionFromComp/>
     </main>
@@ -22,6 +23,7 @@ import CustomerAppealComp from '@/components/AfterSalesComps/CustomerAppealComp.
 import OrderDetailsComp from '@/components/AfterSalesComps/OrderDetailsComp.vue';
 import AfterSalesSolutionFromComp from '@/components/AfterSalesComps/AfterSalesSolutionFromComp.vue';
 import BreadcrumbNav from '@/components/AfterSalesComps/BreadcrumbNav.vue';
+import ScheduleComp from '@/components/AfterSalesComps/ScheduleComp.vue';
 
 export default {
   name: 'AfterSalesInfoPage',
@@ -30,6 +32,7 @@ export default {
     OrderDetailsComp,
     AfterSalesSolutionFromComp,
     BreadcrumbNav,
+    ScheduleComp,
   },
   data() {
     return {
