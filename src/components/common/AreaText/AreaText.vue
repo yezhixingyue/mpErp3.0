@@ -6,22 +6,23 @@
       @keydown="onkeydown"
       @blur="setIndex(-1)"
       @scroll="onscroll"
-      @mouseenter="isHover = true"
-      @mouseleave="isHover = false"
+      @mouseenter="isHover=true"
+      @mouseleave="isHover=false"
     />
     <div class="bar" :style="`top:${top}px`" v-show="index >= 0"></div>
   </div>
 </template>
 
 <script setup lang='ts'>
-import { computed, nextTick, ref } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
+import { delay } from '../NodePicDialog/js/utils';
 import { useScroll, useSelectionChange } from './hooks';
 import { TAB_CHAR } from './utils';
 
 const props = defineProps<{
-  index: number
-  scrollTop: number
   value: string
+  scrollTop: number
+  index: number
 }>();
 
 const emit = defineEmits(['update:value', 'update:index', 'update:scrollTop', 'lineChange']);
@@ -87,6 +88,21 @@ const onkeydown = async (e: KeyboardEvent) => { // Tab事件
   e.preventDefault();
 };
 
+watch(() => localVal.value, async (val, oldVal) => {
+  if (document.activeElement === oArea.value) return;
+
+  const newLineCount = val.split('\n').length;
+  const oldLineCount = oldVal.split('\n').length;
+  if (newLineCount === oldLineCount) return; // 行数没有发生变化
+
+  await nextTick();
+
+  const _oArea = oArea;
+  _oArea.value.scrollTop = props.scrollTop;
+
+  await delay(10);
+  _oArea.value.scrollTop = props.scrollTop;
+});
 </script>
 
 <style scoped lang='scss'>

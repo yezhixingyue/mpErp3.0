@@ -236,7 +236,7 @@ const api = {
   /* 图片与文件上传api
    ----------------------------------------------------------------------------------- */
   getFileServer(Position) {
-    return instance.get('/Api/FileServer', { params: { Position }, loading: false });
+    return instance.get<string>('/Api/FileServer', { params: { Position }, loading: false });
   },
   // type 图片类型 为1时为营业执照会打水印
   uploadImage(data, type = 1) { // 图片上传  POST /Api/Upload/Image
@@ -1624,7 +1624,7 @@ const api = {
     return instance.post('/Api/Customer/Certificate/ManageList', data);
   },
   getCustomerCertificateAll(CustomerID: string) { // /Api/Customer/Certificate/All 获取客户证书列表
-    return instance.post('/Api/Customer/Certificate/All', { CustomerID });
+    return instance.post('/Api/Customer/Certificate/All', { CustomerID, IsPlaceOrder: false });
   },
   getCustomerCertificateNoPassReason() { // GET /Api/Customer/Certificate/NoPassReason 审核不通过原因模板
     return instance.get('/Api/Customer/Certificate/NoPassReason');

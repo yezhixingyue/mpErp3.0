@@ -48,6 +48,7 @@ function _onUploadProgressFunc(e, { initPercentage, lastedPercentage, onUploadPr
   const willPer = (+`${tempPer.toFixed(2)}0`).toFixed(2);
   if (willPer) onUploadProgressFunc(willPer);
 }
+
 /**
  * 用于文件切片后上传
  *

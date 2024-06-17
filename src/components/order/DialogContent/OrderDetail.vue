@@ -205,7 +205,7 @@
                     <!-- <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc"
                      v-if="showData.FileCase" :CustomerID='showData.Customer.CustomerID' /> -->
                     <div class="ft-12" v-if="showData.FileCase" @click="onAnewUploadClick">解决审稿问题</div>
-                    <el-button type="primary" @click="handleReview">
+                    <el-button type="primary" @click="handleReview" :disabled="resumeQuestionDisable">
                       <!-- {{showData.FileCase ? '文件没问题' : '该订单无文件'}} -->
                       没问题,重新审稿</el-button>
                   </li>
@@ -308,6 +308,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    CertificateList: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     ...mapState('orderModule', ['orderDetailData', 'OrderStatusList', 'orderListData']),
@@ -390,6 +394,16 @@ export default {
       // }
       return false;
     },
+    resumeQuestionDisable() {
+      if (this.showData && this.CertificateList.length > 0 && this.showData.CertificateFileList && this.showData.CertificateFileList.length > 0) {
+        const [id] = this.showData.CertificateFileList;
+        const t = this.CertificateList.find(it => it.CertificateID === id);
+
+        return !t || t.CheckStatus === 0 || t.CheckStatus === 2;
+      }
+
+      return false;
+    },
   },
   components: {
     // normalBtn,
@@ -432,7 +446,7 @@ export default {
       // eslint-disable-next-line consistent-return
       return list.filter((item) => item.Value.length > 0);
     },
-    handleReview() { // 不传文件重新提交审稿
+    async handleReview() { // 不传文件重新提交审稿
       this.messageBox.warnCancelBox(
         '确认该问题件订单没问题吗?',
         '[ 未做更改，审稿人员将重新审核当前订单 ]',
@@ -795,6 +809,10 @@ export default {
           }
           &:active {
             color: #009EF9;
+          }
+          &.is-disabled {
+            background-color: #fff;
+            color: #cbcbcb;
           }
         }
         > div {

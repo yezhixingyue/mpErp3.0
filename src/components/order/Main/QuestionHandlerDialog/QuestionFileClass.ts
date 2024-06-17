@@ -1,4 +1,5 @@
-import breakPointUpload, { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+// import breakPointUpload, { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+import { breakPointUpload, getUniqueFileName } from '@/basic/BreakpointUpload';
 
 export class QuestionFileClass {
   file:File

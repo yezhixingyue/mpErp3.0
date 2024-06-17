@@ -23,7 +23,7 @@
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane v-if="showDetail" label="订单详情" name="first">
-          <OrderDetail v-if="!isLoading" showDownload @prodProgress="onProdProgressClick" @anewUpload="onAnewUploadClick" />
+          <OrderDetail v-if="!isLoading" showDownload @prodProgress="onProdProgressClick" @anewUpload="onAnewUploadClick" :CertificateList="CertificateList" />
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane  v-if="canShowExpressList" label="包裹列表" name="second">
@@ -54,12 +54,19 @@ import normalBtn from '@/components/common/normalBtn.vue';
 import LoadingComp from '@/components/common/LoadingComp.vue';
 
 export default {
+  props: {
+    CertificateList: { // 证书列表数据
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       activeName: 'first',
       dialogTop: '0px',
       showDetail: false,
       showService: false,
+      isFetchCertificateListWaiting: false, // 等待获取证书列表数据
     };
   },
   components: {
@@ -97,11 +104,36 @@ export default {
     orderListDialogShowText(val) {
       if (val) this.activeName = val;
     },
+    orderListDialogShow(newVal, oldVal) {
+      this.$emit('setCertificateList', []);
+      this.isFetchCertificateListWaiting = false;
+
+      if (newVal && !oldVal && this.showDetail && this.$route.name === 'orderManage') {
+        this.isFetchCertificateListWaiting = true;
+      }
+    },
+    orderDetailData(val) {
+      if (this.isFetchCertificateListWaiting && val) {
+        const { CertificateFileList, Status, Customer } = val;
+        if (Status === 35 && CertificateFileList && CertificateFileList.length > 0) {
+          // 看看是否有证书 如果有证书则请求证书列表数据 看对应证书是否审核不通过、找不到、已过期 -- 如果是则不允许做此选择
+          this.getCertificateList(Customer.CustomerID);
+        }
+      }
+    },
   },
   methods: {
     ...mapMutations('orderModule', ['setOrderListDialogHide', 'setOrderListDialogShowText', 'getOrderDetail']),
     ...mapMutations('common', ['setIsLoading']),
     ...mapActions('orderModule', ['selectOrderProgress', 'getOrderDetail', 'getExpressProgress', 'getPackageListByExressID', 'getPackageListByOrderID']),
+    async getCertificateList(CustomerID) {
+      this.$emit('setCertificateList', []);
+      const resp = await this.api.getCustomerCertificateAll(CustomerID).catch(() => null);
+
+      if (resp && resp.data.Status === 1000) {
+        this.$emit('setCertificateList', resp.data.Data || []);
+      }
+    },
     handleCatchError(error) { // 处理tab弹窗点击与切换catch错误信息
       this.messageBox.handleLoadingError(
         error,
@@ -185,6 +217,7 @@ export default {
   },
   mounted() {
     if (this.$route.name === 'orderManage' || this.$route.name === 'FeedbackInfo' || this.$route.name === 'ServiceInfo') {
+      console.log('this.showDetail', this.showDetail);
       this.showDetail = true;
       this.showService = true;
     }

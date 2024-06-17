@@ -2,7 +2,8 @@ import api from '@/api';
 import { Loading, Message } from 'element-ui';
 import { getIsOrNotHasRepeatItemInArray } from '@/assets/js/utils/util';
 import messageBox from '@/assets/js/utils/message';
-import breakPointUpload, { getUniqueFileName } from '../upload/UploadFileByBreakPoint';
+// import breakPointUpload, { getUniqueFileName } from '../upload/UploadFileByBreakPoint';
+import { breakPointUpload, getUniqueFileName } from '@/basic/BreakpointUpload';
 
 /**
  * 文件批量上传使用类
