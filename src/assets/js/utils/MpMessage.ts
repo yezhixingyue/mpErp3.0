@@ -1,6 +1,6 @@
 import { Message } from 'element-ui';
 
-export { MyMessageBox as MpMessage } from '@/assets/js/utils/NewMessage';
+export { MyMessage as MpMessage } from '@/basic/message';
 // import message from './message';
 
 // interface Ioptions {

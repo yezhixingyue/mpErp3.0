@@ -118,7 +118,7 @@ export default {
         PayType: this.PaymentMethod,
         PlateList: [],
       };
-      if (this.OrderData?.IsOwnFactory) {
+      if (this.OrderData?.IsOwnFactory && this.ProductionInfo) {
         _temp.PlateList = this.ProductionInfo.PlateList.map(it => ({ ...it, IsWholePlate: this.formValue[it.ID] === 2 }));
       }
       // 请求取消接口
@@ -179,10 +179,12 @@ export default {
             this.ProductionInfo = ProductionInfoRes.data.Data;
           }
           const tempValue = {};
-          this.ProductionInfo.PlateList.forEach(element => {
-            tempValue[element.ID] = this.formValue[element.ID] || 1;
-          });
-          this.formValue = { ...tempValue };
+          if (this.ProductionInfo) {
+            this.ProductionInfo.PlateList.forEach(element => {
+              tempValue[element.ID] = this.formValue[element.ID] || 1;
+            });
+            this.formValue = { ...tempValue };
+          }
         }).catch((err) => {
           this.initLoading = false;
           throw new Error(err);
@@ -198,16 +200,6 @@ export default {
           throw new Error(err);
         });
       }
-      // this.tableList = [
-      //   { ID: 101 },
-      //   { ID: 102 },
-      //   { ID: 103 },
-      // ];
-      // const tempValue = {};
-      // this.ProductionInfo.PlateList.forEach(element => {
-      //   tempValue[element.ID] = this.formValue[element.ID] || 1;
-      // });
-      // this.formValue = { ...tempValue };
     },
     refresh() {
       this.open();

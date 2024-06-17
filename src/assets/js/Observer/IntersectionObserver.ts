@@ -1,4 +1,4 @@
-/** IntersectionObserver: 用于监听一个元素的可见比例（一个DOM元素被另一个DOM元素遮挡百分比）变化。 */
+/** IntersectionObserver: 用于监听一个元素的可见比例（一个DOM元素被另一个DOM元素遮挡百分比）变化。  */
 export const useIntersectionObserver = (target: HTMLElement, rootTarget?: HTMLElement) => {
   const options = {
     root: rootTarget, // 相对于某个元素进行遮挡计算 - 可缺省 -- 如果不传值默认为最近的可滚动的元素?(目前观察结果可能是)

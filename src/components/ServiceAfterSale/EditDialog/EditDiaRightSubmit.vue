@@ -182,7 +182,8 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
 import SingleRadio from '@/components/common/SingleRadio.vue';
 // import { Base64 } from 'js-base64';
-import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+// import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+import { getUniqueFileName } from '@/basic/BreakpointUpload';
 import MpTextInput from './MpTextInput.vue';
 import DropDown from '../../common/DropDown.vue';
 

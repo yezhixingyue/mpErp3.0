@@ -8,13 +8,19 @@
 
 <script setup lang='ts'>
 import { IMRPart } from '@/views/BasicSetup/FactorySerialization/js/types';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 const props = defineProps<{
   Material?: IMRPart['Material']
 }>();
 
 const localMaterial = computed(() => props.Material);
+
+watch(() => localMaterial.value.IsShow, (val) => { // 在禁用时，清除勾选数据
+  if (!val) {
+    localMaterial.value.IsShowName = false;
+  }
+});
 </script>
 
 <style scoped lang='scss'>

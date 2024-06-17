@@ -1,4 +1,4 @@
-import instance from '@/api/axios';
+import { instance } from '@/basic/request';
 
 export const baseSetupApis = {
   /** POST /Api/Product/MRList  获取产品生产需求列表 */
