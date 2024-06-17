@@ -1,11 +1,7 @@
 <template>
   <section class="mp-after-sales-info-page-wrap">
     <header>
-      <p class="is-bold">
-        <span>售后列表</span>
-        <i></i>
-        售后详情
-      </p>
+      <BreadcrumbNav backLabel="售后列表" label="售后详情"></BreadcrumbNav>
     </header>
     <main>
       <div class="left">
@@ -25,6 +21,7 @@ import { mapState } from 'vuex';
 import CustomerAppealComp from '@/components/AfterSalesComps/CustomerAppealComp.vue';
 import OrderDetailsComp from '@/components/AfterSalesComps/OrderDetailsComp.vue';
 import AfterSalesSolutionFromComp from '@/components/AfterSalesComps/AfterSalesSolutionFromComp.vue';
+import BreadcrumbNav from '@/components/AfterSalesComps/BreadcrumbNav.vue';
 
 export default {
   name: 'AfterSalesInfoPage',
@@ -32,6 +29,7 @@ export default {
     CustomerAppealComp,
     OrderDetailsComp,
     AfterSalesSolutionFromComp,
+    BreadcrumbNav,
   },
   data() {
     return {
@@ -65,14 +63,6 @@ export default {
   padding-left: 20px;
   >header{
     margin-top: 20px;
-    >p{
-      margin-bottom: 5px;
-      font-size: 12px;
-      >span{
-        color: #26BCF9;
-        cursor: pointer;
-      }
-    }
   }
   >main{
     display: flex;

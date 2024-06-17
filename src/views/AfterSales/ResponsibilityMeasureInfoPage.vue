@@ -1,7 +1,7 @@
 <template>
   <section class="responsibility-measure-info-page-wrap">
     <header>
-      aaa
+      <BreadcrumbNav backLabel="划分责任" label="查看详情"></BreadcrumbNav>
     </header>
     <main>
       <AfterSalesSolutionInfoComp/>
@@ -17,6 +17,7 @@ import { mapState } from 'vuex';
 import AfterSalesSolutionInfoComp from '@/components/AfterSalesComps/AfterSalesSolutionInfoComp.vue';
 import ResponsibilityDifferentiationComp from '@/components/AfterSalesComps/ResponsibilityDifferentiationComp.vue';
 import OrderDetailsComp from '@/components/AfterSalesComps/OrderDetailsComp.vue';
+import BreadcrumbNav from '@/components/AfterSalesComps/BreadcrumbNav.vue';
 
 export default {
   name: 'ResponsibilityMeasurePage',
@@ -24,6 +25,7 @@ export default {
     AfterSalesSolutionInfoComp,
     ResponsibilityDifferentiationComp,
     OrderDetailsComp,
+    BreadcrumbNav,
   },
   data() {
     return {
@@ -52,6 +54,12 @@ export default {
 <style lang='scss'>
 @import "@/assets/css/var.scss";
 .responsibility-measure-info-page-wrap{
+  padding-left: 20px;
+  >header{
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
   >main{
     display: flex;
     justify-content: flex-start;
