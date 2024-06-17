@@ -28,7 +28,8 @@
         </span>
      </Count>
     </div>
-    <OrderListDialog @prodProgress="onProdProgressClick" @anewUpload="onAnewUploadClick" />
+    <OrderListDialog :CertificateList="CertificateList"
+     @prodProgress="onProdProgressClick" @anewUpload="onAnewUploadClick" @setCertificateList=setCertificateList />
     <!-- 工厂进度弹窗 -->
     <NodePicDialog v-if="orderDetailData"
      :visible="processVisible" @update:visible="(val) => processVisible = val" :targetID="orderDetailData.OrderID" :item="null" :targetType="2" />
@@ -52,8 +53,10 @@
      :visible.sync="AnewUploadVisible"
      :CustomerID="orderDetailData?.Customer?.CustomerID || ''"
      :CertificateID="CertificateID"
+     :CertificateList="CertificateList"
      :CertificateTypeList="CertificateType"
      :handerFunc="AnewUploadHanderFunc"
+     @setCertificateList=setCertificateList
      />
   </div>
 </template>
@@ -115,10 +118,15 @@ export default {
       CancelProductionData: null,
       // 要被取消生产的index
       CancelProductionIndex: null,
+      CertificateList: [],
     };
   },
   methods: {
     ...mapActions('orderModule', ['delTargetOrder', 'getOrderTableData', 'getOrderListData2Excel']),
+    setCertificateList(list) {
+      console.log('setCertificateList', list);
+      this.CertificateList = list;
+    },
     handlePageChange(page) {
       this.getOrderTableData({ page, type: 'get' });
     },
@@ -179,11 +187,9 @@ export default {
       this.processVisible = true;
     },
     onAnewUploadClick() { // 重新上传文件再审稿
-      console.log(this.orderDetailData);
       this.AnewUploadVisible = true;
     },
     AnewUploadHanderFunc(data) {
-      console.log(data);
       return this.$store.dispatch('orderModule/setOrderReCheckFile', data);
     },
   },

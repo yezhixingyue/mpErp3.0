@@ -17,8 +17,23 @@ export class QuestionManageCLass {
 
   CertificateList: ICertificate[] = [] // 全部证书列表数据
 
+  refreshcb: (list: ICertificate[]) => void
+
+  get oldCertificateItem() {
+    return this.CertificateList.find(it => it.CertificateID === this.oldCertificate);
+  }
+
   get oldCertificateName() {
-    return this.CertificateList.find(it => it.CertificateID === this.oldCertificate)?.CertificateName || '';
+    const t = this.oldCertificateItem;
+    if (t) {
+      let statusText = '';
+
+      if (t.CertificateStatus === 0) statusText = '已过期';
+      if (t.CheckStatus === 2) statusText = '未通过';
+
+      return `${t.CertificateName}${statusText ? ` ( ${statusText} )` : ''}`;
+    }
+    return '--';
   }
 
   get newCertificateName() {
@@ -27,21 +42,29 @@ export class QuestionManageCLass {
 
   loading = false
 
-  constructor(fileList: File[], CustomerID: string, oldCertificate: string) {
+  constructor(fileList: File[], CustomerID: string, oldCertificate: string, CertificateList: ICertificate[], refreshcb: (list: ICertificate[]) => void) {
     this.CustomerID = CustomerID;
     this.oldCertificate = oldCertificate;
     this.updateFileList(fileList);
+    this.refreshcb = refreshcb;
 
     // 获取证书列表数据
-    this.getCustomerCertificateAll();
+    if (CertificateList.length > 0) {
+      this.CertificateList = CertificateList;
+    } else {
+      this.getCustomerCertificateAll();
+    }
   }
 
   async getCustomerCertificateAll() { // 获取证书列表数据
+    if (!this.oldCertificate) return;
+
     this.CertificateList = [];
     const resp = await api.getCustomerCertificateAll(this.CustomerID).catch(() => null);
 
     if (resp && resp.data.Status === 1000) {
       this.CertificateList = resp.data.Data || [];
+      this.refreshcb(this.CertificateList);
     }
   }
 
@@ -76,6 +99,14 @@ export class QuestionManageCLass {
     if (this.list.length > 0 && !this.list.find(it => it.isPrintFile)) {
       MpMessage.error({ title: '请指定印刷文件' });
       return false;
+    }
+
+    // 未上传证书则校验旧证书是否可用
+    if (!this.newCertificate && this.oldCertificate) {
+      if (!this.oldCertificateItem || this.oldCertificateItem.CheckStatus === 2 || this.oldCertificateItem.CertificateStatus === 0) {
+        MpMessage.error({ title: '请重新选择证书' });
+        return false;
+      }
     }
 
     return true;

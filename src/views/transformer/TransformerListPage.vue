@@ -101,6 +101,10 @@ const onMenuClick = (type: menuTypeEnum) => {
       router.push('/unionMakeupLimitList');
       break;
 
+    case menuTypeEnum.NumericalCodeAutoMakeup: // 数码自动拼版
+      router.push('/numericalCodeAutoMakeupList');
+      break;
+
     case menuTypeEnum.OtherSetup: // 其它设置
       router.push('/otherLimitList');
       break;

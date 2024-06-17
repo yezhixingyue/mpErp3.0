@@ -41,6 +41,7 @@
         :typeList="[['DateType', ''], ['CreateDate', 'First'], ['CreateDate', 'Second']]"
         :dateValue='set2PaymentList.DateType'
         :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
+        minDate="2022-01-01 00:00:00"
         label="时间筛选"
         :dateList="dateList"
         />
@@ -80,9 +81,10 @@ export default {
   data() {
     return {
       dateList: [
-        { name: '不限', ID: 'all' },
+        // { name: '不限', ID: 'all' },
         { name: '今天', ID: 'today' },
         { name: '昨天', ID: 'yesterday' },
+        { name: '前天', ID: 'beforeyesterday' },
         { name: '本月', ID: 'curMonth' },
         { name: '上月', ID: 'lastMonth' },
       ],

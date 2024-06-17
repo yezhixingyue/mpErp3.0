@@ -23,17 +23,17 @@ export const CheckFileOrderStatusEnumObj = {
   },
   WaitSendFactory: {
     ID: 20,
-    Name: '待确认外协',
-    filter: true, // 手动外协列表是否需要此项进行筛选
+    Name: '待外购',
+    filter: true, // 手动外购列表是否需要此项进行筛选
   },
   OutsourceComfirm: {
     ID: 21,
-    Name: '待接单',
+    Name: '已外购',
     filter: true,
   },
   HaveSendFactory: {
     ID: 25,
-    Name: '生产中',
+    Name: '已接单',
     filter: true,
   },
   Finished: {
@@ -41,12 +41,19 @@ export const CheckFileOrderStatusEnumObj = {
     Name: '生产完成',
     filter: true,
   },
+  Abort: {
+    ID: 253,
+    Name: '生产终止',
+    filter: true,
+    className: 'is-gray',
+  },
   Cancled: {
     ID: 255,
-    Name: '订单已取消',
+    Name: '订单取消',
     filter: true,
+    className: 'is-gray',
   },
 };
 
-/** 外协订单状态枚举列表 */
+/** 外购订单状态枚举列表 */
 export const CheckFileOrderStatusEnumList = getEnumList(CheckFileOrderStatusEnumObj, true);

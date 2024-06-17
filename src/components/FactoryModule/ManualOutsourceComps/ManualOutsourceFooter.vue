@@ -1,26 +1,35 @@
 <template>
   <footer class="mp-erp-factory-manual-out-source-manage-page-footer-wrap">
-    <Count
-      :watchPage='condition.Page'
-      :pageSize="condition.PageSize"
-      :handlePageChange='handlePageChange'
-      :count='dataNumber'
-    >
-      <div slot="left" class="left-box">
-        <el-checkbox v-model="checked" :indeterminate="isIndeterminate">全选</el-checkbox>
-        <span class="blue-span" v-if="localPermission.ReceiveOrder" @click="onOutsourceClick" :class="{'disabled':multipleSelection.length===0}">确认选中订单外协</span>
-        <div v-if="localPermission.ChangeFactory">
-          <span class="is-bold mr-5">选中订单更改外协工厂为：</span>
-          <el-select :value="radio" placeholder="请选择" @change="onFactorySelect" size="mini" :disabled="multipleSelection.length===0">
-            <el-option v-for="it in factorys" :key="it.FactoryID" :label="it.FactoryName" :value="it.FactoryID"></el-option>
-          </el-select>
-        </div>
-      </div>
-    </Count>
+    <span class="count">共检索出<i class="blue">{{ dataNumber }}</i>条记录</span>
+
+    <div class="size">
+      <span>显示</span>
+      <el-select :value="condition.PageSize" @change="onPageSizeChange" size="mini" style="width: 50px;margin: 0 6px;top: -1px;">
+        <el-option :label="20" :value="20"></el-option>
+        <el-option :label="30" :value="30"></el-option>
+        <el-option :label="50" :value="50"></el-option>
+      </el-select>
+      <span>条</span>
+    </div>
+
+    <div class="box">
+      <Count
+        :watchPage='condition.Page'
+        :pageSize="condition.PageSize"
+        :handlePageChange='handlePageChange'
+        :count='dataNumber'
+        :showTotal="false"
+        displayOnSinglePage
+        class="pager"
+      />
+      <DownLoadExcelComp title="导出Excel表格" :configObj="configObj" />
+    </div>
   </footer>
 </template>
 
 <script>
+import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
+import CommonClassType from '@/store/CommonClassType';
 import Count from '../../common/Count.vue';
 
 export default {
@@ -56,6 +65,7 @@ export default {
   },
   components: {
     Count,
+    DownLoadExcelComp,
   },
   data() {
     return {
@@ -77,6 +87,16 @@ export default {
     checkedFactoryList() {
       return this.multipleSelection.map(it => it.Factory.ID);
     },
+    configObj() { // 导出Excel条件对象
+      return {
+        condition: CommonClassType.filter(this.condition, true),
+        count: this.dataNumber,
+        fileDefaultName: '手动外购列表',
+        // fileDate: '',
+        showDateByFile: false,
+        downFunc: data => this.api.getFactoryOrderOrderExcel(data),
+      };
+    },
   },
   methods: {
     handlePageChange(page) {
@@ -91,9 +111,12 @@ export default {
     onOutsourceClick() {
       if (this.multipleSelection.length === 0) return;
       const msg = `<span>共选中 <i class='is-primary-blue'>${this.multipleSelection.length}</i> 个订单</span>`;
-      this.messageBox.warnCancelBox('确认外协选中订单吗 ?', msg, () => {
+      this.messageBox.warnCancelBox('确认外购选中订单吗 ?', msg, () => {
         this.$emit('manualOutsource');
       }, null, true);
+    },
+    onPageSizeChange(PageSize) {
+      this.$emit('changePageSize', PageSize);
     },
   },
   watch: {
@@ -106,32 +129,55 @@ export default {
 <style lang='scss'>
 .mp-erp-factory-manual-out-source-manage-page-footer-wrap {
   box-sizing: border-box;
-  padding-top: 1px;
-  .count-wrap {
-    flex-wrap: wrap;
-    min-height: 45px;
-    height: auto;
-    .left-box {
+  padding-top: 2px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding-bottom: 4px;
+  line-height: 28px;
+  color: #444;
+
+  .count {
+    padding: 0 10px;
+    flex: none;
+    min-width: 200px;
+    text-align: center;
+  }
+
+  .size {
+    flex: none;
+    height: 28px;
+    input {
+      padding-right: 0;
+      padding-left: 8px;
+      border-radius: 3px;
+    }
+    .el-input__suffix {
+      right: 1px;
+    }
+  }
+
+  .box {
+    flex: 1;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+
+    .pager {
+      padding-right: 30px;
+      padding-left: 30px;
+      width: 700px;
+      flex: 0 1 auto;
+    }
+
+    .mp-common-download-to-excel-comp-wrap {
       flex: 1;
       text-align: left;
       white-space: nowrap;
-      .el-checkbox {
-        margin-left: 14px;
-        .el-checkbox__label {
-          font-weight: 700;
-        }
-      }
-      > div {
-        display: inline-block;
-        .el-select {
-          width: 130px;
-          input {
-            height: 30px;
-          }
-        }
-      }
-      > .blue-span {
-        margin: 0 25px;
+
+      button {
+        font-size: 12px;
       }
     }
   }

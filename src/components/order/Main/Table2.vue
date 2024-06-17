@@ -37,14 +37,31 @@
         </li>
         <li v-if="localPermission.CancleOrder || localPermission.ProductionStop">
           <!-- v-if="(canCancelStatuses.includes(scope.row.Status) || localPermission.CancleOrder)" -->
-          <span
-            v-if="canCancelStatuses.includes(scope.row.Status) || (scope.row.Status === 55 && scope.row.IsAutoConvert && localPermission.ProductionStop)"
-            @click="onOrderDel(scope.row, scope.$index)">
-            <img src="@/assets/images/cancel.png" />取消
-          </span>
-          <span v-else class="disbaled">
-            <img src="@/assets/images/cancelstop.png" />取消
-          </span>
+          <template v-if="scope.row.IsOwnSystem">
+            <span
+              v-if="canStopProductionStatuses.includes(scope.row.Status) && localPermission.ProductionStop"
+              @click="onOrderStop(scope.row, scope.$index)">
+              <img src="@/assets/images/cancel.png" />取消
+            </span>
+            <span
+              v-else-if="canStopCancelInMyFactoryStatuses.includes(scope.row.Status)"
+              @click="onOrderDel(scope.row, scope.$index)">
+              <img src="@/assets/images/cancel.png" />取消
+            </span>
+            <span v-else class="disbaled">
+              <img src="@/assets/images/cancelstop.png" />取消
+            </span>
+          </template>
+          <template v-else>
+            <span
+              v-if="canCancelStatuses.includes(scope.row.Status)"
+              @click="onOrderDel(scope.row, scope.$index)">
+              <img src="@/assets/images/cancel.png" />取消
+            </span>
+            <span v-else class="disbaled">
+              <img src="@/assets/images/cancelstop.png" />取消
+            </span>
+          </template>
         </li>
       </ul>
     </el-table-column>
@@ -78,6 +95,14 @@ export default {
     canCancelStatuses() {
       return this.OrderStatusList.filter(it => it.canCancel === true).map(it => it.ID);
     },
+    // 取消订单自营工厂的生产的状态
+    canStopCancelInMyFactoryStatuses() {
+      return this.OrderStatusList.filter(it => it.canCancelInMyFactory === true).map(it => it.ID);
+    },
+    // 终止生产的状态
+    canStopProductionStatuses() {
+      return this.OrderStatusList.filter(it => it.canStopProduction === true).map(it => it.ID);
+    },
   },
   components: {
     TableColumnItem,
@@ -89,7 +114,7 @@ export default {
     ...mapMutations('orderModule', ['setOrderListDialogShow', 'setOrderListDialogHide', 'setCurOrderStatus', 'setCurOrderProductName', 'setIsDelPopShowTrue', 'setOrderID2Del', 'setOrderListData', 'setOrderTotalCount', 'setCurOrderID', 'setIsShowServiceDiaTrue', 'setIsShowServiceDiaFail']),
     ...mapMutations('service', ['clearServiceFormInfo']),
     ...mapMutations('common', ['setIsLoading']),
-    ...mapActions('orderModule', ['delTargetOrder', 'getOrderDetail', 'selectOrderProgress', 'getServiceOrderHistory']),
+    ...mapActions('orderModule', ['delTargetOrder', 'getOrderDetail', 'getServiceOrderHistory']),
     ...mapActions('orderModule', { getPackageListByOrderID2OrderModule: 'getPackageListByOrderID' }),
     ...mapActions('service', ['getQuestionTypeList', 'getPackageListByOrderID']),
     setHeight() {
@@ -102,16 +127,20 @@ export default {
     ServiceAfterSalesClick(data) {
       this.$emit('ServiceAfterSalesClick', data);
     },
-    onOrderDel(data, index) {
-      // this.setOrderID2Del(data.OrderID);
-      // this.open(index, data.OrderID);
+    // 终止生产
+    onOrderStop(data, index) {
       // 生产中
-      if (data.Status === 55) {
+      if (this.canStopProductionStatuses.includes(data.Status)) {
         this.$emit('TerminateProductionClick', index, data);
       } else {
         this.setOrderID2Del(data.OrderID);
         this.$emit('CancelProductionClick', index, data);
       }
+    },
+    onOrderDel(data, index) {
+      this.setOrderID2Del(data.OrderID);
+      // this.open(index, data.OrderID);
+      this.$emit('CancelProductionClick', index, data);
     },
     setStateStyle(Status) {
       if ((Status === 253 || Status === 254 || Status === 255)) return 'is-cancel';

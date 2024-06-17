@@ -1,6 +1,6 @@
 import api from '@/api';
 import { getFilterParams } from 'yezhixingyue-js-utils-4-mpzj';
-import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { dialogSuccess, MpMessage } from '@/assets/js/utils/MpMessage';
 import { getTwoLevelsClassifyDataFromList, IProductClassItem, IProductClassLv1ListItem } from './utils';
 import { TransformerListConditionClass } from './TransformerListConditionClass';
 import {
@@ -77,6 +77,7 @@ export class TransformerListPageDataClass {
       _part.NumbericInfoCount = 0;
       _part.SemiFinished = null;
       _part.UnionMakeupLimitCount = 0;
+      _part.AutoImpositionCount = 0;
       _part.WordsInfoCount = 0;
       _part.WorkTimesCount = 0;
       _part.WorkingCount = 0;
@@ -177,7 +178,7 @@ export class TransformerListPageDataClass {
         }
         callback();
       };
-      MpMessage.dialogSuccess({ title: '设置成功', onOk: cb, onCancel: cb });
+      dialogSuccess({ title: '设置成功', onOk: cb });
     }
   }
 }

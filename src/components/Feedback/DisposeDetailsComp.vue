@@ -228,6 +228,7 @@
         </td>
       </tr>
     </table>
+    <p class="produce-end-tip is-pink" v-if="DisposeDetailsData.IsProduceEnd">该订单已终止生产</p>
     <div class="loss-box" v-if="!localPermission.LossConfirm || this.$route.name !== 'ServiceInfo'">
       <span class="title">损失金额：</span>
       <span class="is-pink">{{DisposeDetailsData.LossAmount}} </span>
@@ -526,6 +527,23 @@ export default {
           }
         }
       }
+    }
+  }
+  .produce-end-tip{
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    margin-top: -5px;
+    font-weight: 700;
+    font-size: 14px;
+    &::before{
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: #ff3769;
+      border-radius: 50%;
+      margin-right: 10px;
     }
   }
   .loss-box{

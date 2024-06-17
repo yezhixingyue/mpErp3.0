@@ -4,7 +4,8 @@
 import api from '@/api/index';
 import CommonClassType from '@/store/CommonClassType';
 import messageBox from '../assets/js/utils/message';
-import UploadFileByBreakPoint from '../assets/js/upload/UploadFileByBreakPoint';
+// import UploadFileByBreakPoint from '../assets/js/upload/UploadFileByBreakPoint';
+import { breakPointUpload as UploadFileByBreakPoint } from '@/basic/BreakpointUpload';
 
 // import { MessageBox } from 'element-ui';
 

@@ -7,10 +7,10 @@ export default {
   state: {
     /* 客户余额流水类型筛选条件信息
     -------------------------------*/
-    condition4BalanceType: new FundBillClassType('today'),
+    condition4BalanceType: new FundBillClassType(),
     /* 客户订单流水类型筛选条件信息
     -------------------------------*/
-    condition4OrderType: new FundBillClassType('today'),
+    condition4OrderType: new FundBillClassType(),
     /* 列表数据
     -------------------------------*/
     balanceTypeDataList: [],
@@ -58,10 +58,10 @@ export default {
     /* 清除重置条件信息
     -------------------------------*/
     clearConditionDate4Balance(state) {
-      state.condition4BalanceType = new FundBillClassType('today');
+      state.condition4BalanceType = new FundBillClassType();
     },
     clearConditionDate4Order(state) {
-      state.condition4OrderType = new FundBillClassType('today');
+      state.condition4OrderType = new FundBillClassType();
     },
     /* 设置列表数据是否正在加载中
     -------------------------------*/

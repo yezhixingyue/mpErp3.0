@@ -262,6 +262,7 @@ export default {
         t.TotalNumber += number;
         if (OnlineChangeNumber) {
           t.OnlineNumber += OnlineChangeNumber;
+          if (t.OnlineNumber < 0) t.OnlineNumber = 0;
         }
         if (StopDistributionChangeNumber) {
           t.StopDistributionNumber += StopDistributionChangeNumber;

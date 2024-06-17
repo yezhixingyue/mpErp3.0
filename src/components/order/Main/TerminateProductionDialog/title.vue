@@ -3,7 +3,12 @@
     <div class="title">
       <img src="@/assets/images/danger.png" alt="">
       <div>
-        订单生产中，取消将产生损失，如若取消，请完善相关信息后提交
+        <template v-if="OrderData?.IsOwnFactory">
+          自主工厂订单生产中，取消将产生损失，如若取消，请完善相关信息后提交
+        </template>
+        <template v-else>
+          外购工厂订单生产中，取消将产生损失，如若取消，请与外购工厂沟通确认
+        </template>
       </div>
     </div>
     <ul class="order-info"  v-if="OrderData">

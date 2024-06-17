@@ -149,7 +149,7 @@ export default {
           this.disabledProducts.push(...element.ProductIDS);
         });
       }
-      console.log(this.disabledProducts);
+
       this.showEdit = true;
     },
     DeleteClick(item) {

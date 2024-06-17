@@ -20,6 +20,18 @@
         <span class="is-font-size-14">满{{scope.row.Data.MinPayAmount}}元</span>
       </template>
     </el-table-column>
+    <el-table-column show-overflow-tooltip min-width="120px" label="发放类型（数量）">
+      <template slot-scope="scope">
+        <span class="is-font-size-14">
+          <template v-if="scope.row.UseNewCustomer">
+            新人券（{{ scope.row.SendNumber }}张/人）
+          </template>
+          <template v-else>
+            --
+          </template>
+        </span>
+      </template>
+    </el-table-column>
     <el-table-column min-width="130px" label="限产品">
       <template slot-scope="scope">
       <!-- <template slot-scope="scope" v-if="ProductListArray && ProductListArray[scope.$index]">
@@ -119,7 +131,7 @@
     <el-table-column width="300px" label="操作">
       <ul class="handle-menus" slot-scope="scope">
         <li class="stop-box" v-if="localPermission.Generate">
-          <span class="is-list-btn" v-if="!scope.row.IsCustomerReceive"
+          <span class="is-list-btn" v-if="!scope.row.IsCustomerReceive && !scope.row.UseNewCustomer"
            @click="onGenerateCoupons(scope.row, scope.$index, scope.row.ProductString ? scope.row.ProductString.split('\n') : [])">
             <img src="@/assets/images/edit-icon.png" alt />手动生成
           </span>

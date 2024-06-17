@@ -116,8 +116,10 @@ export default {
     getAddress(addData) {
       if (!addData) return '';
       const { DetailAddress, SellArea } = addData;
-      const { RegionalName, CountyName, CityName } = SellArea;
-      return `${RegionalName}${CityName}${CountyName}${DetailAddress}`;
+      const { RegionalName, CountyName, CityName } = SellArea || {};
+
+      const _address = [RegionalName, CityName, CountyName, DetailAddress].filter(it => it).join('');
+      return _address;
     },
   },
 };

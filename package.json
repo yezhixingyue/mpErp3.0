@@ -1,11 +1,12 @@
 {
   "name": "mpzj",
-  "version": "0.1.0",
+  "version": "3.1.004",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --port 8368",
-    "serve.test": "vue-cli-service serve --port 8520 --mode test8050",
-    "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve --port 8368 --mode dev",
+    "serve.test": "vue-cli-service serve --port 8520 --mode dev.test",
+    "build.test": "vue-cli-service build --mode prod.test",
+    "build.prod": "node update_version.js && vue-cli-service build  --mode prod",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
@@ -31,6 +32,8 @@
     "sha1-file": "^2.0.0",
     "sortable": "^2.0.0",
     "sortablejs": "^1.15.0",
+    "spark-md5": "^3.0.2",
+    "tinymce": "^5.7.0",
     "uuid": "^3.4.0",
     "vue": "^2.7.10",
     "vue-class-component": "^7.2.3",
@@ -43,8 +46,10 @@
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@types/jest": "^27.0.1",
+    "@types/js-sha1": "^0.6.2",
     "@types/nprogress": "^0.2.0",
     "@types/sortablejs": "^1.15.0",
+    "@types/spark-md5": "^3.0.4",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",
@@ -74,5 +79,6 @@
     "terser-webpack-plugin": "^2.3.6",
     "ts-jest": "^27.0.4",
     "typescript": "^4.8.4"
-  }
+  },
+  "commitId": "942ff3a868ea8547c18a6cb4614308cb401dbf92\n"
 }

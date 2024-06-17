@@ -28,15 +28,17 @@ export default {
     /* 订单状态相关
     -------------------------------*/
     OrderStatusList: [
+      // canStopProduction 终止生产
+      // canCancelInMyFactory 取消订单非s2b平台
       { name: '不限', ID: '' },
-      { name: '待分发', ID: 20, canCancel: true },
-      { name: '已分发', ID: 30, canCancel: true },
-      { name: '已审稿', ID: 40, canCancel: true },
-      { name: '内容已审核', ID: 42, canCancel: true },
-      { name: '已发至工厂', ID: 43, canCancel: true, canProdProgress: true },
-      { name: '拼版中', ID: 45, canProdProgress: true },
-      { name: '已拼版', ID: 50, canProdProgress: true },
-      { name: '生产中', ID: 55, canProdProgress: true },
+      { name: '待分发', ID: 20, canCancel: true, canCancelInMyFactory: true },
+      { name: '已分发', ID: 30, canCancel: true, canCancelInMyFactory: true },
+      { name: '已审稿', ID: 40, canCancel: true, canCancelInMyFactory: true },
+      { name: '内容已审核', ID: 42, canCancel: true, canCancelInMyFactory: true },
+      { name: '已发至工厂', ID: 43, canCancel: true, canStopProduction: true, canProdProgress: true },
+      { name: '拼版中', ID: 45, canStopProduction: true, canProdProgress: true },
+      { name: '已拼版', ID: 50, canStopProduction: true, canProdProgress: true },
+      { name: '生产中', ID: 55, canStopProduction: true, canProdProgress: true },
       { name: '已生产', ID: 60, canProdProgress: true },
       { name: '已入库', ID: 70, canProdProgress: true },
       { name: '已发货', ID: 80, canProdProgress: true },
@@ -44,7 +46,7 @@ export default {
       { name: '终止生产', ID: 253 },
       { name: '已取消', ID: 254 },
       { name: '已过期', ID: 255 },
-      { name: '问题件', ID: 35, canCancel: true },
+      { name: '问题件', ID: 35, canCancel: true, canCancelInMyFactory: true },
     ],
     orderStatueTitle: '不限',
     /* 订单进度信息
@@ -609,10 +611,8 @@ export default {
       const { OrderID } = state.orderDetailData;
       if (!OrderID) return false;
 
-      console.log('dialogData', dialogData);
-
       const _obj = typeof dialogData === 'object' ? { ...dialogData, OrderID } : { OrderID };
-      console.log(_obj, typeof dialogData === 'object');
+
       const res = await api.setOrderReCheckFile(_obj).catch(() => null);
 
       if (res && res.data.Status === 1000) {

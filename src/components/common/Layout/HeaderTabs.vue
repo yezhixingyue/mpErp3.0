@@ -71,11 +71,26 @@
           </el-dropdown-menu>
         </el-dropdown>
         <el-dropdown trigger="click" v-if="Permission" @command='onCommand'>
-          <span class="el-dropdown-link">
-            <i class="el-icon-user"></i>
-            <span :title="Permission.StaffName">{{Permission.StaffName}}</span>
-            <i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
+          <el-tooltip placement="bottom-end" popper-class="mp-erp-header-username-tooltip-popper-box">
+            <div slot="content" class="mp-erp-header-username-tooltip-content">
+              <img :src="Permission.HeadPic" style="width: 100px;height: 140px;object-fit: cover;" alt="">
+              <div class="right">
+                <div class="position">
+                  <p class="mb-2">岗位：</p>
+                  <p v-for="(it, i) in departmentList" :key="it + i" :title="it">{{ it }}</p>
+                </div>
+                <div class="version">
+                  <p class="mb-2">当前版本：</p>
+                  <p style="letter-spacing: 1px;">{{ VERSION }}</p>
+                </div>
+              </div>
+            </div>
+            <span class="el-dropdown-link">
+              <i class="el-icon-user"></i>
+              <span :title="Permission.StaffName">{{Permission.StaffName}}</span>
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+          </el-tooltip>
           <el-dropdown-menu slot="dropdown" class="mp-erp-user-drop-down-wrap">
             <el-dropdown-item icon="el-icon-lock" command='changePwd'>修改密码</el-dropdown-item>
             <el-dropdown-item v-if="docPermissions && docPermissions.manage" command='manage'>
@@ -98,7 +113,8 @@
 <script>
 import { mapMutations, mapState } from 'vuex';
 import { throttle } from '@/assets/js/utils/throttle';
-import TokenClass from '@/assets/js/utils/tokenManage';
+// import TokenClass from '@/assets/js/utils/tokenManage';
+import { logout } from '../../../basic/logout';
 // import sortable from '../../../assets/js/mixins/Sortable/Sortable';
 import ChangePwdDialog from './ChangePwdDialog.vue';
 import { WikiHandler } from '@/assets/js/TypeClass/WikiHandler';
@@ -113,9 +129,11 @@ export default {
       contextMenuLeft: 0,
       contextMenuTop: 0,
       contextmenuItemData: null,
+      departmentLevelList: [], // 部门树形列表 -- 后面不用则删除
       sortItem: null,
       visible4ChangePassword: false, // 修改密码弹窗打开状态
       isIntranet: true,
+      VERSION: '',
     };
   },
   computed: {
@@ -160,6 +178,14 @@ export default {
         manage: Setup,
         read: [ReadLevel1, ReadLevel2, ReadLevel3, ReadLevel4, ReadLevel5].includes(true),
       };
+    },
+    departmentList() {
+      if (this.departmentLevelList.length && this.Permission) {
+        const str = this.formatDepartment(this.Permission, this.departmentLevelList);
+        if (str) return str.split(' | ');
+      }
+
+      return [];
     },
   },
   methods: {
@@ -275,8 +301,9 @@ export default {
     },
     handleLogoutClick() { // 退出
       this.messageBox.warnCancelNullMsg('确定退出登录吗?', () => {
-        TokenClass.removeToken();
-        this.$router.replace('/login');
+        // TokenClass.removeToken();
+        // this.$router.replace('/login');
+        logout();
       });
     },
     handleOpenPageClick(routeName) { // 停机维护点击事件
@@ -286,6 +313,54 @@ export default {
     handleFileCheck() {
       window.open('/checkFileContent');
     },
+    async getDepartmentList() { // 获取部门列表数据
+      const resp = await this.api.getDepartmentList().catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const _list = resp.data.Data || [];
+        const level1List = _list.filter(item => item.Level === 1).map(i => ({ ...i, children: [] }));
+        level1List.forEach(level1 => {
+          const _level1list = _list.filter(item => item.Level === 2 && item.ParentID === level1.ID)
+            .map(item => ({ ...item, children: [] }));
+          // eslint-disable-next-line no-param-reassign
+          level1.children = _level1list;
+          level1.children.forEach(level2 => {
+            const _level3list = _list.filter(item => item.Level === 3 && item.ParentID === level2.ID);
+            // eslint-disable-next-line no-param-reassign
+            level2.children = _level3list;
+          });
+        });
+        this.departmentLevelList = level1List;
+      }
+    },
+    formatDepartment({ PositionList }, departmentLevelList) {
+      if (Array.isArray(PositionList) && PositionList.length > 0) {
+        const list = PositionList.map(({ First, Second }) => {
+          const { FirstDepartmentID, SecondDepartmentID, ThirdDepartmentID } = First;
+          const { PositionName } = Second;
+          let str = '';
+          const _getDepartmentName = (id, _list) => {
+            if ((!id && id !== 0) || id === -666 || !Array.isArray(_list)) return undefined;
+            const t = _list.find(it => it.ID === id);
+            return t && { ClassName: t.ClassName, arr: t.children };
+          };
+          const f = _getDepartmentName(FirstDepartmentID, departmentLevelList);
+          if (f) {
+            str += f.ClassName;
+            const s = _getDepartmentName(SecondDepartmentID, f.arr);
+            if (s) {
+              str += `-${s.ClassName}`;
+              const third = _getDepartmentName(ThirdDepartmentID, s.arr);
+              if (third) {
+                str += `-${third.ClassName}`;
+              }
+            }
+          }
+          return [str, PositionName].filter(it => it).join(' ');
+        });
+        return list.filter(it => it).join(' | ');
+      }
+      return '';
+    },
   },
   mounted() {
     document.addEventListener('click', this.onDocumentClick);
@@ -293,6 +368,9 @@ export default {
     this.setLeftCollapse = throttle(this.setIsLeftCollapse, 360);
 
     this.isIntranet = !window.location.protocol.startsWith('https');
+    this.getDepartmentList();
+
+    this.VERSION = process.env.VUE_APP_VERSION;
   },
   beforeDestroy() {
     document.removeEventListener('click', this.onDocumentClick);
@@ -606,5 +684,34 @@ export default {
     }
     overflow-y: visible;
   }
+}
+.mp-erp-header-username-tooltip-content {
+  display: flex;
+  padding: 8px;
+  padding-bottom: 5px;
+
+  .right {
+    width: 210px;
+    box-sizing: border-box;
+    padding-left: 15px;
+    line-height: 16px;
+    color: #eee;
+    .position {
+      min-height: 102px;
+    }
+    p {
+      margin-bottom: 5px;
+      &.mb-2 {
+        margin-bottom: 2px;
+      }
+    }
+    .version {
+      padding-top: 5px;
+    }
+  }
+}
+.mp-erp-header-username-tooltip-popper-box {
+  background: rgb(25, 31, 42) !important;
+  background: rgb(34, 43, 58) !important;
 }
 </style>

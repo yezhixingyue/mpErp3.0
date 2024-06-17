@@ -9,27 +9,29 @@
     fit
     style="width: 100%"
    >
-    <el-table-column prop="FactoryName" label="工厂名称" min-width="160">
+    <el-table-column prop="FactoryName" label="工厂名称" width="235">
     </el-table-column>
-    <el-table-column prop="Address" label="工厂地址" min-width="360">
+    <el-table-column prop="Address" label="工厂地址" width="520">
       <span slot-scope="scope" class="is-gray">{{getAddName(scope.row)}}</span>
     </el-table-column>
-    <el-table-column prop="LinkMan" label="联系人" min-width="130"> </el-table-column>
-    <el-table-column prop="Mobile" label="联系电话" min-width="115"> </el-table-column>
-    <el-table-column prop="Mobile" label="外发产品" min-width="80">
+    <el-table-column prop="LinkMan" label="联系人" width="170"> </el-table-column>
+    <el-table-column prop="Mobile" label="联系电话" width="150"> </el-table-column>
+    <el-table-column prop="Mobile" label="外发产品" width="110">
       <template slot-scope="scope">
           {{scope.row.ProductNumber}}个
       </template>
     </el-table-column>
-    <el-table-column prop="Convert.Name" label="转换服务器" min-width="130"> </el-table-column>
-    <!-- <el-table-column prop="Convert.Name" label="转换器" min-width="130"> </el-table-column> -->
-    <el-table-column label="操作" width="320">
+    <el-table-column prop="Convert.Name" label="转换服务器" width="185"> </el-table-column>
+    <!-- <el-table-column prop="Convert.Name" label="转换器" width="130"> </el-table-column> -->
+    <el-table-column label="操作" width="345">
       <div class="menu-list" slot-scope="scope" >
-        <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupAccount" @click="onSettingClick(scope.row, 'account')">
+        <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupAccount" :disabled="!!(scope.row.Convert?.ID)"
+         @click="onSettingClick(scope.row, 'account')">
           <i class="el-icon-user-solid is-blue none"></i>账号设置
         </span>
-        <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupPrice" @click="onSettingClick(scope.row, 'outsource')">
-          <i class="setup"></i>外发设置
+        <span v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.SetupPrice"  :disabled="!!(scope.row.Convert?.ID)"
+         @click="onSettingClick(scope.row, 'outsource')">
+          <i class="setup"></i>外购价格设置
         </span>
         <template v-if="Permission && Permission.PermissionList.PermissionSetupFactoryBase.Obj.Setup">
           <span @click="onEditClick(scope.row)"><i></i>编辑</span>
@@ -75,6 +77,7 @@ export default {
       this.h = tempHeight;
     },
     onSettingClick(itemData, type) {
+      if (itemData.Convert?.ID) return;
       this.$emit('setting', itemData, type);
     },
     onEditClick(itemData) {
@@ -138,6 +141,14 @@ export default {
                 width: 12px;
                 height: 16px;
                 background: url(../../assets/images/del.png) no-repeat center center/12px 16px;
+              }
+              &[disabled=disabled] {
+                color: #cbcbcb;
+                cursor: not-allowed;
+                i {
+                  filter: grayscale(1);
+                  opacity: 0.6;
+                }
               }
             }
           }

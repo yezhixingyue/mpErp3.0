@@ -1,11 +1,3 @@
-if (process.env.NODE_ENV === 'production' && process.env.VUE_APP_BASE_URL === 'prod') {
-  // 打包正式环境
-} else if (process.env.NODE_ENV === 'production') {
-  // 打包测试环境
-} else {
-  // 开发环境
-}
-
 // export const amapAppkey = '5133382d95bf0ad64b941ae71d8ae861';
 export const projectType = 'erp';
 export const securityJsCode = '74e98e9813b696f1a5a289b8afe1c65c'; // 高德key对应的密钥，前台不要配置（采用高德推荐的安全模式），后台配置（减少维护复杂度）

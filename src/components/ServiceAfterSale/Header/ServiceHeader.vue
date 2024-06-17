@@ -111,6 +111,7 @@
             :dateValue='obj4RequestServiceList.DateType'
             :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
             :dateList='dateList'
+            minDate="2022-01-01 00:00:00"
             label="处理时间"
           />
           <!-- <ElDateRangeSelector v-model="conditionDate" :condition="obj4RequestServiceList" initText='今天' /> -->

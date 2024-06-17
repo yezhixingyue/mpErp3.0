@@ -16,7 +16,7 @@ import './assets/js/utils/message';
 import './assets/js/filters/filters';
 import './packages/commonFilters';
 import './packages/directive';
-import './api/mock';
+// import './api/mock';
 
 Vue.directive('clickoutside', Clickoutside); // EpCascader等使用 可选更优引入与注册方式
 

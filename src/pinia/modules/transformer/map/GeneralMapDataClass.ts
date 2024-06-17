@@ -175,6 +175,10 @@ export abstract class GeneralMapDataClass extends MapDataClass<{ID: string, Name
             target.UnionMakeupLimitCount += num;
             break;
 
+          case GenerelMappingTypeEnum.NumericalCodeAutoMakeup:
+            target.AutoImpositionCount += num;
+            break;
+
           case GenerelMappingTypeEnum.UnionLine:
             if (isIProduct(target)) {
               target.UnionLineCount += num;

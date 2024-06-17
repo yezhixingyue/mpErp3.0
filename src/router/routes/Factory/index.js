@@ -11,13 +11,13 @@ const routes = { // 基本设置
     icon: 'el-icon-school',
   },
   children: [
-    /*  手动外协
+    /*  手动外购
     ------------------------------------------ */
     {
       path: '/manualOutsource',
       name: 'manualOutsource',
       meta: {
-        title: '手动外协',
+        title: '手动外购',
         pageName: 'ManualOutsourceManagePage',
         icon: 'el-icon-s-help',
         PermissionInfo: ['PermissionCheckFileOutOrder', 'HavePomission'],
@@ -40,16 +40,27 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/BasicSetup/Factory/FactoryManagePage.vue'),
     },
+    // {
+    //   path: '/factoryOutsourceSetup/:ID/:factoryName',
+    //   name: 'factoryOutsourceSetup',
+    //   meta: {
+    //     title: '外发价格',
+    //     pageName: 'FactoryOutsourceSetup',
+    //     PermissionInfo: ['PermissionSetupFactoryBase', 'HavePomission'],
+    //     requiresAuth: true,
+    //   },
+    //   component: () => import('../../../views/BasicSetup/Factory/FactoryOutsourceSetup.vue'),
+    // },
     {
-      path: '/factoryOutsourceSetup/:ID/:factoryName',
-      name: 'factoryOutsourceSetup',
+      path: '/FactoryOutsourcePriceList/:ID/:factoryName',
+      name: 'FactoryOutsourcePriceList',
       meta: {
-        title: '外发价格',
-        pageName: 'FactoryOutsourceSetup',
+        title: '外购价格设置',
+        pageName: 'FactoryOutsourcePriceListPage',
         PermissionInfo: ['PermissionSetupFactoryBase', 'HavePomission'],
         requiresAuth: true,
       },
-      component: () => import('../../../views/BasicSetup/Factory/FactoryOutsourceSetup.vue'),
+      component: () => import('../../../views/BasicSetup/Factory/FactoryOutsourcePriceList/FactoryOutsourcePriceListPage.vue'),
     },
     {
       path: '/factoryAccountSetup/:FactoryID/:FactoryName',
@@ -61,6 +72,20 @@ const routes = { // 基本设置
         requiresAuth: true,
       },
       component: () => import('../../../views/BasicSetup/Factory/FactoryAccountSetupPage.vue'),
+    },
+    /*  制作需求设置 - 序列化外购工厂用产品名称
+    ------------------------------------------ */
+    {
+      path: '/FactorySerialization',
+      name: 'FactorySerialization',
+      meta: {
+        title: '制作需求设置',
+        icon: 'icon-zhizuoxuqiushezhi iconfont',
+        pageName: 'FactorySerialization4OutPage',
+        PermissionInfo: ['PermissionSetupFactoryBase', 'Obj', 'MRSetup'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/BasicSetup/FactorySerialization/FactorySerialization4OutPage.vue'),
     },
     /*  转换失败订单列表
     ------------------------------------------ */
@@ -106,7 +131,7 @@ const routeTree = {
       name: 'factoryManage',
       children: [
         {
-          name: 'factoryOutsourceSetup',
+          name: 'FactoryOutsourcePriceList',
           children: [],
         },
         {
@@ -114,6 +139,12 @@ const routeTree = {
           children: [],
         },
       ],
+    },
+    /*  制作需求设置
+    ------------------------------------------ */
+    {
+      name: 'FactorySerialization',
+      children: [],
     },
     ...transformerRoutes.routeTree,
     /*  转换失败订单列表

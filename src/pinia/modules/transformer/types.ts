@@ -30,6 +30,8 @@ export enum menuTypeEnum {
   NumbericInfo = 'NumbericInfoCount',
   /** 合拼设置 */
   UnionMakeupLimit = 'UnionMakeupLimitCount',
+  /** 数码自动拼版 */
+  NumericalCodeAutoMakeup = 'AutoImpositionCount',
   /** 其它设置（主要为折手及其相关） */
   OtherSetup = 'OtherSetup',
   /** 半成品设置 */
@@ -50,6 +52,8 @@ export interface IPart {
   SemiFinished: null | { ID: string, Name: string }
   /** 合拼禁用设置条数 */
   UnionMakeupLimitCount: number
+  /** 数码自动拼版 */
+  AutoImpositionCount: number
   /** 文字信息映射条数  */
   WordsInfoCount: number
   /** 作业次数映射条数 */

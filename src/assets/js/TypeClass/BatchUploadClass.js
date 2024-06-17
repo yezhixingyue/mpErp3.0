@@ -2,7 +2,8 @@ import api from '@/api';
 import { Loading, Message } from 'element-ui';
 import { getIsOrNotHasRepeatItemInArray } from '@/assets/js/utils/util';
 import messageBox from '@/assets/js/utils/message';
-import breakPointUpload, { getUniqueFileName } from '../upload/UploadFileByBreakPoint';
+// import breakPointUpload, { getUniqueFileName } from '../upload/UploadFileByBreakPoint';
+import { breakPointUpload, getUniqueFileName } from '@/basic/BreakpointUpload';
 
 /**
  * 文件批量上传使用类
@@ -11,6 +12,19 @@ import breakPointUpload, { getUniqueFileName } from '../upload/UploadFileByBreak
  * @class BatchUpload
  */
 export default class BatchUpload {
+  static getErrorMsg(resp, defaultMsg = '请求失败') {
+    if (resp && resp.data && resp.data.Message && resp.data.Status !== 1000) return resp.data.Message;
+
+    if (resp && resp.message === 'Network Error') {
+      return '网络错误';
+    }
+    if (resp && resp.message && resp.message.includes('timeout')) {
+      return '网络超时';
+    }
+
+    return defaultMsg;
+  }
+
   /**
    * 单个文件解析
    *
@@ -42,8 +56,9 @@ export default class BatchUpload {
       ...basicObj,
       FileList: [{ Second: file.name }],
     };
-    const resp = await api.getFileNameAnalysis(temp).catch(() => null);
-    if (resp && resp.data.Status === 1000 && resp.data.Data.length === 1 && resp.data.Data[0]?.IsAnalysisSucceed && resp.data.Data[0]?.HavePrice === true) {
+    const resp = await api.getFileNameAnalysis(temp).catch((err) => err);
+    if (resp && resp.data && resp.data.Status === 1000
+       && resp.data.Data.length === 1 && resp.data.Data[0]?.IsAnalysisSucceed && resp.data.Data[0]?.HavePrice === true) {
       return {
         file,
         result: resp.data.Data[0],
@@ -62,7 +77,7 @@ export default class BatchUpload {
         },
       };
     }
-    let error = resp && resp.data && resp.data.Message && resp.data.Status !== 1000 ? resp.data.Message : '文件解析失败';
+    let error = this.getErrorMsg(resp, '文件解析失败');
     if (resp && resp.data.Status === 1000 && resp.data.Data.length === 1 && resp.data.Data[0]?.Message) error = resp.data.Data[0].Message;
     const errorStatus = resp && resp.data && resp.data.Status && resp.data.Status !== 1000 ? resp.data.Status : 0;
     return {
@@ -159,6 +174,7 @@ export default class BatchUpload {
       }
     };
     const uploadResult = await breakPointUpload(item.file, item.uniqueName, onUploadProgressFunc);
+
     if (uploadResult && uploadResult.status === true) {
       _item.uploadStatus = 'success'; // 上传成功 继续向后面进行
     } else {
@@ -286,13 +302,27 @@ export default class BatchUpload {
     loadingInstance.text = '文件正在上传...';
     const uploadedList = await Promise.all(list.map(it => this.getFileUploadBySingle(it)));
     // 3. 判断文件上传结果中是否存在不成功的项目，如果有则return
-    const i = uploadedList.findIndex(it => !it || (typeof it === 'object' && it.status === false));
-    if (i > -1) {
-      const msg = uploadedList.length === 1 ? '文件上传失败' : '部分文件上传失败，请检查';
-      messageBox.failSingleError('上传失败', msg);
-      loadingInstance.close();
-      return;
+    // const i = uploadedList.findIndex(it => !it || (typeof it === 'object' && it.status === false));
+    // if (i > -1) {
+    //   const msg = uploadedList.length === 1 ? '文件上传失败' : '部分文件上传失败，请检查';
+    //   messageBox.failSingleError('上传失败', msg);
+    //   loadingInstance.close();
+    //   return;
+    // }
+
+    const failList = uploadedList.filter(it => !it || (typeof it === 'object' && it.status === false));
+    if (failList.length > 0) {
+      // eslint-disable-next-line no-param-reassign
+      list = list.filter(it => it.uploadStatus === 'success');
+
+      if (list.length === 0) {
+        const msg = uploadedList.length === 1 ? '文件上传失败' : '全部文件上传失败，请检查';
+        messageBox.failSingleError('上传失败', msg);
+        loadingInstance.close();
+        return;
+      }
     }
+
     // 4. 生成提交数据列表
     loadingInstance.text = '正在提交，请稍候...';
     const temp = this.generateCommitData(list, basicObj);
@@ -311,7 +341,7 @@ export default class BatchUpload {
     // 7. 清除已选列表中已上传文件
     if (isSuccess) {
       const cb = () => {
-        if (handleSuccessFunc) handleSuccessFunc(list, resp.data.Data);
+        if (handleSuccessFunc) handleSuccessFunc(list, resp.data.Data, failList.length);
       };
       // messageBox.successSingle('下单成功', cb, cb);
       cb();

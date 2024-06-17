@@ -10,7 +10,7 @@
         :changePropsFunc='setCondition'
         :typeList="[['FactoryID', '']]"
         :value='condition.FactoryID'
-        label='外协工厂'
+        label='外购工厂'
         class="mt-18 mr-30"
       />
       <OrderChannelSelector
@@ -21,21 +21,43 @@
         :changePropsFunc='setCondition'
         :typeList="[['CheckFileOrderStatus', '']]"
         :value='condition.CheckFileOrderStatus'
-        label='外协状态'
-        class="mt-18"
+        label='外购状态'
+        class="mt-18 mr-30"
       />
+      <OrderChannelSelector
+        :options="userTypeList"
+        :requestFunc="getDataList"
+        :changePropsFunc="setCondition"
+        :typeList="[['CustomerType', '']]"
+        :value="condition.CustomerType"
+        :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
+        class="mt-18 mr-30"
+        label="客户"
+      />
+      <StaffSelector
+        title="审稿人"
+        class="mt-18"
+        needlimit
+        isLineStyle
+        showArrow
+        :remote="false"
+        :changePropsFunc='setCondition'
+        :requestFunc='getDataList'
+        :typeList="[['Checker', '']]"
+        :value="condition.Checker"
+        />
     </div>
     <div class="s">
       <LineDateSelectorComp
         :changePropsFunc='setCondition'
         :requestFunc='getDataList'
-        :typeList="[['DateType', ''], ['PlaceDate', 'First'], ['PlaceDate', 'Second']]"
+        :typeList="[['DateType', ''], ['PayTime', 'First'], ['PayTime', 'Second']]"
         :dateValue='condition.DateType'
         :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
         :dateList="dateList"
         isFull
         class="mt-18"
-        label="时间筛选" />
+        label="付款时间" />
       <SearchInputComp
         class="mt-18"
         :typeList="[['KeyWords', '']]"
@@ -52,9 +74,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
+import StaffSelector from '@/components/common/SelectorComps/StaffSelector.vue';
 import EpCascader from '../../../packages/EpCascader/index.vue';
 import OrderChannelSelector from '../../common/SelectorComps/OrderChannelSelector.vue';
 import { CheckFileOrderStatusEnumList } from '@/views/FactoryManage/ManualOutsourceManage/classType/EnumList';
@@ -87,22 +110,24 @@ export default {
     OrderChannelSelector,
     SearchInputComp,
     LineDateSelectorComp,
+    StaffSelector,
   },
   data() {
     return {
       CheckFileOrderStatusOptions: CheckFileOrderStatusEnumList.filter(it => it.filter),
       dateList: [
         // { name: '近7天异常', ID: 'last7Date' },
-        { name: '今天', ID: 'today' },
-        { name: '昨天', ID: 'yesterday' },
-        { name: '前天', ID: 'beforeyesterday' },
-        { name: '本月', ID: 'curMonth' },
-        { name: '上月', ID: 'lastMonth' },
+        { name: '今天付款', ID: 'today' },
+        { name: '昨天付款', ID: 'yesterday' },
+        { name: '前天付款', ID: 'beforeyesterday' },
+        { name: '本月付款', ID: 'curMonth' },
+        { name: '上月付款', ID: 'lastMonth' },
       ],
     };
   },
   computed: {
     ...mapGetters('common', ['allProductClassifyWithEmpty']),
+    ...mapState('common', ['userTypeList', 'userRankList']),
     EpCascaderProductValue: {
       get() {
         const list = [
@@ -125,7 +150,7 @@ export default {
     },
     UserDefinedTimeIsActive() {
       return this.condition.DateType === ''
-       && !!this.condition.PlaceDate.First && !!this.condition.PlaceDate.Second;
+       && !!this.condition.PayTime.First && !!this.condition.PayTime.Second;
     },
   },
   methods: {
@@ -136,6 +161,7 @@ export default {
   created() {
     this.$store.dispatch('common/getProductClassifyData', { key: 6 });
     this.$store.dispatch('common/getAllProductNames');
+    this.$store.dispatch('common/getUserClassify');
   },
 };
 </script>

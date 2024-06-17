@@ -34,7 +34,7 @@
           <template slot-scope="scope">
             <span
              :class="scope.row._setupNumber===0?'red-span':'is-gray'"
-             :title="scope.row._setupNumber===0?'':'生产线映射、工序映射或合拼、其它设置等不为空，不能删除'"
+             :title="scope.row._setupNumber===0?'':'生产线映射、工序映射或合拼、数码自动拼版、其它设置等不为空，不能删除'"
              @click="del(scope.row)">删除</span>
           </template>
         </el-table-column>
@@ -77,15 +77,16 @@ export default {
     totalPartList() {
       let list = this.item && Array.isArray(this.item.PartList) ? [...this.item.PartList] : [];
       list.unshift({ ...this.item, Name: '产品' });
-      console.log(list);
+
       list = list.map(it => {
         let _setupNumber = 0;
         const {
-          LineCount, UnionMakeupLimitCount, WorkingCount, NeedFolding,
+          LineCount, UnionMakeupLimitCount, WorkingCount, NeedFolding, AutoImpositionCount,
         } = it;
         _setupNumber += (LineCount || 0);
         // _setupNumber += (NumbericInfoCount || 0);
         _setupNumber += (UnionMakeupLimitCount || 0);
+        _setupNumber += (AutoImpositionCount || 0);
         // _setupNumber += (WordsInfoCount || 0);
         // _setupNumber += (WorkTimesCount || 0);
         _setupNumber += (WorkingCount || 0);

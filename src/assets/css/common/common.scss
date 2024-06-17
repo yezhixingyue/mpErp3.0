@@ -7,6 +7,13 @@
   }
 }
 
+
+.keywords-hit {
+  color: #fff;
+  font-style: normal;
+  background-color: #26BCF9;
+}
+
 /* 表格部分公共样式
 -------------------------------*/
  .mp-common-table-styles {
@@ -112,6 +119,16 @@
     background: linear-gradient(266deg, #26BCF9 0%, #428dfa 100%);
     border: 1px solid #428dfa;
     color: #fff;
+  }
+  &.linear-reverse {
+    background: linear-gradient(134deg, #36E0F9 0%, #26BCF9 100%);
+
+    &:hover, &:focus {
+      background: linear-gradient(134deg, rgba(54, 224, 249, 0.8) 0%, rgba(38, 188, 249, 0.8) 100%);
+    }
+    &:active {
+      background: linear-gradient(134deg, #26BCF9 0%, #428dfa 100%);
+    }
   }
   &.is-disabled {
     background: #ccc !important;
@@ -252,6 +269,23 @@
     cursor: default;
   }
 }
+.green-span {
+  color: #52C41A !important;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.05s;
+  &:hover {
+    color: lighten($color: #52C41A, $amount: 10) !important;
+  }
+  &:active {
+    color: darken($color: #52C41A, $amount: 8) !important;
+  }
+  &.disabled, &:disabled {
+    color: #cbcbcb !important;
+    pointer-events: none;
+    cursor: default;
+  }
+}
 
 .el-radio__inner {
   background-color: #fff !important;
@@ -341,7 +375,7 @@
   }
 }
 
-.cancel-blue-btn {
+.cancel-blue-btn, .blue {
   color: #26bcf9;
   border-color: #26bcf9;
   width: 100px;

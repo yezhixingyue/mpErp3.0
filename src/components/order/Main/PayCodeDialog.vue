@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
   props: {
     visible: {
@@ -57,6 +59,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('orderModule', ['objForOrderList']),
     fen() {
       return Math.floor(this.timeRemaining / 60);
     },
@@ -66,6 +69,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions('orderModule', ['getOrderTableData']),
     openTimer() {
       const tiemr = setInterval(() => {
         if (this.timeRemaining > 0) {
@@ -84,7 +88,12 @@ export default {
         if (res.data.Status === 1000) {
           this.rollPoling = true;
         } else if (res.data.Status === 1100) {
-          this.messageBox.failSingleError('操作失败', `[ ${res.data.Message} ]`, () => null, () => null);
+          const cb = () => {
+            this.close();
+            this.$emit('closeSuperiors');
+            this.getOrderTableData({ page: this.objForOrderList.Page, type: 'get' });
+          };
+          this.messageBox.failSingleError('操作失败', `[ ${res.data.Message} ]`, cb, cb);
           return;
         } else {
           return;

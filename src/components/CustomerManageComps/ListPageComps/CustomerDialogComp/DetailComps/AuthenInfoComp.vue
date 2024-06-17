@@ -373,6 +373,14 @@ export default {
               // this.$store.commit('customerManage/setCustomerItemSave', [{ ...this.customer, AuthStatus: 2 }, true]);
             };
             this.messageBox.successSingle('保存成功', cb, cb);
+          } else if(res.data.Status === 1100){
+            const cb = () => {
+              this.getCustomerData();
+              this.isGetList(true);
+            }
+            this.messageBox.successSingle('审核成功', cb, cb, '', '', true, `[ ${res.data.Message} ]`,);
+          } else {
+            this.messageBox.failSingleError('操作失败', `[ ${res.data.Message} ]`);
           }
         });
       }
@@ -384,11 +392,20 @@ export default {
         Remark: '',
       }).then(res => {
         if (res.data.Status === 1000) {
-          this.visible = false;
-          this.getCustomerData();
-          this.isGetList(true);
-          // this.customer.CompanyAuthenticationInfo.Status = 2;
-          // this.$store.commit('customerManage/setCustomerItemSave', [{ ...this.customer, AuthStatus: 2 }, true]);
+          const cb = () => {
+            this.visible = false;
+            this.getCustomerData();
+            this.isGetList(true);
+          };
+          this.messageBox.successSingle('审核成功', cb, cb);
+        } else if(res.data.Status === 1100){
+          const cb = () => {
+            this.getCustomerData();
+            this.isGetList(true);
+          }
+          this.messageBox.successSingle('审核成功', cb, cb, '', '', true, `[ ${res.data.Message} ]`,);
+        } else {
+          this.messageBox.failSingleError('操作失败', `[ ${res.data.Message} ]`);
         }
       });
     },
