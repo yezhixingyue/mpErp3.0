@@ -183,8 +183,8 @@ export default class OutsourceOrderItemClass {
 
     price = +price;
     const [, float] = `${price}`.split('.');
-    if (float && float.length > 2) {
-      messageBox.failSingleError('价格更改失败', '价格最多允许两位小数', changeFailFunc, changeFailFunc);
+    if (float && float.length > 1) {
+      messageBox.failSingleError('价格更改失败', '价格最多允许1位小数', changeFailFunc, changeFailFunc);
       return;
     }
 
