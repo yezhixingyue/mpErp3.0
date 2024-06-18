@@ -167,22 +167,25 @@ export default class OutsourceOrderItemClass {
       this._outPrice = initialPrice;
     };
 
-    if (price !== '') {
-      // changeFailFunc();
-      // messageBox.failSingleError('价格更改失败', '输入的值为空', changeFailFunc, changeFailFunc);
-      // return;
+    if (price === '') {
+      messageBox.failSingleError('价格更改失败', '外购价格不能为空，请填写外购价格', changeFailFunc, changeFailFunc);
+      return;
+    }
 
-      if (Number.isNaN(+price)) {
-        messageBox.failSingleError('价格更改失败', '输入的值不是有效的数字', changeFailFunc, changeFailFunc);
-        return;
-      }
+    // changeFailFunc();
+    // messageBox.failSingleError('价格更改失败', '输入的值为空', changeFailFunc, changeFailFunc);
+    // return;
 
-      price = +price;
-      const [, float] = `${price}`.split('.');
-      if (float && float.length > 2) {
-        messageBox.failSingleError('价格更改失败', '价格最多允许两位小数', changeFailFunc, changeFailFunc);
-        return;
-      }
+    if (Number.isNaN(+price)) {
+      messageBox.failSingleError('价格更改失败', '输入的值不是有效的数字', changeFailFunc, changeFailFunc);
+      return;
+    }
+
+    price = +price;
+    const [, float] = `${price}`.split('.');
+    if (float && float.length > 2) {
+      messageBox.failSingleError('价格更改失败', '价格最多允许两位小数', changeFailFunc, changeFailFunc);
+      return;
     }
 
     const resp = await api.getOutOrderChangePrice(this.OrderID, price).catch(() => null);

@@ -68,6 +68,13 @@ const onDownloadClick = () => {
 const onSendFactoryClick = () => {
   if (props.multipleSelection.length === 0) return;
 
+  const t = props.multipleSelection.find(it => it.Funds.OutPrice === '');
+
+  if (t) {
+    MpMessage.error('批量外购失败', '选中订单中存在外购价格为空的订单，请检查!');
+    return;
+  }
+
   MpMessage.warn({
     title: '批量外购提醒!',
     msg: `当前选中<i class="is-pink">${props.multipleSelection.length}个</i>订单，将外购给指定工厂`,
@@ -78,6 +85,13 @@ const onSendFactoryClick = () => {
 };
 const onHelpOrderClick = () => {
   if (props.multipleSelection.length === 0) return;
+
+  const t = props.multipleSelection.find(it => it.Funds.OutPrice === '');
+
+  if (t) {
+    MpMessage.error('批量接单失败', '选中订单中存在外购价格为空的订单，请检查!');
+    return;
+  }
 
   MpMessage.warn({
     title: '批量接单提醒!',
