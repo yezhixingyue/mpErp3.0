@@ -245,7 +245,6 @@ export default {
       }
     },
     async getOutOrderReceive(arr, isSingle = false) { // 确认接单
-      console.log('arr', arr);
       if (!arr || arr.length === 0) return;
       const temp = {
         OrderList: arr.map(it => it.OrderID),
@@ -302,6 +301,11 @@ export default {
             _it.CheckFileStatus = CheckFileOrderStatusEnumObj.WaitSendFactory.ID;
           });
           this.forceCancelVisible = false;
+
+          if (this.$refs.oTable) {
+            const ids = this.multipleSelection.map(m => m.OrderID);
+            this.$refs.oTable.toggleRowSelection(this.willForceCancelList.filter(a => ids.includes(a.OrderID)));
+          }
         };
         this.messageBox.successSingle('强制撤回成功', cb, cb);
       }
