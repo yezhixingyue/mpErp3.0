@@ -3,10 +3,47 @@
     <header class="title is-bold">划分责任</header>
     <ul>
       <li>
-        <span class="label is-bold">问题类别：</span><span class="value">湿货、生产质量问题、材料质量问题、晚货</span>
+        <div class="label is-bold">问题类别：</div><div class="value">湿货、生产质量问题、材料质量问题、晚货</div>
       </li>
-      <li>
-        <span class="label is-bold">责任占比：</span><span class="value">订单详情</span>
+      <li class="form-box">
+        <div class="label is-bold">责任占比：</div><div class="value">
+          <p>
+            <el-checkbox v-model="checked">备选项</el-checkbox>
+            <template>
+              所占责任：
+              <el-input v-model="input" size="medium" style="width: 50px;"></el-input> %
+              <i>已确认</i>
+              <img src="@/assets/images/success.png" alt="">
+            </template>
+          </p>
+          <p>
+            <el-checkbox v-model="checked">备选项</el-checkbox>
+            <template>
+              所占责任：
+              <el-input v-model="input" size="medium" style="width: 50px;"></el-input> %
+              <i>已确认</i>
+              <img src="@/assets/images/success.png" alt="">
+            </template>
+          </p>
+          <p>
+            <el-checkbox v-model="checked">备选项</el-checkbox>
+            <template>
+              所占责任：
+              <el-input v-model="input" size="medium" style="width: 50px;"></el-input> %
+              <i>已确认</i>
+              <img src="@/assets/images/success.png" alt="">
+            </template>
+          </p>
+          <p>
+            <el-checkbox v-model="checked">备选项</el-checkbox>
+            <template>
+              所占责任：
+              <el-input v-model="input" size="medium" style="width: 50px;"></el-input> %
+              <i>已确认</i>
+              <img src="@/assets/images/success.png" alt="">
+            </template>
+          </p>
+        </div>
       </li>
     </ul>
   </section>
@@ -76,8 +113,38 @@ export default {
       font-size: 12px;
       margin-top: 10px;
       line-height: 15px;
+      &.form-box{
+        line-height: 35px;
+        .el-input, input{
+          height: 35px;
+        }
+      }
       >.value{
         flex: 1;
+        >p{
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          >.el-checkbox{
+            .el-checkbox__label{
+              font-size: 12px;
+              color: #444;
+            }
+            margin-right: 20px;
+          }
+          >.el-input{
+            margin-right: 5px;
+          }
+          >i{
+            margin-right: 5px;
+            margin-left: 20px;
+            color: #80c269;
+          }
+          img{
+            width: 15px;
+            height: 15px;
+          }
+        }
       }
     }
   }

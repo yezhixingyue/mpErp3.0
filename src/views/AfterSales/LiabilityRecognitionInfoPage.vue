@@ -4,11 +4,17 @@
       <BreadcrumbNav backLabel="责任确认" label="确认责任"></BreadcrumbNav>
     </header>
     <main>
-      <AfterSalesSolutionInfoComp/>
-      <ResponsibilityDifferentiationComp/>
-      <OrderDetailsComp/>
+      <div class="top">
+        <AfterSalesSolutionInfoComp/>
+        <ResponsibilityDifferentiationComp/>
+        <OrderDetailsComp/>
+      </div>
+      <ScheduleComp/>
     </main>
-    <el-button @click="onGoBackClick">返回</el-button>
+    <footer>
+      <el-button @click="onGoBackClick" class="linear-bg-color">返回</el-button>
+      <el-button @click="onGoBackClick">返回</el-button>
+    </footer>
   </section>
 </template>
 
@@ -18,6 +24,7 @@ import AfterSalesSolutionInfoComp from '@/components/AfterSalesComps/AfterSalesS
 import ResponsibilityDifferentiationComp from '@/components/AfterSalesComps/ResponsibilityDifferentiationComp.vue';
 import OrderDetailsComp from '@/components/AfterSalesComps/OrderDetailsComp.vue';
 import BreadcrumbNav from '@/components/AfterSalesComps/BreadcrumbNav.vue';
+import ScheduleComp from '@/components/AfterSalesComps/ScheduleComp.vue';
 
 export default {
   name: 'LiabilityRecognitionPage',
@@ -26,6 +33,7 @@ export default {
     ResponsibilityDifferentiationComp,
     OrderDetailsComp,
     BreadcrumbNav,
+    ScheduleComp,
   },
   data() {
     return {
@@ -61,8 +69,31 @@ export default {
     font-size: 12px;
   }
   >main{
-    display: flex;
-    justify-content: flex-start;
+    >.top{
+      display: flex;
+      justify-content: flex-start;
+    }
+    >.schedule-wrap{
+      width: 960px
+    }
+  }
+  >footer{
+    padding: 60px 0 20px 0;
+    text-align: center;
+    .el-button{
+      width: 120px;
+      height: 35px;
+      padding: 0;
+      color: #fff;
+      background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);
+      border: none;
+      & + .el-button{
+        background: #fff;
+        margin-left: 30px;
+        color: #26BCF9;
+        border: 1px solid #26BCF9;
+      }
+    }
   }
 }
 </style>

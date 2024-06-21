@@ -12,8 +12,13 @@
         <ScheduleComp/>
       </div>
       <AfterSalesSolutionFromComp/>
+      <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false" @submit="SuspendVisible = false"></SuspendDialogComp>
     </main>
-    <el-button @click="onGoBackClick">返回</el-button>
+    <footer>
+      <el-button @click="onGoBackClick" class="linear-bg-color">返回</el-button>
+      <el-button @click="SuspendClick">guaqi</el-button>
+      <el-button @click="onGoBackClick">返回</el-button>
+    </footer>
   </section>
 </template>
 
@@ -24,6 +29,7 @@ import OrderDetailsComp from '@/components/AfterSalesComps/OrderDetailsComp.vue'
 import AfterSalesSolutionFromComp from '@/components/AfterSalesComps/AfterSalesSolutionFromComp.vue';
 import BreadcrumbNav from '@/components/AfterSalesComps/BreadcrumbNav.vue';
 import ScheduleComp from '@/components/AfterSalesComps/ScheduleComp.vue';
+import SuspendDialogComp from '@/components/AfterSalesComps/SuspendDialogComp.vue';
 
 export default {
   name: 'AfterSalesInfoPage',
@@ -33,10 +39,12 @@ export default {
     AfterSalesSolutionFromComp,
     BreadcrumbNav,
     ScheduleComp,
+    SuspendDialogComp,
   },
   data() {
     return {
       nowDate: null,
+      SuspendVisible: false,
     };
   },
   computed: {
@@ -51,6 +59,9 @@ export default {
   methods: {
     onGoBackClick() {
       this.$goback();
+    },
+    SuspendClick() {
+      this.SuspendVisible = true;
     },
   },
   mounted() {
@@ -75,6 +86,24 @@ export default {
     >.top{
       display: flex;
     }
+    }
+  }
+  >footer{
+    padding: 60px 0 20px 0;
+    text-align: center;
+    .el-button{
+      width: 120px;
+      height: 35px;
+      padding: 0;
+      color: #fff;
+      background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);
+      border: none;
+      & + .el-button{
+        background: #fff;
+        margin-left: 30px;
+        color: #26BCF9;
+        border: 1px solid #26BCF9;
+      }
     }
   }
 }
