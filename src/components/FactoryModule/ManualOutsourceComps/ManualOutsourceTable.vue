@@ -156,10 +156,15 @@ export default {
       }
     },
     onOutsourceClick(item) { // 确认外购
+      if (item.Funds.OutPrice === '') {
+        this.messageBox.failSingleError('外购失败', '外购价格不能为空，请填写外购价格');
+        return;
+      }
       // const bool = item._canCancel;
       const bool = false;
 
       const title = bool ? '确认取消该订单外购吗 ?' : '确认外购该订单吗 ?';
+
       this.messageBox.warnCancelBox(title, `订单号：[ ${item.OrderID} ]`, () => {
         if (bool) {
           this.$emit('comfirmCancle', [item]);
@@ -169,7 +174,10 @@ export default {
       });
     },
     onHelpOrderClick(item) {
-      console.log('onHelpOrderClick item', item);
+      if (item.Funds.OutPrice === '') {
+        this.messageBox.failSingleError('接单失败', '外购价格不能为空，请填写外购价格');
+        return;
+      }
       this.messageBox.warnCancelBox('接单提醒！', `${item.OrderID}已与[${item.Factory.Name}]沟通确认接单`, () => {
         this.$emit('helpOrder', [item], true);
       });

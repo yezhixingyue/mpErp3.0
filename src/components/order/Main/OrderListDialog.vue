@@ -217,7 +217,6 @@ export default {
   },
   mounted() {
     if (this.$route.name === 'orderManage' || this.$route.name === 'FeedbackInfo' || this.$route.name === 'ServiceInfo') {
-      console.log('this.showDetail', this.showDetail);
       this.showDetail = true;
       this.showService = true;
     }

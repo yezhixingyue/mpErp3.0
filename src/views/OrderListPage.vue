@@ -124,7 +124,6 @@ export default {
   methods: {
     ...mapActions('orderModule', ['delTargetOrder', 'getOrderTableData', 'getOrderListData2Excel']),
     setCertificateList(list) {
-      console.log('setCertificateList', list);
       this.CertificateList = list;
     },
     handlePageChange(page) {
