@@ -26,7 +26,7 @@ export default class FactoryClass {
     // },
   }
 
-  /** 外协自动接单 */
+  /** 外购自动接单 */
   AutoReceiveOrder = false
 
   _AutoLink = false

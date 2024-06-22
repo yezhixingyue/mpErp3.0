@@ -1,6 +1,6 @@
 <template>
   <CommonDialogComp
-    width="560px"
+    width="460px"
     title="强制撤回"
     :visible.sync="localVisible"
     class="mp-erp-out-source-force-cancel-dialog-comp-wrap"
@@ -12,15 +12,17 @@
     <div>
       <el-form :model="ruleForm" ref="formRef">
         <el-form-item
-          label=""
+          label="撤回原因："
           prop="Remark"
           :rules="[
-            { required: true, message: '请输入强制撤回原因'},
+            { required: true, message: '请输入撤回原因'},
           ]"
         >
-          <el-input type="textarea" :rows="5" placeholder="请输入强制撤回原因" maxlength="30" show-word-limit v-model.trim="ruleForm.Remark"></el-input>
+          <el-input type="textarea" :rows="8" placeholder="请输入终结原因" maxlength="100" show-word-limit v-model.trim="ruleForm.Remark"></el-input>
         </el-form-item>
       </el-form>
+
+      <p class="tips-box"> <i class="el-icon-warning"></i> 注：请和工厂沟通是否已生产，填写撤回原因并做好记录</p>
     </div>
   </CommonDialogComp>
 </template>
@@ -72,15 +74,33 @@ const submit = () => {
     line-height: 20px !important;
   }
   .el-dialog__body {
-    height: 130px;
-    padding: 25px 15px;
+    min-height: 130px;
+    padding: 25px 15px 5px;
     > div {
       height: 100%;
       padding: 0 25px;
+
+      .el-form-item__content {
+        display: inline-block;
+        width: 260px;
+
+        textarea {
+          line-height: 20px;
+          font-size: 12px;
+          min-height: 160px;
+        }
+      }
+
+      .tips-box {
+        width: 360px;
+        margin-left: 20px;
+        margin-top: 5px;
+      }
     }
   }
   .el-dialog__footer {
-    padding-bottom: 25px;
+    padding-bottom: 10px;
+    padding-top: 0;
   }
 }
 </style>

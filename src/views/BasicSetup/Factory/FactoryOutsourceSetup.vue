@@ -3,8 +3,6 @@
     <header>
       <div class="factory-manag-setup-header">
         <p class="mp-common-title-wrap">当前工厂：{{FactoryName}}</p> <br>
-        <el-button type="primary"
-         @click="onFactoryAddClick" class="blue-full-color-btn-styles is-blue-button">添加外发价格</el-button>
       </div>
     </header>
     <main>
@@ -123,9 +121,9 @@ export default {
     align-items: center;
     padding-left: 20px;
     justify-content: space-between;
-    p {
-      margin-bottom: 15px;
-    }
+    // p {
+    //   margin-bottom: 15px;
+    // }
     > .input-box {
       display: flex;
       height: 30px;

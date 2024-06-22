@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { MessageBox } from 'element-ui';
 import Vue from 'vue';
+import { MyMessage } from '@/basic/message';
 
 /**
  * 警告提示框 --- 不含内容，只有标题 单按钮
@@ -10,13 +11,20 @@ import Vue from 'vue';
  * @param {*} failFunc
  */
 function failSingle(msg, successFunc, failFunc, dangerouslyUseHTMLString, confirmButtonText) {
-  MessageBox({
-    showClose: true,
-    confirmButtonText: confirmButtonText || '确定',
+  // MessageBox({
+  //   showClose: true,
+  //   confirmButtonText: confirmButtonText || '确定',
+  //   title: msg,
+  //   dangerouslyUseHTMLString,
+  //   customClass: 'mp-order-del-pop-reverse-warn-null fail',
+  // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+  MyMessage.error({
     title: msg,
     dangerouslyUseHTMLString,
-    customClass: 'mp-order-del-pop-reverse-warn-null fail',
-  }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+    confirmButtonText: confirmButtonText || '确定',
+    onOk: successFunc,
+    onCancel: failFunc,
+  });
 }
 
 /**
@@ -29,15 +37,23 @@ function failSingle(msg, successFunc, failFunc, dangerouslyUseHTMLString, confir
  */
 // eslint-disable-next-line default-param-last
 function failSingleError(title = '出错啦 ！', msg, successFunc, failFunc, dangerouslyUseHTMLString, confirmButtonText) {
-  MessageBox({
-    showClose: true,
-    message: msg,
-    type: 'fail ',
-    confirmButtonText: confirmButtonText || '关闭',
+  // MessageBox({
+  //   showClose: true,
+  //   message: msg,
+  //   type: 'fail ',
+  //   confirmButtonText: confirmButtonText || '关闭',
+  //   title,
+  //   customClass: 'mp-order-del-pop-reverse-fail',
+  //   dangerouslyUseHTMLString,
+  // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+  MyMessage.error({
     title,
-    customClass: 'mp-order-del-pop-reverse-fail',
+    msg,
     dangerouslyUseHTMLString,
-  }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+    confirmButtonText: confirmButtonText || '确定',
+    onOk: successFunc,
+    onCancel: failFunc,
+  });
 }
 
 /**
@@ -50,14 +66,21 @@ function failSingleError(title = '出错啦 ！', msg, successFunc, failFunc, da
  * @param {string} [text='关闭']
  */
 function warnSingleError(msg, successFunc, failFunc, title = '注意', text = '关闭') {
-  MessageBox({
-    showClose: true,
-    message: msg,
-    type: 'warning',
-    confirmButtonText: text,
+  // MessageBox({
+  //   showClose: true,
+  //   message: msg,
+  //   type: 'warning',
+  //   confirmButtonText: text,
+  //   title,
+  //   customClass: 'mp-order-del-pop-reverse-warn',
+  // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+  MyMessage.error({
     title,
-    customClass: 'mp-order-del-pop-reverse-warn',
-  }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+    msg,
+    confirmButtonText: text || '确定',
+    onOk: successFunc,
+    onCancel: failFunc,
+  });
 }
 
 /**
@@ -70,17 +93,26 @@ function warnSingleError(msg, successFunc, failFunc, title = '注意', text = '�
  */
 // eslint-disable-next-line default-param-last
 function warnCancelBox(title = '确定取消此订单吗 ?', msg, successFunc, failFunc, dangerouslyUseHTMLString = false, className, confirmButtonText, cancelButtonText) {
-  MessageBox({
-    showClose: true,
-    message: msg,
-    type: 'success ',
-    confirmButtonText: confirmButtonText || '确定',
+  // MessageBox({
+  //   showClose: true,
+  //   message: msg,
+  //   type: 'success ',
+  //   confirmButtonText: confirmButtonText || '确定',
+  //   title,
+  //   customClass: `mp-order-del-pop-reverse-warn ${className}`,
+  //   showCancelButton: true,
+  //   cancelButtonText: cancelButtonText || '取消',
+  //   dangerouslyUseHTMLString,
+  // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+  MyMessage.warn({
     title,
-    customClass: `mp-order-del-pop-reverse-warn ${className}`,
-    showCancelButton: true,
+    msg,
+    confirmButtonText: confirmButtonText || '确定',
     cancelButtonText: cancelButtonText || '取消',
     dangerouslyUseHTMLString,
-  }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+    onOk: successFunc,
+    onCancel: failFunc,
+  });
 }
 
 /**
@@ -91,15 +123,23 @@ function warnCancelBox(title = '确定取消此订单吗 ?', msg, successFunc, f
  * @param {*} failFunc
  */
 function warnCancelNullMsg(title, successFunc, failFunc, dangerouslyUseHTMLString, confirmButtonText, cancelButtonText) {
-  MessageBox({
-    showClose: true,
+  // MessageBox({
+  //   showClose: true,
+  //   confirmButtonText: confirmButtonText || '确定',
+  //   showCancelButton: true,
+  //   cancelButtonText: cancelButtonText || '取消',
+  //   dangerouslyUseHTMLString,
+  //   title,
+  //   customClass: 'mp-order-del-pop-reverse-warn-null',
+  // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+  MyMessage.warn({
+    title,
     confirmButtonText: confirmButtonText || '确定',
-    showCancelButton: true,
     cancelButtonText: cancelButtonText || '取消',
     dangerouslyUseHTMLString,
-    title,
-    customClass: 'mp-order-del-pop-reverse-warn-null',
-  }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+    onOk: successFunc,
+    onCancel: failFunc,
+  });
 }
 
 /**
@@ -111,17 +151,26 @@ function warnCancelNullMsg(title, successFunc, failFunc, dangerouslyUseHTMLStrin
  * @param {boolean} [canCloseOnPressEscape=true]
  */
 function successSingle(title, successFunc, failFunc, dangerouslyUseHTMLString, confirmButtonText, canCloseOnPressEscape = true, msg = '') {
-  let customClass = 'mp-order-del-pop-success';
-  if (!msg) customClass = `${customClass} none-msg`;
-  MessageBox({
-    showClose: true,
-    confirmButtonText: confirmButtonText || '确定',
+  // let customClass = 'mp-order-del-pop-success';
+  // if (!msg) customClass = `${customClass} none-msg`;
+  // MessageBox({
+  //   showClose: true,
+  //   confirmButtonText: confirmButtonText || '确定',
+  //   title,
+  //   message: msg,
+  //   closeOnPressEscape: canCloseOnPressEscape,
+  //   dangerouslyUseHTMLString,
+  //   customClass,
+  // }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+  MyMessage.success({
     title,
-    message: msg,
-    closeOnPressEscape: canCloseOnPressEscape,
+    msg,
+    confirmButtonText: confirmButtonText || '确定',
     dangerouslyUseHTMLString,
-    customClass,
-  }).then(() => successFunc && successFunc()).catch(() => failFunc && failFunc());
+    onOk: successFunc,
+    onCancel: failFunc,
+    canCloseOnPressEscape,
+  });
 }
 
 /**

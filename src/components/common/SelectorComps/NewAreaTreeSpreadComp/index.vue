@@ -148,6 +148,9 @@ export default {
     getCheckAllList(list) {
       return getCheckAllListByCurDataList(list, true, this.DisabledList);
     },
+    getCheckAllHandler(bool) { // 用于向父组件提供全选操作
+      this.checkAll = bool;
+    },
   },
   mounted() {
   },

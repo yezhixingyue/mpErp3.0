@@ -6,6 +6,97 @@
   "description": "mpzj后台管理系统图标集合",
   "glyphs": [
     {
+      "icon_id": "40522898",
+      "name": "编辑",
+      "font_class": "bianji1",
+      "unicode": "e68b",
+      "unicode_decimal": 59019
+    },
+    {
+      "icon_id": "40470964",
+      "name": "制作需求设置",
+      "font_class": "zhizuoxuqiushezhi",
+      "unicode": "e690",
+      "unicode_decimal": 59024
+    },
+    {
+      "icon_id": "40442230",
+      "name": "批量下载",
+      "font_class": "piliangxiazai",
+      "unicode": "e689",
+      "unicode_decimal": 59017
+    },
+    {
+      "icon_id": "40442231",
+      "name": "操作的下载",
+      "font_class": "caozuodexiazai",
+      "unicode": "e688",
+      "unicode_decimal": 59016
+    },
+    {
+      "icon_id": "40442232",
+      "name": "接单工厂大",
+      "font_class": "jiedangongchangda",
+      "unicode": "e67f",
+      "unicode_decimal": 59007
+    },
+    {
+      "icon_id": "40442233",
+      "name": "批量接单",
+      "font_class": "piliangjiedan",
+      "unicode": "e687",
+      "unicode_decimal": 59015
+    },
+    {
+      "icon_id": "40442234",
+      "name": "接单工厂小",
+      "font_class": "jiedangongchangxiao",
+      "unicode": "e686",
+      "unicode_decimal": 59014
+    },
+    {
+      "icon_id": "40442235",
+      "name": "强制撤回",
+      "font_class": "qiangzhichehui",
+      "unicode": "e685",
+      "unicode_decimal": 59013
+    },
+    {
+      "icon_id": "40442236",
+      "name": "确认接单客户端",
+      "font_class": "querenjiedankehuduan",
+      "unicode": "e684",
+      "unicode_decimal": 59012
+    },
+    {
+      "icon_id": "40442237",
+      "name": "详情",
+      "font_class": "xiangqing2",
+      "unicode": "e683",
+      "unicode_decimal": 59011
+    },
+    {
+      "icon_id": "40442238",
+      "name": "取消外购",
+      "font_class": "quxiaowaigou",
+      "unicode": "e682",
+      "unicode_decimal": 59010
+    },
+    {
+      "icon_id": "40442239",
+      "name": "外购",
+      "font_class": "waigou",
+      "unicode": "e681",
+      "unicode_decimal": 59009
+    },
+    {
+      "icon_id": "40442240",
+      "name": "确认接单",
+      "font_class": "querenjiedan",
+      "unicode": "e680",
+      "unicode_decimal": 59008
+    },
+    {
       "icon_id": "39380797",
       "name": "开发者账号",
       "font_class": "kaifazhezhanghao",

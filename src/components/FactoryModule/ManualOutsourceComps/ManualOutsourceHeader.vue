@@ -10,7 +10,7 @@
         :changePropsFunc='setCondition'
         :typeList="[['FactoryID', '']]"
         :value='condition.FactoryID'
-        label='外协工厂'
+        label='外购工厂'
         class="mt-18 mr-30"
       />
       <OrderChannelSelector
@@ -21,7 +21,7 @@
         :changePropsFunc='setCondition'
         :typeList="[['CheckFileOrderStatus', '']]"
         :value='condition.CheckFileOrderStatus'
-        label='外协状态'
+        label='外购状态'
         class="mt-18 mr-30"
       />
       <OrderChannelSelector
@@ -51,13 +51,13 @@
       <LineDateSelectorComp
         :changePropsFunc='setCondition'
         :requestFunc='getDataList'
-        :typeList="[['DateType', ''], ['PlaceDate', 'First'], ['PlaceDate', 'Second']]"
+        :typeList="[['DateType', ''], ['PayTime', 'First'], ['PayTime', 'Second']]"
         :dateValue='condition.DateType'
         :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
         :dateList="dateList"
         isFull
         class="mt-18"
-        label="时间筛选" />
+        label="付款时间" />
       <SearchInputComp
         class="mt-18"
         :typeList="[['KeyWords', '']]"
@@ -117,11 +117,11 @@ export default {
       CheckFileOrderStatusOptions: CheckFileOrderStatusEnumList.filter(it => it.filter),
       dateList: [
         // { name: '近7天异常', ID: 'last7Date' },
-        { name: '今天', ID: 'today' },
-        { name: '昨天', ID: 'yesterday' },
-        { name: '前天', ID: 'beforeyesterday' },
-        { name: '本月', ID: 'curMonth' },
-        { name: '上月', ID: 'lastMonth' },
+        { name: '今天付款', ID: 'today' },
+        { name: '昨天付款', ID: 'yesterday' },
+        { name: '前天付款', ID: 'beforeyesterday' },
+        { name: '本月付款', ID: 'curMonth' },
+        { name: '上月付款', ID: 'lastMonth' },
       ],
     };
   },
@@ -150,7 +150,7 @@ export default {
     },
     UserDefinedTimeIsActive() {
       return this.condition.DateType === ''
-       && !!this.condition.PlaceDate.First && !!this.condition.PlaceDate.Second;
+       && !!this.condition.PayTime.First && !!this.condition.PayTime.Second;
     },
   },
   methods: {

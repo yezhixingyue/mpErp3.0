@@ -2,7 +2,7 @@ import api from '@/api';
 import { Condition } from './Condition';
 import { IDeveloper } from './types';
 import { getDeveloperTableList } from './utils';
-import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { dialogSuccess, MpMessage } from '@/assets/js/utils/MpMessage';
 import { DeveloperStatusEnum } from './enum';
 import { useUserStore } from '@/pinia/modules/user';
 import { getFormatDateString } from '@/assets/js/utils/util';
@@ -57,10 +57,9 @@ export class DeveloperListManageClass {
         }
       };
 
-      MpMessage.dialogSuccess({
+      dialogSuccess({
         title: '审核通过',
         onOk: callback,
-        onCancel: callback,
       });
     }
   }
@@ -79,10 +78,9 @@ export class DeveloperListManageClass {
         }
       };
 
-      MpMessage.dialogSuccess({
+      dialogSuccess({
         title: '已设置为不通过状态',
         onOk: callback,
-        onCancel: callback,
       });
     }
   }

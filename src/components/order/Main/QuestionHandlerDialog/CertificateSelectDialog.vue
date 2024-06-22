@@ -120,7 +120,9 @@ const localCertificateList = computed(() => {
 
   const list2 = Type === '' ? list1 : list1.filter(it => it.CertificateType === Type);
 
-  return list2;
+  // 筛选掉不要的状态
+
+  return list2.filter(it => it.CertificateStatus !== 0 && it.CheckStatus !== 2);
 });
 
 const onRefreshClick = () => {

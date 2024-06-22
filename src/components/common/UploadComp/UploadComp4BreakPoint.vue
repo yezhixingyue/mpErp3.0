@@ -31,7 +31,8 @@
 
 <script>
 
-import UploadFileByBreakPoint, { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+// import UploadFileByBreakPoint, { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+import { breakPointUpload as UploadFileByBreakPoint, getUniqueFileName } from '@/basic/BreakpointUpload';
 
 export default { // 上传图片按钮
   props: {

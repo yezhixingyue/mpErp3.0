@@ -15,11 +15,19 @@
       <span>，开始今天的工作吧！</span>
       <!-- <i>!</i> -->
     </header>
+    <main>
+      <TestAreaTextGroup />
+    </main>
   </section>
 </template>
 
 <script>
+import TestAreaTextGroup from '@/components/common/AreaText/TestAreaTextGroup.vue';
+
 export default {
+  components: {
+    TestAreaTextGroup,
+  },
   data() {
     return {
       dateString: '',
