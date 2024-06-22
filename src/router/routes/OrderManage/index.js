@@ -33,7 +33,7 @@ const routes = { // 客户订单管理
         requiresAuth: true,
         PermissionInfo: ['PermissionManageOrder', 'HavePomission'],
       },
-      component: () => import('../../../components/order/applyAfterSales.vue'),
+      component: () => import('../../../views/AfterSales/OnBehalfOfConsumerAfterSales.vue'),
     },
     {
       path: '/BatchUpload',
