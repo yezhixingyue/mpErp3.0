@@ -31,9 +31,9 @@ const localCraft = computed(() => props.Craft);
 const hasList = computed(() => props.Craft.ElementList.length || props.Craft.GroupList.length);
 
 watch(() => localCraft.value.IsShow, (val) => { // 在禁用时，清除勾选数据
-  if (!val) {
-    localCraft.value.IsShowName = false;
-  }
+  if (!val || !hasList.value) localCraft.value.IsShowName = val;
+}, {
+  immediate: true,
 });
 
 </script>
