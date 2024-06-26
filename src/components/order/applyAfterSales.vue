@@ -384,7 +384,6 @@ export default {
   },
   mounted() {
     this.productInfo = this.$route.params.ServiceAfterSales;
-    console.log(this.productInfo);
     this.api.getApplyQuestionList().then(res => {
       if (res.data.Status === 1000) {
         this.ApplyQuestionList = res.data.Data;

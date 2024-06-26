@@ -1102,7 +1102,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.HandlingAfterSalesForm.Solution.SolutionTypes);
+    // console.log(this.HandlingAfterSalesForm.Solution.SolutionTypes);
   },
   watch: {
     visible(newVal) {

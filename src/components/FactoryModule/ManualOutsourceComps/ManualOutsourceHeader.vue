@@ -11,6 +11,7 @@
         :typeList="[['FactoryID', '']]"
         :value='condition.FactoryID'
         label='外购工厂'
+        filterable
         class="mt-18 mr-30"
       />
       <OrderChannelSelector

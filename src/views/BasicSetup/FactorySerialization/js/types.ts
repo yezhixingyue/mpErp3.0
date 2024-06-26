@@ -87,6 +87,8 @@ export interface IMRProduct extends IMRPart {
   ShowOrderID: boolean
   /** 是否显示订单名称 */
   ShowOrderName: boolean
+  /** 是否显示产品名称 */
+  ShowProductName: boolean
   /** 是否显示工期 */
   ShowPeriod: boolean
 

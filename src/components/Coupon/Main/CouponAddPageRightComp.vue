@@ -116,7 +116,6 @@ export default {
         return this.condition2CouponSave.UseNewCustomer;
       },
       set(val) {
-        console.log();
         this.setCondition2CouponSave([['UseNewCustomer', ''], val]);
         if (val) {
           this.onUserTypeListChange(this.filterUserTypeList); // 客户类型

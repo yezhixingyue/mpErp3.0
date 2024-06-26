@@ -249,7 +249,6 @@ export default {
       const temp = {
         OrderList: arr.map(it => it.OrderID),
       };
-      console.log(123);
       const resp = await this.api.getOutOrderReceive(temp).catch(() => null);
 
       if (resp?.data?.Status === 1000) {
