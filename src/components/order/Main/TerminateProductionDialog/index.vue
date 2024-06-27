@@ -178,6 +178,10 @@ export default {
             this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
             this.ProductionInfo = ProductionInfoRes.data.Data;
           }
+          if (ProductionInfoRes.data.Status !== 1000) {
+            const cb = () => { this.close(); }; // 生产拼板中不能取消 （取消订单时弹框提示 点确定时关闭取消生产弹框）
+            this.messageBox.failSingleError('操作失败', `[ ${ProductionInfoRes.data.Message} ]`, cb, cb);
+          }
           const tempValue = {};
           if (this.ProductionInfo) {
             this.ProductionInfo.PlateList.forEach(element => {

@@ -50,7 +50,7 @@ const api = {
   },
 
   getOrderProductionInfo(OrderID) { // 获取订单生产信息
-    return instance.get(`/Api/Order/ProductionInfo?orderID=${OrderID}`);
+    return instance.get(`/Api/Order/ProductionInfo?orderID=${OrderID}`, { closeTip: true });
   },
   getOrderProductionStopQuery(data) { // POST /Api/Order/ProductionStop/Query
     return instance.post('/Api/Order/ProductionStop/Query', data);
