@@ -199,6 +199,12 @@ export default {
   width: 650px;
   box-sizing: border-box;
   padding-right: 30px;
+  .el-checkbox{
+    .el-checkbox__label{
+      font-size: 12px;
+      color: #444;
+    }
+  }
   >.title{
     font-size: 16px;
     line-height: 20px;

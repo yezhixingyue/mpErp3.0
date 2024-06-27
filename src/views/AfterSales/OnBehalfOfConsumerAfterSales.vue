@@ -7,7 +7,6 @@
       <div class="left">
         <div class="top">
           <OrderDetailsComp/>
-          <!-- <CustomerAppealComp/> -->
           <div class="after-sales-trouble">
             <header class="title is-bold">问题图片</header>
             <ul>
@@ -28,7 +27,6 @@
             </ul>
           </div>
         </div>
-        <!-- <ScheduleComp/> -->
       </div>
       <AfterSalesSolutionFromComp/>
       <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false" @submit="SuspendVisible = false"></SuspendDialogComp>
@@ -43,21 +41,17 @@
 
 <script>
 import { mapState } from 'vuex';
-// import CustomerAppealComp from '@/components/AfterSalesComps/CustomerAppealComp.vue';
 import OrderDetailsComp from '@/components/AfterSalesComps/OrderDetailsComp.vue';
 import AfterSalesSolutionFromComp from '@/components/AfterSalesComps/AfterSalesSolutionFromComp.vue';
 import BreadcrumbNav from '@/components/AfterSalesComps/BreadcrumbNav.vue';
-// import ScheduleComp from '@/components/AfterSalesComps/ScheduleComp.vue';
 import SuspendDialogComp from '@/components/AfterSalesComps/SuspendDialogComp.vue';
 
 export default {
   name: 'AfterSalesInfoPage',
   components: {
-    // CustomerAppealComp,
     OrderDetailsComp,
     AfterSalesSolutionFromComp,
     BreadcrumbNav,
-    // ScheduleComp,
     SuspendDialogComp,
   },
   data() {
