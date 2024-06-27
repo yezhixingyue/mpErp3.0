@@ -233,7 +233,7 @@ export default {
       display: none;
     }
     >.el-dialog__body{
-      height: 784px;
+      //height: 784px;
       box-sizing: border-box;
       padding: 0;
       .dialog-main{
@@ -241,6 +241,7 @@ export default {
         flex-direction: column;
         height: 100%;
         padding: 0 30px;
+        padding-bottom: 30px;
         .from-box{
           display: flex;
           margin-top: 30px;
