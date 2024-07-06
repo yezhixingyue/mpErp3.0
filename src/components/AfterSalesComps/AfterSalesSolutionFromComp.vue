@@ -59,7 +59,7 @@
       </li>
       <li>
         <span class="label is-bold">优惠券：</span><span class="value">
-          <span>选择优惠券</span>
+          <span @click="SelectCouponClick">选择优惠券</span>
           <el-table stripe border fit :data="[]" style="width: 100%; margin-top: 10px" class="ft-14-table">
             <el-table-column prop="AfterSaleCode" label="包裹号" minWidth="123" show-overflow-tooltip></el-table-column>
             <el-table-column prop="OrderID" label="运单号" minWidth="114" show-overflow-tooltip></el-table-column>
@@ -155,11 +155,53 @@
         </span>
       </li>
     </ul>
+
+    <CommonDialogComp
+      width="600px"
+      top='15vh'
+      title="选择优惠券:"
+      :visible="dialogVisible"
+      cancelText='取消'
+      @cancle="dialogVisible = false"
+      @open='handleCouponDialogOpen'
+      @closed='dialogVisible = false'
+      @submit="onSelectClick"
+      class="mp-erp-select-coupon-dialog-comp-wrap"
+    >
+      <div class="coupon-dialog-content">
+        <p v-if="couponList.length === 0" style="letter-spacing:1px" class="is-pink is-font-size-12 tips-box">
+          <i class="el-icon-warning"></i> 暂无可用优惠券！{{couponList}}</p>
+        <ul v-else>
+          <li v-for="it in couponList" :key="it.CouponID">
+            <el-checkbox v-model="it.checked" class="mp-mini-checkbox">
+              <span class="is-pink">{{it.Data.Amount}}元</span>
+              <span class="MinPayAmount"> 满{{it.Data.MinPayAmount}}元使用</span>
+              <i> - </i>
+              <el-tooltip placement="top-start" :enterable='false'>
+                <div slot="content">
+                  <p v-for="(item, i) in it.ProductString.split('\n') || []" :key="item + '---' + i">
+                    {{ item }}
+                  </p>
+                </div>
+                <span class="area-span">限产品：{{ it.ProductString.split('\n') || [].join(' ') }}</span>
+              </el-tooltip>
+            </el-checkbox>
+          </li>
+        </ul>
+      </div>
+      <template slot="footer">
+        <span class="dialog-footer">
+          <el-button type="primary" :disabled='couponList.length === 0' @click="onSelectClick(false)">确 定</el-button>
+          <el-button @click="dialogVisible = false">取 消</el-button>
+        </span>
+      </template>
+    </CommonDialogComp>
   </section>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 
 export default {
   props: {
@@ -174,17 +216,50 @@ export default {
   },
 
   components: {
+    CommonDialogComp,
   },
   computed: {
     ...mapState('common', ['userTypeList']),
   },
   data() {
     return {
+      radio: false,
+      input: '',
+      checked: false,
+      textarea2: '',
 
+      isCouponListLoaded: false,
+      couponList: [],
+      selectedCouponList: [],
+      couponListLoading: false,
+      dialogVisible: false,
     };
   },
   methods: {
-
+    SelectCouponClick() {
+      this.dialogVisible = true;
+    },
+    // 优惠劵确定
+    onSelectClick() {
+      const list = this.couponList.filter(it => it.checked); // CouponNumber
+      if (list.length === 0) {
+        this.messageBox.failSingleError('操作失败', '未选中优惠券');
+        return;
+      }
+      this.selectedCouponList = list.map(it => ({ ...it }));
+      // const _list = this.selectedCouponList.map(it => ({ CouponID: it.CouponID, Number: +it.CouponNumber }));
+      this.dialogVisible = false;
+    },
+    // 选择优惠卷的弹窗
+    async handleCouponDialogOpen() {
+      const resp = await this.api.getCouponList({ ProvideStatus: 1, FieldType: 1, ReceiveNumber: 1 }).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        this.couponList = resp.data.Data.map(it => ({
+          ...it,
+          checked: false,
+        }));
+      }
+    },
   },
   mounted() {
 
@@ -266,6 +341,21 @@ export default {
             line-height: 36px;
             font-size: 14px;
           }
+        }
+      }
+    }
+  }
+  .mp-erp-select-coupon-dialog-comp-wrap{
+    .el-dialog__body{
+      padding: 20px 43px;
+      padding-bottom: 0;
+    }
+    .coupon-dialog-content{
+      height: 448px;
+      li{
+        margin-bottom: 20px;
+        &:last-child{
+          margin-bottom: 0;
         }
       }
     }
