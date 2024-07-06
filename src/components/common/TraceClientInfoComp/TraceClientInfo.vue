@@ -1,6 +1,6 @@
 <template>
   <section class="trace-client-info-comp">
-    <header class="nav"><span @click="onGoBackClick">报价记录</span> > 详情</header>
+    <header class="nav"><span @click="onGoBackClick">{{BackName}}</span> > 详情</header>
     <main class="trace-client-info-box">
       <Left :CustomerTrackDetail="CustomerTrackDetail"
       :customerID="customerID"
@@ -15,7 +15,7 @@
         />
     </main>
     <footer>
-      <el-button @click="onGoBackClick">返回</el-button>
+      <el-button @click="onGoBackClick">返 回</el-button>
     </footer>
   </section>
 </template>
@@ -36,6 +36,7 @@ export default {
       customerID: null,
       customerInfo: null,
       quotation: null,
+      BackName: '',
     };
   },
   computed: {
@@ -58,13 +59,6 @@ export default {
     onGoBackClick() {
       this.$goback();
     },
-    // getCustomerTrackDetail(customerID) {
-    //   this.api.getCustomerTrackDetail(customerID).then(res => {
-    //     if (res.data.Status === 1000) {
-    //       this.CustomerTrackDetail = res.data.Data;
-    //     }
-    //   });
-    // },
   },
   created() {
     const { customerID, customerInfo, quotation } = this.$route.params;
@@ -80,9 +74,25 @@ export default {
     this.getCustomerTrackDetail(customerID);
   },
   watch: {},
-  // mounted() {
-
-  // },
+  mounted() {
+    const routeName = this.$route.name;
+    switch (routeName) {
+      case 'GetPriceRecordDetail':
+        this.BackName = '报价记录';
+        break;
+      case 'TraceClientListDetail':
+        this.BackName = '追踪客户列表';
+        break;
+      case 'CommunicationRecordDetail':
+        this.BackName = '沟通记录';
+        break;
+      case 'TraceRecordDetail':
+        this.BackName = '追踪记录';
+        break;
+      default:
+        break;
+    }
+  },
 };
 </script>
 <style lang='scss'>
