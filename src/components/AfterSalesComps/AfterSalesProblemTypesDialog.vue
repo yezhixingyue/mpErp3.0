@@ -3,19 +3,21 @@
     width="600px"
     top='15vh'
     title="选择优惠券:"
-    :visible="dialogVisible"
+    :visible="ProblemTypesVisible"
     cancelText='取消'
-    @cancle="dialogVisible = false"
+    @cancle="onCancle"
     @open='handleCouponDialogOpen'
-    @closed='dialogVisible = false'
+    @closed='onCancle'
     @submit="onSelectClick"
-    class="mp-erp-select-coupon-dialog-comp-wrap"
+    class="mp-erp-after-sales-problem-types-dialog-comp-wrap"
   >
-    <ul>
-      <li v-for="it in couponList" :key="it.CouponID">
-        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-        <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-          <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+    <ul class="problem-types-dialog-content">
+      <li v-for="QuestionType in QuestionTypeList" :key="QuestionType.ID">
+        <div class="">
+          {{ QuestionType.Name }}
+        </div>
+        <el-checkbox-group v-model="checkedCities">
+          <el-checkbox v-for="SonClass in QuestionType.SonClassList" :label="SonClass.Name" :key="SonClass.ID">{{SonClass.Name}}</el-checkbox>
         </el-checkbox-group>
       </li>
     </ul>
@@ -36,13 +38,43 @@ export default {
       type: String,
       default: '',
     },
+    ProblemTypesVisible: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     CommonDialogComp,
   },
+  data() {
+    return {
+      QuestionTypeList: [],
+
+      checkedCities: [],
+    };
+  },
   methods: {
     onGoBackClick() {
       this.$goback();
+    },
+    async getQuestionTypeList() {
+      if (this.QuestionTypeList.length) return;
+      // 获取所有问题
+      const res = await this.api.getOrderAfterSaleQuestionClassList({ searchType: 1, ID: 'ec7d1141-ccfa-4316-b83c-b0bd01221c99' });
+      if (res.data.Status === 1000) {
+        console.log(res.data.Data);
+        this.QuestionTypeList = res.data.Data.filter(item => item && item.SonClassList.length);
+      }
+    },
+    handleCouponDialogOpen() {
+      console.log('handleCouponDialogOpen');
+      this.getQuestionTypeList();
+    },
+    onSelectClick() {
+      console.log('onSelectClick');
+    },
+    onCancle() {
+      this.$emit('close', false);
     },
   },
 };
@@ -50,12 +82,12 @@ export default {
 
 <style lang='scss'>
 @import "@/assets/css/var.scss";
-.mp-erp-select-coupon-dialog-comp-wrap{
+.mp-erp-after-sales-problem-types-dialog-comp-wrap{
   .el-dialog__body{
     padding: 20px 43px;
     padding-bottom: 0;
   }
-  .coupon-dialog-content{
+  .problem-types-dialog-content{
     height: 448px;
     li{
       margin-bottom: 20px;

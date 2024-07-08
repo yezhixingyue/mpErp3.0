@@ -119,7 +119,7 @@
       </li>
       <li>
         <span class="label is-bold">问题类别：</span><span class="value">
-          <span>选择类别</span> <i>成品异常-数量异常、成品异常-包装异常</i>
+          <span @click="selectProblemTypes">选择类别</span> <i>成品异常-数量异常、成品异常-包装异常</i>
         </span>
       </li>
       <li  class="form-box">
@@ -155,7 +155,7 @@
         </span>
       </li>
     </ul>
-
+    <AfterSalesProblemTypesDialog :ProblemTypesVisible.sync="ProblemTypesVisible" @close="() => ProblemTypesVisible = false"/>
     <CommonDialogComp
       width="600px"
       top='15vh'
@@ -202,6 +202,7 @@
 <script>
 import { mapState } from 'vuex';
 import CommonDialogComp from '@/packages/CommonDialogComp';
+import AfterSalesProblemTypesDialog from '@/components/AfterSalesComps/AfterSalesProblemTypesDialog.vue';
 
 export default {
   props: {
@@ -217,6 +218,7 @@ export default {
 
   components: {
     CommonDialogComp,
+    AfterSalesProblemTypesDialog,
   },
   computed: {
     ...mapState('common', ['userTypeList']),
@@ -233,9 +235,14 @@ export default {
       selectedCouponList: [],
       couponListLoading: false,
       dialogVisible: false,
+
+      ProblemTypesVisible: false,
     };
   },
   methods: {
+    selectProblemTypes() {
+      this.ProblemTypesVisible = true;
+    },
     SelectCouponClick() {
       this.dialogVisible = true;
     },
