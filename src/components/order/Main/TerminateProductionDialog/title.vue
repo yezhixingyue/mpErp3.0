@@ -7,17 +7,18 @@
           自主工厂订单生产中，取消将产生损失，如若取消，请完善相关信息后提交
         </template>
         <template v-else>
-          外协工厂订单生产中，取消将产生损失，如若取消，请与外协工厂沟通确认
+          外购工厂订单生产中，取消将产生损失，如若取消，请与外购工厂沟通确认
         </template>
       </div>
     </div>
     <ul class="order-info"  v-if="OrderData">
       <li>
         <span>订单信息:</span>
-        <p>
+        <p :title="`${OrderData.OrderID} ${OrderData.ProductName} ${OrderData.KindCount}款
+        ${OrderData.ProductAmount}${OrderData.Unit} ${formatCraft(OrderData.CraftList)} ${formatSize(OrderData.SizeList)}`">
           <i>{{OrderData.OrderID}}</i>
           <i>{{OrderData.ProductName}}</i>
-          <i>{{OrderData.kindCount}}款</i>
+          <i>{{OrderData.KindCount}}款</i>
           <i>{{OrderData.ProductAmount}}{{OrderData.Unit}}</i>
           <i>{{formatCraft(OrderData.CraftList)}}</i>
           <i>{{formatSize(OrderData.SizeList)}}</i>
@@ -33,7 +34,7 @@
       </li>
       <li>
         <span>文件内容:</span>
-        <p>{{OrderData.Content}}</p>
+        <p :title="OrderData.Content"> {{OrderData.Content}} </p>
       </li>
     </ul>
   </div>
@@ -86,6 +87,7 @@ export default {
     font-size: 14px;
     padding: 5px 0px;
     margin-top: 30px;
+    padding-right: 20px;
     >li{
       display: flex;
       color: #444;
@@ -100,6 +102,11 @@ export default {
         text-align: right;
       }
       p{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient : vertical;
+        -webkit-line-clamp: 2;
         i+i{
           margin-left: 5px;
         }

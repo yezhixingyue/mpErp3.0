@@ -48,6 +48,7 @@ function _onUploadProgressFunc(e, { initPercentage, lastedPercentage, onUploadPr
   const willPer = (+`${tempPer.toFixed(2)}0`).toFixed(2);
   if (willPer) onUploadProgressFunc(willPer);
 }
+
 /**
  * 用于文件切片后上传
  *
@@ -71,7 +72,7 @@ async function uploadFile(chunkCount, curChunkNum, { data, uniqueName, onUploadP
   let lastedPercentage = _getPercentage(beginNode + chunkSize, data.size); // 当次最终百分比
   lastedPercentage = lastedPercentage > finalPercentage ? +finalPercentage : lastedPercentage;
   const res = await api.UploadFileBreakpointResume(file, uniqueName, beginNode, beginNode + chunkSize, data.size, (e) => _onUploadProgressFunc(e, { initPercentage, lastedPercentage, onUploadProgressFunc }), baseURL); // 上传(传入header Content-Range中所需要的信息)
-  if (res.data.Status === 1000) await uploadFile(chunkCount - 1, beginNode + chunkSize, { data, uniqueName, onUploadProgressFunc, baseURL }); // 递归调用
+  if (res.data.Status === 1000) await uploadFile(chunkCount - 1, beginNode + chunkSize, { data, uniqueName, onUploadProgressFunc, finalPercentage, baseURL }); // 递归调用
   else throw new Error(res.data.Message);
 }
 

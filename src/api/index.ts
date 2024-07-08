@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 // eslint-disable-next-line import/no-cycle
-import instance from '@/api/axios';
+// import instance from '@/api/axios';
+import { instance } from '@/basic/request';
 import { IOrderFlowchartNode } from '@/components/common/NodePicDialog/js/types';
 import { GetLogOptions } from '@/components/LogComp/types/LogConditionClass';
 import { AssistMapItemClass } from '@/pinia/modules/transformer/map/AssistMapItemClass';
@@ -11,8 +12,10 @@ import { TransformerListConditionClass } from '@/pinia/modules/transformer/Trans
 import { IPartChangeParams, ISemiFinishedSaveParams, IGetWorkingProcedureParams, IGetPropertyListParams, IGetDefaultLineSetupParams } from '@/pinia/modules/transformer/types';
 import { IFactoryAccount } from '@/views/BasicSetup/Factory/Account/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
+import { baseSetupApis } from './modules/BaseSetup';
 
 const api = {
+  ...baseSetupApis,
   /* 订单列表部分api
    ------------------------------------------------------------------------------------ */
   getVersionValid(data) { // 缓存版本对比 ---  暂用于获取企业类型    POST
@@ -47,16 +50,16 @@ const api = {
   },
 
   getOrderProductionInfo(OrderID) { // 获取订单生产信息
-    return instance.get(`/Api/Order/ProductionInfo?orderID=${OrderID}`);
+    return instance.get(`/Api/Order/ProductionInfo?orderID=${OrderID}`, { closeTip: true });
   },
   getOrderProductionStopQuery(data) { // POST /Api/Order/ProductionStop/Query
     return instance.post('/Api/Order/ProductionStop/Query', data);
   },
   getOrderProductionStopSave(data) { // POST /Api/Order/ProductionStop/Save
-    return instance.post('/Api/Order/ProductionStop/Save', data);
+    return instance.post('/Api/Order/ProductionStop/Save', data, { closeTip: true });
   },
   getOrderProductionStopCancelPay(OrderID, payCode) { // 生产中止取消支付
-    return instance.put(`/Api/Order/ProductionStop/CancelPay?orderID=${OrderID}&payCode=${payCode}`);
+    return instance.put(`/Api/Order/ProductionStop/CancelPay?orderID=${OrderID}&payCode=${payCode}`, null, { closeTip: true });
   },
   getOrderProductionStopPay(data) { // POST /Api/Order/ProductionStop/Pay
     return instance.post('/Api/Order/ProductionStop/Pay', data);
@@ -64,9 +67,9 @@ const api = {
 
   getOrderListData2Excel(data, type = 'normal') { // POST /Api/OrderList/Excel  ---- 财务用 [finance]   /Api/PackageList/Excel --- 普通方式 [normal]
     if (type === 'finance') {
-      return instance.post('/Api/OrderList/Excel', data, { responseType: 'arraybuffer' }); // 财务
+      return instance.post('/Api/OrderList/Excel', data, { responseType: 'arraybuffer', closeTip: true }); // 财务
     }
-    return instance.post('/Api/PackageList/Excel', data, { responseType: 'arraybuffer' }); // 普通方式
+    return instance.post('/Api/PackageList/Excel', data, { responseType: 'arraybuffer', closeTip: true }); // 普通方式
   },
   setOrderReCheckFile(data) { // POST /Api/Order/ReCheckFile
     return instance.post('/Api/Order/ReCheckFile', data);
@@ -75,7 +78,7 @@ const api = {
     return instance.post('/Api/CalculatePrice/RecordList', data);
   },
   getCalculatePriceRecordListExcel(data) { // POST /Api/CalculatePrice/Excel 导出报价记录Excel
-    return instance.post('/Api/CalculatePrice/Excel', data, { responseType: 'arraybuffer' });
+    return instance.post('/Api/CalculatePrice/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
   getCustomerTrackList(data) { // POST /Api/CustomerTrack/List  追踪客户列表
     return instance.post('/Api/CustomerTrack/List', data);
@@ -84,13 +87,13 @@ const api = {
     return instance.post('/Api/CustomerCommunicateLog/List', data);
   },
   getCustomerCommunicateLogListExcel(data) { // POST /Api/CustomerCommunicateLog/Excel 导出沟通记录Excel
-    return instance.post('/Api/CustomerCommunicateLog/Excel', data, { responseType: 'arraybuffer' });
+    return instance.post('/Api/CustomerCommunicateLog/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
   getCustomerTrackLogList(data) { // POST /Api/CustomerTrackLog/List  追踪记录列表
     return instance.post('/Api/CustomerTrackLog/List', data);
   },
   getCustomerTrackLogListExcel(data) { // POST /Api/CustomerTrackLog/Excel 导出追踪记录Excel
-    return instance.post('/Api/CustomerTrackLog/Excel', data, { responseType: 'arraybuffer' });
+    return instance.post('/Api/CustomerTrackLog/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
   getCustomerTrackDetail(customerID) { // 客户追踪信息
     return instance.get(`/Api/CustomerTrack/Detail?customerID=${customerID}`);
@@ -127,14 +130,14 @@ const api = {
   },
   // 付款二维码界面--轮询付款结果 GET /Api/PaymentOrder/PayResult  参数付款单号payCode
   PollingPayStatus(payCode) {
-    return instance.get(`/Api/PaymentOrder/PayResult?payCode=${payCode}`);
+    return instance.get(`/Api/PaymentOrder/PayResult?payCode=${payCode}`, { loading: false });
   },
   // 已弃用
   // getServiceListData2Excel(data) { // POST /Api/AfterSales/Excel
   //   return instance.post('/Api/AfterSales/Excel', data, { responseType: 'arraybuffer' });
   // },
   getServicesListData2Excel(data) { // POST /Api/AfterSale/Excel
-    return instance.post('/Api/AfterSale/Excel', data, { responseType: 'arraybuffer' });
+    return instance.post('/Api/AfterSale/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
 
   /* 订单售后api
@@ -233,7 +236,7 @@ const api = {
   /* 图片与文件上传api
    ----------------------------------------------------------------------------------- */
   getFileServer(Position) {
-    return instance.get('/Api/FileServer', { params: { Position } });
+    return instance.get<string>('/Api/FileServer', { params: { Position }, loading: false });
   },
   // type 图片类型 为1时为营业执照会打水印
   uploadImage(data, type = 1) { // 图片上传  POST /Api/Upload/Image
@@ -258,7 +261,7 @@ const api = {
     return instance.post(`/Api/Upload/WholeFile?uniqueName=${uniqueName}`, formData, config);
   },
   getUploadedProgress(uniqueName, baseURL) { // 获取断点续传文件已上传的位置  GET /Api/FileNode
-    return instance.get(`/Api/FileNode?uniqueName=${uniqueName}`, { baseURL });
+    return instance.get(`/Api/FileNode?uniqueName=${uniqueName}`, { baseURL, loading: false });
   },
   UploadFileBreakpointResume(data, uniqueName, first, last, length, onUploadProgressFunc, baseURL) { // 断点续传上传文件 /Api/Upload/File
     const formData = new FormData();
@@ -269,6 +272,7 @@ const api = {
       },
       onUploadProgress: onUploadProgressFunc && onUploadProgressFunc,
       baseURL,
+      loading: false,
     };
     return instance.post(`/Api/Upload/File?uniqueName=${uniqueName}`, formData, config);
   },
@@ -282,7 +286,7 @@ const api = {
     return instance.post('/Api/AccountReceivable/List', data);
   },
   getAccountReceivableExcel(data) { // POST /Api/AccountReceivable/Excel  导出财务订单表格数据
-    return instance.post('/Api/AccountReceivable/Excel', data, { responseType: 'arraybuffer' });
+    return instance.post('/Api/AccountReceivable/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
   setWriteOffAll(data) { // POST /Api/WriteOff/All 全部订单进行销账
     return instance.post('/Api/WriteOff/All', data);
@@ -300,16 +304,16 @@ const api = {
     return instance.post('/Api/Order/PrePay', data);
   },
   createPaymentOrder(data) { // POST /Api/PaymentOrder/Create 生成付款单 使用返回值中的阿里支付码
-    return instance.post('/Api/PaymentOrder/Create', data);
+    return instance.post('/Api/PaymentOrder/Create', data, { loading: false });
   },
   getPayResult(payCode, type = 11) { // GET /Api/PaymentOrder/PayResult 查询付款结果
-    return instance.get('/Api/PaymentOrder/PayResult', { params: { payCode, type } });
+    return instance.get('/Api/PaymentOrder/PayResult', { params: { payCode, type }, loading: false });
   },
   getPayResultExtend(payCode, orderID) { // GET /Api/ProductionStop/PayResult 查询付款结果 (取消生产扫码用)
-    return instance.get('/Api/ProductionStop/PayResult', { params: { payCode, orderID } });
+    return instance.get('/Api/ProductionStop/PayResult', { params: { payCode, orderID }, loading: false, closeTip: true });
   },
   getPaymentData2Excel(data) { // POST /Api/PaymentOrder/Excel
-    return instance.post('/Api/PaymentOrder/Excel', data, { responseType: 'arraybuffer' });
+    return instance.post('/Api/PaymentOrder/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
 
   /* 获取权限信息api
@@ -357,7 +361,7 @@ const api = {
     return instance.get(`/Api/GenerateCoupon/List?couponID=${couponID}`);
   },
   downloadGeneratedCoupons2Excel(recordID) { // GET /Api/Coupon/DownLoad  导出优惠券码
-    return instance.get(`/Api/Coupon/DownLoad?recordID=${recordID}`, { responseType: 'arraybuffer' });
+    return instance.get(`/Api/Coupon/DownLoad?recordID=${recordID}`, { responseType: 'arraybuffer', closeTip: true });
   },
   removeCoupon(couponID) { // DELETE /Api/Coupon/Remove  删除优惠券
     return instance.delete(`/Api/Coupon/Remove?couponID=${couponID}`);
@@ -387,7 +391,7 @@ const api = {
   /* 登录api
   ----------------------------------------------------------------------------------- */
   getLogin(data) { // POST /Api/Staff/Login
-    return instance.post('/Api/Staff/Login', data);
+    return instance.post('/Api/Staff/Login', data, { withoutToken: true });
   },
   // POST /Api/Staff/ChangePassword 修改密码
   getStaffChangePassword(data) {
@@ -402,10 +406,10 @@ const api = {
     return instance.post('/Api/Customer/Order/Bill', data);
   },
   getCustomerBillExcel(data) { // POST /Api/CustomerBill/Excel 导出客户余额流水Excel
-    return instance.post('/Api/CustomerBill/Excel', data, { responseType: 'arraybuffer' });
+    return instance.post('/Api/CustomerBill/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
   getOrderBillExcel(data) { // POST /Api/OrderBill/Excel 导出客户订单流水Excel
-    return instance.post('/Api/OrderBill/Excel', data, { responseType: 'arraybuffer' });
+    return instance.post('/Api/OrderBill/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
   /* 工期相关api
   ----------------------------------------------------------------------------------- */
@@ -461,15 +465,15 @@ const api = {
     return instance.get('/Api/OrderAfterSale/DepartmentList');
   },
   getOrderAfterSaleEvaluateDetail(afterSaleCode) { // POST /Api/OrderAfterSale/EvaluateDetail  获取售后评价
-    return instance.get(`/Api/OrderAfterSale/EvaluateDetail?afterSaleCode=${afterSaleCode}`, { closeLoading: true });
+    return instance.get(`/Api/OrderAfterSale/EvaluateDetail?afterSaleCode=${afterSaleCode}`, { loading: false });
   },
   /* 统计分析api
   ----------------------------------------------------------------------------------- */
   getStatisticConfigSave(data) { // POST /Api/StatisticConfig/Save 统计表保存
     return instance.post('/Api/StatisticConfig/Save', data);
   },
-  getStatisticFormDataList({ Page, PageSize, Type }, closeLoading = false) { // GET /Api/StatisticsConfig/List 获取统计表列表数据
-    return instance.get(`/Api/StatisticsConfig/List?page=${Page}&pageSize=${PageSize}&type=${Type}`, { closeLoading });
+  getStatisticFormDataList({ Page, PageSize, Type }, loading = true) { // GET /Api/StatisticsConfig/List 获取统计表列表数据
+    return instance.get(`/Api/StatisticsConfig/List?page=${Page}&pageSize=${PageSize}&type=${Type}`, { loading });
   },
   getStatisticsConfigDetail(id) { // GET /Api/StatisticsConfig/Detail 获取统计表详情信息
     return instance.get(`/Api/StatisticsConfig/Detail?id=${id}`);
@@ -480,8 +484,8 @@ const api = {
   getStatisticSummarySave(data) { // // POST /Api/StatisticSummary/Save 保存汇总面板
     return instance.post('/Api/StatisticSummary/Save', data);
   },
-  getStatisticsSummaryList({ Page, PageSize }, closeLoading = false) { // GET /Api/StatisticsSummary/List 获取统计配置汇总列表数据
-    return instance.get(`/Api/StatisticsSummary/List?page=${Page}&pageSize=${PageSize}`, { closeLoading });
+  getStatisticsSummaryList({ Page, PageSize }, loading = true) { // GET /Api/StatisticsSummary/List 获取统计配置汇总列表数据
+    return instance.get(`/Api/StatisticsSummary/List?page=${Page}&pageSize=${PageSize}`, { loading });
   },
   getStatisticSummaryRemove(id) { // DELETE /Api/StatisticSummary/Remove 删除汇总面板
     return instance.delete(`/Api/StatisticSummary/Remove?id=${id}`);
@@ -741,7 +745,7 @@ const api = {
     return instance.post(`/Api/PriceTable/Import?solutionID=${solutionID}`, formData, config);
   },
   getPriceTableExport({ productID, tableID }) { // GET /Api/PriceTable/Export  价格表导出
-    return instance.get('/Api/PriceTable/Export', { responseType: 'arraybuffer', params: { productID, tableID } });
+    return instance.get('/Api/PriceTable/Export', { responseType: 'arraybuffer', params: { productID, tableID }, closeTip: true });
   },
   /* 基础设置api
   ----------------------------------------------------------------------------------- */
@@ -754,9 +758,9 @@ const api = {
   getFactoryRemove(factoryID) { // 工厂删除
     return instance.delete(`/Api/Factory/Remove?factoryID=${factoryID}`);
   },
-  getFactoryProductPriceList(factoryID) { // GET /Api/Factory/ProductPrice/List 获取工厂产品价格列表
-    return instance.get(`/Api/Factory/ProductPrice/List?factoryID=${factoryID}`);
-  },
+  // getFactoryProductPriceList(factoryID) { // GET /Api/Factory/ProductPrice/List 获取工厂产品价格列表
+  //   return instance.get(`/Api/Factory/ProductPrice/List?factoryID=${factoryID}`);
+  // },
   getProductPriceList(productID) { // GET /Api/ProductPrice/List
     return instance.get(`/Api/ProductPrice/List?productID=${productID}`);
   },
@@ -765,6 +769,10 @@ const api = {
   },
   getFactoryProductPriceRemove(ID) { // POST /Api/Factory/ProductPrice/Remove 工厂产品价格删除
     return instance.delete(`/Api/Factory/ProductPrice/Remove?id=${ID}`);
+  },
+  // POST /Api/Factory/ProductPrice/List  获取工厂产品价格列表
+  getFactoryProductPriceList(condition) {
+    return instance.post('/Api/Factory/ProductPrice/List', condition);
   },
   /** GET /Api/Factory/Account/List  获取工厂账号列表 */
   getFactoryAccountList(factoryID: number) {
@@ -781,7 +789,7 @@ const api = {
   getElementSave(data) { // POST /Api/Element/Save  保存界面元素
     return instance.post('/Api/Element/Save', data);
   },
-  getElementList(data = null, closeLoading = false) { // GET /Api/Element/List 获取元素列表
+  getElementList(data = null, loading = true) { // GET /Api/Element/List 获取元素列表
     let hash = '';
     if (data) {
       const { groupID, positionID } = data;
@@ -792,7 +800,7 @@ const api = {
       }
       hash = hash ? `?${hash}` : '';
     }
-    return instance.get(`/Api/Element/List${hash}`, { closeLoading });
+    return instance.get(`/Api/Element/List${hash}`, { loading });
   },
   getElementRemove(id, module) { // DELETE /Api/Element/Remove 元素删除
     return instance.delete('/Api/Element/Remove', { params: { id, module } });
@@ -800,8 +808,8 @@ const api = {
   getElementGroupSave(data) { // POST /Api/ElementGroup/Save 元素组保存
     return instance.post('/Api/ElementGroup/Save', data);
   },
-  getElementGroupList(positionID, closeLoading = false) { // GET /Api/ElementGroup/List 元素组列表
-    if (positionID) return instance.get(`/Api/ElementGroup/List?positionID=${positionID}`, { closeLoading });
+  getElementGroupList(positionID, loading = true) { // GET /Api/ElementGroup/List 元素组列表
+    if (positionID) return instance.get(`/Api/ElementGroup/List?positionID=${positionID}`, { loading });
     return instance.get('/Api/ElementGroup/List');
   },
   getElementGroupRemove(id, module) { // DELETE /Api/ElementGroup/Remove 元素组删除
@@ -942,31 +950,31 @@ const api = {
   /* 文件批量上传api
   ----------------------------------------------------------------------------------- */
   getExpressValidList(data) { // POST /Api/Express/ValidList 查询可用物流列表
-    return instance.post('/Api/Express/ValidList', data, { closeLoading: true });
+    return instance.post('/Api/Express/ValidList', data, { loading: false });
   },
   getExpressUseableCompanyList(data) { // POST /Api/Express/UseableCompanyList  获取可用快递和物流公司列表
-    return instance.post('/Api/Express/UseableCompanyList', data, { closeLoading: true });
+    return instance.post('/Api/Express/UseableCompanyList', data, { loading: false });
   },
   getExpressTip() { // POST /Api/Express/Tip  获取物流公司可用快递
     return instance.get('/Api/Express/Tip');
   },
   getAddressIDList(data) { // 查询地址ID
-    return instance.get(`/Api/District/List?parentID=${data}`, { closeLoading: true });
+    return instance.get(`/Api/District/List?parentID=${data}`, { loading: false });
   },
   getAnalysisOutPlateNo(outPlateNo) { // 解析电商平台单号收件人信息   GET /Api/Analysis/OutPlateNo
     return instance.get('/Api/Analysis/OutPlateNo', { params: { outPlateNo } });
   },
   getFileNameAnalysis(data) { // POST /Api/FileName/Analysis 文件名解析
-    return instance.post('/Api/FileName/Analysis', data, { closeLoading: true, closeTip: true });
+    return instance.post('/Api/FileName/Analysis', data, { loading: false, closeTip: true });
   },
   getFileSuffixList() { // /Api/File/SuffixList 获取批量上传支持的文件格式
     return instance.get('/Api/File/SuffixList');
   },
   getOrderCreate(data) { // POST /Api/Order/Create 提交下单
-    return instance.post('/Api/Order/Create', data, { closeLoading: true });
+    return instance.post('/Api/Order/Create', data, { loading: false });
   },
   getFreightCalculate(data) { // POST /Api/Freight/Calculate 有效地址或配送方式发生变化时重新计算解析条目的运费价格
-    return instance.post('/Api/Freight/Calculate', data, { closeLoading: true, closeTip: true });
+    return instance.post('/Api/Freight/Calculate', data, { loading: false, closeTip: true });
   },
   getOrderPreCreate(data) { // POST /Api/Order/PreCreate  直接下单 - 预下单
     const { closeTip } = data;
@@ -1028,10 +1036,10 @@ const api = {
     return instance.post('/Api/RestDay/Save', data);
   },
   getRestDayDetailByID(id) { // GET /Api/RestDay/DetailByID  节假日详情
-    return instance.get('/Api/RestDay/DetailByID', { params: { id }, closeLoading: true });
+    return instance.get('/Api/RestDay/DetailByID', { params: { id }, loading: false });
   },
   getRestDayDetailByMonth(yearMonth) { // GET GET /Api/RestDay/DetailByMonth  节假日详情2  非编辑时 切换年份月份时使用
-    return instance.get('/Api/RestDay/DetailByMonth', { params: { yearMonth }, closeLoading: true });
+    return instance.get('/Api/RestDay/DetailByMonth', { params: { yearMonth }, loading: false });
   },
   getRestDayRemove(id) { // DELETE /Api/RestDay/Remove  节假日删除
     return instance.delete('/Api/RestDay/Remove', { params: { id } });
@@ -1150,7 +1158,7 @@ const api = {
     return instance.post('/Api/Customer/Create', data);
   },
   getCustomerList2Excel(data) { // POST /Api/CustomerList/Excel
-    return instance.post('/Api/CustomerList/Excel', data, { responseType: 'arraybuffer' });
+    return instance.post('/Api/CustomerList/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
   getCustomerRemove(customerID) { // DELETE /Api/Customer/Remove  customerID  删除客户
     return instance.delete('/Api/Customer/Remove', { params: { customerID } });
@@ -1359,39 +1367,42 @@ const api = {
     return instance.post('/Api/CheckFile/Statistics', condition);
   },
   getCheckFileStatisticsExcel(data) { // POST /Api/CheckFile/Statistics/Excel   审稿统计导出
-    return instance.post('/Api/CheckFile/Statistics/Excel', data, { responseType: 'arraybuffer' });
+    return instance.post('/Api/CheckFile/Statistics/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
   /* 转换服务器 api
   ----------------------------------------------------------------------------------- */
   getConvertList(id) { // GET /Api/Convert/List    获取转换器列表
     return instance.get('/Api/Convert/List', { params: { id } });
   },
-  /* 手动外协 api
+  /* 手动外购 api
   ----------------------------------------------------------------------------------- */
-  getOutOrderList(condition) { // POST /Api/OutOrder/List   外协订单列表
+  getOutOrderList(condition) { // POST /Api/OutOrder/List   外购订单列表
     return instance.post('/Api/OutOrder/List', condition);
   },
   /** /Api/Factory/Order/OrderExcel 导出表格 */
   getFactoryOrderOrderExcel(condition) {
     return instance.post('/Api/Factory/Order/OrderExcel', condition, { closeTip: true, responseType: 'arraybuffer' });
   },
-  getOutOrderChangeFactory(data) { // POST /Api/OutOrder/ChangeFactory    修改外协工厂
+  getOutOrderChangeFactory(data) { // POST /Api/OutOrder/ChangeFactory    修改外购工厂
     return instance.post('/Api/OutOrder/ChangeFactory', data);
   },
   getOutOrderChangePrice(orderID, price) { // PUT /Api/OutOrder/ChangePrice   修改订单价格
     return instance.put('/Api/OutOrder/ChangePrice', null, { params: { orderID, price }, closeTip: true });
   },
-  getOutOrderProgress(orderID) { // GET /Api/OutOrder/Progress   外协订单状态
+  getOutOrderProgress(orderID) { // GET /Api/OutOrder/Progress   外购订单状态
     return instance.get('/Api/OutOrder/Progress', { params: { orderID } });
   },
-  getOutOrderComfirm(data) { // POST /Api/OutOrder/Comfirm  确认外协
+  getOutOrderComfirm(data) { // POST /Api/OutOrder/Comfirm  确认外购
     return instance.post('/Api/OutOrder/Comfirm', data);
   },
-  getOutOrderComfirmCancle(data) { // POST /Api/OutOrder/ComfirmCancle  取消外协
+  getOutOrderReceive(data) { // POST /Api/OutOrder/Receive  确认接单
+    return instance.post('/Api/OutOrder/Receive', data);
+  },
+  getOutOrderComfirmCancle(data) { // POST /Api/OutOrder/ComfirmCancle  取消外购
     return instance.post('/Api/OutOrder/ComfirmCancle', data);
   },
   /** 文件下载 */
-  getOutOrderDownload(data: object) { // POST /Api/OutOrder/Download  手动外协下载
+  getOutOrderDownload(data: object) { // POST /Api/OutOrder/Download  手动外购下载
     return instance.post('/Api/OutOrder/Download', data);
   },
   /* 发票管理 api
@@ -1418,7 +1429,7 @@ const api = {
     return instance.post('/Api/InvoiceManage/List', condition);
   },
   getInvoiceManageExportExcel(condition) { // POST /Api/InvoiceManage/ExportExcel   发票开具列表导出Excel
-    return instance.post('/Api/InvoiceManage/ExportExcel', condition, { responseType: 'arraybuffer' });
+    return instance.post('/Api/InvoiceManage/ExportExcel', condition, { responseType: 'arraybuffer', closeTip: true });
   },
   getInvoiceManageMakeUpInfo(invoiceID) { // GET /Api/InvoiceManage/MakeUpInfo  获取发票开票信息
     return instance.get('/Api/InvoiceManage/MakeUpInfo', { params: { invoiceID } });
@@ -1451,7 +1462,7 @@ const api = {
 
   // /Api/Heartbeat
   getHeartbeat() {
-    return instance.get('/Api/Heartbeat', { closeLoading: true });
+    return instance.get('/Api/Heartbeat', { loading: false });
   },
   /* 销售端 & 生产端
   ------------------------------- */
@@ -1468,7 +1479,7 @@ const api = {
     return instance.put('/Api/Server/GenerateSecretKey', null, { params: { id } });
   },
   getLogList(data: GetLogOptions) { // POST /Api/Log/List   获取操作日志列表
-    return instance.post('/Api/Log/List', data, { closeLoading: true });
+    return instance.post('/Api/Log/List', data, { loading: false });
   },
   getConvertServerList() { // post /Api/ConvertServer/List  获取转换服务器列表
     return instance.post('/Api/ConvertServer/List');
@@ -1575,7 +1586,7 @@ const api = {
   //   return instance.post('/Api/ProductFormula/List', data);
   // },
   getPackageProgress(packageID, expressID) { // GET /Api/Package/ExpressProgress 通过包裹号查询包裹配送进度
-    return instance.get(`/Api/Package/ExpressProgress?packageID=${packageID}&expressID=${expressID}`, { closeLoading: true });
+    return instance.get(`/Api/Package/ExpressProgress?packageID=${packageID}&expressID=${expressID}`, { loading: false });
   },
   // 售后问题相关
   // searchType 0责任ID,1产品ID
@@ -1613,7 +1624,7 @@ const api = {
     return instance.post('/Api/Customer/Certificate/ManageList', data);
   },
   getCustomerCertificateAll(CustomerID: string) { // /Api/Customer/Certificate/All 获取客户证书列表
-    return instance.post('/Api/Customer/Certificate/All', { CustomerID });
+    return instance.post('/Api/Customer/Certificate/All', { CustomerID, IsPlaceOrder: false });
   },
   getCustomerCertificateNoPassReason() { // GET /Api/Customer/Certificate/NoPassReason 审核不通过原因模板
     return instance.get('/Api/Customer/Certificate/NoPassReason');

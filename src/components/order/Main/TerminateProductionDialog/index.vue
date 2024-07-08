@@ -118,7 +118,7 @@ export default {
         PayType: this.PaymentMethod,
         PlateList: [],
       };
-      if (this.OrderData?.IsOwnFactory) {
+      if (this.OrderData?.IsOwnFactory && this.ProductionInfo) {
         _temp.PlateList = this.ProductionInfo.PlateList.map(it => ({ ...it, IsWholePlate: this.formValue[it.ID] === 2 }));
       }
       // 请求取消接口
@@ -178,11 +178,17 @@ export default {
             this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
             this.ProductionInfo = ProductionInfoRes.data.Data;
           }
+          if (ProductionInfoRes.data.Status !== 1000) {
+            const cb = () => { this.close(); }; // 生产拼板中不能取消 （取消订单时弹框提示 点确定时关闭取消生产弹框）
+            this.messageBox.failSingleError('操作失败', `[ ${ProductionInfoRes.data.Message} ]`, cb, cb);
+          }
           const tempValue = {};
-          this.ProductionInfo.PlateList.forEach(element => {
-            tempValue[element.ID] = this.formValue[element.ID] || 1;
-          });
-          this.formValue = { ...tempValue };
+          if (this.ProductionInfo) {
+            this.ProductionInfo.PlateList.forEach(element => {
+              tempValue[element.ID] = this.formValue[element.ID] || 1;
+            });
+            this.formValue = { ...tempValue };
+          }
         }).catch((err) => {
           this.initLoading = false;
           throw new Error(err);
@@ -198,16 +204,6 @@ export default {
           throw new Error(err);
         });
       }
-      // this.tableList = [
-      //   { ID: 101 },
-      //   { ID: 102 },
-      //   { ID: 103 },
-      // ];
-      // const tempValue = {};
-      // this.ProductionInfo.PlateList.forEach(element => {
-      //   tempValue[element.ID] = this.formValue[element.ID] || 1;
-      // });
-      // this.formValue = { ...tempValue };
     },
     refresh() {
       this.open();
@@ -237,7 +233,7 @@ export default {
       display: none;
     }
     >.el-dialog__body{
-      height: 784px;
+      //height: 784px;
       box-sizing: border-box;
       padding: 0;
       .dialog-main{
@@ -245,6 +241,7 @@ export default {
         flex-direction: column;
         height: 100%;
         padding: 0 30px;
+        padding-bottom: 30px;
         .from-box{
           display: flex;
           margin-top: 30px;

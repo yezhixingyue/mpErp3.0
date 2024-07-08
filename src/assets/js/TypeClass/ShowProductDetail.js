@@ -259,7 +259,7 @@ export default class ProductDetailTypeShowClass {
           if (Array.isArray(it.List)) {
             it.List.forEach((part, index) => {
               let ContentList = this.getDisplayContentFromPartDataByDetailData(it.Attributes.DisplayOrderList, part, true);
-              const Name = it.List.length > 1 && index > 0 ? `${it.Attributes.Name}${index + 1}` : it.Attributes.Name;
+              const Name = it.List.length > 1 ? `${it.Attributes.Name}${index + 1}` : it.Attributes.Name;
               str += '；';
               str += Name;
               str += '：';

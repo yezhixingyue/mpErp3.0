@@ -358,17 +358,17 @@ export default {
         this.ruleForm.OrderID = this.productInfo.OrderID;
         const res = await this.api.getApplyQuestionApply(this.ruleForm);
         if (res.data.Status === 1000) {
+          const cb = () => {
+            const index = this.orderListData.findIndex(it => it.OrderID === this.ruleForm.OrderID);
+            if (index !== -1) {
+              this.$store.commit('orderModule/changeAllowAfterSaleOrderListData', [index, false]);
+            }
+            this.handleCancel();
+          };
           this.messageBox.successSingle(
             '提交成功',
-            () => {
-              console.log('ssss');
-              const index = this.orderListData.findIndex(it => it.OrderID === this.ruleForm.OrderID);
-              if (index !== -1) {
-                this.$store.commit('orderModule/changeAllowAfterSaleOrderListData', [index, false]);
-              }
-              this.handleCancel();
-            },
-            () => null,
+            cb,
+            cb,
           );
         }
       }
@@ -384,7 +384,6 @@ export default {
   },
   mounted() {
     this.productInfo = this.$route.params.ServiceAfterSales;
-    console.log(this.productInfo);
     this.api.getApplyQuestionList().then(res => {
       if (res.data.Status === 1000) {
         this.ApplyQuestionList = res.data.Data;

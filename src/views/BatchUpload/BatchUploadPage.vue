@@ -461,7 +461,7 @@ export default {
       }
 
       const msg = errLen ? `共有${list.length}个订单下单成功，另有${errLen}个订单文件上传失败` : undefined;
-      this.messageBox.successSingle('下单成功', undefined, undefined, true, msg);
+      this.messageBox.successSingle('下单成功', undefined, undefined, undefined, undefined, true, msg);
     },
     handlePaidSuccess() {
       this.messageBox.successSingle('下单并支付成功');

@@ -6,6 +6,7 @@
 // import { getTimeStamp } from '@/assets/js/util';
 import api from '@/api/index';
 import Product from '@/assets/js/TypeClass/ProductClass';
+import { useGlobalStore } from '../pinia/modules/global';
 import messageBox from '../assets/js/utils/message';
 import CommonClassType from './CommonClassType';
 
@@ -871,6 +872,7 @@ export default {
           const _t = state.ProductClassifyIDList.find(it => it.ID === key);
           const Type = _t ? _t.Type : '';
           commit('setProductMultipleClassifyList', { ID: Key, Type, List: resp.data.Data });
+          useGlobalStore().getProductClassList(Key, resp.data.Data);
         }
         return true;
       }

@@ -407,7 +407,7 @@ export default {
           const callback = () => {
             commit('setTableDataOrderStatusChange', [type, productID]);
           };
-          messageBox.successSingle(title, callback, callback, true, msg);
+          messageBox.successSingle(title, callback, callback, true, undefined, undefined, msg);
         }
       }
     },

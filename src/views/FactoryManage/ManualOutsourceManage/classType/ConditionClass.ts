@@ -14,7 +14,7 @@ export default class ConditionClass {
 
   CheckFileOrderStatus = ''
 
-  PlaceDate = {
+  PayTime = {
     First: '',
     Second: '',
   }

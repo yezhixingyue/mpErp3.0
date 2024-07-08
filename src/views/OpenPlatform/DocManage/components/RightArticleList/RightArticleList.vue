@@ -1,7 +1,7 @@
 <template>
   <section class="mp-doc-manage-page-right-article-list-comp-wrap">
     <header>
-      <el-button type="primary" @click="onArticleManageClick(null)">新增页面</el-button>
+      <el-button type="primary" :disabled="!pageData.curClassId && pageData.curClassId !== 0" @click="onArticleManageClick(null)">新增页面</el-button>
     </header>
     <main class="mp-scroll-wrap">
       <!-- 空列表状态 -->

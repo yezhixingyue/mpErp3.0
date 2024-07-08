@@ -1,5 +1,5 @@
 <template>
-  <div class="order-list-dialog-orderdetail-wrap">
+  <div class="order-list-dialog-orderdetail-wrap" :class="{onlyDetail}">
     <template v-if="showData">
       <div class="orderdetail-left is-shadow">
         <header class="bottom-line">
@@ -10,13 +10,13 @@
         </header>
         <article class="product-content">
           <section class="product-header">
-            <OrderDetailDisplayItem :ShowData='ProductShowData' />
+            <OrderDetailDisplayItem :ShowData='ProductShowData' :hiddenFactory="hiddenFactory" />
           </section>
           <section class="unit">  <!-- 部件信息 -->
             <OrderDetailDisplayItem v-for="(it, i) in PartShowDataList" :ShowData='it' :key="it.Name" :class="{border: i > 0}" :showBorder='i > 0' />
           </section>
         </article>
-        <footer v-if="!isCalculate">
+        <footer v-if="!isCalculate && !onlyDetail">
           <!-- <ul>
             <li>
               <span>原价：</span>
@@ -68,7 +68,7 @@
           <OrderDetailPriceBox :OrderData='showData' />
         </footer>
       </div>
-      <ul class="orderdetail-right">
+      <ul class="orderdetail-right" v-if="!onlyDetail">
         <li class="customer-info is-shadow">
           <header class="bottom-line">
             <i>
@@ -205,7 +205,7 @@
                     <!-- <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc"
                      v-if="showData.FileCase" :CustomerID='showData.Customer.CustomerID' /> -->
                     <div class="ft-12" v-if="showData.FileCase" @click="onAnewUploadClick">解决审稿问题</div>
-                    <el-button type="primary" @click="handleReview">
+                    <el-button type="primary" @click="handleReview" :disabled="resumeQuestionDisable">
                       <!-- {{showData.FileCase ? '文件没问题' : '该订单无文件'}} -->
                       没问题,重新审稿</el-button>
                   </li>
@@ -300,6 +300,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    onlyDetail: {
+      type: Boolean,
+      default: false,
+    },
+    hiddenFactory: {
+      type: Boolean,
+      default: false,
+    },
+    CertificateList: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     ...mapState('orderModule', ['orderDetailData', 'OrderStatusList', 'orderListData']),
@@ -349,7 +361,7 @@ export default {
         if (Array.isArray(it.List)) {
           it.List.forEach((part, index) => {
             const ContentList = this.getPartShowList(it.Attributes.DisplayOrderList, part);
-            const Name = it.List.length > 1 && index > 0 ? `${it.Attributes.Name}${index + 1}` : it.Attributes.Name;
+            const Name = it.List.length > 1 ? `${it.Attributes.Name}${index + 1}` : it.Attributes.Name;
             const temp = {
               Name,
               Type: 'Part',
@@ -380,6 +392,16 @@ export default {
       //   console.log('showProdProgress', row);
       //   return row?.IsAutoConvert;
       // }
+      return false;
+    },
+    resumeQuestionDisable() {
+      if (this.showData && this.CertificateList.length > 0 && this.showData.CertificateFileList && this.showData.CertificateFileList.length > 0) {
+        const [id] = this.showData.CertificateFileList;
+        const t = this.CertificateList.find(it => it.CertificateID === id);
+
+        return !t || t.CheckStatus === 0 || t.CheckStatus === 2;
+      }
+
       return false;
     },
   },
@@ -424,7 +446,7 @@ export default {
       // eslint-disable-next-line consistent-return
       return list.filter((item) => item.Value.length > 0);
     },
-    handleReview() { // 不传文件重新提交审稿
+    async handleReview() { // 不传文件重新提交审稿
       this.messageBox.warnCancelBox(
         '确认该问题件订单没问题吗?',
         '[ 未做更改，审稿人员将重新审核当前订单 ]',
@@ -788,6 +810,10 @@ export default {
           &:active {
             color: #009EF9;
           }
+          &.is-disabled {
+            background-color: #fff;
+            color: #cbcbcb;
+          }
         }
         > div {
           margin-top: 0;
@@ -862,6 +888,27 @@ export default {
   }
   li.prop-list-wrap {
     margin-bottom: 0;
+  }
+
+  &.onlyDetail {
+    width: 100%;
+    height: auto;
+    margin: 0;
+
+    .orderdetail-left {
+      width: 100%;
+      box-shadow: none;
+
+      > header {
+        &::after {
+          display: none;
+        }
+      }
+
+      .product-content {
+        height: auto;
+      }
+    }
   }
 }
 </style>

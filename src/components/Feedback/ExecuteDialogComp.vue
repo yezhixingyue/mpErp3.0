@@ -428,7 +428,8 @@ import normalBtnFull from '@/components/common/normalBtnFull.vue';
 import DisplayPictrue from '@/components/ServiceAfterSale/EditDialog/DisplayPictrue.vue';
 import LoadingComp from '@/components/common/LoadingComp.vue';
 // eslint-disable-next-line import/no-named-default
-import { default as breakPointUpload, getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+// import { default as breakPointUpload, getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
+import { breakPointUpload, getUniqueFileName } from '@/basic/BreakpointUpload';
 // import { getUniqueFileName } from '@/assets/js/upload/UploadFileByBreakPoint';
 import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
 import TextareaInput from '@/components/common/TextareaInput';
@@ -1101,7 +1102,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.HandlingAfterSalesForm.Solution.SolutionTypes);
+    // console.log(this.HandlingAfterSalesForm.Solution.SolutionTypes);
   },
   watch: {
     visible(newVal) {

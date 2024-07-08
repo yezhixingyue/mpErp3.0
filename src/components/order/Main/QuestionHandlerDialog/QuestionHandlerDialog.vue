@@ -76,16 +76,18 @@ import MpFileUploader from '@/components/common/NewComps/MpFileUploader/MpFileUp
 import { QuestionManageCLass } from './QuestionManageCLass';
 import QuestionFileComp from './QuestionFileComp.vue';
 import CertificateSelectDialog from './CertificateSelectDialog.vue';
+import { ICertificate } from './type';
 
 const props = defineProps<{
   visible: boolean,
   CustomerID: string,
   CertificateID: string,
+  CertificateList: ICertificate[]
   CertificateTypeList: { label: string, value: '' | number }[]
   handerFunc:(args) => Promise<boolean>
 }>();
 
-const emit = defineEmits(['update:visible']);
+const emit = defineEmits(['update:visible', 'setCertificateList']);
 
 const localVisible = computed({
   get() {
@@ -111,7 +113,10 @@ const fileList = computed({
 });
 
 const onOpen = () => {
-  localManageData.value = new QuestionManageCLass([], props.CustomerID, props.CertificateID);
+  const refreshcb = (list: ICertificate[]) => {
+    emit('setCertificateList', list);
+  };
+  localManageData.value = new QuestionManageCLass([], props.CustomerID, props.CertificateID, props.CertificateList, refreshcb);
 };
 
 const cancel = () => {

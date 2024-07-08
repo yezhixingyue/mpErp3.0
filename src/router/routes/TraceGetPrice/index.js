@@ -25,7 +25,7 @@ const routes = { // 跟踪报价
       path: '/GetPriceRecordDetail',
       name: 'GetPriceRecordDetail',
       meta: {
-        title: '报价记录',
+        title: '报价详情',
         pageName: 'GetPriceRecordDetailPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
@@ -48,7 +48,7 @@ const routes = { // 跟踪报价
       path: '/TraceClientListDetail',
       name: 'TraceClientListDetail',
       meta: {
-        title: '报价记录',
+        title: '追踪客户详情',
         pageName: 'TraceClientListDetailPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
@@ -71,7 +71,7 @@ const routes = { // 跟踪报价
       path: '/CommunicationRecordDetail',
       name: 'CommunicationRecordDetail',
       meta: {
-        title: '报价记录',
+        title: '沟通详情',
         pageName: 'CommunicationRecordDetailPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],
@@ -94,7 +94,7 @@ const routes = { // 跟踪报价
       path: '/TraceRecordDetail',
       name: 'TraceRecordDetail',
       meta: {
-        title: '报价记录',
+        title: '追踪详情',
         pageName: 'TraceRecordDetailPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionCalculateRecord', 'HavePomission'],

@@ -13,22 +13,25 @@
     @close='onClose'
     @closed='onClosed'
     class="mpzj-sell-lib-comps-dialog-comp-wrap"
-    :class="{smallBtn: smallBtn}"
+    :class="{ smallBtn, hideHeader }"
     :before-close="onCancleClick">
   <span class="el-dialog__title" slot="title" v-if="$slots['title']">
     <slot name="title"></slot>
   </span>
+  <i class="el-icon-close close-btn" v-if="hideHeader" @click="onCancleClick"></i>
   <slot></slot>
   <span slot="footer" class="dialog-footer">
-    <div v-if="$slots['foot-tip']">
-      <slot name="foot-tip"></slot>
-    </div>
-    <p>
-      <Button type="primary" :loading='loading' @click="onSubmitClick" v-if="showSubmit" :disabled='disabled'>{{loading?'加载中':submitText}}</Button>
-      <Button type="danger"  @click="onDangerClick" v-if="showDanger">{{dangerText}}</Button>
-      <Button :type="cancelBlue ? 'primary' : 'default'" @click="onCancleClick" v-if="showCancel">{{cancelText}}</Button>
-      <span class="clear" v-if="showClear" @click="onClearClick">{{clearText}}</span>
-    </p>
+    <slot name="footer">
+      <div v-if="$slots['foot-tip']">
+        <slot name="foot-tip"></slot>
+      </div>
+      <p>
+        <Button type="primary" :loading='loading' @click="onSubmitClick" v-if="showSubmit" :disabled='disabled'>{{loading?'加载中':submitText}}</Button>
+        <Button type="danger"  @click="onDangerClick" v-if="showDanger">{{dangerText}}</Button>
+        <Button :type="cancelBlue ? 'primary' : 'default'" @click="onCancleClick" v-if="showCancel">{{cancelText}}</Button>
+        <span class="clear" v-if="showClear" @click="onClearClick">{{clearText}}</span>
+      </p>
+    </slot>
   </span>
 </el-dialog>
 </template>
@@ -118,6 +121,10 @@ export default {
       default: '清除',
     },
     closeOnClickModal: {
+      type: Boolean,
+      default: false,
+    },
+    hideHeader: {
       type: Boolean,
       default: false,
     },

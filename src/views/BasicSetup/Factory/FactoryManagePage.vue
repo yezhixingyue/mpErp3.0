@@ -11,6 +11,7 @@
         @handleAddressItemRemove='handleAddressItemRemove'
        />
       <FactoryManageDialog :visible.sync='dialogVisible' :areaList='allAdAreaTreeList' :itemData='curItemData' @submit="onSubmit" />
+      <FactoryEditConfirmDialog :visible.sync='confirmVisible' :editData="editData" @submit="() => onSubmit(editData)" />
     </main>
     <footer>
       <span>共检索出 <i>{{factoryList.length}}</i> 条数据</span>
@@ -24,6 +25,7 @@ import { mapState, mapGetters } from 'vuex';
 import FactoryManageHeader from '../../../components/FactoryManage/FactoryManageHeader.vue';
 import FactoryManageTable from '../../../components/FactoryManage/FactoryManageTable.vue';
 import FactoryManageDialog from '../../../components/FactoryManage/FactoryManageDialog.vue';
+import FactoryEditConfirmDialog from '../../../components/FactoryManage/FactoryEditConfirmDialog.vue';
 import recordScrollPositionMixin from '../../../assets/js/mixins/recordScrollPositionMixin';
 
 export default {
@@ -33,6 +35,7 @@ export default {
     FactoryManageHeader,
     FactoryManageTable,
     FactoryManageDialog,
+    FactoryEditConfirmDialog,
   },
   computed: {
     ...mapState('common', ['factoryList']),
@@ -50,6 +53,8 @@ export default {
       dialogVisible: false,
       curItemData: null,
       filterWords: '',
+      confirmVisible: false,
+      editData: null,
     };
   },
   methods: {
@@ -73,7 +78,7 @@ export default {
     onSettingClick(itemData, type) {
       switch (type) {
         case 'outsource': // 外发设置
-          this.$router.push({ path: `/factoryOutsourceSetup/${itemData.FactoryID}/${itemData.FactoryName}` });
+          this.$router.push({ path: `/FactoryOutsourcePriceList/${itemData.FactoryID}/${itemData.FactoryName}` });
           break;
         case 'account': // 工厂账号设置
           this.$router.push({ path: `/factoryAccountSetup/${itemData.FactoryID}/${itemData.FactoryName}` });
@@ -88,6 +93,17 @@ export default {
     },
     async onSubmit(editData) {
       if (!editData) return;
+
+      if (!this.confirmVisible && this.curItemData && [this.curItemData.Convert?.ID, editData.Convert?.ID].filter(it => it).length === 1) {
+        this.editData = editData;
+        this.confirmVisible = true;
+        return;
+      }
+
+      if (this.confirmVisible) {
+        this.confirmVisible = false;
+      }
+
       const isAdd = !editData.FactoryID && editData.FactoryID !== 0;
       const keyword = isAdd ? '添加' : '编辑';
       const resp = await this.$store.dispatch('common/getFactorySave', editData);

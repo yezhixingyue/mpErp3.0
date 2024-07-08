@@ -123,14 +123,17 @@ export default {
         CertificateID: this.CertificateUnCheck.CertificateID,
         CheckStatus: Status,
         CheckRemark: Remark,
+        CertificateName: this.CertificateUnCheck.CertificateName,
+        CertificatePics: this.CertificateUnCheck.CertificatePics,
+        Expire: this.CertificateUnCheck.Expire,
       };
-      this.api.getCustomerCertificateCheck(temp).then(res => {
-        if (res.data.Status === 1000) {
-          // 审核成功
-          this.passTheAuditVisible = false;
-          this.AuditFailureVisible = false;
-          this.getCertificateUnCheck();
-        }
+      this.api.getCustomerCertificateCheck(temp).then(() => {
+        // if (res.data.Status === 1000) {
+        // 审核成功
+        this.passTheAuditVisible = false;
+        this.AuditFailureVisible = false;
+        this.getCertificateUnCheck();
+        // }
       });
     },
     // 审核通过

@@ -1,5 +1,15 @@
 <template>
   <section class="mp-coupon-add-page-right-comp-wrap">
+    <div class="MaxReceiveNumber">
+      <span>发放类型：</span>
+      <el-checkbox v-model="UseNewCustomer">新人券</el-checkbox>
+      <p style="font-size: 14px;min-width: 454px;">
+        <span v-if="UseNewCustomer">
+          数量：<el-input style="width: 60px;margin-right: 5px;" size="small" v-model.trim.number="SendNumber" maxlength="9"></el-input>张/人
+        </span>
+        <span class="is-origin">（此处仅针对新人券勾选，非新人券请不要勾选）</span>
+      </p>
+    </div>
     <checkbox-group-comp
       :itemList='orderTypeList'
       :selectList='selectOrderTypeList'
@@ -11,16 +21,18 @@
       :itemList='filterUserTypeList'
       :selectList='selectUserTypeList'
       @change="onUserTypeListChange"
+      :isDisabled="UseNewCustomer"
       />
     <checkbox-group-comp
       title="客户等级"
       :itemList='filterUserRankList'
       :selectList='selectUserRankList'
       @change="onUserRankListChange"
+      :isDisabled="UseNewCustomer"
       />
     <div class="MaxReceiveNumber">
       <span>客户领取：</span>
-      <el-checkbox v-model="IsCustomerReceive">允许</el-checkbox>
+      <el-checkbox :disabled="UseNewCustomer" v-model="IsCustomerReceive">允许</el-checkbox>
       <template v-if="IsCustomerReceive">
         <span>单个客户最大可领取数量：</span>
         <el-input size="small" v-model.trim.number="MaxReceiveNumber" maxlength="9"></el-input>
@@ -34,7 +46,7 @@
       checkAllTitle='所有地区'
       /> -->
     <p class="is-font-size-14 is-bold" style="color:#444;margin-bottom:10px">销售区域：</p>
-    <NewAreaTreeSpreadComp v-model="AreaRange" :list='allAreaTreeList' />
+    <NewAreaTreeSpreadComp :disabled="UseNewCustomer" v-model="AreaRange" :list='allAreaTreeList' ref="NewAreaTreeSpreadComp"/>
   </section>
 </template>
 
@@ -97,6 +109,32 @@ export default {
       },
       set(val) {
         this.setCondition2CouponSave([['IsCustomerReceive', ''], val]);
+      },
+    },
+    UseNewCustomer: {
+      get() {
+        return this.condition2CouponSave.UseNewCustomer;
+      },
+      set(val) {
+        this.setCondition2CouponSave([['UseNewCustomer', ''], val]);
+        if (val) {
+          this.onUserTypeListChange(this.filterUserTypeList); // 客户类型
+          this.onUserRankListChange(this.filterUserRankList); // 客户等级
+          this.$refs.NewAreaTreeSpreadComp.getCheckAllHandler(true);
+          this.IsCustomerReceive = false;
+        } else {
+          this.onUserTypeListChange([]); // 客户类型
+          this.onUserRankListChange([]); // 客户等级
+          this.$refs.NewAreaTreeSpreadComp.getCheckAllHandler(false);
+        }
+      },
+    },
+    SendNumber: {
+      get() {
+        return this.condition2CouponSave.SendNumber;
+      },
+      set(val) {
+        this.setCondition2CouponSave([['SendNumber', ''], val]);
       },
     },
     MaxReceiveNumber: {
