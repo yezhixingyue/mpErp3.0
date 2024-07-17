@@ -92,6 +92,11 @@
           </el-input>
         </span>
       </li>
+      <li>
+        <span class="label is-bold">
+          <el-checkbox v-model="checked" class="is-bold">补充额外支出：</el-checkbox>
+        </span><span class="value"></span>
+      </li>
       <li class="form-box">
         <span class="label is-bold">额外支出：</span><span class="value">
           <span>
@@ -109,10 +114,13 @@
         </span>
         <span class="value">
           <el-input v-model="input" placeholder="请输入内容" size="medium" style="margin-bottom: 10px;"></el-input>
-          <br/>
+        </span>
+      </li>
+      <li>
+        <span class="label is-bold" style="width: 5em;"></span>
+        <span class="value">
           <span style="padding-top: 10px;">
             <el-checkbox v-model="checked">划分责任</el-checkbox>
-            <el-checkbox v-model="checked">业务中心</el-checkbox>
             <i>（可以先不划分，售后完成后3日内可补充。责任确认前可修改）</i>
           </span>
         </span>

@@ -13,10 +13,12 @@
       </div>
       <AfterSalesSolutionFromComp/>
       <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false" @submit="SuspendVisible = false"></SuspendDialogComp>
+      <HandOnDialogComp :visible="HandOnVisible" @cloce="HandOnVisible = false" @submit="HandOnVisible = false"></HandOnDialogComp>
     </main>
     <footer>
       <el-button @click="onGoBackClick" class="linear-bg-color">返回</el-button>
       <el-button @click="SuspendClick">guaqi</el-button>
+      <el-button @click="HandOnClick">转他人处理</el-button>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
   </section>
@@ -30,6 +32,7 @@ import AfterSalesSolutionFromComp from '@/components/AfterSalesComps/AfterSalesS
 import BreadcrumbNav from '@/components/AfterSalesComps/BreadcrumbNav.vue';
 import ScheduleComp from '@/components/AfterSalesComps/ScheduleComp.vue';
 import SuspendDialogComp from '@/components/AfterSalesComps/SuspendDialogComp.vue';
+import HandOnDialogComp from '@/components/AfterSalesComps/HandOnDialogComp.vue';
 
 export default {
   name: 'AfterSalesInfoPage',
@@ -40,11 +43,13 @@ export default {
     BreadcrumbNav,
     ScheduleComp,
     SuspendDialogComp,
+    HandOnDialogComp,
   },
   data() {
     return {
       nowDate: null,
       SuspendVisible: false,
+      HandOnVisible: false,
     };
   },
   computed: {
@@ -62,6 +67,9 @@ export default {
     },
     SuspendClick() {
       this.SuspendVisible = true;
+    },
+    HandOnClick() {
+      this.HandOnVisible = true;
     },
   },
   mounted() {

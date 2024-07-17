@@ -13,8 +13,8 @@
   >
     <ul class="problem-types-dialog-content">
       <li v-for="QuestionType in QuestionTypeList" :key="QuestionType.ID">
-        <div class="">
-          {{ QuestionType.Name }}
+        <div class="label">
+          {{ QuestionType.Name }}：
         </div>
         <el-checkbox-group v-model="checkedCities">
           <el-checkbox v-for="SonClass in QuestionType.SonClassList" :label="SonClass.Name" :key="SonClass.ID">{{SonClass.Name}}</el-checkbox>
@@ -90,7 +90,21 @@ export default {
   .problem-types-dialog-content{
     height: 448px;
     li{
-      margin-bottom: 20px;
+      display: flex;
+      .label{
+        min-width: 5em;
+        text-align: right;
+        margin-right: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 18px;
+      }
+      .el-checkbox-group{
+        .el-checkbox{
+          margin-bottom: 4px;
+        }
+      }
+      margin-bottom: 10px;
       &:last-child{
         margin-bottom: 0;
       }
