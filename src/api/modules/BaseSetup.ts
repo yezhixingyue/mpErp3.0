@@ -17,4 +17,12 @@ export const baseSetupApis = {
   getProductSetupMRProduct(data) {
     return instance.post('/Api/Product/SetupMRProduct', data);
   },
+  /** /Api/PrintPackage/UnFinishedOrderLimit 获取当前是否允许未完工订单回货 */
+  getPrintPackageUnFinishedOrderLimit() {
+    return instance.get('/Api/PrintPackage/UnFinishedOrderLimit');
+  },
+  /** /Api/PrintPackage/ChangeUnFinishedOrderLimit */
+  getPrintPackageChangeUnFinishedOrderLimit(allowPrint: boolean) {
+    return instance.put('/Api/PrintPackage/ChangeUnFinishedOrderLimit', undefined, { params: { allowPrint } });
+  },
 };

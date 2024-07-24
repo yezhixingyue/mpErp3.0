@@ -15,5 +15,11 @@ export interface IUser {
     PermissionCheckFileConvertion: IBasicModulePermission
     /** 转换设置模块 */
     PermissionManageConvert: IBasicModulePermission
+    /** 回货标签打印 */
+    PermissionPrintPackage: {
+      Obj: {
+        PrintLimit: boolean
+      }
+    }
   }
 }
