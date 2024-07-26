@@ -11,6 +11,9 @@
           <CtrlMenus :showList="['del', 'add']" @remove='onRemoveClick(it, i)' @add='onAddClick' v-if="localPermission.Setup" />
         </li>
       </ul>
+      <div>
+        <AllowPrintCheckBox v-if="Permission && JobPermissionsDataList.length" :user="Permission" />
+      </div>
     </main>
     <footer>
       <el-button
@@ -29,12 +32,14 @@
 import { mapState } from 'vuex';
 import CtrlMenus from '@/components/common/NewComps/CtrlMenus';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
+import AllowPrintCheckBox from './AllowPrintCheckBox.vue';
 
 export default {
   name: 'PostManageListPage',
   mixins: [recordScrollPositionMixin('.mp-erp-post-manage-list-page-wrap > main')],
   components: {
     CtrlMenus,
+    AllowPrintCheckBox,
   },
   computed: {
     ...mapState('companyManage', ['JobPermissionsDataList']),
