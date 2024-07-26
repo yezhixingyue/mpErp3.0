@@ -16,7 +16,7 @@ export interface IUser {
     /** 转换设置模块 */
     PermissionManageConvert: IBasicModulePermission
     /** 回货标签打印 */
-    PermissionPrintPackage: {
+    PermissionPrintPackage?: {
       Obj: {
         PrintLimit: boolean
       }

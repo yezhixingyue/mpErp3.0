@@ -1,5 +1,5 @@
 <template>
-  <el-checkbox v-model="localChecked" v-if="props.user.PermissionList.PermissionPrintPackage.Obj.PrintLimit && loaded">未完工订单打印标签</el-checkbox>
+  <el-checkbox v-model="localChecked" v-if="props.user.PermissionList.PermissionPrintPackage?.Obj.PrintLimit && loaded">未完工订单打印标签</el-checkbox>
 </template>
 
 <script setup lang='ts'>
@@ -28,7 +28,7 @@ const localChecked = computed({
 });
 
 onMounted(async () => {
-  if (!props.user.PermissionList.PermissionPrintPackage.Obj.PrintLimit) return;
+  if (!props.user.PermissionList.PermissionPrintPackage?.Obj.PrintLimit) return;
 
   const resp = await api.getPrintPackageUnFinishedOrderLimit();
 

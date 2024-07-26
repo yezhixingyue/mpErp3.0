@@ -72,8 +72,8 @@ export const PropertyFixedType = [
   { ID: 52, Name: '客户等级' },
   { ID: 53, Name: '销售区域' },
   { ID: 54, Name: '印后工艺' },
-  { ID: 55, Name: '物料' },
-  { ID: 56, Name: '尺寸' },
+  { ID: 55, Name: '物料' }, // 须和转换设置中enum文件FixedType保持对应 - 同步修改
+  { ID: 56, Name: '尺寸' }, // 须和转换设置中enum文件FixedType保持对应 - 同步修改
   { ID: 57, Name: '生产工厂' },
   { ID: 58, Name: '产品成交价' },
 ];
