@@ -163,21 +163,26 @@ export default class OutsourceOrderItemClass {
       return;
     }
 
+    const creatPromise = (title: string, msg: string) => new Promise((resolve) => {
+      const changeFailFunc = () => {
+        this._outPrice = initialPrice;
+        resolve(true);
+      };
+
+      messageBox.failSingleError(title, msg, changeFailFunc, changeFailFunc);
+    });
+
     const changeFailFunc = () => {
       this._outPrice = initialPrice;
     };
 
     if (price === '') {
-      messageBox.failSingleError('价格更改失败', '外购价格不能为空，请填写外购价格', changeFailFunc, changeFailFunc);
+      await creatPromise('价格更改失败', '外购价格不能为空，请填写外购价格');
       return;
     }
 
-    // changeFailFunc();
-    // messageBox.failSingleError('价格更改失败', '输入的值为空', changeFailFunc, changeFailFunc);
-    // return;
-
     if (Number.isNaN(+price)) {
-      messageBox.failSingleError('价格更改失败', '输入的值不是有效的数字', changeFailFunc, changeFailFunc);
+      await creatPromise('价格更改失败', '输入的值不是有效的数字');
       return;
     }
 
@@ -185,6 +190,7 @@ export default class OutsourceOrderItemClass {
     const [, float] = `${price}`.split('.');
     if (float && float.length > 1) {
       messageBox.failSingleError('价格更改失败', '价格最多允许1位小数', changeFailFunc, changeFailFunc);
+      await creatPromise('价格更改失败', '价格最多允许1位小数');
       return;
     }
 
@@ -193,7 +199,7 @@ export default class OutsourceOrderItemClass {
     if (!resp || !resp.data) {
       changeFailFunc();
     } else if (resp.data.Status !== 1000) {
-      messageBox.failSingleError('价格更改失败', `[ ${resp?.data?.Message || '服务器通信失败'} ]`, changeFailFunc, changeFailFunc);
+      await creatPromise('价格更改失败', `[ ${resp?.data?.Message || '服务器通信失败'} ]`);
     } else {
       this._outPrice = price;
       this._InitialOutPrice = price;

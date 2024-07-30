@@ -35,7 +35,7 @@
       <template  slot-scope="scope">
         <el-input
           v-model.trim="scope.row.Funds.OutPrice"
-          @blur="()=>scope.row.changeOutPrice()"
+          @blur="onBlur(scope.row)"
           @focus="(e) => e.target.select()"
           placeholder="请输入外购价格"
           maxlength="9"
@@ -126,6 +126,7 @@ export default {
   data() {
     return {
       oSelects: null,
+      isChanging: false,
     };
   },
   methods: {
@@ -193,6 +194,13 @@ export default {
     },
     formarProductAmountFunc(row) {
       return formarProductAmountFunc(row);
+    },
+    async onBlur(row) {
+      if (!this.isChanging) {
+        this.isChanging = true;
+        await row.changeOutPrice();
+        this.isChanging = false;
+      }
     },
   },
 };
