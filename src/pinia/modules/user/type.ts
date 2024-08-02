@@ -21,5 +21,11 @@ export interface IUser {
         PrintLimit: boolean
       }
     }
+    /** 开放平台 */
+    PermissionOpenApi?: {
+      Obj: {
+        BindCustomer: boolean
+      },
+    }
   }
 }
