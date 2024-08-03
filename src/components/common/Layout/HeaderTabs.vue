@@ -113,7 +113,7 @@
 <script>
 import { mapMutations, mapState } from 'vuex';
 import { throttle } from '@/assets/js/utils/throttle';
-// import TokenClass from '@/assets/js/utils/tokenManage';
+import TokenClass from '@/assets/js/utils/tokenManage';
 import { logout } from '../../../basic/logout';
 // import sortable from '../../../assets/js/mixins/Sortable/Sortable';
 import ChangePwdDialog from './ChangePwdDialog.vue';
@@ -368,7 +368,10 @@ export default {
     this.setLeftCollapse = throttle(this.setIsLeftCollapse, 360);
 
     this.isIntranet = !window.location.protocol.startsWith('https');
-    this.getDepartmentList();
+
+    if (TokenClass.getToken()) {
+      this.getDepartmentList();
+    }
 
     this.VERSION = process.env.VUE_APP_VERSION;
   },
