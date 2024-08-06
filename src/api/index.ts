@@ -1671,6 +1671,10 @@ const api = {
   getDeveloperResetPassword(developerID: string) {
     return instance.put('/Api/Developer/ResetPassword', null, { params: { developerID } });
   },
+  /** post /Api/Developer/BindCustomer 绑定ip和客户 */
+  getDeveloperBindCustomer(data) {
+    return instance.post('/Api/Developer/BindCustomer', data);
+  },
 };
 
 export default api;

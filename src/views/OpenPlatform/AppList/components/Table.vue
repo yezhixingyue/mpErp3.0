@@ -5,12 +5,23 @@
     <el-table-column width="285px" prop="Name" label="应用名称" />
     <el-table-column width="280px" prop="Key" label="Key" />
     <el-table-column width="280px" prop="SecretKey" label="安全密钥" />
-    <el-table-column width="220px"  label="添加时间">
+    <el-table-column width="180px"  label="添加时间">
       <template #default="scope">
         <span>{{ scope.row.CreateTime | format2LangTypeDate }}</span>
       </template>
     </el-table-column>
-    <el-table-column width="282px" prop="DeveloperName" label="所属账号" />
+    <el-table-column width="200px" prop="DeveloperName" label="所属账号" />
+    <el-table-column width="180px" prop="Customer.Name" label="已绑定客户名称" />
+    <el-table-column width="170px" label="操作" v-if="Permission.Obj.BindCustomer">
+        <template #default="scope">
+          <div class="menus">
+            <span class="blue-span" @click="onClick(scope.row)" :class="{disabled:scope.row.Type !== ApplicationTypeEnum.Single}">
+              <i class="iconfont icon-bangdingIPhekehu"></i>
+              <i>绑定IP和客户</i>
+            </span>
+          </div>
+        </template>
+      </el-table-column>
     <template #empty>
       <span class="ft-12" v-show="!loading">暂无数据</span>
     </template>
@@ -18,12 +29,23 @@
 </template>
 
 <script setup lang='ts'>
+import { IUser } from '@/pinia/modules/user/type';
+import { ApplicationTypeEnum } from '../js/enum';
 import { IApplication } from '../js/type';
 
 defineProps<{
   list: IApplication[]
   loading: boolean
+  Permission?: IUser['PermissionList']['PermissionOpenApi']
 }>();
+
+const emit = defineEmits(['bind']);
+
+const onClick = (item: IApplication) => {
+  if (item.Type !== ApplicationTypeEnum.Single) return;
+
+  emit('bind', item);
+};
 
 </script>
 
@@ -90,16 +112,9 @@ export default {
         > span {
           display: flex;
           align-items: center;
-          img {
-            margin-right: 6px;
-          }
-
-          &:first-of-type {
-            margin-right: 30px;
-            i {
-              width: 4em;
-              text-align: left;
-            }
+          i:first-of-type {
+            margin-right: 8px;
+            font-size: 12px;
           }
         }
       }
