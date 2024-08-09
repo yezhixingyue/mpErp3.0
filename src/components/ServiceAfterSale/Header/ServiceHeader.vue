@@ -128,9 +128,6 @@
           />
         </div>
       </li>
-      <li v-if="localPermission.DivideQuery">
-        <el-button @click="toResponsibilityMeasurePage" type="primary" size="small" style="margin-bottom: 10px;">管理问题分类</el-button>
-      </li>
   </ul>
 </template>
 
@@ -173,12 +170,6 @@ export default {
     UserDefinedTimeIsActive() {
       return this.obj4RequestServiceList.DateType === '' && !!this.obj4RequestServiceList.OperateTime.First && !!this.obj4RequestServiceList.OperateTime.Second;
     },
-    localPermission() {
-      if (this.Permission?.PermissionList?.PermissionManageAfterSales?.Obj) {
-        return this.Permission.PermissionList.PermissionManageAfterSales.Obj;
-      }
-      return {};
-    },
   },
   data() {
     return {
@@ -214,9 +205,6 @@ export default {
       this.api.getOperateStaff().then(res => {
         this.staffList = [{ StaffName: '不限', StaffID: '' }, ...res.data.Data];
       });
-    },
-    toResponsibilityMeasurePage() {
-      this.$router.push('ResponsibilityMeasure');
     },
   },
   mounted() {

@@ -3,48 +3,18 @@
     <header class="is-bold">
       服务进度：
     </header>
-    <ul>
-      <li>
+    <ul v-if="Progresses">
+      <li v-for="(item, i) in Progresses" :key="item.CreateTime + i">
         <img src="@/assets/images/动线剪头.png" alt="">
-        <p>2024-4-27 20:42</p>
-        <p title="李小二转给王大志">李小二转给王大志李小二转给王大志</p>
-        <p>
+        <p>{{item[defaultKey.Time] | formatDate}}</p>
+        <p :title="item[defaultKey.Content]">{{item[defaultKey.Content]}}</p>
+        <p v-if="item[defaultKey.Title]">
           <el-popover
-            placement="top-start"
-            title="标题"
+            placement="top"
+            :title="item[defaultKey.Title]"
             width="200"
             trigger="click"
-            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-            <span slot="reference">查看原因</span>
-          </el-popover>
-        </p>
-      </li>
-      <li>
-        <img src="@/assets/images/动线剪头.png" alt="">
-        <p>2024-4-27 20:42</p>
-        <p title="李小二转给王大志">李小二转给王大志李小二转给王大志</p>
-        <p>
-          <el-popover
-            placement="top-start"
-            title="标题"
-            width="200"
-            trigger="click"
-            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-            <span slot="reference">查看原因</span>
-          </el-popover>
-        </p>
-      </li>
-      <li>
-        <img src="@/assets/images/动线剪头.png" alt="">
-        <p>2024-4-27 20:42</p>
-        <p title="李小二转给王大志">李小二转给王大志李小二转给王大志</p>
-        <p>
-          <el-popover
-            placement="top-start"
-            title="标题"
-            width="200"
-            trigger="click"
-            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+            :content="item[defaultKey.Remark]">
             <span slot="reference">查看原因</span>
           </el-popover>
         </p>
@@ -56,6 +26,21 @@
 <script>
 
 export default {
+  props: {
+    Progresses: {
+      type: Array,
+      default: () => ([]),
+    },
+    defaultKey: {
+      type: Object,
+      default: () => ({
+        Time: 'CreateTime',
+        Content: 'ServiceContent',
+        Title: 'ReasonTypeTitle',
+        Remark: 'OperaterRemark',
+      }),
+    },
+  },
   components: {},
   data() {
     return {
@@ -82,6 +67,7 @@ export default {
     border-radius: 4px;
     display: flex;
     overflow-x: auto;
+    max-width: 953px;
     >li+li{
       margin-left: 10px;
     }
@@ -92,6 +78,11 @@ export default {
       padding: 0 10px;
       box-sizing: border-box;
       position: relative;
+      &:first-of-type{
+        >img{
+          display: none;
+        }
+      }
       &:last-of-type{
         >img{
           filter: grayscale(0%);

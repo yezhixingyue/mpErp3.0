@@ -7,19 +7,19 @@
             class="mr-12"
             :getList="getDataList"
             :setCondition="setCondition4DataList"
-            :First="condition.Product.ClassID"
-            :Second="condition.Product.TypeID"
-            :ProductID="condition.Product.ProductID"
-            :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
+            :First="condition.ProductClass.ClassID"
+            :Second="condition.ProductClass.TypeID"
+            :ProductID="condition.ProductClass.ProductID"
+            :typeList="[['ProductClass', 'ClassID'],['ProductClass', 'TypeID'],['ProductClass', 'ProductID']]"
           />
           <EpCascaderByArea
             style="margin-right: 40px"
             :getList="getDataList"
             :setCondition="setCondition4DataList"
-            :RegionalID="condition.SellRegionalID"
-            :CityID="condition.SellCityID"
-            :CountyID="condition.SellCountyID"
-            :typeList="[['SellRegionalID', ''],['SellCityID', ''],['SellCountyID', '']]"
+            :RegionalID="condition.RegionalID"
+            :CityID="condition.CityID"
+            :CountyID="condition.CountyID"
+            :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
           />
           <OrderChannelSelector
             :options="userTypeList"
@@ -50,24 +50,28 @@
           :changePropsFunc='setCondition4DataList'
           :requestFunc='getDataList'
           :isFull="true"
-          :typeList="[['DateType', ''], ['Date', 'First'], ['Date', 'Second']]"
+          :typeList="[['DateType', ''], ['SelectTime', 'First'], ['SelectTime', 'Second']]"
           :dateValue='condition.DateType'
           :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
           minDate="2022-01-01 00:00:00"
           label="申请时间"
           :dateList="dateList"
         />
-        售后渠道
+        <SelectAfterSalesSource :changePropsFunc="setCondition4DataList"
+        :dateValue='condition.AfterSaleChannels' :AfterSaleChannel="AfterSaleChannel" :requestFunc='getDataList'/>
       </li>
       <li>
         <RadioButtonGroupComp
           :radioList="progressList"
           :requestFunc="getDataList"
-          v-model="CouponUseStatus"
+          v-model="Status"
           :isFull="true"
           title="状态筛选"
         />
-        <el-checkbox v-model="checked">仅显示我能处理的</el-checkbox>
+        <el-checkbox v-model="IsAllowHandle">仅显示我能处理的</el-checkbox>
+      </li>
+      <li v-if="localPermission.SetupQuestionClass">
+        <el-button @click="toResponsibilityMeasurePage" type="primary" size="small" style="margin-bottom: 10px;">管理问题分类</el-button>
       </li>
     </ul>
   </header>
@@ -80,7 +84,7 @@ import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSele
 import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
 import { mapState } from 'vuex';
 import EpCascaderByProduct from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
-
+import SelectAfterSalesSource from '@/components/AfterSalesComps/SelectAfterSalesSource.vue';
 import EpCascaderByArea from '../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
 export default {
@@ -93,6 +97,14 @@ export default {
       type: Array,
       default: () => ([]),
     },
+    progressList: {
+      type: Array,
+      default: () => ([]),
+    },
+    AfterSaleChannel: {
+      type: Array,
+      default: () => ([]),
+    },
   },
 
   components: {
@@ -102,22 +114,35 @@ export default {
     EpCascaderByArea,
     EpCascaderByProduct,
     RadioButtonGroupComp,
+    SelectAfterSalesSource,
   },
   computed: {
-    ...mapState('common', ['userTypeList']),
+    ...mapState('common', ['Permission', 'userTypeList']),
     UserDefinedTimeIsActive() {
-      return this.condition.DateType === '' && !!this.condition.Date.First && !!this.condition.Date.Second;
+      return this.condition.DateType === '' && !!this.condition.SelectTime.First && !!this.condition.SelectTime.Second;
     },
-    progressList() {
-      const arr = [
-        { name: '不限', ID: '' },
-        { name: '待处理', ID: 0 },
-        { name: '处理中', ID: 10 },
-        { name: '已挂起', ID: 25 },
-        { name: '已完成', ID: 30 },
-        { name: '已取消', ID: 255 },
-      ];
-      return arr;
+    Status: {
+      get() {
+        return this.condition.Status;
+      },
+      set(val) {
+        this.setCondition4DataList([['Status', ''], val]);
+      },
+    },
+    IsAllowHandle: {
+      get() {
+        return this.condition.IsAllowHandle;
+      },
+      set(val) {
+        this.setCondition4DataList([['IsAllowHandle', ''], val]);
+        this.getDataList();
+      },
+    },
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionManageAfterSales?.Obj) {
+        return this.Permission.PermissionList.PermissionManageAfterSales.Obj;
+      }
+      return {};
     },
   },
   data() {
@@ -141,16 +166,13 @@ export default {
     getDataList() {
       this.$emit('getDataList');
     },
-    // async getCustomerData() { // 获取客户数据
-    //   this.api.getOperateStaff().then(res => {
-    //     this.staffList = [{ StaffName: '不限', StaffID: '' }, ...res.data.Data];
-    //   });
-    // },
+    toResponsibilityMeasurePage() {
+      this.$router.push({ name: 'QuestionClass' });
+    },
   },
   mounted() {
     this.$store.dispatch('common/getFeedbackQuestionList');
     this.$store.dispatch('common/getUserClassify');
-    // this.getCustomerData();
   },
 };
 </script>
@@ -179,6 +201,9 @@ export default {
           flex-wrap: wrap;
           display: flex;
         }
+      }
+      >.el-checkbox{
+        margin-left: 20px;
       }
     }
   }

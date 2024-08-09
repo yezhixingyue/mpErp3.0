@@ -12,27 +12,28 @@
     class="mp-erp-suspend-dialog-comp-wrap"
    >
    <template>
-    <el-form :model="SuspendForm" status-icon ref="ruleForm" label-width="80px" class="demo-ruleForm" label-position="right">
+    <el-form :model="HandOnForm" status-icon ref="ruleForm" label-width="80px" class="demo-ruleForm" label-position="right">
       <el-form-item label="接收人:">
         <select-comp
           :options='staffList'
+          :title="HandOnForm.NextOperater"
           :defaultProps='{
             label: "StaffName",
             value: "StaffID",
           }'
+          v-model="HandOnForm.NextOperater"
           @handleChange='handleChange'
           :filterable="true"
         />
       </el-form-item>
       <el-form-item label="转交原因:">
-        <el-radio-group v-model="SuspendForm.Reason">
-          <el-radio :label="3">因请假，请同事帮处理</el-radio>
-          <el-radio :label="6">问题过于复杂，请更高级别同事帮忙处理</el-radio>
+        <el-radio-group v-model="HandOnForm.ReasonType">
+          <el-radio :label="item.ID" v-for="item in TransferReasonList" :key="item.ID">{{item.Title}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备注:">
         <TextareaInput
-        v-model.trim="SuspendForm.Remark" show-word-limit :maxlength="300" placeholder="请输入挂起原因" autocomplete="off"></TextareaInput>
+        v-model.trim="HandOnForm.TransferRemark" show-word-limit :maxlength="300" placeholder="请输入挂起原因" autocomplete="off"></TextareaInput>
         <p style="margin-top: 5px; color: #AEAEAE;">(选填，客户不可见)</p>
       </el-form-item>
     </el-form>
@@ -59,36 +60,50 @@ export default {
   },
   data() {
     return {
-      staffList: null,
+      staffList: [],
       loading: false,
-      DeliverToForma: '',
-      DeliverToFormb: '',
-      SuspendForm: {
-        Reason: '',
-        Remark: '',
+      TransferReasonList: [],
+      HandOnForm: {
+        AfterSaleCode: '',
+        ReasonType: '',
+        TransferRemark: '',
+        NextOperater: '',
       },
     };
   },
   methods: {
     onCancle() { // 取消  关闭弹窗
-      this.DeliverToForm = {
+      this.HandOnForm = {
         AfterSaleCode: '',
-        Reason: '',
-        Remark: '',
+        NextOperater: '',
+        TransferRemark: '',
+        ReasonType: 0,
       };
       this.$emit('cloce');
     },
     onSubmit() {
-
+      this.$emit('submit', this.HandOnForm);
+    },
+    async getAfterSaleOrderTransferReasonList() {
+      this.api.getAfterSaleOrderTransferReasonList().then(res => {
+        if (res.data.Status === 1000) {
+          this.TransferReasonList = res.data.Data;
+        }
+      });
     },
     onOpen() {
+      this.getAfterSaleOrderTransferReasonList();
     },
     onClosed() {
       this.onCancle();
     },
+    handleChange(ID) {
+      this.HandOnForm.NextOperater = ID;
+    },
     async getCustomerData() { // 获取客户数据
+      if (this.staffList.length) return;
       this.api.getOperateStaff().then(res => {
-        this.staffList = [{ StaffName: '不限', StaffID: '' }, ...res.data.Data];
+        this.staffList = res.data.Data;
       });
     },
   },
@@ -105,6 +120,7 @@ export default {
     .demo-ruleForm{
       .el-form-item{
         margin-bottom: 20px;
+        line-height: 15px;
       }
       .el-form-item__label{
         font-weight: 700;
@@ -117,8 +133,17 @@ export default {
           margin-top: 10px;
         }
       }
+      .el-form-item__content{
+        line-height: 15px;
+      }
       .mp-textarea, .el-textarea, textarea{
         height: 90px;
+      }
+      .el-select{
+        .el-input{
+          height: 24px;
+          display: flex;
+        }
       }
     }
   }

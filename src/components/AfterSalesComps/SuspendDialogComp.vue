@@ -14,16 +14,13 @@
    <template>
     <el-form :model="SuspendForm" status-icon ref="ruleForm" label-width="80px" class="demo-ruleForm" label-position="right">
       <el-form-item label="挂起原因:">
-        <el-radio-group v-model="SuspendForm.Reason">
-          <el-radio :label="3">等待客户返货</el-radio>
-          <el-radio :label="6">等待专家确认是否存在问题</el-radio>
-          <el-radio :label="9">等待客户确认是否进行售后</el-radio>
-          <el-radio :label="9">暂时与客户协商不成功</el-radio>
+        <el-radio-group v-model="SuspendForm.ReasonType">
+          <el-radio v-for="item in HangReasonList" :key="item.ID" :label="item.ID">{{item.Title}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备注:">
         <TextareaInput
-        v-model.trim="SuspendForm.Remark" show-word-limit :maxlength="300" placeholder="请输入挂起原因" autocomplete="off"></TextareaInput>
+        v-model.trim="SuspendForm.HangRemark" show-word-limit :maxlength="300" placeholder="请输入挂起原因" autocomplete="off"></TextareaInput>
         <p style="margin-top: 5px; color: #AEAEAE;">(选填，客户不可见)</p>
       </el-form-item>
     </el-form>
@@ -49,34 +46,36 @@ export default {
   data() {
     return {
       loading: false,
-      DeliverToForma: '',
-      DeliverToFormb: '',
+      HangReasonList: [],
       SuspendForm: {
-        Reason: '',
-        Remark: '',
+        ReasonType: '',
+        HangRemark: '',
       },
     };
   },
   methods: {
     onCancle() { // 取消  关闭弹窗
-      this.DeliverToForm = {
-        AfterSaleCode: '',
-        Reason: '',
-        Remark: '',
+      this.SuspendForm = {
+        ReasonType: '',
+        HangRemark: '',
       };
       this.$emit('cloce');
     },
     onSubmit() {
-
+      this.$emit('submit', this.SuspendForm);
     },
     onOpen() {
-      this.getCustomerData();
+      this.getAfterSaleOrderHangReasonList();
     },
     onClosed() {
       this.onCancle();
     },
-    async getCustomerData() { // 获取客户数据
-      console.log('getCustomerData');
+    async getAfterSaleOrderHangReasonList() {
+      this.api.getAfterSaleOrderHangReasonList().then(res => {
+        if (res.data.Status === 1000) {
+          this.HangReasonList = res.data.Data;
+        }
+      });
     },
   },
 };

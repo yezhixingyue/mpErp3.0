@@ -4,7 +4,8 @@ require('events').EventEmitter.defaultMaxListeners = 20; // 将MaxListeners的�
 
 const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web/';
 
-let proxyUrl = 'http://192.168.2.238:8050';
+let proxyUrl = 'http://192.168.2.234:8050'; // 吕
+// let proxyUrl = 'http://192.168.2.238:8050';
 // let proxyUrl = 'http://192.168.1.92:8060';
 // let proxyUrl = 'http://192.168.3.253';
 // let proxyUrl = 'http://erp.ybz888.com/';

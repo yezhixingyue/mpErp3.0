@@ -180,7 +180,11 @@ export default {
     ServiceAfterSalesClick(data) {
       // this.ServiceAfterSalesVisible = true;
       // this.ServiceAfterSales = data;
-      this.$router.push({ name: 'applyAfterSales', params: { ServiceAfterSales: data } });
+      this.$router.push({ name: 'applyAfterSales',
+        query: {
+          OrderID: data.OrderID,
+        },
+      });
     },
     onProdProgressClick() {
       this.processVisible = true;

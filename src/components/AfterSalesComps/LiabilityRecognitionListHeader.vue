@@ -7,19 +7,19 @@
             class="mr-12"
             :getList="getDataList"
             :setCondition="setCondition4DataList"
-            :First="condition.Product.ClassID"
-            :Second="condition.Product.TypeID"
-            :ProductID="condition.Product.ProductID"
-            :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
+            :First="condition.ProductClass.ClassID"
+            :Second="condition.ProductClass.TypeID"
+            :ProductID="condition.ProductClass.ProductID"
+            :typeList="[['ProductClass', 'ClassID'],['ProductClass', 'TypeID'],['ProductClass', 'ProductID']]"
           />
           <EpCascaderByArea
             style="margin-right: 40px"
             :getList="getDataList"
             :setCondition="setCondition4DataList"
-            :RegionalID="condition.SellRegionalID"
-            :CityID="condition.SellCityID"
-            :CountyID="condition.SellCountyID"
-            :typeList="[['SellRegionalID', ''],['SellCityID', ''],['SellCountyID', '']]"
+            :RegionalID="condition.SellArea.RegionalID"
+            :CityID="condition.SellArea.CityID"
+            :CountyID="condition.SellArea.CountyID"
+            :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
           />
           <OrderChannelSelector
             :options="userTypeList"
@@ -62,7 +62,7 @@
         <RadioButtonGroupComp
           :radioList="progressList"
           :requestFunc="getDataList"
-          v-model="CouponUseStatus"
+          v-model="Status"
           :isFull="true"
           title="状态筛选"
         />
@@ -91,6 +91,10 @@ export default {
       type: Array,
       default: () => ([]),
     },
+    progressList: {
+      type: Array,
+      default: () => ([]),
+    },
   },
 
   components: {
@@ -106,13 +110,13 @@ export default {
     UserDefinedTimeIsActive() {
       return this.condition.DateType === '' && !!this.condition.Date.First && !!this.condition.Date.Second;
     },
-    progressList() {
-      const arr = [
-        { name: '不限', ID: '' },
-        { name: '待确认', ID: 10 },
-        { name: '已确认', ID: 25 },
-      ];
-      return arr;
+    Status: {
+      get() {
+        return this.condition.Status;
+      },
+      set(val) {
+        this.setCondition4DataList([['Status', ''], val]);
+      },
     },
   },
   data() {
@@ -163,6 +167,9 @@ export default {
       > div {
         margin-top: 9px !important;
         margin: 9px 0;
+        >.title{
+          width: 7em;
+        }
       }
       > section {
         margin: 11.5px 0;

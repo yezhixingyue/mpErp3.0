@@ -2,37 +2,39 @@
   <CommonDialogComp
     width="600px"
     top='15vh'
-    title="选择优惠券:"
+    title="选择问题类别:"
     :visible="ProblemTypesVisible"
     cancelText='取消'
     @cancle="onCancle"
-    @open='handleCouponDialogOpen'
+    @open="onOpen"
     @closed='onCancle'
     @submit="onSelectClick"
     class="mp-erp-after-sales-problem-types-dialog-comp-wrap"
   >
     <ul class="problem-types-dialog-content">
-      <li v-for="QuestionType in QuestionTypeList" :key="QuestionType.ID">
+      <li v-for="QuestionType in SolutionQuestion" :key="QuestionType.ID">
         <div class="label">
           {{ QuestionType.Name }}：
         </div>
-        <el-checkbox-group v-model="checkedCities">
-          <el-checkbox v-for="SonClass in QuestionType.SonClassList" :label="SonClass.Name" :key="SonClass.ID">{{SonClass.Name}}</el-checkbox>
-        </el-checkbox-group>
+        <div>
+          <el-checkbox  v-for="SonClass in QuestionType.SonClassList" :key="SonClass.ID"
+          :checked="!!actionTypes.find(it => it.ID === SonClass.ID)"
+          @change="(check) => checkChange(check, SonClass)">{{SonClass.Name}}</el-checkbox>
+        </div>
       </li>
     </ul>
   </CommonDialogComp>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import CommonDialogComp from '@/packages/CommonDialogComp';
 
 export default {
   props: {
-    backLabel: {
-      type: String,
-      default: '',
+    selectKeys: {
+      type: Array,
+      default: () => [],
     },
     label: {
       type: String,
@@ -46,35 +48,38 @@ export default {
   components: {
     CommonDialogComp,
   },
+  computed: {
+    ...mapState('AfterSale', ['QuestionClassList']),
+    SolutionQuestion() {
+      return this.QuestionClassList.map(element => {
+        const temp = element.SonClassList.map(it => ({ ...it, ParentID: element.ID, ParentName: element.Name }));
+        return { ...element, SonClassList: temp };
+      });
+    },
+  },
   data() {
     return {
-      QuestionTypeList: [],
-
-      checkedCities: [],
+      actionTypes: [],
     };
   },
   methods: {
-    onGoBackClick() {
-      this.$goback();
-    },
-    async getQuestionTypeList() {
-      if (this.QuestionTypeList.length) return;
-      // 获取所有问题
-      const res = await this.api.getOrderAfterSaleQuestionClassList({ searchType: 1, ID: 'ec7d1141-ccfa-4316-b83c-b0bd01221c99' });
-      if (res.data.Status === 1000) {
-        console.log(res.data.Data);
-        this.QuestionTypeList = res.data.Data.filter(item => item && item.SonClassList.length);
-      }
-    },
-    handleCouponDialogOpen() {
-      console.log('handleCouponDialogOpen');
-      this.getQuestionTypeList();
-    },
+    ...mapActions('AfterSale', ['getOrderAfterSaleQuestionClassList']),
     onSelectClick() {
-      console.log('onSelectClick');
+      this.$emit('select', [...this.actionTypes]);
+      this.onCancle();
     },
     onCancle() {
       this.$emit('close', false);
+    },
+    onOpen() {
+      this.actionTypes = [...this.selectKeys];
+    },
+    checkChange(check, item) {
+      if (check) {
+        this.actionTypes.push(item);
+      } else {
+        this.actionTypes = this.actionTypes.filter(it => it.ID !== item.ID);
+      }
     },
   },
 };
@@ -89,19 +94,23 @@ export default {
   }
   .problem-types-dialog-content{
     height: 448px;
+    overflow-y: auto;
     li{
       display: flex;
       .label{
-        min-width: 5em;
+        min-width: 6em;
         text-align: right;
         margin-right: 10px;
         font-weight: 700;
         font-size: 14px;
         line-height: 18px;
       }
-      .el-checkbox-group{
-        .el-checkbox{
-          margin-bottom: 4px;
+      .el-checkbox{
+        margin-bottom: 4px;
+        margin: 0;
+        width: 105px;
+        .el-checkbox__label{
+          padding-left: 5px;
         }
       }
       margin-bottom: 10px;

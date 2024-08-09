@@ -3,6 +3,7 @@ import api from '@/api/index';
 export default {
   namespaced: true,
   state: {
+    QuestionClassList: [], // 售后问题列表
     AfterSalesList: [], // 售后列表
     AfterSalesDetail: null, // 售后详情
   },
@@ -14,6 +15,9 @@ export default {
     },
     setAfterSalesDetail(state, Detail) {
       state.AfterSalesDetail = Detail;
+    },
+    setOrderAfterSaleQuestionClassList(state, list) {
+      state.QuestionClassList = list;
     },
   },
   actions: {

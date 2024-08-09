@@ -1,8 +1,8 @@
 <template>
   <section class="mp-erp-question-class-page-wrap">
-    <p><span>问题分类名称：</span><i v-if="this.paramsData">{{ this.paramsData.DivideName }}</i></p>
-    <ClassifyContentComp :classifyData='classifyData' title='问题' v-if="this.paramsData"
-     @goback='onGobackClick' :DivideID="paramsData.ID" @sort='onSortSuccess' :fetchData='fetchClassifyData' />
+    <p><span>问题分类名称：</span></p>
+    <ClassifyContentComp :classifyData='classifyData' title='问题'
+     @goback='onGobackClick' @sort='onSortSuccess' :fetchData='fetchClassifyData' />
   </section>
 </template>
 
@@ -37,17 +37,16 @@ export default {
   },
   data() {
     return {
-      paramsData: null,
     };
   },
   methods: {
     onGobackClick() {
-      this.$router.replace('/ResponsibilityMeasure');
+      this.$router.replace('/AfterSalesList');
     },
     async fetchClassifyData() {
       const resBool = await this.$store.dispatch(
         'AfterSaleQuestion/getOrderAfterSaleQuestionClassList',
-        { searchType: 0, ID: this.paramsData.ID },
+        { searchType: 2 },
       );
       return resBool;
     },
@@ -56,7 +55,6 @@ export default {
     },
   },
   mounted() {
-    this.paramsData = this.$route.params.item;
   },
 };
 </script>

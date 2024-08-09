@@ -1,58 +1,89 @@
 <template>
   <section class="after-sales-list-page">
-    <ResponsibilityMeasureListHeader :dataList='AfterSalesList' :condition='condition' @getDataList='getDataList'
-     @clearCondition='clearCondition' @setCondition='setCondition' />
+    <ResponsibilityMeasureListHeader :dataList='ResponsibilityMeasureList' :condition='condition' @getDataList='getDataList'
+     @clearCondition='clearCondition' @setCondition='setCondition' :progressList='progressList' />
     <div>
-      <el-table stripe border fit :data="AfterSalesList" style="width: 100%" class="ft-14-table" :max-height="h" :height="h">
+      <el-table stripe border fit :data="ResponsibilityMeasureList" style="width: 100%" class="ft-14-table" :max-height="h" :height="h">
         <el-table-column prop="AfterSaleCode" label="售后单号" minWidth="110" show-overflow-tooltip></el-table-column>
         <el-table-column prop="OrderID" label="订单号" minWidth="90" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="CustomerType" label="区域" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}====={{scope.row.CustomerGrade}}</template>
-        </el-table-column>
-        <el-table-column prop="CustomerType" label="客户类型" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}{{scope.row.CustomerGrade}}</template>
-        </el-table-column>
-        <el-table-column prop="CustomerType" label="产品" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
-        </el-table-column>
+        <el-table-column prop="SellArea" label="区域" minWidth="125" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="CustomerType" label="客户类型" minWidth="125" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="ProductName" label="产品" minWidth="125" show-overflow-tooltip></el-table-column>
         <el-table-column prop="CustomerType" label="金额" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">{{scope.row.OrderProductPrice }}元</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="运费" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">{{scope.row.OrderFreight }}元</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="处理结果" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">
+            <template v-if="scope.row.IsReject">
+              驳回{{scope.row.RejectReason}}
+            </template>
+            <template v-else>
+              <template v-if="scope.row.SolutionResults[0]">
+                {{ scope.row.SolutionResults[0] ? scope.row.SolutionResults[0].SolutionContent : '' }}
+                <template v-if="scope.row.SolutionResults[0].CouponContents.length">
+                  {{scope.row.CouponIsExtra?'额外':''}}赠送优惠券：
+                  {{ scope.row.SolutionResults[0].CouponContents.join('、') }}
+                </template>
+              </template>
+            </template>
+          </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="额外支出" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">{{scope.row.ExtraPayAmount}}</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="责任金额" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">{{scope.row.ResponsibilityAmount}}</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="售后完成时间" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">{{scope.row.CompleteTime | format2MiddleLangTypeDate }}</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="责任划分时间" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">{{scope.row.ResponsibilityDivideTime | format2MiddleLangTypeDate }}</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="责任占比" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">
+            <span v-for="it in scope.row.AfterSaleResponsibilities" :key="it.Department">
+              <template v-if="it.Department === 1">
+                业务中心
+              </template>
+              <template v-if="it.Department === 2">
+                生产工厂
+              </template>
+              <template v-if="it.Department === 3">
+                物流中心
+              </template>
+              <template v-if="it.Department === 4">
+                配送中心
+              </template>:{{ it.Proportion }}%
+            </span>
+          </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="问题类型" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">
+            {{scope.row.AfterSaleQuestions.map(it => `${it.FirstQuestionTypeTitle}-${it.SecondQuestionTypeTitle}`).join('、')}}
+          </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="状态" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">{{progressList.find(it => it.ID === scope.row.Status)?.name }}</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="划分人" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CustomerType}}========={{scope.row.CustomerGrade}}</template>
+          <template slot-scope="scope">{{scope.row.ResponsibilityDivideOperater}}</template>
         </el-table-column>
         <el-table-column label="操作" width="120" fixed="right">
-          <div class="is-font-12 btn-wrap" slot-scope="scope">
-            <span @click="onDetailClick(scope.row)" v-if="localPermission.Operate">
-              <span v-if="scope.row.Status === 0">划分责任</span>
-              <span v-else>查看详情</span>
+          <div class="is-font-12 operate" slot-scope="scope">
+            <span @click="onDetailClick(scope.row)" v-if="localPermission.Divide">
+              <span v-if="scope.row.Status !== 2">
+                <i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-huafenzeren2"></i>划分责任
+              </span>
+              <span v-else>
+                <i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-xiangqing3"></i>查看详情
+              </span>
+            </span>
+            <span v-else>
+              <span class="is-gray"> <i class="iconfont icon-xiangqing3"></i>查看详情</span>
             </span>
           </div>
         </el-table-column>
@@ -64,18 +95,21 @@
        :handlePageChange='handlePageChange'
        :count='dataNumber'
        :pageSize='20'
-       />
+       >
+        <DownLoadExcelComp v-if="localPermission.ExportExcel" title="导出Excel表格" :configObj="configObj" />
+      </Count>
     </footer>
   </section>
 </template>
 
 <script>
 import ResponsibilityMeasureListHeader from '@/components/AfterSalesComps/ResponsibilityMeasureListHeader.vue';
+import DownLoadExcelComp from '@/components/common/UploadComp/DownLoadExcelComp.vue';
 import Count from '@/components/common/Count.vue';
 import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 import ClassType from '@/store/CommonClassType';
 
 export default {
@@ -83,24 +117,45 @@ export default {
   components: {
     Count,
     ResponsibilityMeasureListHeader,
+    DownLoadExcelComp,
   },
   mixins: [mixin, tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   data() {
     return {
       nowDate: null,
+      ResponsibilityMeasureList: [],
       dataNumber: 0,
       condition: {
-        Product: {
-          ClassID: '',
-          TypeID: '',
+        ProductClass: {
+          ClassID: 0,
+          TypeID: 0,
           ProductID: '',
+        },
+        DateType: 'today',
+        SellArea: {
+          RegionalID: 0,
+          RegionalName: '',
+          CityID: 0,
+          CityName: '',
+          CountyID: 0,
+          CountyName: '',
         },
         CustomerType: {
           First: '',
         },
-        SellRegionalID: '',
-        SellCityID: '',
-        SellCountyID: '',
+        Date: {
+          First: '',
+          Second: '',
+        },
+        SelectTime: {
+          First: '',
+          Second: '',
+        },
+        Status: '',
+        IsAllowHandle: false,
+        AfterSaleChannels: [],
+        ID: '',
+        FieldType: 1,
         KeyWords: '',
         Page: 1,
         PageSize: 20,
@@ -109,16 +164,45 @@ export default {
   },
   computed: {
     ...mapState('common', ['Permission', 'ServerApplyTypeList']),
-    ...mapState('AfterSale', ['AfterSalesList']),
+    ...mapState('AfterSale', ['AfterSalesList', 'QuestionClassList']),
     localPermission() {
-      if (this.Permission?.PermissionList?.PermissionAfterSalesApply?.Obj) {
-        return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;
+      if (this.Permission?.PermissionList?.PermissionResponsibilityDivide?.Obj) {
+        return this.Permission.PermissionList.PermissionResponsibilityDivide.Obj;
       }
       return {};
     },
+    progressList() {
+      const arr = [
+        { name: '不限', ID: '' },
+        { name: '未划分', ID: 0 },
+        { name: '未确认', ID: 1 },
+        { name: '已完结', ID: 2 },
+      ];
+      return arr;
+    },
+    staffDetailData() {
+      const _detailData = localStorage.getItem('staffDetailData');
+      return JSON.parse(_detailData);
+    },
+    configObj() { // 导出Excel条件对象
+      ClassType.setDate(this.condition);
+      const _obj = ClassType.filter(this.condition, true);
+      if (_obj.Date) {
+        _obj.SelectTime = _obj.Date;
+        delete _obj.Date;
+      }
+      return {
+        condition: ClassType.filter(_obj, true),
+        count: this.dataNumber,
+        fileDefaultName: '责任划分表',
+        // fileDate: '',
+        showDateByFile: false,
+        downFunc: data => this.api.getAfterSaleResponsibilityDivideExcel(data),
+      };
+    },
   },
   methods: {
-    ...mapMutations('AfterSale', ['setAfterSalesList', 'setAfterSalesDetail']),
+    ...mapActions('AfterSale', ['getOrderAfterSaleQuestionClassList']),
     setHeight() {
       const tempHeight = this.getHeight('.mp-responsibility-measure-page-header-wrap', 60);
       this.h = tempHeight;
@@ -128,30 +212,46 @@ export default {
       ClassType.setDate(this.condition);
       const _obj = ClassType.filter(this.condition, true);
       if (_obj.Date) {
-        _obj.ApplyTime = _obj.Date;
+        _obj.SelectTime = _obj.Date;
         delete _obj.Date;
       }
       let key = true;
-      this.setAfterSalesList([]);
-      const res = await this.api.getApplyQuestionApplyList(_obj).catch(() => { key = false; });
+      const res = await this.api.getOrderAfterSaleResponsibilityDivideList(_obj).catch(() => { key = false; });
       if (key && res.data.Status === 1000) {
-        this.setAfterSalesList(res.data.Data);
+        this.ResponsibilityMeasureList = res.data.Data;
         this.dataNumber = res.data.DataNumber;
       }
     },
     clearCondition() {
     },
-    setCondition() {
+    setCondition([[key1, key2], value]) {
+      if (!key1) return;
+      if (key2) {
+        this.condition[key1][key2] = value;
+      } else {
+        this.condition[key1] = value;
+      }
     },
-    handlePageChange() {
+    getQuestionClassList() {
+      if (this.QuestionClassList.length === 0) {
+        this.getOrderAfterSaleQuestionClassList({ searchType: 2 });
+      }
+    },
+    handlePageChange(page) {
+      this.getDataList(page);
     },
     onDetailClick(Detail) {
-      this.setAfterSalesDetail(Detail);
-      this.$router.push({ name: 'ResponsibilityMeasureInfo' });
+      this.$router.push({ name: 'ResponsibilityMeasureInfo',
+        query: {
+          AfterSaleCode: Detail.AfterSaleCode,
+          OrderID: Detail.OrderID,
+        },
+      });
     },
   },
   mounted() {
     this.getDataList();
+    this.getQuestionClassList();
     this.$nextTick(() => this.setHeight());
     window.onresize = () => this.setHeight();
   },
@@ -162,6 +262,20 @@ export default {
 @import "@/assets/css/var.scss";
 .after-sales-list-page{
   padding-left: 8px;
+  .el-table {
+    .operate{
+      .iconfont{
+        font-size: 12px;
+        margin-right: 3px;
+      }
+      >span>span{
+        cursor: pointer;
+        &.is-gray{
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
   .el-table__header-wrapper thead tr th .cell {
     line-height: 36px;
     font-size: 14px;
@@ -169,6 +283,22 @@ export default {
   .el-table__fixed-header-wrapper thead tr th .cell {
     line-height: 36px;
     font-size: 14px;
+  }
+  footer{
+    height: 57px;
+    display: flex;
+    justify-content: flex-end;
+    > .count-wrap {
+      flex: 1;
+      > .is-blue {
+        margin-left: 60px;
+        margin-right: -20px;
+        cursor: pointer;
+        &:hover {
+          color: $--color-primary-light !important;
+        }
+      }
+    }
   }
 }
 </style>

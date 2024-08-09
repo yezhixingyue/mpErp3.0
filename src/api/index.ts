@@ -176,6 +176,9 @@ const api = {
   getOrderAfterSaleManageList(data) { // POST /Api/OrderAfterSale/ManageList  售后管理列表
     return instance.post('/Api/OrderAfterSale/ManageList', data);
   },
+  getOrderAfterSaleManageListExcel(data) { // POST /Api/OrderAfterSale/ManageList/Excel  售后管理列表导出
+    return instance.post('/Api/OrderAfterSale/ManageList/Excel', data, { responseType: 'arraybuffer', closeTip: true });
+  },
   getOrderAfterSaleDealApply(code) { // POST /Api/OrderAfterSale/DealApply  开始处理售后申请
     return instance.put(`/Api/OrderAfterSale/DealApply?applyCode=${code}`);
   },
@@ -214,6 +217,57 @@ const api = {
   },
   getCustomerApplyRecord(customerID) { // POST /Api/OrderAfterSale/CustomerApplyRecord 客户已售后列表
     return instance.get(`/Api/OrderAfterSale/CustomerApplyRecord?customerID=${customerID}`);
+  },
+  getOrderDetailUseOrderID(orderID) { // POST /Api/AfterSaleOrder/Detail 订单详情
+    return instance.get(`/Api/AfterSaleOrder/Detail?orderID=${orderID}`);
+  },
+  getAfterSaleOrderHangReasonList() { // POST /Api/OrderAfterSale/HangReasonList 售后挂起原因
+    return instance.get('/Api/OrderAfterSale/HangReasonList');
+  },
+  getAfterSaleOrderTransferReasonList() { // POST /Api/OrderAfterSale/TransferReasonList 售后转交原因
+    return instance.get('/Api/OrderAfterSale/TransferReasonList');
+  },
+  getAfterSaleOrderSolutionQuestionList() { // POST /Api/OrderAfterSale/SolutionQuestionList 售后解决方案问题分类列表
+    return instance.get('/Api/OrderAfterSale/SolutionQuestionList');
+  },
+  getOrderAfterSaleResponsibilityDivideList(data) { // POST /Api/OrderAfterSale/ResponsibilityDivide/List 责任划分列表
+    return instance.post('/Api/OrderAfterSale/ResponsibilityDivide/List', data);
+  },
+  getOrderAfterSaleResponsibilityDivideDetail(afterSaleCode) { // POST /Api/OrderAfterSale/ResponsibilityDivide/Detail 责任划分详情
+    return instance.get(`/Api/OrderAfterSale/ResponsibilityDivide/Detail?afterSaleCode=${afterSaleCode}`);
+  },
+  getAfterSaleResponsibilityDivideExcel(data) { // POST /Api/AfterSale/ResponsibilityDivide/Excel  责任划分列表导出
+    return instance.post('/Api/AfterSale/ResponsibilityDivide/Excel', data, { responseType: 'arraybuffer', closeTip: true });
+  },
+  getOrderAfterSaleResponsibilityDivide(data) { // POST /Api/OrderAfterSale/ResponsibilityDivide 划分责任
+    return instance.post('/Api/OrderAfterSale/ResponsibilityDivide', data);
+  },
+  getOrderAfterSaleResponsibilityConfirmList(data) { // POST /Api/OrderAfterSale/ResponsibilityConfirm/List 责任确定列表
+    return instance.post('/Api/OrderAfterSale/ResponsibilityConfirm/List', data);
+  },
+  getOrderAfterSaleResponsibilityConfirmDetail(afterSaleCode) { // POST /Api/OrderAfterSale/ResponsibilityConfirm/Detail 责任确定详情
+    return instance.get(`/Api/OrderAfterSale/ResponsibilityConfirm/Detail?afterSaleCode=${afterSaleCode}`);
+  },
+  getAfterSaleResponsibilityConfirmExcel(data) { // POST /Api/AfterSale/ResponsibilityConfirm/Excel  责任划分列表导出
+    return instance.post('/Api/AfterSale/ResponsibilityConfirm/Excel', data, { responseType: 'arraybuffer', closeTip: true });
+  },
+  getOrderAfterSaleResponsibilityConfirm(data) { // POST /Api/OrderAfterSale/ResponsibilityConfirm 责任确定
+    return instance.post('/Api/OrderAfterSale/ResponsibilityConfirm', data);
+  },
+  getOrderAfterSaleSupplementalPicAdd(data) { // POST /Api/OrderAfterSale/SupplementalPic/Add 售后客服补充图片
+    return instance.post('/Api/OrderAfterSale/SupplementalPic/Add', data);
+  },
+  getOrderAfterSaleSupplementalPicRemove(data) { // POST /Api/OrderAfterSale/SupplementalPic/Remove 售后客服补充图片删除
+    return instance.post('/Api/OrderAfterSale/SupplementalPic/Remove', data);
+  },
+  getOrderAfterSaleRemove(afterSaleCode) { // POST /Api/OrderAfterSale/Remove 售后删除
+    return instance.delete(`/Api/OrderAfterSale/Remove?afterSaleCode=${afterSaleCode}`);
+  },
+  getOrderAfterSaleExtraPay(data) { // POST /Api/OrderAfterSale/ExtraPay 售后补充额外支付
+    return instance.post('/Api/OrderAfterSale/ExtraPay', data);
+  },
+  getOrderAfterSaleRelevantPerson(orderID) { // POST /Api/OrderAfterSale/RelevantPerson 售后相关人
+    return instance.get(`/Api/OrderAfterSale/RelevantPerson?orderID=${orderID}`);
   },
   /* 包裹列表api
    ----------------------------------------------------------------------------------- */

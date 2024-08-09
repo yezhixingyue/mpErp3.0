@@ -3,16 +3,24 @@
     <header class="is-bold">
       <BreadcrumbNav backLabel="责任确认" label="确认责任"></BreadcrumbNav>
     </header>
-    <main>
+    <main v-if="ResponsibilityConfirmDetail">
       <div class="top">
-        <AfterSalesSolutionInfoComp/>
-        <ResponsibilityDifferentiationComp/>
-        <OrderDetailsComp/>
+        <AfterSalesSolutionInfoComp :showImg="true" :appealData="ResponsibilityConfirmDetail"/>
+        <div class="line"></div>
+        <ResponsibilityConfirmComp ref="ConfirmComp" :ConfirmDetail="ResponsibilityConfirmDetail"
+        :AfterSaleCode="queryData?.AfterSaleCode" :OrderID="queryData?.OrderID"/>
+        <OrderDetailsComp :OrderDetail="OrderDetail" :AfterSaleCode="queryData?.AfterSaleCode"/>
       </div>
-      <ScheduleComp/>
+      <ScheduleComp v-if="ResponsibilityConfirmDetail" :Progresses="ResponsibilityConfirmDetail.DivideProgresses.map(it => ({
+        CreateTime: it.CreateTime,
+        DivideName: `${it.OperaterUserName||''}${it.DivideName}`,
+      }))" :defaultKey="{
+        Time: 'CreateTime',
+        Content: 'DivideName',
+      }"/>
     </main>
     <footer>
-      <el-button @click="onGoBackClick" class="linear-bg-color">返回</el-button>
+      <el-button @click="onSubmitClick" class="linear-bg-color">提交</el-button>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
   </section>
@@ -21,7 +29,7 @@
 <script>
 import { mapState } from 'vuex';
 import AfterSalesSolutionInfoComp from '@/components/AfterSalesComps/AfterSalesSolutionInfoComp.vue';
-import ResponsibilityDifferentiationComp from '@/components/AfterSalesComps/ResponsibilityDifferentiationComp.vue';
+import ResponsibilityConfirmComp from '@/components/AfterSalesComps/ResponsibilityConfirmComp.vue';
 import OrderDetailsComp from '@/components/AfterSalesComps/OrderDetailsComp.vue';
 import BreadcrumbNav from '@/components/AfterSalesComps/BreadcrumbNav.vue';
 import ScheduleComp from '@/components/AfterSalesComps/ScheduleComp.vue';
@@ -30,14 +38,16 @@ export default {
   name: 'LiabilityRecognitionPage',
   components: {
     AfterSalesSolutionInfoComp,
-    ResponsibilityDifferentiationComp,
+    ResponsibilityConfirmComp,
     OrderDetailsComp,
     BreadcrumbNav,
     ScheduleComp,
   },
   data() {
     return {
-      nowDate: null,
+      queryData: null,
+      OrderDetail: null,
+      ResponsibilityConfirmDetail: null,
     };
   },
   computed: {
@@ -53,8 +63,25 @@ export default {
     onGoBackClick() {
       this.$goback();
     },
+    getAfterSaleOrderDetail() {
+      this.api.getOrderDetailUseOrderID(this.queryData.OrderID).then(res => {
+        if (res.data.Status === 1000) {
+          this.OrderDetail = res.data.Data;
+        }
+      });
+    },
+    onSubmitClick() {
+      this.$refs.ConfirmComp.submit();
+    },
   },
   mounted() {
+    this.queryData = this.$route.query;
+    this.api.getOrderAfterSaleResponsibilityConfirmDetail(this.queryData.AfterSaleCode).then(res => {
+      if (res.data.Status === 1000) {
+        this.ResponsibilityConfirmDetail = res.data.Data;
+      }
+    });
+    this.getAfterSaleOrderDetail();
   },
 };
 </script>
@@ -72,6 +99,22 @@ export default {
     >.top{
       display: flex;
       justify-content: flex-start;
+      .line{
+        width: 1px;
+        min-width: 1px;
+        background-color: #D3F2FE;
+        margin-top: 40px;
+        margin-right: 55px;
+      }
+      .responsibility-confirm-comp{
+        margin-right: 45px;
+      }
+      >.order-details-comp{
+        min-width: 500px;
+      }
+      .after-sales-solution-info-comp{
+        width: 483px;
+      }
     }
     >.schedule-wrap{
       width: 960px

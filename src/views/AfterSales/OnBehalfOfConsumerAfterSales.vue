@@ -6,84 +6,153 @@
     <main>
       <div class="left">
         <div class="top">
-          <OrderDetailsComp/>
+          <OrderDetailsComp :OrderDetail="OrderDetail"/>
           <div class="after-sales-trouble">
             <header class="title is-bold">问题图片</header>
             <ul>
               <li>
                 <span class="label is-bold">售后问题：</span>
                 <span class="value">
-                  <el-checkbox-group v-model="checkList">
-                    <el-checkbox label="复选框 A"></el-checkbox>
-                    <el-checkbox label="复选框 B"></el-checkbox>
-                    <el-checkbox label="复选框 C"></el-checkbox>
+                  <el-checkbox-group v-model="CompleteFrom.QuestionTypes">
+                    <el-checkbox v-for="(item, index) in ApplyQuestionList" :key="index" :label="item.ID">{{item.Title}}</el-checkbox>
                   </el-checkbox-group>
                 </span>
               </li>
               <li>
                 <span class="label is-bold">图片凭证：</span>
-                <span class="value">后宫编号重复，客户4月28日摇号，同时出现两次重复奖项，客户要求赔偿礼品损失</span>
+                <span class="value">
+                  <div class="image-list QuestionPicList">
+                    <ImageUploadComp :ImgList="CompleteFrom.QuestionPics" @UploadedSeccess="UploadedSeccess"
+                    @PictureDelete="PictureDelete" :limit='6' :beforeUploadFun="beforeUpload"></ImageUploadComp>
+                  </div>
+                </span>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <AfterSalesSolutionFromComp/>
-      <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false" @submit="SuspendVisible = false"></SuspendDialogComp>
+      <AfterSalesSolutionFromComp consent :PackagesList="PackagesList" :OrderID="$route.query.OrderID"
+      ref="AfterSalesSolutionFrom" Source/>
+      <!-- <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false" @submit="SuspendVisible = false"></SuspendDialogComp> -->
     </main>
     <footer>
-      <el-button @click="onGoBackClick" class="linear-bg-color">返回</el-button>
-      <el-button @click="SuspendClick">guaqi</el-button>
+      <el-button @click="AfterSaleSubmit" class="linear-bg-color">执行售后</el-button>
+      <el-button @click="SuspendClick">挂起</el-button>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
   </section>
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import OrderDetailsComp from '@/components/AfterSalesComps/OrderDetailsComp.vue';
+import ImageUploadComp from '@/components/AfterSalesComps/ImageUploadComp.vue';
 import AfterSalesSolutionFromComp from '@/components/AfterSalesComps/AfterSalesSolutionFromComp.vue';
 import BreadcrumbNav from '@/components/AfterSalesComps/BreadcrumbNav.vue';
-import SuspendDialogComp from '@/components/AfterSalesComps/SuspendDialogComp.vue';
+// import SuspendDialogComp from '@/components/AfterSalesComps/SuspendDialogComp.vue';
+import { Message } from 'element-ui';
 
 export default {
-  name: 'AfterSalesInfoPage',
+  name: 'applyAfterSalesPage',
   components: {
     OrderDetailsComp,
     AfterSalesSolutionFromComp,
     BreadcrumbNav,
-    SuspendDialogComp,
+    // SuspendDialogComp,
+    ImageUploadComp,
   },
   data() {
     return {
-      nowDate: null,
+      ApplyQuestionList: [],
+      PackagesList: null,
       SuspendVisible: false,
+      OrderDetail: null,
+      CompleteFrom: {
+        QuestionTypes: [],
+        QuestionPics: [],
+      },
     };
   },
   computed: {
-    ...mapState('common', ['Permission', 'ServerApplyTypeList']),
-    localPermission() {
-      if (this.Permission?.PermissionList?.PermissionAfterSalesApply?.Obj) {
-        return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;
+    isUpImg() {
+      if (!this.ApplyQuestionList) {
+        return false;
       }
-      return {};
+      const ActionQuestionList = this.ApplyQuestionList.filter(res => this.CompleteFrom.QuestionTypes.find(item => item === res.ID));
+      return ActionQuestionList.filter(res => res.IsUploadPic).length !== 0;
     },
   },
   methods: {
     onGoBackClick() {
       this.$goback();
     },
+    UploadedSeccess(Url) {
+      this.CompleteFrom.QuestionPics.push(Url);
+    },
+    PictureDelete(Url) {
+      this.CompleteFrom.QuestionPics = this.CompleteFrom.QuestionPics.filter(it => it !== Url);
+    },
+    beforeUpload(file) {
+      const isLt15M = file.size / 1024 / 1024 < 15;
+      if (!isLt15M) {
+        // 文件过大上传失败
+        Message({
+          showClose: true,
+          message: '文件过大，上传失败',
+          type: 'error',
+        });
+      }
+      return isLt15M;
+    },
+
     SuspendClick() {
-      this.SuspendVisible = true;
+      if (!this.formValidator()) return;
+      this.$refs.AfterSalesSolutionFrom.onSuspendClick(this.CompleteFrom);
+    },
+    getOrderDetail(OrderID) {
+      this.api.getOrderDetailUseOrderID(OrderID).then(res => {
+        if (res.data.Status === 1000) {
+          this.OrderDetail = res.data.Data;
+        }
+      });
+    },
+    async getPackagesByOrderID() {
+      const resp = await this.api.getPackagesByOrderID(this.$route.query.OrderID).catch(() => {});
+      if (resp && resp.data.Status === 1000) {
+        this.PackagesList = resp.data.Data;
+      }
+    },
+    formValidator() {
+      if (!this.CompleteFrom.QuestionTypes.length) {
+        this.messageBox.failSingleError('操作失败', '请选择售后问题');
+        return false;
+      }
+      if (this.isUpImg && !this.CompleteFrom.QuestionPics.length) {
+        this.messageBox.failSingleError('操作失败', '请上传图片凭证');
+        return false;
+      }
+      return true;
+    },
+    AfterSaleSubmit() {
+      if (!this.formValidator()) return;
+      this.$refs.AfterSalesSolutionFrom.submit(this.CompleteFrom);
+    },
+    initQuestion() {
+      this.api.getApplyQuestionList().then(res => {
+        if (res.data.Status === 1000) {
+          this.ApplyQuestionList = res.data.Data;
+        }
+      });
     },
   },
   mounted() {
+    this.getOrderDetail(this.$route.query.OrderID);
+    this.initQuestion();
+    this.getPackagesByOrderID();
   },
 };
 </script>
 
 <style lang='scss'>
-@import "@/assets/css/var.scss";
 .on-behalf-of-consumer-after-sales{
   overflow-x: auto;
   height: 100%;
@@ -121,13 +190,23 @@ export default {
             }
           }
           >ul{
-            li{
+            >li{
               display: flex;
               font-size: 12px;
               margin-top: 10px;
               line-height: 15px;
               >.value{
                 flex: 1;
+                .el-checkbox-group{
+                  .el-checkbox{
+                    margin-right: 0;
+                    width: 85px;
+                    .el-checkbox__label{
+                      font-size: 12px;
+                      padding-left: 5px
+                    }
+                  }
+                }
               }
             }
           }

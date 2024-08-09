@@ -5,14 +5,22 @@
     </header>
     <main>
       <div class="top">
-        <AfterSalesSolutionInfoComp/>
-        <ResponsibilityDifferentiationComp/>
-        <OrderDetailsComp/>
+        <AfterSalesSolutionInfoComp :showImg="true" v-if="ResponsibilityDivideDetail" :appealData="ResponsibilityDivideDetail"/>
+        <div class="line"></div>
+        <ResponsibilityDifferentiationComp ref="DifferentiationComp" :AfterSaleCode="queryData?.AfterSaleCode"
+        :ResponsibilityDivideDetail="ResponsibilityDivideDetail" v-if="ResponsibilityDivideDetail"/>
+        <OrderDetailsComp :OrderDetail="OrderDetail" :AfterSaleCode="queryData?.AfterSaleCode"/>
       </div>
-      <ScheduleComp/>
+      <ScheduleComp v-if="ResponsibilityDivideDetail" :Progresses="ResponsibilityDivideDetail.DivideProgresses.map(it => ({
+        CreateTime: it.CreateTime,
+        DivideName: `${it.OperaterUserName||''}${it.DivideName}`,
+      }))" :defaultKey="{
+        Time: 'CreateTime',
+        Content: 'DivideName',
+      }"/>
     </main>
     <footer>
-      <el-button @click="onGoBackClick" class="linear-bg-color">返回</el-button>
+      <el-button @click="onSubmitClick" class="linear-bg-color">保存</el-button>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
   </section>
@@ -38,6 +46,9 @@ export default {
   data() {
     return {
       nowDate: null,
+      queryData: null,
+      ResponsibilityDivideDetail: null,
+      OrderDetail: null,
     };
   },
   computed: {
@@ -53,8 +64,28 @@ export default {
     onGoBackClick() {
       this.$goback();
     },
+    getResponsibilityDivideDetail() {
+      this.api.getOrderAfterSaleResponsibilityDivideDetail(this.queryData.AfterSaleCode).then(res => {
+        if (res.data.Status === 1000) {
+          this.ResponsibilityDivideDetail = res.data.Data;
+        }
+      });
+    },
+    getAfterSaleOrderDetail() {
+      this.api.getOrderDetailUseOrderID(this.queryData.OrderID).then(res => {
+        if (res.data.Status === 1000) {
+          this.OrderDetail = res.data.Data;
+        }
+      });
+    },
+    onSubmitClick() {
+      this.$refs.DifferentiationComp.submit();
+    },
   },
   mounted() {
+    this.queryData = this.$route.query;
+    this.getResponsibilityDivideDetail();
+    this.getAfterSaleOrderDetail();
   },
 };
 </script>
@@ -72,6 +103,22 @@ export default {
     >.top{
       display: flex;
       justify-content: flex-start;
+      .line{
+        width: 1px;
+        min-width: 1px;
+        background-color: #D3F2FE;
+        margin-top: 40px;
+        margin-right: 55px;
+      }
+      .responsibility-differentiation-comp{
+        margin-right: 45px;
+      }
+      >.order-details-comp{
+        min-width: 500px;
+      }
+      .after-sales-solution-info-comp{
+        width: 483px;
+      }
     }
     >.schedule-wrap{
       width: 960px

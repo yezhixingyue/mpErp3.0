@@ -93,29 +93,29 @@ const routes = { // 客户订单管理
     // },
     /*  售后管理
     ------------------------------------------ */
-    {
-      path: '/Service',
-      name: 'Service',
-      meta: {
-        title: '售后管理',
-        icon: 'iconfont icon-shouhouguanli',
-        pageName: 'ServicePage',
-        requiresAuth: true,
-        PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
-      },
-      component: () => import('../../../views/AfterSaleQuestion/ServicePage.vue'),
-    },
-    {
-      path: '/ResponsibilityMeasure',
-      name: 'ResponsibilityMeasure',
-      meta: {
-        title: '售后管理',
-        pageName: 'ResponsibilityMeasurePage',
-        requiresAuth: true,
-        PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
-      },
-      component: () => import('../../../views/AfterSaleQuestion/ResponsibilityMeasurePage.vue'),
-    },
+    // {
+    //   path: '/Service',
+    //   name: 'Service',
+    //   meta: {
+    //     title: '售后管理',
+    //     icon: 'iconfont icon-shouhouguanli',
+    //     pageName: 'ServicePage',
+    //     requiresAuth: true,
+    //     PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
+    //   },
+    //   component: () => import('../../../views/AfterSaleQuestion/ServicePage.vue'),
+    // },
+    // {
+    //   path: '/ResponsibilityMeasure',
+    //   name: 'ResponsibilityMeasure',
+    //   meta: {
+    //     title: '售后管理',
+    //     pageName: 'ResponsibilityMeasurePage',
+    //     requiresAuth: true,
+    //     PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
+    //   },
+    //   component: () => import('../../../views/AfterSaleQuestion/ResponsibilityMeasurePage.vue'),
+    // },
     {
       path: '/QuestionClass',
       name: 'QuestionClass',
@@ -127,44 +127,44 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../views/AfterSaleQuestion/QuestionClassPage.vue'),
     },
-    {
-      path: '/ServiceInfo',
-      name: 'ServiceInfo',
-      meta: {
-        title: '售后详情',
-        pageName: 'ServiceAfterSaleInfoPage',
-        PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
-        requiresAuth: true,
-      },
-      component: () => import('../../../components/ServiceAfterSale/Main/ServiceAfterSaleInfoPage.vue'),
-    },
+    // {
+    //   path: '/ServiceInfo',
+    //   name: 'ServiceInfo',
+    //   meta: {
+    //     title: '售后详情',
+    //     pageName: 'ServiceAfterSaleInfoPage',
+    //     PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
+    //     requiresAuth: true,
+    //   },
+    //   component: () => import('../../../components/ServiceAfterSale/Main/ServiceAfterSaleInfoPage.vue'),
+    // },
     /*  售后申请列表
     ------------------------------------------ */
-    {
-      path: '/Feedback',
-      name: 'Feedback',
-      meta: {
-        title: '售后申请列表',
-        icon: 'iconfont icon-shouhoushenqingliebiao',
-        pageName: 'FeedbackPage',
-        requiresAuth: true,
-        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
-      },
-      component: () => import('../../../views/FeedbackPage/FeedbackListPage.vue'),
-    },
+    // {
+    //   path: '/Feedback',
+    //   name: 'Feedback',
+    //   meta: {
+    //     title: '售后申请列表',
+    //     icon: 'iconfont icon-shouhoushenqingliebiao',
+    //     pageName: 'FeedbackPage',
+    //     requiresAuth: true,
+    //     PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+    //   },
+    //   component: () => import('../../../views/FeedbackPage/FeedbackListPage.vue'),
+    // },
     /*  售后详情
     ------------------------------------------ */
-    {
-      path: '/FeedbackInfo',
-      name: 'FeedbackInfo',
-      meta: {
-        title: '售后详情',
-        pageName: 'feedbackInfoPage',
-        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
-        requiresAuth: true,
-      },
-      component: () => import('../../../views/FeedbackPage/FeedbackInfoPage.vue'),
-    },
+    // {
+    //   path: '/FeedbackInfo',
+    //   name: 'FeedbackInfo',
+    //   meta: {
+    //     title: '售后详情',
+    //     pageName: 'feedbackInfoPage',
+    //     PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+    //     requiresAuth: true,
+    //   },
+    //   component: () => import('../../../views/FeedbackPage/FeedbackInfoPage.vue'),
+    // },
     /*  新售后列表
     ------------------------------------------ */
     {
@@ -172,10 +172,10 @@ const routes = { // 客户订单管理
       name: 'AfterSalesList',
       meta: {
         title: '售后列表',
-        icon: 'iconfont icon-shouhoushenqingliebiao',
+        icon: 'iconfont icon-shouhouliebiao',
         pageName: 'AfterSalesListPage',
         requiresAuth: true,
-        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
       },
       component: () => import('../../../views/AfterSales/AfterSalesListPage.vue'),
     },
@@ -187,7 +187,7 @@ const routes = { // 客户订单管理
       meta: {
         title: '售后详情',
         pageName: 'AfterSalesInfoPage',
-        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
         requiresAuth: true,
       },
       component: () => import('../../../views/AfterSales/AfterSalesInfoPage.vue'),
@@ -199,10 +199,10 @@ const routes = { // 客户订单管理
       name: 'ResponsibilityMeasureList',
       meta: {
         title: '责任划分',
-        icon: 'iconfont icon-shouhoushenqingliebiao',
+        icon: 'iconfont icon-huafenzeren',
         pageName: 'ResponsibilityMeasureListPage',
         requiresAuth: true,
-        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        PermissionInfo: ['PermissionResponsibilityDivide', 'HavePomission'],
       },
       component: () => import('../../../views/AfterSales/ResponsibilityMeasureList.vue'),
     },
@@ -214,7 +214,7 @@ const routes = { // 客户订单管理
       meta: {
         title: '责任划分详情',
         pageName: 'ResponsibilityMeasurePage',
-        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        PermissionInfo: ['PermissionResponsibilityDivide', 'HavePomission'],
         requiresAuth: true,
       },
       component: () => import('../../../views/AfterSales/ResponsibilityMeasureInfoPage.vue'),
@@ -226,10 +226,10 @@ const routes = { // 客户订单管理
       name: 'LiabilityRecognitionList',
       meta: {
         title: '责任确认',
-        icon: 'iconfont icon-shouhoushenqingliebiao',
+        icon: 'iconfont icon-querenzeren',
         pageName: 'LiabilityRecognitionListPage',
         requiresAuth: true,
-        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        PermissionInfo: ['PermissionResponsibilityConfirm', 'HavePomission'],
       },
       component: () => import('../../../views/AfterSales/LiabilityRecognitionList.vue'),
     },
@@ -241,7 +241,7 @@ const routes = { // 客户订单管理
       meta: {
         title: '责任确认详情',
         pageName: 'LiabilityRecognitionPage',
-        PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
+        PermissionInfo: ['PermissionResponsibilityConfirm', 'HavePomission'],
         requiresAuth: true,
       },
       component: () => import('../../../views/AfterSales/LiabilityRecognitionInfoPage.vue'),
