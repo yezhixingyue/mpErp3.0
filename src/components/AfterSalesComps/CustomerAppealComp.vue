@@ -31,7 +31,7 @@
           </div>
         </span>
       </li>
-      <li v-if="SupplementalQuestionPics.length && (appealData.Status === 30 || appealData.Status === 255)">
+      <li v-if="SupplementalQuestionPics.length || appealData.Status === 10 || appealData.Status === 25">
         <span class="label is-bold">客服补充：</span><span class="value">
           <div>
             <ImageUploadComp :ImgList="SupplementalQuestionPics" @UploadedSeccess="UploadedSeccess"

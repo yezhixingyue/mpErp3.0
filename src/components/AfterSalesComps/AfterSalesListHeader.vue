@@ -50,7 +50,7 @@
           :changePropsFunc='setCondition4DataList'
           :requestFunc='getDataList'
           :isFull="true"
-          :typeList="[['DateType', ''], ['SelectTime', 'First'], ['SelectTime', 'Second']]"
+          :typeList="[['DateType', ''], ['Date', 'First'], ['Date', 'Second']]"
           :dateValue='condition.DateType'
           :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
           minDate="2022-01-01 00:00:00"
