@@ -57,7 +57,7 @@
             {{OrderDetail.Status | formatStatus}} <a @click="orderProgressVisible = true">查看进度</a>
           </span>
         </li>
-        <li v-if="OrderDetail.FilePath">
+        <li v-if="showDownload && OrderDetail.FilePath && [0, 10, 25].findIndex(it => it === AfterSaleStatus) !== -1">
           <span class="label is-bold">文件下载：</span><span class="value">
             <a :href="OrderDetail.FilePath" target="_blank" class="link download">下载订单文件</a>
           </span>
@@ -221,6 +221,14 @@ export default {
     AfterSaleCode: {
       type: Number,
       default: () => 0,
+    },
+    AfterSaleStatus: {
+      type: Number,
+      default: () => 255,
+    },
+    showDownload: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

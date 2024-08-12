@@ -21,7 +21,7 @@
         <el-table-column prop="CustomerType" label="处理结果" minWidth="125" show-overflow-tooltip>
           <template slot-scope="scope">
             <template v-if="scope.row.IsReject">
-              驳回{{scope.row.RejectReason}}
+              驳回
             </template>
             <template v-else>
               <template v-if="scope.row.SolutionResults[0]">

@@ -93,7 +93,8 @@
             <span class="label is-bold" style="min-width: 5em;"></span><span class="value">
               <el-checkbox v-model="CompleteFrom.IsProduceEnd">终止生产</el-checkbox>
               <br/>
-              <el-checkbox v-model="CompleteFrom.Solution.CouponIsExtra" style="line-height: 20px;">额外增送优惠券</el-checkbox>
+              <el-checkbox v-if="SolutionTypes === 2 || SolutionTypes === 7"
+              v-model="CompleteFrom.Solution.CouponIsExtra" style="line-height: 20px;">额外增送优惠券</el-checkbox>
             </span>
           </li>
         </template>
@@ -101,25 +102,33 @@
           <span class="label is-bold">优惠券：</span><span class="value">
             <span @click="SelectCouponClick" style="color: #26BCF9; cursor: pointer;">选择优惠券</span>
             <el-table v-if="selectedCouponList.length" stripe border fit :data="selectedCouponList"
-            style="width: 100%; margin-top: 10px" class="ft-14-table coupon-table">
-              <el-table-column prop="AfterSaleCode" label="包裹号" minWidth="123" show-overflow-tooltip>
+            style="width: 100%; margin-top: 10px" class="ft-14-table coupon-table" size="mini">
+              <el-table-column prop="AfterSaleCode" label="包裹号" minWidth="60" show-overflow-tooltip>
                 <template slot-scope="scope">
                   {{scope.row.Data.Amount}}元
                 </template>
               </el-table-column>
-              <el-table-column prop="OrderID" label="运单号" minWidth="114" show-overflow-tooltip>
+              <el-table-column prop="OrderID" label="运单号" minWidth="105" show-overflow-tooltip>
                 <template slot-scope="scope">
                   满{{scope.row.Data.MinPayAmount}}元使用
                 </template>
               </el-table-column>
-              <el-table-column prop="CustomerType" label="产品数量" minWidth="85" show-overflow-tooltip>
+              <el-table-column prop="CustomerType" label="产品数量" minWidth="212" show-overflow-tooltip>
                 <template slot-scope="scope">
                   限产品：{{ (scope.row.ProductString.split('\n') || []).join(' ') }}
                 </template>
               </el-table-column>
-              <el-table-column prop="CustomerType" label="金额" minWidth="57" show-overflow-tooltip>
+              <el-table-column prop="CustomerType" label="金额" minWidth="90" show-overflow-tooltip>
                 <template slot-scope="scope">
                   <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="selectedCouponList[scope.$index].Number"></el-input>张
+                </template>
+              </el-table-column>
+              <el-table-column prop="CustomerType" label="金额" minWidth="80" show-overflow-tooltip>
+                <template slot-scope="scope">
+                  <el-button type="text" class="is-pink" @click="removeCoupon(scope.row)">
+                    <i class="iconfont icon-delete"></i>
+                    删除
+                  </el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -230,6 +239,7 @@
       top='15vh'
       title="选择优惠券:"
       :visible="dialogVisible"
+      submitText='确定'
       cancelText='取消'
       @cancle="dialogVisible = false"
       @closed='dialogVisible = false'
@@ -257,12 +267,6 @@
           </li>
         </ul>
       </div>
-      <template slot="footer">
-        <span class="dialog-footer">
-          <el-button type="primary" :disabled='couponList.length === 0' @click="onSelectCouponClick(false)">确 定</el-button>
-          <el-button @click="dialogVisible = false">取 消</el-button>
-        </span>
-      </template>
     </CommonDialogComp>
 
     <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false"
@@ -324,6 +328,7 @@ export default {
   },
   computed: {
     ...mapState('common', ['userTypeList']),
+    ...mapState('orderModule', ['objForOrderList']),
     ...mapState('AfterSale', ['QuestionClassList']),
     resultRadio: {
       get() {
@@ -435,6 +440,7 @@ export default {
   },
   methods: {
     ...mapActions('AfterSale', ['getOrderAfterSaleQuestionClassList']),
+    ...mapActions('orderModule', ['getOrderTableData']),
     // 选择上传的文件
     readFileUniqueName(file) {
       // 上传成功后，设置文件名称, 文件唯一标识 getUniqueFileName
@@ -496,7 +502,7 @@ export default {
           this.messageBox.failSingleError('操作失败', '请选择优惠券');
           return false;
         }
-        if (!this.setCoupons()) {
+        if ((this.SolutionTypes === 8 || this.CompleteFrom.Solution.CouponIsExtra) && !this.setCoupons()) {
           this.messageBox.failSingleError('操作失败', '请输入优惠券数量');
           return false;
         }
@@ -593,7 +599,11 @@ export default {
         const resp = await this.api.getOrderAfterSaleHang(temp).catch(() => {});
         if (resp && resp.data.Status === 1000) {
           this.SuspendVisible = false;
-          this.messageBox.successSingle('挂起成功', this.onGoBackClick, this.onGoBackClick);
+          const successCb = () => {
+            this.getOrderTableData({ page: this.objForOrderList.Page, type: 'get' });
+            this.onGoBackClick();
+          };
+          this.messageBox.successSingle('挂起成功', successCb, successCb);
         }
       };
       if (this.ReprintFile && this.CompleteFrom.Solution.IsNewUpFile) {
@@ -632,14 +642,19 @@ export default {
       this.dialogVisible = true;
     },
     // 优惠劵确定
-    onSelectCouponClick() {
+    onSelectCouponClick(bool = true) {
       const list = this.couponList.filter(it => it.checked); // CouponNumber
-      if (list.length === 0) {
+      if (list.length === 0 && bool) {
         this.messageBox.failSingleError('操作失败', '未选中优惠券');
         return;
       }
       this.selectedCouponList = list.map(it => ({ ...it }));
       this.dialogVisible = false;
+    },
+    removeCoupon(item) {
+      const index = this.couponList.findIndex(it => it.CouponID === item.CouponID);
+      this.couponList[index].checked = false;
+      this.onSelectCouponClick(false);
     },
     // 选择优惠卷的弹窗
     async getCouponList() {
@@ -839,6 +854,28 @@ export default {
         .coupon-table{
           .el-table__header{
             display: none;
+          }
+          .el-table__body-wrapper{
+            .el-table__row{
+              .el-table__cell{
+                padding: 6px 0;
+              }
+            }
+          }
+          .el-button{
+            padding: 8px 0;
+            font-size: 12px;
+            .iconfont{
+              font-size: 12px;
+            }
+          }
+          .el-input{
+            width: 50px;
+            margin-right: 5px;
+            .el-input__inner{
+              height: 32px;
+              line-height: 32px
+            }
           }
         }
         .uploadFileBox{

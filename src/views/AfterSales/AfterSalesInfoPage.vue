@@ -7,7 +7,7 @@
       <div class="left">
         <div class="top">
           <CustomerAppealComp v-if="AfterSaleInfoDetail" :appealData="AfterSaleInfoDetail"/>
-          <OrderDetailsComp :OrderDetail="OrderDetail" :AfterSaleCode="queryData?.AfterSaleCode"/>
+          <OrderDetailsComp showDownload :OrderDetail="OrderDetail" :AfterSaleCode="queryData?.AfterSaleCode"/>
         </div>
         <ScheduleComp v-if="AfterSaleInfoDetail" :Progresses="AfterSaleInfoDetail.ServiceProgresses"/>
       </div>

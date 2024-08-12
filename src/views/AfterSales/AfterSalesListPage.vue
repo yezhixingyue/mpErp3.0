@@ -34,11 +34,11 @@
         </el-table-column>
         <el-table-column prop="CustomerType" label="处理结果" minWidth="125" show-overflow-tooltip>
           <template slot-scope="scope">
-            <template v-if="scope.row.SolutionResults.length">
-              <template v-if="scope.row.IsReject">
-                驳回{{scope.row.RejectReason}}
-              </template>
-              <template v-else>
+            <template v-if="scope.row.IsReject">
+              <span class="is-pink">驳回</span>
+            </template>
+            <template v-else>
+              <template v-if="scope.row.SolutionResults.length">
                 <template v-if="scope.row.SolutionResults[0]">
                   {{ scope.row.SolutionResults[0] ? scope.row.SolutionResults[0].SolutionContent : '' }}
                   <template v-if="scope.row.SolutionResults[0].CouponContents.length">
@@ -47,9 +47,9 @@
                   </template>
                 </template>
               </template>
-            </template>
-            <template v-else>
-              -
+              <template v-else>
+                -
+              </template>
             </template>
           </template>
         </el-table-column>
