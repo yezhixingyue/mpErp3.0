@@ -8,19 +8,19 @@
         <AfterSalesSolutionInfoComp :showImg="true" :appealData="ResponsibilityConfirmDetail"/>
         <div class="line"></div>
         <ResponsibilityConfirmComp ref="ConfirmComp" :ConfirmDetail="ResponsibilityConfirmDetail"
-        :AfterSaleCode="queryData?.AfterSaleCode" :OrderID="queryData?.OrderID"/>
+        :AfterSaleCode="queryData?.AfterSaleCode" :OrderID="queryData?.OrderID" :Status="queryData?.Status"/>
         <OrderDetailsComp :OrderDetail="OrderDetail" :AfterSaleCode="queryData?.AfterSaleCode"/>
       </div>
       <ScheduleComp v-if="ResponsibilityConfirmDetail" :Progresses="ResponsibilityConfirmDetail.DivideProgresses.map(it => ({
         CreateTime: it.CreateTime,
         DivideName: `${it.OperaterUserName||''}${it.DivideName}`,
-      }))" :defaultKey="{
+      }))" title="定责进度" :defaultKey="{
         Time: 'CreateTime',
         Content: 'DivideName',
       }"/>
     </main>
     <footer>
-      <el-button @click="onSubmitClick" class="linear-bg-color">提交</el-button>
+      <el-button v-if="queryData && queryData.Status === 0" @click="onSubmitClick" class="linear-bg-color">提交</el-button>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
   </section>
@@ -127,14 +127,16 @@ export default {
       width: 120px;
       height: 35px;
       padding: 0;
-      color: #fff;
-      background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);
       border: none;
+      background: #fff;
+      color: #26BCF9;
+      border: 1px solid #26BCF9;
+      &.linear-bg-color{
+        color: #fff;
+        background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);
+      }
       & + .el-button{
-        background: #fff;
         margin-left: 30px;
-        color: #26BCF9;
-        border: 1px solid #26BCF9;
       }
     }
   }

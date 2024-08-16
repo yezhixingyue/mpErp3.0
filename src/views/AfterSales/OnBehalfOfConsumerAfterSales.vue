@@ -32,7 +32,7 @@
         </div>
       </div>
       <AfterSalesSolutionFromComp consent :PackagesList="PackagesList" :OrderID="$route.query.OrderID"
-      ref="AfterSalesSolutionFrom" Source/>
+      ref="AfterSalesSolutionFrom" Source :OrderStatus="OrderDetail?.Status"/>
       <!-- <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false" @submit="SuspendVisible = false"></SuspendDialogComp> -->
     </main>
     <footer>
@@ -221,14 +221,16 @@ export default {
       width: 120px;
       height: 35px;
       padding: 0;
-      color: #fff;
-      background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);
       border: none;
+      background: #fff;
+      color: #26BCF9;
+      border: 1px solid #26BCF9;
+      &.linear-bg-color{
+        color: #fff;
+        background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);
+      }
       & + .el-button{
-        background: #fff;
         margin-left: 30px;
-        color: #26BCF9;
-        border: 1px solid #26BCF9;
       }
     }
   }

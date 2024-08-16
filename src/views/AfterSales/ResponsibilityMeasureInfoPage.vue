@@ -8,19 +8,20 @@
         <AfterSalesSolutionInfoComp :showImg="true" v-if="ResponsibilityDivideDetail" :appealData="ResponsibilityDivideDetail"/>
         <div class="line"></div>
         <ResponsibilityDifferentiationComp ref="DifferentiationComp" :AfterSaleCode="queryData?.AfterSaleCode"
-        :ResponsibilityDivideDetail="ResponsibilityDivideDetail" v-if="ResponsibilityDivideDetail"/>
+        :ResponsibilityDivideDetail="ResponsibilityDivideDetail" v-if="ResponsibilityDivideDetail" :Status="queryData?.Status"/>
         <OrderDetailsComp :OrderDetail="OrderDetail" :AfterSaleCode="queryData?.AfterSaleCode"/>
       </div>
       <ScheduleComp v-if="ResponsibilityDivideDetail" :Progresses="ResponsibilityDivideDetail.DivideProgresses.map(it => ({
+        ConfirmType: it.ConfirmType,
         CreateTime: it.CreateTime,
         DivideName: `${it.OperaterUserName||''}${it.DivideName}`,
-      }))" :defaultKey="{
+      }))" title="定责进度" :defaultKey="{
         Time: 'CreateTime',
         Content: 'DivideName',
       }"/>
     </main>
     <footer>
-      <el-button @click="onSubmitClick" class="linear-bg-color">保存</el-button>
+      <el-button v-if="ResponsibilityDivideDetail?.ResponsibilityIsAllowDivide" @click="onSubmitClick" class="linear-bg-color">保存</el-button>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
   </section>
@@ -131,14 +132,16 @@ export default {
       width: 120px;
       height: 35px;
       padding: 0;
-      color: #fff;
-      background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);
       border: none;
+      background: #fff;
+      color: #26BCF9;
+      border: 1px solid #26BCF9;
+      &.linear-bg-color{
+        color: #fff;
+        background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);
+      }
       & + .el-button{
-        background: #fff;
         margin-left: 30px;
-        color: #26BCF9;
-        border: 1px solid #26BCF9;
       }
     }
   }

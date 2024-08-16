@@ -1,21 +1,33 @@
 <template>
   <section class="schedule-wrap">
     <header class="is-bold">
-      服务进度：
+      {{title}}：
     </header>
     <ul v-if="Progresses">
       <li v-for="(item, i) in Progresses" :key="item.CreateTime + i">
         <img src="@/assets/images/动线剪头.png" alt="">
-        <p>{{item[defaultKey.Time] | formatDate}}</p>
-        <p :title="item[defaultKey.Content]">{{item[defaultKey.Content]}}</p>
+        <p :class="{'is-pink': item.ConfirmType === 0}" >{{item[defaultKey.Time] | formatDate}}</p>
+        <p :class="{'is-pink': item.ConfirmType === 0}" :title="item[defaultKey.Content]">{{item[defaultKey.Content]}}</p>
         <p v-if="item[defaultKey.Title]">
           <el-popover
             placement="top"
-            :title="item[defaultKey.Title]"
-            width="200"
-            trigger="click"
-            :content="item[defaultKey.Remark]">
-            <span slot="reference">查看原因</span>
+            @show="() => show(i)"
+            @hide="() => hide(i)"
+            width="240"
+            trigger="click">
+            <div style="max-height: 100px; overflow-y: auto">
+              <p style="display: flex;">
+                <span class="is-gray">
+                  {{getServiceType(item.ServiceType)}}原因：
+                  </span><span style="flex: 1;">{{ item[defaultKey.Title] }}
+                </span>
+              </p>
+              <p style="background-color: #E6E6E6;height: 1px;margin: 4px 0;"></p>
+              <p style="display: flex;">
+                <span class="is-gray">备注：</span><span style="flex: 1;">{{ item[defaultKey.Remark] }}</span>
+              </p>
+            </div>
+            <span slot="reference">{{lists.findIndex(it => it === i) === -1 ? '查看' : '隐藏'}}原因</span>
           </el-popover>
         </p>
       </li>
@@ -27,6 +39,10 @@
 
 export default {
   props: {
+    title: {
+      type: String,
+      default: '服务进度',
+    },
     Progresses: {
       type: Array,
       default: () => ([]),
@@ -45,10 +61,32 @@ export default {
   data() {
     return {
       nowDate: null,
+      lists: [],
     };
   },
   computed: {},
-  methods: {},
+  methods: {
+    getServiceType(ServiceType) {
+      let msg = '';
+      switch (ServiceType) {
+        case 1:
+          msg = '挂起';
+          break;
+        case 3:
+          msg = '转他人';
+          break;
+        default:
+          break;
+      }
+      return msg;
+    },
+    show(index) {
+      this.lists.push(index);
+    },
+    hide(index) {
+      this.lists = this.lists.filter(it => it !== index);
+    },
+  },
   mounted() {},
 };
 </script>

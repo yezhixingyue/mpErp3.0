@@ -16,7 +16,9 @@
             type="textarea"
             :autosize="{minRows: 4, maxRows: 4}"
             placeholder="请输入内容"
-            v-model="CompleteFrom.RejectReason">
+            maxlength="300"
+            show-word-limit
+            v-model.trim="CompleteFrom.RejectReason">
           </el-input>
         </span>
       </li>
@@ -34,7 +36,7 @@
           <li>
             <span class="label is-bold">选择包裹：</span><span class="value">
               <el-table v-if="PackagesList" ref="selectPackages" stripe border fit :data="PackagesList.BackPackageInfos" style="width: 100%"
-              @selection-change="handleSelectionChange" class="ft-14-table">
+              @selection-change="handleSelectionChange" class="ft-14-table" maxHeight="300">
                 <el-table-column
                   type="selection"
                   label="包裹号"
@@ -91,8 +93,10 @@
           </li>
           <li class="form-box">
             <span class="label is-bold" style="min-width: 5em;"></span><span class="value">
-              <el-checkbox v-model="CompleteFrom.IsProduceEnd">终止生产</el-checkbox>
-              <br/>
+              <template v-if="(SolutionTypes === 2 || SolutionTypes === 7) && [43, 45, 50, 55].find(it => it === OrderStatus)">
+                <el-checkbox v-model="CompleteFrom.IsProduceEnd">终止生产</el-checkbox>
+                <br/>
+              </template>
               <el-checkbox v-if="SolutionTypes === 2 || SolutionTypes === 7"
               v-model="CompleteFrom.Solution.CouponIsExtra" style="line-height: 20px;">额外增送优惠券</el-checkbox>
             </span>
@@ -101,7 +105,7 @@
         <li v-if="CompleteFrom.Solution.CouponIsExtra || SolutionTypes === 8">
           <span class="label is-bold">优惠券：</span><span class="value">
             <span @click="SelectCouponClick" style="color: #26BCF9; cursor: pointer;">选择优惠券</span>
-            <el-table v-if="selectedCouponList.length" stripe border fit :data="selectedCouponList"
+            <el-table v-if="selectedCouponList.length" stripe border fit :data="selectedCouponList" maxHeight="300"
             style="width: 100%; margin-top: 10px" class="ft-14-table coupon-table" size="mini">
               <el-table-column prop="AfterSaleCode" label="包裹号" minWidth="60" show-overflow-tooltip>
                 <template slot-scope="scope">
@@ -147,7 +151,9 @@
               type="textarea"
               :autosize="{minRows: 2, maxRows: 4}"
               placeholder="请输入内容"
-              v-model="CompleteFrom.Solution.SolutionResultRemark">
+              maxlength="300"
+              show-word-limit
+              v-model.trim="CompleteFrom.Solution.SolutionResultRemark">
             </el-input>
           </span>
         </li>
@@ -172,7 +178,10 @@
               支出说明：<span class="text">(选填)</span>
             </span>
             <span class="value">
-              <el-input v-model="CompleteFrom.ExtraPayRemark" placeholder="请输入内容" size="medium" style="margin-bottom: 10px;"></el-input>
+              <el-input v-model.trim="CompleteFrom.ExtraPayRemark"
+              maxlength="300"
+              show-word-limit
+              placeholder="请输入内容" size="medium" style="margin-bottom: 10px;"></el-input>
             </span>
           </li>
         </template>
@@ -261,7 +270,7 @@
                     {{ item }}
                   </p>
                 </div>
-                <span class="area-span">限产品：{{ (it.ProductString.split('\n') || []).join(' ') }}</span>
+                <span class="area-span">限产品：<span>{{ (it.ProductString.split('\n') || []).join(' ') }}</span></span>
               </el-tooltip>
             </el-checkbox>
           </li>
@@ -317,6 +326,10 @@ export default {
       type: Number,
       default: 0,
     },
+    OrderStatus: {
+      type: Number,
+      default: 0,
+    },
   },
 
   components: {
@@ -329,7 +342,7 @@ export default {
   computed: {
     ...mapState('common', ['userTypeList']),
     ...mapState('orderModule', ['objForOrderList']),
-    ...mapState('AfterSale', ['QuestionClassList']),
+    ...mapState('AfterSale', ['QuestionClassList', 'AfterSalesCondition']),
     resultRadio: {
       get() {
         if (this.CompleteFrom.IsReject === true) {
@@ -408,7 +421,7 @@ export default {
           // },
         ],
         Solution: {
-          SolutionTypes: [],
+          SolutionTypes: [2],
           KindCount: '',
           Number: '',
           UniqueName: '',
@@ -439,7 +452,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions('AfterSale', ['getOrderAfterSaleQuestionClassList']),
+    ...mapActions('AfterSale', ['getOrderAfterSaleQuestionClassList', 'getOrderAfterSaleManageList']),
     ...mapActions('orderModule', ['getOrderTableData']),
     // 选择上传的文件
     readFileUniqueName(file) {
@@ -468,7 +481,7 @@ export default {
       this.$goback();
     },
     formValidator() {
-      console.log(this.SolutionTypes);
+      console.log(this.CompleteFrom.Solution);
       if (this.resultRadio === '') {
         this.messageBox.failSingleError('操作失败', '请选择解决方案');
         return false;
@@ -482,15 +495,15 @@ export default {
           this.messageBox.failSingleError('操作失败', '请选择解决方案');
           return false;
         }
-        if (this.SolutionTypes === 2 && !this.CompleteFrom.Solution.RefundBalance) {
+        if (this.SolutionTypes === 2 && !(Number(this.CompleteFrom.Solution.RefundBalance) + Number(this.CompleteFrom.Solution.RefundFreightAmount))) {
           this.messageBox.failSingleError('操作失败', '请输入退款金额');
           return false;
         }
-        if (this.SolutionTypes === 7 && !this.CompleteFrom.Solution.KindCount) {
+        if (this.SolutionTypes === 7 && !Number(this.CompleteFrom.Solution.KindCount)) {
           this.messageBox.failSingleError('操作失败', '请输入补印数量');
           return false;
         }
-        if (this.SolutionTypes === 7 && !this.CompleteFrom.Solution.Number) {
+        if (this.SolutionTypes === 7 && !Number(this.CompleteFrom.Solution.Number)) {
           this.messageBox.failSingleError('操作失败', '请输入每款数量');
           return false;
         }
@@ -516,6 +529,10 @@ export default {
         }
         if (this.CompleteFrom.ResponsibilityIsDivide && !this.setResponsibility()) {
           this.messageBox.failSingleError('操作失败', '责任占比总和需为100');
+          return false;
+        }
+        if (this.CompleteFrom.ResponsibilityIsDivide && this.CompleteFrom.AfterSaleResponsibilities.findIndex(it => Number(it.Proportion) === 0) !== -1) {
+          this.messageBox.failSingleError('操作失败', '请勿勾选无责任中心');
           return false;
         }
       }
@@ -600,7 +617,11 @@ export default {
         if (resp && resp.data.Status === 1000) {
           this.SuspendVisible = false;
           const successCb = () => {
-            this.getOrderTableData({ page: this.objForOrderList.Page, type: 'get' });
+            if (this.consent) {
+              this.getOrderTableData({ page: this.objForOrderList.Page, type: 'get' });
+            } else {
+              this.getOrderAfterSaleManageList(this.AfterSalesCondition.Page);
+            }
             this.onGoBackClick();
           };
           this.messageBox.successSingle('挂起成功', successCb, successCb);
@@ -617,7 +638,9 @@ export default {
       temp.AfterSaleCode = this.AfterSaleCode;
       const resp = await this.api.getOrderAfterSaleTransfer(temp).catch(() => {});
       if (resp && resp.data.Status === 1000) {
+        this.getOrderAfterSaleManageList(this.AfterSalesCondition.Page);
         this.emitVisible();
+        this.onGoBackClick();
       }
     },
     handleSelectionChange(Selection) {
@@ -660,7 +683,7 @@ export default {
     async getCouponList() {
       const resp = await this.api.getCouponList({ ProvideStatus: 1, FieldType: 1, ReceiveNumber: 1 }).catch(() => {});
       if (resp && resp.data.Status === 1000) {
-        this.couponList = resp.data.Data.map(it => ({
+        this.couponList = resp.data.Data.filter(it => !it.UseNewCustomer).map(it => ({
           ...it,
           checked: false,
         }));
@@ -678,10 +701,14 @@ export default {
           }
           const resp = await this.api.getComplete(this.CompleteFrom).catch(() => {});
           if (resp && resp.data.Status === 1000) {
+            const successCb = () => {
+              this.getOrderAfterSaleManageList(this.AfterSalesCondition.Page);
+              this.onGoBackClick();
+            };
             if (this.CompleteFrom.IsReject) {
-              this.messageBox.successSingle('您已驳回售后', this.onGoBackClick, this.onGoBackClick);
+              this.messageBox.successSingle('您已驳回售后', successCb, successCb);
             } else {
-              this.messageBox.successSingle('售后成功', this.onGoBackClick, this.onGoBackClick);
+              this.messageBox.successSingle('售后成功', successCb, successCb);
             }
           }
         };
@@ -722,7 +749,11 @@ export default {
       });
     },
     setSubmitData() {
-      this.CompleteFrom.IsReject = this.appealData.IsReject;
+      if (this.appealData.Status === 10) {
+        this.CompleteFrom.IsReject = null;
+      } else {
+        this.CompleteFrom.IsReject = this.appealData.IsReject;
+      }
       this.CompleteFrom.IsProduceEnd = this.appealData.IsProduceEnd;
       this.CompleteFrom.IsExtraPay = this.appealData.IsExtraPay;
       this.CompleteFrom.ExtraPayAmount = this.appealData.ExtraPayAmount;
@@ -745,7 +776,11 @@ export default {
       this.CompleteFrom.AfterSaleResponsibilities = this.appealData.AfterSaleResponsibilities;
       if (this.CompleteFrom.AfterSaleResponsibilities.length) this.backResponsibilities();
 
-      this.CompleteFrom.Solution.SolutionTypes = this.appealData.Solution.SolutionTypes;
+      if (this.appealData.Status === 10) {
+        this.CompleteFrom.Solution.SolutionTypes = [2];
+      } else {
+        this.CompleteFrom.Solution.SolutionTypes = this.appealData.Solution.SolutionTypes;
+      }
       this.CompleteFrom.Solution.RefundBalance = this.appealData.Solution.RefundBalance;
       this.CompleteFrom.Solution.RefundFreightAmount = this.appealData.Solution.RefundFreightAmount;
       this.CompleteFrom.Solution.KindCount = this.appealData.Solution.KindCount;
@@ -902,6 +937,17 @@ export default {
         margin-bottom: 20px;
         &:last-child{
           margin-bottom: 0;
+        }
+      }
+      .area-span{
+        >span{
+          display: inline-block;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          position: relative;
+          top: 5px;
+          max-width: 350px;
         }
       }
     }

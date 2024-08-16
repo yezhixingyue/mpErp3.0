@@ -2,83 +2,95 @@
   <section class="responsibility-differentiation-comp">
     <header class="title is-bold">划分责任</header>
     <ul>
-      <li>
-        <div class="label is-bold">问题类别：</div><div class="value">
-          <span @click="selectProblemTypesClick" style="color: #26BCF9; cursor: pointer;">选择类别</span> <i>
-            {{ProblemTypesList.map(it => it.Name).join('、')}}
-          </i>
-        </div>
+      <li v-if="Status === 255">
+        <p class="overtime is-pink"><img src="@/assets/images/超时未划分责任.png" alt="">超时未划分责任！！！</p>
       </li>
-      <li class="form-box">
-        <div class="label is-bold">责任占比：</div><div class="value">
-          <template v-if="ResponsibilityDivideDetail.ResponsibilityIsAllowDivide">
-            <p>
-              <el-checkbox v-model="ProportionResponsibility.Department1">业务中心</el-checkbox>
-              <template v-if="ProportionResponsibility.Department1">
-                所占责任：
-                <el-input v-model="ProportionResponsibility.DepartmentProportion1" size="medium" style="width: 50px;"></el-input> %
-                <template v-if="ResponsibilityDivideDetail &&
-                ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 1)?.ConfirmTime">
-                  <i>已确认</i>
-                  <img src="@/assets/images/success.png" alt="">
+      <template v-else>
+        <li>
+          <div class="label is-bold">问题类别：</div><div class="value">
+            <template v-if="ResponsibilityDivideDetail.ResponsibilityIsAllowDivide">
+              <span @click="selectProblemTypesClick" style="color: #26BCF9; cursor: pointer;"
+              >选择类别</span>
+              <i>
+                {{ProblemTypesList.map(it => `${it.ParentName}-${it.Name}`).join('、')}}
+              </i>
+            </template>
+            <template v-else>
+              {{ResponsibilityDivideDetail.AfterSaleQuestions.map(it => `${it.FirstQuestionTypeTitle}-${it.SecondQuestionTypeTitle}`).join('、')}}
+            </template>
+          </div>
+        </li>
+        <li class="form-box">
+          <div class="label is-bold">责任占比：</div><div class="value">
+            <template v-if="ResponsibilityDivideDetail.ResponsibilityIsAllowDivide">
+              <p>
+                <el-checkbox v-model="ProportionResponsibility.Department1">业务中心</el-checkbox>
+                <template v-if="ProportionResponsibility.Department1">
+                  所占责任：
+                  <el-input v-model="ProportionResponsibility.DepartmentProportion1" size="medium" style="width: 50px;"></el-input> %
+                  <template v-if="ResponsibilityDivideDetail &&
+                  ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 1)?.ConfirmTime">
+                    <i>已确认</i>
+                    <img src="@/assets/images/success.png" alt="">
+                  </template>
                 </template>
-              </template>
-            </p>
-            <p>
-              <el-checkbox v-model="ProportionResponsibility.Department2">生产工厂</el-checkbox>
-              <template v-if="ProportionResponsibility.Department2">
-                所占责任：
-                <el-input v-model="ProportionResponsibility.DepartmentProportion2" size="medium" style="width: 50px;"></el-input> %
-                <template v-if="ResponsibilityDivideDetail &&
-                ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 2)?.ConfirmTime">
-                  <i>已确认</i>
-                  <img src="@/assets/images/success.png" alt="">
+              </p>
+              <p>
+                <el-checkbox v-model="ProportionResponsibility.Department2">生产工厂</el-checkbox>
+                <template v-if="ProportionResponsibility.Department2">
+                  所占责任：
+                  <el-input v-model="ProportionResponsibility.DepartmentProportion2" size="medium" style="width: 50px;"></el-input> %
+                  <template v-if="ResponsibilityDivideDetail &&
+                  ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 2)?.ConfirmTime">
+                    <i>已确认</i>
+                    <img src="@/assets/images/success.png" alt="">
+                  </template>
                 </template>
-              </template>
-            </p>
-            <p>
-              <el-checkbox v-model="ProportionResponsibility.Department3">物流中心</el-checkbox>
-              <template v-if="ProportionResponsibility.Department3">
-                所占责任：
-                <el-input v-model="ProportionResponsibility.DepartmentProportion3" size="medium" style="width: 50px;"></el-input> %
-                <template v-if="ResponsibilityDivideDetail &&
-                ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 3)?.ConfirmTime">
-                  <i>已确认</i>
-                  <img src="@/assets/images/success.png" alt="">
+              </p>
+              <p>
+                <el-checkbox v-model="ProportionResponsibility.Department3">物流中心</el-checkbox>
+                <template v-if="ProportionResponsibility.Department3">
+                  所占责任：
+                  <el-input v-model="ProportionResponsibility.DepartmentProportion3" size="medium" style="width: 50px;"></el-input> %
+                  <template v-if="ResponsibilityDivideDetail &&
+                  ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 3)?.ConfirmTime">
+                    <i>已确认</i>
+                    <img src="@/assets/images/success.png" alt="">
+                  </template>
                 </template>
-              </template>
-            </p>
-            <p>
-              <el-checkbox v-model="ProportionResponsibility.Department4">配送中心</el-checkbox>
-              <template v-if="ProportionResponsibility.Department4">
-                所占责任：
-                <el-input v-model="ProportionResponsibility.DepartmentProportion4" size="medium" style="width: 50px;"></el-input> %
-                <template v-if="ResponsibilityDivideDetail &&
-                ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 4)?.ConfirmTime">
-                  <i>已确认</i>
-                  <img src="@/assets/images/success.png" alt="">
+              </p>
+              <p>
+                <el-checkbox v-model="ProportionResponsibility.Department4">配送中心</el-checkbox>
+                <template v-if="ProportionResponsibility.Department4">
+                  所占责任：
+                  <el-input v-model="ProportionResponsibility.DepartmentProportion4" size="medium" style="width: 50px;"></el-input> %
+                  <template v-if="ResponsibilityDivideDetail &&
+                  ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 4)?.ConfirmTime">
+                    <i>已确认</i>
+                    <img src="@/assets/images/success.png" alt="">
+                  </template>
                 </template>
-              </template>
-            </p>
-          </template>
-          <template v-else>
-            <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 1)">
-              业务中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 1).Proportion }}%
-            </p>
-            <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 2)">
-              生产工厂 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 2).Proportion }}%
-            </p>
-            <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 3)">
-              物流中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 3).Proportion }}%
-            </p>
-            <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 4)">
-              配送中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 4).Proportion }}%
-            </p>
-          </template>
-        </div>
-        <AfterSalesProblemTypesDialog @select="ProblemTypesSelect" :ProblemTypesVisible.sync="ProblemTypesVisible"
-        @close="() => ProblemTypesVisible = false" :selectKeys="ProblemTypesList"/>
-      </li>
+              </p>
+            </template>
+            <template v-else>
+              <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 1)">
+                业务中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 1).Proportion }}%
+              </p>
+              <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 2)">
+                生产工厂 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 2).Proportion }}%
+              </p>
+              <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 3)">
+                物流中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 3).Proportion }}%
+              </p>
+              <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 4)">
+                配送中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 4).Proportion }}%
+              </p>
+            </template>
+          </div>
+          <AfterSalesProblemTypesDialog @select="ProblemTypesSelect" :ProblemTypesVisible.sync="ProblemTypesVisible"
+          @close="() => ProblemTypesVisible = false" :selectKeys="ProblemTypesList"/>
+        </li>
+      </template>
     </ul>
   </section>
 </template>
@@ -97,6 +109,10 @@ export default {
       type: Number,
       default: 0,
     },
+    Status: {
+      type: Number,
+      default: 0,
+    },
   },
 
   components: {
@@ -104,7 +120,7 @@ export default {
   },
   computed: {
     ...mapState('common', ['userTypeList']),
-    ...mapState('AfterSale', ['QuestionClassList']),
+    ...mapState('AfterSale', ['QuestionClassList', 'ResponsibilityMeasureCondition']),
   },
   data() {
     return {
@@ -143,8 +159,9 @@ export default {
     };
   },
   methods: {
-    ...mapActions('AfterSale', ['getOrderAfterSaleQuestionClassList']),
+    ...mapActions('AfterSale', ['getOrderAfterSaleQuestionClassList', 'getOrderAfterSaleResponsibilityDivideList']),
     ProblemTypesSelect(list) {
+      console.log(list);
       this.ProblemTypesList = list;
       this.submitForm.AfterSaleQuestions = list.map(it => ({
         FirstQuestionType: it.ParentID,
@@ -204,11 +221,17 @@ export default {
         this.messageBox.failSingleError('操作失败', '请选择问题类别');
       } else if (!this.setResponsibility()) {
         this.messageBox.failSingleError('操作失败', '责任占比总和需为100');
+      } else if (this.submitForm.AfterSaleResponsibilities.findIndex(it => Number(it.Proportion) === 0) !== -1) {
+        this.messageBox.failSingleError('操作失败', '请勿勾选无责任中心');
       } else {
         this.submitForm.AfterSaleCode = this.AfterSaleCode;
         this.api.getOrderAfterSaleResponsibilityDivide(this.submitForm).then(res => {
           if (res.data.Status === 1000) {
-            this.messageBox.successSingle('划分成功', this.onGoBackClick, this.onGoBackClick);
+            const cb = () => {
+              this.getOrderAfterSaleResponsibilityDivideList(this.ResponsibilityMeasureCondition.Page);
+              this.onGoBackClick();
+            };
+            this.messageBox.successSingle('划分成功', cb, cb);
           }
         });
       }
@@ -273,7 +296,14 @@ export default {
       display: flex;
       font-size: 12px;
       margin-top: 10px;
-      line-height: 15px;
+      line-height: 20px;
+      .overtime{
+        display: flex;
+        align-items: flex-start;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 30px;
+      }
       &.form-box{
         line-height: 35px;
         .el-input, input{
@@ -287,6 +317,9 @@ export default {
       }
       >.value{
         flex: 1;
+        >i{
+          line-height: 20px;
+        }
         >p{
           margin-bottom: 10px;
           display: flex;
@@ -295,6 +328,7 @@ export default {
             .el-checkbox__label{
               font-size: 12px;
               color: #444;
+              padding-left: 5px;
             }
             margin-right: 20px;
           }

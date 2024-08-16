@@ -24,13 +24,18 @@
           </li>
           <li v-if="appealData.SolutionResults[0].CouponContents.length">
             <span class="label is-bold">{{appealData.CouponIsExtra?'额外':''}}增送优惠券：</span><span class="value">
-              <p v-for="it in appealData.SolutionResults[0].CouponContents" :key="it">{{it}}</p>
+              <p class="coupon-item" :title="it" v-for="it in appealData.SolutionResults[0].CouponContents" :key="it">{{it}}</p>
             </span>
           </li>
           <li v-if="appealData.SolutionResultRemark">
             <span class="label is-bold">补充说明：</span><span class="value">{{appealData.SolutionResultRemark}}</span>
           </li>
-          <template v-if="!propsData.IsExtraPay && IsShowExtraPayForm">
+          <li v-if="appealData.IsProduceEnd">
+            <span class="label is-bold" style="min-width: 5em;"></span><span class="value is-pink" style="font-weight: 700">
+              已终止生产
+            </span>
+          </li>
+          <template v-if="IsShowExtraPayForm && propsData.IsAllowExtraPay">
             <li>
               <span class="label is-bold" style="min-width: 5em;">
               </span><span class="value"> <el-checkbox v-model="CompleteFrom.IsExtraPay " class="is-bold">补充额外支出：</el-checkbox> </span>
@@ -39,7 +44,7 @@
               <li class="form-box" style="line-height: 35px;">
                 <span class="label is-bold">额外支出：</span><span class="value">
                   <span>
-                    <el-input v-model="CompleteFrom.ExtraPayAmount" style="width: 80px;"></el-input> 元
+                    <el-input v-model="CompleteFrom.ExtraPayAmount" oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]" style="width: 80px;"></el-input> 元
                   </span>
                   <span style="margin-left: 30px;">
                     <el-checkbox v-model="CompleteFrom.ExtraPayIsShow">支出给客户</el-checkbox>
@@ -59,14 +64,16 @@
                 <span class="label is-bold" style="min-width: 5em;"></span>
                 <span class="value">
                   <el-button @click="saveExtraPay"
-                  style="color: #fff; border: none; background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);">保存</el-button>
+                  style="color: #fff; border: none; background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%); width: 120px;padding: 0;line-height: 35px;">
+                    保存
+                  </el-button>
                 </span>
               </li>
             </template>
           </template>
           <template v-else>
             <li v-if="propsData.ExtraPayAmount">
-              <span class="label is-bold">额外支出：</span><span class="value">{{propsData.ExtraPayAmount}}</span>
+              <span class="label is-bold">额外支出：</span><span class="value">{{propsData.ExtraPayAmount}}<i v-if="propsData.ExtraPayIsShow">（支出给客户）</i> </span>
             </li>
             <li v-if="propsData.ExtraPayRemark">
               <span class="label is-bold">支出说明：</span><span class="value">{{propsData.ExtraPayRemark}}</span>
@@ -144,12 +151,36 @@
           </li>
         </template>
       </template>
+      <CommonDialogComp
+        width="470px"
+        top='30vh'
+        :visible="dialogVisible"
+        submitText='确认保存'
+        cancelText='取消'
+        @cancle="dialogVisible = false"
+        @closed='dialogVisible = false'
+        @submit="onSaveClick"
+        class="mp-erp-save-massage-dialog-comp-wrap"
+      >
+        <div class="save-massage-content">
+          <div class="title">
+            <img src="@/assets/images/warn.png" alt="">
+            <div>
+              <h3>补充额外支出</h3>
+              <p>请确定数据正确无误，提交后不可修改</p>
+            </div>
+          </div>
+          <p>额外支出：{{CompleteFrom.ExtraPayAmount}}元{{ CompleteFrom.ExtraPayIsShow ? '（支出给客户）' : '' }}</p>
+          <p v-if="CompleteFrom.ExtraPayRemark">支出说明：{{CompleteFrom.ExtraPayRemark}}</p>
+        </div>
+      </CommonDialogComp>
     </ul>
   </section>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import CommonDialogComp from '@/packages/CommonDialogComp';
 
 export default {
   props: {
@@ -176,18 +207,20 @@ export default {
   },
 
   components: {
+    CommonDialogComp,
   },
   computed: {
     ...mapState('common', ['userTypeList']),
   },
   data() {
     return {
+      dialogVisible: false,
       propsData: null,
       CompleteFrom: {
         AfterSaleCode: 0,
         ExtraPayAmount: '',
         ExtraPayRemark: '',
-        ExtraPayIsShow: true,
+        ExtraPayIsShow: false,
       },
     };
   },
@@ -196,18 +229,24 @@ export default {
       if (!this.CompleteFrom.ExtraPayAmount) {
         this.messageBox.failSingleError('操作失败', '请输入额外支出');
       } else {
-        this.CompleteFrom.AfterSaleCode = this.propsData.AfterSaleCode;
-        this.api.getOrderAfterSaleExtraPay(this.CompleteFrom).then(res => {
-          if (res.data.Status === 1000) {
-            const cb = () => {
-              this.propsData.IsExtraPay = true;
-              this.propsData.ExtraPayAmount = this.CompleteFrom.ExtraPayAmount;
-              this.propsData.ExtraPayRemark = this.CompleteFrom.ExtraPayRemark;
-            };
-            this.messageBox.successSingle('保存成功', cb, cb);
-          }
-        });
+        this.dialogVisible = true;
       }
+    },
+    onSaveClick() {
+      this.CompleteFrom.AfterSaleCode = this.propsData.AfterSaleCode;
+      this.api.getOrderAfterSaleExtraPay(this.CompleteFrom).then(res => {
+        if (res.data.Status === 1000) {
+          const cb = () => {
+            this.propsData.IsExtraPay = true;
+            this.dialogVisible = false;
+            this.propsData.ExtraPayAmount = this.CompleteFrom.ExtraPayAmount;
+            this.propsData.ExtraPayRemark = this.CompleteFrom.ExtraPayRemark;
+            this.propsData.ExtraPayIsShow = this.CompleteFrom.ExtraPayIsShow;
+            this.propsData.IsAllowExtraPay = false;
+          };
+          this.messageBox.successSingle('保存成功', cb, cb);
+        }
+      });
     },
   },
   mounted() {
@@ -272,6 +311,12 @@ export default {
           color: #FE5065;
         }
       }
+      .coupon-item{
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 380px;
+      }
       >.label{
         position: relative;
         >.text{
@@ -312,6 +357,39 @@ export default {
                 display: none;
               }
             }
+          }
+        }
+      }
+    }
+  }
+  .mp-erp-save-massage-dialog-comp-wrap{
+    .el-dialog__header{
+      .el-dialog__title{
+        display: none;
+      }
+      &::after{
+        content: none;
+      }
+    }
+    .el-dialog__body{
+      padding: 0 73px;
+      line-height: 18px;
+      font-size: 12px;
+      .save-massage-content{
+        .title{
+          padding-left: 35px;
+          display: flex;
+          margin-bottom: 15px;
+          h3{
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 25px;
+            margin-bottom: 3px;
+          }
+          img{
+            width: 45px;
+            height: 45px;
+            margin-right: 10px;
           }
         }
       }

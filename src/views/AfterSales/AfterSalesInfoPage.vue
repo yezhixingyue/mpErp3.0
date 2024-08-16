@@ -7,7 +7,7 @@
       <div class="left">
         <div class="top">
           <CustomerAppealComp v-if="AfterSaleInfoDetail" :appealData="AfterSaleInfoDetail"/>
-          <OrderDetailsComp showDownload :OrderDetail="OrderDetail" :AfterSaleCode="queryData?.AfterSaleCode"/>
+          <OrderDetailsComp showDownload :OrderDetail="OrderDetail" :AfterSaleCode="queryData?.AfterSaleCode" :AfterSaleStatus="AfterSaleInfoDetail?.Status"/>
         </div>
         <ScheduleComp v-if="AfterSaleInfoDetail" :Progresses="AfterSaleInfoDetail.ServiceProgresses"/>
       </div>
@@ -15,7 +15,7 @@
         <AfterSalesSolutionInfoComp :PackagesList="PackagesList" :appealData="AfterSaleInfoDetail" IsShowExtraPayForm
         v-if="queryData.Status === 30 || queryData.Status === 40 || queryData.Status === 255" showResponsibilities/>
         <template v-else>
-          <AfterSalesSolutionFromComp :PackagesList="PackagesList" :OrderID="queryData.OrderID"
+          <AfterSalesSolutionFromComp :PackagesList="PackagesList" :OrderID="queryData.OrderID" :OrderStatus="OrderDetail.Status"
           @changeVisible="HandOnVisible = false" :appealData="AfterSaleInfoDetail" ref="AfterSalesSolutionFrom"
           :HandOnVisible="HandOnVisible" :AfterSaleCode="queryData?.AfterSaleCode"/>
         </template>
@@ -150,7 +150,7 @@ export default {
       background: #fff;
       color: #26BCF9;
       border: 1px solid #26BCF9;
-      .linear-bg-color{
+      &.linear-bg-color{
         color: #fff;
         background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);
       }

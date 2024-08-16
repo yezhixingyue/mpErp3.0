@@ -12,14 +12,14 @@
     class="mp-erp-after-sales-problem-types-dialog-comp-wrap"
   >
     <ul class="problem-types-dialog-content">
-      <li v-for="QuestionType in SolutionQuestion" :key="QuestionType.ID">
-        <div class="label">
+      <li v-for="QuestionType in SolutionQuestion" :key="QuestionType.ID" v-show="QuestionType.SonClassList && QuestionType.SonClassList.length">
+        <div class="label" :title="QuestionType.Name">
           {{ QuestionType.Name }}：
         </div>
-        <div>
+        <div class="value">
           <el-checkbox  v-for="SonClass in QuestionType.SonClassList" :key="SonClass.ID"
           :checked="!!actionTypes.find(it => it.ID === SonClass.ID)"
-          @change="(check) => checkChange(check, SonClass)">{{SonClass.Name}}</el-checkbox>
+          @change="(check) => checkChange(check, SonClass)"><p :title="SonClass.Name">{{SonClass.Name}}</p></el-checkbox>
         </div>
       </li>
     </ul>
@@ -89,7 +89,7 @@ export default {
 @import "@/assets/css/var.scss";
 .mp-erp-after-sales-problem-types-dialog-comp-wrap{
   .el-dialog__body{
-    padding: 20px 43px;
+    padding: 20px 40px;
     padding-bottom: 0;
   }
   .problem-types-dialog-content{
@@ -104,13 +104,30 @@ export default {
         font-weight: 700;
         font-size: 14px;
         line-height: 18px;
+        max-width: 6em;
+      }
+      .value{
+        display: flex;
+        flex-wrap: wrap;
       }
       .el-checkbox{
         margin-bottom: 4px;
         margin: 0;
         width: 105px;
+        vertical-align: top;
+        display: flex;
+        align-items: center;
         .el-checkbox__label{
+          p{
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
           padding-left: 5px;
+          width: calc(100% - 14px);
+        }
+        .el-checkbox__input{
+          margin-top: 2px;
         }
       }
       margin-bottom: 10px;

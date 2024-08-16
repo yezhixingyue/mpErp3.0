@@ -16,9 +16,9 @@
             style="margin-right: 40px"
             :getList="getDataList"
             :setCondition="setCondition4DataList"
-            :RegionalID="condition.RegionalID"
-            :CityID="condition.CityID"
-            :CountyID="condition.CountyID"
+            :RegionalID="condition.SellArea.RegionalID"
+            :CityID="condition.SellArea.CityID"
+            :CountyID="condition.SellArea.CountyID"
             :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
           />
           <OrderChannelSelector

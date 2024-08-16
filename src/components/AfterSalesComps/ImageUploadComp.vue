@@ -13,7 +13,7 @@
         :action="'/Api/Upload/Image?type=3'"
         multiple
         :disabled="false"
-        :limit="getlimit"
+        :limit="limit"
         accept='.png,.jpeg,.jpg,.bmp'
         :on-success='handllePictureUploaded'
         :on-error='() => loadding = false'
@@ -71,7 +71,11 @@ export default {
   methods: {
     handllePictureUploaded(e) {
       this.loadding = false;
-      this.$emit('UploadedSeccess', e.Data.Url);
+      if (this.limit - this.ImgList.length) {
+        this.$emit('UploadedSeccess', e.Data.Url);
+      } else {
+        this.messageBox.failSingleError('上传失败', '您最多只能补充6张图片');
+      }
     },
     beforeUpload(e) {
       const bool = this.beforeUploadFun(e);

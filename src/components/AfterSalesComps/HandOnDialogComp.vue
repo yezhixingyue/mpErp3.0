@@ -5,6 +5,7 @@
     title="转他人处理:"
     :visible="visible"
     cancelText='取消'
+    submitText='确定转他人'
     @cancle="onCancle"
     @open='onOpen'
     @closed='onClosed'
@@ -33,7 +34,7 @@
       </el-form-item>
       <el-form-item label="备注:">
         <TextareaInput
-        v-model.trim="HandOnForm.TransferRemark" show-word-limit :maxlength="300" placeholder="请输入挂起原因" autocomplete="off"></TextareaInput>
+        v-model.trim="HandOnForm.TransferRemark" show-word-limit :maxlength="300" placeholder="请输入转交原因" autocomplete="off"></TextareaInput>
         <p style="margin-top: 5px; color: #AEAEAE;">(选填，客户不可见)</p>
       </el-form-item>
     </el-form>

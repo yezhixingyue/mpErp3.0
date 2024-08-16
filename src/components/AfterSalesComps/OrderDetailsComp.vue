@@ -9,7 +9,8 @@
         <li>
           <span class="label is-bold">售后次数：</span>
           <span class="value">
-            <a @click="onDetailClick('order')">{{OrderDetail.AfterSaleNumber}}次（点击查看详情）</a>
+            <a @click="onDetailClick('order')" v-if="Number(OrderDetail.AfterSaleNumber)">{{OrderDetail.AfterSaleNumber}}次（点击查看详情）</a>
+            <span v-else>{{OrderDetail.AfterSaleNumber}}次</span>
           </span>
         </li>
         <li>
@@ -97,7 +98,8 @@
           <li>
             <span class="label is-bold">售后次数：</span>
             <span class="value">
-              <a @click="onDetailClick('customer')">{{OrderDetail.Customer.AfterSaleNumber}}次（点击查看详情）</a>
+              <a @click="onDetailClick('customer')" v-if="Number(OrderDetail.Customer.AfterSaleNumber)">{{OrderDetail.Customer.AfterSaleNumber}}次（点击查看详情）</a>
+              <span v-else>{{OrderDetail.Customer.AfterSaleNumber}}次</span>
             </span>
           </li>
           <li>
@@ -151,32 +153,54 @@
         <el-table class="ft-14-table"
         :data="dialogTableData.AfterSaleRecords" max-height=487
         style="width: 100%">
-          <el-table-column prop="AfterSaleCode" label="售后单" width="85"></el-table-column>
+          <el-table-column prop="AfterSaleCode" label="售后单号" width="85"></el-table-column>
           <el-table-column prop="ID" label="问题" width="90" show-overflow-tooltip>
             <template slot-scope="scope">
               {{scope.row.QuestionTypeTitles.join('、')}}
             </template>
           </el-table-column>
-          <el-table-column prop="QuestionRemark" label="备注" width="115" show-overflow-tooltip>
+          <el-table-column prop="SolutionResultRemark" label="解决方案" width="200" show-overflow-tooltip>
+            <span class='is-gray' slot-scope="scope">
+              <template v-if="scope.row.IsReject">
+                <span class="is-pink">驳回</span>
+              </template>
+              <template v-else>
+                <template v-if="scope.row.SolutionResults.length">
+                  <template v-if="scope.row.SolutionResults[0]">
+                    {{ scope.row.SolutionResults[0] ? scope.row.SolutionResults[0].SolutionContent : '' }}
+                    <template v-if="scope.row.SolutionResults[0].CouponContents.length">
+                      {{scope.row.CouponIsExtra?'额外':''}}赠送优惠券：
+                      {{ scope.row.SolutionResults[0].CouponContents.join('、') }}
+                    </template>
+                  </template>
+                </template>
+                <template v-else>
+                  -
+                </template>
+              </template>
+            </span>
           </el-table-column>
-          <el-table-column prop="SolutionResultRemark" label="解决方案" width="160" show-overflow-tooltip>
-            <span class='is-gray' slot-scope="scope">{{ getSolution(scope.row) || '其他' }}</span>
+          <el-table-column prop="LossAmount" label="额外支出" width="80">
+            <template slot-scope="scope">
+              <el-tooltip v-if="scope.row.ExtraPayAmount" :disabled="!scope.row.ExtraPayRemark" effect="dark"
+              :content="scope.row.ExtraPayRemark" placement="top">
+                <span>{{scope.row.ExtraPayAmount}}元</span>
+              </el-tooltip>
+              <template v-else>
+                -
+              </template>
+            </template>
           </el-table-column>
           <el-table-column prop="date" label="处理时间" width="130">
             <template slot-scope="scope">
               <span class='is-gray'>{{ scope.row.LastOperateTime | formatDate }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="LossAmount" label="损失金额" width="80">
-            <template slot-scope="scope">
-              <span :class="{'is-pink': scope.row.LossAmount > 0}">{{getLossAmount(scope.row.LossAmount)}}</span>
-            </template>
-          </el-table-column>
           <el-table-column prop="OperaterUserName" label="处理人"></el-table-column>
         </el-table>
         <p style="margin-top: 6px;">{{curDialogType !== 'customer' ? "此单" : ''}}已售后<span class="is-origin">{{dialogTableData.AfterSaleNumber}}</span>次
           <template v-if="dialogTableData.AfterSaleNumber > 10"><i class="is-gray">( 只显示出最近10条记录）</i></template>
-          <template v-if="dialogTableData.LossAmount > 0">，共损失<i class="is-pink is-font-size-14"> - {{dialogTableData.LossAmount}}元</i></template>
+          <template v-if="dialogTableData.ExtraPayAmount > 0">，共额外支出<i class="is-pink is-font-size-14"> - {{dialogTableData.ExtraPayAmount}}元</i></template>
         </p>
       </main>
       <span slot="footer" class="dialog-footer">
@@ -334,30 +358,6 @@ export default {
     handleClose() {
       this.dialogVisible = false;
       this.dialogTableData = [];
-    },
-    getSolution(solution) {
-      const arr = [];
-      if (solution.SolutionTypes.find(it => it === 2)) {
-        arr.push('退款');
-      }
-      if (solution.SolutionTypes.find(it => it === 7)) {
-        arr.push('补印');
-      }
-      if (solution.SolutionTypes.find(it => it === 8)) {
-        arr.push('赠送优惠券');
-      }
-      if (solution.SolutionTypes.find(it => it === 255)) {
-        arr.push('其他');
-      }
-      return arr.join('、');
-    },
-    getLossAmount(LossAmount) {
-      if (LossAmount > 0) {
-        return `-${LossAmount}元`;
-      }
-      if (LossAmount === 0) return `${LossAmount}元`;
-      if (LossAmount < 0) return `${-LossAmount}元`;
-      return '';
     },
     cancle() {
       this.orderProgressVisible = false;

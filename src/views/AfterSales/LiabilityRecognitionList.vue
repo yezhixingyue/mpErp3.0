@@ -1,24 +1,24 @@
 <template>
   <section class="after-sales-list-page">
-    <LiabilityRecognitionListHeader :dataList='ResponsibilityConfirmList' :condition='condition' @getDataList='getDataList'
+    <LiabilityRecognitionListHeader :dataList='ResponsibilityConfirmList' :condition='ResponsibilityConfirmCondition' @getDataList='getDataList'
     @clearCondition='clearCondition' @setCondition='setCondition' :progressList='progressList'  />
     <div>
       <el-table stripe border fit :data="ResponsibilityConfirmList" style="width: 100%" class="ft-14-table" :max-height="h" :height="h">
-        <el-table-column prop="AfterSaleCode" label="售后单号" minWidth="110" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="OrderID" label="订单号" minWidth="90" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="SellArea" label="区域" minWidth="125" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="CustomerType" label="客户类型" minWidth="125" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="ProductName" label="产品" minWidth="125" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="CustomerType" label="金额" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="AfterSaleCode" label="售后单号" minWidth="80" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="OrderID" label="订单号" minWidth="86" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="SellArea" label="区域" minWidth="127" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="CustomerType" label="客户类型" minWidth="76" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="ProductName" label="产品" minWidth="138" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="CustomerType" label="金额" minWidth="60" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.OrderProductPrice }}元</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="运费" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="运费" minWidth="60" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.OrderFreight }}元</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="责任划分时间" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="责任划分时间" minWidth="124" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.ResponsibilityDivideTime | format2MiddleLangTypeDate }}</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="处理结果" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="处理结果" minWidth="136" show-overflow-tooltip>
           <template slot-scope="scope">
             <template v-if="scope.row.IsReject">
               驳回
@@ -34,44 +34,60 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="额外支出" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.ExtraPayAmount}}</template>
+        <el-table-column prop="CustomerType" label="额外支出" minWidth="66" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <el-tooltip v-if="scope.row.ExtraPayAmount" :disabled="!scope.row.ExtraPayRemark" effect="dark"
+            :content="scope.row.ExtraPayRemark" placement="top">
+              <span>{{scope.row.ExtraPayAmount}}元</span>
+            </el-tooltip>
+            <template v-else>
+              -
+            </template>
+          </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="责任总金额" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="责任总金额" minWidth="80" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.ResponsibilityAmount}}</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="本中心责任" minWidth="125" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.AfterSaleResponsibilities.find(it => it.Department===1)?.Proportion}}</template>
+        <el-table-column prop="CustomerType" label="本中心责任" minWidth="80" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <el-tooltip  :disabled="scope.row.AfterSaleResponsibilities.length === 1" effect="dark"
+            :content="getAfterSaleResponsibilities(scope.row.AfterSaleResponsibilities)" placement="top">
+              <span>{{scope.row.AfterSaleResponsibilities.find(it => it.Department===1)?.Proportion}}%</span>
+            </el-tooltip>
+          </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="问题类型" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="问题类型" minWidth="141" show-overflow-tooltip>
           <template slot-scope="scope">
             {{scope.row.AfterSaleQuestions.map(it => `${it.FirstQuestionTypeTitle}-${it.SecondQuestionTypeTitle}`).join('、')}}
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="责任人" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="责任人" minWidth="82" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.ResponsibilityPersons ? scope.row.ResponsibilityPersons.join('、') : ''}}</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="状态" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="状态" minWidth="60" show-overflow-tooltip>
           <template slot-scope="scope">{{ progressList.find(it => scope.row.Status === it.ID)?.name}}</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="划分人" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="划分人" minWidth="60" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.ResponsibilityDivideOperater}}</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="确认时间" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="确认时间" minWidth="124" show-overflow-tooltip>
           <template slot-scope="scope">
             {{scope.row.ResponsibilityConfirmTime | format2MiddleLangTypeDate}}
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="确认人" minWidth="125" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="确认人" minWidth="60" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.AfterSaleResponsibilities.find(it => it.Department===1)?.ConfirmerName }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="120" fixed="right">
+        <el-table-column label="操作" width="80" fixed="right">
           <div class="is-font-12 operate" slot-scope="scope">
-            <span @click="onDetailClick(scope.row)" v-if="localPermission.Confirm">
-              <span><i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-querenzeren"></i>确认责任</span>
+            <span v-if="scope.row.Status === 0">
+              <span v-if="localPermission.Confirm" @click="onDetailClick(scope.row)">
+                <i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-querenzeren"></i>确认责任
+              </span>
+              <span v-else class="is-gray"><i class="iconfont icon-querenzeren"></i>确认责任</span>
             </span>
-            <span v-else>
-              <span class="is-gray"> <i class="iconfont icon-xiangqing3"></i>查看详情</span>
+            <span v-else @click="onDetailClick(scope.row)">
+              <span><i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-xiangqing3"></i>查看详情</span>
             </span>
           </div>
         </el-table-column>
@@ -79,9 +95,9 @@
     </div>
     <footer>
       <Count
-       :watchPage='condition.Page'
+       :watchPage='ResponsibilityConfirmCondition.Page'
        :handlePageChange='handlePageChange'
-       :count='dataNumber'
+       :count='ResponsibilityConfirmDataNumber'
        :pageSize='20'
        >
         <DownLoadExcelComp v-if="localPermission.ExportExcel" title="导出Excel表格" :configObj="configObj" />
@@ -97,7 +113,7 @@ import Count from '@/components/common/Count.vue';
 import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 import ClassType from '@/store/CommonClassType';
 
 export default {
@@ -111,48 +127,11 @@ export default {
   data() {
     return {
       nowDate: null,
-      ResponsibilityConfirmList: [],
-      dataNumber: 0,
-      condition: {
-        ProductClass: {
-          ClassID: 0,
-          TypeID: 0,
-          ProductID: '',
-        },
-        DateType: 'today',
-        SellArea: {
-          RegionalID: 0,
-          RegionalName: '',
-          CityID: 0,
-          CityName: '',
-          CountyID: 0,
-          CountyName: '',
-        },
-        CustomerType: {
-          First: '',
-        },
-        Date: {
-          First: '',
-          Second: '',
-        },
-        SelectTime: {
-          First: '',
-          Second: '',
-        },
-        Status: '',
-        IsAllowHandle: false,
-        AfterSaleChannels: [],
-        ID: '',
-        FieldType: 1,
-        KeyWords: '',
-        Page: 1,
-        PageSize: 20,
-      },
     };
   },
   computed: {
+    ...mapState('AfterSale', ['ResponsibilityConfirmList', 'ResponsibilityConfirmDataNumber', 'ResponsibilityConfirmCondition']),
     ...mapState('common', ['Permission', 'ServerApplyTypeList']),
-    ...mapState('AfterSale', ['AfterSalesList']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionResponsibilityConfirm?.Obj) {
         return this.Permission.PermissionList.PermissionResponsibilityConfirm.Obj;
@@ -168,15 +147,16 @@ export default {
       return arr;
     },
     configObj() { // 导出Excel条件对象
-      ClassType.setDate(this.condition);
-      const _obj = ClassType.filter(this.condition, true);
+      const temp = JSON.parse(JSON.stringify(this.ResponsibilityConfirmCondition));
+      ClassType.setDate(temp);
+      const _obj = ClassType.filter(temp, true);
       if (_obj.Date) {
         _obj.SelectTime = _obj.Date;
         delete _obj.Date;
       }
       return {
         condition: ClassType.filter(_obj, true),
-        count: this.dataNumber,
+        count: this.ResponsibilityConfirmDataNumber,
         fileDefaultName: '责任确认表',
         // fileDate: '',
         showDateByFile: false,
@@ -185,49 +165,51 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('AfterSale', ['setAfterSalesList', 'setAfterSalesDetail']),
+    ...mapActions('AfterSale', ['getOrderAfterSaleResponsibilityConfirmList', 'getOrderAfterSaleResponsibilityConfirmList']),
+    ...mapMutations('AfterSale', ['setResponsibilityConfirmCondition', 'setClearResponsibilityConfirmCondition']),
+    getAfterSaleResponsibilities(list) {
+      const temp = list.map(it => {
+        let title = '';
+        switch (it.Department) {
+          case 1:
+            title = '业务中心';
+            break;
+          case 2:
+            title = '生产工厂';
+            break;
+          case 3:
+            title = '物流中心';
+            break;
+          default:
+            title = '配送中心';
+            break;
+        }
+        return `${title}:${it.Proportion}%`;
+      });
+      return temp.join('、');
+    },
     setHeight() {
       const tempHeight = this.getHeight('.mp-liability-recognition-page-header-wrap', 60);
       this.h = tempHeight;
     },
     async getDataList(page = 1) {
-      this.condition.Page = page;
-      ClassType.setDate(this.condition);
-      const _obj = ClassType.filter(this.condition, true);
-      if (_obj.Date) {
-        _obj.SelectTime = _obj.Date;
-        delete _obj.Date;
-      }
-      let key = true;
-      const res = await this.api.getOrderAfterSaleResponsibilityConfirmList(_obj).catch(() => { key = false; });
-      if (key && res.data.Status === 1000) {
-        this.ResponsibilityConfirmList = res.data.Data;
-        this.dataNumber = res.data.DataNumber;
-      }
+      this.getOrderAfterSaleResponsibilityConfirmList(page);
     },
     clearCondition() {
+      this.setClearResponsibilityConfirmCondition();
     },
-    setCondition([[key1, key2], value]) {
-      if (!key1) return;
-      if (key2) {
-        this.condition[key1][key2] = value;
-      } else {
-        this.condition[key1] = value;
-      }
+    setCondition(Condition) {
+      this.setResponsibilityConfirmCondition(Condition);
     },
     handlePageChange(page) {
       this.getDataList(page);
-    },
-    getQuestionClassList() {
-      if (this.QuestionClassList.length === 0) {
-        this.getOrderAfterSaleQuestionClassList({ searchType: 2 });
-      }
     },
     onDetailClick(Detail) {
       this.$router.push({ name: 'LiabilityRecognitionInfo',
         query: {
           AfterSaleCode: Detail.AfterSaleCode,
           OrderID: Detail.OrderID,
+          Status: Detail.Status,
         },
       });
     },

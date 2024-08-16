@@ -37,6 +37,7 @@
             <ImageUploadComp :ImgList="SupplementalQuestionPics" @UploadedSeccess="UploadedSeccess"
             @PictureDelete="PictureDelete" :limit='6' :disabled="appealData.Status === 30 || appealData.Status === 255"
             :beforeUploadFun="beforeUpload"></ImageUploadComp>
+            <p class="is-origin">（最多可补充6张图片，支持jpg/.jpep/.png/.gif/.bmp格式）</p>
           </div>
         </span>
       </li>
@@ -47,6 +48,7 @@
 <script>
 import { mapState } from 'vuex';
 import ImageUploadComp from '@/components/AfterSalesComps/ImageUploadComp.vue';
+import { debounce } from '@/assets/js/utils/throttle';
 import { Message } from 'element-ui';
 
 export default {
@@ -66,23 +68,24 @@ export default {
   data() {
     return {
       SupplementalQuestionPics: [],
+      imgList: [],
     };
   },
   methods: {
     SupplementalPicAdd(picUrl) {
       this.api.getOrderAfterSaleSupplementalPicAdd({
         AfterSaleCode: this.appealData.AfterSaleCode,
-        QuestionPic: picUrl,
+        QuestionPics: picUrl,
       }).then(res => {
-        if (res.data.Status === 1000) {
-          this.SupplementalQuestionPics.push(res.data.Data);
+        if (res.data.Status === 1000 && res.data.Data && res.data.Data.length) {
+          this.SupplementalQuestionPics.push(...res.data.Data);
         }
       });
     },
     SupplementalPicRemove(picUrl) {
       this.api.getOrderAfterSaleSupplementalPicRemove({
         AfterSaleCode: this.appealData.AfterSaleCode,
-        QuestionPic: picUrl,
+        QuestionPics: [picUrl],
       }).then(res => {
         if (res.data.Status === 1000) {
           this.SupplementalQuestionPics = this.SupplementalQuestionPics.filter(it => it !== picUrl);
@@ -103,12 +106,20 @@ export default {
       return isLt15M;
     },
     closeViewer() {},
+    PicAdd() {
+      this.SupplementalPicAdd(this.imgList);
+      this.imgList = [];
+    },
     UploadedSeccess(Url) {
-      this.SupplementalPicAdd(Url);
+      this.imgList.push(Url);
+      this.debounceFnc();
     },
     PictureDelete(Url) {
       this.SupplementalPicRemove(Url);
     },
+  },
+  created() {
+    this.debounceFnc = debounce(this.PicAdd, 100);
   },
   mounted() {
     if (

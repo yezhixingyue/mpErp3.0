@@ -12,7 +12,7 @@
     <CommonDialogComp
       width="500px"
       top='30vh'
-      title="转他人处理:"
+      title="选择售后渠道:"
       :visible="visible"
       cancelText='取消'
       @cancle="onCancle"

@@ -10,8 +10,8 @@
         </div>
       </li>
       <li class="form-box">
-        <div class="label is-bold">责任占比：</div><div class="value">
-          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 1)">
+        <div class="label is-bold">责任占比：</div><div class="value" style="font-weight: 700;">
+          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 1)" class="is-pink" style="font-size: 14px;">
             业务中心 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 1).Proportion }}%
           </p>
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2)">
@@ -42,10 +42,10 @@
             </el-checkbox>
           </div>
         </li>
-        <li class="form-box" v-if="RelevantPerson && RelevantPerson.length && RelevantPerson.find(it => it.ResponsiblePersonType === 1)">
+        <li class="form-box" v-if="RelevantPerson && RelevantPerson.length && RelevantPerson.find(it => it.ResponsiblePersonType === 2)">
           <div class="label is-bold" style="min-width: 5em;"></div><div class="value">
             <el-checkbox v-model="IsReader">审稿客服
-              <i>（{{RelevantPerson.find(it => it.ResponsiblePersonType === 1)?.ResponsiblePersonName}}）</i>
+              <i>（{{RelevantPerson.find(it => it.ResponsiblePersonType === 2)?.ResponsiblePersonName}}）</i>
             </el-checkbox>
           </div>
         </li>
@@ -92,7 +92,7 @@ export default {
   },
   computed: {
     ...mapState('common', ['userTypeList']),
-    ...mapState('AfterSale', ['QuestionClassList']),
+    ...mapState('AfterSale', ['QuestionClassList', 'ResponsibilityConfirmCondition']),
   },
   data() {
     return {
@@ -110,7 +110,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions('AfterSale', ['getOrderAfterSaleQuestionClassList']),
+    ...mapActions('AfterSale', ['getOrderAfterSaleQuestionClassList', 'getOrderAfterSaleResponsibilityConfirmList']),
     onGoBackClick() {
       this.$goback();
     },
@@ -158,7 +158,11 @@ export default {
       } else {
         this.api.getOrderAfterSaleResponsibilityConfirm(this.submitForm).then(res => {
           if (res.data.Status === 1000) {
-            this.messageBox.successSingle('确认成功', this.onGoBackClick, this.onGoBackClick);
+            const cb = () => {
+              this.getOrderAfterSaleResponsibilityConfirmList(this.ResponsibilityConfirmCondition.Page);
+              this.onGoBackClick();
+            };
+            this.messageBox.successSingle('确认成功', cb, cb);
           }
         });
       }

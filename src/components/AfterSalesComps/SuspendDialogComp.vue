@@ -5,6 +5,7 @@
     title="挂起售后:"
     :visible="visible"
     cancelText='取消'
+    submitText='确定挂起'
     @cancle="onCancle"
     @open='onOpen'
     @closed='onClosed'
