@@ -82,7 +82,21 @@
         </el-table-column>
         <el-table-column label="操作" width="120" fixed="right">
           <div class="is-font-12 operate" slot-scope="scope">
-            <span @click="onDetailClick(scope.row)"
+            <span v-if="localPermission.Operate"  @click="onDetailClick(scope.row)">
+              <span v-if="scope.row.Status === 0"> <i style="color: #52C41A;" class="iconfont icon-kaishichuli"></i>开始处理</span>
+              <span v-if="scope.row.Status === 10 || scope.row.Status === 25"><i style="color: #F4A307;" class="iconfont icon-a-zu16852"></i>继续处理</span>
+            </span>
+            <span v-else class="is-gray">
+              <span v-if="scope.row.Status === 0"> <i class="iconfont icon-kaishichuli"></i>开始处理</span>
+              <span v-if="scope.row.Status === 10 || scope.row.Status === 25"><i class="iconfont icon-a-zu16852"></i>继续处理</span>
+            </span>
+            <span @click="onDetailClick(scope.row)" v-if="localPermission.QueryDetail || staffDetailData.StaffID === scope.row.OperaterID">
+              <span v-if="[30, 255].find(it => it === scope.row.Status)"><i style="color: #26BCF9;" class="iconfont icon-xiangqing3"></i>查看详情</span>
+            </span>
+            <span v-else class="is-gray">
+              <span v-if="[30, 255].find(it => it === scope.row.Status)"> <i class="iconfont icon-xiangqing3"></i>查看详情</span>
+            </span>
+            <!-- <span @click="onDetailClick(scope.row)"
             v-if="scope.row.Status === 0 || staffDetailData.StaffID === scope.row.OperaterID || localPermission.QueryDetail">
               <span v-if="scope.row.Status === 0"> <i style="color: #52C41A;" class="iconfont icon-kaishichuli"></i>开始处理</span>
               <span v-if="staffDetailData.StaffID === scope.row.OperaterID && (scope.row.Status === 10 || scope.row.Status === 25)">
@@ -90,12 +104,12 @@
               </span>
               <span v-if="[30, 255].find(it => it === scope.row.Status)"> <i style="color: #26BCF9;" class="iconfont icon-xiangqing3"></i>查看详情</span>
             </span>
-            <span v-if="[30, 255].find(it => it === scope.row.Status) && !localPermission.QueryDetail && staffDetailData.StaffID !== scope.row.OperaterID">
-              <span class="is-gray"> <i class="iconfont icon-xiangqing3"></i>查看详情</span>
-            </span>
             <span v-if="[10, 25].find(it => it === scope.row.Status) && staffDetailData.StaffID !== scope.row.OperaterID">
               <span class="is-gray"> <i class="iconfont icon-a-zu16852"></i>继续处理</span>
             </span>
+            <span v-if="[30, 255].find(it => it === scope.row.Status) && !localPermission.QueryDetail && staffDetailData.StaffID !== scope.row.OperaterID">
+              <span class="is-gray"> <i class="iconfont icon-xiangqing3"></i>查看详情</span>
+            </span> -->
             <span style="color: #FF3E6A;margin-left: 5px;" @click="removeAfterSales(scope.row)" v-if="localPermission.RemoveAfterSale">
               <i class="iconfont icon-delete"></i>删除
             </span>
@@ -255,9 +269,9 @@ export default {
         // width: 13px;
         // display: inline-block;
       }
-      >span>span{
+      >span{
         cursor: pointer;
-        &.is-gray{
+        &.is-gray>span{
           cursor: not-allowed;
         }
       }

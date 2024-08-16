@@ -153,13 +153,13 @@
         <el-table class="ft-14-table"
         :data="dialogTableData.AfterSaleRecords" max-height=487
         style="width: 100%">
-          <el-table-column prop="AfterSaleCode" label="售后单号" width="85"></el-table-column>
-          <el-table-column prop="ID" label="问题" width="90" show-overflow-tooltip>
+          <el-table-column prop="AfterSaleCode" label="售后单号" min-width="80"></el-table-column>
+          <el-table-column prop="ID" label="问题" min-width="110" show-overflow-tooltip>
             <template slot-scope="scope">
               {{scope.row.QuestionTypeTitles.join('、')}}
             </template>
           </el-table-column>
-          <el-table-column prop="SolutionResultRemark" label="解决方案" width="200" show-overflow-tooltip>
+          <el-table-column prop="SolutionResultRemark" label="解决方案" min-width="190" show-overflow-tooltip>
             <span class='is-gray' slot-scope="scope">
               <template v-if="scope.row.IsReject">
                 <span class="is-pink">驳回</span>
@@ -180,7 +180,7 @@
               </template>
             </span>
           </el-table-column>
-          <el-table-column prop="LossAmount" label="额外支出" width="80">
+          <el-table-column prop="LossAmount" label="额外支出" min-width="70">
             <template slot-scope="scope">
               <el-tooltip v-if="scope.row.ExtraPayAmount" :disabled="!scope.row.ExtraPayRemark" effect="dark"
               :content="scope.row.ExtraPayRemark" placement="top">
@@ -191,12 +191,12 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column prop="date" label="处理时间" width="130">
+          <el-table-column prop="date" label="处理时间" min-width="140">
             <template slot-scope="scope">
               <span class='is-gray'>{{ scope.row.LastOperateTime | formatDate }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="OperaterUserName" label="处理人"></el-table-column>
+          <el-table-column prop="OperaterUserName" label="处理人" min-width="80"></el-table-column>
         </el-table>
         <p style="margin-top: 6px;">{{curDialogType !== 'customer' ? "此单" : ''}}已售后<span class="is-origin">{{dialogTableData.AfterSaleNumber}}</span>次
           <template v-if="dialogTableData.AfterSaleNumber > 10"><i class="is-gray">( 只显示出最近10条记录）</i></template>

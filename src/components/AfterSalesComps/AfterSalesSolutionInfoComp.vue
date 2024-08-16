@@ -80,17 +80,21 @@
             </li>
           </template>
           <template v-if="showImg">
-            <li>
+            <li v-if="appealData.QuestionPics && appealData.QuestionPics.length">
               <span class="label is-bold">图片凭证：</span><span class="value">
                 <div class="image-list">
-                  <img v-for="it in appealData.QuestionPics" :key="it" :src="it" alt="">
+                  <!-- <img v-for="it in appealData.QuestionPics" :key="it" :src="it" alt=""> -->
+                  <el-image :preview-src-list="appealData.QuestionPics" :mpCloseViewer='closeViewer'
+                  v-for="(item, index) in appealData.QuestionPics" :key="index + item" :src="item" fit="cover" ></el-image>
                 </div>
               </span>
             </li>
-            <li>
+            <li v-if="appealData.SupplementalQuestionPics && appealData.SupplementalQuestionPics.length">
               <span class="label is-bold">客服补充：</span><span class="value">
                 <div class="image-list">
-                  <img v-for="it in appealData.SupplementalQuestionPics" :key="it" :src="it" alt="">
+                  <!-- <img v-for="it in appealData.SupplementalQuestionPics" :key="it" :src="it" alt=""> -->
+                  <el-image :preview-src-list="appealData.SupplementalQuestionPics" :mpCloseViewer='closeViewer'
+                  v-for="(item, index) in appealData.SupplementalQuestionPics" :key="index + item" :src="item" fit="cover" ></el-image>
                 </div>
               </span>
             </li>
@@ -225,6 +229,7 @@ export default {
     };
   },
   methods: {
+    closeViewer() {},
     saveExtraPay() {
       if (!this.CompleteFrom.ExtraPayAmount) {
         this.messageBox.failSingleError('操作失败', '请输入额外支出');

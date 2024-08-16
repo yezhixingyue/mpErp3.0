@@ -31,18 +31,31 @@
             <p v-for="it in ConfirmDetail.ResponsibilityPersons" :key="it">
               {{ it }}
             </p>
+            <p v-if="!ConfirmDetail.ResponsibilityPersons || ConfirmDetail.ResponsibilityPersons.length === 0">无</p>
           </div>
         </li>
       </template>
       <template v-else>
-        <li class="form-box" v-if="RelevantPerson && RelevantPerson.length && RelevantPerson.find(it => it.ResponsiblePersonType === 1)">
+        <li class="form-box" style="line-height: 35px;">
           <div class="label is-bold" style="min-width: 5em;text-align: right">责任人：</div><div class="value">
-            <el-checkbox v-model="IsTakeOrders">接单客服
-              <i>（{{RelevantPerson.find(it => it.ResponsiblePersonType === 1)?.ResponsiblePersonName}}）</i>
-            </el-checkbox>
+            <p v-if="RelevantPerson && RelevantPerson.length && RelevantPerson.find(it => it.ResponsiblePersonType === 1)">
+              <el-checkbox v-model="IsTakeOrders">接单客服
+                <i>（{{RelevantPerson.find(it => it.ResponsiblePersonType === 1)?.ResponsiblePersonName}}）</i>
+              </el-checkbox>
+            </p>
+            <p  v-if="RelevantPerson && RelevantPerson.length && RelevantPerson.find(it => it.ResponsiblePersonType === 2)">
+              <el-checkbox v-model="IsReader">审稿客服
+                <i>（{{RelevantPerson.find(it => it.ResponsiblePersonType === 2)?.ResponsiblePersonName}}）</i>
+              </el-checkbox>
+            </p>
+            <div>
+              <el-checkbox v-model="IsRests">其他责任人</el-checkbox>
+              <el-input v-if="IsRests" v-model="RestsMsg" placeholder="请输入责任人名称" style="width: 150px;margin-left: 10px;"></el-input>
+              <p v-if="IsRests" style="line-height: 20px;" class="is-gray">（确认责任时责任人必填，如果有多个其他责任人，请使用逗号分隔。）</p>
+            </div>
           </div>
         </li>
-        <li class="form-box" v-if="RelevantPerson && RelevantPerson.length && RelevantPerson.find(it => it.ResponsiblePersonType === 2)">
+        <!-- <li class="form-box" v-if="RelevantPerson && RelevantPerson.length && RelevantPerson.find(it => it.ResponsiblePersonType === 2)">
           <div class="label is-bold" style="min-width: 5em;"></div><div class="value">
             <el-checkbox v-model="IsReader">审稿客服
               <i>（{{RelevantPerson.find(it => it.ResponsiblePersonType === 2)?.ResponsiblePersonName}}）</i>
@@ -54,6 +67,11 @@
             <el-checkbox v-model="IsRests">其他责任人</el-checkbox>
             <el-input v-if="IsRests" v-model="RestsMsg" placeholder="请输入责任人名称" style="width: 150px;margin-left: 10px;"></el-input>
             <p v-if="IsRests" style="line-height: 20px;" class="is-gray">（确认责任时责任人必填，如果有多个其他责任人，请使用逗号分隔。）</p>
+          </div>
+        </li> -->
+        <li style="width: 348px; margin-bottom: 35px;">
+          <div >
+            <p>说明：如果不确认责任，请线下与责任划分人沟通，在确认责任前，划分人可修改责任比例。</p>
           </div>
         </li>
         <li>

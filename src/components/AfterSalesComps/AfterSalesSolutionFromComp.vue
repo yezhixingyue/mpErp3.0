@@ -124,7 +124,9 @@
               </el-table-column>
               <el-table-column prop="CustomerType" label="金额" minWidth="90" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="selectedCouponList[scope.$index].Number"></el-input>张
+                  <el-input oninput="value=value.replace(/[^\d]/g,'')"
+                  @input="(e) => change(e, scope.row.CouponID)" v-model="selectedCouponList[scope.$index].Number"></el-input>张
+                  <!-- <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="selectedCouponList[scope.$index].Number"></el-input>张 -->
                 </template>
               </el-table-column>
               <el-table-column prop="CustomerType" label="金额" minWidth="80" show-overflow-tooltip>
@@ -481,7 +483,6 @@ export default {
       this.$goback();
     },
     formValidator() {
-      console.log(this.CompleteFrom.Solution);
       if (this.resultRadio === '') {
         this.messageBox.failSingleError('操作失败', '请选择解决方案');
         return false;
@@ -523,17 +524,23 @@ export default {
           this.messageBox.failSingleError('操作失败', '请输入额外支出');
           return false;
         }
-        if (this.CompleteFrom.ResponsibilityIsDivide && !this.ProblemTypesList.length) {
-          this.messageBox.failSingleError('操作失败', '请选择问题类别');
-          return false;
-        }
-        if (this.CompleteFrom.ResponsibilityIsDivide && !this.setResponsibility()) {
-          this.messageBox.failSingleError('操作失败', '责任占比总和需为100');
-          return false;
-        }
-        if (this.CompleteFrom.ResponsibilityIsDivide && this.CompleteFrom.AfterSaleResponsibilities.findIndex(it => Number(it.Proportion) === 0) !== -1) {
-          this.messageBox.failSingleError('操作失败', '请勿勾选无责任中心');
-          return false;
+        if (this.CompleteFrom.ResponsibilityIsDivide) {
+          if (this.CompleteFrom.ResponsibilityIsDivide && !this.ProblemTypesList.length) {
+            this.messageBox.failSingleError('操作失败', '请选择问题类别');
+            return false;
+          }
+          if (this.CompleteFrom.ResponsibilityIsDivide && !this.setResponsibility()) {
+            this.messageBox.failSingleError('操作失败', '责任占比总和需为100');
+            return false;
+          }
+          if (this.CompleteFrom.ResponsibilityIsDivide && this.CompleteFrom.AfterSaleResponsibilities.findIndex(it => Number(it.Proportion) === 0) !== -1) {
+            this.messageBox.failSingleError('操作失败', '请勿勾选无责任中心');
+            return false;
+          }
+        } else {
+          this.CompleteFrom.AfterSaleResponsibilities = [];
+          this.ProblemTypesList = [];
+          this.CompleteFrom.AfterSaleQuestions = [];
         }
       }
       return true;
@@ -677,7 +684,12 @@ export default {
     removeCoupon(item) {
       const index = this.couponList.findIndex(it => it.CouponID === item.CouponID);
       this.couponList[index].checked = false;
+      this.couponList[index].Number = '';
       this.onSelectCouponClick(false);
+    },
+    change(e, ID) {
+      const index = this.couponList.findIndex(it => it.CouponID === ID);
+      this.couponList[index].Number = e;
     },
     // 选择优惠卷的弹窗
     async getCouponList() {
@@ -686,14 +698,13 @@ export default {
         this.couponList = resp.data.Data.filter(it => !it.UseNewCustomer).map(it => ({
           ...it,
           checked: false,
+          Number: '',
         }));
       }
     },
     async submit(data) {
-      // console.log(this.formValidator());
       if (!this.formValidator()) return;
       this.messageBox.warnCancelBox('执行售后', '确定要提交所有数据吗？提交后不可修改！', () => {
-        // this.setCoupons();
         const cb = async () => {
           if (data) {
             this.CompleteFrom.QuestionTypes = data.QuestionTypes;
@@ -726,7 +737,6 @@ export default {
       });
     },
     async backCoupon() {
-      console.log(this.couponList);
       this.couponList = this.couponList.map(it => {
         const temp = this.CompleteFrom.Solution.Coupons.find(Coupon => Coupon.CouponID === it.CouponID);
         return {

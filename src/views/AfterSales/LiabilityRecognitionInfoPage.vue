@@ -12,6 +12,7 @@
         <OrderDetailsComp :OrderDetail="OrderDetail" :AfterSaleCode="queryData?.AfterSaleCode"/>
       </div>
       <ScheduleComp v-if="ResponsibilityConfirmDetail" :Progresses="ResponsibilityConfirmDetail.DivideProgresses.map(it => ({
+        ConfirmType: it.ConfirmType,
         CreateTime: it.CreateTime,
         DivideName: `${it.OperaterUserName||''}${it.DivideName}`,
       }))" title="定责进度" :defaultKey="{

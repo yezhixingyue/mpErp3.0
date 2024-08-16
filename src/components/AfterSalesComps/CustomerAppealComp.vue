@@ -23,7 +23,7 @@
           <span v-else></span>
         </span>
       </li>
-      <li>
+      <li v-if="appealData.QuestionPics && appealData.QuestionPics.length">
         <span class="label is-bold">图片凭证：</span><span class="value">
           <div class="image-list">
             <el-image :preview-src-list="appealData.QuestionPics" :mpCloseViewer='closeViewer'

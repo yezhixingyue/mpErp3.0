@@ -75,7 +75,9 @@
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="状态" minWidth="60" show-overflow-tooltip>
-          <template slot-scope="scope">{{progressList.find(it => it.ID === scope.row.Status)?.name }}</template>
+          <template slot-scope="scope">
+            <span :class="{'is-pink': scope.row.Status === 255}">{{progressList.find(it => it.ID === scope.row.Status)?.name }}</span>
+          </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="划分人" minWidth="60" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.ResponsibilityDivideOperater}}</template>
