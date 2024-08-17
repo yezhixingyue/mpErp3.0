@@ -290,7 +290,7 @@ export default {
       }
       >span{
         cursor: pointer;
-        &.is-gray>span{
+        &.is-gray>span, .is-gray{
           cursor: not-allowed;
         }
       }

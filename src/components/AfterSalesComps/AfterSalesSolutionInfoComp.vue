@@ -132,24 +132,42 @@
                   :selectable="() => false"
                   type="selection"
                   label="包裹号"
-                  width="65">
+                  width="50">
                 </el-table-column>
-                <el-table-column prop="ID" label="包裹号" minWidth="110" show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column prop="Logistics.BillNo" label="运单号" minWidth="114" show-overflow-tooltip>
+                <el-table-column prop="ID" label="包裹号" minWidth="115" show-overflow-tooltip>
                   <template slot-scope="scope">
-                    {{ scope.row.Logistics?.BillNo }}
-                    <template v-if="scope.row.Logistics?.BillNo && PackagesList?.PackageBills.filter(it => it.ExpressBillType === 1)
-                    .map(it => it.BillNo).length">
-                      、
-                    </template>
-                    <template v-if="PackagesList?.PackageBills.filter(it => it.ExpressBillType === 1).map(it => it.BillNo).length">
-                      {{PackagesList?.PackageBills.filter(it => it.ExpressBillType === 1).map(it => it.BillNo).join('、')}}
-                    </template>
-                  </template></el-table-column>
-                <el-table-column prop="ProductAmount" label="产品数量" minWidth="80" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="TotalAmount" label="金额" minWidth="57" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="UnPaidAmount" label="代收金额" minWidth="80" show-overflow-tooltip></el-table-column>
+                    <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.ID }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="Logistics.BillNo" label="运单号" minWidth="160" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">
+                      {{ scope.row.Logistics?.BillNo }}
+                      <template v-if="scope.row.Logistics?.BillNo && PackagesList?.PackageBills.filter(it => it.ExpressBillType === 1)
+                      .map(it => it.BillNo).length">
+                        、
+                      </template>
+                      <template v-if="PackagesList?.PackageBills.filter(it => it.ExpressBillType === 1).map(it => it.BillNo).length">
+                        {{PackagesList?.PackageBills.filter(it => it.ExpressBillType === 1).map(it => it.BillNo).join('、')}}
+                      </template>
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="ProductAmount" label="产品数量" minWidth="70" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.ProductAmount }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="TotalAmount" label="金额" minWidth="50" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.TotalAmount }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="UnPaidAmount" label="代收金额" minWidth="70" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.UnPaidAmount }}</span>
+                  </template>
+                </el-table-column>
               </el-table>
             </span>
           </li>

@@ -198,7 +198,7 @@ const routes = { // 客户订单管理
       path: '/ResponsibilityMeasureList',
       name: 'ResponsibilityMeasureList',
       meta: {
-        title: '责任划分',
+        title: '划分责任',
         icon: 'iconfont icon-huafenzeren',
         pageName: 'ResponsibilityMeasureListPage',
         requiresAuth: true,

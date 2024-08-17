@@ -19,9 +19,9 @@
         <li v-if="AfterSaleCode">
           <span class="label is-bold">售后单号：</span><span class="value">{{AfterSaleCode}}</span>
         </li>
-        <li>
+        <!-- <li>
           <span class="label is-bold">产品：</span><span class="value">{{ProductShowData.Name}}</span>
-        </li>
+        </li> -->
         <li>
           <span class="label is-bold">工厂：</span><span class="value">{{ProductShowData.FactoryName}}</span>
         </li>
@@ -433,11 +433,23 @@ export default {
   }
   >.main{
     display: flex;
+    height: calc(100% - 40px);
     >ul{
-      width: 50%;
+      width: calc(50% - 20px);
       flex: 1;
-      padding-right: 20px;
+      margin-right: 20px;
       box-sizing: border-box;
+      overflow-y: auto;
+      position: relative;
+      max-height: calc(100% - 40px);
+      .title{
+        position: sticky;
+        top: 0;
+        padding-top: 10px;
+        margin-top: 0;
+        background-color: #F4FCFF;
+        z-index: 2;
+      }
     }
     >.box{
       flex: 1;
@@ -446,9 +458,6 @@ export default {
   }
   .box{
     .mp-order-detail-item-comp-wrap{
-      >li:first-of-type{
-        display: none;
-      }
       >li{
         line-height: 15px;
         >.label{
@@ -476,8 +485,8 @@ export default {
         color: #000;
         &.product-info{
           display: block;
-          max-height: 200px;
-          overflow-y: auto;
+          // max-height: 200px;
+          // overflow-y: auto;
         }
         &.title{
           font-size: 14px;
