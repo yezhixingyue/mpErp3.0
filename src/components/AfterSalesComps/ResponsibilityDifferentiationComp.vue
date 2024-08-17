@@ -90,6 +90,11 @@
           <AfterSalesProblemTypesDialog @select="ProblemTypesSelect" :ProblemTypesVisible.sync="ProblemTypesVisible"
           @close="() => ProblemTypesVisible = false" :selectKeys="ProblemTypesList"/>
         </li>
+        <li style="width: 348px; margin-bottom: 35px;" v-if="ResponsibilityDivideDetail.ResponsibilityIsAllowDivide">
+          <div>
+            <p>说明：在所有相关责任部门全部确认前，可无限次修改责任占比。如果某一部门已确认，然后又修改了其责任占比，则该部门需要重新确认。</p>
+          </div>
+        </li>
       </template>
     </ul>
   </section>
@@ -124,6 +129,8 @@ export default {
   },
   data() {
     return {
+      oldData: '',
+      oldTypesData: [],
       ProblemTypesVisible: false,
       ProblemTypesList: [],
       ProportionResponsibility: {
@@ -161,7 +168,6 @@ export default {
   methods: {
     ...mapActions('AfterSale', ['getOrderAfterSaleQuestionClassList', 'getOrderAfterSaleResponsibilityDivideList']),
     ProblemTypesSelect(list) {
-      console.log(list);
       this.ProblemTypesList = list;
       this.submitForm.AfterSaleQuestions = list.map(it => ({
         FirstQuestionType: it.ParentID,
@@ -181,6 +187,18 @@ export default {
       if (this.QuestionClassList.length === 0) {
         this.getOrderAfterSaleQuestionClassList({ searchType: 2 });
       }
+    },
+    getContrastOldTypesData() {
+      let bool = true;
+      this.ProblemTypesList.forEach(it => {
+        if (this.oldTypesData.findIndex(el => el === it.ID) === -1) {
+          bool = false;
+        }
+      });
+      if (this.oldTypesData.length === this.ProblemTypesList.map(it => it.ID).length && bool) {
+        return true;
+      }
+      return false;
     },
     // 设置划分责任的数据
     setResponsibility() {
@@ -219,6 +237,8 @@ export default {
     submit() {
       if (!this.ProblemTypesList.length) {
         this.messageBox.failSingleError('操作失败', '请选择问题类别');
+      } else if (this.oldData === JSON.stringify(this.ProportionResponsibility) && this.getContrastOldTypesData()) {
+        this.messageBox.failSingleError('操作失败', '数据无更改');
       } else if (!this.setResponsibility()) {
         this.messageBox.failSingleError('操作失败', '责任占比总和需为100');
       } else if (this.submitForm.AfterSaleResponsibilities.findIndex(it => Number(it.Proportion) === 0) !== -1) {
@@ -239,8 +259,9 @@ export default {
     async backResponsibilities() {
       this.submitForm.AfterSaleResponsibilities.forEach(it => {
         this.ProportionResponsibility[`Department${it.Department}`] = true;
-        this.ProportionResponsibility[`DepartmentProportion${it.Department}`] = it.Proportion;
+        this.ProportionResponsibility[`DepartmentProportion${it.Department}`] = `${it.Proportion}`;
       });
+      this.oldData = JSON.stringify(this.ProportionResponsibility);
     },
     async backQuestionClass() {
       this.ProblemTypesList = this.submitForm.AfterSaleQuestions.map(it => {
@@ -252,6 +273,7 @@ export default {
           Name: lv1QuestionClass?.SonClassList.find(Son => Son.ID === it.SecondQuestionType)?.Name,
         };
       });
+      this.oldTypesData = this.ProblemTypesList.map(it => it.ID);
     },
   },
   mounted() {

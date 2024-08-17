@@ -269,6 +269,9 @@ const api = {
   getOrderAfterSaleRelevantPerson(orderID) { // POST /Api/OrderAfterSale/RelevantPerson 售后相关人
     return instance.get(`/Api/OrderAfterSale/RelevantPerson?orderID=${orderID}`);
   },
+  getRemoveAfterSaleIsAllow() { // POST /Api/OrderAfterSale/RelevantPerson 售后是否可以删除
+    return instance.get('/Api/RemoveAfterSale/IsAllow');
+  },
   /* 包裹列表api
    ----------------------------------------------------------------------------------- */
   getPackageListByOrderID(orderID) { // GET /Api/Order/PackageList 通过订单号获取包裹列表

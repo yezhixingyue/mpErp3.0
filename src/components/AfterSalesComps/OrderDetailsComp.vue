@@ -26,8 +26,10 @@
           <span class="label is-bold">工厂：</span><span class="value">{{ProductShowData.FactoryName}}</span>
         </li>
         <li></li>
-        <OrderDetailDisplayItem :ShowData='ProductShowData' :hiddenFactory="true" />
-        <OrderDetailDisplayItem v-for="it in PartShowDataList" :ShowData='it' :key="it.Name" />
+        <li class="product-info">
+          <OrderDetailDisplayItem :ShowData='ProductShowData' :hiddenFactory="true" />
+          <OrderDetailDisplayItem v-for="it in PartShowDataList" :ShowData='it' :key="it.Name" />
+        </li>
         <li></li>
         <li>
           <span class="label is-bold">下单方式：</span><span class="value">
@@ -47,7 +49,7 @@
             <span class="text is-gray">{{getMiDate(OrderDetail.PayTime)}}</span>
           </span>
         </li>
-        <li  v-if="[254, 255].indexOf(OrderDetail.Status) === -1
+        <li v-if="[254, 255].indexOf(OrderDetail.Status) === -1
         && OrderDetail.ProducePeriod && OrderDetail.ProducePeriod.TotalTime">
           <span class="label is-bold">{{OrderDetail.ProducePeriod.IncludeDiliveryTime ? '预计送达：' : '预计发货：'}}</span><span class="value">
             <span class="text is-gray">{{getDayDate(OrderDetail.ProducePeriod.TotalTime)}}</span>
@@ -293,9 +295,9 @@ export default {
       };
     },
     PartList() {
-      if (!this.showData) return [];
-      if (!this.showData.ProductParams) return [];
-      return this.showData.ProductParams.PartList;
+      if (!this.OrderDetail) return [];
+      if (!this.OrderDetail.ProductParams) return [];
+      return this.OrderDetail.ProductParams.PartList;
     },
     PartShowDataList() {
       const arr = [];
@@ -472,6 +474,11 @@ export default {
         margin-top: 10px;
         line-height: 15px;
         color: #000;
+        &.product-info{
+          display: block;
+          max-height: 200px;
+          overflow-y: auto;
+        }
         &.title{
           font-size: 14px;
           color: #444;

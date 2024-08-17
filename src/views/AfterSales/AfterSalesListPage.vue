@@ -34,22 +34,24 @@
         </el-table-column>
         <el-table-column prop="CustomerType" label="处理结果" minWidth="172" show-overflow-tooltip>
           <template slot-scope="scope">
-            <template v-if="scope.row.IsReject">
-              <span class="is-pink">驳回</span>
-            </template>
-            <template v-else>
-              <template v-if="scope.row.SolutionResults.length">
-                <template v-if="scope.row.SolutionResults[0]">
-                  {{ scope.row.SolutionResults[0] ? scope.row.SolutionResults[0].SolutionContent : '' }}
-                  <template v-if="scope.row.SolutionResults[0].CouponContents.length">
-                    {{scope.row.CouponIsExtra?'额外':''}}赠送优惠券：
-                    {{ scope.row.SolutionResults[0].CouponContents.join('、') }}
+            <template v-if="scope.row.Status === 30">
+              <template v-if="scope.row.IsReject">
+                <span class="is-pink">驳回</span>
+              </template>
+              <template v-else>
+                <template v-if="scope.row.SolutionResults.length">
+                  <template v-if="scope.row.SolutionResults[0]">
+                    {{ scope.row.SolutionResults[0] ? scope.row.SolutionResults[0].SolutionContent : '' }}
+                    <template v-if="scope.row.SolutionResults[0].CouponContents.length">
+                      {{scope.row.CouponIsExtra?'额外':''}}赠送优惠券：
+                      {{ scope.row.SolutionResults[0].CouponContents.join('、') }}
+                    </template>
                   </template>
                 </template>
               </template>
-              <template v-else>
-                -
-              </template>
+            </template>
+            <template v-else>
+              -
             </template>
           </template>
         </el-table-column>
@@ -82,9 +84,18 @@
         </el-table-column>
         <el-table-column label="操作" width="120" fixed="right">
           <div class="is-font-12 operate" slot-scope="scope">
-            <span v-if="localPermission.Operate"  @click="onDetailClick(scope.row)">
-              <span v-if="scope.row.Status === 0"> <i style="color: #52C41A;" class="iconfont icon-kaishichuli"></i>开始处理</span>
-              <span v-if="scope.row.Status === 10 || scope.row.Status === 25"><i style="color: #F4A307;" class="iconfont icon-a-zu16852"></i>继续处理</span>
+            <span v-if="localPermission.Operate">
+              <span v-if="scope.row.Status === 0"  @click="onDetailClick(scope.row)">
+                <i style="color: #52C41A;" class="iconfont icon-kaishichuli"></i>开始处理
+              </span>
+              <template v-if="staffDetailData.StaffID === scope.row.OperaterID">
+                <span v-if="scope.row.Status === 10 || scope.row.Status === 25" @click="onDetailClick(scope.row)">
+                  <i style="color: #F4A307;" class="iconfont icon-a-zu16852"></i>继续处理
+                </span>
+              </template>
+              <template v-else>
+                <span class="is-gray" v-if="scope.row.Status === 10 || scope.row.Status === 25"><i class="iconfont icon-a-zu16852"></i>继续处理</span>
+              </template>
             </span>
             <span v-else class="is-gray">
               <span v-if="scope.row.Status === 0"> <i class="iconfont icon-kaishichuli"></i>开始处理</span>
@@ -110,7 +121,7 @@
             <span v-if="[30, 255].find(it => it === scope.row.Status) && !localPermission.QueryDetail && staffDetailData.StaffID !== scope.row.OperaterID">
               <span class="is-gray"> <i class="iconfont icon-xiangqing3"></i>查看详情</span>
             </span> -->
-            <span style="color: #FF3E6A;margin-left: 5px;" @click="removeAfterSales(scope.row)" v-if="localPermission.RemoveAfterSale">
+            <span style="color: #FF3E6A;margin-left: 5px;" @click="removeAfterSales(scope.row)" v-if="IsAllow === 'True'">
               <i class="iconfont icon-delete"></i>删除
             </span>
           </div>
@@ -150,6 +161,7 @@ export default {
   mixins: [mixin, tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   data() {
     return {
+      IsAllow: '',
       progressList: [
         { name: '不限', ID: '' },
         { name: '未处理', ID: 0 },
@@ -250,6 +262,13 @@ export default {
     },
   },
   mounted() {
+    if (!this.IsAllow) {
+      this.api.getRemoveAfterSaleIsAllow().then(res => {
+        if (res.data.Status === 1000) {
+          this.IsAllow = res.data.Data;
+        }
+      });
+    }
     this.getDataList();
     this.$nextTick(() => this.setHeight());
     window.onresize = () => this.setHeight();

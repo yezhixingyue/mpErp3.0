@@ -283,7 +283,7 @@
     <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false"
      @submit="SuspendSubmit"></SuspendDialogComp>
 
-    <HandOnDialogComp :visible="HandOnVisible" @cloce="emitVisible('HandOnVisible')"
+    <HandOnDialogComp v-if="!consent" :visible="HandOnVisible" @cloce="emitVisible('HandOnVisible')"
     @submit="HandOnSubmit"></HandOnDialogComp>
   </section>
 </template>

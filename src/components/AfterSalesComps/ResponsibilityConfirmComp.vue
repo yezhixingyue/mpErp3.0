@@ -141,7 +141,6 @@ export default {
       this.api.getOrderAfterSaleRelevantPerson(this.OrderID).then(res => {
         if (res.data.Status === 1000) {
           this.RelevantPerson = res.data.Data;
-          console.log(res);
         }
       });
     },
