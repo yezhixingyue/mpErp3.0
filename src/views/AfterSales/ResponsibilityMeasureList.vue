@@ -8,7 +8,7 @@
         <el-table-column prop="OrderID" label="订单号" minWidth="86" show-overflow-tooltip></el-table-column>
         <el-table-column prop="SellArea" label="区域" minWidth="148" show-overflow-tooltip></el-table-column>
         <el-table-column prop="CustomerType" label="客户类型" minWidth="90" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="ProductName" label="产品" minWidth="148" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="ProductName" label="产品" minWidth="140" show-overflow-tooltip></el-table-column>
         <el-table-column prop="CustomerType" label="金额" minWidth="60" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.OrderProductPrice }}元</template>
         </el-table-column>
@@ -85,16 +85,18 @@
         <el-table-column label="操作" width="88" fixed="right">
           <div class="is-font-12 operate" slot-scope="scope">
             <span v-if="scope.row.Status === 0 || scope.row.Status === 1">
-              <span v-if="localPermission.Divide" @click="onDetailClick(scope.row)">
+              <span v-if="staffDetailData.StaffID === scope.row.ResponsibilityDivideOperaterID" @click="onDetailClick(scope.row)">
                 <i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-huafenzeren2"></i>划分责任
               </span>
-              <span v-else>
-                <span class="is-gray"> <i class="iconfont icon-huafenzeren2"></i>划分责任</span>
-              </span>
+              <span v-else class="is-gray" style="margin-left: 5px;"> <i class="iconfont icon-huafenzeren2"></i>划分责任</span>
             </span>
-            <span v-else @click="onDetailClick(scope.row)">
-              <span>
+            <span v-else>
+              <span v-if="localPermission.QueryDetail || staffDetailData.StaffID === scope.row.ResponsibilityDivideOperaterID"
+              @click="onDetailClick(scope.row)">
                 <i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-xiangqing3"></i>查看详情
+              </span>
+              <span v-else class="is-gray">
+                <i style="margin-left: 5px;" class="iconfont icon-xiangqing3"></i>查看详情
               </span>
             </span>
           </div>
