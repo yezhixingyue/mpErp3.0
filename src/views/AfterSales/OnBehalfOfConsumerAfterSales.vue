@@ -6,7 +6,7 @@
     <main>
       <div class="left">
         <div class="top">
-          <OrderDetailsComp :OrderDetail="OrderDetail"/>
+          <OrderDetailsComp :OrderDetail="OrderDetail" showDownload/>
           <div class="after-sales-trouble">
             <header class="title is-bold">问题图片</header>
             <ul>

@@ -787,7 +787,7 @@ export default {
       if (this.CompleteFrom.AfterSaleResponsibilities.length) this.backResponsibilities();
 
       if (this.appealData.Status === 10) {
-        this.CompleteFrom.Solution.SolutionTypes = [2];
+        this.CompleteFrom.Solution.SolutionTypes = this.appealData.Solution.SolutionTypes[0] ? [this.appealData.Solution.SolutionTypes[0]] : [2];
       } else {
         this.CompleteFrom.Solution.SolutionTypes = this.appealData.Solution.SolutionTypes;
       }
