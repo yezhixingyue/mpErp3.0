@@ -6,7 +6,7 @@
     <main>
       <div class="left">
         <div class="top">
-          <OrderDetailsComp :OrderDetail="OrderDetail" showDownload/>
+          <OrderDetailsComp :OrderDetail="OrderDetail" showDownload :AfterSaleStatus="0"/>
           <div class="after-sales-trouble">
             <header class="title is-bold">问题图片</header>
             <ul>
@@ -32,7 +32,7 @@
         </div>
       </div>
       <AfterSalesSolutionFromComp consent :PackagesList="PackagesList" :OrderID="$route.query.OrderID"
-      ref="AfterSalesSolutionFrom" Source :OrderStatus="OrderDetail?.Status"/>
+      ref="AfterSalesSolutionFrom" Source :OrderStatus="OrderDetail?.Status" :KindCount="OrderDetail?.ProductParams?.Attributes?.Unit"/>
       <!-- <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false" @submit="SuspendVisible = false"></SuspendDialogComp> -->
     </main>
     <footer>

@@ -80,7 +80,7 @@
               </span>
               <span style="margin-left: 30px;">
                 <i class="is-bold">每款数量：</i>
-                <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="CompleteFrom.Solution.Number" style="width: 100px;"></el-input> 张/款
+                <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="CompleteFrom.Solution.Number" style="width: 100px;"></el-input> {{KindCount}}
               </span>
             </span>
           </li>
@@ -331,6 +331,10 @@ export default {
     OrderStatus: {
       type: Number,
       default: 0,
+    },
+    KindCount: {
+      type: String,
+      default: '/款',
     },
   },
 
