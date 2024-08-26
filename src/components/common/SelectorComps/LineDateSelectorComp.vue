@@ -116,12 +116,6 @@ export default {
         return !!(this.key && this.beginTime && this.endTime);
       },
     },
-    Format2DateEnd() {
-      return this.$utils.getDateFormat2Date(this.endTime);
-    },
-    Format2DateBegin() {
-      return this.$utils.getDateFormat2Date(this.beginTime);
-    },
     localValue: {
       get() {
         if (this.beginTime && this.endTime) {
@@ -169,8 +163,8 @@ export default {
       setTimeout(() => {
         if (!this.clickTarget) {
           this.changePropsFunc([this.typeList[0], '']);
-          this.changePropsFunc([this.typeList[1], this.beginTime]);
-          this.changePropsFunc([this.typeList[2], this.endTime]);
+          this.changePropsFunc([this.typeList[1], this.beginTime ? `${this.beginTime}.000` : '']);
+          this.changePropsFunc([this.typeList[2], this.endTime ? `${this.endTime}.997` : '']);
           this.requestFunc();
           this.key = true;
         }
