@@ -15,7 +15,7 @@
                 {{ProblemTypesList.map(it => `${it.ParentName}-${it.Name}`).join('、')}}
               </i>
             </template>
-            <template v-else>
+            <template v-else-if="ResponsibilityDivideDetail.AfterSaleQuestions">
               {{ResponsibilityDivideDetail.AfterSaleQuestions.map(it => `${it.FirstQuestionTypeTitle}-${it.SecondQuestionTypeTitle}`).join('、')}}
             </template>
           </div>
@@ -281,7 +281,7 @@ export default {
       this.submitForm.AfterSaleResponsibilities = this.ResponsibilityDivideDetail.AfterSaleResponsibilities;
       if (this.submitForm.AfterSaleResponsibilities.length) this.backResponsibilities();
 
-      this.submitForm.AfterSaleQuestions = this.ResponsibilityDivideDetail.AfterSaleQuestions;
+      this.submitForm.AfterSaleQuestions = this.ResponsibilityDivideDetail.AfterSaleQuestions || [];
       if (this.submitForm.AfterSaleQuestions.length) this.backQuestionClass();
     });
   },

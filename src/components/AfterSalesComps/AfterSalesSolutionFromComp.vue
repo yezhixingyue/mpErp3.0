@@ -717,7 +717,11 @@ export default {
           const resp = await this.api.getComplete(this.CompleteFrom).catch(() => {});
           if (resp && resp.data.Status === 1000) {
             const successCb = () => {
-              this.getOrderAfterSaleManageList(this.AfterSalesCondition.Page);
+              if (this.consent) {
+                this.getOrderTableData({ page: this.objForOrderList.Page, type: 'get' });
+              } else {
+                this.getOrderAfterSaleManageList(this.AfterSalesCondition.Page);
+              }
               this.onGoBackClick();
             };
             if (this.CompleteFrom.IsReject) {
