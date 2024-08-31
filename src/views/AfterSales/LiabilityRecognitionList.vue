@@ -7,8 +7,8 @@
         <el-table-column prop="AfterSaleCode" label="售后单号" minWidth="80" show-overflow-tooltip></el-table-column>
         <el-table-column prop="OrderID" label="订单号" minWidth="86" show-overflow-tooltip></el-table-column>
         <el-table-column prop="SellArea" label="区域" minWidth="127" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="CustomerType" label="客户类型" minWidth="76" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="ProductName" label="产品" minWidth="138" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="CustomerType" label="客户类型" minWidth="70" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="ProductName" label="产品" minWidth="130" show-overflow-tooltip></el-table-column>
         <el-table-column prop="CustomerType" label="金额" minWidth="60" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.OrderProductPrice }}元</template>
         </el-table-column>
@@ -56,7 +56,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="问题类型" minWidth="141" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="问题类型" minWidth="135" show-overflow-tooltip>
           <template slot-scope="scope">
             {{scope.row.AfterSaleQuestions.map(it => `${it.FirstQuestionTypeTitle}-${it.SecondQuestionTypeTitle}`).join('、')}}
           </template>

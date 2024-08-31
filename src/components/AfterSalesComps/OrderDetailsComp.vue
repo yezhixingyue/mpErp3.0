@@ -19,9 +19,6 @@
         <li v-if="AfterSaleCode">
           <span class="label is-bold">售后单号：</span><span class="value">{{AfterSaleCode}}</span>
         </li>
-        <!-- <li>
-          <span class="label is-bold">产品：</span><span class="value">{{ProductShowData.Name}}</span>
-        </li> -->
         <li>
           <span class="label is-bold">工厂：</span><span class="value">{{ProductShowData.FactoryName}}</span>
         </li>
