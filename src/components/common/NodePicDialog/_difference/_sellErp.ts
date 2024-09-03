@@ -112,10 +112,14 @@ interface IManageOrderListItem {
   Unit: string
   /** 尺寸 */
   Size: string
+  /** 订单状态 */
+  Status: OrderStatus
   /** 下单时间 */
   CreateTime: string
   /** 预计完成时间 */
   WishFinishTime: string
+  /** 完成时间 */
+  FinishTime: string
   /** 是否已置顶 */
   IsTop: boolean
   /** 生产线 */
@@ -172,6 +176,26 @@ interface IEquipmentBaseInfo {
   GroupName: string
   /** 是否外购工厂 */
   IsExternalFactory: boolean
+}
+
+/** 订单状态枚举 */
+export enum OrderStatus {
+  /** 创建生产订单 */
+  CreateOrder = 0,
+  /** 文件已同步 */
+  ConvertFile = 2,
+  /** 待折手 */
+  WaitFolding = 10,
+  /** 已做折手 */
+  HaveFolding = 15,
+  /** 已排程 */
+  HaveScheduling = 20,
+  /** 生产中 */
+  InProduction = 30,
+  /** 已完成 */
+  Finished = 50,
+  /** 已取消 */
+  HaveCancled = 255
 }
 
 export const getEnumList = (e) => _getEnumList(e, true);
