@@ -47,9 +47,9 @@ export enum AssistInfoTypeEnum {
   numerical = 2,
 }
 
-export enum FixedType {
-  Material = 54,
-  Size = 55,
+export enum FixedType { // 须和propertyUtils.js中PropertyFixedType保持对应
+  Material = 55,
+  Size = 56,
   constant = 255
 }
 

@@ -6,6 +6,13 @@
   "description": "mpzj后台管理系统图标集合",
   "glyphs": [
     {
+      "icon_id": "41296485",
+      "name": "绑定IP和客户",
+      "font_class": "bangdingIPhekehu",
+      "unicode": "e67e",
+      "unicode_decimal": 59006
+    },
+    {
       "icon_id": "40522898",
       "name": "编辑",
       "font_class": "bianji1",

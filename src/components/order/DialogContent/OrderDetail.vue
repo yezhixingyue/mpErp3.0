@@ -161,18 +161,14 @@
                     <span class="text-title">订单状态：</span>
                     <span
                       class="text"
+                      style="display: inline-block;min-width: 72px;"
                       :class="{
                       'is-red':showData.Status===10,
                       'is-completed':showData.Status===200,
                       'is-origin':showData.Status!==10&&showData.Status!==200,
                     }"
                     >{{showData.Status | formatStatus}}</span>
-                    <span class="blue-span is-font-size-12 ml-6" v-if="showProdProgress" @click="onProdProgressClick">
-                      <!-- <i class="el-icon-s-promotion is-font-size-14"></i> -->
-                      <!-- <i> (</i> -->
-                      查看工厂进度
-                      <!-- <i>)</i> -->
-                    </span>
+                    <span class="blue-span is-font-size-12 ml-13" v-if="showProdProgress" @click="onProdProgressClick">查看工厂进度</span>
                     <el-tooltip
                     class="item"
                     effect="dark"
@@ -197,9 +193,12 @@
                   </li>
                   <li
                   class="right-flex-wrap download-box"
-                  v-if="showDownload && showData.FilePath && !showData.ProductParams.Attributes.IsSpotGoods && localPermission.DownloadFile">
+                  v-if="showDownload && (showData.FilePath || showData.CheckedFileList?.length > 0)
+                   && !showData.ProductParams.Attributes.IsSpotGoods && localPermission.DownloadFile">
                     <span class="text-title">文件下载：</span>
-                    <a :href="showData.FilePath" target="_blank" class="link download">下载订单文件</a>
+                    <a v-if="showData.FilePath" :href="showData.FilePath" target="_blank" class="link download">下载订单文件</a>
+                    <a v-if="showData.CheckedFileList?.length > 0" @click.prevent="onCheckFileDownloadClick(showData.CheckedFileList)"
+                       class="link download">下载审稿文件</a>
                   </li>
                   <li class="btn-box" v-if="showData.Status===35 && $route.name === 'orderManage'" :class="{hiddenFileUpload: !showData.FileCase}">
                     <!-- <UploadComp4BreakPoint title="重新上传文件再审稿" :successFunc="successFunc"
@@ -387,11 +386,11 @@ export default {
       return '';
     },
     showProdProgress() {
-      // if (this.$route.name === 'orderManage' && this.OrderStatusList.filter(it => it.canProdProgress).map(it => it.ID).includes(this.showData.Status)) {
-      //   const row = this.orderListData.find(it => it.OrderID === this.showData.OrderID);
-      //   console.log('showProdProgress', row);
-      //   return row?.IsAutoConvert;
-      // }
+      if (this.$route.name === 'orderManage' && this.OrderStatusList.filter(it => it.canProdProgress).map(it => it.ID).includes(this.showData.Status)) {
+        const row = this.orderListData.find(it => it.OrderID === this.showData.OrderID);
+        // console.log('showProdProgress', row);
+        return row?.IsOwnFactory;
+      }
       return false;
     },
     resumeQuestionDisable() {
@@ -464,6 +463,23 @@ export default {
     },
     onAnewUploadClick() { // 重新上传文件再审稿
       this.$emit('anewUpload');
+    },
+    onCheckFileDownloadClick(CheckedFileList) {
+      const _download = (href) => {
+        if (!href) return;
+
+        const link = document.createElement('a');
+
+        link.target = '_blank';
+        link.style.display = 'none';
+        link.href = href;
+
+        document.body.appendChild(link);
+
+        link.click();
+      };
+
+      CheckedFileList.forEach(it => _download(it.FilePath));
     },
   },
 };
@@ -773,6 +789,7 @@ export default {
             box-shadow: none;
             color: #26bcf9;
             text-decoration: none;
+            cursor: pointer;
             // &::after {
             //   position: absolute;
             //   content: "";
@@ -788,6 +805,10 @@ export default {
               color: $--color-primary-light;
               font-size: 12px !important;
               text-decoration: underline;
+            }
+
+            & + .link {
+              margin-left: 12px
             }
           }
         }
