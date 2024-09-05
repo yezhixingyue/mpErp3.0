@@ -23,7 +23,8 @@
               {{appealData.SolutionResults[0].SolutionContent}}</span>
           </li>
           <li v-if="appealData.SolutionResults[0].CouponContents.length">
-            <span class="label is-bold">{{appealData.CouponIsExtra?'额外':''}}增送优惠券：</span><span class="value">
+            <span class="label is-bold" :style="`min-width: ${appealData.CouponIsExtra?8:6}em;`">{{appealData.CouponIsExtra?'额外':''}}增送优惠券：</span>
+            <span class="value">
               <p class="coupon-item" :title="it" v-for="it in appealData.SolutionResults[0].CouponContents" :key="it">{{it}}</p>
             </span>
           </li>
@@ -120,6 +121,12 @@
                   </template>
                   <template v-if="it.Department === 4">
                     配送中心
+                  </template>
+                  <template v-if="it.Department === 5">
+                    自动审稿软件
+                  </template>
+                  <template v-if="it.Department === 6">
+                    其他软件
                   </template>{{ it.Proportion }}%
                 </i>
               </template>

@@ -71,6 +71,30 @@
                   </template>
                 </template>
               </p>
+              <p>
+                <el-checkbox v-model="ProportionResponsibility.Department5">自动审稿软件</el-checkbox>
+                <template v-if="ProportionResponsibility.Department5">
+                  所占责任：
+                  <el-input v-model="ProportionResponsibility.DepartmentProportion5" size="medium" style="width: 50px;"></el-input> %
+                  <template v-if="ResponsibilityDivideDetail &&
+                  ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 5)?.ConfirmTime">
+                    <i>已确认</i>
+                    <img src="@/assets/images/success.png" alt="">
+                  </template>
+                </template>
+              </p>
+              <p>
+                <el-checkbox v-model="ProportionResponsibility.Department6">其他软件</el-checkbox>
+                <template v-if="ProportionResponsibility.Department6">
+                  所占责任：
+                  <el-input v-model="ProportionResponsibility.DepartmentProportion6" size="medium" style="width: 50px;"></el-input> %
+                  <template v-if="ResponsibilityDivideDetail &&
+                  ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 6)?.ConfirmTime">
+                    <i>已确认</i>
+                    <img src="@/assets/images/success.png" alt="">
+                  </template>
+                </template>
+              </p>
             </template>
             <template v-else>
               <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 1)">
@@ -84,6 +108,12 @@
               </p>
               <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 4)">
                 配送中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 4).Proportion }}%
+              </p>
+              <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 5)">
+                自动审稿软件 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 5).Proportion }}%
+              </p>
+              <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 6)">
+                其他软件 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 6).Proportion }}%
               </p>
             </template>
           </div>
@@ -142,26 +172,15 @@ export default {
         DepartmentProportion3: '',
         Department4: false,
         DepartmentProportion4: '',
+        Department5: false,
+        DepartmentProportion5: '',
+        Department6: false,
+        DepartmentProportion6: '',
       },
       submitForm: {
         AfterSaleCode: 0,
-        AfterSaleQuestions: [
-          {
-            FirstQuestionType: 0,
-            SecondQuestionType: 0,
-            Remark: '',
-            Version: 1,
-            QuestionTitle: '',
-          },
-        ],
-        AfterSaleResponsibilities: [
-          {
-            Department: 0,
-            Proportion: 0,
-            ConfirmerName: '',
-            ConfirmTime: '',
-          },
-        ],
+        AfterSaleQuestions: [],
+        AfterSaleResponsibilities: [],
       },
     };
   },
@@ -227,6 +246,14 @@ export default {
       if (this.ProportionResponsibility.Department4) {
         num += Number(this.ProportionResponsibility.DepartmentProportion4);
         setResponsibilities(4, Number(this.ProportionResponsibility.DepartmentProportion4));
+      }
+      if (this.ProportionResponsibility.Department5) {
+        num += Number(this.ProportionResponsibility.DepartmentProportion5);
+        setResponsibilities(5, Number(this.ProportionResponsibility.DepartmentProportion5));
+      }
+      if (this.ProportionResponsibility.Department6) {
+        num += Number(this.ProportionResponsibility.DepartmentProportion6);
+        setResponsibilities(6, Number(this.ProportionResponsibility.DepartmentProportion6));
       }
       this.submitForm.AfterSaleResponsibilities = Responsibilities;
       if (num === 100) {
@@ -295,7 +322,7 @@ export default {
   width: 400px;
   min-width: 400px;
   box-sizing: border-box;
-  padding-right: 30px;
+  // padding-right: 30px;
   >.title{
     font-size: 16px;
     line-height: 20px;
@@ -351,6 +378,7 @@ export default {
               font-size: 12px;
               color: #444;
               padding-left: 5px;
+              width: 6em;
             }
             margin-right: 20px;
           }

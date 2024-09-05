@@ -61,6 +61,9 @@
           <span class="label is-bold">文件下载：</span><span class="value">
             <a :href="OrderDetail.FilePath" target="_blank" class="link download">下载订单文件</a>
           </span>
+          <span class="label is-bold">审稿文件：</span><span class="value">
+            <a :href="OrderDetail.FilePath" target="_blank" class="link download">下载审稿文件</a>
+          </span>
         </li>
       </ul>
       <div class="box">

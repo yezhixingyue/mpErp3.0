@@ -91,6 +91,7 @@ export default {
         TypeID: 0,
         ProductID: '',
       },
+      DepartmentID: 1,
       DateType: 'today',
       SellArea: {
         RegionalID: 0,
@@ -254,6 +255,7 @@ export default {
           TypeID: 0,
           ProductID: '',
         },
+        DepartmentID: 1,
         DateType: 'today',
         SellArea: {
           RegionalID: 0,

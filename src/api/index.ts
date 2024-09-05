@@ -245,8 +245,8 @@ const api = {
   getOrderAfterSaleResponsibilityConfirmList(data) { // POST /Api/OrderAfterSale/ResponsibilityConfirm/List 责任确定列表
     return instance.post('/Api/OrderAfterSale/ResponsibilityConfirm/List', data);
   },
-  getOrderAfterSaleResponsibilityConfirmDetail(afterSaleCode) { // POST /Api/OrderAfterSale/ResponsibilityConfirm/Detail 责任确定详情
-    return instance.get(`/Api/OrderAfterSale/ResponsibilityConfirm/Detail?afterSaleCode=${afterSaleCode}`);
+  getOrderAfterSaleResponsibilityConfirmDetail(afterSaleCode, departmentID) { // POST /Api/OrderAfterSale/ResponsibilityConfirm/Detail 责任确定详情
+    return instance.get(`/Api/OrderAfterSale/ResponsibilityConfirm/Detail?afterSaleCode=${afterSaleCode}&departmentID=${departmentID}`);
   },
   getAfterSaleResponsibilityConfirmExcel(data) { // POST /Api/AfterSale/ResponsibilityConfirm/Excel  责任划分列表导出
     return instance.post('/Api/AfterSale/ResponsibilityConfirm/Excel', data, { responseType: 'arraybuffer', closeTip: true });

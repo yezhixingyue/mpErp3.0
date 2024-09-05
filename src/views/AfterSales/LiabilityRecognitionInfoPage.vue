@@ -1,7 +1,7 @@
 <template>
   <section class="liability-recognition-info-page-wrap">
     <header class="is-bold">
-      <BreadcrumbNav backLabel="责任确认" label="确认责任"></BreadcrumbNav>
+      <BreadcrumbNav backLabel="责任确认" :label="`${queryData?.Status === 0 ? '确认责任' : '查看详情'}`"></BreadcrumbNav>
     </header>
     <main v-if="ResponsibilityConfirmDetail">
       <div class="top">
@@ -21,7 +21,7 @@
       }"/>
     </main>
     <footer>
-      <el-button v-if="queryData && queryData.Status === 0" @click="onSubmitClick" class="linear-bg-color">提交</el-button>
+      <el-button v-if="queryData && queryData.Status === 0" @click="onSubmitClick" class="linear-bg-color">确定责任</el-button>
       <el-button @click="onGoBackClick">返回</el-button>
     </footer>
   </section>
@@ -53,6 +53,7 @@ export default {
   },
   computed: {
     ...mapState('common', ['Permission', 'ServerApplyTypeList']),
+    ...mapState('AfterSale', ['ResponsibilityConfirmCondition']),
     localPermission() {
       if (this.Permission?.PermissionList?.PermissionAfterSalesApply?.Obj) {
         return this.Permission.PermissionList.PermissionAfterSalesApply.Obj;
@@ -77,7 +78,7 @@ export default {
   },
   mounted() {
     this.queryData = this.$route.query;
-    this.api.getOrderAfterSaleResponsibilityConfirmDetail(this.queryData.AfterSaleCode).then(res => {
+    this.api.getOrderAfterSaleResponsibilityConfirmDetail(this.queryData.AfterSaleCode, this.ResponsibilityConfirmCondition.DepartmentID).then(res => {
       if (res.data.Status === 1000) {
         this.ResponsibilityConfirmDetail = res.data.Data;
       }

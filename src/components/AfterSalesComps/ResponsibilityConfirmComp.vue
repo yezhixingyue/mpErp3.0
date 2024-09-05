@@ -11,7 +11,8 @@
       </li>
       <li class="form-box">
         <div class="label is-bold">责任占比：</div><div class="value" style="font-weight: 700;">
-          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 1)" class="is-pink" style="font-size: 14px;">
+          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 1)"
+            :class="`${ResponsibilityConfirmCondition.DepartmentID === 1 ? 'is-pink fontsize14' : ''}`">
             业务中心 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 1).Proportion }}%
           </p>
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2)">
@@ -23,10 +24,18 @@
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 4)">
             配送中心 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 4).Proportion }}%
           </p>
+          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 5)"
+            :class="`${ResponsibilityConfirmCondition.DepartmentID === 5 ? 'is-pink fontsize14' : ''}`">
+            自动审稿软件 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 5).Proportion }}%
+          </p>
+          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 6)"
+            :class="`${ResponsibilityConfirmCondition.DepartmentID === 6 ? 'is-pink fontsize14' : ''}`">
+            其他软件 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 6).Proportion }}%
+          </p>
         </div>
       </li>
       <template v-if="!ConfirmDetail.ResponsibilityIsAllowConfirm">
-        <li class="form-box">
+        <li class="form-box" v-if="!isNoPerson">
           <div class="label is-bold" style="min-width: 5em;text-align: right">责任人：</div><div class="value">
             <p v-for="it in ConfirmDetail.ResponsibilityPersons" :key="it">
               {{ it }}
@@ -36,7 +45,7 @@
         </li>
       </template>
       <template v-else>
-        <li class="form-box" style="line-height: 35px;">
+        <li class="form-box" style="line-height: 35px;" v-if="!isNoPerson">
           <div class="label is-bold" style="min-width: 5em;text-align: right">责任人：</div><div class="value">
             <p v-if="RelevantPerson && RelevantPerson.length && RelevantPerson.find(it => it.ResponsiblePersonType === 1)">
               <el-checkbox v-model="IsTakeOrders">接单客服
@@ -111,6 +120,9 @@ export default {
   computed: {
     ...mapState('common', ['userTypeList']),
     ...mapState('AfterSale', ['QuestionClassList', 'ResponsibilityConfirmCondition']),
+    isNoPerson() {
+      return this.ResponsibilityConfirmCondition.DepartmentID === 5 || this.ResponsibilityConfirmCondition.DepartmentID === 6;
+    },
   },
   data() {
     return {
@@ -123,6 +135,7 @@ export default {
       submitForm: {
         AfterSaleCode: 0,
         ResponsibilityID: 0,
+        DepartmentID: 1,
         ResponsiblePersons: [],
       },
     };
@@ -166,11 +179,12 @@ export default {
       }
     },
     submit() {
-      const temp = this.ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 1);
+      const temp = this.ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === this.ResponsibilityConfirmCondition.DepartmentID);
       this.submitForm.AfterSaleCode = this.AfterSaleCode;
       this.submitForm.ResponsibilityID = temp.ResponsibilityID;
+      this.submitForm.DepartmentID = this.ResponsibilityConfirmCondition.DepartmentID;
       this.setResponsiblePersons();
-      if (!this.submitForm.ResponsiblePersons.length || this.submitForm.ResponsiblePersons.find(it => !it.ResponsiblePersonName)) {
+      if (!this.isNoPerson && (!this.submitForm.ResponsiblePersons.length || this.submitForm.ResponsiblePersons.find(it => !it.ResponsiblePersonName))) {
         this.messageBox.failSingleError('操作失败', '请输入责任人');
       } else {
         this.api.getOrderAfterSaleResponsibilityConfirm(this.submitForm).then(res => {
@@ -249,6 +263,9 @@ export default {
       }
       >.value{
         flex: 1;
+        .fontsize14{
+          font-size: 14px;
+        }
         >p{
           margin-bottom: 10px;
           display: flex;

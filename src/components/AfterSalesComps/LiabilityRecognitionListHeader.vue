@@ -1,5 +1,14 @@
 <template>
   <header class="mp-liability-recognition-page-header-wrap">
+    <el-tabs v-model="activeName" type="card" @tab-click="handleClick"
+    v-if="localPermission.BusinessQueryAll || localPermission.BusinessQueryDepartment || localPermission.AutoSoftManage || localPermission.OtherSoftManage">
+      <el-tab-pane label="业务中心" name="businessCenter" v-if="localPermission.BusinessQueryAll || localPermission.BusinessQueryDepartment">
+      </el-tab-pane>
+      <el-tab-pane label="自动审稿软件" name="reviewSoftware" v-if="localPermission.AutoSoftManage">
+      </el-tab-pane>
+      <el-tab-pane label="其他软件" name="otherSoftware" v-if="localPermission.OtherSoftManage">
+      </el-tab-pane>
+    </el-tabs>
     <ul>
       <li>
         <div>
@@ -106,9 +115,15 @@ export default {
     RadioButtonGroupComp,
   },
   computed: {
-    ...mapState('common', ['userTypeList']),
+    ...mapState('common', ['Permission', 'userTypeList']),
     UserDefinedTimeIsActive() {
       return this.condition.DateType === '' && !!this.condition.Date.First && !!this.condition.Date.Second;
+    },
+    localPermission() {
+      if (this.Permission?.PermissionList?.PermissionResponsibilityConfirm?.Obj) {
+        return this.Permission.PermissionList.PermissionResponsibilityConfirm.Obj;
+      }
+      return {};
     },
     Status: {
       get() {
@@ -121,6 +136,7 @@ export default {
   },
   data() {
     return {
+      activeName: '1',
       dateList: [
         { name: '今天', ID: 'today' },
         { name: '昨天', ID: 'yesterday' },
@@ -131,6 +147,22 @@ export default {
     };
   },
   methods: {
+    handleClick() {
+      switch (this.activeName) {
+        case 'businessCenter':
+          this.setCondition4DataList([['DepartmentID', ''], 1]);
+          break;
+        case 'reviewSoftware':
+          this.setCondition4DataList([['DepartmentID', ''], 5]);
+          break;
+        case 'otherSoftware':
+          this.setCondition4DataList([['DepartmentID', ''], 6]);
+          break;
+        default:
+          break;
+      }
+      this.$emit('getDataList');
+    },
     clearCondition() {
       this.$emit('clearCondition');
     },
@@ -150,6 +182,19 @@ export default {
     this.$store.dispatch('common/getFeedbackQuestionList');
     this.$store.dispatch('common/getUserClassify');
     // this.getCustomerData();
+    switch (this.condition.DepartmentID) {
+      case 1:
+        this.activeName = 'businessCenter';
+        break;
+      case 5:
+        this.activeName = 'reviewSoftware';
+        break;
+      case 6:
+        this.activeName = 'otherSoftware';
+        break;
+      default:
+        break;
+    }
   },
 };
 </script>
@@ -182,7 +227,36 @@ export default {
           display: flex;
         }
       }
-
+    }
+  }
+  > .el-tabs {
+    margin-left: -8px;
+    > .el-tabs__header {
+      background-color: rgb(245, 245, 245);
+      padding-left: 30px;
+      padding-top: 13px;
+      margin-bottom: 0;
+      .el-tabs__nav {
+        > div {
+          height: 38px;
+          line-height: 36px;
+          &.is-active {
+            position: relative;
+            background-color: #fff;
+            &::before {
+              content: "";
+              position: absolute;
+              height: 2px;
+              width: calc(100%);
+              background-color: rgb(38, 188, 249);
+              left: 0px;
+              top: 0px;
+              border-radius: 2px;
+            }
+          }
+          font-size: 13px;
+        }
+      }
     }
   }
 }

@@ -52,7 +52,7 @@
           <template slot-scope="scope">
             <el-tooltip  :disabled="scope.row.AfterSaleResponsibilities.length === 1" effect="dark"
             :content="getAfterSaleResponsibilities(scope.row.AfterSaleResponsibilities)" placement="top">
-              <span>{{scope.row.AfterSaleResponsibilities.find(it => it.Department===1)?.Proportion}}%</span>
+              <span>{{scope.row.AfterSaleResponsibilities.find(it => it.Department===ResponsibilityConfirmCondition.DepartmentID)?.Proportion}}%</span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -76,12 +76,14 @@
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="确认人" minWidth="60" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.AfterSaleResponsibilities.find(it => it.Department===1)?.ConfirmerName }}</template>
+          <template slot-scope="scope">
+            {{scope.row.AfterSaleResponsibilities.find(it => it.Department===ResponsibilityConfirmCondition.DepartmentID)?.ConfirmerName }}
+          </template>
         </el-table-column>
-        <el-table-column label="操作" width="80" fixed="right">
+        <el-table-column label="操作" width="88" fixed="right">
           <div class="is-font-12 operate" slot-scope="scope">
             <span v-if="scope.row.Status === 0">
-              <span v-if="localPermission.Confirm" @click="onDetailClick(scope.row)">
+              <span v-if="PermissionData.Confirm" @click="onDetailClick(scope.row)">
                 <i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-querenzeren"></i>确认责任
               </span>
               <span v-else class="is-gray"><i class="iconfont icon-querenzeren"></i>确认责任</span>
@@ -100,7 +102,7 @@
        :count='ResponsibilityConfirmDataNumber'
        :pageSize='20'
        >
-        <DownLoadExcelComp v-if="localPermission.ExportExcel" title="导出Excel表格" :configObj="configObj" />
+        <DownLoadExcelComp v-if="PermissionData.ExportExcel" title="导出Excel表格" :configObj="configObj" />
       </Count>
     </footer>
   </section>
@@ -137,6 +139,25 @@ export default {
         return this.Permission.PermissionList.PermissionResponsibilityConfirm.Obj;
       }
       return {};
+    },
+    PermissionData() {
+      const temp = {
+        Confirm: false,
+        ExportExcel: false,
+      };
+      if (this.ResponsibilityConfirmCondition.DepartmentID === 1) {
+        temp.Confirm = this.localPermission.BusinessConfirm;
+        temp.ExportExcel = this.localPermission.BusinessExportExcel;
+      }
+      if (this.ResponsibilityConfirmCondition.DepartmentID === 5) {
+        temp.Confirm = this.localPermission.AutoSoftManage;
+        temp.ExportExcel = this.localPermission.AutoSoftManage;
+      }
+      if (this.ResponsibilityConfirmCondition.DepartmentID === 6) {
+        temp.Confirm = this.localPermission.OtherSoftManage;
+        temp.ExportExcel = this.localPermission.OtherSoftManage;
+      }
+      return temp;
     },
     progressList() {
       const arr = [
@@ -180,8 +201,17 @@ export default {
           case 3:
             title = '物流中心';
             break;
-          default:
+          case 4:
             title = '配送中心';
+            break;
+          case 5:
+            title = '自动审稿软件';
+            break;
+          case 6:
+            title = '其他软件';
+            break;
+          default:
+            title = '业务中心';
             break;
         }
         return `${title}:${it.Proportion}%`;

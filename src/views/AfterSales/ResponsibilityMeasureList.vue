@@ -65,6 +65,12 @@
               </template>
               <template v-if="it.Department === 4">
                 配送中心
+              </template>
+              <template v-if="it.Department === 5">
+                自动审稿软件
+              </template>
+              <template v-if="it.Department === 6">
+                其他软件
               </template>:{{ it.Proportion }}%
             </span>
           </template>

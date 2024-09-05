@@ -238,6 +238,22 @@
                   v-model="ProportionResponsibility.DepartmentProportion4" size="medium" style="width: 50px;"></el-input> %
                 </template>
               </span>
+              <span style="width: 50%;">
+                <el-checkbox v-model="ProportionResponsibility.Department5" style="margin-right: 20px;">自动审稿软件</el-checkbox>
+                <template v-if="ProportionResponsibility.Department5">
+                  所占责任：
+                  <el-input oninput="value=value.replace(/[^\d]/g,'')"
+                  v-model="ProportionResponsibility.DepartmentProportion5" size="medium" style="width: 50px;"></el-input> %
+                </template>
+              </span>
+              <span style="width: 50%;">
+                <el-checkbox v-model="ProportionResponsibility.Department6" style="margin-right: 20px;">其他软件</el-checkbox>
+                <template v-if="ProportionResponsibility.Department6">
+                  所占责任：
+                  <el-input oninput="value=value.replace(/[^\d]/g,'')"
+                  v-model="ProportionResponsibility.DepartmentProportion6" size="medium" style="width: 50px;"></el-input> %
+                </template>
+              </span>
             </span>
           </li>
         </template>
@@ -368,6 +384,25 @@ export default {
         return this.CompleteFrom.Solution.SolutionTypes[0];
       },
       set(val) {
+        switch (val) {
+          case 2:
+            this.CompleteFrom.Solution.KindCount = '';
+            this.CompleteFrom.Solution.Number = '';
+            break;
+          case 7:
+            this.CompleteFrom.Solution.RefundBalance = '';
+            this.CompleteFrom.Solution.RefundFreightAmount = '';
+            break;
+          case 8:
+            this.CompleteFrom.Solution.CouponIsExtra = false;
+            this.CompleteFrom.Solution.RefundBalance = '';
+            this.CompleteFrom.Solution.RefundFreightAmount = '';
+            this.CompleteFrom.Solution.KindCount = '';
+            this.CompleteFrom.Solution.Number = '';
+            break;
+          default:
+            break;
+        }
         this.CompleteFrom.Solution.SolutionTypes = [val];
       },
     },
@@ -392,6 +427,10 @@ export default {
         DepartmentProportion3: '',
         Department4: false,
         DepartmentProportion4: '',
+        Department5: false,
+        DepartmentProportion5: '',
+        Department6: false,
+        DepartmentProportion6: '',
       },
       dialogVisible: false,
       couponList: [],
@@ -433,7 +472,7 @@ export default {
           UniqueName: '',
           FileName: '',
           IsFileInLan: true,
-          IsNewUpFile: true,
+          IsNewUpFile: false,
           CouponIsExtra: false,
           Coupons: [
             // {
@@ -581,6 +620,14 @@ export default {
       if (this.ProportionResponsibility.Department4) {
         num += Number(this.ProportionResponsibility.DepartmentProportion4);
         setResponsibilities(4, Number(this.ProportionResponsibility.DepartmentProportion4));
+      }
+      if (this.ProportionResponsibility.Department5) {
+        num += Number(this.ProportionResponsibility.DepartmentProportion5);
+        setResponsibilities(5, Number(this.ProportionResponsibility.DepartmentProportion5));
+      }
+      if (this.ProportionResponsibility.Department6) {
+        num += Number(this.ProportionResponsibility.DepartmentProportion6);
+        setResponsibilities(6, Number(this.ProportionResponsibility.DepartmentProportion6));
       }
       this.CompleteFrom.AfterSaleResponsibilities = Responsibilities;
       if (num === 100) {
