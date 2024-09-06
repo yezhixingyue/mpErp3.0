@@ -217,7 +217,7 @@
                       <div class="row solution-type2" v-if="UnpaidReducedAmountShow">
                         <div class="form-item">
                           <div class="label">
-                            售后优惠：
+                            尾款减少：
                           </div>
                           <div class="conent">
                             <el-input @change="HandlingAfterSalesForm.Solution.UnpaidReducedAmount > dataInfo.Order.UnPaidAmount ?
@@ -341,7 +341,7 @@
                 <p><span class="label">已付金额：</span>     {{dataInfo.Order.PaidAmount}}元（含{{dataInfo.Order.PaidPrintBean}}个印豆）</p>
                 <p><span class="label">退款：</span>         {{dataInfo.Order.RefundOrderAmount}}元（含{{dataInfo.Order.RefundOrderPrintBean}}个印豆）</p>
                 <p><span class="label">未收金额：</span>     {{dataInfo.Order.UnPaidAmount}}元</p>
-                <p><span class="label">售后优惠：</span>     {{dataInfo.Order.ReducedAmount}}元</p>
+                <p><span class="label">尾款减少：</span>     {{dataInfo.Order.ReducedAmount}}元</p>
                 <p><span class="label">运费：
                   </span> {{dataInfo.Order.FreightAmount}}元（含{{dataInfo.Order.FreightPrintBean}}个印豆，含{{dataInfo.Order.FreightOrderNumber}}个订单）
                 </p>

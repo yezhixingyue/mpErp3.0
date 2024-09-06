@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <AfterSalesSolutionFromComp consent :PackagesList="PackagesList" :OrderID="$route.query.OrderID"
+      <AfterSalesSolutionFromComp consent :PackagesList="PackagesList" :OrderID="$route.query.OrderID" :dataInfo="OrderDetail"
       ref="AfterSalesSolutionFrom" Source :OrderStatus="OrderDetail?.Status" :KindCount="OrderDetail?.ProductParams?.Attributes?.Unit"/>
       <!-- <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false" @submit="SuspendVisible = false"></SuspendDialogComp> -->
     </main>

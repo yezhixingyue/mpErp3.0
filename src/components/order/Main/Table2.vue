@@ -299,7 +299,7 @@ export default {
           show: true,
         },
         {
-          label: '售后优惠',
+          label: '尾款减少',
           prop: 'Funds.Reduced',
           minWidth: '78px',
           sortable: true,

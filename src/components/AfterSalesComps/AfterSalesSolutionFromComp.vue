@@ -62,16 +62,29 @@
             </span>
           </li>
           <li class="form-box" v-if="SolutionTypes === 2">
-            <span class="label is-bold">退到余额：</span><span class="value">
-              <span>
-                <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]" v-model="CompleteFrom.Solution.RefundBalance" style="width: 80px;"></el-input> 元
+            <template v-if="dataInfo?.SurplusOrderBalance">
+              <span class="label is-bold">退到余额：</span><span class="value">
+                <span>
+                  <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]" v-model="CompleteFrom.Solution.RefundBalance" style="width: 80px;"></el-input> 元
+                </span>
               </span>
-              <span style="margin-left: 30px;">
-                <i class="is-bold">退运费：</i>
-                <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"
-                v-model="CompleteFrom.Solution.RefundFreightAmount" style="width: 100px;"></el-input> 元
+            </template>
+            <template v-if="dataInfo?.SurplusFreightAmount">
+              <span class="label is-bold" style="width: 5em; text-align: right;">退运费：</span><span class="value">
+                <span>
+                  <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"
+                  v-model="CompleteFrom.Solution.RefundFreightAmount" style="width: 80px;"></el-input> 元
+                </span>
               </span>
-            </span>
+            </template>
+            <template v-if="dataInfo?.UnPaidAmount">
+              <span class="label is-bold">尾款减少：</span><span class="value">
+                <span>
+                  <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"
+                  v-model="CompleteFrom.Solution.UnpaidReducedAmount" style="width: 80px;"></el-input> 元
+                </span>
+              </span>
+            </template>
           </li>
           <li class="form-box" v-if="SolutionTypes === 7">
             <span class="label is-bold">补印数量：</span><span class="value">
@@ -323,6 +336,10 @@ export default {
       type: Object,
       default: () => null,
     },
+    dataInfo: {
+      type: Object,
+      default: () => null,
+    },
     OrderID: {
       type: Number,
       default: () => 0,
@@ -392,11 +409,13 @@ export default {
           case 7:
             this.CompleteFrom.Solution.RefundBalance = '';
             this.CompleteFrom.Solution.RefundFreightAmount = '';
+            this.CompleteFrom.Solution.UnpaidReducedAmount = '';
             break;
           case 8:
             this.CompleteFrom.Solution.CouponIsExtra = false;
             this.CompleteFrom.Solution.RefundBalance = '';
             this.CompleteFrom.Solution.RefundFreightAmount = '';
+            this.CompleteFrom.Solution.UnpaidReducedAmount = '';
             this.CompleteFrom.Solution.KindCount = '';
             this.CompleteFrom.Solution.Number = '';
             break;
@@ -482,11 +501,11 @@ export default {
           ],
           SolutionResultRemark: '',
           RefundFreightAmount: '',
+          UnpaidReducedAmount: '',
           RefundFreightType: 1,
           RefundBalance: '',
           RefundThirdParty: 0,
           RefundPrintBean: 0,
-          UnpaidReducedAmount: 0,
         },
         IsProduceEnd: false,
         Source: 2,
@@ -503,7 +522,7 @@ export default {
     readFileUniqueName(file) {
       // 上传成功后，设置文件名称, 文件唯一标识 getUniqueFileName
       if (!file) return;
-      const CustomerID = this.dataInfo?.Order?.CustomerID || '';
+      const CustomerID = this.dataInfo?.Customer?.CustomerID || '';
       const uniqueName = getUniqueFileName({ file, Terminal: 1, CustomerID });
       this.ReprintFile = { file, uniqueName };
       this.CompleteFrom.Solution.UniqueName = uniqueName;
@@ -539,9 +558,19 @@ export default {
           this.messageBox.failSingleError('操作失败', '请选择解决方案');
           return false;
         }
-        if (this.SolutionTypes === 2 && !(Number(this.CompleteFrom.Solution.RefundBalance) + Number(this.CompleteFrom.Solution.RefundFreightAmount))) {
-          this.messageBox.failSingleError('操作失败', '请输入退款金额');
-          return false;
+        if (this.SolutionTypes === 2) {
+          if (Number(this.CompleteFrom.Solution.RefundBalance) > this.dataInfo?.SurplusOrderBalance) {
+            this.messageBox.failSingleError('操作失败', `最大‘退到余额’为${this.dataInfo?.SurplusOrderBalance}`);
+            return false;
+          }
+          if (Number(this.CompleteFrom.Solution.RefundFreightAmount) > this.dataInfo?.SurplusFreightAmount) {
+            this.messageBox.failSingleError('操作失败', `最大‘退运费’为${this.dataInfo?.SurplusFreightAmount}`);
+            return false;
+          }
+          if (Number(this.CompleteFrom.Solution.UnpaidReducedAmount) > this.dataInfo?.UnPaidAmount) {
+            this.messageBox.failSingleError('操作失败', `最大‘尾款减少’为${this.dataInfo?.UnPaidAmount}`);
+            return false;
+          }
         }
         if (this.SolutionTypes === 7 && !Number(this.CompleteFrom.Solution.KindCount)) {
           this.messageBox.failSingleError('操作失败', '请输入补印数量');
@@ -658,7 +687,6 @@ export default {
       this.$emit('changeVisible', key);
     },
     onSuspendClick(data) {
-      // if (!this.formValidator()) return;
       this.setResponsibility();
       this.setCoupons();
       if (data) {
@@ -848,6 +876,7 @@ export default {
       }
       this.CompleteFrom.Solution.RefundBalance = this.appealData.Solution.RefundBalance;
       this.CompleteFrom.Solution.RefundFreightAmount = this.appealData.Solution.RefundFreightAmount;
+      this.CompleteFrom.Solution.UnpaidReducedAmount = this.appealData.Solution.UnpaidReducedAmount;
       this.CompleteFrom.Solution.KindCount = this.appealData.Solution.KindCount;
       this.CompleteFrom.Solution.Number = this.appealData.Solution.Number;
       this.CompleteFrom.Solution.CouponIsExtra = this.appealData.Solution.CouponIsExtra;

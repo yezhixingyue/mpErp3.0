@@ -239,7 +239,7 @@
                             <div class="item">
                               <div><span style="margin:0"></span>
                                 <span style="width:20em;">
-                                  售后优惠：<span class="color-red">
+                                  尾款减少：<span class="color-red">
                                     {{DisposeDetailsData.Solution.UnpaidReducedAmount}}
                                   </span>元
                                 </span>
