@@ -25,7 +25,7 @@
       </span>
     </div>
     <div>
-      <span class="title">尾款减少：</span>
+      <span class="title">减尾款：</span>
       <span class="text-content">￥{{Funds.Reduced}}元</span>
     </div>
   </div>

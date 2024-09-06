@@ -239,7 +239,7 @@
                             <div class="item">
                               <div><span style="margin:0"></span>
                                 <span style="width:20em;">
-                                  尾款减少：<span class="color-red">
+                                  减尾款：<span class="color-red">
                                     {{DisposeDetailsData.Solution.UnpaidReducedAmount}}
                                   </span>元
                                 </span>

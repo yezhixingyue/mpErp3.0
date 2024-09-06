@@ -8,7 +8,7 @@ let proxyUrl = 'http://192.168.2.234:8050'; // 吕伟
 // let proxyUrl = 'http://192.168.1.92:8060';
 // let proxyUrl = 'http://192.168.3.253';
 // let proxyUrl = 'http://erp.ybz888.com/';
-if (process.env.VUE_APP_ENV_TYPE && process.env.VUE_APP_ENV_TYPE === 'dev-test') proxyUrl = 'http://192.168.1.92:8050';
+if (process.env.VUE_APP_ENV_TYPE && process.env.VUE_APP_ENV_TYPE === 'dev-test') proxyUrl = 'http://192.168.1.92:8056';
 
 process.env.VUE_APP_VERSION = require('./package.json').version;
 
