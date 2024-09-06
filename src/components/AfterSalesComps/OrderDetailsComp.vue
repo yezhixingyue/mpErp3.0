@@ -57,12 +57,12 @@
             {{OrderDetail.Status | formatStatus}} <a @click="orderProgressVisible = true">查看进度</a>
           </span>
         </li>
-        <li v-if="showDownload && OrderDetail.FilePath && [0, 10, 25].findIndex(it => it === AfterSaleStatus) !== -1">
+        <li v-if="showDownload && (OrderDetail.FilePath || OrderDetail.CheckedFileList?.length > 0) &&
+        [0, 10, 25].findIndex(it => it === AfterSaleStatus) !== -1" class="download-box">
           <span class="label is-bold">文件下载：</span><span class="value">
-            <a :href="OrderDetail.FilePath" target="_blank" class="link download">下载订单文件</a>
-          </span>
-          <span class="label is-bold">审稿文件：</span><span class="value">
-            <a :href="OrderDetail.FilePath" target="_blank" class="link download">下载审稿文件</a>
+            <a v-if="OrderDetail.FilePath" :href="OrderDetail.FilePath" target="_blank" class="link download">下载订单文件</a>
+            <a v-if="OrderDetail.CheckedFileList?.length > 0" @click.prevent="onCheckFileDownloadClick(OrderDetail.CheckedFileList)"
+              class="link download">下载审稿文件</a>
           </span>
         </li>
       </ul>
@@ -377,6 +377,23 @@ export default {
         this.orderProgress = res.data.Data;
       }
     },
+    onCheckFileDownloadClick(CheckedFileList) {
+      const _download = (href) => {
+        if (!href) return;
+
+        const link = document.createElement('a');
+
+        link.target = '_blank';
+        link.style.display = 'none';
+        link.href = href;
+
+        document.body.appendChild(link);
+
+        link.click();
+      };
+
+      CheckedFileList.forEach(it => _download(it.FilePath));
+    },
   },
   mounted() {
 
@@ -385,6 +402,7 @@ export default {
 </script>
 
 <style lang='scss'>
+@import "@/assets/css/var.scss";
 .mp-order-progress-dia{
   .el-dialog__body{
     padding: 0;
@@ -452,6 +470,35 @@ export default {
         margin-top: 0;
         background-color: #F4FCFF;
         z-index: 2;
+      }
+      li{
+        &.download-box{
+          > button, .link {
+            margin: 0;
+            height: 16px;
+            line-height: 13px;
+            border: none;
+            padding: 0;
+            width: 6em;
+            overflow: hidden;
+            font-size: 12px;
+            position: relative;
+            text-align: center;
+            left: 0;
+            box-shadow: none;
+            color: #26bcf9;
+            text-decoration: none;
+            cursor: pointer;
+            &:hover {
+              color: $--color-primary-light;
+              font-size: 12px !important;
+              text-decoration: underline;
+            }
+            & + .link {
+              margin-left: 12px
+            }
+          }
+        }
       }
     }
     >.box{
