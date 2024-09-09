@@ -299,7 +299,7 @@ export default {
           show: true,
         },
         {
-          label: '尾款减少',
+          label: '减尾款',
           prop: 'Funds.Reduced',
           minWidth: '78px',
           sortable: true,

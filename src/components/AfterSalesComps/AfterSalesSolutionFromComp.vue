@@ -78,7 +78,7 @@
               </span>
             </template>
             <template v-if="dataInfo?.UnPaidAmount">
-              <span class="label is-bold">减尾款：</span><span class="value">
+              <span class="label is-bold" style="width: 5em; text-align: right;">减尾款：</span><span class="value">
                 <span>
                   <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"
                   v-model="CompleteFrom.Solution.UnpaidReducedAmount" style="width: 80px;"></el-input> 元
