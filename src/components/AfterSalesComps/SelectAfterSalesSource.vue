@@ -6,10 +6,23 @@
         <span v-for="it in dateValue" :key="it">
           {{AfterSaleChannel.find(e => e.ID === it)?.name}}
         </span>
-        <i @click="SelectSource">选择渠道</i>
+        <el-popover
+          placement="bottom"
+          @after-leave="afterLeave"
+          @show="show"
+          v-model="visible">
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox v-for="it in AfterSaleChannel" :key="it.ID" :label="it.ID">{{ it.name }}</el-checkbox>
+          </el-checkbox-group>
+          <div class="select-after-sales-source-btn-btn">
+            <el-button @click="confirm" class="linear-bg-color">确定</el-button>
+            <!-- <el-button @click="() => visible = false">取消</el-button> -->
+          </div>
+          <i slot="reference">选择渠道</i>
+        </el-popover>
       </p>
     </div>
-    <CommonDialogComp
+    <!-- <CommonDialogComp
       width="500px"
       top='30vh'
       title="选择售后渠道:"
@@ -22,16 +35,13 @@
       class="select-after-sales-source-dialog"
     >
     <template>
-      <el-checkbox-group v-model="checkList">
-        <el-checkbox v-for="it in AfterSaleChannel" :key="it.ID" :label="it.ID">{{ it.name }}</el-checkbox>
-      </el-checkbox-group>
     </template>
-    </CommonDialogComp>
+    </CommonDialogComp> -->
   </section>
 </template>
 
 <script>
-import CommonDialogComp from '@/packages/CommonDialogComp';
+// import CommonDialogComp from '@/packages/CommonDialogComp';
 
 export default {
   props: {
@@ -53,7 +63,7 @@ export default {
     },
   },
   components: {
-    CommonDialogComp,
+    // CommonDialogComp,
   },
   data() {
     return {
@@ -65,16 +75,16 @@ export default {
     onCancle() { // 取消  关闭弹窗
       this.visible = false;
     },
-    onSubmit() {
+    confirm() {
       this.changePropsFunc([['AfterSaleChannels', ''], [...this.checkList]]);
       this.requestFunc();
       this.onCancle();
     },
-    onOpen() {
+    afterLeave() {
       this.checkList = this.dateValue;
     },
-    onClosed() {
-      this.onCancle();
+    show() {
+      this.checkList = this.dateValue;
     },
     SelectSource() {
       this.visible = true;
@@ -103,10 +113,30 @@ export default {
       >span{
         margin-right: 10px;
       }
-      >i{
+      i{
         color: #26BCF9;
         cursor: pointer;
       }
+    }
+  }
+}
+.select-after-sales-source-btn-btn{
+  padding-top: 20px;
+  text-align: center;
+  .el-button{
+    width: 120px;
+    height: 35px;
+    padding: 0;
+    border: none;
+    background: #fff;
+    color: #26BCF9;
+    border: 1px solid #26BCF9;
+    &.linear-bg-color{
+      color: #fff;
+      background: linear-gradient( 226deg, #34DEF9 0%, #26BCF9 100%);
+    }
+    & + .el-button{
+      margin-left: 30px;
     }
   }
 }

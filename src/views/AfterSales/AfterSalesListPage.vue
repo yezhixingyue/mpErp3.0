@@ -67,7 +67,12 @@
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="状态" minWidth="70" show-overflow-tooltip>
-          <template slot-scope="scope">{{ progressList.find(it => scope.row.Status === it.ID)?.name}}</template>
+          <template slot-scope="scope">
+            <el-tooltip :disabled="scope.row.Status !== 25" effect="dark"
+            :content="`${scope.row.ReasonTypeName}${scope.row.HangRemark ? `(${scope.row.HangRemark})` : ''}`" placement="top">
+              <span>{{ progressList.find(it => scope.row.Status === it.ID)?.name}}</span>
+            </el-tooltip>
+          </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="处理人" minWidth="62" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.Operater || '-'}}</template>
