@@ -26,8 +26,10 @@
       <li v-if="appealData.QuestionPics && appealData.QuestionPics.length">
         <span class="label is-bold">图片凭证：</span><span class="value">
           <div class="image-list">
-            <el-image :preview-src-list="appealData.QuestionPics" :mpCloseViewer='closeViewer'
-              v-for="(item, index) in appealData.QuestionPics" :key="index + item" :src="item" fit="cover" ></el-image>
+            <!-- <el-image :preview-src-list="appealData.QuestionPics" :mpCloseViewer='closeViewer'
+              v-for="(item, index) in appealData.QuestionPics" :key="index + item" :src="item" fit="cover" ></el-image> -->
+            <ImageUploadComp :ImgList="appealData.QuestionPics" :limit='6' :disabled="true"
+            :beforeUploadFun="beforeUpload"></ImageUploadComp>
           </div>
         </span>
       </li>
@@ -158,7 +160,7 @@ export default {
   >ul{
     >li{
       display: flex;
-      font-size: 12px;
+      font-size: 14px;
       margin-top: 10px;
       line-height: 15px;
       >.value{

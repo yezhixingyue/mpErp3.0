@@ -3,7 +3,7 @@
     <li v-for="img in ImgList" :key="img">
       <div class="model-box">
         <i class="el-icon-zoom-in" @click="onPreview(img)"></i>
-        <i class="el-icon-delete" @click="onDelete(img)"></i>
+        <i v-if="!disabled" class="el-icon-delete" @click="onDelete(img)"></i>
       </div>
       <el-image :src="img" fit="cover" ></el-image>
     </li>
@@ -155,6 +155,7 @@ export default {
       align-items: center;
       i{
         font-size: 20px;
+        cursor: pointer;
       }
       i+i{
         margin-left: 15px;
