@@ -108,7 +108,7 @@ export default {
     width: 107px;
     height: 75px;
     border-radius: 4px;
-    margin-right: 10px;
+    margin-right: 5px;
     margin-bottom: 10px;
     overflow: hidden;
     .el-image{
