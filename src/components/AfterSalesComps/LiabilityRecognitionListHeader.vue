@@ -182,18 +182,17 @@ export default {
     this.$store.dispatch('common/getFeedbackQuestionList');
     this.$store.dispatch('common/getUserClassify');
     // this.getCustomerData();
-    switch (this.condition.DepartmentID) {
-      case 1:
-        this.activeName = 'businessCenter';
-        break;
-      case 5:
-        this.activeName = 'reviewSoftware';
-        break;
-      case 6:
-        this.activeName = 'otherSoftware';
-        break;
-      default:
-        break;
+    if (this.localPermission.BusinessQueryAll || this.localPermission.BusinessQueryDepartment) {
+      this.activeName = 'businessCenter';
+      this.setCondition4DataList([['DepartmentID', ''], 1]);
+    } else if (this.localPermission.AutoSoftManage) {
+      this.activeName = 'reviewSoftware';
+      this.setCondition4DataList([['DepartmentID', ''], 5]);
+    } else if (this.localPermission.OtherSoftManage) {
+      this.activeName = 'otherSoftware';
+      this.setCondition4DataList([['DepartmentID', ''], 6]);
+    } else {
+      this.setCondition4DataList([['DepartmentID', ''], '']);
     }
   },
 };

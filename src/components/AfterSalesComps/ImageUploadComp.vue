@@ -2,8 +2,10 @@
   <ul class="image-upload-comp">
     <li v-for="img in ImgList" :key="img">
       <div class="model-box">
-        <i class="el-icon-zoom-in" @click="onPreview(img)"></i>
-        <i v-if="!disabled" class="el-icon-delete" @click="onDelete(img)"></i>
+        <div @click="onPreview(img)" style="width: 100%; height: 100%; text-align: center;">
+          <i class="el-icon-zoom-in"></i> 查看
+        </div>
+        <i v-if="!disabled" class="el-icon-close" @click="onDelete(img)"></i>
       </div>
       <el-image :src="img" fit="cover" ></el-image>
     </li>
@@ -71,10 +73,14 @@ export default {
   methods: {
     handllePictureUploaded(e) {
       this.loadding = false;
-      if (this.limit - this.ImgList.length) {
-        this.$emit('UploadedSeccess', e.Data.Url);
+      if (e.Status === 1000) {
+        if (this.limit - this.ImgList.length) {
+          this.$emit('UploadedSeccess', e.Data.Url);
+        } else {
+          this.messageBox.failSingleError('上传失败', '您最多只能补充6张图片');
+        }
       } else {
-        this.messageBox.failSingleError('上传失败', '您最多只能补充6张图片');
+        this.messageBox.failSingleError('上传失败', e.Message);
       }
     },
     beforeUpload(e) {
@@ -110,7 +116,7 @@ export default {
     border-radius: 4px;
     margin-right: 5px;
     margin-bottom: 10px;
-    overflow: hidden;
+    // overflow: hidden;
     .el-image{
       width: 100%;
       height: 100%;
@@ -140,6 +146,10 @@ export default {
       >.model-box{
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 1;
+        >i{
+          display: inline;
+          opacity: 1;
+        }
       }
     }
     >.model-box{
@@ -150,15 +160,35 @@ export default {
       height: 100%;
       background-color: rgba(0, 0, 0, 0);
       color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      i{
-        font-size: 20px;
+      >div{
+        display: flex;
+        justify-content: center;
+        align-items: center;
         cursor: pointer;
       }
-      i+i{
-        margin-left: 15px;
+      i{
+        font-size: 20px;
+        padding: 5px;
+      }
+      >i{
+        transition: all 0.2s;
+        position: absolute;
+        padding: 0;
+        right: -7px;
+        top: -7px;
+        z-index: 2;
+        padding: 0;
+        border-radius: 50%;
+        font-size: 14px;
+        display: none;
+        background-color: #FF003A;
+        color: #FFFFFF;
+        width: 16px;
+        height: 16px;
+        text-align: center;
+        line-height: 16px;
+        cursor: pointer;
+        opacity: 0;
       }
     }
   }

@@ -1,7 +1,8 @@
 <template>
   <section class="mp-after-sales-info-page-wrap">
     <header>
-      <BreadcrumbNav backLabel="售后列表" label="售后详情"></BreadcrumbNav>
+      <BreadcrumbNav backLabel="售后列表"
+      :label="`${[10, 25].find(it => it === AfterSaleInfoDetail?.Status) ? '执行售后' : '查看详情'}`"></BreadcrumbNav>
     </header>
     <main>
       <div class="left">

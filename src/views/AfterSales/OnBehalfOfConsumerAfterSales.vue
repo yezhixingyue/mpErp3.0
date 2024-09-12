@@ -197,6 +197,11 @@ export default {
               line-height: 15px;
               >.value{
                 flex: 1;
+                .image-list{
+                  .el-image{
+                    border-radius: 4px;
+                  }
+                }
                 .el-checkbox-group{
                   .el-checkbox{
                     margin-right: 0;

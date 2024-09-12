@@ -35,11 +35,11 @@
       </li>
       <li v-if="SupplementalQuestionPics.length || appealData.Status === 10 || appealData.Status === 25">
         <span class="label is-bold">客服补充：</span><span class="value">
-          <div>
+          <div class="image-list">
             <ImageUploadComp :ImgList="SupplementalQuestionPics" @UploadedSeccess="UploadedSeccess"
             @PictureDelete="PictureDelete" :limit='6' :disabled="appealData.Status === 30 || appealData.Status === 255"
             :beforeUploadFun="beforeUpload"></ImageUploadComp>
-            <p class="is-origin">（最多可补充6张图片，支持jpg/.jpep/.png/.gif/.bmp格式）</p>
+            <p class="is-origin" style="font-size: 12px;">（最多可补充6张图片，支持jpg/.jpep/.png/.gif/.bmp格式）</p>
           </div>
         </span>
       </li>
@@ -165,6 +165,10 @@ export default {
       line-height: 15px;
       >.value{
         flex: 1;
+        >a{
+          color: #26BCF9;
+          cursor: pointer;
+        }
       }
       .image-list{
         display: flex;

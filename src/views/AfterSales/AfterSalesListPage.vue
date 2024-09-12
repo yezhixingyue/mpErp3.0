@@ -16,10 +16,10 @@
           <template slot-scope="scope">{{scope.row.ProductName}}</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="金额" minWidth="60" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.OrderProductPrice}}</template>
+          <template slot-scope="scope">{{scope.row.OrderProductPrice}}元</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="运费" minWidth="60" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.OrderFreight}}</template>
+          <template slot-scope="scope">{{scope.row.OrderFreight}}元</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="客户诉求" minWidth="136" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.AppealContent || '-'}}</template>

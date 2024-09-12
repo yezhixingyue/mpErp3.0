@@ -146,7 +146,7 @@
                     <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.ID }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="Logistics.BillNo" label="运单号" minWidth="160" show-overflow-tooltip>
+                <el-table-column prop="Logistics.BillNo" label="运单号" minWidth="140" show-overflow-tooltip>
                   <template slot-scope="scope">
                     <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">
                       {{ scope.row.Logistics?.BillNo }}
@@ -165,7 +165,7 @@
                     <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.ProductAmount }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="TotalAmount" label="金额" minWidth="50" show-overflow-tooltip>
+                <el-table-column prop="TotalAmount" label="金额" minWidth="70" show-overflow-tooltip>
                   <template slot-scope="scope">
                     <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.TotalAmount }}</span>
                   </template>

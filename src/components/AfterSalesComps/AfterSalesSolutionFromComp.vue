@@ -34,17 +34,17 @@
         </li>
         <template v-if="SolutionTypes !== 8">
           <li>
-            <span class="label is-bold">选择包裹：</span><span class="value">
+            <span class="label is-bold" style="min-width: 5em;">选择包裹：</span><span class="value">
               <el-table v-if="PackagesList" ref="selectPackages" stripe border fit :data="PackagesList.BackPackageInfos" style="width: 100%"
               @selection-change="handleSelectionChange" class="ft-14-table" maxHeight="300">
                 <el-table-column
                   type="selection"
                   label="包裹号"
-                  width="73">
+                  width="60">
                 </el-table-column>
-                <el-table-column prop="ID" label="包裹号" minWidth="123" show-overflow-tooltip>
+                <el-table-column prop="ID" label="包裹号" minWidth="115" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="Logistics.BillNo" label="运单号" minWidth="114" show-overflow-tooltip>
+                <el-table-column prop="Logistics.BillNo" label="运单号" minWidth="140" show-overflow-tooltip>
                   <template slot-scope="scope">
                     {{ scope.row.Logistics?.BillNo }}
                     <template v-if="scope.row.Logistics?.BillNo && PackagesList?.PackageBills.filter(it => it.ExpressBillType === 1)
@@ -55,8 +55,8 @@
                       {{PackagesList?.PackageBills.filter(it => it.ExpressBillType === 1).map(it => it.BillNo).join('、')}}
                     </template>
                   </template></el-table-column>
-                <el-table-column prop="ProductAmount" label="产品数量" minWidth="85" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="TotalAmount" label="金额" minWidth="57" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="ProductAmount" label="产品数量" minWidth="70" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="TotalAmount" label="金额" minWidth="70" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="UnPaidAmount" label="代收金额" minWidth="84" show-overflow-tooltip></el-table-column>
               </el-table>
             </span>
@@ -94,6 +94,9 @@
               <span style="margin-left: 30px;">
                 <i class="is-bold">每款数量：</i>
                 <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="CompleteFrom.Solution.Number" style="width: 100px;"></el-input> {{KindCount}}
+              </span>
+              <span style="margin-left: 30px;">
+                <el-checkbox v-model="CompleteFrom.Solution.LossIsAddFreight" style="line-height: 20px;">责任金额增加运费</el-checkbox>
               </span>
             </span>
           </li>
@@ -319,6 +322,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import { Loading } from 'element-ui';
 import FileSelectBtn from '@/packages/FileSelectComp/src/FileSelectBtn';
 import CommonDialogComp from '@/packages/CommonDialogComp';
 import AfterSalesProblemTypesDialog from '@/components/AfterSalesComps/AfterSalesProblemTypesDialog.vue';
@@ -405,6 +409,7 @@ export default {
           case 2:
             this.CompleteFrom.Solution.KindCount = '';
             this.CompleteFrom.Solution.Number = '';
+            this.CompleteFrom.Solution.LossIsAddFreight = false;
             break;
           case 7:
             this.CompleteFrom.Solution.RefundBalance = '';
@@ -418,6 +423,7 @@ export default {
             this.CompleteFrom.Solution.UnpaidReducedAmount = '';
             this.CompleteFrom.Solution.KindCount = '';
             this.CompleteFrom.Solution.Number = '';
+            this.CompleteFrom.Solution.LossIsAddFreight = false;
             break;
           default:
             break;
@@ -431,6 +437,7 @@ export default {
   },
   data() {
     return {
+      loadingInstance: false,
       // 补印文件
       ReprintFile: null,
       // 上传进度
@@ -486,6 +493,7 @@ export default {
         ],
         Solution: {
           SolutionTypes: [2],
+          LossIsAddFreight: false,
           KindCount: '',
           Number: '',
           UniqueName: '',
@@ -531,6 +539,13 @@ export default {
     },
     // 上传文件
     uploadFile(cb) {
+      this.loadingInstance = Loading.service({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(255, 255, 255, 0.3)',
+        customClass: 'mp-general-loading-box',
+      });
       const { file, uniqueName } = this.ReprintFile;
       // 先上传文件
       breakPointUpload(file, uniqueName, (res) => {
@@ -539,6 +554,7 @@ export default {
         if (!res.status) return;
         // 文件上传成功
         cb();
+        this.loadingInstance.close();
       });
     },
     onGoBackClick() {
@@ -878,6 +894,7 @@ export default {
       this.CompleteFrom.Solution.RefundFreightAmount = this.appealData.Solution.RefundFreightAmount;
       this.CompleteFrom.Solution.UnpaidReducedAmount = this.appealData.Solution.UnpaidReducedAmount;
       this.CompleteFrom.Solution.KindCount = this.appealData.Solution.KindCount;
+      this.CompleteFrom.Solution.LossIsAddFreight = this.appealData.Solution.LossIsAddFreight;
       this.CompleteFrom.Solution.Number = this.appealData.Solution.Number;
       this.CompleteFrom.Solution.CouponIsExtra = this.appealData.Solution.CouponIsExtra;
       this.CompleteFrom.Solution.SolutionResultRemark = this.appealData.Solution.SolutionResultRemark;

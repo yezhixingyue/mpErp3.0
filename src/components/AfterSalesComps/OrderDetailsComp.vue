@@ -155,7 +155,7 @@
       class="mp-service-detail-cord-dia"
     >
       <main>
-        <el-table class="ft-14-table"
+        <el-table class="ft-14-table" border stripe fit
         :data="dialogTableData.AfterSaleRecords" max-height=487
         style="width: 100%">
           <el-table-column prop="AfterSaleCode" label="售后单号" min-width="80"></el-table-column>
@@ -227,7 +227,7 @@
     <ul class="order-list-progress-wrap mp-scroll-wrap">
       <ProgressItem
         v-for="(item, i) in orderProgress" :key='item.Status + "-" + i'
-        :status='status' :orderProgressData='orderProgress' :index='i' />
+        :orderProgressData='orderProgress' :index='i' />
     </ul>
     </CommonDialogComp>
   </section>
@@ -374,7 +374,7 @@ export default {
       const res = await this.api.selectOrderProgress(this.OrderDetail.OrderID);
       if (!res) return;
       if (res.data.Status === 1000) {
-        this.orderProgress = res.data.Data;
+        this.orderProgress = [...res.data.Data].reverse();
       }
     },
     onCheckFileDownloadClick(CheckedFileList) {

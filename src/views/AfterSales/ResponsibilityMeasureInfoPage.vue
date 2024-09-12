@@ -1,7 +1,7 @@
 <template>
   <section class="responsibility-measure-info-page-wrap">
     <header>
-      <BreadcrumbNav backLabel="划分责任" label="查看详情"></BreadcrumbNav>
+      <BreadcrumbNav backLabel="划分责任" :label="`${[0, 1].findIndex(it => it === queryData?.Status) !== -1 ? '划分责任' : '查看详情'}`"></BreadcrumbNav>
     </header>
     <main>
       <div class="top">
@@ -104,7 +104,7 @@ export default {
     >.top{
       display: flex;
       justify-content: flex-start;
-      .line{
+      >.line{
         width: 1px;
         min-width: 1px;
         background-color: #D3F2FE;

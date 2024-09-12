@@ -1,7 +1,7 @@
 <template>
   <section class="liability-recognition-info-page-wrap">
     <header class="is-bold">
-      <BreadcrumbNav backLabel="责任确认" :label="`${queryData?.Status === 0 ? '确认责任' : '查看详情'}`"></BreadcrumbNav>
+      <BreadcrumbNav backLabel="责任确认" :label="`${queryData?.Status === 0 ? '责任确认' : '查看详情'}`"></BreadcrumbNav>
     </header>
     <main v-if="ResponsibilityConfirmDetail">
       <div class="top">
@@ -101,7 +101,7 @@ export default {
     >.top{
       display: flex;
       justify-content: flex-start;
-      .line{
+      >.line{
         width: 1px;
         min-width: 1px;
         background-color: #D3F2FE;
