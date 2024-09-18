@@ -120,12 +120,13 @@ export default {
     box-sizing: border-box;
     width: calc(100% - 50px);
     overflow: auto;
+    // box-shadow: 0 0 3px rgba($color: #000000, $alpha: 0.1);
     > ul {
-      display: inline-block;
-      min-width: 100%;
+      // display: inline-block;
+      // min-width: 100%;
+      width: 100%;
       > li {
         display: flex;
-        height: 60px;
         align-items: center;
         box-sizing: border-box;
         border: 1px solid #cbcbcb;
@@ -133,7 +134,6 @@ export default {
           width: 300px;
           flex: none;
           box-sizing: border-box;
-          height: 60px;
           padding: 15px 0;
           padding-left: 50px;
           line-height: 28px;
@@ -141,12 +141,18 @@ export default {
             font-weight: 700;
             color: #585858;
           }
-          border-right: 1px solid #cbcbcb;
         }
         > ul.content {
+          min-height: 50px;
+          border-left: 1px solid #cbcbcb;
+          margin-top: -1px;
           display: flex;
           align-items: center;
+          padding: 8px 0;
           padding-left: 20px;
+          flex: 1;
+          overflow: hidden;
+          flex-wrap: wrap;
           > li {
             > label {
               margin-right: 5px;
