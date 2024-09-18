@@ -28,10 +28,15 @@
           <OrderDetailDisplayItem v-for="it in PartShowDataList" :ShowData='it' :key="it.Name" />
         </li>
         <li></li>
+        <li v-if="OrderDetail.Weight">
+          <span class="label is-bold">理论重量：</span><span class="value">
+            <i>{{OrderDetail.Weight}} 千克</i>
+          </span>
+        </li>
         <li>
           <span class="label is-bold">下单方式：</span><span class="value">
             <i>{{OrderDetail.OrderType | formatOrderTypeToText}}</i>
-            <i class="is-gray" v-if="OrderDetail.OrderTaker">（ {{OrderDetail.OrderTaker.Value}} ）</i>
+            <i class="is-gray" v-if="OrderDetail.TakerName">（ {{OrderDetail.TakerName}} ）</i>
           </span>
         </li>
         <li>
@@ -54,7 +59,12 @@
         </li>
         <li>
           <span class="label is-bold">当前状态：</span><span class="value">
-            {{OrderDetail.Status | formatStatus}} <a @click="orderProgressVisible = true">查看进度</a>
+            <p> {{OrderDetail.Status | formatStatus}}</p>
+          </span>
+        </li>
+        <li>
+          <span class="label is-bold">其他信息：</span><span class="value">
+            <a @click="OrderInfo(OrderDetail, 0)">查看进度</a> <a @click="OrderInfo(OrderDetail, 2)">包裹列表</a>
           </span>
         </li>
         <li v-if="showDownload && (OrderDetail.FilePath || OrderDetail.CheckedFileList?.length > 0) &&
@@ -124,7 +134,7 @@
             </span>
           </li>
           <li>
-            <span class="label is-bold">配送方式：</span><span class="value">{{OrderDetail.Customer.ExpressText}}</span>
+            <span class="label is-bold">配送方式：</span><span class="value">{{OrderDetail.Customer.DeliveryAddress.ExpressText}}</span>
           </li>
           <li>
             <span class="label is-bold">收件人：</span><span class="value">
@@ -230,18 +240,22 @@
         :orderProgressData='orderProgress' :index='i' />
     </ul>
     </CommonDialogComp>
+    <OrderListDialog IsAfterSales/>
   </section>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index';
 import ProgressItem from '@/components/common/ProgressItem.vue';
 import CommonDialogComp from '@/packages/CommonDialogComp';
 import normalBtn from '@/components/common/normalBtn.vue';
 import OrderDetailDisplayItem from '@/packages/OrderDetailDisplayItem';
 import ShowProductDetail from '@/assets/js/TypeClass/ShowProductDetail';
+import OrderListDialog from '@/components/order/Main/OrderListDialog.vue';
 
 export default {
+  mixins: [mixin],
   props: {
     OrderDetail: {
       type: Object,
@@ -265,6 +279,7 @@ export default {
     OrderDetailDisplayItem,
     CommonDialogComp,
     ProgressItem,
+    OrderListDialog,
   },
   computed: {
     ...mapState('common', ['userTypeList']),
@@ -332,6 +347,11 @@ export default {
     };
   },
   methods: {
+    async OrderInfo(data, id) {
+      const orderItem = { ...data };
+      orderItem.ProductName = '';
+      this.onMenuClick(orderItem, id);
+    },
     getDayDate(time) {
       if (!time) return '';
       return time.split('.')[0].split('T')[0];

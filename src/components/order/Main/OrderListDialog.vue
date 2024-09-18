@@ -59,6 +59,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    IsAfterSales: { // 是否是售后
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -168,7 +172,7 @@ export default {
           }
           break;
         case 'second': // 包裹列表 - 双页
-          if (this.$route.name === 'orderManage' || this.$route.name === 'FeedbackInfo' || this.$route.name === 'ServiceInfo') {
+          if (this.$route.name === 'orderManage' || this.IsAfterSales) {
             if (this.dialogPackageData?.BackPackageInfos?.length === 0
               || this.dialogPackageData?.Order?.OrderID !== this.curOrderID
               || new Date().getTime() - this.packageListDateByOrderSetTime > this.requestDuration) {
@@ -216,8 +220,11 @@ export default {
     },
   },
   mounted() {
-    if (this.$route.name === 'orderManage' || this.$route.name === 'FeedbackInfo' || this.$route.name === 'ServiceInfo') {
+    if (this.$route.name === 'orderManage') {
       this.showDetail = true;
+      this.showService = true;
+    }
+    if (this.IsAfterSales) {
       this.showService = true;
     }
     this.$nextTick(this.getDialogTop());

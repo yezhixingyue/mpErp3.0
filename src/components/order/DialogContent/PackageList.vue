@@ -468,6 +468,7 @@ export default {
   .order-list-express-progress-dialog-wrap {
     min-height: 260px;
     max-height: 420px;
+    padding: 4px 0;
     overflow: auto;
     .el-loading-spinner {
       top: 30%;

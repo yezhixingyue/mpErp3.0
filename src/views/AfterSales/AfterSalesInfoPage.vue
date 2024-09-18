@@ -19,7 +19,8 @@
           <AfterSalesSolutionFromComp :PackagesList="PackagesList" :OrderID="queryData.OrderID" :OrderStatus="OrderDetail.Status"
           @changeVisible="HandOnVisible = false" :appealData="AfterSaleInfoDetail" ref="AfterSalesSolutionFrom"
           :HandOnVisible="HandOnVisible" :AfterSaleCode="queryData?.AfterSaleCode" :dataInfo="OrderDetail"
-          :KindCount="OrderDetail?.ProductParams?.Attributes?.Unit"/>
+          :KindCount="OrderDetail?.ProductParams?.Attributes?.Unit"
+          :ExpressType="OrderDetail?.Customer.DeliveryAddress.ExpressType"/>
         </template>
       </template>
     </main>

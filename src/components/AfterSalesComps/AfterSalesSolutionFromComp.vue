@@ -95,7 +95,7 @@
                 <i class="is-bold">每款数量：</i>
                 <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="CompleteFrom.Solution.Number" style="width: 100px;"></el-input> {{KindCount}}
               </span>
-              <span style="margin-left: 30px;">
+              <span style="margin-left: 30px;" v-if="ExpressType === 3 || ExpressType === 2">
                 <el-checkbox v-model="CompleteFrom.Solution.LossIsAddFreight" style="line-height: 20px;">责任金额增加运费</el-checkbox>
               </span>
             </span>
@@ -345,6 +345,10 @@ export default {
       default: () => null,
     },
     OrderID: {
+      type: Number,
+      default: () => 0,
+    },
+    ExpressType: {
       type: Number,
       default: () => 0,
     },
