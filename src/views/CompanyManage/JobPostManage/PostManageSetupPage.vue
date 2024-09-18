@@ -143,12 +143,13 @@ export default {
           }
         }
         > ul.content {
-          min-height: 50px;
+          min-height: 60px;
           border-left: 1px solid #cbcbcb;
           margin-top: -1px;
           display: flex;
           align-items: center;
           padding: 8px 0;
+          box-sizing: border-box;
           padding-left: 20px;
           flex: 1;
           overflow: hidden;
