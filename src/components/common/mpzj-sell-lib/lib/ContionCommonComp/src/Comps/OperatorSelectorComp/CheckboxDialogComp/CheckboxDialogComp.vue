@@ -3,6 +3,7 @@
     :title="title"
     :visible.sync="dialogVisible"
     :width="width"
+    :submitText="submitText"
     @cancel="handleClose"
     @open="open"
     @submit="onSubmitClick"
