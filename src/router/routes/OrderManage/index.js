@@ -323,20 +323,21 @@ const routeTree = {
     /*  售后管理
     ------------------------------------------ */
     // { name: 'service', children: [] },
-    { name: 'Service',
-      children: [
-        { name: 'ServiceInfo', children: [] },
-        { name: 'ResponsibilityMeasure',
-          children: [
-            { name: 'QuestionClass', children: [] },
-          ] },
-      ],
-    },
+    // { name: 'Service',
+    //   children: [
+    //     { name: 'ServiceInfo', children: [] },
+    //     { name: 'ResponsibilityMeasure',
+    //       children: [
+    //         { name: 'QuestionClass', children: [] },
+    //       ] },
+    //   ],
+    // },
     /*  售后列表
     ------------------------------------------ */
     { name: 'AfterSalesList',
       children: [
         { name: 'AfterSalesInfo', children: [] },
+        { name: 'QuestionClass', children: [] },
       ],
     },
     /*  责任划分详情

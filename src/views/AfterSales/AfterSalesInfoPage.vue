@@ -13,7 +13,7 @@
         <ScheduleComp v-if="AfterSaleInfoDetail" :Progresses="AfterSaleInfoDetail.ServiceProgresses"/>
       </div>
       <template v-if="queryData && AfterSaleInfoDetail && PackagesList">
-        <AfterSalesSolutionInfoComp :PackagesList="PackagesList" :appealData="AfterSaleInfoDetail" IsShowExtraPayForm
+        <AfterSalesSolutionInfoComp :PackagesList="PackagesList" :appealData="AfterSaleInfoDetail" IsShowExtraPayForm :showQuestionType="false"
         v-if="queryData.Status === 30 || queryData.Status === 40 || queryData.Status === 255" showResponsibilities/>
         <template v-else>
           <AfterSalesSolutionFromComp :PackagesList="PackagesList" :OrderID="queryData.OrderID" :OrderStatus="OrderDetail.Status"

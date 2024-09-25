@@ -80,6 +80,13 @@
               <span class="label is-bold">支出说明：</span><span class="value">{{propsData.ExtraPayRemark}}</span>
             </li>
           </template>
+          <li v-if="showQuestionType">
+            <span class="label is-bold">售后问题：</span><span class="value">
+              <div class="image-list">
+                {{appealData.QuestionTypeTitles.join('，')}}
+              </div>
+            </span>
+          </li>
           <template v-if="showImg">
             <li v-if="appealData.QuestionPics && appealData.QuestionPics.length">
               <span class="label is-bold">图片凭证：</span><span class="value">
@@ -224,6 +231,10 @@ export default {
     showImg: {
       type: Boolean,
       default: false,
+    },
+    showQuestionType: {
+      type: Boolean,
+      default: true,
     },
     showResponsibilities: {
       type: Boolean,

@@ -16,7 +16,8 @@
           </div>
           <ul class="content">
             <li v-for="item in it.List" :key="item.key">
-              <el-checkbox v-model="item.HavePermission" :title="item.Name">{{item.Name}}</el-checkbox>
+              <el-checkbox v-model="item.HavePermission" @change="bool => PermissionChange(bool, it.Type, item.Key)"
+                :title="item.Name" :disabled="disabledList.some(el => el === it.Type + item.Key)">{{item.Name}}</el-checkbox>
             </li>
           </ul>
         </li>
@@ -30,6 +31,7 @@
 </template>
 
 <script>
+import { setManageAfterSalesPermission } from './AdterSalesPermission';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
 
 export default {
@@ -38,6 +40,7 @@ export default {
   data() {
     return {
       detailData: null,
+      disabledList: [],
     };
   },
   methods: {
@@ -46,6 +49,7 @@ export default {
       const resp = await this.api.getJobPermissionsDetail(PositionID).catch(() => null);
       if (resp && resp.data.Status === 1000) {
         this.detailData = resp.data.Data;
+        this.SetDisabledList(); // 初始化需要禁用的选项
       }
     },
     onGoBackClick() {
@@ -89,6 +93,33 @@ export default {
       if (resp && resp.data.Status === 1000) {
         this.messageBox.successSingle('保存成功', this.onGoBackClick, this.onGoBackClick);
       }
+    },
+    async setAfterSalesDisabledPermission(bool, Type, Key) {
+      const temp = setManageAfterSalesPermission(bool, Type, Key, this.detailData.PermissionList, this.disabledList);
+      this.disabledList = [...temp.disabledList];
+      temp.changeList.forEach(it => {
+        this.detailData.PermissionList[it.PermissionIndex].List[it.index].HavePermission = false;
+      });
+    },
+    async PermissionChange(bool, Type, Key) {
+      switch (Type) {
+        case 21: // 售后列表
+          this.setAfterSalesDisabledPermission(bool, Type, Key);
+          break;
+        default:
+          break;
+      }
+    },
+    SetDisabledList() {
+      this.detailData.PermissionList.forEach(it => {
+        if (it.Type === 21) { // 售后列表
+          it.List.forEach(e => {
+            if (e.HavePermission) {
+              this.setAfterSalesDisabledPermission(e.HavePermission, it.Type, e.Key);
+            }
+          });
+        }
+      });
     },
   },
   mounted() {

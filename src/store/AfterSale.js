@@ -255,7 +255,7 @@ export default {
           TypeID: 0,
           ProductID: '',
         },
-        DepartmentID: 1,
+        DepartmentID: state.ResponsibilityConfirmCondition.DepartmentID,
         DateType: 'today',
         SellArea: {
           RegionalID: 0,
