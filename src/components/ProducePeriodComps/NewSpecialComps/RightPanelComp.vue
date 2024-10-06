@@ -36,16 +36,16 @@
         <label>提示：</label>
         <el-input type="textarea" :rows="3" v-model.trim="itemData.Tips" maxlength="40" show-word-limit />
       </li>
-      <li>
+      <!-- <li>
         <label></label>
         <div class="update">
           <el-checkbox v-model="itemData.IsUpdateOrder">更新已有订单</el-checkbox>
           <div class="is-gray">
-            <p>（仅更新近10天生产未完工的订单）</p>
-            <p>（仅更新近10天未完成的订单）</p>
+            <p v-show="itemData.SpecialType===NewSpecialTypeEnumObj.produce.ID">（仅更新近10天生产未完工的订单）</p>
+            <p v-show="itemData.SpecialType===NewSpecialTypeEnumObj.transport.ID">（仅更新近10天未完成的订单）</p>
           </div>
         </div>
-      </li>
+      </li> -->
     </template>
     <template v-else>
       <li class="l">
