@@ -74,7 +74,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="处理人" minWidth="62" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="处理人" minWidth="80" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.Operater || '-'}}</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="最后操作时间" minWidth="124" show-overflow-tooltip>
@@ -87,7 +87,7 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="120" fixed="right">
+        <el-table-column label="操作" width="102" fixed="right">
           <div class="is-font-12 operate" slot-scope="scope">
             <template v-if="scope.row.Status === 0 || scope.row.Status === 10 || scope.row.Status === 25">
               <template v-if="scope.row.Status === 0">
