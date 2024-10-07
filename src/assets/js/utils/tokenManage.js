@@ -48,8 +48,14 @@ export default class TokenClass {
     if (!_detailData) {
       const res = await api.getStaffDetail().catch(() => null);
       if (res && res.status === 200 && res.data.Status === 1000) {
-        localStorage.setItem('staffDetailData', JSON.stringify(res.data.Data));
-        return res.data.Data;
+        const _obj = { ...res.data.Data }; // 处理售后列表没有查看权限但有其他权限左侧显示售后列表的问题
+        if (!_obj.PermissionList.PermissionManageAfterSales.Obj.QueryAll
+          && !_obj.PermissionList.PermissionManageAfterSales.Obj.QueryDepartment
+          && !_obj.PermissionList.PermissionManageAfterSales.Obj.QueryOwn) {
+          _obj.PermissionList.PermissionManageAfterSales.HavePomission = false;
+        }
+        localStorage.setItem('staffDetailData', JSON.stringify(_obj));
+        return _obj;
       }
       return res && res.data ? res.data.Message : '获取账号信息失败，请刷新重试';
     }
