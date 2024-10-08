@@ -46,7 +46,7 @@ export default {
       { name: '终止生产', ID: 253 },
       { name: '已取消', ID: 254 },
       { name: '已过期', ID: 255 },
-      { name: '问题件', ID: 35, canCancel: true, canCancelInMyFactory: true },
+      { name: '问题件', ID: 35, canCancel: true, canCancelInMyFactory: true, isProblemShipment: true },
     ],
     orderStatueTitle: '不限',
     /* 订单进度信息
@@ -88,6 +88,7 @@ export default {
       DeliverStatus: '',
       DateType: 'today',
       FieldType: 2,
+      OnlyShowOwnQuestionOrder: false,
     },
     /* 订单列表数据（网络请求到的）
     -------------------------------*/
@@ -245,6 +246,7 @@ export default {
       if (!key2) state.objForOrderList[key1] = value;
       else state.objForOrderList[key1][key2] = value;
       if (key1 === 'OrderType') state.objForOrderList.Terminal = '';
+      if (key1 === 'Status') state.objForOrderList.OnlyShowOwnQuestionOrder = false;
     },
     /* 设置获取列表数据加载翻页 页码
     -------------------------------*/
@@ -293,6 +295,7 @@ export default {
         DeliverStatus: '',
         DateType: 'today',
         FieldType: 2,
+        OnlyShowOwnQuestionOrder: false,
       };
       if (type === 'onKeyWordSubmit') state.objForOrderList.KeyWords = _keywordsText;
       state.largeTitle = '不限';

@@ -46,6 +46,9 @@
           class="status"
           key='order-Status'
          />
+        <el-checkbox v-model="localOnlyShowOwnQuestionOrder" style="margin-right: 30px;margin-top: -1px;margin-left: -10px;" v-show="isProblemShipment">
+          <span style="font-size: 12px;">仅显示自己打回问题件</span>
+        </el-checkbox>
         <OrderChannelSelector
           :options='orderCreateTypeList'
           :requestFunc='getDataList'
@@ -151,6 +154,20 @@ export default {
     },
     localSelfHelpOrderTypeList() {
       return this.selfHelpOrderTypeList?.filter(it => it.name !== '移动端') || [];
+    },
+    isProblemShipment() {
+      const t = this.OrderStatusList.find(it => it.ID === this.objForOrderList.Status);
+
+      return !!(t && t.isProblemShipment);
+    },
+    localOnlyShowOwnQuestionOrder: {
+      get() {
+        return this.objForOrderList.OnlyShowOwnQuestionOrder;
+      },
+      set(val) {
+        this.setOrderManageRequestObj([['OnlyShowOwnQuestionOrder'], val]);
+        this.getDataList();
+      },
     },
     // :changePropsFunc="setOrderManageRequestObj"
     //       :requestFunc="getDataList"
