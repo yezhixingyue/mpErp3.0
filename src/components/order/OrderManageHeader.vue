@@ -47,7 +47,7 @@
           key='order-Status'
          />
         <el-checkbox v-model="localOnlyShowOwnQuestionOrder" style="margin-right: 30px;margin-top: -1px;margin-left: -10px;" v-show="isProblemShipment">
-          <span style="font-size: 12px;">仅显示自己打回问题件</span>
+          <span style="font-size: 12px;">仅显示自己的问题件</span>
         </el-checkbox>
         <OrderChannelSelector
           :options='orderCreateTypeList'
