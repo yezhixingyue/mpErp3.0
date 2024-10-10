@@ -38,7 +38,6 @@ const { UserDetail } = storeToRefs(userStore);
 const localManageAppList = ref(new ManageAppListClass());
 
 const onBind = (row) => {
-  console.log('onBind', row);
   localManageAppList.value.currentItem = row;
   localManageAppList.value.bindVisible = true;
 };
