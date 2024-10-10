@@ -44,6 +44,20 @@ export default {
         state.InvoiceMakeUpList.splice(i, 1, { ...state.InvoiceMakeUpList[i], ...temp });
       }
     },
+    setInvoiceMakeUpListSuccess(state, { multipleSelection, info }) {
+      if (multipleSelection.length === 0) return;
+
+      const { InvoiceStatus, OperaterUserName, OperateTime } = info;
+
+      const ids = multipleSelection.map(it => it.InvoiceID);
+
+      state.InvoiceMakeUpList.filter(it => ids.includes(it.InvoiceID)).forEach(it => {
+        const _it = it;
+        _it.InvoiceStatus = InvoiceStatus;
+        _it.OperateTime = OperateTime;
+        _it.OperaterUserName = OperaterUserName;
+      });
+    },
     /** 发票类别相关
      ---------------------------------------- */
     setInvoiceInfoList(state, { Data, DataNumber }) {

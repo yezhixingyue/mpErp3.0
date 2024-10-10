@@ -5,12 +5,15 @@
       <InvoiceMakeupTable
         :list="InvoiceMakeUpList"
         :loading="loading"
+        ref="oTable"
         @view="onViewClick"
         @detail="onDetailClick"
+        @selection="onselection"
       />
       <InvoiceMakeupListDialog :visible.sync="visible" :curItem="curItem" />
     </main>
     <footer>
+      <el-button class="btn" type="primary" size="mini" :disabled="multipleSelection.length===0" @click=onBatchCompleteClick>批量设置开票完成</el-button>
       <Count
         :count="InvoiceMakeUpListNumber"
         :watchPage="condition4InvoiceMakeUpList.Page"
@@ -34,6 +37,7 @@ import InvoiceMakeupTable from '../../components/InvoiceComps/Makeup/InvoiceMake
 import InvoiceMakeupListDialog from '../../components/InvoiceComps/Detail/InvoiceMakeupListDialog.vue';
 import Count from '../../components/common/Count.vue';
 import DownLoadExcelComp from '../../components/common/UploadComp/DownLoadExcelComp.vue';
+import { InvoiceStatusEnums } from '../../packages/InvoiceComps/enums';
 
 export default {
   name: 'InvoiceMakeOutListPage',
@@ -73,6 +77,7 @@ export default {
     return {
       visible: false,
       curItem: null,
+      multipleSelection: [],
     };
   },
   methods: {
@@ -90,6 +95,38 @@ export default {
       this.$router.push({
         name: 'InvoiceMakeOutDetail',
         params: { invoiceID: e.InvoiceID },
+      });
+    },
+    onselection(list) {
+      this.multipleSelection = list;
+    },
+    onBatchCompleteClick() {
+      if (!this.multipleSelection.length) return;
+
+      this.messageBox.warnCancelNullMsg('确定批量完成选中申请单吗 ?', () => {
+        // 成功后需要处理的事情：1.更改选中订单状态、处理人、处理时间  2. 清除批量选中
+        const callback = () => {
+          const OperaterUserName = this.$store.state.common.Permission.StaffName;
+          const OperateTime = new Date().toLocaleString().replace(/\//g, '-').replace(' ', 'T');
+
+          const temp = {
+            multipleSelection: this.multipleSelection,
+            info: {
+              OperateTime,
+              OperaterUserName,
+              InvoiceStatus: InvoiceStatusEnums.haveMaked.ID,
+            },
+          };
+
+          this.$store.commit('invoice/setInvoiceMakeUpListSuccess', temp);
+
+          this.$refs.oTable.toggleSelection();
+        };
+
+        // 模拟完成
+        setTimeout(() => {
+          this.messageBox.successSingle('设置成功', callback, callback);
+        }, 1000);
       });
     },
   },
@@ -156,7 +193,16 @@ export default {
   > footer {
     flex: none;
     background-color: #fff;
-    height: 50px;
+    height: 47px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 3px;
+    padding-left: 10px;
+
+    > .btn {
+      flex: none;
+      margin-right: 20px;
+    }
 
     .mp-common-download-to-excel-comp-wrap {
       margin-left: 35px;
