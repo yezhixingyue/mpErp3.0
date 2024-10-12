@@ -88,6 +88,20 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/CompanyManage/ScreenNameManage/ScreenNameManagePage.vue'),
     },
+    /*  资产管理
+    ------------------------------------------ */
+    {
+      path: '/ComputerList',
+      name: 'ComputerList',
+      meta: {
+        title: '办公电脑管理',
+        icon: 'el-icon-s-platform',
+        pageName: 'ComputerListManageView',
+        PermissionInfo: ['PermissionManagePC', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CompanyManage/EquipmentManage/ComputerList/ComputerListManageView.vue'),
+    },
   ],
 };
 

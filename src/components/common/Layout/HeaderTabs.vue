@@ -118,6 +118,7 @@ import { logout } from '../../../basic/logout';
 // import sortable from '../../../assets/js/mixins/Sortable/Sortable';
 import ChangePwdDialog from './ChangePwdDialog.vue';
 import { WikiHandler } from '@/assets/js/TypeClass/WikiHandler';
+import { siteType } from '@/config';
 
 export default {
   components: {
@@ -295,7 +296,6 @@ export default {
     },
     onDocClick(target) {
       if (!this.Permission) return;
-      const siteType = 1;
       // window.open(`http://file.ybz888.com:7006/init?token=${this.Permission.Token}&siteType=${siteType}&target=${target}`);
       WikiHandler.toWikiPageWithToken({ token: this.Permission.Token, siteType, target });
     },
@@ -370,7 +370,7 @@ export default {
     this.isIntranet = !window.location.protocol.startsWith('https');
 
     if (TokenClass.getToken()) {
-      this.getDepartmentList();
+      setTimeout(this.getDepartmentList, 0);
     }
 
     this.VERSION = process.env.VUE_APP_VERSION;
