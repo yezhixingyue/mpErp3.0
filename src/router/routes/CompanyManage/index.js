@@ -94,10 +94,10 @@ const routes = { // 基本设置
       path: '/ComputerList',
       name: 'ComputerList',
       meta: {
-        title: '计算机列表',
+        title: '办公电脑管理',
         icon: 'el-icon-s-platform',
         pageName: 'ComputerListManageView',
-        // PermissionInfo: ['PermissionManageRoster', 'HavePomission'],
+        PermissionInfo: ['PermissionManagePC', 'HavePomission'],
         requiresAuth: true,
       },
       component: () => import('../../../views/CompanyManage/EquipmentManage/ComputerList/ComputerListManageView.vue'),

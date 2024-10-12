@@ -1,4 +1,4 @@
-import { ComputerUseStateEnum } from './enum';
+import { ComputerUseStateEnum, EquipmentHistoryTypeEnum } from './enum';
 
 export interface IComputer {
   id: string
@@ -29,9 +29,16 @@ export interface IComputer {
 }
 
 export interface IRemarkSubmitParams {
-  equipmentId: string;
-  creator: string;
+  type: EquipmentHistoryTypeEnum;
   content: string;
+  creator: string;
+  equipmentId: string;
+}
+
+/** 调入提交信息 */
+export interface ICallinStateInfo {
+  state: ComputerUseStateEnum
+  user: string
 }
 
 export interface IComputerEditHistory {

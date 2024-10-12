@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <el-button type="primary" @click="emit('add')">+ 添加计算机</el-button>
+    <el-button type="primary" @click="emit('add')">+ 添加电脑</el-button>
     <div class="filter">
       <div class="list">
         <OrderChannelSelector

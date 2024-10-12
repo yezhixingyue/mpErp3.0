@@ -96,6 +96,7 @@ export class ComputerForm extends MyValidationDecorator {
     if (isCopy) { // 如果是拷贝方式新增
       this.id = undefined;
       this.user = '';
+      this.state = ComputerUseStateEnum.inUse;
     }
   }
 

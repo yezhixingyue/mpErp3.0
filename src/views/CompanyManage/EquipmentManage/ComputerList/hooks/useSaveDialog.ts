@@ -1,15 +1,18 @@
 import { Ref, ref } from 'vue';
-import { useUserStore } from '@/pinia/modules/user';
 import { ComputerForm } from '../model/Computer';
 import { ComputerListManageClass } from '../model/ComputerListManageClass';
-import { IComputer, IRemarkSubmitParams } from '../types/type';
+import { ICallinStateInfo, IComputer, IRemarkSubmitParams } from '../types/type';
+import { ComputerUseStateEnum, EquipmentHistoryTypeEnum } from '../types/enum';
 
 export const useSaveDialog = (localManageListData: Ref<ComputerListManageClass>) => {
   const visible = ref(false);
   const row = ref<null | IComputer>(null);
   const isCopy = ref(false);
 
+  let _computerSaveParams: ReturnType<ComputerForm['getParams']> | null = null;
+
   const remarkVisible = ref(false);
+  const operationType = ref(EquipmentHistoryTypeEnum.create);
 
   const onDialogSaveClick = (item: null | IComputer, _isCopy = false) => {
     row.value = item;
@@ -17,36 +20,54 @@ export const useSaveDialog = (localManageListData: Ref<ComputerListManageClass>)
     visible.value = true;
   };
 
-  let _params: ReturnType<ComputerForm['getParams']> | null = null;
+  const onDialogSubmitClick = (params: ReturnType<ComputerForm['getParams']>) => {
+    _computerSaveParams = params;
 
-  const submit = (content = '') => {
-    if (!_params) return;
+    // if (row.value && !isCopy.value) { // 编辑 有值且不是拷贝
+    //   remarkVisible.value = true;
+    //   return;
+    // }
 
+    // submit();
+    onRemarkDialogOpen(_computerSaveParams.id ? EquipmentHistoryTypeEnum.update : EquipmentHistoryTypeEnum.create, row.value);
+  };
+
+  const onRemarkDialogOpen = (type: EquipmentHistoryTypeEnum, item: null | IComputer) => { // 备注弹窗打开
+    operationType.value = type;
+    row.value = item;
+    remarkVisible.value = true;
+  };
+
+  const onRemarkDialogSubmit = (remarkData: IRemarkSubmitParams, callinStateData?: ICallinStateInfo) => { // 备注弹窗保存
     const callback = () => {
       visible.value = false;
       remarkVisible.value = false;
     };
 
-    const remark: IRemarkSubmitParams | null = content ? { content, creator: useUserStore().UserDetail.StaffID, equipmentId: row.value?.id } : null;
+    if (remarkData.type === EquipmentHistoryTypeEnum.abandon && row.value) {
+      localManageListData.value.changeState({ id: row.value.id, user: null, state: ComputerUseStateEnum.abandoned }, remarkData, callback);
+      return;
+    }
+
+    if (remarkData.type === EquipmentHistoryTypeEnum.callout && row.value) {
+      localManageListData.value.changeState({ id: row.value.id, user: null, state: ComputerUseStateEnum.calledout }, remarkData, callback);
+      return;
+    }
+
+    if (remarkData.type === EquipmentHistoryTypeEnum.callin && row.value && callinStateData) {
+      localManageListData.value.changeState({ id: row.value.id, ...callinStateData }, remarkData, callback);
+      return;
+    }
+
+    if (!_computerSaveParams) return;
 
     const data = {
-      params: _params,
-      remark,
+      params: _computerSaveParams,
+      remark: remarkData,
     };
 
     localManageListData.value.save(data, callback);
   };
 
-  const onDialogSubmitClick = (params: ReturnType<ComputerForm['getParams']>) => {
-    _params = params;
-
-    if (row.value && !isCopy.value) { // 编辑 有值且不是拷贝
-      remarkVisible.value = true;
-      return;
-    }
-
-    submit();
-  };
-
-  return { visible, row, isCopy, remarkVisible, onDialogSaveClick, onDialogSubmitClick, submit };
+  return { visible, row, isCopy, remarkVisible, operationType, onDialogSaveClick, onDialogSubmitClick, onRemarkDialogOpen, onRemarkDialogSubmit };
 };

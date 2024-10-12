@@ -27,13 +27,13 @@
         <el-form-item required label="显示器型号" prop="displayModel"
           :rules="[{ validator: ruleForm.validateField('displayModel') }]"
         >
-          <el-input v-model.trim="ruleForm.displayModel" autocomplete="off" maxlength="50"></el-input>
+          <el-input v-model="ruleForm.displayModel" autocomplete="off" maxlength="50"></el-input>
         </el-form-item>
 
         <el-form-item required label="cpu型号" prop="cpu"
           :rules="[{ validator: ruleForm.validateField('cpu') }]"
         >
-          <el-input v-model.trim="ruleForm.cpu" autocomplete="off" maxlength="50"></el-input>
+          <el-input v-model="ruleForm.cpu" autocomplete="off" maxlength="50"></el-input>
         </el-form-item>
 
         <el-form-item required label="内存插槽数量" prop="memorySlotsNumber"
@@ -45,7 +45,7 @@
         <el-form-item required label="内存型号" prop="memory"
           :rules="[{ validator: ruleForm.validateField('memory') }]"
         >
-          <el-input v-model.trim="ruleForm.memory" autocomplete="off" maxlength="50"></el-input>
+          <el-input v-model="ruleForm.memory" autocomplete="off" maxlength="50"></el-input>
         </el-form-item>
 
         <el-form-item required label="硬盘数量" prop="diskNumber"
@@ -57,19 +57,19 @@
         <el-form-item required label="硬盘型号" prop="disk"
           :rules="[{ validator: ruleForm.validateField('disk') }]"
         >
-          <el-input v-model.trim="ruleForm.disk" autocomplete="off" maxlength="50"></el-input>
+          <el-input v-model="ruleForm.disk" autocomplete="off" maxlength="50"></el-input>
         </el-form-item>
 
         <el-form-item required label="显卡型号" prop="graphicsCard"
           :rules="[{ validator: ruleForm.validateField('graphicsCard') }]"
         >
-          <el-input v-model.trim="ruleForm.graphicsCard" autocomplete="off" maxlength="50"></el-input>
+          <el-input v-model="ruleForm.graphicsCard" autocomplete="off" maxlength="50"></el-input>
         </el-form-item>
 
         <el-form-item required label="网卡型号" prop="networkCard"
           :rules="[{ validator: ruleForm.validateField('networkCard') }]"
         >
-          <el-input v-model.trim="ruleForm.networkCard" autocomplete="off" maxlength="50"></el-input>
+          <el-input v-model="ruleForm.networkCard" autocomplete="off" maxlength="50"></el-input>
         </el-form-item>
       </el-form>
 
@@ -78,7 +78,7 @@
         <el-form-item required label="操作系统" prop="os"
           :rules="[{ validator: ruleForm.validateField('os') }]"
         >
-          <el-input v-model.trim="ruleForm.os" autocomplete="off" maxlength="50"></el-input>
+          <el-input v-model="ruleForm.os" autocomplete="off" maxlength="50"></el-input>
         </el-form-item>
 
         <el-form-item required label="系统盘类型" prop="systermDiskType"
@@ -103,7 +103,7 @@
         <el-form-item label="采购来源" prop="source"
           :rules="[{ validator: ruleForm.validateField('source') }]"
         >
-          <el-input v-model.trim="ruleForm.source" autocomplete="off" maxlength="50"></el-input>
+          <el-input v-model="ruleForm.source" autocomplete="off" maxlength="50"></el-input>
         </el-form-item>
 
         <!-- 购买时间 -->

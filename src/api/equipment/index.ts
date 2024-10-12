@@ -16,4 +16,7 @@ export const mpEquipmentApi = {
   getComputerHistoryList(condition) {
     return instance.post('/api/computer/history', condition, { baseURL, headers: { siteType } });
   },
+  getComputerChangeState(data) {
+    return instance.post('/api/computer/changeState', data, { baseURL, headers: { siteType } });
+  },
 };

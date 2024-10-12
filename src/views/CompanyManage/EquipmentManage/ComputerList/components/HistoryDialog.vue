@@ -1,16 +1,21 @@
 <template>
   <CommonDialogComp
-    class="dialog" width="660px" top="15vh" title="查看设备修改历史"
+    class="dialog" width="700px" top="15vh" title="查看设备修改历史"
     :visible.sync="localVisible" :showSubmit="false"
     @open="open" @cancle="cancel">
     <div class="dialog-content">
       <el-table v-if="result" :data="result.rows" stripe border style="width: 100%;" height="240">
-        <el-table-column width="145" label="操作人" show-overflow-tooltip>
+        <el-table-column width="100" label="操作人" show-overflow-tooltip>
           <template #default="scope">
             <span>{{ getStaffName(scope.row.creator) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="content" label="操作备注" show-overflow-tooltip width="300"></el-table-column>
+        <el-table-column width="80" label="操作类型" show-overflow-tooltip>
+          <template #default="scope">
+            <span>{{ getTypeEnumName(scope.row.type) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="content" label="操作备注" show-overflow-tooltip width="325"></el-table-column>
         <el-table-column prop="createdAt" label="时间" show-overflow-tooltip ></el-table-column>
       </el-table>
 
@@ -25,6 +30,7 @@ import { mpEquipmentApi } from '@/api/equipment';
 import { CommonDialogComp } from '@/components/common/mpzj-sell-lib/lib';
 import { computed, ref } from 'vue';
 import { useStaffList } from '../hooks/useStaffList';
+import { EquipmentHistoryTypeEnum, EquipmentHistoryTypeEnumList } from '../types/enum';
 import { IComputer, IComputerEditHistory } from '../types/type';
 
 const props = defineProps<{
@@ -59,6 +65,7 @@ const getHistory = async (offset = 1) => {
 };
 
 const { getStaffName } = useStaffList();
+const getTypeEnumName = (type: EquipmentHistoryTypeEnum) => EquipmentHistoryTypeEnumList.find(it => it.ID === type)?.Name;
 
 const open = async () => {
   result.value = null;
@@ -76,7 +83,8 @@ const cancel = () => {
   display: flex;
   margin: 0 auto;
   flex-direction: column;
-  height: 320px;
+  height: 350px;
+  margin-bottom: -20px;
 
   :deep(.el-table) {
     th.el-table__cell {

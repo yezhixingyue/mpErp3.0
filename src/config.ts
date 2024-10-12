@@ -10,4 +10,4 @@ export const docClientURL = process.env.VUE_APP_DOC_CLIENT_URL; // 文章预览�
 export const equipmentURL = process.env.VUE_APP_EQUIPMENT_API_URL;
 
 // ----------------- 帮助文档与文档管理相关设置
-export const siteType = 1;
+export const siteType = process.env.VUE_APP_ENV_SITE_TYPE;

@@ -23,9 +23,9 @@
         <span>{{ getStaffName(scope.row.user) }}</span>
       </template>
     </el-table-column>
-    <el-table-column show-overflow-tooltip width="120" prop="code" label="主机编号" />
-    <el-table-column show-overflow-tooltip width="85" prop="displayNumber" label="显示器数量" />
-    <el-table-column show-overflow-tooltip width="120" prop="displayCode" label="显示器编号" />
+    <el-table-column show-overflow-tooltip width="140" prop="code" label="主机编号" />
+    <el-table-column show-overflow-tooltip width="90" prop="displayNumber" label="显示器数量" />
+    <el-table-column show-overflow-tooltip width="140" prop="displayCode" label="显示器编号" />
     <el-table-column show-overflow-tooltip width="125" prop="displayModel" label="显示器型号" />
     <el-table-column show-overflow-tooltip width="120" prop="ip" label="ip" />
     <el-table-column show-overflow-tooltip width="140" prop="mac" label="mac" />
@@ -51,7 +51,7 @@
     </el-table-column>
     <el-table-column show-overflow-tooltip width="100" label="创建人">
       <template #default="scope">
-        <span>{{ getStaffName(scope.row.creator) }}</span>
+        <span>{{ scope.row.creator === '00000000-0000-0000-0000-000000000000' ? '数据导入' : getStaffName(scope.row.creator) }}</span>
       </template>
     </el-table-column>
     <el-table-column show-overflow-tooltip width="155" label="创建时间">
@@ -64,18 +64,34 @@
         <span>{{ getDateTimeFormat(scope.row.updatedAt === scope.row.createdAt ? '' : scope.row.updatedAt) }}</span>
       </template>
     </el-table-column>
-    <el-table-column show-overflow-tooltip width="200px" label="操作" fixed="right">
+    <el-table-column show-overflow-tooltip width="260px" label="操作" fixed="right">
         <template #default="scope">
           <div class="menus">
-            <span class="blue-span" @click="emit('edit', scope.row)">
+            <!-- 设置禁用 -->
+            <span class="blue-span" @click="emit('edit', scope.row)"
+              :class="{disabled:[ComputerUseStateEnum.abandoned, ComputerUseStateEnum.calledout].includes(scope.row.state)}">
               <i>编辑</i>
             </span>
-            <span class="blue-span ml-15" @click="emit('edit', scope.row, true)">
+            <span class="blue-span ml-15" @click="emit('edit', scope.row, true)"
+              :class="{disabled:[ComputerUseStateEnum.abandoned, ComputerUseStateEnum.calledout].includes(scope.row.state)}">
               <i>拷贝</i>
             </span>
+            <span class="blue-span ml-15" @click="emit('abandon', EquipmentHistoryTypeEnum.abandon, scope.row)"
+              :class="{disabled:[ComputerUseStateEnum.abandoned, ComputerUseStateEnum.calledout].includes(scope.row.state)}">
+              <i>作废</i>
+            </span>
+            <span class="blue-span ml-15" @click="emit('callin', EquipmentHistoryTypeEnum.callin, scope.row)"
+               v-if="scope.row.state === ComputerUseStateEnum.calledout">
+              <i>调入</i>
+            </span>
+            <span class="blue-span ml-15" @click="emit('callout', EquipmentHistoryTypeEnum.callout, scope.row)" v-else
+              :class="{disabled:[ComputerUseStateEnum.abandoned, ComputerUseStateEnum.calledout].includes(scope.row.state)}">
+              <i>调出</i>
+            </span>
             <span class="blue-span ml-15" @click="emit('history', scope.row)"
-             :class="{disabled: !scope.row.updatedAt || scope.row.updatedAt===scope.row.createdAt}">
-              <i>查看修改历史</i>
+             :class="{disabled: !scope.row.updatedAt
+               || (scope.row.updatedAt===scope.row.createdAt && scope.row.creator === '00000000-0000-0000-0000-000000000000')}">
+              <i>查看历史记录</i>
             </span>
           </div>
         </template>
@@ -90,7 +106,7 @@
 import { IComputer } from '../types/type';
 import { getOnlyDateFormat, getDateTimeFormat } from '../js/tool';
 import { useStaffList } from '../hooks/useStaffList';
-import { ComputerUseStateEnumList } from '../types/enum';
+import { ComputerUseStateEnumList, ComputerUseStateEnum, EquipmentHistoryTypeEnum } from '../types/enum';
 
 defineProps<{
   list: IComputer[]
@@ -102,6 +118,7 @@ const emit = defineEmits(['edit', 'history']);
 const { getStaffName, getDepartment, getPostName } = useStaffList();
 
 const getStateText = (state) => ComputerUseStateEnumList.find(it => it.ID === state)?.Name || '';
+
 </script>
 
 <script lang='ts'>

@@ -3,9 +3,16 @@
     <Header @add="onDialogSaveClick(null)" :localManageListData='localManageListData' @getList="getList" />
     <main>
       <Dialog :visible.sync="visible" :item="row" :isCopy="isCopy" @submit="onDialogSubmitClick" />
-      <RemarkDialog :visible.sync="remarkVisible" @submit="submit" />
+      <RemarkDialog :visible.sync="remarkVisible" :row="row" :operationType="operationType"  @submit="onRemarkDialogSubmit" />
       <HistoryDialog :visible.sync="history.visible" :item="history.row" />
-      <Table :list="localManageListData.list" :loading="localManageListData.loading" @edit="onDialogSaveClick" @history="onHistoryClick" />
+      <Table :list="localManageListData.list" :loading="localManageListData.loading"
+        :operationType='operationType'
+        @edit="onDialogSaveClick"
+        @history="onHistoryClick"
+        @abandon="onRemarkDialogOpen"
+        @callin="onRemarkDialogOpen"
+        @callout="onRemarkDialogOpen"
+       />
     </main>
 
     <Footer :Page="localManageListData.condition.Page" :PageSize="localManageListData.condition.PageSize" :listNumber="localManageListData.listNumber"
@@ -28,7 +35,9 @@ import { useStaffList } from './hooks/useStaffList';
 
 const localManageListData = ref(new ComputerListManageClass());
 
-const { visible, row, isCopy, remarkVisible, onDialogSaveClick, onDialogSubmitClick, submit } = useSaveDialog(localManageListData);
+const {
+  visible, row, isCopy, remarkVisible, operationType, onDialogSaveClick, onDialogSubmitClick, onRemarkDialogOpen, onRemarkDialogSubmit,
+} = useSaveDialog(localManageListData);
 
 const { history, onHistoryClick } = useHistory();
 
