@@ -147,7 +147,7 @@ export default {
       if (!this.Permission) return [];
       return [
         'detail',
-        this.PermissionObj.SetPrice ? 'setup' : '',
+        this.PermissionObj.SetPrice || this.PermissionObj.QueryPrice ? 'setup' : '',
         // this.PermissionObj.BindShop ? 'setup2' : '',
         this.hasEditPermission ? 'edit' : '',
         this.PermissionObj.Delete ? 'del' : '',
@@ -156,7 +156,7 @@ export default {
     lastMinWidth() {
       let num = 335;
       if (this.Permission) {
-        if (!this.PermissionObj.SetPrice) {
+        if (!this.PermissionObj.SetPrice && !this.PermissionObj.QueryPrice) {
           num -= 80;
         }
         // if (!this.PermissionObj.BindShop) {

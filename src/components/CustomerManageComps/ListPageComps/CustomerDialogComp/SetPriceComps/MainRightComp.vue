@@ -1,7 +1,7 @@
 <template>
   <section class="mp-erp-comps-customer-detail-display-dialog-comp-set-price-index-main-right-comp-wrap" v-if="customer">
     <header>
-      <el-radio-group v-model="FundInfo.CashBackType" size="mini">
+      <el-radio-group v-model="FundInfo.CashBackType" size="mini" :disabled="!haveEditPermission">
         <el-radio :label="it.ID" v-for="it in CashBackTypeEnumList" :key="it.ID">{{it.Name}}</el-radio>
       </el-radio-group>
       <div class="tips">
@@ -19,7 +19,7 @@
       </div>
     </header>
     <main>
-      <el-form :model="FundInfo" ref="FundInfo" label-width="120px" class="demo-FundInfo" hide-required-asterisk size="mini">
+      <el-form :model="FundInfo" ref="FundInfo" label-width="120px" class="demo-FundInfo" hide-required-asterisk size="mini" :disabled="!haveEditPermission">
         <el-form-item
           :label="amountLabel"
           prop="MinAmount"
@@ -56,6 +56,10 @@ export default {
     customer: {
       type: Object,
       default: null,
+    },
+    haveEditPermission: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
