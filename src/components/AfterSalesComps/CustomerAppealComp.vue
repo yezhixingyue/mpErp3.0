@@ -49,7 +49,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import ImageUploadComp from '@/components/AfterSalesComps/ImageUploadComp.vue';
+import ImageUploadComp from '@/components/common/UploadComp/ImageUploadComp.vue';
 import { debounce } from '@/assets/js/utils/throttle';
 import { Message } from 'element-ui';
 

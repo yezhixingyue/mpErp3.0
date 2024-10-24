@@ -17,7 +17,7 @@
        >{{ scope.row.OrderID }}</span>
     </el-table-column>
     <TableColumnItem v-for="colItem in tableColData.filter(it => it.show)" :key="colItem.label" :colItem='colItem' />
-    <el-table-column width="260px" prop="handle" label="操作" fixed="right">
+    <el-table-column width="330px" prop="handle" label="操作" fixed="right">
       <template slot="header">
         <TableInfoDefindHeaderColumnScope @onClick="onInfoClick" />
       </template>
@@ -33,6 +33,11 @@
           </span>
           <span v-else class="disbaled">
             <img src="@/assets/images/servicestop.png" />售后
+          </span>
+        </li>
+        <li v-if="localPermission.PayExpress">
+          <span  @click="FreightWriteOff(scope.row)">
+            <img src="@/assets/images/运费核销.png" width="16px"/>运费核销
           </span>
         </li>
         <li v-if="localPermission.CancleOrder || localPermission.ProductionStop">
@@ -126,6 +131,9 @@ export default {
     },
     ServiceAfterSalesClick(data) {
       this.$emit('ServiceAfterSalesClick', data);
+    },
+    FreightWriteOff(data) { // 运费核销
+      this.$emit('FreightWriteOff', data);
     },
     // 终止生产
     onOrderStop(data, index) {
@@ -448,7 +456,7 @@ export default {
         // height: 14px;
         width: 15px;
       }
-      &:nth-of-type(3) {
+      &:nth-of-type(4) {
         // width: 21%;
         img {
           top: 2px;

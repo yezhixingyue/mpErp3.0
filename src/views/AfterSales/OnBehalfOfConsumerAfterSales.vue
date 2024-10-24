@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <AfterSalesSolutionFromComp consent :PackagesList="PackagesList" :OrderID="$route.query.OrderID" :dataInfo="OrderDetail"
+      <AfterSalesSolutionFromComp consent :PackagesList="PackagesList" :OrderID="OrderID" :dataInfo="OrderDetail"
       :ExpressType="OrderDetail?.Customer.DeliveryAddress.ExpressType"
       ref="AfterSalesSolutionFrom" Source :OrderStatus="OrderDetail?.Status" :KindCount="OrderDetail?.ProductParams?.Attributes?.Unit"/>
       <!-- <SuspendDialogComp :visible="SuspendVisible" @cloce="SuspendVisible = false" @submit="SuspendVisible = false"></SuspendDialogComp> -->
@@ -63,6 +63,7 @@ export default {
   },
   data() {
     return {
+      OrderID: '',
       ApplyQuestionList: [],
       PackagesList: null,
       SuspendVisible: false,
@@ -117,7 +118,7 @@ export default {
       });
     },
     async getPackagesByOrderID() {
-      const resp = await this.api.getPackagesByOrderID(this.$route.query.OrderID).catch(() => {});
+      const resp = await this.api.getPackagesByOrderID(this.OrderID).catch(() => {});
       if (resp && resp.data.Status === 1000) {
         this.PackagesList = resp.data.Data;
       }
@@ -145,8 +146,12 @@ export default {
       });
     },
   },
+  created() {
+    console.log(this.OrderID, this.$route.query.OrderID);
+    if (this.$route.query.OrderID) this.OrderID = this.$route.query.OrderID;
+  },
   mounted() {
-    this.getOrderDetail(this.$route.query.OrderID);
+    this.getOrderDetail(this.OrderID);
     this.initQuestion();
     this.getPackagesByOrderID();
   },

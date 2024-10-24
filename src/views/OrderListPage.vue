@@ -1,6 +1,7 @@
 <template>
   <div class="order-list-page-wrap">
     <Table @ServiceAfterSalesClick="ServiceAfterSalesClick"
+    @FreightWriteOff="FreightWriteOff"
     @CancelProductionClick="CancelProductionClick"
     @TerminateProductionClick="TerminateProductionClick"
     />
@@ -183,6 +184,18 @@ export default {
       this.$router.push({ name: 'applyAfterSales',
         query: {
           OrderID: data.OrderID,
+        },
+      });
+    },
+    FreightWriteOff(data) {
+      this.$router.push({ name: 'FreightWriteOffPage',
+        params: {
+          Weight: data.Weight,
+          ProductID: data.ProductID,
+          CustomerID: data.CustomerID,
+          OrderID: data.OrderID,
+          OrderData: data,
+          ProductPrice: data.Funds.FinalPrice,
         },
       });
     },

@@ -25,6 +25,28 @@ const routes = { // 客户订单管理
       component: () => import('../../../components/order/Order.vue'),
     },
     {
+      path: '/freightWriteOffList',
+      name: 'freightWriteOffList',
+      meta: {
+        title: '运费核销',
+        icon: 'iconfont icon-dingdanguanli1',
+        pageName: 'freightWriteOffListPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionManagePayExpress', 'HavePomission'],
+      },
+      component: () => import('../../../views/FreightWriteOffListPage.vue'),
+    },
+    {
+      path: '/FreightWriteOffPage',
+      name: 'FreightWriteOffPage',
+      meta: {
+        title: '运费核销',
+        pageName: 'FreightWriteOffPage',
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/FreightWriteOffPage.vue'),
+    },
+    {
       path: '/applyAfterSales',
       name: 'applyAfterSales',
       meta: {
@@ -312,7 +334,9 @@ const routeTree = {
     { name: 'orderManage',
       children: [
         { name: 'applyAfterSales', children: [] },
+        { name: 'FreightWriteOffPage', children: [] },
       ] },
+    { name: 'freightWriteOffListPage', children: [] },
     { name: 'BatchUpload', children: [] },
     /*  运单管理
     ------------------------------------------ */

@@ -55,6 +55,24 @@ const api = {
   getOrderProductionStopQuery(data) { // POST /Api/Order/ProductionStop/Query
     return instance.post('/Api/Order/ProductionStop/Query', data);
   },
+  getPayExpressPayResult(changeID) { // 运费核销支付结果查询
+    return instance.get(`/Api/PayExpress/PayResult?changeID=${changeID}`, { closeTip: true, loading: false });
+  },
+  getOrderExpressChange(data) { // POST /Api/Order/ExpressChange 修改订单配送
+    return instance.post('/Api/Order/ExpressChange', data);
+  },
+  getFreightCalculateClick(data) { // POST /Api/Freight/Calculate 运费（差额）计算
+    return instance.post('/Api/Freight/Calculate', data);
+  },
+  getExpressChangeList(data) { // POST /Api/ExpressChange/List 运费核销列表
+    return instance.post('/Api/ExpressChange/List ', data);
+  },
+  getExpressChangeExcel(data) { // POST /Api/ExpressChange/Excel 运费核销列表导出
+    return instance.post('/Api/ExpressChange/Excel ', data, { responseType: 'arraybuffer', closeTip: true });
+  },
+  getExpressChangeCancle(changeID) { // POST /Api/ExpressChange/Cancle 运费核销取消
+    return instance.delete(`/Api/ExpressChange/Cancle?changeID=${changeID}`);
+  },
   getOrderProductionStopSave(data) { // POST /Api/Order/ProductionStop/Save
     return instance.post('/Api/Order/ProductionStop/Save', data, { closeTip: true });
   },

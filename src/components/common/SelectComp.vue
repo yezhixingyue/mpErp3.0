@@ -9,6 +9,7 @@
     <el-option
       v-for="item in options"
       :key="item.value"
+      :disabled='item.disabled'
       :label="item[defaultProps.label]"
       :value="item[defaultProps.value]">
     </el-option>
