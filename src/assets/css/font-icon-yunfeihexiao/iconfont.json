@@ -1,0 +1,16 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "139441561",
+      "name": "运费核销",
+      "font_class": "yunfeihexiao",
+      "unicode": "e69a",
+      "unicode_decimal": 59034
+    }
+  ]
+}

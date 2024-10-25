@@ -29,7 +29,7 @@ const routes = { // 客户订单管理
       name: 'freightWriteOffList',
       meta: {
         title: '运费核销',
-        icon: 'iconfont icon-dingdanguanli1',
+        icon: 'iconfont icon-yunfeihexiao',
         pageName: 'freightWriteOffListPage',
         requiresAuth: true,
         PermissionInfo: ['PermissionManagePayExpress', 'HavePomission'],

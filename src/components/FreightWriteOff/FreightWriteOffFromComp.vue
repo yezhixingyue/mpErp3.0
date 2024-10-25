@@ -15,7 +15,7 @@
         </li>
         <li>
           <span class="label is-bold">原运费：</span><span class="value">
-            {{ OrderDetail.Funds.Freight - OrderDetail.Funds.RefundFreightAmount }} 元
+            {{ (OrderDetail.Funds.Freight - OrderDetail.Funds.RefundFreightAmount).toFixed(1) }} 元
           </span>
         </li>
         <li>
@@ -64,9 +64,8 @@
           <span class="label is-bold">备注（选填）：</span><span class="value">
             <el-input
               type="textarea"
-              :autosize="{minRows: 4, maxRows: 4}"
               placeholder="请输入备注"
-              maxlength="300"
+              maxlength="100"
               show-word-limit
               v-model.trim="ruleForm.Remark">
             </el-input>
@@ -86,16 +85,15 @@
           <span class="label is-bold">备注（必填）：</span><span class="value">
             <el-input
               type="textarea"
-              :autosize="{minRows: 4, maxRows: 4}"
               placeholder="请输入备注"
-              maxlength="300"
+              maxlength="100"
               show-word-limit
               v-model.trim="ruleForm.Remark">
             </el-input>
           </span>
         </li>
         <li>
-          <span class="label is-bold">上传凭证（必填）：</span><span class="value">
+          <span class="label is-bold">上传凭证（必填）：</span><span class="value" style="width: 400px;">
             <ImageUploadComp :ImgList="ruleForm.PicList" @UploadedSeccess="UploadedSeccess"
             @PictureDelete="PictureDelete" :limit='9'
             :beforeUploadFun="beforeUpload"></ImageUploadComp>
@@ -104,7 +102,7 @@
       </template>
     </ul>
     <PayCodeDialog :visible="PayCodeVisible" @close='PayCodeDialogClose' :CustomerName="CustomerName"
-      :PayCodeData="PayCodeData" :ChangeID="ChangeID" @seccess="PayCodeSeccess"/>
+      :PayCodeData="PayCodeData" :ChangeID="PayCodeData?.ID" @seccess="PayCodeSeccess"/>
   </section>
 </template>
 
@@ -325,10 +323,12 @@ export default {
     },
     PayCodeDialogClose() {
       this.PayCodeVisible = false;
+      setTimeout(() => {
+        this.$goback();
+      }, 10);
     },
     PayCodeSeccess() {
-      this.PayCodeVisible = false;
-      this.messageBox.successSingle('支付成功', this.$goback, this.$goback);
+      this.messageBox.successSingle('支付成功', this.PayCodeDialogClose, this.PayCodeDialogClose);
     },
     FreightCalculate() {
       const obj = {
@@ -341,7 +341,7 @@ export default {
       this.api.getFreightCalculateClick(obj).then(res => {
         if (res.data.Status === 1000) {
           this.ruleForm.CurrentAmount = Number(res.data.Data);
-          this.ruleForm.Amount = this.ruleForm.OriginalAmount - this.ruleForm.CurrentAmount;
+          this.ruleForm.Amount = (this.ruleForm.OriginalAmount - this.ruleForm.CurrentAmount).toFixed(1);
         }
       });
     },
@@ -393,10 +393,10 @@ export default {
               this.messageBox.successSingle('提交成功', this.$goback, this.$goback);
             } else if (this.ruleForm.Amount === 0) {
               this.messageBox.successSingle('提交成功', this.$goback, this.$goback);
-            } else if (this.ruleForm.Amount < 0 && !!res.data.Data.PayWay) {
+            } else if (this.ruleForm.Amount < 0 && !!res.data.Data) {
               this.PayCodeVisible = true;
               this.PayCodeData = res.data.Data;
-            } else if (this.ruleForm.Amount < 0 && !res.data.Data.PayWay) {
+            } else if (this.ruleForm.Amount < 0 && !res.data.Data) {
               this.messageBox.successSingle('扣款成功', this.$goback, this.$goback);
             } else {
               this.messageBox.successSingle('退款成功', this.$goback, this.$goback);
@@ -424,7 +424,7 @@ export default {
     this.ruleForm.Address.Address.Consignee = this.OrderDetail.Address.Address.Consignee;
     this.ruleForm.Address.Address.Mobile = this.OrderDetail.Address.Address.Mobile;
     this.ruleForm.Address.Express.Second = this.OrderDetail.Address.Express.Second;
-    this.ruleForm.OriginalAmount = this.OrderDetail.Funds.Freight - this.OrderDetail.Funds.RefundFreightAmount;
+    this.ruleForm.OriginalAmount = (this.OrderDetail.Funds.Freight - this.OrderDetail.Funds.RefundFreightAmount).toFixed(1);
     this.ruleForm.IsAuto = this.isNotYetShipped;
     setTimeout(() => { // 处理运费差额默认值（因省市区修改只能watch监听然后指控差额所以需要在回显之后再赋默认值）
       this.ruleForm.Amount = 0;
@@ -459,6 +459,9 @@ export default {
           margin-left: 50px;
         }
       }
+      .detail-input{
+        width: 492px;
+      }
       .address-select{
         .el-select {
           margin-right: 20px;
@@ -490,11 +493,18 @@ export default {
           }
         }
       }
+      .el-textarea, textarea{
+        width: 290px;
+        height: 174px;
+      }
       >.label{
         position: relative;
       }
       >.value{
         flex: 1;
+        .image-upload-comp{
+          width: 400px;
+        }
       }
     }
   }

@@ -14,6 +14,7 @@
               label="客户类型"
             />
             <EpCascaderByProduct
+              style="margin-right: 30px"
               class="mr-12"
               :getList="getDataList"
               :setCondition="setCondition4DataList"
@@ -21,6 +22,26 @@
               :Second="condition.Product.TypeID"
               :ProductID="condition.Product.ProductID"
               :typeList="[['Product', 'ClassID'],['Product', 'TypeID'],['Product', 'ProductID']]"
+            />
+            <OrderChannelSelector
+              style="margin-right: 30px"
+              :options="FreightWriteStatus"
+              :requestFunc="getDataList"
+              :changePropsFunc="setCondition4DataList"
+              :typeList="[['Status', '']]"
+              :value="condition.Status"
+              :defaultProps="{ label: 'label', value: 'value' }"
+              label="核销状态"
+            />
+            <OrderChannelSelector
+              :filterable='true'
+              :options='staffList'
+              :requestFunc='getDataList'
+              :changePropsFunc='setCondition4DataList'
+              :typeList="[['Operator', '']]"
+              :defaultProps="{ label: 'StaffName', value: 'StaffID' }"
+              :value='condition.Operator'
+              label="处理人"
             />
           </div>
         </li>
@@ -33,6 +54,7 @@
             :dateValue='condition.DateType'
             :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
             minDate="2022-01-01 00:00:00"
+            :dateList="dateList"
             label="时间筛选"
           />
           <SearchInputComp
@@ -68,7 +90,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="ProductName" label="产品" minWidth="148" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.Product.Name }}</template>
+          <template slot-scope="scope">{{ scope.row.SecondLevel.Name }} - {{ scope.row.Product.Name }}</template>
         </el-table-column>
         <el-table-column prop="ProductName" label="产品金额" minWidth="76" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.ProductAmount }}</template>
@@ -80,17 +102,17 @@
           <template slot-scope="scope">{{scope.row.CurrentAmount }}</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="差额" minWidth="48" show-overflow-tooltip>
-          <template slot-scope="scope">
+          <template slot-scope="scope" v-if="!scope.row.Type">
             {{scope.row.Amount}}
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="收取客户金额" minWidth="104" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{scope.row.Amount}}
+          <template slot-scope="scope" v-if="!scope.row.Type">
+            {{scope.row.Amount < 0 ? scope.row.Amount : ''}}
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="退回客户金额" minWidth="104" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.Amount}}</template>
+          <template slot-scope="scope" v-if="!scope.row.Type">{{scope.row.Amount > 0 ? scope.row.Amount : ''}}</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="客户要求" minWidth="116" show-overflow-tooltip>
           <template slot-scope="scope">
@@ -98,7 +120,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="申请时间" minWidth="136" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CreateTime }}</template>
+          <template slot-scope="scope">{{scope.row.CreateTime | format2MiddleLangTypeDate}}</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="核销状态" minWidth="76" show-overflow-tooltip>
           <template slot-scope="scope">
@@ -162,7 +184,7 @@
                 <li>
                   <span class="label is-bold">差额：</span><span class="value">{{FreightWriteOffDetailData.Amount}}元</span>
                 </li>
-                <li>
+                <li v-if="FreightWriteOffDetailData.Amount > 0">
                   <span class="label is-bold">退款方式：</span><span class="value">{{ FreightWriteOffDetailData.IsRefundBalance ? '退回客户余额' : '原路退回'}}</span>
                 </li>
                 <li>
@@ -246,7 +268,18 @@ export default {
   mixins: [mixin, tableMixin, recordScrollPositionMixin('.ft-14-table .el-table__body-wrapper')],
   data() {
     return {
+      dateList: [
+        { name: '今天', ID: 'today' },
+        { name: '昨天', ID: 'yesterday' },
+        { name: '前天', ID: 'beforeyesterday' },
+        { name: '本月', ID: 'curMonth' },
+        { name: '上月', ID: 'lastMonth' },
+      ],
       FreightWriteStatus: [
+        {
+          value: '',
+          label: '不限',
+        },
         {
           value: 0,
           label: '待核销',
@@ -264,6 +297,7 @@ export default {
           label: '已取消',
         },
       ],
+      staffList: null,
       OrderDetailData: null,
       FreightWriteOffDetailData: null,
       PayCodeData: {
@@ -288,7 +322,7 @@ export default {
           TypeID: '',
           ProductID: '',
         },
-        DateType: 'all',
+        DateType: 'today',
         Date: {
           First: '',
           Second: '',
@@ -419,9 +453,15 @@ export default {
       };
       this.messageBox.warnCancelBox('确定取消此运费核销吗 ?', `订单号：[ ${OrderID} ]`, cb, null);
     },
+    async getStaffList() { // 获取客户数据
+      this.api.getStaffList().then(res => {
+        this.staffList = [{ StaffName: '不限', StaffID: '' }, ...res.data.Data];
+      });
+    },
   },
   mounted() {
     this.getDataList();
+    this.getStaffList();
     this.$store.dispatch('common/getUserClassify');
     this.$nextTick(() => this.setHeight());
     window.onresize = () => this.setHeight();
@@ -497,6 +537,7 @@ export default {
   }
   .mp-erp-freight-write-off-dialog-comp-wrap{
     .el-dialog__body{
+      padding: 0 30px;
       padding-top: 0;
       padding-bottom: 0;
     }
@@ -509,10 +550,11 @@ export default {
       .mp-erp-freight-write-off-dialog-right {
         margin-top: 16px;
         padding-left: 20px;
-        width: 390px;
+        width: 362px;
         box-sizing: border-box;
-        padding-right: 32px;
+        // padding-right: 10px;
         border-left: 1px solid #EEEEEE;
+        margin-left: 20px;
         >.title{
           font-size: 16px;
           line-height: 20px;
@@ -528,6 +570,12 @@ export default {
             line-height: 15px;
             >.value{
               flex: 1;
+              .image-upload-comp > li{
+                margin-right: 10px;
+                &:nth-child(3n){
+                  margin-right: 0px;
+                }
+              }
             }
           }
         }

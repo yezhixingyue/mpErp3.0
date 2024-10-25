@@ -120,6 +120,7 @@ export default {
     .el-image{
       width: 100%;
       height: 100%;
+      border-radius: 4px;
     }
     .upload-demo{
       display: flex;
@@ -160,6 +161,7 @@ export default {
       height: 100%;
       background-color: rgba(0, 0, 0, 0);
       color: #fff;
+      border-radius: 4px;
       >div{
         display: flex;
         justify-content: center;
