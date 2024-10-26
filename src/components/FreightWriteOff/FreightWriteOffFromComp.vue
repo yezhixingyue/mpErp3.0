@@ -15,7 +15,7 @@
         </li>
         <li>
           <span class="label is-bold">原运费：</span><span class="value">
-            {{ (OrderDetail.Funds.Freight - OrderDetail.Funds.RefundFreightAmount).toFixed(1) }} 元
+            {{ Number((OrderDetail.Funds.Freight - OrderDetail.Funds.RefundFreightAmount).toFixed(1)) }} 元
           </span>
         </li>
         <li>
@@ -341,7 +341,7 @@ export default {
       this.api.getFreightCalculateClick(obj).then(res => {
         if (res.data.Status === 1000) {
           this.ruleForm.CurrentAmount = Number(res.data.Data);
-          this.ruleForm.Amount = (this.ruleForm.OriginalAmount - this.ruleForm.CurrentAmount).toFixed(1);
+          this.ruleForm.Amount = Number((this.ruleForm.OriginalAmount - this.ruleForm.CurrentAmount).toFixed(1));
         }
       });
     },

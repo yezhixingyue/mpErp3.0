@@ -18,7 +18,6 @@
 import OrderDetailsComp from '@/components/FreightWriteOff/OrderDetailsComp.vue';
 import FreightWriteOffFromComp from '@/components/FreightWriteOff/FreightWriteOffFromComp.vue';
 import BreadcrumbNav from '@/components/AfterSalesComps/BreadcrumbNav.vue';
-import { Message } from 'element-ui';
 
 export default {
   name: 'FreightWriteOffPage',

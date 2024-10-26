@@ -93,26 +93,31 @@
           <template slot-scope="scope">{{ scope.row.SecondLevel.Name }} - {{ scope.row.Product.Name }}</template>
         </el-table-column>
         <el-table-column prop="ProductName" label="产品金额" minWidth="76" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.ProductAmount }}</template>
+          <template slot-scope="scope">{{scope.row.ProductAmount }}元</template>
         </el-table-column>
         <el-table-column prop="Amount" label="运费" minWidth="48" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.OriginalAmount }}元</template>
+          <template slot-scope="scope">{{ Number((scope.row.CurrentAmount + scope.row.Amount).toFixed(1)) }}元</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="实际运费" minWidth="76" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CurrentAmount }}</template>
+          <template slot-scope="scope">{{scope.row.CurrentAmount }}元</template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="差额" minWidth="48" show-overflow-tooltip>
-          <template slot-scope="scope" v-if="!scope.row.Type">
-            {{scope.row.Amount}}
+          <template slot-scope="scope">
+            <span v-if="!scope.row.Type">{{scope.row.Amount}}元</span>
+            <span v-else>0元</span>
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="收取客户金额" minWidth="104" show-overflow-tooltip>
-          <template slot-scope="scope" v-if="!scope.row.Type">
-            {{scope.row.Amount < 0 ? scope.row.Amount : ''}}
+          <template slot-scope="scope">
+            <span class="is-success" v-if="!scope.row.Type">{{scope.row.Amount < 0 ? Math.abs(scope.row.Amount) : '0'}}元</span>
+            <span class="is-success" v-else>0元</span>
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="退回客户金额" minWidth="104" show-overflow-tooltip>
-          <template slot-scope="scope" v-if="!scope.row.Type">{{scope.row.Amount > 0 ? scope.row.Amount : ''}}</template>
+          <template slot-scope="scope">
+            <span class="is-pink" v-if="!scope.row.Type">{{scope.row.Amount > 0 ? scope.row.Amount : '0'}}元</span>
+            <span class="is-pink" v-else>0元</span>
+          </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="客户要求" minWidth="116" show-overflow-tooltip>
           <template slot-scope="scope">
@@ -175,7 +180,7 @@
                 </span>
               </li>
               <template v-if="FreightWriteOffDetailData.Type === 0">
-                <li>
+                <li v-if="FreightWriteOffDetailData.OperatorRemark">
                   <span class="label is-bold">更改信息：</span><span class="value">{{FreightWriteOffDetailData.OperatorRemark}}</span>
                 </li>
                 <li>
@@ -210,7 +215,7 @@
                 <span class="label is-bold">操作人：</span><span class="value">{{FreightWriteOffDetailData?.Operator?.Name}}</span>
               </li>
               <li>
-                <span class="label is-bold">核销状态：</span><span class="value">
+                <span class="label is-bold">核销状态：</span><span class="value" :class="{'is-success': FreightWriteOffDetailData.Status === 0}">
                   {{FreightWriteStatus.find(it => it.value === FreightWriteOffDetailData.Status).label}}
                 </span>
               </li>
@@ -242,7 +247,7 @@ import Count from '@/components/common/Count.vue';
 import mixin from '@/assets/js/mixins/OrderList&FeedbackCommonDialogMixins/index';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
 import recordScrollPositionMixin from '@/assets/js/mixins/recordScrollPositionMixin';
-import { mapState, mapMutations, mapActions } from 'vuex';
+import { mapState } from 'vuex';
 import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
 import EpCascaderByProduct from '@/components/common/SelectorComps/EpCascaderWrap/EpCascaderByProduct.vue';
 import ClassType from '@/store/CommonClassType';
@@ -300,13 +305,7 @@ export default {
       staffList: null,
       OrderDetailData: null,
       FreightWriteOffDetailData: null,
-      PayCodeData: {
-        PayWay: {
-          AllinPay: 'ssssssssssssss',
-        },
-        PayCode: '10548201585',
-        Amount: '1000',
-      },
+      PayCodeData: null,
       FreightWriteOffVisible: false,
       ChangeID: null,
       CustomerName: null,
@@ -390,7 +389,6 @@ export default {
             this.dataList[index].Status = 1;
           }
         });
-        this.$goback();
       };
       this.messageBox.successSingle('支付成功', cb, cb);
     },
@@ -412,8 +410,28 @@ export default {
       }
     },
     clearCondition() {
-    },
-    setCondition(Condition) {
+      this.condition = {
+        CustomerType: {
+          First: '',
+        },
+        Product: {
+          ClassID: '',
+          TypeID: '',
+          ProductID: '',
+        },
+        DateType: 'today',
+        Date: {
+          First: '',
+          Second: '',
+        },
+        CreateTime: {
+          First: '',
+          Second: '',
+        },
+        Page: 1,
+        PageSize: 20,
+        KeyWords: '',
+      };
     },
     handlePageChange(page) {
       this.getDataList(page);
@@ -502,6 +520,17 @@ export default {
     }
   }
   .el-table {
+    .el-table__body-wrapper{
+      tbody{
+        .el-table__row{
+          .el-table__cell{
+            .cell{
+              padding: 0 1px;
+            }
+          }
+        }
+      }
+    }
     .operate{
       display: flex;
       .iconfont{
