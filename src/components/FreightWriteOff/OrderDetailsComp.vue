@@ -34,7 +34,7 @@
         <li>
           <span class="label is-bold">运费：</span><span class="value">{{OrderDetail.Funds.Freight}}元</span>
         </li>
-        <li>
+        <li v-if="OrderDetail.Funds.RefundFreightAmount">
           <span class="label is-bold">已退运费：</span><span class="value">{{OrderDetail.Funds.RefundFreightAmount}}元</span>
         </li>
       </ul>
