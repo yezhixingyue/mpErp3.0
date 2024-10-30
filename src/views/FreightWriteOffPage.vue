@@ -63,7 +63,7 @@ export default {
   overflow-x: auto;
   height: 100%;
   padding-left: 20px;
-  width: 1230px;
+  min-width: 1230px;
   >header{
     margin-top: 20px;
   }

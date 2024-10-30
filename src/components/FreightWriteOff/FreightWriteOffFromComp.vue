@@ -3,8 +3,8 @@
     <ul>
       <li class="clients-requirement">
         <span class="label is-bold" style="line-height: 35px;">客户要求：</span><span class="value">
-          <el-button size="medium" @click="ruleForm.Type = 0" :type="`${ruleForm.Type === 0 ? 'primary' : ''}`">更改快递信息</el-button>
-          <el-button size="medium" @click="ruleForm.Type = 1" :type="`${ruleForm.Type === 1 ? 'primary' : ''}`">其他</el-button>
+          <el-button size="medium" @click="userRequest(0)" :type="`${ruleForm.Type === 0 ? 'primary' : ''}`">更改快递信息</el-button>
+          <el-button size="medium" @click="userRequest(1)" :type="`${ruleForm.Type === 1 ? 'primary' : ''}`">其他</el-button>
         </span>
       </li>
       <template v-if="ruleForm.Type === 0">
@@ -18,7 +18,7 @@
             {{ Number((OrderDetail.Funds.Freight - OrderDetail.Funds.RefundFreightAmount).toFixed(1)) }} 元
           </span>
         </li>
-        <li>
+        <li v-if="ruleForm.Address.Address.ExpressArea">
           <span class="label is-bold" style="line-height: 30px;">地址：</span><span class="value">
             <p>
               <AreaAddressInfoSetupComp class="address-select"
@@ -217,14 +217,7 @@ export default {
           Address: {
             CustomerID: '',
             AddressID: '',
-            ExpressArea: {
-              RegionalID: 0,
-              RegionalName: '',
-              CityID: 0,
-              CityName: '',
-              CountyID: 0,
-              CountyName: '',
-            },
+            ExpressArea: null,
             ActualArea: {
               RegionalID: 0,
               RegionalName: '',
@@ -296,6 +289,12 @@ export default {
     onGoBackClick() {
       this.$goback();
     },
+    userRequest(type) {
+      this.ruleForm.Type = type;
+      this.ruleForm.Amount = '';
+      this.ruleForm.Remark = '';
+      this.ruleForm.CurrentAmount = 0;
+    },
     handleChange(e) {
       const temp = this.spreadExpressList.find(it => it.ID === e);
       if (!temp) return;
@@ -341,11 +340,29 @@ export default {
       this.api.getFreightCalculateClick(obj).then(res => {
         if (res.data.Status === 1000) {
           this.ruleForm.CurrentAmount = Number(res.data.Data);
-          this.ruleForm.Amount = Number((this.ruleForm.OriginalAmount - this.ruleForm.CurrentAmount).toFixed(1));
+          this.ruleForm.Amount = `${Number((this.ruleForm.OriginalAmount - this.ruleForm.CurrentAmount).toFixed(1))}`;
         }
       });
     },
     formValidator() {
+      const oldData = {
+        CountyID: this.OrderDetail.Address.Address.ExpressArea.CountyID,
+        AddressDetail: this.OrderDetail.Address.Address.AddressDetail,
+        Consignee: this.OrderDetail.Address.Address.Consignee,
+        Mobile: this.OrderDetail.Address.Address.Mobile,
+        Second: this.OrderDetail.Address.Express.Second,
+        Amount: '0',
+        Remark: '',
+      };
+      const newData = {
+        CountyID: this.ruleForm.Address.Address.ExpressArea.CountyID,
+        AddressDetail: this.ruleForm.Address.Address.AddressDetail,
+        Consignee: this.ruleForm.Address.Address.Consignee,
+        Mobile: this.ruleForm.Address.Address.Mobile,
+        Second: this.ruleForm.Address.Express.Second,
+        Amount: this.ruleForm.Amount,
+        Remark: this.ruleForm.Remark,
+      };
       if (this.ruleForm.Type === 0 && !this.ruleForm.Address.Address.ExpressArea.CountyID) {
         this.messageBox.failSingleError('操作失败', '请选择地址');
         return false;
@@ -363,7 +380,7 @@ export default {
         return false;
       }
       if (this.ruleForm.Type === 0 && this.isNotYetShipped && this.ruleForm.Amount === '') {
-        this.messageBox.failSingleError('操作失败', '请点击“计算运费差额”后保存');
+        this.messageBox.failSingleError('操作失败', '请点击“计算运费差额”后提交');
         return false;
       }
       if (this.ruleForm.Type === 0 && !this.isNotYetShipped && this.ruleForm.Amount === '') {
@@ -380,6 +397,10 @@ export default {
       }
       if (this.ruleForm.Type === 1 && !this.ruleForm.PicList.length) {
         this.messageBox.failSingleError('操作失败', '请上传凭证');
+        return false;
+      }
+      if (JSON.stringify(oldData) === JSON.stringify(newData)) {
+        this.messageBox.failSingleError('操作失败', '数据无更改');
         return false;
       }
       return true;
@@ -427,7 +448,7 @@ export default {
     this.ruleForm.OriginalAmount = (this.OrderDetail.Funds.Freight - this.OrderDetail.Funds.RefundFreightAmount).toFixed(1);
     this.ruleForm.IsAuto = this.isNotYetShipped;
     setTimeout(() => { // 处理运费差额默认值（因省市区修改只能watch监听然后指控差额所以需要在回显之后再赋默认值）
-      this.ruleForm.Amount = 0;
+      this.ruleForm.Amount = '0';
     }, 10);
 
     this.CustomerName = this.OrderDetail.Customer.CustomerName;

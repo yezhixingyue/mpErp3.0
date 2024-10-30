@@ -96,27 +96,36 @@
           <template slot-scope="scope">{{scope.row.ProductAmount }}元</template>
         </el-table-column>
         <el-table-column prop="Amount" label="运费" minWidth="48" show-overflow-tooltip>
-          <template slot-scope="scope">{{ Number((scope.row.CurrentAmount + scope.row.Amount).toFixed(1)) }}元</template>
+          <template slot-scope="scope">
+            <span v-if="!scope.row.Type">
+              {{scope.row.OriginalAmount }}元
+            </span>
+            <span v-else>-</span>
+          </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="实际运费" minWidth="76" show-overflow-tooltip>
-          <template slot-scope="scope">{{scope.row.CurrentAmount }}元</template>
-        </el-table-column>
-        <el-table-column prop="CustomerType" label="差额" minWidth="48" show-overflow-tooltip>
           <template slot-scope="scope">
-            <span v-if="!scope.row.Type">{{scope.row.Amount}}元</span>
-            <span v-else>0元</span>
+            <span v-if="!scope.row.Type">
+              {{scope.row.CurrentAmount }}元
+            </span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="CustomerType" label="差额/运费金额" minWidth="110" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <span>{{scope.row.Amount}}元</span>
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="收取客户金额" minWidth="104" show-overflow-tooltip>
           <template slot-scope="scope">
-            <span class="is-success" v-if="!scope.row.Type">{{scope.row.Amount < 0 ? Math.abs(scope.row.Amount) : '0'}}元</span>
-            <span class="is-success" v-else>0元</span>
+            <span class="is-success" v-if="!scope.row.Type && scope.row.Amount < 0">{{`${Math.abs(scope.row.Amount)}元`}}</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="退回客户金额" minWidth="104" show-overflow-tooltip>
           <template slot-scope="scope">
-            <span class="is-pink" v-if="!scope.row.Type">{{scope.row.Amount > 0 ? scope.row.Amount : '0'}}元</span>
-            <span class="is-pink" v-else>0元</span>
+            <span class="is-pink" v-if="!scope.row.Type && scope.row.Amount > 0">{{ `${scope.row.Amount}元` }}</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column prop="CustomerType" label="客户要求" minWidth="116" show-overflow-tooltip>
@@ -192,7 +201,7 @@
                 <li v-if="FreightWriteOffDetailData.Amount > 0">
                   <span class="label is-bold">退款方式：</span><span class="value">{{ FreightWriteOffDetailData.IsRefundBalance ? '退回客户余额' : '原路退回'}}</span>
                 </li>
-                <li>
+                <li v-if="FreightWriteOffDetailData.Remark">
                   <span class="label is-bold">备注：</span><span class="value">{{FreightWriteOffDetailData.Remark}}</span>
                 </li>
               </template>
