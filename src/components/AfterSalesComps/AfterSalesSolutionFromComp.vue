@@ -441,6 +441,7 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
       loadingInstance: false,
       // 补印文件
       ReprintFile: null,
@@ -707,6 +708,7 @@ export default {
       this.$emit('changeVisible', key);
     },
     onSuspendClick(data) {
+      if (this.submitLoading) return;
       this.setResponsibility();
       this.setCoupons();
       if (data) {
@@ -716,6 +718,7 @@ export default {
       this.SuspendVisible = true;
     },
     SuspendSubmit(value) { // 挂起
+      this.submitLoading = true;
       this.CompleteFrom.OrderID = this.OrderID;
       const temp = { ...value, ...this.CompleteFrom };
       const cb = async () => {
@@ -732,6 +735,7 @@ export default {
           };
           this.messageBox.successSingle('挂起成功', successCb, successCb);
         }
+        this.submitLoading = false;
       };
       if (this.ReprintFile && this.CompleteFrom.Solution.IsNewUpFile) {
         this.uploadFile(cb);
@@ -740,6 +744,7 @@ export default {
       }
     },
     async HandOnSubmit(value) {
+      if (this.submitLoading) return;
       const temp = { ...value };
       temp.AfterSaleCode = this.AfterSaleCode;
       const resp = await this.api.getOrderAfterSaleTransfer(temp).catch(() => {});
@@ -802,8 +807,10 @@ export default {
       }
     },
     async submit(data) {
+      if (this.submitLoading) return;
       if (!this.formValidator()) return;
       this.messageBox.warnCancelBox('执行售后', '确定要提交所有数据吗？提交后不可修改！', () => {
+        this.submitLoading = true;
         const cb = async () => {
           if (data) {
             this.CompleteFrom.QuestionTypes = data.QuestionTypes;
@@ -825,6 +832,7 @@ export default {
               this.messageBox.successSingle('售后成功', successCb, successCb);
             }
           }
+          this.submitLoading = false;
         };
         if (this.ReprintFile && this.CompleteFrom.Solution.IsNewUpFile) {
           this.uploadFile(cb);

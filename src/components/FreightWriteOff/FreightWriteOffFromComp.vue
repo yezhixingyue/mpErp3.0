@@ -387,6 +387,11 @@ export default {
         this.messageBox.failSingleError('操作失败', '请输入差额');
         return false;
       }
+      if (this.ruleForm.Type === 0 && !this.isNotYetShipped
+      && this.ruleForm.Amount > Number((this.OrderDetail.Funds.Freight - this.OrderDetail.Funds.RefundFreightAmount).toFixed(1))) {
+        this.messageBox.failSingleError('操作失败', '需退差额超过原运费');
+        return false;
+      }
       if (this.ruleForm.Type === 1 && this.ruleForm.Amount === '') {
         this.messageBox.failSingleError('操作失败', '请输入运费金额');
         return false;
@@ -407,6 +412,9 @@ export default {
     },
     submit() {
       if (this.formValidator()) {
+        if (!this.isNotYetShipped) {
+          this.ruleForm.CurrentAmount = this.ruleForm.OriginalAmount - this.ruleForm.Amount;
+        }
         // 提交数据
         this.api.getOrderExpressChange(this.ruleForm).then(res => {
           if (res.data.Status === 1000) {
