@@ -21,7 +21,8 @@
       <AuthenInfoComp :customer='customer' :getCustomerData="getCustomerData" :isGetList="(bool) => isGetList = bool"/>
       <AddressInfoComp :customer='customer' />
     </ul>
-    <SetPriceComp v-show="showType === 'setPrice'" :customer='customer' @jump='onJumpClick("detail")' ref="oPriceForm" />
+    <SetPriceComp v-show="showType === 'setPrice'" :haveEditPermission='PermissionObj.SetPrice'
+     :customer='customer' @jump='onJumpClick("detail")' ref="oPriceForm" />
    </template>
   </CommonDialogComp>
 </template>
@@ -71,10 +72,10 @@ export default {
       return {};
     },
     showSubmit() {
-      return this.showType === 'setPrice';
+      return this.showType === 'setPrice' && this.PermissionObj.SetPrice;
     },
     cancelText() {
-      if (this.showType === 'setPrice') return '取消';
+      if (this.showSubmit) return '取消';
       return '关闭';
     },
     title() {

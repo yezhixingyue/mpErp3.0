@@ -113,7 +113,7 @@ defineProps<{
   loading: boolean
 }>();
 
-const emit = defineEmits(['edit', 'history']);
+const emit = defineEmits(['edit', 'history', 'abandon', 'callin', 'callout']);
 
 const { getStaffName, getDepartment, getPostName } = useStaffList();
 

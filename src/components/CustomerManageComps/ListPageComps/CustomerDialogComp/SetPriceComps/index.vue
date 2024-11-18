@@ -2,8 +2,8 @@
   <section class="mp-erp-comps-customer-setup-module-customer-detail-display-dialog-comp-set-price-index-comp-wrap" v-if="customer">
     <HeaderComp :customer="customer" @jump='onJumpClick' />
     <main>
-      <MainLeftComp :customer="customer" ref="oLeft" />
-      <MainRightComp :customer="customer" ref="oRight" />
+      <MainLeftComp :customer="customer" ref="oLeft" :haveEditPermission="haveEditPermission" />
+      <MainRightComp :customer="customer" ref="oRight" :haveEditPermission="haveEditPermission" />
     </main>
   </section>
 </template>
@@ -18,6 +18,10 @@ export default {
     customer: {
       type: Object,
       default: null,
+    },
+    haveEditPermission: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

@@ -9,7 +9,8 @@
       </p>
       <ul class="mp-scroll-wrap" ref="oUl">
         <li v-for="(it, i) in PolicyList" :key="it.key">
-          <CascadeSelector :tree-data="twoLevelsProductClassify4Customer" :cascadeList='cascadeList' :index='i' auto class="item f" />
+          <CascadeSelector :tree-data="twoLevelsProductClassify4Customer" :disabled="!haveEditPermission"
+           :cascadeList='cascadeList' :index='i' auto class="item f" />
           <OrderChannelSelector
             class="s item"
            :options='userVipListNoneEmpty'
@@ -17,11 +18,12 @@
            :typeList='[["CategoryID"]]'
            :showLabel='false'
            :value='it.Category.CategoryID'
+           :disabled="!haveEditPermission"
            initSelect
            :defaultProps="{ label: 'CategoryName', value: 'CategoryID' }"
            />
           <CtrlMenus
-           :showList="['add', 'del']"
+           :showList="haveEditPermission ? ['add', 'del'] : []"
            :canRemove='PolicyList.length > 1'
            @remove="() => PolicyList.splice(i, 1)"
            @add="onAddClick"
@@ -45,6 +47,10 @@ export default {
     customer: {
       type: Object,
       default: null,
+    },
+    haveEditPermission: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

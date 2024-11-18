@@ -12,6 +12,7 @@
       :showLabel='!!it.label'
       :initSelect='i === 0'
       :withEmpty='withEmpty'
+      :disabled='disabled'
       :defaultProps="it.defaultProps || defaultProps"
       />
   </div>
@@ -45,6 +46,10 @@ export default {
     withEmpty: { // 是否包含不限选项
       type: Boolean,
       default: false,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
     },
   },
   components: {

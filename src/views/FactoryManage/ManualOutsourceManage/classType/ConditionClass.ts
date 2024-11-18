@@ -19,7 +19,7 @@ export default class ConditionClass {
     Second: '',
   }
 
-  DateType = 'today'
+  DateType = 'last3Date'
 
   CustomerType = '' // 客户类型
 

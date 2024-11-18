@@ -117,7 +117,7 @@ export default {
     return {
       CheckFileOrderStatusOptions: CheckFileOrderStatusEnumList.filter(it => it.filter),
       dateList: [
-        // { name: '近7天异常', ID: 'last7Date' },
+        { name: '近3天付款', ID: 'last3Date' },
         { name: '今天付款', ID: 'today' },
         { name: '昨天付款', ID: 'yesterday' },
         { name: '前天付款', ID: 'beforeyesterday' },
