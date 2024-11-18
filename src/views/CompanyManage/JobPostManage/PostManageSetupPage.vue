@@ -70,6 +70,7 @@ export default {
       return false;
     },
     setItemAllChecked(bool, it) {
+      if (it.Type === 21) return; // 售后列表
       if (it && it.List) {
         it.List.forEach(item => {
           const _item = item;

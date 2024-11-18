@@ -241,8 +241,9 @@
        :handlePageChange='handlePageChange'
        :count='dataNumber'
        :pageSize='20'
+       center
        >
-        <DownLoadExcelComp v-if="localPermission.Excel" title="导出Excel表格" :configObj="configObj" />
+        <DownLoadExcelComp class="down-load-excel" v-if="localPermission.Excel" title="导出Excel表格" :configObj="configObj" />
       </Count>
     </footer>
   </section>
@@ -376,7 +377,7 @@ export default {
   },
   methods: {
     setHeight() {
-      const tempHeight = this.getHeight('.freight-write-off-list-page-header-wrap', 60);
+      const tempHeight = this.getHeight('.freight-write-off-list-page-header-wrap', 45);
       this.h = tempHeight;
     },
     async setCondition4DataList([[key1, key2], value]) {
@@ -618,6 +619,12 @@ export default {
           }
         }
       }
+    }
+  }
+  footer{
+    .down-load-excel{
+      position: absolute;
+      right: 240px;
     }
   }
 }

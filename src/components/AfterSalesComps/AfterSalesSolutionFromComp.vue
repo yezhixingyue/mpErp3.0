@@ -481,21 +481,9 @@ export default {
           '',
         ],
         ResponsibilityIsDivide: false,
-        AfterSaleQuestions: [
-          // {
-          //   FirstQuestionType: 0,
-          //   SecondQuestionType: 0,
-          //   Remark: '',
-          //   Version: 1,
-          //   QuestionTitle: '',
-          // },
-        ],
+        AfterSaleQuestions: [],
         AfterSaleResponsibilities: [],
-        AfterSalePackages: [
-          // {
-          //   PackageID: 0,
-          // },
-        ],
+        AfterSalePackages: [],
         Solution: {
           SolutionTypes: [2],
           LossIsAddFreight: false,
@@ -506,12 +494,7 @@ export default {
           IsFileInLan: true,
           IsNewUpFile: false,
           CouponIsExtra: false,
-          Coupons: [
-            // {
-            //   CouponID: '00000000-0000-0000-0000-000000000000',
-            //   Number: 0,
-            // },
-          ],
+          Coupons: [],
           SolutionResultRemark: '',
           RefundFreightAmount: '',
           UnpaidReducedAmount: '',
