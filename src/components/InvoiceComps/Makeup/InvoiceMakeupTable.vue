@@ -8,7 +8,10 @@
     stripe
     border
     style="width: 100%"
+    ref="multipleTable"
+    @selection-change="handleSelectionChange"
   >
+    <el-table-column type="selection" width="40" :selectable="selectable"></el-table-column>
     <el-table-column width="80px" prop="InvoiceID" show-overflow-tooltip label="申请单号"></el-table-column>
     <el-table-column width="90px" prop="CustomerNo" show-overflow-tooltip label="客户编号"></el-table-column>
     <el-table-column width="120px" prop="CustomerName" show-overflow-tooltip label="客户"></el-table-column>
@@ -155,6 +158,21 @@ export default {
     },
     onCrtlClick(item) {
       this.$emit('detail', item);
+    },
+    selectable(e) {
+      return e.InvoiceStatus === InvoiceStatusEnums.makingUp.ID;
+    },
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
+    handleSelectionChange(val) {
+      this.$emit('selection', val);
     },
   },
 };
