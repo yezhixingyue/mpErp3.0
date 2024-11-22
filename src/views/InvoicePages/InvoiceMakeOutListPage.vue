@@ -13,7 +13,7 @@
       <InvoiceMakeupListDialog :visible.sync="visible" :curItem="curItem" />
     </main>
     <footer>
-      <el-button class="btn" type="primary" size="mini" :disabled="multipleSelection.length===0" @click=onBatchCompleteClick>批量设置开票完成</el-button>
+      <el-button class="btn" type="primary" size="mini" :disabled="multipleSelection.length===0" @click='onBatchCompleteClick'>批量开票完成</el-button>
       <Count
         :count="InvoiceMakeUpListNumber"
         :watchPage="condition4InvoiceMakeUpList.Page"
@@ -103,7 +103,7 @@ export default {
     onBatchCompleteClick() {
       if (!this.multipleSelection.length) return;
 
-      this.messageBox.warnCancelNullMsg('确定批量完成选中申请单吗 ?', () => {
+      this.messageBox.warnCancelNullMsg('确定批量完成选中申请单吗 ?', async () => {
         // 成功后需要处理的事情：1.更改选中订单状态、处理人、处理时间  2. 清除批量选中
         const callback = () => {
           const OperaterUserName = this.$store.state.common.Permission.StaffName;
@@ -123,10 +123,12 @@ export default {
           this.$refs.oTable.toggleSelection();
         };
 
-        // 模拟完成
-        setTimeout(() => {
-          this.messageBox.successSingle('设置成功', callback, callback);
-        }, 1000);
+        // 执行
+        const ids = this.multipleSelection.map(it => it.InvoiceID);
+        const resp = await this.api.getInvoiceManageComplete(ids).catch(() => null);
+        if (resp && resp.data.Status === 1000) {
+          this.messageBox.successSingle('批量开票成功', callback, callback);
+        }
       });
     },
   },
