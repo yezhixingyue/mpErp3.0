@@ -13,7 +13,8 @@
       <InvoiceMakeupListDialog :visible.sync="visible" :curItem="curItem" />
     </main>
     <footer>
-      <el-button class="btn" type="primary" size="mini" :disabled="multipleSelection.length===0" @click='onBatchCompleteClick'>批量开票完成</el-button>
+      <el-button class="btn" type="primary" size="mini" :disabled="multipleSelection.length===0" @click='onBatchCompleteClick' v-if="localPermission.Operate"
+      >批量开票完成</el-button>
       <Count
         :count="InvoiceMakeUpListNumber"
         :watchPage="condition4InvoiceMakeUpList.Page"

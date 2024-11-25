@@ -11,7 +11,7 @@
     ref="multipleTable"
     @selection-change="handleSelectionChange"
   >
-    <el-table-column type="selection" width="40" :selectable="selectable"></el-table-column>
+    <el-table-column type="selection" width="40" :selectable="selectable" v-if="localPermission.Operate"></el-table-column>
     <el-table-column width="80px" prop="InvoiceID" show-overflow-tooltip label="申请单号"></el-table-column>
     <el-table-column width="90px" prop="CustomerNo" show-overflow-tooltip label="客户编号"></el-table-column>
     <el-table-column width="120px" prop="CustomerName" show-overflow-tooltip label="客户"></el-table-column>
