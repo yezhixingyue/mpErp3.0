@@ -71,7 +71,7 @@ export default class InvoiceHandlerClass {
 
   async makeout() { // 开票
     if (!this.handleTarget || this.handleTarget.InvoiceStatus !== InvoiceStatusEnums.makingUp.ID) return;
-    const resp = await api.getInvoiceManageComplete(this.handleTarget.InvoiceID).catch(() => null);
+    const resp = await api.getInvoiceManageComplete([this.handleTarget.InvoiceID]).catch(() => null);
     if (resp && resp.data.Status === 1000) {
       const cb = () => {
         this.handleTarget.InvoiceStatus = InvoiceStatusEnums.haveMaked.ID;

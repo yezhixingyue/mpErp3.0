@@ -5,12 +5,18 @@
       <InvoiceMakeupTable
         :list="InvoiceMakeUpList"
         :loading="loading"
+        ref="oTable"
         @view="onViewClick"
         @detail="onDetailClick"
+        @selection="onselection"
       />
       <InvoiceMakeupListDialog :visible.sync="visible" :curItem="curItem" />
     </main>
     <footer>
+      <el-button class="btn" type="primary" size="mini" :disabled="multipleSelection.length===0" @click='onBatchCompleteClick' v-if="localPermission.Operate"
+      >批量开票完成</el-button>
+      <span class="total" v-if="localPermission.Operate"
+      >已选中 <i>{{mulInvoiceInfo.len}}</i> 个申请单，共计金额 <i>{{mulInvoiceInfo.total}}</i> 元</span>
       <Count
         :count="InvoiceMakeUpListNumber"
         :watchPage="condition4InvoiceMakeUpList.Page"
@@ -34,6 +40,7 @@ import InvoiceMakeupTable from '../../components/InvoiceComps/Makeup/InvoiceMake
 import InvoiceMakeupListDialog from '../../components/InvoiceComps/Detail/InvoiceMakeupListDialog.vue';
 import Count from '../../components/common/Count.vue';
 import DownLoadExcelComp from '../../components/common/UploadComp/DownLoadExcelComp.vue';
+import { InvoiceStatusEnums } from '../../packages/InvoiceComps/enums';
 
 export default {
   name: 'InvoiceMakeOutListPage',
@@ -68,11 +75,28 @@ export default {
         downFunc: data => this.api.getInvoiceManageExportExcel(data),
       };
     },
+    mulInvoiceInfo() {
+      // if (!this.multipleSelection.length) return null;
+
+      let total = 0;
+
+      this.multipleSelection.forEach(it => {
+        if (typeof it.InvoiceAmount === 'number' && it.InvoiceAmount) total += it.InvoiceAmount;
+      });
+
+      total = Number(total.toFixed(2));
+
+      return {
+        len: this.multipleSelection.length,
+        total,
+      };
+    },
   },
   data() {
     return {
       visible: false,
       curItem: null,
+      multipleSelection: [],
     };
   },
   methods: {
@@ -90,6 +114,42 @@ export default {
       this.$router.push({
         name: 'InvoiceMakeOutDetail',
         params: { invoiceID: e.InvoiceID },
+      });
+    },
+    onselection(list) {
+      this.multipleSelection = list;
+    },
+    onBatchCompleteClick() {
+      if (!this.multipleSelection.length) return;
+
+      console.log(this.multipleSelection);
+
+      this.messageBox.warnCancelNullMsg('确定批量完成选中申请单吗 ?', async () => {
+        // 成功后需要处理的事情：1.更改选中订单状态、处理人、处理时间  2. 清除批量选中
+        const callback = () => {
+          const OperaterUserName = this.$store.state.common.Permission.StaffName;
+          const OperateTime = new Date().toLocaleString().replace(/\//g, '-').replace(' ', 'T');
+
+          const temp = {
+            multipleSelection: this.multipleSelection,
+            info: {
+              OperateTime,
+              OperaterUserName,
+              InvoiceStatus: InvoiceStatusEnums.haveMaked.ID,
+            },
+          };
+
+          this.$store.commit('invoice/setInvoiceMakeUpListSuccess', temp);
+
+          this.$refs.oTable.toggleSelection();
+        };
+
+        // 执行
+        const ids = this.multipleSelection.map(it => it.InvoiceID);
+        const resp = await this.api.getInvoiceManageComplete(ids).catch(() => null);
+        if (resp && resp.data.Status === 1000) {
+          this.messageBox.successSingle('批量开票成功', callback, callback);
+        }
       });
     },
   },
@@ -156,7 +216,27 @@ export default {
   > footer {
     flex: none;
     background-color: #fff;
-    height: 50px;
+    height: 47px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 3px;
+    padding-left: 10px;
+
+    > .btn {
+      flex: none;
+      margin-right: 20px;
+    }
+
+    > .total {
+      font-size: 12px;
+      margin-right: 10px;
+      white-space: nowrap;
+      color: #585858;
+
+      > i {
+        color: #ff3769;
+      }
+    }
 
     .mp-common-download-to-excel-comp-wrap {
       margin-left: 35px;

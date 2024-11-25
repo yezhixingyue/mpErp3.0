@@ -1521,8 +1521,8 @@ const api = {
   getInvoiceManageCancel(data) { // POST /Api/InvoiceManage/Cancel  取消
     return instance.post('/Api/InvoiceManage/Cancel', data);
   },
-  getInvoiceManageComplete(invoiceID) { // GET /Api/InvoiceManage/Complete  开具完成
-    return instance.get('/Api/InvoiceManage/Complete', { params: { invoiceID } });
+  getInvoiceManageComplete(invoiceIDS) { // GET /Api/InvoiceManage/Complete  开具完成
+    return instance.post('/Api/InvoiceManage/Complete', invoiceIDS);
   },
   getInvoiceManagePost(data) { // POST /Api/InvoiceManage/Post  邮寄
     return instance.post('/Api/InvoiceManage/Post', data);
