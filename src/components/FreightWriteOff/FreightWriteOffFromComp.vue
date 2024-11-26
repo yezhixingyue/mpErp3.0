@@ -108,6 +108,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { MobileReg } from '@/assets/js/utils/regexp';
 import { Message } from 'element-ui';
 import SelectComp from '@/components/common/SelectComp.vue';
 import ImageUploadComp from '@/components/common/UploadComp/ImageUploadComp.vue';
@@ -379,6 +380,10 @@ export default {
         this.messageBox.failSingleError('操作失败', '请输入收货人手机号');
         return false;
       }
+      if (this.ruleForm.Type === 0 && newData.Mobile !== oldData.Mobile && !MobileReg.test(this.ruleForm.Address.Address.Mobile)) {
+        this.messageBox.failSingleError('操作失败', '请输入正确的手机号');
+        return false;
+      }
       if (this.ruleForm.Type === 0 && this.isNotYetShipped && this.ruleForm.Amount === '') {
         this.messageBox.failSingleError('操作失败', '请点击“计算运费差额”后提交');
         return false;
@@ -420,12 +425,12 @@ export default {
           if (res.data.Status === 1000) {
             if (this.ruleForm.Type === 1) {
               this.messageBox.successSingle('提交成功', this.$goback, this.$goback);
-            } else if (this.ruleForm.Amount === 0) {
+            } else if (Number(this.ruleForm.Amount) === 0) {
               this.messageBox.successSingle('提交成功', this.$goback, this.$goback);
-            } else if (this.ruleForm.Amount < 0 && !!res.data.Data) {
+            } else if (this.ruleForm.Amount < 0 && !!res.data.Data.PayWay) {
               this.PayCodeVisible = true;
               this.PayCodeData = res.data.Data;
-            } else if (this.ruleForm.Amount < 0 && !res.data.Data) {
+            } else if (this.ruleForm.Amount < 0 && !res.data.Data.PayWay) {
               this.messageBox.successSingle('扣款成功', this.$goback, this.$goback);
             } else {
               this.messageBox.successSingle('退款成功', this.$goback, this.$goback);
@@ -454,6 +459,7 @@ export default {
     this.ruleForm.Address.Address.Mobile = this.OrderDetail.Address.Address.Mobile;
     this.ruleForm.Address.Express.Second = this.OrderDetail.Address.Express.Second;
     this.ruleForm.OriginalAmount = (this.OrderDetail.Funds.Freight - this.OrderDetail.Funds.RefundFreightAmount).toFixed(1);
+    this.ruleForm.CurrentAmount = this.ruleForm.OriginalAmount;
     this.ruleForm.IsAuto = this.isNotYetShipped;
     setTimeout(() => { // 处理运费差额默认值（因省市区修改只能watch监听然后指控差额所以需要在回显之后再赋默认值）
       this.ruleForm.Amount = '0';

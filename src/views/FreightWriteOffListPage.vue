@@ -76,7 +76,7 @@
         <el-table-column prop="OrderID" label="订单编号" minWidth="76" show-overflow-tooltip></el-table-column>
         <el-table-column prop="Customer.CustomerSN" label="客户编号" minWidth="96" show-overflow-tooltip></el-table-column>
         <el-table-column prop="Customer.CustomerName" label="客户名称" minWidth="94" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="SellArea" label="区域" minWidth="156" show-overflow-tooltip>
+        <el-table-column prop="SellArea" label="区域" minWidth="140" show-overflow-tooltip>
           <template slot-scope="scope">
             {{scope.row.Customer.SellArea.RegionalName }}
             {{scope.row.Customer.SellArea.CityName }}
@@ -128,15 +128,15 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="客户要求" minWidth="116" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="客户要求" minWidth="80" show-overflow-tooltip>
           <template slot-scope="scope">
             {{scope.row.Type ? '其他' : '更改快递信息'}}
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="申请时间" minWidth="136" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="申请时间" minWidth="110" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.CreateTime | format2MiddleLangTypeDate}}</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="核销状态" minWidth="76" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="核销状态" minWidth="70" show-overflow-tooltip>
           <template slot-scope="scope">
             {{FreightWriteStatus.find(it => it.value === scope.row.Status).label}}
           </template>
