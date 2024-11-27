@@ -131,6 +131,7 @@ export default {
   computed: {
     ...mapGetters('common', ['allAdAreaTreeList']),
     ...mapState('common', ['ExpressList']),
+    ...mapState('orderModule', ['objForOrderList']),
     spreadExpressList() {
       let returnList = [];
       this.ExpressList.forEach(element => {
@@ -287,8 +288,9 @@ export default {
   },
   methods: {
     ...mapActions('common', ['getExpressList']),
-    onGoBackClick() {
-      this.$goback();
+    ...mapActions('orderModule', ['getOrderTableData']),
+    getOrderTableList() {
+      this.getOrderTableData({ page: this.objForOrderList.Page, type: 'get' });
     },
     userRequest(type) {
       this.ruleForm.Type = type;
@@ -328,7 +330,11 @@ export default {
       }, 10);
     },
     PayCodeSeccess() {
-      this.messageBox.successSingle('支付成功', this.PayCodeDialogClose, this.PayCodeDialogClose);
+      const cb = () => {
+        this.getOrderTableList();
+        this.PayCodeDialogClose();
+      };
+      this.messageBox.successSingle('支付成功', cb, cb);
     },
     FreightCalculate() {
       const obj = {
@@ -423,17 +429,21 @@ export default {
         // 提交数据
         this.api.getOrderExpressChange(this.ruleForm).then(res => {
           if (res.data.Status === 1000) {
+            const back = () => {
+              this.getOrderTableList();
+              this.$goback();
+            };
             if (this.ruleForm.Type === 1) {
               this.messageBox.successSingle('提交成功', this.$goback, this.$goback);
             } else if (Number(this.ruleForm.Amount) === 0) {
-              this.messageBox.successSingle('提交成功', this.$goback, this.$goback);
+              this.messageBox.successSingle('提交成功', back, back);
             } else if (this.ruleForm.Amount < 0 && !!res.data.Data.PayWay) {
               this.PayCodeVisible = true;
               this.PayCodeData = res.data.Data;
             } else if (this.ruleForm.Amount < 0 && !res.data.Data.PayWay) {
-              this.messageBox.successSingle('扣款成功', this.$goback, this.$goback);
+              this.messageBox.successSingle('扣款成功', back, back);
             } else {
-              this.messageBox.successSingle('退款成功', this.$goback, this.$goback);
+              this.messageBox.successSingle('退款成功', back, back);
             }
             // 成功
           }

@@ -356,6 +356,9 @@ export default {
     changeStatus4OrderListData(state, [index, status]) {
       state.orderListData[index].Status = status;
     },
+    changeIsExpressChangeable4OrderListData(state, [index, bool]) { // 修改运费核销状态
+      state.orderListData[index].IsExpressChangeable = bool;
+    },
     changeAllowAfterSaleOrderListData(state, [index, status]) {
       state.orderListData[index].AllowAfterSale = status;
     },
@@ -496,8 +499,10 @@ export default {
       if (result.data.Status === 1000) {
         messageBox.successSingle('取消成功', () => {
           commit('changeStatus4OrderListData', [index, 254]);
+          commit('changeIsExpressChangeable4OrderListData', [index, false]);
         }, () => {
           commit('changeStatus4OrderListData', [index, 254]);
+          commit('changeIsExpressChangeable4OrderListData', [index, false]);
         });
       }
     },
