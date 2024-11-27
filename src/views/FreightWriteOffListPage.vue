@@ -210,6 +210,9 @@
                   <span class="label is-bold">实际运费：</span><span class="value">{{FreightWriteOffDetailData.CurrentAmount}}元</span>
                 </li>
                 <li>
+                  <span class="label is-bold">运费金额：</span><span class="value">{{FreightWriteOffDetailData.Amount}}元</span>
+                </li>
+                <li>
                   <span class="label is-bold">备注：</span><span class="value">{{FreightWriteOffDetailData.Remark}}</span>
                 </li>
                 <li style="display: block;">
