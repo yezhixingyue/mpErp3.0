@@ -55,7 +55,8 @@
         </li>
         <li>
           <span class="label is-bold" style="line-height: 32px;">差额：</span><span class="value">
-            <el-input size="small" v-model="ruleForm.Amount" :disabled="isNotYetShipped" style="width: 120px;"></el-input> 元
+            <el-input size="small" v-model="ruleForm.Amount"
+            oninput="value=value.match(/^\d*(\.?\d{0,1})/g)[0]" :disabled="isNotYetShipped" style="width: 120px;"></el-input> 元
             <el-button size="small" type="primary" style="margin-left: 20px;" v-if="isNotYetShipped"
               @click="FreightCalculate">计算运费差额</el-button>
           </span>
@@ -75,7 +76,8 @@
       <template v-else>
         <li>
           <span class="label is-bold" style="line-height: 32px;">运费金额：</span><span class="value">
-            <el-input size="small" v-model="ruleForm.Amount" style="width: 120px;"></el-input> 元
+            <el-input size="small" v-model="ruleForm.Amount" style="width: 120px;"
+            oninput="value=value.match(/^\d*(\.?\d{0,1})/g)[0]"></el-input> 元
             <p class="is-orgin" style="margin-top: 5px;">
               注：此处金额仅作说明用，记录运费的实际金额
             </p>
