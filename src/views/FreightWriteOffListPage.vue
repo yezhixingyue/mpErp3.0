@@ -397,9 +397,14 @@ export default {
     PayCodeSeccess() {
       this.PayCodeVisible = false;
       const cb = () => {
-        this.dataList.forEach((element, index) => {
-          if (element.ID === this.ChangeID) {
-            this.dataList[index].Status = 1;
+        this.api.getExpressChangeDetail(this.ChangeID).then(res => {
+          if (res.data.Status === 1000) {
+            this.dataList.forEach((element, index) => {
+              if (element.ID === this.ChangeID) {
+                this.dataList[index].Status = res.data.Data.Status;
+                this.dataList[index].OperatorRemark = res.data.Data.OperatorRemark;
+              }
+            });
           }
         });
       };

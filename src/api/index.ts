@@ -73,6 +73,9 @@ const api = {
   getExpressChangeCancle(changeID) { // POST /Api/ExpressChange/Cancle 运费核销取消
     return instance.delete(`/Api/ExpressChange/Cancle?changeID=${changeID}`);
   },
+  getExpressChangeDetail(changeID) { // POST /Api/ExpressChange/Detail 运费核销详情
+    return instance.get(`/Api/ExpressChange/Detail?changeID=${changeID}`);
+  },
   getOrderProductionStopSave(data) { // POST /Api/Order/ProductionStop/Save
     return instance.post('/Api/Order/ProductionStop/Save', data, { closeTip: true });
   },
