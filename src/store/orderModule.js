@@ -356,7 +356,7 @@ export default {
     changeStatus4OrderListData(state, [index, status]) {
       state.orderListData[index].Status = status;
     },
-    changeIsExpressChangeable4OrderListData(state, [index, bool]) { // 修改运费核销状态
+    changeIsExpressChangeable4OrderListData(state, [index, bool]) { // 修改运费结算状态
       state.orderListData[index].IsExpressChangeable = bool;
     },
     changeAllowAfterSaleOrderListData(state, [index, status]) {

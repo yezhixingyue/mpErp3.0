@@ -55,7 +55,7 @@ const api = {
   getOrderProductionStopQuery(data) { // POST /Api/Order/ProductionStop/Query
     return instance.post('/Api/Order/ProductionStop/Query', data);
   },
-  getPayExpressPayResult(changeID) { // 运费核销支付结果查询
+  getPayExpressPayResult(changeID) { // 运费结算支付结果查询
     return instance.get(`/Api/PayExpress/PayResult?changeID=${changeID}`, { closeTip: true, loading: false });
   },
   getOrderExpressChange(data) { // POST /Api/Order/ExpressChange 修改订单配送
@@ -64,16 +64,16 @@ const api = {
   getFreightCalculateClick(data) { // POST /Api/Freight/Calculate 运费（差额）计算
     return instance.post('/Api/Freight/Calculate', data);
   },
-  getExpressChangeList(data) { // POST /Api/ExpressChange/List 运费核销列表
+  getExpressChangeList(data) { // POST /Api/ExpressChange/List 运费结算列表
     return instance.post('/Api/ExpressChange/List ', data);
   },
-  getExpressChangeExcel(data) { // POST /Api/ExpressChange/Excel 运费核销列表导出
+  getExpressChangeExcel(data) { // POST /Api/ExpressChange/Excel 运费结算列表导出
     return instance.post('/Api/ExpressChange/Excel ', data, { responseType: 'arraybuffer', closeTip: true });
   },
-  getExpressChangeCancle(changeID) { // POST /Api/ExpressChange/Cancle 运费核销取消
+  getExpressChangeCancle(changeID) { // POST /Api/ExpressChange/Cancle 运费结算取消
     return instance.delete(`/Api/ExpressChange/Cancle?changeID=${changeID}`);
   },
-  getExpressChangeDetail(changeID) { // POST /Api/ExpressChange/Detail 运费核销详情
+  getExpressChangeDetail(changeID) { // POST /Api/ExpressChange/Detail 运费结算详情
     return instance.get(`/Api/ExpressChange/Detail?changeID=${changeID}`);
   },
   getOrderProductionStopSave(data) { // POST /Api/Order/ProductionStop/Save

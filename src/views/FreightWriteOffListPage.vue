@@ -31,7 +31,7 @@
               :typeList="[['Status', '']]"
               :value="condition.Status"
               :defaultProps="{ label: 'label', value: 'value' }"
-              label="核销状态"
+              label="结算状态"
             />
             <OrderChannelSelector
               :filterable='true'
@@ -136,7 +136,7 @@
         <el-table-column prop="CustomerType" label="申请时间" minWidth="110" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.CreateTime | format2MiddleLangTypeDate}}</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="核销状态" minWidth="70" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="结算状态" minWidth="70" show-overflow-tooltip>
           <template slot-scope="scope">
             {{FreightWriteStatus.find(it => it.value === scope.row.Status).label}}
           </template>
@@ -152,10 +152,10 @@
               <span><i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-xiangqing3"></i>查看详情</span>
             </span>
             <span @click="onVerifyClick(scope.row)" v-if="scope.row.Status === 0">
-              <span><img src="@/assets/images/运费核销.png" width="16px"/>核销</span>
+              <span><img src="@/assets/images/运费核销.png" width="16px"/>结算</span>
             </span>
             <span v-else>
-              <span class="is-gray"><img src="@/assets/images/运费核销.png" width="16px"/>核销</span>
+              <span class="is-gray"><img src="@/assets/images/运费核销.png" width="16px"/>结算</span>
             </span>
             <span @click="onCancelClick(scope.row.OrderID, scope.row.ID)" v-if="scope.row.Status === 0">
               <span><img src="@/assets/images/cancel.png" />取消</span>
@@ -181,7 +181,7 @@
         <div class="mp-erp-freight-write-off-dialog-main">
           <OrderDetail :detailData="OrderDetailData"/>
           <div class="mp-erp-freight-write-off-dialog-right" v-if="FreightWriteOffDetailData">
-            <header class="title is-bold">核销内容</header>
+            <header class="title is-bold">结算内容</header>
             <ul>
               <li>
                 <span class="label is-bold">客户要求：</span><span class="value">
@@ -227,7 +227,7 @@
                 <span class="label is-bold">操作人：</span><span class="value">{{FreightWriteOffDetailData?.Operator?.Name}}</span>
               </li>
               <li>
-                <span class="label is-bold">核销状态：</span><span class="value" :class="{'is-success': FreightWriteOffDetailData.Status === 0}">
+                <span class="label is-bold">结算状态：</span><span class="value" :class="{'is-success': FreightWriteOffDetailData.Status === 0}">
                   {{FreightWriteStatus.find(it => it.value === FreightWriteOffDetailData.Status).label}}
                 </span>
               </li>
@@ -300,11 +300,11 @@ export default {
         },
         {
           value: 0,
-          label: '待核销',
+          label: '待结算',
         },
         {
           value: 1,
-          label: '已核销',
+          label: '已结算',
         },
         {
           value: 3,
@@ -371,7 +371,7 @@ export default {
       return {
         condition: ClassType.filter(_obj, true),
         count: this.dataNumber,
-        fileDefaultName: '运费核销',
+        fileDefaultName: '运费结算',
         // fileDate: '',
         showDateByFile: false,
         downFunc: data => this.api.getExpressChangeExcel(data),
@@ -487,7 +487,7 @@ export default {
           }
         });
       };
-      this.messageBox.warnCancelBox('确定取消此运费核销吗 ?', `订单号：[ ${OrderID} ]`, cb, null);
+      this.messageBox.warnCancelBox('确定取消此运费结算吗 ?', `订单号：[ ${OrderID} ]`, cb, null);
     },
     async getStaffList() { // 获取客户数据
       this.api.getStaffList().then(res => {

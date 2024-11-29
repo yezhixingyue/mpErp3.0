@@ -1,7 +1,7 @@
 <template>
   <section class="freight-write-off-from-page">
     <header>
-      <BreadcrumbNav backLabel="订单列表" label="运费核销"></BreadcrumbNav>
+      <BreadcrumbNav backLabel="订单列表" label="运费结算"></BreadcrumbNav>
     </header>
     <main>
       <OrderDetailsComp v-if="OrderDetail" :OrderDetail="OrderDetail"/>

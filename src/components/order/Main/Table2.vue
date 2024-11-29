@@ -37,11 +37,11 @@
         </li>
         <li v-if="localPermission.PayExpress">
           <span  @click="FreightWriteOff(scope.row)" v-if="scope.row.IsExpressChangeable">
-            <img src="@/assets/images/运费核销.png" width="16px"/>运费核销
+            <img src="@/assets/images/运费核销.png" width="16px"/>运费结算
           </span>
           <span v-else class="disbaled">
-            <i class="iconfont icon-yunfeihexiao" style="margin-right: 5px;"></i>运费核销
-            <!-- <img src="@/assets/images/运费核销.png" style="filter: grayscale(100%);" width="16px"/>运费核销 -->
+            <i class="iconfont icon-yunfeihexiao" style="margin-right: 5px;"></i>运费结算
+            <!-- <img src="@/assets/images/运费核销.png" style="filter: grayscale(100%);" width="16px"/>运费结算 -->
           </span>
         </li>
         <li v-if="localPermission.CancleOrder || localPermission.ProductionStop">
@@ -136,7 +136,7 @@ export default {
     ServiceAfterSalesClick(data) {
       this.$emit('ServiceAfterSalesClick', data);
     },
-    FreightWriteOff(data) { // 运费核销
+    FreightWriteOff(data) { // 运费结算
       this.$emit('FreightWriteOff', data);
     },
     // 终止生产

@@ -28,7 +28,7 @@ const routes = { // 客户订单管理
       path: '/freightWriteOffList',
       name: 'freightWriteOffList',
       meta: {
-        title: '运费核销',
+        title: '运费结算',
         icon: 'iconfont icon-yunfeihexiao',
         pageName: 'freightWriteOffListPage',
         requiresAuth: true,
@@ -40,7 +40,7 @@ const routes = { // 客户订单管理
       path: '/FreightWriteOffPage',
       name: 'FreightWriteOffPage',
       meta: {
-        title: '运费核销',
+        title: '运费结算',
         pageName: 'FreightWriteOffPage',
         requiresAuth: true,
       },

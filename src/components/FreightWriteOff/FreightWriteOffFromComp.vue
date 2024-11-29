@@ -21,11 +21,12 @@
         <li v-if="ruleForm.Address.Address.ExpressArea">
           <span class="label is-bold" style="line-height: 30px;">地址：</span><span class="value">
             <p>
-              <AreaAddressInfoSetupComp class="address-select"
+              <AreaAddressInfoSetupComp class="address-select" :disabled="ruleForm.Address.Express.Second === 1"
               v-model="ruleForm.Address.Address.ExpressArea" :allAreaDataList='allAdAreaTreeList'/>
             </p>
             <p style="margin-top: 20px;">
               <el-input v-model.trim="ruleForm.Address.Address.AddressDetail" maxlength="60" size="small"
+              :disabled="ruleForm.Address.Express.Second === 1"
               class="detail-input" show-word-limit placeholder="在此输入详细地址"></el-input>
             </p>
           </span>
@@ -33,11 +34,13 @@
         <li>
           <span class="label is-bold" style="line-height: 32px;">收货人：</span><span class="value">
             <span>
-              <el-input size="small" v-model="ruleForm.Address.Address.Consignee" style="width: 120px;"></el-input>
+              <el-input size="small" v-model="ruleForm.Address.Address.Consignee" style="width: 120px;"
+              :disabled="ruleForm.Address.Express.Second === 1"></el-input>
             </span>
             <span style="margin-left: 30px;">
               <i class="is-bold">手机号：</i>
-              <el-input size="small" v-model="ruleForm.Address.Address.Mobile" style="width: 120px;"></el-input>
+              <el-input size="small" v-model="ruleForm.Address.Address.Mobile" style="width: 120px;"
+              :disabled="ruleForm.Address.Express.Second === 1"></el-input>
             </span>
           </span>
         </li>
