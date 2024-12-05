@@ -3,7 +3,8 @@
     <ul>
       <li class="clients-requirement">
         <span class="label is-bold" style="line-height: 35px;">客户要求：</span><span class="value">
-          <el-button size="medium" @click="userRequest(0)" :type="`${ruleForm.Type === 0 ? 'primary' : ''}`">更改快递信息</el-button>
+          <el-button :disabled="ruleForm.Address.Express.Second === 1"
+          size="medium" @click="userRequest(0)" :type="`${ruleForm.Type === 0 ? 'primary' : ''}`">更改快递信息</el-button>
           <el-button size="medium" @click="userRequest(1)" :type="`${ruleForm.Type === 1 ? 'primary' : ''}`">其他</el-button>
         </span>
       </li>
@@ -479,7 +480,9 @@ export default {
     setTimeout(() => { // 处理运费差额默认值（因省市区修改只能watch监听然后指控差额所以需要在回显之后再赋默认值）
       this.ruleForm.Amount = '0';
     }, 10);
-
+    if (this.OrderDetail.Address.Express.Second === 1) {
+      this.ruleForm.Type = 1;
+    }
     this.CustomerName = this.OrderDetail.Customer.CustomerName;
   },
 };
