@@ -299,6 +299,7 @@ export default {
       this.getOrderTableData({ page: this.objForOrderList.Page, type: 'get' });
     },
     userRequest(type) {
+      if (this.ruleForm.Type === type) return;
       this.ruleForm.Type = type;
       this.ruleForm.Amount = '';
       this.ruleForm.Remark = '';
