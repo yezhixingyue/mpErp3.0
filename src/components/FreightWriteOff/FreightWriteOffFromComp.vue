@@ -144,7 +144,7 @@ export default {
         if (element.Type !== 1) {
           returnList = [...returnList, ...element.List];
         } else {
-          returnList = [...returnList, ...element.List.map(it => ({ ...it, disabled: true }))];
+          // returnList = [...returnList, ...element.List.map(it => ({ ...it, disabled: true }))];
         }
       });
       return returnList;

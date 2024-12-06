@@ -100,7 +100,7 @@
               </span>
             </span>
           </li>
-          <li class="form-box" v-if="SolutionTypes === 7">
+          <li class="form-box" v-if="SolutionTypes === 7 && dataInfo.FileCase !== 0">
             <span class="label is-bold" style="min-width: 5em;"></span><span class="value">
               <FileSelectBtn class="uploadFileBox" accept='*'
               :func="readFileUniqueName" title="上传补印文件" />
@@ -584,7 +584,7 @@ export default {
           this.messageBox.failSingleError('操作失败', '请输入每款数量');
           return false;
         }
-        if (this.SolutionTypes === 7 && !this.CompleteFrom.Solution.FileName) {
+        if (this.SolutionTypes === 7 && this.dataInfo.FileCase === 2 && !this.CompleteFrom.Solution.FileName) {
           this.messageBox.failSingleError('操作失败', '请上传补印文件');
           return false;
         }
