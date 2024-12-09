@@ -111,25 +111,12 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="差额" minWidth="80" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="差额/运费金额" minWidth="110" show-overflow-tooltip>
           <template slot-scope="scope">
-            <template v-if="!scope.row.Type">
-              <span class="is-success" v-if="scope.row.Amount < 0">{{`${scope.row.Amount}元`}}</span>
-              <span class="is-pink" v-else-if="scope.row.Amount > 0">{{ `${scope.row.Amount}元` }}</span>
-              <span v-else>0元</span>
-            </template>
-            <span v-else>-</span>
+            <span>{{scope.row.Amount}}元</span>
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="运费金额" minWidth="80" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <template v-if="scope.row.Type">
-              <span>{{scope.row.Amount}}元</span>
-            </template>
-            <span v-else>-</span>
-          </template>
-        </el-table-column>
-        <!-- <el-table-column prop="CustomerType" label="收取客户金额" minWidth="104" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="收取客户金额" minWidth="104" show-overflow-tooltip>
           <template slot-scope="scope">
             <span class="is-success" v-if="!scope.row.Type && scope.row.Amount < 0">{{`${Math.abs(scope.row.Amount)}元`}}</span>
             <span v-else>-</span>
@@ -140,7 +127,7 @@
             <span class="is-pink" v-if="!scope.row.Type && scope.row.Amount > 0">{{ `${scope.row.Amount}元` }}</span>
             <span v-else>-</span>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column prop="CustomerType" label="客户要求" minWidth="80" show-overflow-tooltip>
           <template slot-scope="scope">
             {{scope.row.Type ? '其他' : '更改快递信息'}}
