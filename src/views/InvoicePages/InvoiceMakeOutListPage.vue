@@ -15,8 +15,7 @@
     <footer>
       <el-button class="btn" type="primary" size="mini" :disabled="multipleSelection.length===0" @click='onBatchCompleteClick' v-if="localPermission.Operate"
       >批量开票完成</el-button>
-      <span class="total" v-if="localPermission.Operate"
-      >已选中 <i>{{mulInvoiceInfo.len}}</i> 个申请单，共计金额 <i>{{mulInvoiceInfo.total}}</i> 元</span>
+      <span class="total" v-if="localPermission.Operate">已选中 <i>{{mulInvoiceInfo.len}}</i> 个申请单，共计金额 <i>{{mulInvoiceInfo.total}}</i> 元</span>
       <Count
         :count="InvoiceMakeUpListNumber"
         :watchPage="condition4InvoiceMakeUpList.Page"
@@ -121,8 +120,6 @@ export default {
     },
     onBatchCompleteClick() {
       if (!this.multipleSelection.length) return;
-
-      console.log(this.multipleSelection);
 
       this.messageBox.warnCancelNullMsg('确定批量完成选中申请单吗 ?', async () => {
         // 成功后需要处理的事情：1.更改选中订单状态、处理人、处理时间  2. 清除批量选中

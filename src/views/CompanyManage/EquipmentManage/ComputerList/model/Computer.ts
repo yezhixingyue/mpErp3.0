@@ -41,7 +41,7 @@ export class ComputerForm extends MyValidationDecorator {
   @IsNotEmpty({ message: '请输入内存插槽数量' })
   memorySlotsNumber: number | '' = ''
 
-  @IsNotEmpty({ message: '请输入内存型号' })
+  @IsNotEmpty({ message: '请输入内存' })
   memory = ''
 
   @IsNotEmpty({ message: '请输入硬盘型号' })
@@ -53,10 +53,10 @@ export class ComputerForm extends MyValidationDecorator {
   @IsNotEmpty({ message: '请输入内存硬盘数量' })
   diskNumber: number | '' = ''
 
-  @IsNotEmpty({ message: '请输入显卡型号' })
+  @IsNotEmpty({ message: '请输入显卡' })
   graphicsCard = ''
 
-  @IsNotEmpty({ message: '请输入网卡型号' })
+  @IsNotEmpty({ message: '请输入网卡' })
   networkCard = ''
 
   @IsNotEmpty({ message: '请输入操作系统' })

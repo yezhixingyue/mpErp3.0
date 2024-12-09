@@ -58,7 +58,7 @@ export const instance = create({
   getToken,
   useResponse,
   useCatchError,
-  isSuccess: resp => resp.status === 200 && resp.data.Status === 1000,
+  isSuccess: resp => resp?.status === 200 && resp.data.Status === 1000,
   validStatuses: [200],
   // baseURL,
 });

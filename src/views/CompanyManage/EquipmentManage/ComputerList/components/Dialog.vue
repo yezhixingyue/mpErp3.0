@@ -42,7 +42,7 @@
           <el-input v-model.number="ruleForm.memorySlotsNumber" autocomplete="off" maxlength="2"></el-input>
         </el-form-item>
 
-        <el-form-item required label="内存型号" prop="memory"
+        <el-form-item required label="内存" prop="memory"
           :rules="[{ validator: ruleForm.validateField('memory') }]"
         >
           <el-input v-model="ruleForm.memory" autocomplete="off" maxlength="50"></el-input>
@@ -60,13 +60,13 @@
           <el-input v-model="ruleForm.disk" autocomplete="off" maxlength="50"></el-input>
         </el-form-item>
 
-        <el-form-item required label="显卡型号" prop="graphicsCard"
+        <el-form-item required label="显卡" prop="graphicsCard"
           :rules="[{ validator: ruleForm.validateField('graphicsCard') }]"
         >
           <el-input v-model="ruleForm.graphicsCard" autocomplete="off" maxlength="50"></el-input>
         </el-form-item>
 
-        <el-form-item required label="网卡型号" prop="networkCard"
+        <el-form-item required label="网卡" prop="networkCard"
           :rules="[{ validator: ruleForm.validateField('networkCard') }]"
         >
           <el-input v-model="ruleForm.networkCard" autocomplete="off" maxlength="50"></el-input>

@@ -91,17 +91,31 @@ const routes = { // 基本设置
     /*  资产管理
     ------------------------------------------ */
     {
-      path: '/ComputerList',
-      name: 'ComputerList',
+      path: '/EquipmentList',
+      name: 'EquipmentList',
       meta: {
-        title: '办公电脑管理',
+        title: '办公设备管理',
         icon: 'el-icon-s-platform',
-        pageName: 'ComputerListManageView',
+        pageName: 'EquipmentListManageView',
         PermissionInfo: ['PermissionManagePC', 'HavePomission'],
         requiresAuth: true,
       },
-      component: () => import('../../../views/CompanyManage/EquipmentManage/ComputerList/ComputerListManageView.vue'),
+      component: () => import('../../../views/CompanyManage/EquipmentManage/EquipmentList/EquipmentListManageView.vue'),
     },
+    /*  资产管理
+    ------------------------------------------ */
+    // {
+    //   path: '/ComputerList',
+    //   name: 'ComputerList',
+    //   meta: {
+    //     title: '办公电脑管理',
+    //     icon: 'el-icon-s-platform',
+    //     pageName: 'ComputerListManageView',
+    //     PermissionInfo: ['PermissionManagePC', 'HavePomission'],
+    //     requiresAuth: true,
+    //   },
+    //   component: () => import('../../../views/CompanyManage/EquipmentManage/ComputerList/ComputerListManageView.vue'),
+    // },
   ],
 };
 
