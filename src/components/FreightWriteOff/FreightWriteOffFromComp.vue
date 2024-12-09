@@ -60,7 +60,15 @@
         <li>
           <span class="label is-bold" style="line-height: 32px;">差额：</span><span class="value">
             <el-input size="small" v-model="ruleForm.Amount"
-            oninput="value=value.match(/^\d*(\.?\d{0,1})/g)[0]" :disabled="isNotYetShipped" style="width: 120px;"></el-input> 元
+            oninput="value=value.match(/^-?\d*(\.?\d{0,1})/g)[0]" :disabled="isNotYetShipped" style="width: 120px;"></el-input> 元
+            <span class="is-gray" v-if="Number(ruleForm.Amount)">
+              <template v-if="Number(ruleForm.Amount) > 0">
+                <b>退给</b>客户{{Math.abs(ruleForm.Amount)}}元
+              </template>
+              <template v-else>
+                客户<b>另付</b>{{Math.abs(ruleForm.Amount)}}元差价
+              </template>
+            </span>
             <el-button size="small" type="primary" style="margin-left: 20px;" v-if="isNotYetShipped"
               @click="FreightCalculate">计算运费差额</el-button>
           </span>
