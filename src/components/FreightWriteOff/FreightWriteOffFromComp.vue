@@ -61,7 +61,7 @@
           <span class="label is-bold" style="line-height: 32px;">差额：</span><span class="value">
             <el-input size="small" v-model="ruleForm.Amount"
             oninput="value=value.match(/^-?\d*(\.?\d{0,1})/g)[0]" :disabled="isNotYetShipped" style="width: 120px;"></el-input> 元
-            <span class="is-gray" v-if="!isNotYetShipped && Number(ruleForm.Amount)">
+            <span class="is-pink" v-if="!isNotYetShipped && Number(ruleForm.Amount)">
               <template v-if="Number(ruleForm.Amount) > 0">
                 <b>退给</b>客户{{Math.abs(ruleForm.Amount)}}元
               </template>
