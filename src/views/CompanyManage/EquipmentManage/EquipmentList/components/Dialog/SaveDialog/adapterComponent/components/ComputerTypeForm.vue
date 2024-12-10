@@ -54,10 +54,10 @@
 
 <script setup lang='ts'>
 import { computed, ref } from 'vue';
-import { ComputerAttrForm } from '../../../../model/ruleForm/attr/ComputerAttrForm';
+import { ComputerAttrClass } from '../../../../../model/ruleForm/adapter/ComputerAttrClass';
 
 const props = defineProps<{
-  form: ComputerAttrForm
+  form: ComputerAttrClass
 }>();
 
 const ruleForm = computed(() => props.form);

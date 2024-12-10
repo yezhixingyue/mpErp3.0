@@ -1,5 +1,5 @@
 <template>
-  <el-checkbox v-model="localChecked" v-if="props.user.PermissionList.PermissionPrintPackage?.Obj.PrintLimit && loaded">未完工订单打印标签</el-checkbox>
+  <el-checkbox v-model="localChecked" v-if="props.user.PermissionList.PermissionPrintPackage?.Obj.PrintLimit && loaded">允许未完工订单打印标签</el-checkbox>
 </template>
 
 <script setup lang='ts'>

@@ -9,10 +9,10 @@
 
 <script setup lang='ts'>
 import { computed, ref } from 'vue';
-import { DisplayerAttrForm } from '../../../../model/ruleForm/attr/DisplayerAttrForm';
+import { DisplayerAttrClass } from '../../../../../model/ruleForm/adapter/DisplayerAttrClass';
 
 const props = defineProps<{
-  form: DisplayerAttrForm
+  form: DisplayerAttrClass
 }>();
 
 const ruleForm = computed(() => props.form);
