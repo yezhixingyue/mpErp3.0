@@ -57,7 +57,7 @@ export class Condition {
 
       if (_arr.length) {
         temp.staffIds = _arr;
-        delete temp.keywords;
+        // delete temp.keywords;
       }
     }
 

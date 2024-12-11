@@ -40,7 +40,7 @@ export class ManageEquipmentListClass {
   /** 历史记录查询 */
   historyHandler = new HistoryViewManageClass()
 
-  async excel(staffList, departmentList) {
+  async excel(staffList, departmentList, jobPostList) {
     const _condition = this.condition.getParams(staffList);
 
     delete _condition.Page;
@@ -50,6 +50,7 @@ export class ManageEquipmentListClass {
       condition: _condition,
       staffList,
       departmentList: departmentList.map(it => ({ ID: it.ID, ClassName: it.ClassName })),
+      jobPostList: jobPostList.map(it => ({ PositionID: it.PositionID, PositionName: it.PositionName })),
     };
 
     const resp = await mpEquipmentApi.getEquipmentListExcel(temp).catch(() => null);

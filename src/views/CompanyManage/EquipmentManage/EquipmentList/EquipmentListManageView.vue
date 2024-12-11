@@ -49,14 +49,14 @@ import { useStaffList } from './hooks/useStaffList';
 
 const localListManageData = ref(new ManageEquipmentListClass());
 
-const { staffList, departmentList } = useStaffList();
+const { staffList, departmentList, jobPostList } = useStaffList();
 
 const getList = (Page?: number) => localListManageData.value.getList(Page || 1, staffList.value);
 
 onMounted(getList);
 
 const getExcelDownload = () => {
-  localListManageData.value.excel(staffList.value, departmentList.value);
+  localListManageData.value.excel(staffList.value, departmentList.value, jobPostList.value);
 };
 </script>
 
