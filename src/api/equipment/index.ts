@@ -1,5 +1,5 @@
 import { instance } from '@/basic/request';
-import { equipmentURL as baseURL, siteType } from '@/config';
+import { wikiServerURL as baseURL, siteType } from '@/config';
 
 /** 设备管理接口 */
 export const mpEquipmentApi = {

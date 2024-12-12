@@ -296,7 +296,6 @@ export default {
     },
     onDocClick(target) {
       if (!this.Permission) return;
-      // window.open(`http://file.ybz888.com:7006/init?token=${this.Permission.Token}&siteType=${siteType}&target=${target}`);
       WikiHandler.toWikiPageWithToken({ token: this.Permission.Token, siteType, target });
     },
     handleLogoutClick() { // 退出

@@ -7,7 +7,7 @@ export const docBaseURL = process.env.VUE_APP_DOC_API_URL; // 文档服务器调
 export const docClientURL = process.env.VUE_APP_DOC_CLIENT_URL; // 文章预览地址
 
 // ---------------------------------- 设备管理接口
-export const equipmentURL = process.env.VUE_APP_EQUIPMENT_API_URL;
+export const wikiServerURL = process.env.VUE_APP_WIKI_SERVER_URL;
 
 // ----------------- 帮助文档与文档管理相关设置
 export const siteType = process.env.VUE_APP_ENV_SITE_TYPE;
