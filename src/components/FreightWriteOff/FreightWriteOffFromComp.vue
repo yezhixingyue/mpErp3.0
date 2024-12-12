@@ -59,16 +59,25 @@
         </li>
         <li>
           <span class="label is-bold" style="line-height: 32px;">差额：</span><span class="value">
+            <el-select class="amount-select" size="small" @change="AmountSelectChange" v-model="AmountSelect" placeholder="请选择"
+            style="margin-right: 20px; width: 90px;" v-if="!isNotYetShipped">
+              <el-option
+                v-for="item in [{label: '无差额',value: 3}, {label: '退还',value: 6}, {label: '补收',value: 9}]"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
             <el-input size="small" v-model="ruleForm.Amount"
-            oninput="value=value.match(/^-?\d*(\.?\d{0,1})/g)[0]" :disabled="isNotYetShipped" style="width: 120px;"></el-input> 元
-            <span class="is-pink" v-if="!isNotYetShipped && Number(ruleForm.Amount)">
+            oninput="value=value.match(/^\d*(\.?\d{0,1})/g)[0]" :disabled="isNotYetShipped || AmountSelect === 3" style="width: 120px;"></el-input> 元
+            <!-- <span class="is-pink" v-if="!isNotYetShipped && Number(ruleForm.Amount)">
               <template v-if="Number(ruleForm.Amount) > 0">
                 <b>退给</b>客户{{Math.abs(ruleForm.Amount)}}元
               </template>
               <template v-else>
                 客户<b>另付</b>{{Math.abs(ruleForm.Amount)}}元差价
               </template>
-            </span>
+            </span> -->
             <el-button size="small" type="primary" style="margin-left: 20px;" v-if="isNotYetShipped"
               @click="FreightCalculate">计算运费差额</el-button>
           </span>
@@ -166,6 +175,7 @@ export default {
   },
   data() {
     return {
+      AmountSelect: 9,
       PayCodeVisible: false,
       CustomerName: null,
       ChangeID: null,
@@ -287,6 +297,7 @@ export default {
         IsAuto: true,
         CurrentAmount: 0,
         Amount: 0,
+        _Amount: 0,
         Remark: '',
         Status: 0,
         OperatorRemark: '',
@@ -351,6 +362,11 @@ export default {
       };
       this.messageBox.successSingle('支付成功', cb, cb);
     },
+    AmountSelectChange(e) {
+      if (e === 3) {
+        this.ruleForm.Amount = '0';
+      }
+    },
     FreightCalculate() {
       const obj = {
         CustomerID: this.OrderDetail.Customer.CustomerID,
@@ -362,7 +378,7 @@ export default {
       this.api.getFreightCalculateClick(obj).then(res => {
         if (res.data.Status === 1000) {
           this.ruleForm.CurrentAmount = Number(res.data.Data);
-          this.ruleForm.Amount = `${Number((this.ruleForm.OriginalAmount - this.ruleForm.CurrentAmount).toFixed(1))}`;
+          this.ruleForm.Amount = `${Number((this.ruleForm.CurrentAmount - this.ruleForm.OriginalAmount).toFixed(1))}`;
         }
       });
     },
@@ -373,7 +389,7 @@ export default {
         Consignee: this.OrderDetail.Address.Address.Consignee,
         Mobile: this.OrderDetail.Address.Address.Mobile,
         Second: this.OrderDetail.Address.Express.Second,
-        Amount: '0',
+        Amount: '',
         Remark: '',
       };
       const newData = {
@@ -438,11 +454,16 @@ export default {
     },
     submit() {
       if (this.formValidator()) {
+        const _ruleForm = { ...this.ruleForm };
         if (!this.isNotYetShipped) {
-          this.ruleForm.CurrentAmount = this.ruleForm.OriginalAmount - this.ruleForm.Amount;
+          if (this.AmountSelect === 6) {
+            _ruleForm.Amount = 0 - this.ruleForm.Amount;
+          }
+          _ruleForm.CurrentAmount = Number(this.ruleForm.OriginalAmount) + Number(_ruleForm.Amount);
         }
+        console.log(_ruleForm);
         // 提交数据
-        this.api.getOrderExpressChange(this.ruleForm).then(res => {
+        this.api.getOrderExpressChange(_ruleForm).then(res => {
           if (res.data.Status === 1000) {
             const back = () => {
               this.getOrderTableList();
@@ -450,12 +471,12 @@ export default {
             };
             if (this.ruleForm.Type === 1) {
               this.messageBox.successSingle('提交成功', this.$goback, this.$goback);
-            } else if (Number(this.ruleForm.Amount) === 0) {
+            } else if (Number(_ruleForm.Amount) === 0) {
               this.messageBox.successSingle('提交成功', back, back);
-            } else if (this.ruleForm.Amount < 0 && !!res.data.Data.PayWay) {
+            } else if (_ruleForm.Amount > 0 && !!res.data.Data.PayWay) {
               this.PayCodeVisible = true;
               this.PayCodeData = res.data.Data;
-            } else if (this.ruleForm.Amount < 0 && !res.data.Data.PayWay) {
+            } else if (_ruleForm.Amount > 0 && !res.data.Data.PayWay) {
               this.messageBox.successSingle('扣款成功', back, back);
             } else {
               this.messageBox.successSingle('退款成功', back, back);
@@ -487,7 +508,11 @@ export default {
     this.ruleForm.CurrentAmount = this.ruleForm.OriginalAmount;
     this.ruleForm.IsAuto = this.isNotYetShipped;
     setTimeout(() => { // 处理运费差额默认值（因省市区修改只能watch监听然后指控差额所以需要在回显之后再赋默认值）
-      this.ruleForm.Amount = '0';
+      if (this.isNotYetShipped) {
+        this.ruleForm.Amount = '0';
+      } else {
+        this.ruleForm.Amount = '';
+      }
     }, 10);
     if (this.OrderDetail.Address.Express.Second === 1) {
       this.ruleForm.Type = 1;
