@@ -53,7 +53,7 @@ import { mapState } from 'vuex';
 import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
 import OrderChannelSelector from '../../common/SelectorComps/OrderChannelSelector.vue';
 import LineDateSelectorComp from '../../common/SelectorComps/LineDateSelectorComp.vue';
-import { InvoiceStatusEnumList, InvoiceStatusEnums, InvoiceTypeEnumList } from '../../../packages/InvoiceComps/enums';
+import { InvoiceStatusEnumList, InvoiceTypeEnumList } from '../../../packages/InvoiceComps/enums';
 
 export default {
   components: {
@@ -71,7 +71,8 @@ export default {
   data() {
     return {
       InvoiceTypeEnumList,
-      localInvoiceStatusEnumList: InvoiceStatusEnumList.filter(it => it.ID !== InvoiceStatusEnums.canceled.ID),
+      // localInvoiceStatusEnumList: InvoiceStatusEnumList.filter(it => it.ID !== InvoiceStatusEnums.canceled.ID),
+      localInvoiceStatusEnumList: InvoiceStatusEnumList,
       dateList: [
         { name: '今天', ID: 'today' },
         { name: '昨天', ID: 'yesterday' },
