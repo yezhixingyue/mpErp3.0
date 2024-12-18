@@ -365,6 +365,8 @@ export default {
     AmountSelectChange(e) {
       if (e === 3) {
         this.ruleForm.Amount = '0';
+      } else {
+        this.ruleForm.Amount = '';
       }
     },
     FreightCalculate() {
@@ -429,7 +431,11 @@ export default {
         this.messageBox.failSingleError('操作失败', '请输入差额');
         return false;
       }
-      if (this.ruleForm.Type === 0 && !this.isNotYetShipped
+      if (this.ruleForm.Type === 0 && !this.isNotYetShipped && this.ruleForm.Amount === '0' && (this.AmountSelect === 6 || this.AmountSelect === 9)) {
+        this.messageBox.failSingleError('操作失败', '差额不能为0');
+        return false;
+      }
+      if (this.ruleForm.Type === 0 && !this.isNotYetShipped && this.AmountSelect === 6
       && this.ruleForm.Amount > Number((this.OrderDetail.Funds.Freight - this.OrderDetail.Funds.RefundFreightAmount).toFixed(1))) {
         this.messageBox.failSingleError('操作失败', '需退差额超过原运费');
         return false;
