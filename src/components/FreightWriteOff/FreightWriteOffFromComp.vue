@@ -365,6 +365,8 @@ export default {
     AmountSelectChange(e) {
       if (e === 3) {
         this.ruleForm.Amount = '0';
+      } else {
+        this.ruleForm.Amount = '';
       }
     },
     FreightCalculate() {
