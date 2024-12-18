@@ -1,5 +1,6 @@
-// const WIKI_ADDRESS = 'http://file.ybz888.com:7006';
-const WIKI_ADDRESS = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5173' : 'https://file.ybz888.com:7006';
+import { wikiServerURL } from '@/config';
+
+const WIKI_ADDRESS = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5173' : wikiServerURL;
 
 export class WikiHandler {
   static generateQueryString(query: { [key: string]: string | number }) {
