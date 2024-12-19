@@ -23,7 +23,7 @@
     <el-table-column label="类型" min-width="70">
      <span
       slot-scope="scope"
-      :class="{ 'is-red': scope.row.Type === 21, 'is-success': scope.row.Type === 11 }"
+      :class="{ 'is-success': scope.row.Type === 21, 'is-red': scope.row.Type === 11 }"
      >{{ scope.row.Type | formatFundBillBalanceType }}</span>
     </el-table-column>
     <el-table-column label="方式" min-width="70">
@@ -36,7 +36,7 @@
     </el-table-column>
     <el-table-column prop="name" :label="isBeanType ? '印豆数量' : '金额'" min-width="100" show-overflow-tooltip>
       <span
-       :class="{ 'is-red': scope.row.Amount < 0, 'is-success': scope.row.Amount > 0 }"
+       :class="{ 'is-success': scope.row.Amount < 0, 'is-red': scope.row.Amount > 0 }"
         slot-scope="scope"><i class="is-font-size-13">{{ scope.row.Amount}}</i>{{isBeanType ? '个' : '元'}}</span>
     </el-table-column>
     <!-- <el-table-column label="原账户余额" min-width="110">

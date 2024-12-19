@@ -21,7 +21,7 @@
     <el-table-column prop="Customer.CustomerName" label="类型" width="90" show-overflow-tooltip>
       <span
         slot-scope="scope"
-        :class="{ 'is-red': scope.row.Type === 21, 'is-success': scope.row.Type === 12 }"
+        :class="{ 'is-success': scope.row.Type === 21, 'is-red': scope.row.Type === 12 }"
       >{{ scope.row.Type | formatFundBillOrderType }}</span>
     </el-table-column>
     <el-table-column label="渠道" width="90">
@@ -29,12 +29,12 @@
     </el-table-column>
     <el-table-column label="现金" width="120">
       <span
-       :class="{'is-red': scope.row.CashAmount < 0,'is-success': scope.row.CashAmount > 0}"
+       :class="{'is-success': scope.row.CashAmount < 0,'is-red': scope.row.CashAmount > 0}"
         slot-scope="scope"><i class="is-font-size-13">{{ scope.row.CashAmount}}</i>元</span>
     </el-table-column>
     <el-table-column label="印豆" width="120">
       <span
-       :class="{'is-red': scope.row.BeanNumber < 0,'is-success': scope.row.BeanNumber > 0}"
+       :class="{'is-success': scope.row.BeanNumber < 0,'is-red': scope.row.BeanNumber > 0}"
         slot-scope="scope"><i class="is-font-size-13">{{ scope.row.BeanNumber}}</i>个</span>
     </el-table-column>
     <el-table-column prop="date" label="未付金额" width="120">
