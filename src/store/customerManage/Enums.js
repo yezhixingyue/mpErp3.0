@@ -5,7 +5,9 @@ export const RegTypeEnum = { // 注册方式
 
   Web: { ID: 1, Name: '网页版' },
 
-  Mobile: { ID: 2, Name: '微信端' },
+  Mobile: { ID: 2, Name: '手机网页版' },
+
+  MiniProgram: { ID: 4, Name: '微信小程序' },
 
   Manual: { ID: 255, Name: '员工添加' }, // 员工添加
 };
