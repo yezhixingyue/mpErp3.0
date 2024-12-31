@@ -26,6 +26,9 @@
           <el-checkbox :label="it.ID" v-for="it in logisticAAAEnumList" :key='it.ID'>{{it.Name}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
+      <el-form-item label="下单提示:" prop="PlaceOrderTip" style="height: 75px;">
+        <el-input  type="textarea" :rows="3" v-model="ruleForm.PlaceOrderTip" maxlength="50" placeholder="请输入下单提示" show-word-limit></el-input>
+      </el-form-item>
       <el-form-item label="是否启用:" prop="IsEnabled">
         <el-switch v-model="ruleForm.IsEnabled"></el-switch>
       </el-form-item>
@@ -132,6 +135,9 @@ export default {
         max-height: 60px;
         line-height: 30px;
         color: #585858;
+        .el-textarea {
+          width: 270px;
+        }
         .el-input {
           height: 30px;
           line-height: 30px;

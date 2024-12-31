@@ -11,6 +11,9 @@ export default class LogisticItem {
   // 可用平台 拼多多订单|淘宝订单|京东订单|线下订单
   PlatformTypes = []
 
+  // 下单提示
+  PlaceOrderTip = ''
+
   // 是否启用
   IsEnabled = false
 
