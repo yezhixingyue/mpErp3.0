@@ -11,6 +11,7 @@ export default {
     condition4InvoiceMakeUpList: new Condition4InvoiceMakeUpList(),
     InvoiceMakeUpList: [],
     InvoiceMakeUpListNumber: 0,
+    InvoiceMakeUpTotalAmount: 0,
     /** 发票类别相关
      ---------------------------------------- */
     InvoiceInfoList: [],
@@ -34,9 +35,10 @@ export default {
     transformCondition4InvoiceMakeUpList(state) {
       CommonClassType.setDate(state.condition4InvoiceMakeUpList, 'InvoiceApplyTime');
     },
-    setInvoiceMakeUpList(state, { Data, DataNumber }) {
+    setInvoiceMakeUpList(state, { Data, DataNumber, Message }) {
       state.InvoiceMakeUpList = Data;
       if (DataNumber || DataNumber === 0) state.InvoiceMakeUpListNumber = DataNumber;
+      state.InvoiceMakeUpTotalAmount = Message && Number(Message) > 0 ? Message : 0;
     },
     setItemStatusChange(state, temp) {
       const i = state.InvoiceMakeUpList.findIndex(it => it.InvoiceID === temp.InvoiceID);
@@ -93,7 +95,7 @@ export default {
       commit('setCondition4InvoiceMakeUpList', [['Page', ''], page]);
       commit('transformCondition4InvoiceMakeUpList');
       const temp = CommonClassType.filter(state.condition4InvoiceMakeUpList, true);
-      commit('setInvoiceMakeUpList', { Data: [], DataNumber: undefined });
+      commit('setInvoiceMakeUpList', { Data: [], DataNumber: undefined, Message: undefined });
       commit('setLoading', true);
       const resp = await api.getInvoiceManageList(temp).catch(() => null); // 需要改接口
       // console.log('获取发票开具列表数据', resp);

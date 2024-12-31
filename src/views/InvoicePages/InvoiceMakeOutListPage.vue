@@ -13,9 +13,12 @@
       <InvoiceMakeupListDialog :visible.sync="visible" :curItem="curItem" />
     </main>
     <footer>
-      <el-button class="btn" type="primary" size="mini" :disabled="multipleSelection.length===0" @click='onBatchCompleteClick' v-if="localPermission.Operate"
-      >批量开票完成</el-button>
-      <span class="total" v-if="localPermission.Operate">已选中 <i>{{mulInvoiceInfo.len}}</i> 个申请单，共计金额 <i>{{mulInvoiceInfo.total}}</i> 元</span>
+      <span v-show="!loading" class="total amount">总金额：<i>{{ InvoiceMakeUpTotalAmount }}元</i></span>
+      <template v-if="localPermission.Operate && !loading">
+        <el-button class="btn" type="primary" size="mini" :disabled="multipleSelection.length===0" @click='onBatchCompleteClick'
+          >批量开票完成</el-button>
+        <span class="total">已选中 <i>{{mulInvoiceInfo.len}}</i> 个申请单，共计金额 <i>{{mulInvoiceInfo.total}}</i> 元</span>
+      </template>
       <Count
         :count="InvoiceMakeUpListNumber"
         :watchPage="condition4InvoiceMakeUpList.Page"
@@ -56,6 +59,7 @@ export default {
       'InvoiceMakeUpList',
       'loading',
       'InvoiceMakeUpListNumber',
+      'InvoiceMakeUpTotalAmount',
       'condition4InvoiceMakeUpList',
     ]),
     ...mapState('common', ['Permission']),
@@ -218,6 +222,12 @@ export default {
     align-items: center;
     padding-bottom: 3px;
     padding-left: 10px;
+
+    > .total.amount {
+      font-weight: 700;
+      font-size: 14px;
+      margin-right: 30px;
+    }
 
     > .btn {
       flex: none;
