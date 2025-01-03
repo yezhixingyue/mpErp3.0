@@ -42,6 +42,7 @@
         <span class="blue-span" @click="onStationLinkClick(scope.row)">关联物流配送</span>
       </div>
     </el-table-column> -->
+    <el-table-column prop="PlaceOrderTip" label="下单提示" width="150" show-overflow-tooltip></el-table-column>
     <el-table-column label="操作" width="410" v-if="localPermission.Setup" class-name="ctrl">
       <div slot-scope="scope" class='menus'>
         <span class="blue-span" @click="onPrintedSheetLinkClick(scope.row)">关联快印仓</span>
