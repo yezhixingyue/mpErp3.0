@@ -156,7 +156,9 @@ export default {
   mounted() {
     this.$store.dispatch('basicSet/getLogisticList');
     // this.$store.dispatch('basicSet/getThirdPlatExpressList');
-    this.$store.dispatch('basicSet/getExpressProductList');
+    if (this.localPermission.Setup) {
+      this.$store.dispatch('basicSet/getExpressProductList');
+    }
     // string boolean number null undefined symbol object BigInt
   },
 };
