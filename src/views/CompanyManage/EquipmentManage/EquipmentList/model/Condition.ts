@@ -23,24 +23,30 @@ export class Condition {
       if (typeof this.DepartmentID !== 'number' && !this.PostID) return null;
 
       let _staffList = staffList;
+      let screeningGroup = false; // 是否筛选部门或岗位
 
       if (typeof this.DepartmentID === 'number') {
         _staffList = _staffList.filter(staff => staff.PositionList.map(p => p.First.FirstDepartmentID).includes(this.DepartmentID as number));
+        screeningGroup = true;
       }
 
       if (this.PostID) {
         _staffList = _staffList.filter(staff => staff.PositionList.map(p => p.Second.PositionID).includes(this.PostID));
+        screeningGroup = true;
       }
 
-      return _staffList.map(staff => staff.StaffID);
+      return { staffIds: _staffList.map(staff => staff.StaffID), screeningGroup };
     };
+
+    const { staffIds, screeningGroup } = getStaffIds() || {};
 
     const temp = {
       ...this,
       status: this.Status || this.Status === 0 ? this.Status : undefined,
       type: this.Type || this.Type === 0 ? this.Type : undefined,
       keywords: this.Keywords || undefined,
-      staffIds: getStaffIds() || undefined,
+      staffIds: staffIds || undefined,
+      screeningGroup: screeningGroup || false, // 是否筛选部门或岗位
     };
 
     delete temp.Status;
