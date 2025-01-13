@@ -108,6 +108,7 @@ export default {
       this.Amount = null;
       this.PaymentMethod = 0;
       this.$emit('close');
+      this.formValue = {};
     },
     submit() {
       const _temp = {
@@ -138,13 +139,21 @@ export default {
     },
     confirm() {
       const reg = /(^\d*[0-9]\d*(\.\d{1,2})?$)|0\.(\d?[0-9]|[0-9]\d?)$/;
-      // const reg = /(^\d*[1-9]\d*(\.\d{1,2})?$)|0\.(\d?[1-9]|[1-9]\d?)$/;
+      const temp = Object.keys(this.formValue).filter(res => !this.formValue[res]);
+      if (temp.length) {
+        this.messageBox.failSingleError('提交失败', '请选择大版取消方式');
+        return;
+      }
       if (this.Amount === '' || this.Amount === null) {
         this.messageBox.failSingleError('提交失败', '请输入扣除损失金额');
         return;
       }
       if (Number(this.Amount) > 999999) {
         this.messageBox.failSingleError('提交失败', '请输入小于一百万的扣除损失金额');
+        return;
+      }
+      if (Number(this.Amount) === 0 && (this.ProductionInfo.PlateList.length + this.ProductionInfo.ChunkList.length + this.ProductionInfo.FinishedKindCount)) {
+        this.messageBox.failSingleError('提交失败', '工厂已产生损失，请正确输入扣除损失金额');
         return;
       }
       if (!reg.test(this.Amount)) {
@@ -185,7 +194,7 @@ export default {
           const tempValue = {};
           if (this.ProductionInfo) {
             this.ProductionInfo.PlateList.forEach(element => {
-              tempValue[element.ID] = this.formValue[element.ID] || 1;
+              tempValue[element.ID] = this.formValue[element.ID] || 0;
             });
             this.formValue = { ...tempValue };
           }
