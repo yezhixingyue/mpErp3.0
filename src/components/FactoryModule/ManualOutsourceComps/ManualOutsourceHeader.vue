@@ -56,6 +56,7 @@
         :dateValue='condition.DateType'
         :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
         :dateList="dateList"
+        minDate="2024-01-01 00:00:00"
         isFull
         class="mt-18"
         label="付款时间" />

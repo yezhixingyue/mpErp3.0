@@ -66,7 +66,7 @@
           :typeList="[['DateType', ''], ['CreateTime', 'First'], ['CreateTime', 'Second']]"
           :dateValue='condition4DataList.DateType'
           :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
-          minDate="2022-01-01 00:00:00"
+          minDate="2024-06-01 00:00:00"
           label="时间筛选"
           :dateList="dateList"
           />

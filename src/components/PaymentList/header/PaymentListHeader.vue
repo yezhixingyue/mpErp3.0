@@ -41,7 +41,7 @@
         :typeList="[['DateType', ''], ['CreateDate', 'First'], ['CreateDate', 'Second']]"
         :dateValue='set2PaymentList.DateType'
         :UserDefinedTimeIsActive='UserDefinedTimeIsActive'
-        minDate="2022-01-01 00:00:00"
+        minDate="2023-01-01 00:00:00"
         label="时间筛选"
         :dateList="dateList"
         />

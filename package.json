@@ -1,6 +1,6 @@
 {
   "name": "mpzj",
-  "version": "3.1.044",
+  "version": "3.1.045",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --port 8368 --mode dev",
@@ -82,5 +82,5 @@
     "ts-jest": "^27.0.4",
     "typescript": "^4.8.4"
   },
-  "commitId": "d3daddd9edb90a13c7f58f242f64f5ae1bd05d02\n"
+  "commitId": "86a9d78245529cb875feb9d168973e0ed9cb20cb\n"
 }
