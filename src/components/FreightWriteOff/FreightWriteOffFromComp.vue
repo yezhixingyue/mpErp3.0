@@ -465,7 +465,7 @@ export default {
           if (this.AmountSelect === 6) {
             _ruleForm.Amount = 0 - this.ruleForm.Amount;
           }
-          _ruleForm.CurrentAmount = Number(this.ruleForm.OriginalAmount) + Number(_ruleForm.Amount);
+          _ruleForm.CurrentAmount = (Number(this.ruleForm.OriginalAmount) + Number(_ruleForm.Amount)).toFixed(1);
         }
         console.log(_ruleForm);
         // 提交数据
