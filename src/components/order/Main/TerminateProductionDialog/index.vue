@@ -106,6 +106,7 @@ export default {
     },
     close() {
       this.Amount = null;
+      this.ProductionInfo = null;
       this.PaymentMethod = 0;
       this.$emit('close');
       this.formValue = {};
@@ -152,7 +153,8 @@ export default {
         this.messageBox.failSingleError('提交失败', '请输入小于一百万的扣除损失金额');
         return;
       }
-      if (Number(this.Amount) === 0 && (this.ProductionInfo.PlateList.length + this.ProductionInfo.ChunkList.length + this.ProductionInfo.FinishedKindCount)) {
+      if (Number(this.Amount) === 0 && this.OrderData.IsOwnFactory
+      && (this.ProductionInfo.PlateList.length + this.ProductionInfo.ChunkList.length + this.ProductionInfo.FinishedKindCount)) {
         this.messageBox.failSingleError('提交失败', '工厂已产生损失，请正确输入扣除损失金额');
         return;
       }
@@ -233,7 +235,7 @@ export default {
   &.IsOwnFactory{
     >.el-dialog--center{
       >.el-dialog__body{
-        height: 510px;
+        min-height: 510px;
       }
     }
   }
