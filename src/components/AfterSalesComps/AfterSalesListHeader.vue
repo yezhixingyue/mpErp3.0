@@ -119,7 +119,7 @@ export default {
   computed: {
     ...mapState('common', ['Permission', 'userTypeList']),
     UserDefinedTimeIsActive() {
-      return this.condition.DateType === '' && !!this.condition.SelectTime.First && !!this.condition.SelectTime.Second;
+      return this.condition.DateType === '' && !!this.condition.Date.First && !!this.condition.Date.Second;
     },
     Status: {
       get() {
