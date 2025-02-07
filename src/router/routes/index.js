@@ -17,7 +17,7 @@ const routes = [
     path: '/',
     // redirect: '/orderManage',
     meta: {
-      title: '首页 - 名片之家后台管理系统',
+      title: '首页',
       requiresAuth: true,
       hideMenu: true,
     },
