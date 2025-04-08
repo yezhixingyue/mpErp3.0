@@ -8,22 +8,24 @@
       <ContionCommonComp ref="oLeftCondition" :PropertyList='ProductFilePropertyList' :curEditData='curEditFileData'
       :adAreaList="adAreaList" :areaList="areaList" :allAdAreaTreeList="allAdAreaTreeList"
         :allProductClassify="allProductClassify" :allProductAndLevelList="allProductAndLevelList" :allAreaTreeList="allAreaTreeList">
-        <span>文件类目：</span>
-        <ul class="file-list">
-          <li v-for="it in FileDataList" :key="it.ID">
-            <el-checkbox :value='checkedFileIDs.includes(it.ID)' @change="selectChange(it)">{{it.InternalName}}{{it.IsPrintFile ? '（印刷文件）' : ''}}</el-checkbox>
-            <el-checkbox v-if="checkedFileIDs.includes(it.ID)" :value='getIsRequiredByID(it.ID)' @change="requiredChange(it.ID)">必须上传</el-checkbox>
-            <div class="max-size-box" v-if="checkedFileIDs.includes(it.ID)">
-              <span title="多文件时，指全部文件总大小限制">文件最大限制：</span>
-              <el-input placeholder="1 - 3000" size="mini" maxlength="4"
-               :value='getMaxSizeValByID(it.ID)' @input="onMaxSizeChange($event, it.ID)"></el-input>
-              <span>M</span>
-            </div>
-          </li>
-          <li v-if="!loadingFileList && FileDataList.length === 0">
-            <span class="is-gray is-font-size-12" style="line-height:16px">暂无文件类目列表，请到文件类目中添加</span>
-          </li>
-        </ul>
+        <div class="file-list-wrap mp-scroll-wrap">
+          <span>文件类目：</span>
+          <ul class="file-list">
+            <li v-for="it in FileDataList" :key="it.ID">
+              <el-checkbox :value='checkedFileIDs.includes(it.ID)' @change="selectChange(it)">{{it.InternalName}}{{it.IsPrintFile?'（印刷文件）':''}}</el-checkbox>
+              <el-checkbox v-if="checkedFileIDs.includes(it.ID)" :value='getIsRequiredByID(it.ID)' @change="requiredChange(it.ID)">必须上传</el-checkbox>
+              <div class="max-size-box" v-if="checkedFileIDs.includes(it.ID)">
+                <span title="多文件时，指全部文件总大小限制">文件最大限制：</span>
+                <el-input placeholder="1 - 3000" size="mini" maxlength="4"
+                :value='getMaxSizeValByID(it.ID)' @input="onMaxSizeChange($event, it.ID)"></el-input>
+                <span>M</span>
+              </div>
+            </li>
+            <li v-if="!loadingFileList && FileDataList.length === 0">
+              <span class="is-gray is-font-size-12" style="line-height:16px">暂无文件类目列表，请到文件类目中添加</span>
+            </li>
+          </ul>
+        </div>
       </ContionCommonComp>
     </main>
     <footer>
@@ -186,9 +188,22 @@ export default {
   }
   > main {
     flex: 1;
+    overflow: hidden;
     padding-top: 15px;
-    .right-content-main-wrap {
+    .right-content {
+      height: 100%;
       display: flex;
+      flex-direction: column;
+
+      > header {
+        flex: none;
+      }
+    }
+    .file-list-wrap {
+      display: flex;
+      height: 100%;
+      overflow: auto;
+      margin-right: 30px;
       > span {
         color: #888E99;
         font-size: 14px;
@@ -196,6 +211,11 @@ export default {
         padding-top: 15px;
         white-space: nowrap;
       }
+    }
+    .right-content-main-wrap {
+      height: 100%;
+      flex: 1;
+      overflow: hidden;
       .file-list {
         > li {
           padding: 9px 0;
@@ -211,12 +231,12 @@ export default {
               margin-top: -2px;
             }
             &:first-of-type {
-              width: 180px;
+              width: 280px;
               overflow: hidden;
               vertical-align: middle;
               margin-right: 0;
               > .el-checkbox__label {
-                max-width: 185px;
+                max-width: 280px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;

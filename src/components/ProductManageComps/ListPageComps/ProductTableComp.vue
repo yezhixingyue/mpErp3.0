@@ -74,7 +74,7 @@ export default {
   }
   > .content {
     width: 100%;
-    min-width: 1720px;
+    min-width: 1700px;
     height: 100%;
     // min-height: 100%;
     // overflow: hidden;

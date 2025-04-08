@@ -249,7 +249,7 @@ export default {
 .mp-erp-product-manage-table-item-comp-wrap {
   // padding: 0 5px;
   padding-top: 10px;
-  min-width: 1718px;
+  min-width: 1700px;
   width: calc(100% - 2px);
   &.active > header {
     background-color: #f5f5f5;
@@ -268,7 +268,7 @@ export default {
   }
   > header {
     display: flex;
-    min-width: 1703px;
+    min-width: 1700px;
     height: 44px;
     border: 1px solid #f8f8f8;
     box-sizing: border-box;
@@ -381,10 +381,10 @@ export default {
         }
       }
       &.text-menu-box {
-        width: 640px;
+        width: 620px;
         text-align: center;
         > span:not(:last-of-type) {
-          margin-right: 20px;
+          margin-right: 19px;
         }
       }
       &.extend-box {

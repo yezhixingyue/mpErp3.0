@@ -97,7 +97,7 @@ export default {
       width: 100%;
       > td {
         > .cell {
-          font-size: 14px;
+          font-size: 12px;
           height: 30px;
           color: #585858;
           .menu-list {

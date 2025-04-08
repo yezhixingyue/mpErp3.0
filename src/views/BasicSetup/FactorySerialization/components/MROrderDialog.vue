@@ -5,13 +5,14 @@
         <el-checkbox v-model="ruleForm.ShowOrderID">显示订单号</el-checkbox>
         <el-checkbox v-model="ruleForm.ShowOrderName">显示订单名称</el-checkbox>
         <el-checkbox v-model="ruleForm.ShowProductName">显示产品名称</el-checkbox>
+        <el-checkbox v-model="ruleForm.ShowExpress">显示配送方式</el-checkbox>
         <el-checkbox v-model="ruleForm.ShowPeriod">显示工期</el-checkbox>
       </div>
 
       <div class="tips is-origin">
         <p>显示订单名称：即订单的“文件内容”。</p>
         <p>如审稿时有填写“订单名称”则优先显示，仅取前8位有效字符</p>
-        <p>显示举例：100000001_订单名称取前八位_产品名称_生产需求_5月10日 03点00分前</p>
+        <p>显示举例：100000001_订单名称取前八位_产品名称_生产需求_配送方式_5月10日 03点00分前</p>
       </div>
     </div>
   </CommonDialogComp>
@@ -38,13 +39,14 @@ const localVisible = computed({
   },
 });
 
-const ruleForm = ref<null | Pick<IMRProduct, 'ShowOrderID' | 'ShowOrderName' | 'ShowPeriod' | 'ShowProductName'>>(null);
+const ruleForm = ref<null | Pick<IMRProduct, 'ShowOrderID' | 'ShowOrderName' | 'ShowPeriod' | 'ShowProductName' | 'ShowExpress'>>(null);
 
 const open = () => {
   ruleForm.value = props.item ? {
     ShowOrderID: props.item.ShowOrderID,
     ShowOrderName: props.item.ShowOrderName,
     ShowProductName: props.item.ShowProductName,
+    ShowExpress: props.item.ShowExpress,
     ShowPeriod: props.item.ShowPeriod,
   } : null;
 };
