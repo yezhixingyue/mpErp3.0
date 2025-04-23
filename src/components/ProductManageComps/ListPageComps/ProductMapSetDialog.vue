@@ -146,7 +146,7 @@ export default {
       this.loading = false;
       const _ElementList = ElementList
         .filter(it => (it.Type === 1 && it.NumbericAttribute?.AllowDecimal === false)
-          || (it.Type === 2 && it.OptionAttribute?.OptionList?.length > 0 && it.OptionAttribute?.OptionList?.length <= 2));
+          || (it.Type === 2 && it.OptionAttribute?.OptionList?.length > 0));
       this.ElementData.List = [..._ElementList, ...FormulaList];
       return [_ElementList, FormulaList];
     },

@@ -22,12 +22,12 @@
           <el-radio-button v-for="it in level2Options" :key="it.ID" :label="it.ID">{{it.Name}}</el-radio-button>
         </el-radio-group>
         <p class="t" v-show="ruleForm.Element.ID">元素选项：</p>
-        <el-radio-group v-show="ruleForm.Element.ID" v-model="ruleForm.Option.ID" size="mini" @change="onLv3Change">
+        <el-radio-group v-show="ruleForm.Element.ID" v-model="ruleForm.OptionList[0].ID" size="mini" @change="onLv3Change">
           <el-radio-button v-for="it in level3Options" :key="it.ID" :label="it.ID" :disabled="disabledOptionIds.includes(it.ID)">{{it.Name}}</el-radio-button>
         </el-radio-group>
-        <p class="t" v-show="ruleForm.Option.ID">映射到以下印色：</p>
+        <p class="t" v-show="ruleForm.OptionList[0].ID">映射到以下印色：</p>
       </template>
-      <el-checkbox-group v-model="ruleForm.ColorList" :class="{default:isDefault}" v-show="ruleForm.Option.ID || isDefault">
+      <el-checkbox-group v-model="ruleForm.ColorList" :class="{default:isDefault}" v-show="ruleForm.OptionList[0].ID || isDefault">
         <el-checkbox v-for="it in PrintColorTypeEnumList" :key="it.ID" :label="it.ID">{{it.Name}} ({{it.remark}})</el-checkbox>
       </el-checkbox-group>
     </template>
@@ -162,8 +162,8 @@ export default {
       this.ruleForm.Group.Name = '';
       this.ruleForm.Element.ID = '';
       this.ruleForm.Element.Name = '';
-      this.ruleForm.Option.ID = '';
-      this.ruleForm.Option.Name = '';
+      this.ruleForm.OptionList[0].ID = '';
+      this.ruleForm.OptionList[0].Name = '';
       this.ruleForm.ColorList = [];
     },
     onLv2Change(e) {
@@ -178,15 +178,15 @@ export default {
         this.ruleForm.Element.Name = ElementName;
       }
       // 2. 清空Option、ColorList
-      this.ruleForm.Option.ID = '';
-      this.ruleForm.Option.Name = '';
+      this.ruleForm.OptionList[0].ID = '';
+      this.ruleForm.OptionList[0].Name = '';
       this.ruleForm.ColorList = [];
     },
     onLv3Change(e) {
       // 1. 为Option中Name赋值
       const t = this.level3Options.find(it => it.ID === e);
       if (t) {
-        this.ruleForm.Option.Name = t.Name;
+        this.ruleForm.OptionList[0].Name = t.Name;
       }
       // 2. 清空ColorList
       this.ruleForm.ColorList = [];

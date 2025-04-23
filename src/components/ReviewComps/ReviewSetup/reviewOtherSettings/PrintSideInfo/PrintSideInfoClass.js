@@ -18,10 +18,7 @@ export default class PrintSideInfoClass {
       ID: '',
       Name: '',
     },
-    Option: {
-      ID: '',
-      Name: '',
-    },
+    OptionList: [], // { ID: '', Name: '' }[]
   }
 
   DoubleSide = {
@@ -37,36 +34,50 @@ export default class PrintSideInfoClass {
       ID: '',
       Name: '',
     },
-    Option: {
-      ID: '',
-      Name: '',
-    },
+    OptionList: [], // { ID: '', Name: '' }[]
   }
 
   constructor(data) {
-    restoreInitDataByOrigin(this, data);
+    this.SideType = data.SideType;
+
+    if (this.SideType === PrintSideTypeEnums.propMap.ID) {
+      restoreInitDataByOrigin(this, data);
+    }
   }
 
-  checker() {
+  checker(OptionList) {
     if (!this.SideType && this.SideType !== 0) {
       messageBox.failSingleError('保存失败', '单双面未设置');
       return false;
     }
     if (this.SideType === PrintSideTypeEnums.propMap.ID) {
-      if (!this.SingleSide.Element.ID || !this.SingleSide.Option.ID) {
-        messageBox.failSingleError('保存失败', '单双面设置中 [ 单面 ] 信息不完整');
+      if (!this.SingleSide.Element.ID || this.SingleSide.OptionList.length === 0) {
+        messageBox.failSingleError('保存失败', '[ 单面 ] 信息不完整');
         return false;
       }
-      if (!this.DoubleSide.Element.ID || !this.DoubleSide.Option.ID) {
-        messageBox.failSingleError('保存失败', '单双面设置中 [ 双面 ] 信息不完整');
+      if (!this.DoubleSide.Element.ID || this.DoubleSide.OptionList.length === 0) {
+        messageBox.failSingleError('保存失败', '[ 双面 ] 信息不完整');
+        return false;
+      }
+
+      const SingleSideOptionIDs = this.SingleSide.OptionList.map(it => it.ID);
+      const DoubleSideOptionIDs = this.DoubleSide.OptionList.map(it => it.ID);
+
+      if ([...new Set([...SingleSideOptionIDs, ...DoubleSideOptionIDs])].length !== SingleSideOptionIDs.length + DoubleSideOptionIDs.length) {
+        messageBox.failSingleError('保存失败', '[ 单面 ] 和 [ 双面 ] 存在重复选项');
+        return false;
+      }
+
+      if (OptionList.length > 0 && SingleSideOptionIDs.length + DoubleSideOptionIDs.length !== OptionList.length) {
+        messageBox.failSingleError('保存失败', '选中相同元素时，[ 单面 ] 和 [ 双面 ] 选项应覆盖所有选项');
         return false;
       }
     }
     return true;
   }
 
-  getInfo() {
-    if (!this.checker()) {
+  getInfo(OptionList) {
+    if (!this.checker(OptionList)) {
       return null;
     }
     if (this.SideType === PrintSideTypeEnums.propMap.ID) {

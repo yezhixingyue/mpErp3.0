@@ -18,11 +18,13 @@
       </li>
       <li v-show="ruleForm.SideType===PrintSideTypeEnums.propMap.ID">
         <label class="label">单面：</label>
-        <TwoLevelSelectComp v-model="SingleSideIDs" size="mini" :level1Options='commonLevel1Options' :level2Options='SingleSideLevel2Options' />
+        <PrintSideInfoSetDialogLi v-model="SingleSideValue" :ElementList='commonLevel1Options'
+         :ElementOptionList='SingleSideLevel2Options' :disabledOptions="DoubleSideValue.OptionList" />
       </li>
-      <li v-show="ruleForm.SideType===PrintSideTypeEnums.propMap.ID">
+      <li v-show="ruleForm.SideType===PrintSideTypeEnums.propMap.ID" style="margin-bottom: -31px;">
         <label class="label">双面：</label>
-        <TwoLevelSelectComp v-model="DoubleSideIDs" size="mini" :level1Options='commonLevel1Options' :level2Options='DoubleSideLevel2Options' />
+        <PrintSideInfoSetDialogLi v-model="DoubleSideValue" :ElementList='commonLevel1Options'
+         :ElementOptionList='DoubleSideLevel2Options' :disabledOptions="SingleSideValue.OptionList" />
       </li>
     </ul>
   </CommonDialogComp>
@@ -31,7 +33,7 @@
 <script>
 import CommonDialogComp from '../../../../../packages/CommonDialogComp';
 import { PrintSideTypeEnumList, PrintSideTypeEnums } from '../../../../../store/review/reviewEnums';
-import TwoLevelSelectComp from '../../../../common/SelectorComps/TwoLevelSelectComp.vue';
+import PrintSideInfoSetDialogLi from './PrintSideInfoSetDialogLi.vue';
 import PrintSideInfoClass from './PrintSideInfoClass';
 
 export default {
@@ -58,7 +60,7 @@ export default {
     },
   },
   components: {
-    TwoLevelSelectComp,
+    PrintSideInfoSetDialogLi,
     CommonDialogComp,
   },
   data() {
@@ -86,21 +88,18 @@ export default {
     },
     SingleSideLevel2Options() {
       if (!this.elements || this.elements.length === 0 || !this.ruleForm.SingleSide.Element.ID) return [];
+
       const t = this.elements.find(it => it.ID === this.ruleForm.SingleSide.Element.ID);
       if (t) {
-        let list = t.OptionAttribute.OptionList;
-        if (this.ruleForm.SingleSide.Element.ID === this.ruleForm.DoubleSide.Element.ID) {
-          list = list.filter(it => it.ID !== this.ruleForm.DoubleSide.Option.ID);
-        }
-        return list.map(it => ({ Name: it.Name, ID: it.ID, item: it }));
+        return t.OptionAttribute.OptionList.map(it => ({ Name: it.Name, ID: it.ID }));
       }
       return [];
     },
-    SingleSideIDs: {
+    SingleSideValue: {
       get() {
         return {
-          level1Val: this.ruleForm.SingleSide.Element.ID,
-          level2Val: this.ruleForm.SingleSide.Option.ID,
+          ElementID: this.ruleForm.SingleSide.Element.ID,
+          OptionList: this.ruleForm.SingleSide.OptionList.map(it => it.ID),
         };
       },
       set(data) {
@@ -109,21 +108,18 @@ export default {
     },
     DoubleSideLevel2Options() {
       if (!this.elements || this.elements.length === 0 || !this.ruleForm.DoubleSide.Element.ID) return [];
+
       const t = this.elements.find(it => it.ID === this.ruleForm.DoubleSide.Element.ID);
       if (t) {
-        let list = t.OptionAttribute.OptionList;
-        if (this.ruleForm.DoubleSide.Element.ID === this.ruleForm.SingleSide.Element.ID) {
-          list = list.filter(it => it.ID !== this.ruleForm.SingleSide.Option.ID);
-        }
-        return list.map(it => ({ Name: it.Name, ID: it.ID, item: it }));
+        return t.OptionAttribute.OptionList.map(it => ({ Name: it.Name, ID: it.ID }));
       }
       return [];
     },
-    DoubleSideIDs: {
+    DoubleSideValue: {
       get() {
         return {
-          level1Val: this.ruleForm.DoubleSide.Element.ID,
-          level2Val: this.ruleForm.DoubleSide.Option.ID,
+          ElementID: this.ruleForm.DoubleSide.Element.ID,
+          OptionList: this.ruleForm.DoubleSide.OptionList.map(it => it.ID),
         };
       },
       set(data) {
@@ -134,9 +130,17 @@ export default {
   methods: {
     onOpen() {
       this.ruleForm = new PrintSideInfoClass(this.PrintSideInfo);
+
+      if (this.ruleForm.SideType === PrintSideTypeEnums.propMap.ID) {
+        const lv1OpIds = this.SingleSideLevel2Options.map(it => it.ID);
+        const lv2OpIds = this.DoubleSideLevel2Options.map(it => it.ID);
+
+        this.ruleForm.SingleSide.OptionList = this.ruleForm.SingleSide.OptionList.filter(it => lv1OpIds.includes(it.ID)); // 筛选掉不在单面选项中的双面选项
+        this.ruleForm.DoubleSide.OptionList = this.ruleForm.DoubleSide.OptionList.filter(it => lv2OpIds.includes(it.ID)); // 同上
+      }
     },
     submit() {
-      const data = this.ruleForm.getInfo();
+      const data = this.ruleForm.getInfo(this.ruleForm.DoubleSide.Element.ID === this.ruleForm.SingleSide.Element.ID ? this.SingleSideLevel2Options : []);
       if (!data) return;
       this.$emit('submit', data);
     },
@@ -145,16 +149,26 @@ export default {
     },
     setValue(obj, data) {
       if (!obj || !data) return;
-      const { level1Val, level2Val, level1Item, level2Item } = data;
+
+      const { ElementID, OptionList } = data;
+
+      const target = this.elements.find(it => it.ID === ElementID);
+      if (!target) return;
+
       const temp = obj;
-      temp.Part.ID = level1Item?.item?._Part?.ID || '';
-      temp.Part.Name = level1Item?.item?._Part?.Name || '';
-      temp.Group.ID = level1Item?.item?._Group?.ID || '';
-      temp.Group.Name = level1Item?.item?._Group?.Name || '';
-      temp.Element.ID = level1Val;
-      temp.Element.Name = level1Item ? level1Item.Name.replace(`${temp.Part.Name}`, '').replace(`${temp.Group.Name}`, '').replaceAll(':', '') : '';
-      temp.Option.ID = level2Val;
-      temp.Option.Name = level2Item ? level2Item.Name : '';
+
+      temp.Part.ID = target._Part?.ID || '';
+      temp.Part.Name = target._Part?.Name || '';
+      temp.Group.ID = target._Group?.ID || '';
+      temp.Group.Name = target._Group?.Name || '';
+
+      temp.Element.ID = ElementID;
+      temp.Element.Name = target.Name.replace(`${temp.Part.Name}`, '').replace(`${temp.Group.Name}`, '').replaceAll(':', '');
+
+      temp.OptionList = OptionList.map(ID => {
+        const item = target.OptionAttribute.OptionList.find(it => it.ID === ID);
+        return item ? { ID, Name: item.Name } : null;
+      }).filter(it => it);
     },
   },
 };
@@ -162,7 +176,7 @@ export default {
 <style lang='scss'>
 .mp-erp-review-manage-list-page-comps-other-print-side-info-set-dialog-comp-wrap {
   .el-dialog__body {
-    min-height: 125px;
+    min-height: 136px;
     .el-radio__label {
       font-size: 12px;
     }
@@ -172,6 +186,7 @@ export default {
       text-align: right;
       width: 148px;
       margin-right: 10px;
+      line-height: 28px;
       &.is-bold {
         color: #585858;
       }
@@ -187,12 +202,10 @@ export default {
     }
     > ul {
       > li {
-        margin-bottom: 16px;
+        margin-bottom: 10px;
         .mp-erp-common-select-comps-two-level-select-comp-wrap {
           display: inline-block;
-          > li {
-            display: inline-block;
-          }
+          vertical-align: top;
         }
       }
     }

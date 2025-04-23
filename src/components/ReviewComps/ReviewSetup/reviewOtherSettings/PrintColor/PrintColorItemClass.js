@@ -22,10 +22,10 @@ export default class PrintColorItemClass {
     Name: '',
   }
 
-  Option = {
+  OptionList = [{
     ID: '',
     Name: '',
-  }
+  }]
 
   ColorList = [] // 不可为空
 
@@ -83,7 +83,7 @@ export default class PrintColorItemClass {
     return list.map(it => it.Name).join('、');
   }
 
-  static getPropOptionDisplayContent({ Part, Group, Element, Option } = {}) {
-    return [Part, Group, Element, Option].map(it => (it && it.Name ? it.Name : '')).filter(it => it).join(':');
+  static getPropOptionDisplayContent({ Part, Group, Element, OptionList } = {}) {
+    return [Part, Group, Element, OptionList[0]].map(it => (it && it.Name ? it.Name : '')).filter(it => it).join(':');
   }
 }

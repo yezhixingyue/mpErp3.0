@@ -3,7 +3,7 @@
     <header>
       <h2 class="mp-common-title-wrap">单双面设置：</h2>
       <span class="blue-span ft-13" @click="visible = true">设置单双面</span>
-      <span class="gray ft-12">{{content}}</span>
+      <span class="gray ft-12 content">{{content}}</span>
     </header>
     <PrintSideInfoSetDialog :elements="elements" :PrintSideInfo="PrintSideInfo" :visible.sync="visible" @submit="submit" />
   </section>
@@ -64,12 +64,12 @@ export default {
         const getPropName = (data) => {
           if (!data) return '';
           let str = '';
-          const { Part, Group, Element, Option } = data;
-          if (Element && Element.Name && Option && Option.Name) {
+          const { Part, Group, Element, OptionList } = data;
+          if (Element && Element.Name && OptionList && OptionList.length > 0) {
             str = '(';
             if (Part && Part.Name) str += `${Part.Name}:`;
             if (Group && Group.Name) str += `${Group.Name}:`;
-            str += `${Element.Name} - ${Option.Name})`;
+            str += `${Element.Name} - ${OptionList.map(it => it.Name).join('/')})`;
           }
           return str;
         };
@@ -77,7 +77,7 @@ export default {
         let d = getPropName(this.PrintSideInfo.DoubleSide);
         s = s ? `单面${s}` : s;
         d = d ? `双面${d}` : d;
-        return s && d ? `${c}：${s}、${d}` : c;
+        return s && d ? `${c}：${s}、 ${d}` : c;
       }
       return '';
     },
@@ -124,6 +124,13 @@ export default {
     }
     padding: 10px 0 18px;
     white-space: nowrap;
+
+    > .content {
+      white-space: normal;
+      display: inline-block;
+      vertical-align: top;
+      max-width: calc(100% - 8em);
+    }
   }
 }
 </style>
