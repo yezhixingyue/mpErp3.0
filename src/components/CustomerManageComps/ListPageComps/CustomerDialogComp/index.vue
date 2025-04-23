@@ -142,6 +142,7 @@ export default {
     handleChangeStatus() { // 冻结及解冻
       if (!this.customer) return;
       this.getCustomerData();
+      this.isGetList = true;
     },
     handleRecharge(increment) { // 充值及退款
       this.customer.FundInfo.Amount = +this.customer.FundInfo.Amount + +increment;
