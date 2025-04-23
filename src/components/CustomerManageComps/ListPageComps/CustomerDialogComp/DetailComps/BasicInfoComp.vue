@@ -51,10 +51,12 @@
         <label>状态：</label>
         <span :class="{
           'is-success': customer.Status === CustomerStatusEnum.Nomal.ID,
-          'is-pink': customer.Status === CustomerStatusEnum.Freezed.ID,
-          'is-gray': customer.Status === CustomerStatusEnum.Deleted.ID,
+          'is-pink': customer.Status === CustomerStatusEnum.Freezed.ID || customer.Status === CustomerStatusEnum.FullPayment.ID,
         }">{{customer.Status | formatStatus}}
           <i v-if="customer.Status === CustomerStatusEnum.Freezed.ID">
+            （{{customer.CustomerFreezeInfo.FreezeName }} {{ customer.CustomerFreezeInfo.FreezeTime | format2LangTypeDate }}）
+          </i>
+          <i v-if="customer.Status === CustomerStatusEnum.FullPayment.ID">
             （{{customer.CustomerFreezeInfo.FreezeName }} {{ customer.CustomerFreezeInfo.FreezeTime | format2LangTypeDate }}）
           </i>
         </span>
@@ -73,10 +75,17 @@
     </ul>
     <div class="footer">
       <el-button
-       :type="isFreezed ? 'danger' : 'primary'"
-       size="small" @click="onFreezedClick"
+       :type="isFullPayment ? 'danger' : 'primary'"
+       size="small" @click="onChangeStatusClick('FullPayment')"
        v-if="!disabled"
-       :disabled="customer.Status === CustomerStatusEnum.Deleted.ID || disabled">
+       :disabled="customer.Status === CustomerStatusEnum.Freezed.ID || disabled">
+        {{isFullPayment ? '解除支付全款' : '支付全款'}}
+      </el-button>
+      <el-button
+       :type="isFreezed ? 'danger' : 'primary'"
+       size="small" @click="onChangeStatusClick('Freezed')"
+       v-if="!disabled"
+       :disabled="disabled">
         {{isFreezed ? '解除冻结' : '冻结'}}
       </el-button>
       <CommonDialogComp
@@ -88,14 +97,16 @@
         @submit="onSubmit"
         class="freeze-dialog"
       >
-        <p><img src="@/assets/images/warn.png" alt="">确定要冻结用户吗？</p>
+        <p><img src="@/assets/images/warn.png" alt="">
+          {{ StatusType === 'FullPayment' ? '确定要修改为支付全款吗？' : '确定要冻结用户吗？' }}
+        </p>
         <div class="form">
           <div class="form-item">
             <i>客户姓名:</i><span style="font-weight: 400;">{{this.customer.CustomerName}}（{{this.customer.CustomerSN}}）</span>
           </div>
           <div class="form-item required">
-            <i>冻结原因:</i><el-input v-model.trim="CheckDescribe"
-            :rows="6" type="textarea" placeholder="请在此输入客户冻结原因..." maxlength="100" show-word-limit></el-input>
+            <i>{{ StatusType === 'FullPayment' ? '全款' : '冻结' }}原因:</i><el-input v-model.trim="CheckDescribe"
+            :rows="6" type="textarea" :placeholder="`请在此输入客户${ StatusType === 'FullPayment' ? '全款' : '冻结' }原因...`" maxlength="100" show-word-limit></el-input>
           </div>
         </div>
       </CommonDialogComp>
@@ -132,19 +143,39 @@ export default {
       CustomerStatusEnum,
       CheckDescribe: '',
       freezeVisible: false,
+      StatusType: false,
     };
   },
   computed: {
     isFreezed() { // 是否为冻结状态
       return this.customer && this.customer.Status === CustomerStatusEnum.Freezed.ID;
     },
+    isFullPayment() { // 是否为支付全款状态
+      return this.customer && this.customer.Status === CustomerStatusEnum.FullPayment.ID;
+    },
   },
   methods: {
-    onFreezedClick() { // 点击操作按钮
+    onChangeStatusClick(StatusType) { // 点击操作按钮
+      // StatusType = 'FullPayment' || 'Freezed'
+      this.StatusType = StatusType;
       if (!this.customer) return;
       let title = '';
       let msg = '';
-      if (this.customer.Status === CustomerStatusEnum.Nomal.ID) { // 冻结用户
+      if (StatusType === 'FullPayment') { // 支付全款
+        if (this.customer.Status === CustomerStatusEnum.Nomal.ID) { // 冻结用户
+          this.CheckDescribe = '';
+          this.freezeVisible = true;
+        } else if (this.isFullPayment) { // 解冻
+          title = '确定要解除支付全款吗？';
+          msg = `解除支付全款用户：${this.customer.CustomerName}`;
+          if (title && msg) {
+            this.messageBox.warnCancelBox(title, msg, () => {
+              const Status = this.isFullPayment ? CustomerStatusEnum.Nomal.ID : CustomerStatusEnum.FullPayment.ID;
+              this.handleFreezedOrNot(Status);
+            }, null);
+          }
+        }
+      } else if (this.customer.Status === CustomerStatusEnum.Nomal.ID || this.customer.Status === CustomerStatusEnum.FullPayment.ID) { // 冻结用户
         title = '确定要冻结用户吗？';
         msg = `冻结用户：${this.customer.CustomerName}`;
         this.CheckDescribe = '';
@@ -169,7 +200,12 @@ export default {
         return;
       }
       this.freezeVisible = false;
-      const Status = this.isFreezed ? CustomerStatusEnum.Nomal.ID : CustomerStatusEnum.Freezed.ID;
+      let Status;
+      if (this.StatusType === 'FullPayment') {
+        Status = this.isFreezed ? CustomerStatusEnum.Nomal.ID : CustomerStatusEnum.FullPayment.ID;
+      } else {
+        Status = this.isFreezed ? CustomerStatusEnum.Nomal.ID : CustomerStatusEnum.Freezed.ID;
+      }
       this.handleFreezedOrNot(Status, this.CheckDescribe);
     },
 
@@ -178,7 +214,12 @@ export default {
       const temp = { CustomerID: this.customer.CustomerID, Status, CheckDescribe };
       const resp = await this.api.getCustomerChangeStatus(temp).catch(() => null);
       if (resp && resp.data.Status === 1000) {
-        const title = this.isFreezed ? '解冻成功' : '冻结成功';
+        let title;
+        if (this.StatusType === 'FullPayment') {
+          title = this.isFullPayment ? '解除支付全款成功' : '支付全款成功';
+        } else {
+          title = this.isFreezed ? '解冻成功' : '冻结成功';
+        }
         const cb = () => {
           this.$emit('changeStatus');
         };

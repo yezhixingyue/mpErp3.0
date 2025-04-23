@@ -28,7 +28,7 @@ export const CustomerStatusEnum = { // 客户状态
 
   Freezed: { ID: 2, Name: '已冻结' },
 
-  Deleted: { ID: 3, Name: '已删除' },
+  FullPayment: { ID: 0, Name: '支付全款' },
 };
 
 export const AccountStatusEnum = { // 账号状态
