@@ -221,7 +221,7 @@ export default {
       return '';
     },
     getStatusClassName({ Status }) {
-      if (Status === CustomerStatusEnum.Freezed.ID) return 'is-pink';
+      if (Status === CustomerStatusEnum.Freezed.ID || Status === CustomerStatusEnum.FullPayment.ID) return 'is-pink';
       return '';
     },
     getIsSinglePriceType({ Type }) {
