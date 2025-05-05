@@ -58,7 +58,7 @@ export const PropertyFixedType = [
   { ID: 38, Name: '拼版宽' },
   // { ID: 39, Name: '工期数据' },
   { ID: 40, Name: '拼版方式' },
-  { ID: 41, Name: '付款时间' },
+  { ID: 41, Name: '付款日期' },
   { ID: 42, Name: '付款时间星期' },
   { ID: 43, Name: '付款日' },
   { ID: 44, Name: '生产工时' },
@@ -76,6 +76,7 @@ export const PropertyFixedType = [
   { ID: 56, Name: '尺寸' }, // 须和转换设置中enum文件FixedType保持对应 - 同步修改
   { ID: 57, Name: '生产工厂' },
   { ID: 58, Name: '产品成交价' },
+  { ID: 59, Name: '付款时间' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表

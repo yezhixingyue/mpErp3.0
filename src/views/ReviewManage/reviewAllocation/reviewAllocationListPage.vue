@@ -75,6 +75,7 @@ export default {
     this.$store.dispatch('common/getAreaList');
     this.$store.dispatch('common/getProductClassifyData');
     this.$store.dispatch('common/getAllProductNames');
+    this.$store.dispatch('common/fetchAdAreaList');
   },
 };
 </script>

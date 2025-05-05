@@ -11,6 +11,13 @@
       value-format="yyyy-MM-ddTHH:mm:ss"
       placeholder="选择日期"
       size="small" />
+    <el-time-picker
+      v-else-if="!ValProperty && PropertyData.FixedType === 59"
+      v-model="localValue"
+      format="HH:mm"
+      value-format="HH:mm"
+      placeholder="选择时间"
+      size="small" />
     <template v-else-if="ValueType === 0 && !ValProperty">
       <el-input v-model.trim="localValue" maxlength="9" size="mini"></el-input>
       <span v-if="Unit" class="unit" :title="Unit">{{Unit}}</span>
@@ -38,6 +45,8 @@
 </template>
 
 <script>
+import { getTimeStrByMinutes } from '../../../js/util';
+
 export default {
   model: {
     prop: 'value',
@@ -55,13 +64,26 @@ export default {
     localValue: {
       get() {
         if (Array.isArray(this.value) && this.value.length > 0) {
-          return this.isMultiple ? this.value.map((it) => it.Value) : this.value[0].Value;
+          const _fixedVal = (Value) => {
+            if (/^\d+$/.test(Value) && this.PropertyData.FixedType === 59) { // 字符串时间格式反转
+              return getTimeStrByMinutes(Value);
+            }
+            return Value;
+          };
+          return this.isMultiple ? this.value.map((it) => _fixedVal(it.Value)) : _fixedVal(this.value[0].Value);
         }
+
         if (!this.ValProperty && this.PropertyData.FixedType === 41) return '';
+
         return Array.isArray(this.value) ? [] : '';
       },
       set(val) {
-        const _list = this.isMultiple ? val.map((Value) => ({ Value })) : [{ Value: val }];
+        let _val = val;
+        if (this.PropertyData.FixedType === 59 && /\d{2}:\d{2}/.test(_val)) { // 字符串时间格式转换为分钟数
+          _val = Number(_val.slice(0, 2)) * 60 + Number(_val.slice(-2));
+        }
+        const _list = this.isMultiple ? _val.map((Value) => ({ Value })) : [{ Value: _val }];
+
         this.$emit('change', _list);
       },
     },

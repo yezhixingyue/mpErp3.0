@@ -232,6 +232,15 @@ export const generateProductString = (ProductList, allProductClassify, defalutPr
   }
 };
 
+export const getTimeStrByMinutes = (Value) => {
+  if (/^\d+$/.test(Value)) { // 字符串时间格式反转
+    const paddingBit = (num) => `0${num}`.slice(-2); // 补充位数至2位
+    return `${paddingBit(Math.floor(Value / 60))}:${paddingBit(Value % 60)}`;
+  }
+
+  return Value;
+};
+
 export default {
   getValueIsOrNotNumber,
   getNumberValueList,

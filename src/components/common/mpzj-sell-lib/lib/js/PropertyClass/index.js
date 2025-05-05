@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import {
-  getValueIsOrNotNumber, getNumberValueList, getNameFromListByIDs, getTreeTextDisplayContent,
+  getValueIsOrNotNumber, getNumberValueList, getNameFromListByIDs, getTreeTextDisplayContent, getTimeStrByMinutes,
 } from '../util';
 
 import {
@@ -221,9 +221,11 @@ export default class PropertyClass {
       const _name = DisplayContent ? DisplayContent.replace(/\[|\]/g, '') : '';
       let _val = '';
       if (ValueList) {
-        if ([41, 46, 47, 53].includes(FixedType)) {
+        if ([41, 46, 47, 53, 59].includes(FixedType)) {
           if (FixedType === 41) {
             _val = ValueList[0].Value ? ValueList[0].Value.split('T')[0] : '';
+          } else if (FixedType === 59) {
+            _val = ValueList[0].Value ? getTimeStrByMinutes(ValueList[0].Value) : '';
           } else if (Array.isArray(ValueList) && ValueList.length > 0) {
             const vals = ValueList.filter((_it) => _it && _it.Value).map((_it) => JSON.parse(_it.Value)).filter((_it) => _it);
             if (FixedType === 46) {
