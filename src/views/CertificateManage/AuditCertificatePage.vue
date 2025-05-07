@@ -48,6 +48,7 @@
       :visible.sync="AuditFailureVisible"
       @submit="AuditFailure"
       @cancle="onCancle"
+      @closed="onClosed"
       class="audit-failure-dialog"
     >
       <main>
@@ -150,6 +151,8 @@ export default {
     },
     onCancle() {
       this.AuditFailureVisible = false;
+    },
+    onClosed() {
       this.CheckRemark = '';
       this.CauseTemplate = '';
     },
