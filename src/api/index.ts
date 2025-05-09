@@ -1701,8 +1701,8 @@ const api = {
   getCustomerCertificateManageList(data) { // GET /Api/Customer/Certificate/ManageList 证书管理列表
     return instance.post('/Api/Customer/Certificate/ManageList', data);
   },
-  getCustomerCertificateAll(CustomerID: string) { // /Api/Customer/Certificate/All 获取客户证书列表
-    return instance.post('/Api/Customer/Certificate/All', { CustomerID, IsPlaceOrder: false });
+  getCustomerCertificateAll(customerID: string) { // /Api/Customer/Certificate/All 获取客户证书列表
+    return instance.get('/Api/Customer/Certificate/All', { params: { customerID } });
   },
   getCustomerCertificateNoPassReason() { // GET /Api/Customer/Certificate/NoPassReason 审核不通过原因模板
     return instance.get('/Api/Customer/Certificate/NoPassReason');

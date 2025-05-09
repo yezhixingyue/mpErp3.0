@@ -108,7 +108,7 @@ export default class {
       return false;
     }
     if (new Date(this.StartTime) < new Date(new Date().toLocaleDateString()) && !this.ID) {
-      messageBox.failSingleError('保存失败', '开始时间不能晚于当前时间');
+      messageBox.failSingleError('保存失败', '开始时间不能早于当前时间');
       return false;
     }
     if (!this._IsActiveOnLong) {

@@ -88,7 +88,7 @@ export default class PrintBeanClass {
       msg = '请设置开始时间';
     }
     else if (new Date(this.StartTime) < new Date() && !this.ID) {
-      msg = '开始时间不能晚于当前时间';
+      msg = '开始时间不能早于当前时间';
     }
     else if (!this._IsActiveOnLong && !this.EndTime) {
       msg = '请设置结束时间';
