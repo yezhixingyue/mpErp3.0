@@ -8,6 +8,8 @@
       </el-tab-pane>
       <el-tab-pane label="其他软件" name="otherSoftware" v-if="localPermission.OtherSoftManage">
       </el-tab-pane>
+      <el-tab-pane label="物流软件" name="logisticsCenter" v-if="localPermission.OtherSoftManage">
+      </el-tab-pane>
     </el-tabs>
     <ul>
       <li>
@@ -157,6 +159,9 @@ export default {
           break;
         case 'otherSoftware':
           this.setCondition4DataList([['DepartmentID', ''], 6]);
+          break;
+        case 'logisticsCenter':
+          this.setCondition4DataList([['DepartmentID', ''], 3]);
           break;
         default:
           break;
