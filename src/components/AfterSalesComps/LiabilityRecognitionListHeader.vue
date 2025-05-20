@@ -1,14 +1,15 @@
 <template>
   <header class="mp-liability-recognition-page-header-wrap">
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick"
-    v-if="localPermission.BusinessQueryAll || localPermission.BusinessQueryDepartment || localPermission.AutoSoftManage || localPermission.OtherSoftManage">
+    v-if="localPermission.BusinessQueryAll || localPermission.BusinessQueryDepartment ||
+    localPermission.AutoSoftManage || localPermission.OtherSoftManage || localPermission.LogisticsManage">
       <el-tab-pane label="业务中心" name="businessCenter" v-if="localPermission.BusinessQueryAll || localPermission.BusinessQueryDepartment">
       </el-tab-pane>
       <el-tab-pane label="自动审稿软件" name="reviewSoftware" v-if="localPermission.AutoSoftManage">
       </el-tab-pane>
       <el-tab-pane label="其他软件" name="otherSoftware" v-if="localPermission.OtherSoftManage">
       </el-tab-pane>
-      <el-tab-pane label="物流软件" name="logisticsCenter" v-if="localPermission.OtherSoftManage">
+      <el-tab-pane label="物流软件" name="logisticsCenter" v-if="localPermission.LogisticsManage">
       </el-tab-pane>
     </el-tabs>
     <ul>
@@ -196,6 +197,9 @@ export default {
     } else if (this.localPermission.OtherSoftManage) {
       this.activeName = 'otherSoftware';
       this.setCondition4DataList([['DepartmentID', ''], 6]);
+    } else if (this.localPermission.LogisticsManage) {
+      this.activeName = 'logisticsCenter';
+      this.setCondition4DataList([['DepartmentID', ''], 3]);
     } else {
       this.setCondition4DataList([['DepartmentID', ''], '']);
     }

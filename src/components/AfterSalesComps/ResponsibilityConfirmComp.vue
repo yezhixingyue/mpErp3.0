@@ -18,7 +18,8 @@
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2)">
             生产工厂 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2).Proportion }}%
           </p>
-          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 3)">
+          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 3)"
+            :class="`${ResponsibilityConfirmCondition.DepartmentID === 3 ? 'is-pink fontsize14' : ''}`">
             物流中心 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 3).Proportion }}%
           </p>
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 4)">
@@ -121,7 +122,8 @@ export default {
     ...mapState('common', ['userTypeList']),
     ...mapState('AfterSale', ['QuestionClassList', 'ResponsibilityConfirmCondition']),
     isNoPerson() {
-      return this.ResponsibilityConfirmCondition.DepartmentID === 5 || this.ResponsibilityConfirmCondition.DepartmentID === 6;
+      return this.ResponsibilityConfirmCondition.DepartmentID === 5
+      || this.ResponsibilityConfirmCondition.DepartmentID === 6 || this.ResponsibilityConfirmCondition.DepartmentID === 3;
     },
   },
   data() {

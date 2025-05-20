@@ -83,7 +83,7 @@
         <el-table-column label="操作" width="88" fixed="right">
           <div class="is-font-12 operate" slot-scope="scope">
             <span v-if="scope.row.Status === 0">
-              <span v-if="PermissionData.Confirm" @click="onDetailClick(scope.row)">
+              <span v-if="PermissionData.Confirm || ResponsibilityConfirmCondition.DepartmentID !== 1" @click="onDetailClick(scope.row)">
                 <i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-querenzeren"></i>确认责任
               </span>
               <span v-else class="is-gray"><i class="iconfont icon-querenzeren"></i>确认责任</span>
@@ -102,7 +102,7 @@
        :count='ResponsibilityConfirmDataNumber'
        :pageSize='20'
        >
-        <DownLoadExcelComp v-if="PermissionData.ExportExcel" title="导出Excel表格" :configObj="configObj" />
+        <DownLoadExcelComp v-if="PermissionData.ExportExcel || ResponsibilityConfirmCondition.DepartmentID !== 1" title="导出Excel表格" :configObj="configObj" />
       </Count>
     </footer>
   </section>
