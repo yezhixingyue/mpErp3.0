@@ -398,7 +398,7 @@ export default {
         const [id] = this.showData.CertificateFileList;
         const t = this.CertificateList.find(it => it.CertificateID === id);
 
-        return !t || t.CheckStatus === 0 || t.CheckStatus === 2;
+        return !t || t.CheckStatus === 2;
       }
 
       return false;
