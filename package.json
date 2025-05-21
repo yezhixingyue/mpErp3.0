@@ -1,10 +1,6 @@
 {
   "name": "mpzj",
-<<<<<<< HEAD
-  "version": "3.1.051",
-=======
   "version": "3.1.052",
->>>>>>> master
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --port 8368 --mode dev",
