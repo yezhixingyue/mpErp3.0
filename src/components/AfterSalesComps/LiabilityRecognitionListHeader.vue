@@ -9,7 +9,7 @@
       </el-tab-pane>
       <el-tab-pane label="其他软件" name="otherSoftware" v-if="localPermission.OtherSoftManage">
       </el-tab-pane>
-      <el-tab-pane label="物流软件" name="logisticsCenter" v-if="localPermission.LogisticsManage">
+      <el-tab-pane label="物流中心" name="logisticsCenter" v-if="localPermission.LogisticsManage">
       </el-tab-pane>
     </el-tabs>
     <ul>
