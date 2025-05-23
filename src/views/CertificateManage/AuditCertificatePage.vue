@@ -9,15 +9,67 @@
         </div>
       </div>
       <div class="certificate-info">
-        <p class="title">证书内容</p>
+        <p class="title">证书内容 <el-button :disabled="isEditInfo" type="text" @click="EditClick">修改内容</el-button></p>
         <ul>
-          <li> {{ CertificateType.find(it => it.value === CertificateUnCheck.CertificateType).label }}：<span>{{CertificateUnCheck.CertificateName}}</span></li>
-          <li>有效期至：{{CertificateUnCheck.Expire.split('T')[0]}}</li>
-          <li>{{CertificateUnCheck.Customer.CustomerName}}（{{CertificateUnCheck.Customer.CustomerSN}}）</li>
+          <li>
+            <p>
+              证书类型：
+              <span v-if="!isEditInfo">
+                {{ CertificateType.find(it => it.value === CertificateUnCheck.CertificateType).label }}
+              </span>
+              <el-select v-else
+                v-model="CertificateUnCheckForm.CertificateType"
+                placeholder="选择证书类型"
+                size="small"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="item in CertificateType.filter(it => it.value !== '')"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </p>
+            <p>
+              品牌名称：
+              <span v-if="!isEditInfo">
+                {{  CertificateUnCheck.CertificateName }}
+              </span>
+              <el-input v-else size="small" v-model="CertificateUnCheckForm.CertificateName" style="width: 200px" placeholder="请输入品牌名称" />
+            </p>
+          </li>
+          <li>
+            <p>
+              有效期至：
+              <span v-if="!isEditInfo">
+                {{CertificateUnCheck.Expire.split('T')[0]}}
+              </span>
+              <el-date-picker
+                v-else
+                v-model="CertificateUnCheckForm.Expire"
+                type="date"
+                :picker-options="pickerOptions"
+                value-format="yyyy-MM-ddTHH:mm:ss"
+                size="small"
+                style="width: 200px"
+                placeholder="选择日期">
+              </el-date-picker>
+            </p>
+            <p>
+              客户信息： {{CertificateUnCheck.Customer.CustomerName}}（{{CertificateUnCheck.Customer.CustomerSN}}）
+            </p>
+          </li>
         </ul>
         <div class="check-btns">
-          <el-button size="small" @click="passTheAuditVisible = true">审核通过</el-button>
-          <el-button size="small" @click="AuditFailureVisible = true">审核不通过</el-button>
+          <template v-if="isEditInfo">
+            <el-button size="small" @click="confirmClick">确定</el-button>
+            <el-button size="small" @click="cancelClick">取消</el-button>
+          </template>
+          <template v-else>
+            <el-button size="small" @click="passTheAuditVisible = true">审核通过</el-button>
+            <el-button size="small" @click="AuditFailureVisible = true">审核不通过</el-button>
+          </template>
         </div>
       </div>
     </div>
@@ -89,15 +141,52 @@ export default {
   },
   data() {
     return {
+      isEditInfo: false,
       CauseTemplate: '',
       CertificateUnCheck: null,
+      CertificateUnCheckForm: {
+        CertificateType: 0,
+        CertificateID: '',
+        CertificateName: '',
+        CertificatePics: [],
+        Expire: '',
+      },
       CertificateNoPassReason: null,
       passTheAuditVisible: false,
       AuditFailureVisible: false,
       CheckRemark: '',
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7;
+        },
+      },
     };
   },
   methods: {
+    confirmClick() {
+      if (!this.CertificateUnCheckForm.CertificateName) {
+        this.messageBox.failSingleError('保存失败', '请输入品牌名称');
+      } else if (!this.CertificateUnCheckForm.Expire) {
+        this.messageBox.failSingleError('保存失败', '请选择证书有效期');
+      } else {
+        this.CertificateUnCheck = { ...this.CertificateUnCheckForm };
+        this.isEditInfo = false;
+      }
+    },
+    cancelClick() {
+      this.CertificateUnCheckForm = {
+        CertificateType: 0,
+        CertificateID: '',
+        CertificateName: '',
+        CertificatePics: [],
+        Expire: '',
+      };
+      this.isEditInfo = false;
+    },
+    EditClick() {
+      this.CertificateUnCheckForm = { ...this.CertificateUnCheck };
+      this.isEditInfo = true;
+    },
     // 不通过原因模板
     getCertificateNoPassReason() {
       this.api.getCustomerCertificateNoPassReason().then(res => {
@@ -111,6 +200,7 @@ export default {
     getCertificateUnCheck() {
       this.api.getCustomerCertificateUnCheck().then(res => {
         if (res.data.Status === 1000) {
+          this.cancelClick();
           if (res.data.Data) {
             this.CertificateUnCheck = res.data.Data;
           } else {
@@ -121,6 +211,7 @@ export default {
     },
     CertificateCheck(Status, Remark) {
       const temp = {
+        CertificateType: this.CertificateUnCheck.CertificateType,
         CertificateID: this.CertificateUnCheck.CertificateID,
         CheckStatus: Status,
         CheckRemark: Remark,
@@ -128,13 +219,13 @@ export default {
         CertificatePics: this.CertificateUnCheck.CertificatePics,
         Expire: this.CertificateUnCheck.Expire,
       };
-      this.api.getCustomerCertificateCheck(temp).then(() => {
-        // if (res.data.Status === 1000) {
-        // 审核成功
-        this.passTheAuditVisible = false;
-        this.AuditFailureVisible = false;
-        this.getCertificateUnCheck();
-        // }
+      this.api.getCustomerCertificateCheck(temp).then((res) => {
+        if (res.data.Status === 1000) {
+          // 审核成功
+          this.passTheAuditVisible = false;
+          this.AuditFailureVisible = false;
+          this.getCertificateUnCheck();
+        }
       });
     },
     // 审核通过
@@ -211,18 +302,23 @@ export default {
       }
     }
     .certificate-info{
+      >p{
+        >.el-button{
+          margin-left: 10px;
+          padding: 0;
+          height: 18px;
+        }
+      }
       >ul{
-        display: flex;
-        margin-top: 10px;
         li{
-          line-height: 22px;
+          margin-top: 10px;
           display: flex;
           align-items: center;
-          span{
-            font-size: 22px;
-          }
-          & + li{
-            margin-left: 60px;
+          >p{
+            overflow-y: hidden;
+            line-height: 32px;
+            height: 35px;
+            width: 400px;
           }
         }
       }
