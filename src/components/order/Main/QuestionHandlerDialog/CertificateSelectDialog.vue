@@ -110,6 +110,10 @@ const localValue = ref('');
 const onOpen = () => {
   Condition.value = { Keywords: '', Type: '' };
   localValue.value = props.id;
+
+  if (props.CertificateList.length === 0) {
+    onRefreshClick();
+  }
 };
 
 /** 筛选后的证书列表 */

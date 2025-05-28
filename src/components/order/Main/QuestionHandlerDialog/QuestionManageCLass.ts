@@ -10,18 +10,26 @@ export class QuestionManageCLass {
   list: QuestionFileClass[]
 
   /** 旧的证书ID */
-  oldCertificate: string
+  oldCertificateID: string
 
   /** 新选择的证书ID */
-  newCertificate = ''
+  newCertificateID = ''
 
   CertificateList: ICertificate[] = [] // 全部证书列表数据
 
   refreshcb: (list: ICertificate[]) => void
 
-  get oldCertificateItem() {
-    return this.CertificateList.find(it => it.CertificateID === this.oldCertificate);
-  }
+  useCertificate: boolean
+
+  // get checkedCertificate() {
+  //   return this.useCertificate;
+  // }
+
+  oldCertificateItem: ICertificate | undefined
+
+  // get oldCertificateItem() {
+  //   return this.CertificateList.find(it => it.CertificateID === this.oldCertificateID);
+  // }
 
   get oldCertificateName() {
     const t = this.oldCertificateItem;
@@ -31,33 +39,48 @@ export class QuestionManageCLass {
       if (t.CertificateStatus === 0) statusText = '已过期';
       if (t.CheckStatus === 2) statusText = '未通过';
 
-      return `${t.CertificateName}${statusText ? ` ( ${statusText} )` : ''}`;
+      const name = `${t.CertificateName}${statusText ? ` ( ${statusText} )` : ''}`;
+
+      if (name) {
+        return name;
+      }
     }
     return '--';
   }
 
-  get newCertificateName() {
-    return this.CertificateList.find(it => it.CertificateID === this.newCertificate)?.CertificateName || '';
+  get newCertificate() {
+    return this.CertificateList.find(it => it.CertificateID === this.newCertificateID);
   }
 
   loading = false
 
-  constructor(fileList: File[], CustomerID: string, oldCertificate: string, CertificateList: ICertificate[], refreshcb: (list: ICertificate[]) => void) {
+  constructor(fileList: File[], CustomerID: string, oldCertificateID: string, CertificateList: ICertificate[], refreshcb: (list: ICertificate[]) => void) {
     this.CustomerID = CustomerID;
-    this.oldCertificate = oldCertificate;
+    this.oldCertificateID = oldCertificateID;
     this.updateFileList(fileList);
     this.refreshcb = refreshcb;
+    this.useCertificate = !!oldCertificateID;
 
     // 获取证书列表数据
     if (CertificateList.length > 0) {
       this.CertificateList = CertificateList;
-    } else {
-      this.getCustomerCertificateAll();
+    }
+
+    this.getCustomerCertificateInfo();
+  }
+
+  async getCustomerCertificateInfo() {
+    if (!this.oldCertificateID) return;
+
+    const resp = await api.getCustomerCertificateInfo(this.oldCertificateID).catch(() => null);
+
+    if (resp && resp.data.Status === 1000 && resp.data.Data) {
+      this.oldCertificateItem = resp.data.Data;
     }
   }
 
   async getCustomerCertificateAll() { // 获取证书列表数据
-    if (!this.oldCertificate) return;
+    // if (!this.oldCertificateID) return;
 
     this.CertificateList = [];
     const resp = await api.getCustomerCertificateAll(this.CustomerID).catch(() => null);
@@ -86,28 +109,46 @@ export class QuestionManageCLass {
 
   /** 内部方法：提交前的校验  */
   private _validate() {
-    if (this.list.length === 0 && !this.oldCertificate) {
-      MpMessage.error({ title: '请上传文件' });
-      return false;
-    }
-
-    if (this.list.length === 0 && !this.newCertificate) {
-      MpMessage.error({ title: '请上传文件或选择证书' });
-      return false;
-    }
-
     if (this.list.length > 0 && !this.list.find(it => it.isPrintFile)) {
-      MpMessage.error({ title: '请指定印刷文件' });
+      MpMessage.error({ title: '保存失败', msg: '请指定印刷文件' });
       return false;
     }
 
-    // 未上传证书则校验旧证书是否可用
-    if (!this.newCertificate && this.oldCertificate) {
-      if (!this.oldCertificateItem || this.oldCertificateItem.CheckStatus === 2 || this.oldCertificateItem.CertificateStatus === 0) {
-        MpMessage.error({ title: '请重新选择证书' });
+    if (this.list.length === 0) { // 未上传文件
+      // 查看证书是否变动
+      if (!this.oldCertificateID && !this.useCertificate) {
+        MpMessage.error({ title: '保存失败', msg: '未做改动，请上传文件或修改证书配置' });
+        return false;
+      }
+
+      if (this.oldCertificateID && this.useCertificate && !this.newCertificateID) {
+        MpMessage.error({ title: '保存失败', msg: '未做改动，请上传文件或修改证书配置' });
         return false;
       }
     }
+
+    if (this.useCertificate && !this.newCertificate && !this.oldCertificateID) {
+      MpMessage.error({ title: '保存失败', msg: '请选择证书' });
+      return false;
+    }
+
+    // if (this.list.length === 0 && !this.oldCertificateID) {
+    //   MpMessage.error({ title: '请上传文件' });
+    //   return false;
+    // }
+
+    // if (this.list.length === 0 && !this.newCertificateID) {
+    //   MpMessage.error({ title: '请上传文件或选择证书' });
+    //   return false;
+    // }
+
+    // 未上传证书则校验旧证书是否可用 ----- 不再校验证书状态 此处全凭人工控制
+    // if (!this.newCertificateID && this.oldCertificateID) {
+    //   if (!this.oldCertificateItem || this.oldCertificateItem.CheckStatus === 2 || this.oldCertificateItem.CertificateStatus === 0) {
+    //     MpMessage.error({ title: '请重新选择证书' });
+    //     return false;
+    //   }
+    // }
 
     return true;
   }
@@ -132,7 +173,21 @@ export class QuestionManageCLass {
     const list = this.list.map(it => ({ UniqueName: it.UniqueName, isPrintFile: it.isPrintFile, FileSize: it.file.size }));
 
     // 提交
-    const result = await handerFunc({ FileList: list, Certificate: this.newCertificate });
+    const temp = {
+      FileList: list,
+      Certificate: this.newCertificateID,
+      useCertificate: this.useCertificate,
+    };
+
+    if (!temp.useCertificate) {
+      delete temp.Certificate;
+    }
+
+    if (temp.useCertificate && !this.newCertificateID && this.oldCertificateID) {
+      temp.Certificate = this.oldCertificateID;
+    }
+
+    const result = await handerFunc(temp);
 
     this.loading = false;
 

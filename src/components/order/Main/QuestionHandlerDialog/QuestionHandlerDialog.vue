@@ -44,21 +44,31 @@
       </div>
 
       <!-- 证书选择 -->
-      <div class="certificate-box" v-if="localManageData && localManageData.oldCertificate">
-        <h4>
-          <span class="is-bold">选择证书：</span>
-          <span class="gray text" :title="localManageData.oldCertificateName">{{ localManageData.oldCertificateName || '' }}</span>
+      <div class="certificate-box" v-if="localManageData">
+        <h4 v-if="localManageData.oldCertificateID">
+          <span class="is-bold" style="width: 5em;text-align: right;">原证书：</span>
+          <CertificateImgName :Name="localManageData.oldCertificateName" :CertificateItem="localManageData.oldCertificateItem" style="max-width: 550px;" />
         </h4>
 
         <div class="content">
-          <span class="blue-span underline btn" :class="{active:!!localManageData.newCertificate}" @click="selectVisible=true">
-            <i class="el-icon-circle-check"></i>重新选择证书</span>
-          <span class="is-bold text" :title="localManageData.newCertificateName">{{ localManageData.newCertificateName }}</span>
-          <span class="clear blue-span" v-show="localManageData.newCertificate" @click="clear">清除</span>
+          <span class="is-bold label"> {{ localManageData.oldCertificateID ? '修改证书' : '设置证书'}}：</span>
+          <el-radio-group v-model="localManageData.useCertificate" style="position: relative;top: 1px;">
+            <el-radio :label="false" style="margin-right: 20px;">无注册商标</el-radio>
+            <el-radio :label="true">带注册商标</el-radio>
+          </el-radio-group>
+          <div v-show="localManageData.useCertificate" style="margin-left: 30px;">
+            <span class="blue-span underline btn" :class="{active:!!localManageData.newCertificateID}" @click="selectVisible=true">
+            <i class="el-icon-circle-check"></i>{{ localManageData.oldCertificateID ? '重新选择证书' : '选择证书'}}</span>
+            <template v-if="localManageData.newCertificateID">
+              <CertificateImgName :CertificateItem="localManageData.newCertificate" style="margin-right: 10px;max-width: 165px;" />
+              <span class="clear blue-span" @click="clear">清除</span>
+            </template>
+            <span v-else-if="localManageData.oldCertificateID" style="font-size: 12px;color: #aaa;">( <i class="el-icon-info ft-14"></i> 不重新选择则保持原证书不变 )</span>
+          </div>
         </div>
 
         <CertificateSelectDialog
-         :id.sync="localManageData.newCertificate"
+         :id.sync="localManageData.newCertificateID"
          :visible.sync="selectVisible"
          :CertificateList="localManageData.CertificateList"
          :CertificateTypeList="CertificateTypeList"
@@ -77,6 +87,7 @@ import { QuestionManageCLass } from './QuestionManageCLass';
 import QuestionFileComp from './QuestionFileComp.vue';
 import CertificateSelectDialog from './CertificateSelectDialog.vue';
 import { ICertificate } from './type';
+import CertificateImgName from './CertificateImgName.vue';
 
 const props = defineProps<{
   visible: boolean,
@@ -129,7 +140,7 @@ const closed = () => {
 const selectVisible = ref(false);
 
 const clear = () => {
-  localManageData.value.newCertificate = '';
+  localManageData.value.newCertificateID = '';
 };
 
 const submit = () => {
@@ -228,10 +239,11 @@ const submit = () => {
 
         .content {
           padding-top: 10px;
-          padding-left: 5em;
+          // padding-left: 5em;
+          line-height: 15px;
 
           .btn {
-            margin-right: 50px;
+            margin-right: 20px;
             i {
               margin-right: 4px;
               display: none;

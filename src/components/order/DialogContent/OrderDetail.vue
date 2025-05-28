@@ -394,12 +394,12 @@ export default {
       return false;
     },
     resumeQuestionDisable() {
-      if (this.showData && this.CertificateList.length > 0 && this.showData.CertificateFileList && this.showData.CertificateFileList.length > 0) {
-        const [id] = this.showData.CertificateFileList;
-        const t = this.CertificateList.find(it => it.CertificateID === id);
+      // if (this.showData && this.CertificateList.length > 0 && this.showData.CertificateFileList && this.showData.CertificateFileList.length > 0) {
+      //  const [id] = this.showData.CertificateFileList;
+      //  const t = this.CertificateList.find(it => it.CertificateID === id);
 
-        return !t || t.CheckStatus === 2;
-      }
+      //  return !t || t.CheckStatus === 2;
+      // }
 
       return false;
     },
@@ -446,10 +446,15 @@ export default {
       return list.filter((item) => item.Value.length > 0);
     },
     async handleReview() { // 不传文件重新提交审稿
+      let Certificate;
+      if (this.showData.CertificateFileList && this.showData.CertificateFileList.length > 0) {
+        // eslint-disable-next-line prefer-destructuring
+        Certificate = this.showData.CertificateFileList[0];
+      }
       this.messageBox.warnCancelBox(
         '确认该问题件订单没问题吗?',
         '[ 未做更改，审稿人员将重新审核当前订单 ]',
-        () => this.$store.dispatch('orderModule/setOrderReCheckFile', ''),
+        () => this.$store.dispatch('orderModule/setOrderReCheckFile', { Certificate }),
       );
     },
     successFunc(fileName) {

@@ -1704,6 +1704,9 @@ const api = {
   getCustomerCertificateAll(customerID: string) { // /Api/Customer/Certificate/All 获取客户证书列表
     return instance.get('/Api/Customer/Certificate/All', { params: { customerID } });
   },
+  getCustomerCertificateInfo(certificateID: string) { // Api/Customer/Certificate/Info get请求 参数certificateID  获取证书信息 包括过期已拒绝等状态
+    return instance.get('/Api/Customer/Certificate/Info', { params: { certificateID } });
+  },
   getCustomerCertificateNoPassReason() { // GET /Api/Customer/Certificate/NoPassReason 审核不通过原因模板
     return instance.get('/Api/Customer/Certificate/NoPassReason');
   },
