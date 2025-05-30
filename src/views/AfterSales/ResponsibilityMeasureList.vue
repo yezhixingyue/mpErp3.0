@@ -15,7 +15,7 @@
         <el-table-column prop="CustomerType" label="运费" minWidth="60" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.OrderFreight }}元</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="处理结果" minWidth="170" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="处理结果" minWidth="166" show-overflow-tooltip>
           <template slot-scope="scope">
             <template v-if="scope.row.IsReject">
               驳回{{scope.row.RejectReason}}
@@ -75,7 +75,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="问题类型" minWidth="157" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="问题类型" minWidth="153" show-overflow-tooltip>
           <template slot-scope="scope">
             {{scope.row.AfterSaleQuestions.map(it => `${it.FirstQuestionTypeTitle}-${it.SecondQuestionTypeTitle}`).join('、')}}
           </template>
@@ -88,7 +88,7 @@
         <el-table-column prop="CustomerType" label="划分人" minWidth="60" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.ResponsibilityDivideOperater}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="88" fixed="right">
+        <el-table-column label="操作" width="88">
           <div class="is-font-12 operate" slot-scope="scope">
             <span v-if="scope.row.Status === 0 || scope.row.Status === 1">
               <span v-if="staffDetailData.StaffID === scope.row.ResponsibilityDivideOperaterID" @click="onDetailClick(scope.row)">

@@ -163,7 +163,7 @@
             {{scope.row.Operator.Name }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right" v-if="localPermission.Setup">
+        <el-table-column label="操作" width="200" v-if="localPermission.Setup">
           <div class="is-font-12 operate" slot-scope="scope">
             <span @click="onDetailClick(scope.row)">
               <span><i style="color: #26BCF9;margin-left: 5px;" class="iconfont icon-xiangqing3"></i>查看详情</span>

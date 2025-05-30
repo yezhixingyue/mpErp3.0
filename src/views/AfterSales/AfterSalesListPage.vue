@@ -27,12 +27,12 @@
         <el-table-column prop="CustomerType" label="申请时间" minWidth="124" show-overflow-tooltip>
           <template slot-scope="scope">{{scope.row.CreateTime | format2MiddleLangTypeDate}}</template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="售后渠道" minWidth="96" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="售后渠道" minWidth="92" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ AfterSaleChannel.find(it => it.ID === scope.row.AfterSaleChannel)?.name }}
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="处理结果" minWidth="172" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="处理结果" minWidth="168" show-overflow-tooltip>
           <template slot-scope="scope">
             <template v-if="scope.row.Status === 30">
               <template v-if="scope.row.IsReject">
@@ -87,7 +87,7 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="102" fixed="right">
+        <el-table-column label="操作" width="102">
           <div class="is-font-12 operate" slot-scope="scope">
             <template v-if="scope.row.Status === 0 || scope.row.Status === 10 || scope.row.Status === 25">
               <template v-if="scope.row.Status === 0">

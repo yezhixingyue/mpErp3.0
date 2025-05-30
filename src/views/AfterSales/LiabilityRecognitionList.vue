@@ -6,7 +6,7 @@
       <el-table stripe border fit :data="ResponsibilityConfirmList" style="width: 100%" class="ft-14-table" :max-height="h" :height="h">
         <el-table-column prop="AfterSaleCode" label="售后单号" minWidth="80" show-overflow-tooltip></el-table-column>
         <el-table-column prop="OrderID" label="订单号" minWidth="86" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="SellArea" label="区域" minWidth="127" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="SellArea" label="区域" minWidth="125" show-overflow-tooltip></el-table-column>
         <el-table-column prop="CustomerType" label="客户类型" minWidth="70" show-overflow-tooltip></el-table-column>
         <el-table-column prop="ProductName" label="产品" minWidth="130" show-overflow-tooltip></el-table-column>
         <el-table-column prop="CustomerType" label="金额" minWidth="60" show-overflow-tooltip>
@@ -56,7 +56,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="CustomerType" label="问题类型" minWidth="135" show-overflow-tooltip>
+        <el-table-column prop="CustomerType" label="问题类型" minWidth="130" show-overflow-tooltip>
           <template slot-scope="scope">
             {{scope.row.AfterSaleQuestions.map(it => `${it.FirstQuestionTypeTitle}-${it.SecondQuestionTypeTitle}`).join('、')}}
           </template>
@@ -80,7 +80,7 @@
             {{scope.row.AfterSaleResponsibilities.find(it => it.Department===ResponsibilityConfirmCondition.DepartmentID)?.ConfirmerName }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="88" fixed="right">
+        <el-table-column label="操作" width="88">
           <div class="is-font-12 operate" slot-scope="scope">
             <span v-if="scope.row.Status === 0">
               <span v-if="PermissionData.Confirm || ResponsibilityConfirmCondition.DepartmentID !== 1" @click="onDetailClick(scope.row)">
