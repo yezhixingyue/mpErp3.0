@@ -307,7 +307,7 @@ export default {
       }
       >span{
         cursor: pointer;
-        &.is-gray>span, .is-gray{
+        &.is-gray{
           cursor: not-allowed;
         }
       }
