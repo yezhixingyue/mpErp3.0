@@ -118,7 +118,7 @@ export default {
     },
     orderDetailData(val) {
       if (this.isFetchCertificateListWaiting && val) {
-        const { CertificateFileList, Status, Customer } = val;
+        const { CertificateFileList, Status } = val;
         if (Status === 35 && CertificateFileList && CertificateFileList.length > 0) {
           // 看看是否有证书 如果有证书则请求证书列表数据 看对应证书是否审核不通过、找不到、已过期 -- 如果是则不允许做此选择
           // this.getCertificateList(Customer.CustomerID);

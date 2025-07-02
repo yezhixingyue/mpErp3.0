@@ -123,6 +123,25 @@ export default {
     },
     onClosed() { // 关闭 重置表单
     },
+    fixedOriginalReferencePriceList(ReferencePriceList) {
+      let _ReferencePriceList = ReferencePriceList;
+
+      const t = this.canSelectPriceList.find(it => it.ID === this.curPrice.BasePriceID);
+      if (t && t.SolutionList) {
+        _ReferencePriceList = t.SolutionList.map(it => {
+          const Percent = ReferencePriceList.find(_it => _it.Solution.ID === it.ID)?.Percent || '';
+          return {
+            Solution: {
+              ID: it.ID,
+              Name: it.Name,
+            },
+            Percent,
+          };
+        });
+      }
+
+      return _ReferencePriceList;
+    },
     initEditData() { // 数据初始化方法
       if (!this.curPrice) return;
       const { ID, ProductID, IsOwnPrice, BasePriceID, ReferencePriceList } = this.curPrice;
@@ -130,7 +149,7 @@ export default {
       this.ruleForm.ProductID = ProductID;
       this.ruleForm.IsOwnPrice = IsOwnPrice;
       this.ruleForm.BasePriceID = BasePriceID;
-      this.ruleForm.ReferencePriceList = ReferencePriceList;
+      this.ruleForm.ReferencePriceList = this.fixedOriginalReferencePriceList(ReferencePriceList);
     },
     formDataChecker() {
       if (this.ruleForm.IsOwnPrice) return true;
@@ -175,7 +194,7 @@ export default {
           return;
         }
         if (val.ID === this.curPrice.BasePriceID) {
-          this.ruleForm.ReferencePriceList = this.curPrice.ReferencePriceList;
+          this.ruleForm.ReferencePriceList = this.fixedOriginalReferencePriceList(this.curPrice.ReferencePriceList);
           return;
         }
         this.ruleForm.ReferencePriceList = val.SolutionList.map(it => ({
