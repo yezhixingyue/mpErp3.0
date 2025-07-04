@@ -20,16 +20,18 @@ export class MoveSetupTypeClass extends OtherSetupGeneralTypeClass {
     if (item.MoveType === MoveTypeEnum.Zoom) arr.push('使用缩放');
 
     if (item.Formula) {
-      arr.push(`内爬移设为：${item.Formula.Name}`);
-    } else if (item.Value) {
-      arr.push(`内爬移设为：${item.Value}mm`);
+      arr.push(`内爬移系数设为：${item.Formula.Name}`);
+    } else if (item.Value || item.Value === 0) {
+      arr.push(`内爬移系数设为：${item.Value}`);
     }
 
-    if (item.MoveOutFormula) {
-      arr.push(`外爬移设为：${item.MoveOutFormula.Name}`);
-    } else if (item.MoveOutValue) {
-      arr.push(`外爬移设为：${item.MoveOutValue}mm`);
-    }
+    console.log(item);
+
+    // if (item.MoveOutFormula) {
+    //   arr.push(`外爬移系数设为：${item.MoveOutFormula.Name}`);
+    // } else if (item.MoveOutValue) {
+    //   arr.push(`外爬移系数设为：${item.MoveOutValue}`);
+    // }
 
     return arr.join('，');
   }

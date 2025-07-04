@@ -61,7 +61,7 @@ export class RightPanelRuleForm {
             MpMessage.error({ title: '保存失败', msg: '爬移系数未设置' });
             return null;
           }
-          if (!/^\d+(.\d{1})?$/.test(`${this.Value}`) || this.Value === 0) {
+          if (!/^\d+(.\d{1})?$/.test(`${this.Value}`)) {
             MpMessage.error({ title: '保存失败', msg: '爬移常数设置不正确，必须为大于等于0的数字且最多1位小数' });
             return null;
           }
@@ -105,7 +105,7 @@ export class RightPanelRuleForm {
           MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸不能为空' });
           return null;
         }
-        if (!/^\d+(.\d{1})?$/.test(`${this.Value}`) || this.Value === 0) {
+        if (!/^\d+(.\d{1})?$/.test(`${this.Value}`)) {
           MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸设置不正确，必须为大于等于0的数字且最多1位小数' });
           return null;
         }
@@ -123,7 +123,7 @@ export class RightPanelRuleForm {
           MpMessage.error({ title: '保存失败', msg: '铣背值不能为空' });
           return null;
         }
-        if (!/^\d+(.\d{1})?$/.test(`${this.Value}`) || this.Value === 0) {
+        if (!/^\d+(.\d{1})?$/.test(`${this.Value}`)) {
           MpMessage.error({ title: '保存失败', msg: '铣背深度设置不正确，必须为大于0等于0的数字且最多1位小数' });
           return null;
         }
@@ -153,10 +153,10 @@ export class RightPanelRuleForm {
     this.Position = data.Position;
 
     if (this.Type === GenerelMappingTypeEnum.Move) {
-      if (this.Formula || this.Value) {
+      if (this.Formula || this.Value || this.Value === 0) {
         this._MoveInChecked = true;
       }
-      if (this.MoveOutFormula || this.MoveOutValue) {
+      if (this.MoveOutFormula || this.MoveOutValue || this.MoveOutValue === 0) {
         this._MoveOutChecked = true;
       }
     }

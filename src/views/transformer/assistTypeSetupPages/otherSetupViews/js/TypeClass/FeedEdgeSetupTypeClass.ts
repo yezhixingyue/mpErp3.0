@@ -24,7 +24,7 @@ export class FeedEdgeSetupTypeClass extends OtherSetupGeneralTypeClass {
 
     if (item.Formula) {
       arr.push(`${item.Formula.Name}`);
-    } else if (item.Value) {
+    } else if (item.Value || item.Value === 0) {
       arr.push(`${item.Value}mm`);
     }
     return arr.join('');

@@ -18,7 +18,7 @@ export class MillingSetupTypeClass extends OtherSetupGeneralTypeClass {
 
     if (item.Formula) {
       arr.push(`铣背深度设为：${item.Formula.Name}`);
-    } else if (item.Value) {
+    } else if (item.Value || item.Value === 0) {
       arr.push(`铣背深度设为：${item.Value}mm`);
     }
 
