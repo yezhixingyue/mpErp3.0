@@ -9,6 +9,7 @@
     @closed="closed"
     class="dialog"
     top="15vh"
+    submitText="确定"
   >
     <div class="list-wrap">
       <span v-if="DisplayList.length === 0" class="ft-12 is-gray">暂无公式</span>

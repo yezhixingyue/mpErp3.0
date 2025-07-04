@@ -21,37 +21,35 @@
             <div class="row">
               <span class="label">爬移使用：</span>
               <el-radio-group v-model="rultForm.MoveType" class="content">
-                <el-radio :label="MoveTypeEnum.Skewing">偏移</el-radio>
+                <el-radio :label="MoveTypeEnum.Skewing" disabled>偏移</el-radio>
                 <el-radio :label="MoveTypeEnum.Zoom">缩放</el-radio>
               </el-radio-group>
             </div>
             <div class="row">
-              <span class="label" style="line-height: 36px;">爬移量：</span>
+              <span class="label" style="line-height: 36px;">内爬移：</span>
               <div class="content">
                 <div class="box">
-                  <el-checkbox v-model="rultForm._MoveInChecked">内爬移：</el-checkbox>
+                  <el-checkbox v-model="rultForm._MoveInChecked">爬移系数：</el-checkbox>
                   <template v-if="rultForm._MoveInChecked">
                     <mp-button type="text" @click="onPorpertySelectClick('Formula')">设置</mp-button>
                     <span v-if="rultForm.Formula">{{ getFormulaName(rultForm.Formula) }}</span>
                     <div v-else>
                       <span>常数：</span>
                       <el-input v-model="rultForm.Value" maxlength="9" size="small"></el-input>
-                      <em>mm</em>
                     </div>
                   </template>
                 </div>
-                <div class="box">
-                  <el-checkbox v-model="rultForm._MoveOutChecked">外爬移：</el-checkbox>
+                <!-- <div class="box">
+                  <el-checkbox v-model="rultForm._MoveOutChecked" disabled>外爬移系数：</el-checkbox>
                   <template v-if="rultForm._MoveOutChecked">
-                    <mp-button type="text" @click="onPorpertySelectClick('MoveOutFormula')">设置</mp-button>
+                    <mp-button type="text" @click="onPorpertySelectClick('MoveOutFormula')" disabled style="color: #cbcbcb;">设置</mp-button>
                     <span v-if="rultForm.MoveOutFormula">{{ getFormulaName(rultForm.MoveOutFormula) }}</span>
                     <div v-else>
                       <span>常数：</span>
-                      <el-input v-model="rultForm.MoveOutValue" maxlength="9" size="small"></el-input>
-                      <em>mm</em>
+                      <el-input v-model="rultForm.MoveOutValue" maxlength="9" size="small" disabled></el-input>
                     </div>
                   </template>
-                </div>
+                </div> -->
               </div>
             </div>
           </li>
