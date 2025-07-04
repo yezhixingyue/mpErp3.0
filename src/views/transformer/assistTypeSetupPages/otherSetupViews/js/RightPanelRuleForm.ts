@@ -62,7 +62,7 @@ export class RightPanelRuleForm {
             return null;
           }
           if (!/^\d+(.\d{1})?$/.test(`${this.Value}`) || this.Value === 0) {
-            MpMessage.error({ title: '保存失败', msg: '爬移常数设置不正确，必须为大于0的数字且最多1位小数' });
+            MpMessage.error({ title: '保存失败', msg: '爬移常数设置不正确，必须为大于等于0的数字且最多1位小数' });
             return null;
           }
           temp.Value = this.Value;
@@ -77,7 +77,7 @@ export class RightPanelRuleForm {
       //       return null;
       //     }
       //     if (!/^\d+(.\d{1})?$/.test(this.MoveOutValue.toString()) || this.MoveOutValue === 0) {
-      //       MpMessage.error({ title: '保存失败', msg: '外爬移常数设置不正确，必须为大于0的数字且最多1位小数' });
+      //       MpMessage.error({ title: '保存失败', msg: '外爬移常数设置不正确，必须为大于等于0的数字且最多1位小数' });
       //       return null;
       //     }
       //     temp.MoveOutValue = this.MoveOutValue;
@@ -106,7 +106,7 @@ export class RightPanelRuleForm {
           return null;
         }
         if (!/^\d+(.\d{1})?$/.test(`${this.Value}`) || this.Value === 0) {
-          MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸设置不正确，必须为大于0的数字且最多1位小数' });
+          MpMessage.error({ title: '保存失败', msg: '叼口空白尺寸设置不正确，必须为大于等于0的数字且最多1位小数' });
           return null;
         }
         temp.Value = this.Value;
@@ -124,7 +124,7 @@ export class RightPanelRuleForm {
           return null;
         }
         if (!/^\d+(.\d{1})?$/.test(`${this.Value}`) || this.Value === 0) {
-          MpMessage.error({ title: '保存失败', msg: '铣背深度设置不正确，必须为大于0的数字且最多1位小数' });
+          MpMessage.error({ title: '保存失败', msg: '铣背深度设置不正确，必须为大于0等于0的数字且最多1位小数' });
           return null;
         }
         temp.Value = this.Value;
