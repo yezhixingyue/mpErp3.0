@@ -170,6 +170,30 @@ const routes = [
     component: () => import('@/views/transformer/assistTypeSetupPages/otherSetupViews/OtherSetupSetupView.vue'),
   },
   {
+    path: '/processDecompositionList',
+    name: 'processDecompositionList',
+    meta: {
+      title: '工艺分解',
+      hideMenu: true,
+      pageName: 'ProcessDecompositionListView',
+      // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+      requiresAuth: true,
+    },
+    component: () => import('@/views/transformer/assistTypeSetupPages/ProcessDecomposition/ProcessDecompositionListView.vue'),
+  },
+  {
+    path: '/processDecompositionSetup',
+    name: 'processDecompositionSetup',
+    meta: {
+      title: '工艺分解',
+      hideMenu: true,
+      pageName: 'ProcessDecompositionSetupView',
+      // PermissionInfo: ['PermissionManageStaffBase', 'HavePomission'],
+      requiresAuth: true,
+    },
+    component: () => import('@/views/transformer/assistTypeSetupPages/ProcessDecomposition/ProcessDecompositionSetupView.vue'),
+  },
+  {
     path: '/mapLineList/:pageType',
     name: 'mapLineList',
     meta: {
@@ -248,6 +272,12 @@ const routeTree = [
         name: 'otherLimitList',
         children: [
           { name: 'otherLimitSetup', children: [] },
+        ],
+      },
+      {
+        name: 'processDecompositionList',
+        children: [
+          { name: 'processDecompositionSetup', children: [] },
         ],
       },
       {
