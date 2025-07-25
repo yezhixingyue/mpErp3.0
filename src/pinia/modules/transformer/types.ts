@@ -12,6 +12,8 @@ export enum menuTypeEnum {
   color = 'color',
   /** 物料映射 */
   material = 'material',
+  /** 工艺分解 */
+  processDecomposition = 'processDecomposition',
   /** 选择产品部件 */
   partSetup = 'partSetup',
   /** 组合生产线映射 */
@@ -87,6 +89,8 @@ export interface IProduct extends Omit<IPart, 'UseTimes'> {
   /** 组合 - 文字信息映射条数 */
   UnionWordsInfoCount: number
   PartList: IPart[]
+  /** 工艺分解条目数量 */
+  CraftResolveCount: number
 }
 
 export interface IPartChangeParams {

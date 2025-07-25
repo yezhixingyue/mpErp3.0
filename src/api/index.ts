@@ -1646,6 +1646,18 @@ const api = {
   getPropertyList(data: IGetPropertyListParams) { // POST /Api/Property/List  获取属性列表
     return instance.post('/Api/Property/List', data);
   },
+  // get /Api/GetCraftResolveList/List  获取工艺分解列表
+  getGetCraftResolveList(serverID: string, productID: string) {
+    return instance.get('/Api/GetCraftResolveList/List', { params: { serverID, productID } });
+  },
+  // post /Api/CraftResolve/Save 工艺分解保存
+  getCraftResolveSave(data) {
+    return instance.post('/Api/CraftResolve/Save', data);
+  },
+  // delete /Api/CraftResolve/Remove  工艺分解删除
+  getCraftResolveRemove(serverID: string, productID: string, constraintID: string) {
+    return instance.delete('/Api/CraftResolve/Remove', { params: { serverID, productID, constraintID } });
+  },
   getProduceLineList(serverID: string, isUnionLine: boolean) { // GET /Api/ProduceLine/List   获取生产线列表
     return instance.get('/Api/ProduceLine/List', { params: { serverID, isUnionLine } });
   },

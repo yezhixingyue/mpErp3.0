@@ -3,6 +3,7 @@
     <dt @click.self="onHideClick" :class="{a: selectedPartList.length>0}">
       <div class="name">{{getProductName(props.item)}}</div>
       <div class="right">
+        <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.processDecomposition)">工艺分解 ({{props.item.CraftResolveCount}})</span>
         <span class="blue-span" v-if="HavePomission" @click="onClick(menuTypeEnum.partSetup)">选择产品部件 ({{selectedPartList.length}})</span>
         <span :class="{hide: selectedPartList.length < 0, disabled: !selectedPartList.length}" class="blue-span" v-if="HavePomission"
           @click="onClick(menuTypeEnum.UnionLine)">组合生产线映射 ({{props.item.UnionLineCount}})</span>
@@ -71,7 +72,7 @@ const HavePomission = computed(() => props.UserDetail && props.UserDetail.Permis
 // });
 
 const onClick = (type: menuTypeEnum, PartID?: string) => {
-  if (selectedPartList.value.length === 0 && type !== menuTypeEnum.partSetup) return;
+  if (selectedPartList.value.length === 0 && ![menuTypeEnum.partSetup, menuTypeEnum.processDecomposition].includes(type)) return;
   // if (type === menuTypeEnum.UnionLine || type === menuTypeEnum.UnionWorking) {
   //   if (selectedPartList.value.length < 1) {
   //     onHideClick();

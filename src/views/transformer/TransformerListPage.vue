@@ -69,6 +69,10 @@ const onMenuClick = (type: menuTypeEnum) => {
       partSetupVisible.value = true;
       break;
 
+    case menuTypeEnum.processDecomposition: // 工艺分解
+      router.push('/processDecompositionList');
+      break;
+
     case menuTypeEnum.assist: // 辅助文件映射
       router.push('/mapAssist');
       break;

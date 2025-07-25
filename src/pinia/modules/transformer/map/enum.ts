@@ -37,7 +37,7 @@ export enum GenerelMappingTypeEnum {
   /** 铣背 */
   Milling = 8,
   /** 数码自动拼版 */
-  NumericalCodeAutoMakeup = 9,
+  NumericalCodeAutoMakeup = 9
 }
 
 /** 生产端辅助信息枚举类型： 文件 | 文字信息 | 数值 */
@@ -76,6 +76,8 @@ export enum UseModuleEnum {
   otherSetupGeneral = 52,
   /** 数码自动拼版 */
   NumericalCodeAutoMakeup = 52,
+  /** 人工工艺分解 */
+  ProcessDecomposition = 52,
 }
 
 /** 爬移类型枚举 */
