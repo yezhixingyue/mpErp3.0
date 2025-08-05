@@ -467,7 +467,7 @@ export default {
           }
           _ruleForm.CurrentAmount = (Number(this.ruleForm.OriginalAmount) + Number(_ruleForm.Amount)).toFixed(1);
         }
-        console.log(_ruleForm);
+
         // 提交数据
         this.api.getOrderExpressChange(_ruleForm).then(res => {
           if (res.data.Status === 1000) {

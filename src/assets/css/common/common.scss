@@ -701,3 +701,14 @@ button.border-blue-btn {
     margin-right: 8px;
   }
 }
+
+.star {
+  position: relative;
+
+  &::before {
+    content: '*';
+    color: #ff3769;
+    position: absolute;
+    left: -0.55em;
+  }
+}

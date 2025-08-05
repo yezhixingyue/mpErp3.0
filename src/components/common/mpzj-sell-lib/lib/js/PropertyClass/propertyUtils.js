@@ -12,7 +12,7 @@ export const ElementSelectTypeEnum = [
   { label: ' 部件', ID: 10, nickName: '部件' },
   { label: ' 公共属性', ID: 11, nickName: '公共属性' },
   { label: ' 工期数据', ID: 12, nickName: '工期数据' },
-  { label: ' 其他', ID: 254, nickName: '其他' },
+  { label: ' 其它', ID: 254, nickName: '其它属性' },
   { label: ' 常量', ID: 255, nickName: '常量' },
 ];
 
@@ -77,6 +77,7 @@ export const PropertyFixedType = [
   { ID: 57, Name: '生产工厂' },
   { ID: 58, Name: '产品成交价' },
   { ID: 59, Name: '付款时间' },
+  { ID: 64, Name: '打包体积' },
 ];
 
 export const AllOperatorList = [ // 运算符号列表

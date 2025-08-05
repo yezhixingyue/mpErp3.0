@@ -58,10 +58,6 @@ const { AllOperatorList } = PropertyUtils;
 
 export default {
   props: {
-    Property: {
-      type: Object,
-      default: () => ({}),
-    },
     value: {
       type: String,
       default: '',

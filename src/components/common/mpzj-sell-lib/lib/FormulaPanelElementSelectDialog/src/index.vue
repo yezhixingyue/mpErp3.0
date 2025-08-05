@@ -17,8 +17,21 @@
           <el-radio-button :label="it.value" v-for="it in panelList" :key="it.value">{{it.label}}</el-radio-button>
         </el-radio-group>
         <p v-else-if="DialogTitle">{{DialogTitle}}</p>
+        <div v-else style="margin-top: -25px;"></div>
       </header>
       <main v-if="showData" >
+        <!-- 创建手写参数 -->
+         <section v-if="writableProperty" class="writable-box">
+          <header class="blue-v-line">创建常量参数</header>
+          <main>
+            <span>参数名：</span>
+            <el-input maxlength="30" size="small" style="width: 160px;" v-model.trim="writablePropertyRuleForm.Name"></el-input>
+            <span class="ml-30">单位：</span>
+            <el-input maxlength="10" size="small" style="width: 80px;" v-model.trim="writablePropertyRuleForm.Unit"></el-input>
+            <Menu class="menu" title="添加" :defineOption="{rightImgUrl:require('@/assets/images/add.png')}" @click="onWritableClick" />
+          </main>
+         </section>
+
         <div v-for="it in showData" :key="it.Type">
           <span class="title mp-common-title-wrap" v-if="getTitle(it.Type)">{{getTitle(it.Type)}}</span>
           <!-- 元素组类型 -->
@@ -99,6 +112,8 @@ import ElementTypeShowComp from './ElementTypeShowComp.vue';
 import CraftTypeShowComp from './CraftTypeShowComp.vue';
 import MaterialTypeShowComp from './MaterialTypeShowComp.vue';
 import PartTypeShowComp from './PartTypeShowComp.vue';
+import Menu from '@/components/common/NewSetupComps/menus/Menu.vue';
+import { MpMessage } from '@/assets/js/utils/MpMessage';
 
 const FormulaUseModuleEnum = [
   { type: 'ProductProperty', label: '产品' },
@@ -115,6 +130,7 @@ export default {
     CraftTypeShowComp,
     MaterialTypeShowComp,
     PartTypeShowComp,
+    Menu,
   },
   props: {
     visible: {
@@ -165,6 +181,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    writableProperty: {
+      type: Object,
+      default: () => null,
+    },
+    PropertyNames: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -177,6 +201,10 @@ export default {
       ],
       MultipleList: [],
       ExcludeShowTitleTypeList: [7, 10],
+      writablePropertyRuleForm: {
+        Name: '',
+        Unit: '',
+      },
     };
   },
   computed: {
@@ -193,6 +221,35 @@ export default {
     },
   },
   methods: {
+    onWritableClick() {
+      if (!this.writablePropertyRuleForm.Name) {
+        MpMessage.error('添加失败', '请输入参数名称');
+        return;
+      }
+
+      // 正则表达式：仅允许数字、字母和汉字
+      const regex = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/;
+      if (!regex.test(this.writablePropertyRuleForm.Name)) {
+        MpMessage.error('添加失败', '参数名称仅允许数字、字母和汉字组成');
+        return;
+      }
+
+      const DisplayContent = `[${this.writablePropertyRuleForm.Name}]`;
+
+      if (this.PropertyNames.includes(DisplayContent)) {
+        MpMessage.error('添加失败', '参数名称重复');
+        return;
+      }
+
+      const property = {
+        ...this.writableProperty,
+        DisplayContent,
+        Unit: this.writablePropertyRuleForm.Unit,
+      };
+
+      this.$emit('submit', property);
+      this.onCancle();
+    },
     onSubmit(data) {
       if (this.selectedElementIDs.includes(data.StoredContent)) return;
       this.$emit('submit', data);
@@ -307,6 +364,9 @@ export default {
       this.getInitListData();
       // MultipleList
       this.setMultipleListInit();
+
+      this.writablePropertyRuleForm.Name = '';
+      this.writablePropertyRuleForm.Unit = '';
     },
     setMultipleListInit() {
       this.MultipleList = this.MultipleCheckedList.filter((it) => it.StoredContent);
@@ -407,6 +467,40 @@ export default {
             vertical-align: -2px;
           }
         }
+      }
+    }
+
+    .title.mp-common-title-wrap {
+      margin-left: -10px;
+    }
+
+    .blue-v-line {
+      margin-left: -10px;
+      font-weight: 700;
+    }
+
+    .writable-box {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 15px;
+      .el-input {
+        input {
+          line-height: 30px;
+          height: 30px;
+        }
+      }
+
+      .menu {
+        margin-left: 20px;
+      }
+
+      > header {
+        margin-bottom: 15px;
+      }
+
+      > main {
+        display: flex;
+        align-items: center;
       }
     }
   }

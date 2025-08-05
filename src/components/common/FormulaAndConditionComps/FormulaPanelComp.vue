@@ -1,5 +1,5 @@
 <template>
-  <section class="mp-erp-common-comps-formula-set-panel-comp--wrap" :class="{isSingle: isSingle}">
+  <section class="mp-erp-common-comps-formula-set-panel-comp--wrap" :class="{isSingle: isSingle, 'is-vertical': isVertical}">
     <header v-if="!hiddenHeader">
       <span>{{pageLabel}}：</span>
       <span>{{pageTitle}}</span>
@@ -20,8 +20,10 @@
         <template v-slot:left>
           <section class="mp-erp-common-comps-formula-set-panel-comp-left-content-wrap">
             <header>
+              <p class="ft-14 is-bold mb-20 mt-10" v-if="isVertical">参数表</p>
               <p class="btn-box">
-                <el-button type="primary" size="small" @click='onElementAddClick' v-if="!isSingle">+添加元素</el-button>
+                <el-button type="primary" size="small" @click='onElementAddClick' v-if="!isSingle && !isVertical">+添加元素</el-button>
+                <span class="blue-span ft-13" @click='onElementAddClick' v-else-if="isVertical">+添加</span>
                 <span class="blue-span" @click='onElementAddClick' v-else>+添加元素</span>
               </p>
               <p class="tips-box">
@@ -35,15 +37,15 @@
               </p>
             </header>
             <main>
-              <p class="module-title" v-if="!isSingle">已选元素概览</p>
+              <p class="module-title" v-if="!isSingle && !isVertical">已选元素概览</p>
               <ul>
                 <li v-for="(it, i) in FormulaData.PropertyList" :key="it.StoredContent + '' + i">
                   <span class="name" v-if="!it.TipsContent" :class="{'is-bold': it.Type === 8 || it.Type === 9}">{{it.DisplayContent}}</span>
                   <TipsSpanButton v-else class="name" :text='it.DisplayContent' :tipContent='it.TipsContent' />
                   <span class="default">
                     <template v-if="it.Type !== 8 && !(it.Type === 9 && it.CraftOptionList && it.CraftOptionList.length > 0)">
-                      <i>空值设为：</i>
-                      <el-input size="small" v-model.trim="it.DefaultValue"></el-input>
+                      <i :class="{hidden: it.FixedType===254}">空值设为：</i>
+                      <el-input size="small" v-model.trim="it.DefaultValue" maxlength="9"></el-input>
                       <i> {{it.Unit}}</i>
                     </template>
                     <template v-if="it.Type === 9 && it.CraftOptionList && it.CraftOptionList.length > 0">
@@ -58,10 +60,16 @@
               <!-- 相同公式面板1 后面提取公共组件 -->
               <section class="mp-erp-common-comps-formula-set-panel-comp-right-content-wrap show-left" v-if="isSingle">
                 <header>
-                  <p class="module-title">公式</p>
+                  <p class="is-bold ft-14" :class="{'module-title' : !isVertical}">公式</p>
                 </header>
                 <main>
-                  <el-input type="textarea" :autosize="{ minRows: 10, maxRows: 100}"  v-model.trim="FormulaData.Content" />
+                  <div class="textarea-box">
+                    <el-input type="textarea" spellcheck="false" :autosize="{ minRows: 10, maxRows: 100}"  v-model.trim="FormulaData.Content" />
+                    <!-- 插入特殊函数 -->
+                    <p v-if="SpecialFunctionList.length > 0" class="special-function-btn">
+                      <span class="blue-span" @click="specialFunctionVisible = true">+插入特殊函数</span>
+                    </p>
+                  </div>
                   <div class="ctrl-box">
                     <span :class="it.isMini?'mini':''" v-for="it in ArithmeticOperatorList" :key='it.value'
                     @click="onArithmeticOperatorClick(it)">{{it.label}}</span>
@@ -70,7 +78,7 @@
                     <span>公式说明：</span>
                     <el-input size="small" v-model.trim="FormulaData.Remark" maxlength="150" show-word-limit></el-input>
                   </p>
-                  <p class="module-title">试算</p>
+                  <p class="is-bold ft-14" :class="{'module-title' : !isVertical}">试算</p>
                   <div class="test-box">
                     <div>
                       <div v-for="it in FormulaData.PropertyList" :key="it.DisplayContent">
@@ -94,10 +102,16 @@
           <!-- 相同公式面板2 后面提取公共组件 -->
           <section class="mp-erp-common-comps-formula-set-panel-comp-right-content-wrap">
             <header>
-              <p class="module-title">公式</p>
+              <p class="is-bold ft-14" :class="{'module-title' : !isVertical}">公式</p>
             </header>
             <main>
-              <el-input type="textarea" :autosize="{ minRows: 10, maxRows: 100}"  v-model.trim="FormulaData.Content" />
+              <div class="textarea-box">
+                <el-input type="textarea" spellcheck="false" :autosize="{ minRows: 10, maxRows: 100}"  v-model.trim="FormulaData.Content" />
+                <!-- 插入特殊函数 -->
+                <p v-if="SpecialFunctionList.length > 0" class="special-function-btn">
+                  <span class="blue-span" @click="specialFunctionVisible = true">+插入特殊函数</span>
+                </p>
+              </div>
               <div class="ctrl-box">
                 <span :class="it.isMini?'mini':''" v-for="it in ArithmeticOperatorList" :key='it.value'
                  @click="onArithmeticOperatorClick(it)">{{it.label}}</span>
@@ -106,7 +120,7 @@
                 <span>公式说明：</span>
                 <el-input size="small" v-model.trim="FormulaData.Remark" maxlength="150" show-word-limit></el-input>
               </p>
-              <p class="module-title">试算</p>
+              <p class="is-bold ft-14" :class="{'module-title' : !isVertical}">试算</p>
               <div class="test-box">
                 <div>
                   <div v-for="it in FormulaData.PropertyList" :key="it.DisplayContent">
@@ -125,11 +139,25 @@
           </section>
         </template>
       </LRWidthDragAutoChangeComp>
+
       <FormulaCostOptionSetupDialog :visible.sync="CostSetupVisible" :prop='curSetupCostProp' @submit='onCostSetupSubmit' />
+
       <FormulaPanelElementSelectDialog useType='formula' :DialogTitle="subFromulaDialogTitle" v-if="PropertyList && FormulaData"
-        :visible.sync='selectVisible' :list='PropertyList' @submit='onElementSelect' :selectedElementIDs='selectedElementIDs' />
+        :writableProperty="writableProperty" :PropertyNames="PropertyNames"
+        :visible.sync='selectVisible'
+        :list='PropertyList'
+        @submit='onElementSelect'
+        :selectedElementIDs='selectedElementIDs'
+      />
+
+      <FormulaSpecialFunctionDialog
+        v-if="SpecialFunctionList.length"
+        :visible.sync='specialFunctionVisible'
+        :SpecialFunctionList="SpecialFunctionList"
+        @submit="onSpecialFunctionSubmit"
+      />
     </main>
-    <footer v-if="!isSingle">
+    <footer v-if="!isSingle && !hiddenFooter">
       <el-button type="primary" @click="onSubmitClick">保存</el-button>
       <el-button @click="onGoBackClick" class="go-back">返回</el-button>
     </footer>
@@ -141,6 +169,7 @@ import FormulaClass from '@/assets/js/TypeClass/FormulaClass';
 import { PropertyClass, LRWidthDragAutoChangeComp, FormulaPanelElementSelectDialog } from '@/components/common/mpzj-sell-lib/lib';
 import TipsSpanButton from '@/components/common/NewComps/TipsSpanButton.vue';
 import FormulaCostOptionSetupDialog from './FormulaCostOptionSetupDialog.vue';
+import FormulaSpecialFunctionDialog from './FormulaSpecialFunctionDialog.vue';
 
 export default {
   props: {
@@ -200,16 +229,30 @@ export default {
       type: String,
       default: '',
     },
+    isVertical: {
+      type: Boolean,
+      default: false,
+    },
+    hiddenFooter: {
+      type: Boolean,
+      default: false,
+    },
+    useSpecialFunc: { // 是否使用特殊函数
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     LRWidthDragAutoChangeComp,
     FormulaPanelElementSelectDialog,
     TipsSpanButton,
     FormulaCostOptionSetupDialog,
+    FormulaSpecialFunctionDialog,
   },
   data() {
     return {
       PropertyList: null,
+      writableProperty: null,
       FormulaData: null,
       selectVisible: false,
       ArithmeticOperatorList: [
@@ -230,6 +273,8 @@ export default {
       isloading: false,
       CostSetupVisible: false, // 设置工艺费弹窗
       curSetupCostProp: null,
+      SpecialFunctionList: [],
+      specialFunctionVisible: false,
     };
   },
   computed: {
@@ -242,6 +287,12 @@ export default {
     haveInputElementList() {
       if (this.FormulaData && this.FormulaData.PropertyList && Array.isArray(this.FormulaData.PropertyList) && this.FormulaData.Content.length > 0) {
         return this.FormulaData.PropertyList.filter(it => this.FormulaData.Content.includes(it.DisplayContent));
+      }
+      return [];
+    },
+    PropertyNames() {
+      if (this.FormulaData && this.FormulaData.PropertyList && Array.isArray(this.FormulaData.PropertyList)) {
+        return this.FormulaData.PropertyList.map(it => it.DisplayContent);
       }
       return [];
     },
@@ -289,6 +340,11 @@ export default {
       const propertyList = await PropertyClass.getPropertyList(_data4FetchProperty, this.api.getFormulaPropertyList);
       this.isloading = false;
       if (propertyList) {
+        const index = propertyList.findIndex(it => it.FixedType === 254);
+        if (index > -1) {
+          this.writableProperty = propertyList[index];
+          propertyList.splice(index, 1);
+        }
         this.PropertyList = propertyList;
         this.initPropertyListReplaceHelper();
       } else {
@@ -296,14 +352,34 @@ export default {
       }
       // this.getPropertyList(); // 获取属性列表信息
     },
+    async getFormulaSpecialFunction() {
+      const resp = await this.api.getFormulaSpecialFunction();
+      if (resp?.data.isSuccess) {
+        this.SpecialFunctionList = resp.data.Data;
+      }
+    },
+    async getPropertyListAfresh() { // 外部重新获取属性列表数据
+      const propertyList = await PropertyClass.getPropertyList(this.Condition4getProperty, this.api.getFormulaPropertyList);
+      if (propertyList) {
+        const index = propertyList.findIndex(it => it.FixedType === 254);
+        if (index > -1) {
+          this.writableProperty = propertyList[index];
+          propertyList.splice(index, 1);
+        }
+        this.PropertyList = propertyList;
+      }
+    },
     onGoBackClick(type) {
       this.$emit('goback', type);
     },
     initPropertyListReplaceHelper() { // 获取可用属性列表并转换完成后，对编辑数据时初始的PropertyList的数据进行修改操作（以获取到的可用属性为准）
       if (this.FormulaData.PropertyList.length === 0) return;
       this.FormulaData.PropertyList = this.FormulaData.PropertyList.map(it => {
+        if (it.FixedType === 254) return it;
+
         const t = PropertyClass.getPerfectPropertyByImperfectProperty(it, this.PropertyList);
         if (!t) return null;
+
         const temp = { ...t, DefaultValue: it.DefaultValue };
         if (Array.isArray(it.CraftOptionList) && it.CraftOptionList.length > 0 && Array.isArray(temp.CraftOptionList)) {
           temp.CraftOptionList = temp.CraftOptionList.map(option => {
@@ -362,6 +438,13 @@ export default {
       if (!it) return;
       this.insertVariable(it.value, it.num || 0);
     },
+    onSpecialFunctionSubmit(data) {
+      const temp = {
+        value: data.Expression,
+        num: 0,
+      };
+      this.onArithmeticOperatorClick(temp);
+    },
     async submitSave(data) {
       const resp = await this.api.getFormulaSave(data).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
@@ -398,7 +481,11 @@ export default {
     onCalculateInput() {
       this.CalculateRes = '';
     },
-    getFormulaData() {
+    getFormulaData(ignore = false) {
+      if (ignore) {
+        return this.FormulaData ? { ...this.FormulaData } : null;
+      }
+
       const checkBool = FormulaClass.checkSubmit(this.FormulaData, this.hiddenHeader);
       if (!checkBool) return null;
       const temp = { ...this.FormulaData };
@@ -440,6 +527,7 @@ export default {
   },
   mounted() {
     this.initData();
+    if (this.useSpecialFunc) this.getFormulaSpecialFunction();
   },
   // activated() {
   //   this.initData();
@@ -532,7 +620,7 @@ export default {
             display: flex;
             align-items: center;
             min-width: 700px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             > span {
               &.name {
                 color: #585858;
@@ -593,6 +681,10 @@ export default {
                 font-size: 14px;
                 margin-left: 18px;
               }
+
+              .hidden {
+                visibility: hidden;
+              }
             }
           }
         }
@@ -649,7 +741,7 @@ export default {
           }
           input {
             border-radius: 5px;
-            padding-right: 45px;
+            padding-right: 60px;
           }
           .el-input__suffix {
             right: 1px;
@@ -740,6 +832,23 @@ export default {
         line-height: 30px;
       }
     }
+
+    .textarea-box {
+      position: relative;
+
+      .special-function-btn {
+        position: absolute;
+        right: 20px;
+        bottom: 15px;
+        font-size: 14px;
+        height: 20px;
+        line-height: 20px;
+
+        span {
+          text-decoration: underline;
+        }
+      }
+    }
   }
 
   &.isSingle {
@@ -762,6 +871,61 @@ export default {
       }
     }
   }
+
+  &.is-vertical {
+    padding-left: 0;
+    min-width: 820px;
+
+    .ft-14.is-bold {
+      color: #444;
+    }
+
+    .vertical-line {
+      display: none;
+    }
+
+    .mp-erp-common-comps-left-and-right-width-drap-auto-change-comp-wrap {
+      flex-direction: column;
+
+      > .left {
+        width: 100% !important;
+        overflow: hidden;
+
+        .btn-box {
+          padding: 0;
+        }
+
+        > section {
+          > main {
+            padding-top: 18px;
+
+            > ul {
+              padding-top: 0;
+            }
+          }
+        }
+      }
+
+      .mp-erp-common-comps-formula-set-panel-comp-right-content-wrap {
+        padding-left: 0;
+
+        > header {
+          padding-bottom: 18px;
+        }
+
+        > main {
+          > .intro {
+            padding-bottom: 30px;
+          }
+        }
+      }
+    }
+
+    .test-box {
+      padding-left: 0 !important;
+    }
+  }
+
   > footer {
     text-align: center;
     padding: 25px;

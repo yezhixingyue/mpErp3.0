@@ -27,5 +27,7 @@ export interface IUser {
         BindCustomer: boolean
       },
     }
+    /** 抛货管理 */
+    PermissionBulkyCargo: IBasicModulePermission
   }
 }

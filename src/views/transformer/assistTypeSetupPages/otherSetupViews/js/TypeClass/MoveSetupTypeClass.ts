@@ -25,8 +25,6 @@ export class MoveSetupTypeClass extends OtherSetupGeneralTypeClass {
       arr.push(`内爬移系数设为：${item.Value}`);
     }
 
-    console.log(item);
-
     // if (item.MoveOutFormula) {
     //   arr.push(`外爬移系数设为：${item.MoveOutFormula.Name}`);
     // } else if (item.MoveOutValue) {

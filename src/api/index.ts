@@ -13,8 +13,10 @@ import { IPartChangeParams, ISemiFinishedSaveParams, IGetWorkingProcedureParams,
 import { IFactoryAccount } from '@/views/BasicSetup/Factory/Account/types';
 import { SaleAndProductionListItemPlainType } from '@/views/serverManage/utils/SaleAndProductionListItemClass';
 import { baseSetupApis } from './modules/BaseSetup';
+import { lightgoodsApis } from './modules/lightgoodsApis';
 
 const api = {
+  lightgoodsApis,
   ...baseSetupApis,
   /* 订单列表部分api
    ------------------------------------------------------------------------------------ */
@@ -408,8 +410,8 @@ const api = {
   savePromote(data) { // POST /Api/Promote/Save  添加和编辑活动
     return instance.post('/Api/Promote/Save', data);
   },
-  getAllProductLists() { // 获取列表头部产品第三级列表
-    return instance.post('/Api/Product/List', { FieldType: 1, ShowAllClassify: true });
+  getAllProductLists(FieldType = 1, ShowAllClassify = true) { // 获取列表头部产品第三级列表
+    return instance.post('/Api/Product/List', { FieldType, ShowAllClassify });
   },
   getConditionList(type, positionID) { // GET /Api/Common/GetConditionList 获取条件列表
     let query;
@@ -979,6 +981,10 @@ const api = {
   ----------------------------------------------------------------------------------- */
   getFormulaPropertyList(data) { // post /Api/Property/List  获取公式属性列表
     return instance.post('/Api/Property/List', data);
+  },
+  /** get /Api/Formula/SpecialFunction 获取特殊函数列表 */
+  getFormulaSpecialFunction() {
+    return instance.get('/Api/Formula/SpecialFunction');
   },
   getFormulaSave(data) { // POST /Api/Formula/Save 公式保存
     return instance.post('/Api/Formula/Save', data);

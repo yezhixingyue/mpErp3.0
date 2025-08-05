@@ -60,6 +60,20 @@ export default class FormulaClass {
       messageBox.failSingleError('操作失败', '请输入公式名称');
       return false;
     }
+
+    if (PropertyList && PropertyList.length > 0) {
+      let t = PropertyList.find(it => it.FixedType === 254 && it.DefaultValue === '');
+      if (t) {
+        messageBox.failSingleError('操作失败', `${t.DisplayContent}未设置值`);
+        return false;
+      }
+      t = PropertyList.find(it => it.FixedType === 254 && !/^\d+(.\d+)?$/.test(it.DefaultValue));
+      if (t) {
+        messageBox.failSingleError('操作失败', `${t.DisplayContent}值设置不正确`);
+        return false;
+      }
+    }
+
     // if (!PropertyList || PropertyList.length === 0) { // ---- 最开始注释
     //   messageBox.failSingleError('操作失败', '请添加元素并填写公式内容');
     //   return false;

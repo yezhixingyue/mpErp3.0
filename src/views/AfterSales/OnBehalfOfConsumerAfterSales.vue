@@ -147,7 +147,6 @@ export default {
     },
   },
   created() {
-    console.log(this.OrderID, this.$route.query.OrderID);
     if (this.$route.query.OrderID) this.OrderID = this.$route.query.OrderID;
   },
   mounted() {

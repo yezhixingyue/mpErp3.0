@@ -90,6 +90,7 @@ export default {
       color: #444;
       text-align: left;
       border-bottom: 1px solid #e6e6e6;
+      white-space: nowrap;
       > span {
         display: inline-block;
         text-align: center;

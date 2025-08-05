@@ -6,6 +6,27 @@
   "description": "mpzj后台管理系统图标集合",
   "glyphs": [
     {
+      "icon_id": "45068666",
+      "name": "抛货管理",
+      "font_class": "paohuoguanli",
+      "unicode": "e6a6",
+      "unicode_decimal": 59046
+    },
+    {
+      "icon_id": "45084827",
+      "name": "打包方案",
+      "font_class": "dabaofangan",
+      "unicode": "e6a8",
+      "unicode_decimal": 59048
+    },
+    {
+      "icon_id": "45084828",
+      "name": "方案设计",
+      "font_class": "fangansheji",
+      "unicode": "e6a7",
+      "unicode_decimal": 59047
+    },
+    {
       "icon_id": "41296485",
       "name": "绑定IP和客户",
       "font_class": "bangdingIPhekehu",

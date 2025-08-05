@@ -23,7 +23,6 @@ export const setManageAfterSalesPermission = (bool, Type, Key, PermissionList, _
     }
   }
   if (Key === 'QueryDepartment') { // 查看本部门列表
-    console.log(List.find(it => (['QueryDepartmentDetail', 'DepartmentOperate'].some(e => e === it.Key) && it.HavePermission)));
     const keys = ['QueryAllDetail', 'AllOperate']; // 需要禁用的key
     if (bool) {
       ['QueryAll', 'QueryOwn'].forEach(PermissionKey => { // 需要取消选中的key 用于同级的单选效果

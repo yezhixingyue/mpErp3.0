@@ -47,15 +47,15 @@ const props = withDefaults(defineProps<{
   icon?: string
   isPink?: boolean // 仅icon模式生效
   isSuccess?: boolean // 仅icon模式生效
-  defineOption?: null | { // 需要传递未禁用时图片路径 和 禁用时图片路径
+  defineOption?: { // 需要传递未禁用时图片路径 和 禁用时图片路径
     rightImgUrl: string
-    disabledImgUrl: string
+    disabledImgUrl?: string
   },
 }>(), {
   title: '编辑',
   disabled: false,
   type: 'edit',
-  defineOption: null,
+  defineOption: undefined,
 });
 
 const emit = defineEmits(['click']);
@@ -77,7 +77,7 @@ const rightImgUrl = computed(() => {
 const disabledImgUrl = computed(() => {
   let url = '';
   if (props.defineOption && displayType.value === 'defineOption') {
-    url = props.defineOption.disabledImgUrl;
+    url = props.defineOption.disabledImgUrl || props.defineOption.rightImgUrl;
   }
   return url;
 });

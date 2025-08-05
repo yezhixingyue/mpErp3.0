@@ -46,7 +46,7 @@
     </div>
     <div class="is-font-size-12 is-gray" v-if="localListData.OtherList.length > 0">
       <span>注：</span>
-      <div>原始物料数量、原始物料尺寸指没有进行二次加工前的物料数量、尺寸，比如纸张，指没有分切前的纸张数量、尺寸，可能是大度、正度，也可能是特规纸，数量指的是这些纸张使用了多少张，并且加上损耗。</div>
+      <div style="white-space: wrap;">原始物料数量、原始物料尺寸指没有进行二次加工前的物料数量、尺寸，比如纸张，指没有分切前的纸张数量、尺寸，可能是大度、正度，也可能是特规纸，数量指的是这些纸张使用了多少张，并且加上损耗。</div>
     </div>
   </div>
 </template>
@@ -139,6 +139,7 @@ export default {
     padding-bottom: 4px;
     display: flex;
     flex-wrap: wrap;
+    max-width: 100%;
     .mp-common-title-wrap {
       width: 100%;
       margin-bottom: 15px;

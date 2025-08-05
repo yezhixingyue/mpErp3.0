@@ -311,7 +311,7 @@ export const getAUUID = () => uuidv4();
 export const getIsOrNotHasRepeatItemInArray = list => {
   if (!Array.isArray(list) || list.length < 2) return false;
   const len1 = list.length;
-  const len2 = [...new Set(list)].length;
+  const len2 = new Set(list).size;
   return len1 > len2;
 };
 
