@@ -54,6 +54,8 @@ export default class OutsourceOrderItemClass {
 
   Describe = '' // 文件下载名称
 
+  Sender = '' // 外购人
+
   _InitialOutPrice: number | '' = ''
 
   get _outPrice() {

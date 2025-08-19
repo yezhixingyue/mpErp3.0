@@ -12,22 +12,22 @@
     @selection-change="handleSelectionChange"
   >
     <el-table-column type="selection" width="35" :selectable="(row) => selectableStatuses.includes(row.CheckFileStatus)"></el-table-column>
-    <el-table-column width="90px" prop="OrderID" show-overflow-tooltip label="订单号"></el-table-column>
-    <el-table-column width="180px" show-overflow-tooltip label="产品名称">
+    <el-table-column width="80px" prop="OrderID" show-overflow-tooltip label="订单号"></el-table-column>
+    <el-table-column width="170px" show-overflow-tooltip label="产品名称">
       <template slot-scope="scope">{{scope.row | getFullName(true)}}</template>
     </el-table-column>
-    <el-table-column width="140px" prop="Content" show-overflow-tooltip label="文件内容"></el-table-column>
-    <el-table-column width="120px" show-overflow-tooltip label="数量-款数">
+    <el-table-column width="135px" prop="Content" show-overflow-tooltip label="文件内容"></el-table-column>
+    <el-table-column width="110px" show-overflow-tooltip label="数量-款数">
       <template slot-scope="scope">{{formarProductAmountFunc(scope.row).replace(' ', '-')}}</template>
     </el-table-column>
-    <el-table-column width="95px" prop="Checker" show-overflow-tooltip label="审稿人"></el-table-column>
+    <el-table-column width="90px" prop="Checker" show-overflow-tooltip label="审稿人"></el-table-column>
     <!-- <el-table-column width="120px" show-overflow-tooltip label="尺寸">
       <template slot-scope="scope">{{scope.row.SizeList.join('、')}}</template>
     </el-table-column>
     <el-table-column width="120px" show-overflow-tooltip label="工艺">
       <template slot-scope="scope">{{scope.row.CraftList.join('、')}}</template>
     </el-table-column> -->
-    <el-table-column width="95px" prop="Funds.FinalPrice" show-overflow-tooltip label="成交价">
+    <el-table-column width="90px" prop="Funds.FinalPrice" show-overflow-tooltip label="成交价">
       <template  slot-scope="scope">{{scope.row.Funds.FinalPrice}}</template>
     </el-table-column>
     <!-- <el-table-column width="110px" prop="Factory.Name" show-overflow-tooltip label="原外购工厂"></el-table-column> -->
@@ -46,7 +46,7 @@
         <span style="vertical-align: -3px;">元</span>
       </template>
     </el-table-column>
-    <el-table-column width="160px" show-overflow-tooltip label="外购厂" class-name="el-box">
+    <el-table-column width="150px" show-overflow-tooltip label="外购厂" class-name="el-box">
       <el-select
        :disabled="!localPermission.ChangeFactory || !scope.row._canChangePriceFactory"
        filterable
@@ -61,16 +61,17 @@
       </el-select>
     </el-table-column>
     <!-- <el-table-column width="95px" prop="_statusText" show-overflow-tooltip label="外购状态"></el-table-column> -->
-    <el-table-column width="95px" show-overflow-tooltip label="外购状态">
+    <el-table-column width="90px" show-overflow-tooltip label="外购状态">
       <span v-if="scope.row._status" slot-scope="scope" :class="scope.row._status.className">{{scope.row._status.Name}}</span>
     </el-table-column>
-    <el-table-column width="125px" show-overflow-tooltip label="付款时间">
+    <el-table-column width="115px" show-overflow-tooltip label="付款时间">
       <template slot-scope="scope">{{scope.row.PayTime | format2MiddleLangTypeDate}}</template>
     </el-table-column>
-    <el-table-column width="155px" show-overflow-tooltip label="预计工期">
+    <el-table-column width="150px" show-overflow-tooltip label="预计工期">
       <template slot-scope="scope">{{scope.row.ProducePeriod | getDoneTime}}</template>
     </el-table-column>
-    <el-table-column width="270px" label="操作" v-if="localPermission.Query">
+    <el-table-column width="90px" prop="Sender" show-overflow-tooltip label="外购操作人"></el-table-column>
+    <el-table-column min-width="250px" label="操作" v-if="localPermission.Query">
       <div class="menus" slot-scope="scope">
         <div v-if="localPermission.ReceiveOrder">
           <span class="blue-span" @click="onOutsourceClick(scope.row)" v-if="scope.row._canComfirm"><i class="iconfont icon-waigou"></i> 外购</span>
@@ -239,6 +240,7 @@ export default {
     > .cell {
       color: #585858;
       height: 32px;
+      padding: 0 2px;
       input {
         padding: 0 10px;
         padding-left: 12px;

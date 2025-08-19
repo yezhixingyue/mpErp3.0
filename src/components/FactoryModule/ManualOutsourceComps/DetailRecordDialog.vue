@@ -173,7 +173,7 @@ const onTabClick = async () => {
           line-height: 17px;
           font-size: 12px;
           color: #444;
-          letter-spacing: 0.5px;
+          // letter-spacing: 0.1px;
           p:not(:last-of-type) {
             padding-bottom: 5px;
           }

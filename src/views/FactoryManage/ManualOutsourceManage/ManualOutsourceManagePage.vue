@@ -235,6 +235,7 @@ export default {
           arr.forEach(it => {
             const _it = it;
             _it.CheckFileStatus = CheckFileOrderStatusEnumObj.OutsourceComfirm.ID;
+            _it.Sender = this.Permission?.StaffName || ''; // 外购人
           });
           if (this.$refs.oTable && isSingle) {
             const ids = this.multipleSelection.map(m => m.OrderID);
@@ -277,6 +278,7 @@ export default {
           arr.forEach(it => {
             const _it = it;
             _it.CheckFileStatus = CheckFileOrderStatusEnumObj.WaitSendFactory.ID;
+            _it.Sender = ''; // 清空外购人
           });
         };
         this.messageBox.successSingle('取消成功', cb, cb);
@@ -298,6 +300,7 @@ export default {
           this.willForceCancelList.forEach(it => {
             const _it = it;
             _it.CheckFileStatus = CheckFileOrderStatusEnumObj.WaitSendFactory.ID;
+            _it.Sender = ''; // 清空外购人
           });
           this.forceCancelVisible = false;
 

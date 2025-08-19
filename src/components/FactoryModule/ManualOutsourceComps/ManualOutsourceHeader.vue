@@ -37,7 +37,7 @@
       />
       <StaffSelector
         title="审稿人"
-        class="mt-18"
+        class="mt-18 mr-30"
         needlimit
         isLineStyle
         showArrow
@@ -46,6 +46,18 @@
         :requestFunc='getDataList'
         :typeList="[['Checker', '']]"
         :value="condition.Checker"
+        />
+      <StaffSelector
+        title="外购操作人"
+        class="mt-18 sender"
+        needlimit
+        isLineStyle
+        showArrow
+        :remote="false"
+        :changePropsFunc='setCondition'
+        :requestFunc='getDataList'
+        :typeList="[['Sender', '']]"
+        :value="condition.Sender"
         />
     </div>
     <div class="s">
@@ -188,6 +200,10 @@ export default {
     .mp-common-comps-ep-cascader-comp-wrap > .title {
       margin-right: 15px;
     }
+  }
+
+  .sender.mp-common-comps-staff-selector-wrap.mt-18 > header {
+    width: 6em;
   }
 }
 </style>

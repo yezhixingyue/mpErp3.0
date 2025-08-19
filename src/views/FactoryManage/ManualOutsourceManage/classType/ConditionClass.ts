@@ -25,6 +25,8 @@ export default class ConditionClass {
 
   Checker = '' // 审稿人
 
+  Sender = '' // 外购操作人
+
   Page = 1
 
   PageSize = 20
