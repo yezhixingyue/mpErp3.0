@@ -71,7 +71,7 @@
       <template slot-scope="scope">{{scope.row.ProducePeriod | getDoneTime}}</template>
     </el-table-column>
     <el-table-column width="90px" prop="Sender" show-overflow-tooltip label="外购操作人"></el-table-column>
-    <el-table-column min-width="250px" label="操作" v-if="localPermission.Query">
+    <el-table-column min-width="240px" label="操作" v-if="localPermission.Query">
       <div class="menus" slot-scope="scope">
         <div v-if="localPermission.ReceiveOrder">
           <span class="blue-span" @click="onOutsourceClick(scope.row)" v-if="scope.row._canComfirm"><i class="iconfont icon-waigou"></i> 外购</span>
