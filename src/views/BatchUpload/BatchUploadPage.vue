@@ -32,10 +32,16 @@
         <div class="select-box">
           <!-- v-show='canSelectFile' -->
           <FileSelectComp @change="handleFileChange" v-show="customer" :disabled="!canSelectFile" :accept='accept' :selectTitle='selectTitle' ref="oFileBox" />
+
+          <div style="display: inline-block;margin-right: 25px;" v-show="customer">
+            <span>传稿人电话：</span>
+            <el-input v-model.trim="FileAuthorMobile" maxlength="20" placeholder="请输入传稿人电话，方便核对问题订单" style="width: 180px;" size="mini" />
+          </div>
+
           <el-tooltip class="item" effect="dark" content="勾选此处则下单时弹出订单信息复核弹窗，确认后再进行提交。" placement="top-start">
             <el-checkbox v-show="customer" class="legal" style="margin-right: 20px;" v-model="needToastPreDialog" label="">弹窗确认后再提交</el-checkbox>
           </el-tooltip>
-          <FailListComp :failed-list="failedList" width="720" :offset='122' />
+          <FailListComp :failed-list="failedList" width="720" :offset='0' />
         </div>
       </div>
       <MainTableComp
@@ -98,6 +104,7 @@ import QrCodeForPayDialogComp from '@/packages/QrCodeForPayDialogComp';
 import AddressChangeComp from '@/packages/BatchUploadComps/Header/AddressChangeComp.vue';
 import FailListComp from '@/packages/BatchUploadComps/Main/FailListComp';
 import LocalCatchHandler from '@/assets/js/LocalCatchHandler';
+import { FileAuthorMobileRegxp } from '@/assets/js/regExp';
 import PreCreateDialog from '../../packages/PreCreateDialog';
 
 export default {
@@ -133,6 +140,8 @@ export default {
       failedList: [], // 解析失败的文件列表 -- 错误信息展示尚未完成  后续处理 ！！！
       successedList: [], // 解析成功的文件列表
       multipleSelection: [], // 文件选中列表
+      phoneRegxp: FileAuthorMobileRegxp,
+      FileAuthorMobile: '', // 传稿人电话
       QrCodeVisible: false,
       payInfoData: null,
       IsBatchUpload: true,
@@ -244,6 +253,7 @@ export default {
       //   this.messageBox.failSingleError('客户选择失败', '该客户无批量上传权限');
       //   return;
       // }
+
       if (this.customer && data && this.customer.CustomerID !== data.CustomerID) {
         this.getCustomerBalance();
       }
@@ -251,6 +261,7 @@ export default {
       this.handleCheckAll(false);
       this.successedList = [];
       this.failedList = [];
+      this.FileAuthorMobile = this.customer && this.customer.Mobile ? this.customer.Mobile : '';
     },
     onProductFilterChange([key, val]) { // 产品筛选发生改变 -- 同上：清空已解析订单列表
       if (!key) return;
@@ -353,6 +364,12 @@ export default {
     },
     handleUploadSelected() { // 上传选中文件
       if (this.successedList.length === 0 || this.multipleSelection.length === 0) return;
+
+      if (this.FileAuthorMobile && !this.phoneRegxp.test(this.FileAuthorMobile)) {
+        this.messageBox.failSingleError({ title: '上传失败', msg: '传稿人电话输入格式不正确' });
+        return;
+      }
+
       // 需要筛选掉已上传成功的文件（已失败文件待定）
       this.handleBatchUploadFiles(this.multipleSelection);
     },
@@ -401,6 +418,7 @@ export default {
           ...this.basicObj,
           PayInFull: true,
           UsePrintBean: false,
+          FileAuthorMobile: this.FileAuthorMobile,
         };
         BatchUploadClass.BatchUploadFiles(list, temp, this.handleSubmitSuccess);
 
@@ -437,6 +455,7 @@ export default {
         ...this.basicObj,
         PayInFull,
         UsePrintBean,
+        FileAuthorMobile: this.FileAuthorMobile,
       };
       BatchUploadClass.BatchUploadFiles(OriginList, temp, this.handleSubmitSuccess);
     },

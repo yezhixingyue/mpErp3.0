@@ -21,7 +21,7 @@
       </header>
       <main v-if="showData" >
         <!-- 创建手写参数 -->
-         <section v-if="writableProperty" class="writable-box">
+        <section v-if="writableProperty" class="writable-box">
           <header class="blue-v-line">创建常量参数</header>
           <main>
             <span>参数名：</span>
@@ -30,7 +30,7 @@
             <el-input maxlength="10" size="small" style="width: 80px;" v-model.trim="writablePropertyRuleForm.Unit"></el-input>
             <Menu class="menu" title="添加" :defineOption="{rightImgUrl:require('@/assets/images/add.png')}" @click="onWritableClick" />
           </main>
-         </section>
+        </section>
 
         <div v-for="it in showData" :key="it.Type">
           <span class="title mp-common-title-wrap" v-if="getTitle(it.Type)">{{getTitle(it.Type)}}</span>
