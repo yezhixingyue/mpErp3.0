@@ -81,7 +81,7 @@
               <ul>
                 <li>
                   <span class="text-title">客户编号：</span>
-                  <span class="text md-font">{{showData.Customer.CustomerSN}}</span>
+                  <span class="text md-font">{{showData.Customer.CustomerSN}} <i style="color: #989898;">({{ showData.Customer.Mobile }})</i> </span>
                 </li>
                 <li>
                   <span class="text-title">客户名称：</span>
