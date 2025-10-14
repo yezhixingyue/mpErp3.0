@@ -22,7 +22,9 @@ export default class SizeNumberPanelClass {
     if (item && Array.isArray(item.SizeNumberList)) {
       const names = [];
       item.SizeNumberList.forEach(it => {
-        if (Array.isArray(it.FileList)) {
+        if (it.Fileless) {
+          names.push('无文件');
+        } else if (Array.isArray(it.FileList)) {
           names.push(...it.FileList.map(_it => _it.Name).filter(_it => _it));
         }
       });

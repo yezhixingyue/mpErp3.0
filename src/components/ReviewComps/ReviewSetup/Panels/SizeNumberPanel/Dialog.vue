@@ -12,54 +12,62 @@
     top="6vh"
   >
     <template v-if="ruleForm">
-      <p class="mp-common-title-wrap">输出文件：</p>
-      <OutputFileListSelectComp :loading="loading" :OutputFileList="OutputFileList" onlyPDF v-model="ruleForm.FileList" :disabledIds="disabledFileIds" />
-
-      <p class="mp-common-title-wrap" style="margin-bottom: 20px">
-        <label>宽高互换：</label>
-        <el-checkbox v-model="ruleForm.AllowSizeExchange">允许宽高互换</el-checkbox>
-      </p>
-
       <p class="mp-common-title-wrap">
-        <label>宽：</label>
-        <span class="blue-span" @click="onFormulaSelectClick('LengthFormula')">选择公式</span>
-        <span class="formula" :class="{'is-gray':!(ruleForm&&ruleForm.LengthFormula)}">{{getFormulaName('LengthFormula')}}</span>
+        <label>输出文件：</label>
+        <el-checkbox v-model="ruleForm.Fileless" v-show="!this.part">无文件</el-checkbox>
       </p>
-      <dl class="content ft-12" v-show="ruleForm&&ruleForm.LengthFormula">
-        <dt>宽允许误差：</dt>
-        <dd>
-          <i>+</i>
-          <el-input size="mini" maxlength="9" v-model.trim="ruleForm.LengthErrorRange.MaxValue"></el-input>
-          <em>mm</em>
-        </dd>
-        <dd>
-          <i>-</i>
-          <el-input size="mini" maxlength="9" v-model.trim="ruleForm.LengthErrorRange.MinValue"></el-input>
-          <em>mm</em>
-        </dd>
-      </dl>
 
-      <p class="mp-common-title-wrap">
-        <label>高：</label>
-        <span class="blue-span" @click="onFormulaSelectClick('WidthFormula')">选择公式</span>
-        <span class="formula" :class="{'is-gray':!(ruleForm&&ruleForm.WidthFormula)}">{{getFormulaName('WidthFormula')}}</span>
-      </p>
-      <dl class="content ft-12" v-show="ruleForm&&ruleForm.WidthFormula">
-        <dt>高允许误差：</dt>
-        <dd>
-          <i>+</i>
-          <el-input size="mini" maxlength="9" v-model.trim="ruleForm.WidthErrorRange.MaxValue"></el-input>
-          <em>mm</em>
-        </dd>
-        <dd>
-          <i>-</i>
-          <el-input size="mini" maxlength="9" v-model.trim="ruleForm.WidthErrorRange.MinValue"></el-input>
-          <em>mm</em>
-        </dd>
-      </dl>
+      <!-- 需要输出文件时的设置 -->
+      <template v-if="!ruleForm.Fileless">
+        <!-- 输出文件列表 -->
+        <OutputFileListSelectComp :loading="loading" :OutputFileList="OutputFileList" onlyPDF v-model="ruleForm.FileList" :disabledIds="disabledFileIds" />
 
-      <p class="mp-common-title-wrap">出血：</p>
-      <BleedSetupComp :ruleForm='ruleForm' @change="onBleedChange"/>
+        <p class="mp-common-title-wrap" style="margin-bottom: 20px">
+          <label>宽高互换：</label>
+          <el-checkbox v-model="ruleForm.AllowSizeExchange">允许宽高互换</el-checkbox>
+        </p>
+
+        <p class="mp-common-title-wrap">
+          <label>宽：</label>
+          <span class="blue-span" @click="onFormulaSelectClick('LengthFormula')">选择公式</span>
+          <span class="formula" :class="{'is-gray':!(ruleForm&&ruleForm.LengthFormula)}">{{getFormulaName('LengthFormula')}}</span>
+        </p>
+        <dl class="content ft-12" v-show="ruleForm&&ruleForm.LengthFormula">
+          <dt>宽允许误差：</dt>
+          <dd>
+            <i>+</i>
+            <el-input size="mini" maxlength="9" v-model.trim="ruleForm.LengthErrorRange.MaxValue"></el-input>
+            <em>mm</em>
+          </dd>
+          <dd>
+            <i>-</i>
+            <el-input size="mini" maxlength="9" v-model.trim="ruleForm.LengthErrorRange.MinValue"></el-input>
+            <em>mm</em>
+          </dd>
+        </dl>
+
+        <p class="mp-common-title-wrap">
+          <label>高：</label>
+          <span class="blue-span" @click="onFormulaSelectClick('WidthFormula')">选择公式</span>
+          <span class="formula" :class="{'is-gray':!(ruleForm&&ruleForm.WidthFormula)}">{{getFormulaName('WidthFormula')}}</span>
+        </p>
+        <dl class="content ft-12" v-show="ruleForm&&ruleForm.WidthFormula">
+          <dt>高允许误差：</dt>
+          <dd>
+            <i>+</i>
+            <el-input size="mini" maxlength="9" v-model.trim="ruleForm.WidthErrorRange.MaxValue"></el-input>
+            <em>mm</em>
+          </dd>
+          <dd>
+            <i>-</i>
+            <el-input size="mini" maxlength="9" v-model.trim="ruleForm.WidthErrorRange.MinValue"></el-input>
+            <em>mm</em>
+          </dd>
+        </dl>
+
+        <p class="mp-common-title-wrap">出血：</p>
+        <BleedSetupComp :ruleForm='ruleForm' @change="onBleedChange"/>
+      </template>
 
       <p class="mp-common-title-wrap" v-show="!this.part">
         <label>修改产品数量为：</label>
@@ -68,7 +76,7 @@
       </p>
 
       <p class="is-pink">注：1. 尺寸公式的单位必须是毫米，否则会造成文件尺寸检查结果完全不符合预期</p>
-      <p class="is-pink s">2. 数量公式单位须与产品/部件的数量单位保持一致，否则会造成不可预测的结果。</p>
+      <p class="is-pink s">2. 数量公式单位须与产品的数量单位保持一致，否则会造成不可预测的结果。</p>
     </template>
     <ProductFormulasSelectDialog :visible.sync='formulaVisible' :list='formulaList' title="选择公式" hideConstant
      :canEmpty="curkey==='NumberFormula'"

@@ -47,11 +47,12 @@ export default {
     localList() {
       return this.list.map(it => ({
         ...it,
-        _FileNames: it.FileList.map(_it => _it.Name).join('、'),
-        _LenContent: this.getSizeContent(it.LengthFormula, it.LengthErrorRange),
-        _WidthContent: this.getSizeContent(it.WidthFormula, it.WidthErrorRange),
-        _BleedContent: this.getBleedContent(it),
-        _LenWidthExchange: it.AllowSizeExchange ? '允许' : '不允许',
+        _FileNames: it.Fileless ? '无文件' : it.FileList.map(_it => _it.Name).join('、'),
+        _LenContent: it.Fileless ? '' : this.getSizeContent(it.LengthFormula, it.LengthErrorRange),
+        _WidthContent: it.Fileless ? '' : this.getSizeContent(it.WidthFormula, it.WidthErrorRange),
+        _BleedContent: it.Fileless ? '' : this.getBleedContent(it),
+        // eslint-disable-next-line no-nested-ternary
+        _LenWidthExchange: it.Fileless ? '' : (it.AllowSizeExchange ? '允许' : '不允许'),
       }));
     },
   },

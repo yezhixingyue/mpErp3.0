@@ -4,6 +4,9 @@ import messageBox from '../../../../../assets/js/utils/message';
 export default class SizeNumberItemClass {
   ID = '' // number
 
+  /** 是否无文件 - 不需要输出文件 */
+  Fileless = false
+
   FileList = []
 
   LengthFormula = null
@@ -36,6 +39,15 @@ export default class SizeNumberItemClass {
   key = Math.random().toString(16).slice(-10)
 
   constructor(data) {
+    if (data?.Fileless) { // 无文件
+      this.ID = data.ID || '';
+      this.key = data.key || this.key;
+      this.Fileless = data.Fileless;
+      if (data.NumberFormula) this.NumberFormula = { ...data.NumberFormula };
+      return;
+    }
+
+    // 有文件
     restoreInitDataByOrigin(this, data);
     if (data) {
       const { LengthFormula, WidthFormula, NumberFormula } = data;
@@ -46,6 +58,13 @@ export default class SizeNumberItemClass {
   }
 
   checker() {
+    if (this.Fileless) {
+      if (!this.NumberFormula) {
+        messageBox.failSingleError('保存失败', '[ 数量 ] 公式未设置');
+        return false;
+      }
+      return true;
+    }
     if (!this.FileList || this.FileList.length === 0) {
       messageBox.failSingleError('保存失败', '未选择输出文件');
       return false;
