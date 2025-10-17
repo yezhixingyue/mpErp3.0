@@ -3,6 +3,10 @@
     <header>
       <el-button type="primary" sizi='small' @click="onItemSaveClick(null)" v-if="localPermission.ProduceSpecialSetup">添加特殊情况</el-button>
       <span class="blue-span" @click="onToLogClick(null)">删除记录</span>
+      <span class="warning ft-12 tips-box ml-22" style="width: 360px;">
+        <i class="el-icon-warning ft-14 mr-8  ml-1"></i>
+        注：仅匹配一条，优先级数字越小，越优先匹配
+      </span>
     </header>
     <main>
       <NewSpecialTable :loading='loading' :dataList='NewSpecialDataListByGetters' @edit="onItemSaveClick" @remove="onRemoveClick" @log="onToLogClick" />
