@@ -53,6 +53,7 @@ export default class NewSpecialPanelClass {
     temp.SpecialType = this.SpecialType;
     // 延长生产工时 或 延长运输时长
     if (this.SpecialType === NewSpecialTypeEnumObj.produce.ID || this.SpecialType === NewSpecialTypeEnumObj.transport.ID) {
+      temp.Tips = this.Tips.trim();
       // 必填的值：Tips
       if (this.TimeType === SpecialTimeTypeEnumObj.fixedTime.ID) { // 选择固定时长 - TimeChange中First Second必填
         const { First, Second } = this.TimeChange;
@@ -64,7 +65,7 @@ export default class NewSpecialPanelClass {
           messageBox.failSingleError('保存失败', '延长时间设置不正确');
           return false;
         }
-        if (!this.Tips && (First === 0 || First === '') && (Second === 0 || Second === '')) {
+        if (!temp.Tips && (First === 0 || First === '') && (Second === 0 || Second === '')) {
           messageBox.failSingleError('保存失败', '提示为空时，延长时间中天和小时不能同时为0');
           return false;
         }
@@ -77,11 +78,11 @@ export default class NewSpecialPanelClass {
         temp.StartTime = this.StartTime;
         temp.EndTime = this.EndTime;
       }
-      // if (!this.Tips) {
+      // if (!temp.Tips) {
       //   messageBox.failSingleError('保存失败', '提示未设置');
       //   return false;
       // }
-      temp.Tips = this.Tips;
+
       temp.TimeType = this.TimeType;
       temp.IsUpdateOrder = this.IsUpdateOrder;
     } else if (this.SpecialType === NewSpecialTypeEnumObj.lastPay.ID) {

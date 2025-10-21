@@ -34,7 +34,7 @@
       </li>
       <li>
         <label>提示：</label>
-        <el-input type="textarea" :rows="3" v-model.trim="itemData.Tips" maxlength="40" show-word-limit />
+        <el-input type="textarea" :rows="3" v-model="itemData.Tips" maxlength="40" show-word-limit />
       </li>
       <!-- <li>
         <label></label>
