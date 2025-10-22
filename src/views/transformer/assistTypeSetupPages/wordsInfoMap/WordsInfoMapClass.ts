@@ -75,10 +75,20 @@ export class WordsInfoMapClass extends AssistMapDataClass<IWordsInfoLeftType, IW
     const _mapList = mapList || this.mapDataList;
     const t = _mapList.find(it => it.SourceID === id || it.SourceID === `${id}`);
     if (!t) return '无';
-    return t.TargetProperty.map((p) => {
+
+    let productString = t.TargetProperty.filter(p => !p.Part).map((p) => {
       const _p = p as IWordsInfoRightType;
       return _p._Name;
-    }).join('、') || '无';
+    }).join('、');
+    if (productString) productString = `产品：${productString}`;
+
+    let partString = t.TargetProperty.filter(p => !!p.Part).map((p) => {
+      const _p = p as IWordsInfoRightType;
+      return _p._Name;
+    }).join('、');
+    if (partString) partString = `部件：${partString}`;
+
+    return [productString, partString].filter(Boolean).join('； ') || '无';
   }
 
   public async saveItem(TargetProperty: IWordsInfoRightType[], ID: string): Promise<void> {
