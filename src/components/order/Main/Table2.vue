@@ -23,19 +23,20 @@
       </template>
       <ul class="handle-menus" slot-scope="scope">
         <li v-if="localPermission.OrderPause">
-          <span @click="onPauseClick(scope.row)" v-if="scope.row.OrderPause.IsPause">
+          <span @click="onPauseClick(scope.row)" v-if="scope.row.OrderPause.IsPause"
+          :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status)}">
             <el-tooltip class="item" effect="dark"
             :content="`暂停人：${scope.row.OrderPause.PausePerson}；
             暂停时间：${scope.row.OrderPause.PauseTime?.split('.')[0].slice(0, -3).replace('T', ' ')||''}；
             备注：${scope.row.OrderPause.PauseRemark}`"
             placement="top">
             <span>
-              <img src="@/assets/images/start.png" />启动
+              <img src="@/assets/images/start.png" class="stop-img" />启动
             </span>
             </el-tooltip>
           </span>
-          <span @click="onPauseClick(scope.row)" v-else>
-            <img src="@/assets/images/pause.png" />暂停
+          <span @click="onPauseClick(scope.row)" v-else :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status)}">
+            <img src="@/assets/images/pause.png" class="stop-img" />暂停
           </span>
         </li>
         <li>
@@ -70,7 +71,7 @@
               <span v-if="canNoncancelabilityStatuses.includes(scope.row.Status)" class="disbaled">
                 <img src="@/assets/images/cancelstop.png" />取消
               </span>
-              <!-- 如果已发至工厂点击取消 -->
+              <!-- 如果已发至工厂之前点击取消 -->
               <span v-else-if="canStopCancelInMyFactoryStatuses.includes(scope.row.Status)"
                 @click="onOrderDel(scope.row, scope.$index)">
                 <img src="@/assets/images/cancel.png" />取消
@@ -516,6 +517,10 @@ export default {
       span.disbaled {
         cursor: not-allowed;
         color: $--color-text-secondary;
+        .stop-img{
+          filter: grayscale(100%);
+          opacity: 0.3;
+        }
       }
       img {
         margin-right: 5px;

@@ -486,11 +486,12 @@ export default {
     },
   },
   actions: {
-    async getOrderPause({ commit }, prop) { // 暂停
+    async getOrderPause({ state, dispatch }, prop) { // 暂停
       const res = await api.getOrderPause(prop.submitData); // 网络请求
       if (!res) return;
       if (res.data.Status === 1000) {
-        commit('changePauseOrderListData', prop.submitData);
+        // commit('changePauseOrderListData', prop.submitData);
+        dispatch('getOrderTableData', { page: state.objForOrderList.Page, type: 'get' });
         if (prop.back) prop.back();
       }
     },
