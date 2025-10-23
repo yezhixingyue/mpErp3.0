@@ -1,6 +1,7 @@
 <template>
   <div class="order-list-page-wrap">
     <Table @ServiceAfterSalesClick="ServiceAfterSalesClick"
+    @onPauseClick="onPauseClick"
     @FreightWriteOff="FreightWriteOff"
     @CancelProductionClick="CancelProductionClick"
     @TerminateProductionClick="TerminateProductionClick"
@@ -59,6 +60,10 @@
      :handerFunc="AnewUploadHanderFunc"
      @setCertificateList=setCertificateList
      />
+    <PauseDialog
+     :visible.sync="PauseVisible"
+     :PauseInfo="PauseInfo"
+     />
   </div>
 </template>
 
@@ -73,6 +78,8 @@ import Count from '@/components/common/Count.vue';
 import NodePicDialog from '@/components/common/NodePicDialog/NodePicDialog.vue';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import QuestionHandlerDialog from '@/components/order/Main/QuestionHandlerDialog/QuestionHandlerDialog.vue';
+import PauseDialog from '@/components/order/Main/PauseDialog.vue';
+import messageBox from '@/assets/js/utils/message';
 
 export default {
   components: {
@@ -84,6 +91,7 @@ export default {
     QuestionHandlerDialog,
     ConfirmCancellationDialog,
     TerminateProductionDialog,
+    PauseDialog,
     // ServiceDialog: () => import(/* webpackChunkName: "async" */ '@/components/order/DialogContent/ServiceDialog.vue'),
   },
   mixins: [recordScrollPositionMixin('.order-list-page-wrap .el-table__body-wrapper')],
@@ -120,10 +128,13 @@ export default {
       // 要被取消生产的index
       CancelProductionIndex: null,
       CertificateList: [],
+      // 暂停操作
+      PauseVisible: false,
+      PauseInfo: null,
     };
   },
   methods: {
-    ...mapActions('orderModule', ['delTargetOrder', 'getOrderTableData', 'getOrderListData2Excel']),
+    ...mapActions('orderModule', ['delTargetOrder', 'getOrderTableData', 'getOrderListData2Excel', 'getOrderPause']),
     setCertificateList(list) {
       this.CertificateList = list;
     },
@@ -177,6 +188,27 @@ export default {
       this.CancelProductionData = Order;
       this.CancelProductionIndex = index;
       this.TerminateProductionVisible = true;
+    },
+    onPauseClick(data) {
+      if (data.OrderPause.IsPause) { // 已暂停
+        // 取消暂停
+        this.getOrderPause({ submitData: {
+          OrderID: data.OrderID,
+          IsPause: false,
+          Remark: '',
+        },
+        back: () => {
+          this.messageBox.successSingle(
+            '启动成功',
+            () => null,
+            () => null,
+          );
+        } });
+      } else { // 未暂停
+        // 暂停操作
+        this.PauseVisible = true;
+        this.PauseInfo = data;
+      }
     },
     ServiceAfterSalesClick(data) {
       // this.ServiceAfterSalesVisible = true;

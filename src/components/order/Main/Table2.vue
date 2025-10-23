@@ -17,11 +17,27 @@
        >{{ scope.row.OrderID }}</span>
     </el-table-column>
     <TableColumnItem v-for="colItem in tableColData.filter(it => it.show)" :key="colItem.label" :colItem='colItem' />
-    <el-table-column width="330px" prop="handle" label="操作" fixed="right">
+    <el-table-column width="390px" prop="handle" label="操作" fixed="right">
       <template slot="header">
         <TableInfoDefindHeaderColumnScope @onClick="onInfoClick" />
       </template>
       <ul class="handle-menus" slot-scope="scope">
+        <li v-if="localPermission.OrderPause">
+          <span @click="onPauseClick(scope.row)" v-if="scope.row.OrderPause.IsPause">
+            <el-tooltip class="item" effect="dark"
+            :content="`暂停人：${scope.row.OrderPause.PausePerson}；
+            暂停时间：${scope.row.OrderPause.PauseTime?.split('.')[0].slice(0, -3).replace('T', ' ')||''}；
+            备注：${scope.row.OrderPause.PauseRemark}`"
+            placement="top">
+            <span>
+              <img src="@/assets/images/start.png" />启动
+            </span>
+            </el-tooltip>
+          </span>
+          <span @click="onPauseClick(scope.row)" v-else>
+            <img src="@/assets/images/pause.png" />暂停
+          </span>
+        </li>
         <li>
           <span @click="onMenuClick(scope.row, 1)">
             <img src="@/assets/images/detail.png" />
@@ -132,6 +148,9 @@ export default {
     },
     open(index, OrderID) {
       this.messageBox.warnCancelBox('确定取消此订单吗 ?', `订单号：[ ${OrderID} ]`, () => this.delTargetOrder(index), null);
+    },
+    onPauseClick(data) {
+      this.$emit('onPauseClick', data);
     },
     ServiceAfterSalesClick(data) {
       this.$emit('ServiceAfterSalesClick', data);
@@ -327,6 +346,27 @@ export default {
           scope: (scope) => <span class={this.setStateStyle(scope.row.Status)}>
             { this.$options.filters.formatStatus(scope.row.Status)}
           </span>,
+          show: true,
+        },
+        {
+          label: '暂停',
+          minWidth: '76px',
+          showOverflowTooltip: true,
+          scope: (scope) => {
+            if (!scope.row.OrderPause.IsPause) {
+              return <span></span>;
+            }
+            const contentText = `暂停人：${scope.row.OrderPause.PausePerson}；
+            暂停时间：${this.$options.filters.formatDate(scope.row.OrderPause.PauseTime)}；
+            备注：${scope.row.OrderPause.PauseRemark}`;
+            return <span>
+            <el-tooltip class="item" effect="dark"
+            content={contentText}
+            placement="top">
+              <span class="is-pink">暂停</span>
+            </el-tooltip>
+          </span>;
+          },
           show: true,
         },
         {

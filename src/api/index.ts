@@ -50,6 +50,9 @@ const api = {
   cancelStaffOrder({ OrderID, closeTip = false }) { // 取消客户订单(接单员)
     return instance.delete(`/Api/Order/Cancle?OrderID=${OrderID}`, { closeTip });
   },
+  getOrderPause({ OrderID, IsPause, Remark }) { // 取消客户订单(接单员)
+    return instance.get(`/Api/Order/Pause?orderID=${OrderID}&isPause=${IsPause}&remark=${Remark}`);
+  },
 
   getOrderProductionInfo(OrderID) { // 获取订单生产信息
     return instance.get(`/Api/Order/ProductionInfo?orderID=${OrderID}`, { closeTip: true });
