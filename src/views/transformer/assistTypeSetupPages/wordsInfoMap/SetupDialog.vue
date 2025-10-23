@@ -10,21 +10,45 @@
     class="dialog"
     top="15vh"
   >
-    <div v-for="item in DisplayList" :key="item.TypeName" class="item">
-      <p>{{item.TypeName}}</p>
-      <div class="item-content">
-        <el-checkbox
-          v-for="it in item.List"
-          :key="it._ID"
-          :label="it._ID"
-          :title="it._Name"
-          :value="getValue(it)"
-          @change="onChange(it)">
-          {{it._Name}}
-        </el-checkbox>
+    <!-- 产品上 -->
+    <template v-if="ProductionDisplayList.length > 0">
+      <h4 class="title mp-common-title-wrap">产品：</h4>
+      <div v-for="item in ProductionDisplayList" :key="'prod' + item.TypeName" class="item">
+        <p>{{item.TypeName}}</p>
+        <div class="item-content">
+          <el-checkbox
+            v-for="it in item.List"
+            :key="it._ID"
+            :label="it._ID"
+            :title="it._Name"
+            :value="getValue(it)"
+            @change="onChange(it)">
+            {{it._Name}}
+          </el-checkbox>
+        </div>
       </div>
-    </div>
-    <mp-empty v-if="DisplayList.length === 0" description="暂无可映射数据"></mp-empty>
+    </template>
+
+    <!-- 部件上 -->
+    <template v-if="PartDisplayList.length > 0">
+      <h4 class="title mp-common-title-wrap" style="margin-top: 10px;">部件：</h4>
+      <div v-for="item in PartDisplayList" :key="'part' + item.TypeName" class="item">
+        <p>{{item.TypeName}}</p>
+        <div class="item-content">
+          <el-checkbox
+            v-for="it in item.List"
+            :key="it._ID"
+            :label="it._ID"
+            :title="it._Name"
+            :value="getValue(it)"
+            @change="onChange(it)">
+            {{it._Name}}
+          </el-checkbox>
+        </div>
+      </div>
+    </template>
+
+    <mp-empty v-if="ProductionDisplayList.length === 0 && PartDisplayList.length" description="暂无可映射数据"></mp-empty>
   </CommonDialogComp>
 </template>
 
@@ -53,16 +77,25 @@ const localVisible = computed({
 
 const checkList = ref<IWordsInfoRightType[]>([]);
 
-const DisplayList = ref<IDisplayItem[]>([]);
+// const DisplayList = ref<IDisplayItem[]>([]);
+const ProductionDisplayList = ref<IDisplayItem[]>([]);
+const PartDisplayList = ref<IDisplayItem[]>([]);
 
 const getDisplayList = () => {
-  DisplayList.value = [];
+  // DisplayList.value = [];
+  ProductionDisplayList.value = [];
+  PartDisplayList.value = [];
   Object.values(DisplayTypeEnum).forEach((type) => {
     const TypeName = type.split(' ')[1];
     const List = props.data.rightDataList.filter(it => it._DisplayType === type);
-    const temp = { TypeName, List };
+    // const temp = { TypeName, List };
     if (List.length > 0) {
-      DisplayList.value.push(temp);
+      // DisplayList.value.push(temp);
+      const ProdList = List.filter(it => !it.Part);
+      const PartList = List.filter(it => !!it.Part);
+
+      if (ProdList.length > 0) ProductionDisplayList.value.push({ TypeName, List: ProdList });
+      if (PartList.length > 0) PartDisplayList.value.push({ TypeName, List: PartList });
     }
   });
 };
@@ -122,6 +155,7 @@ const submit = () => {
     @include scroll;
     .item {
       padding-bottom: 13px;
+      padding-left: 5px;
       > p {
         padding-bottom: 6px;
         color: #444;
@@ -143,6 +177,14 @@ const submit = () => {
           }
         }
       }
+    }
+
+    .title {
+      margin-left: -4.5em;
+      margin-bottom: 5px;
+      font-weight: 700;
+      // font-size: 15px;
+      // color: #444;
     }
   }
 }
