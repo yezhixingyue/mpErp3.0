@@ -61,21 +61,41 @@
           </span>
         </li>
         <li v-if="localPermission.CancleOrder || localPermission.ProductionStop">
-          <!-- v-if="(canCancelStatuses.includes(scope.row.Status) || localPermission.CancleOrder)" -->
+          <!-- IsOwnSystem: 是否是自己系统(自己工厂系统/鹏的系统) v-if="(canCancelStatuses.includes(scope.row.Status) || localPermission.CancleOrder)" -->
           <template v-if="scope.row.IsOwnSystem">
-            <span
-              v-if="canStopProductionStatuses.includes(scope.row.Status) && localPermission.ProductionStop"
-              @click="onOrderStop(scope.row, scope.$index)">
-              <img src="@/assets/images/cancel.png" />取消
-            </span>
-            <span
-              v-else-if="canStopCancelInMyFactoryStatuses.includes(scope.row.Status)"
-              @click="onOrderDel(scope.row, scope.$index)">
-              <img src="@/assets/images/cancel.png" />取消
-            </span>
-            <span v-else class="disbaled">
-              <img src="@/assets/images/cancelstop.png" />取消
-            </span>
+
+            <!-- IsOwnLogistics: 是否是自己物流(自己物流系统/般若的物流系统) 临时解决方案 最终会全都替换成自己的物流系统（开始上线到全部上线期间会并存） -->
+            <template v-if="scope.row.IsOwnLogistics">
+              <!-- 如果不允许点击取消 -->
+              <span v-if="canNoncancelabilityStatuses.includes(scope.row.Status)" class="disbaled">
+                <img src="@/assets/images/cancelstop.png" />取消
+              </span>
+              <!-- 如果已发至工厂点击取消 -->
+              <span v-else-if="canStopCancelInMyFactoryStatuses.includes(scope.row.Status)"
+                @click="onOrderDel(scope.row, scope.$index)">
+                <img src="@/assets/images/cancel.png" />取消
+              </span>
+              <!-- 否则（不是发至工厂并且允许点击 那就是需要输入损失） -->
+              <span v-else @click="onOrderStop(scope.row, scope.$index)">
+                <img src="@/assets/images/cancel.png" />取消
+              </span>
+            </template>
+            <template v-else>
+              <span
+                v-if="canStopProductionStatuses.includes(scope.row.Status) && localPermission.ProductionStop"
+                @click="onOrderStop(scope.row, scope.$index)">
+                <img src="@/assets/images/cancel.png" />取消
+              </span>
+              <span
+                v-else-if="canStopCancelInMyFactoryStatuses.includes(scope.row.Status)"
+                @click="onOrderDel(scope.row, scope.$index)">
+                <img src="@/assets/images/cancel.png" />取消
+              </span>
+              <span v-else class="disbaled">
+                <img src="@/assets/images/cancelstop.png" />取消
+              </span>
+            </template>
+
           </template>
           <template v-else>
             <span
@@ -127,6 +147,10 @@ export default {
     // 终止生产的状态
     canStopProductionStatuses() {
       return this.OrderStatusList.filter(it => it.canStopProduction === true).map(it => it.ID);
+    },
+    // 不能在物流系统点击取消的状态
+    canNoncancelabilityStatuses() {
+      return this.OrderStatusList.filter(it => it.noncancelability === true).map(it => it.ID);
     },
   },
   components: {

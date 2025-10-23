@@ -79,7 +79,6 @@ import NodePicDialog from '@/components/common/NodePicDialog/NodePicDialog.vue';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import QuestionHandlerDialog from '@/components/order/Main/QuestionHandlerDialog/QuestionHandlerDialog.vue';
 import PauseDialog from '@/components/order/Main/PauseDialog.vue';
-import messageBox from '@/assets/js/utils/message';
 
 export default {
   components: {
@@ -191,19 +190,15 @@ export default {
     },
     onPauseClick(data) {
       if (data.OrderPause.IsPause) { // 已暂停
+        this.messageBox.warnCancelBox('确定要启动此订单吗 ?', `订单号：${data.OrderID}`, () => {
+          this.getOrderPause({ submitData: {
+            OrderID: data.OrderID,
+            IsPause: false,
+            Remark: '',
+          },
+          back: () => null });
+        }, null);
         // 取消暂停
-        this.getOrderPause({ submitData: {
-          OrderID: data.OrderID,
-          IsPause: false,
-          Remark: '',
-        },
-        back: () => {
-          this.messageBox.successSingle(
-            '启动成功',
-            () => null,
-            () => null,
-          );
-        } });
       } else { // 未暂停
         // 暂停操作
         this.PauseVisible = true;

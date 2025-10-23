@@ -87,14 +87,7 @@ export default {
       if (!this.submitData.Remark) {
         this.messageBox.failSingleError('操作失败', '请输入暂停备注');
       } else {
-        this.getOrderPause({ submitData: this.submitData,
-          back: () => {
-            this.messageBox.successSingle(
-              '暂停成功',
-              this.close,
-              this.close,
-            );
-          } });
+        this.getOrderPause({ submitData: this.submitData, back: this.close });
       }
     },
   },
