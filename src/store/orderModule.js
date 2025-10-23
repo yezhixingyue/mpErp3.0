@@ -359,7 +359,20 @@ export default {
       const _detailData = localStorage.getItem('staffDetailData');
       const userInfo = JSON.parse(_detailData);
       const temp = { ...data };
-      temp.PauseTime = new Date();
+      const _date = new Date();
+      const year = _date.getFullYear(); // 年
+      const month = _date.getMonth(); // 月 ------------- 用于显示时 应 + 1 处理
+      const day = _date.getDate(); // 当前日
+      const h = _date.getHours(); // 当前时
+      const m = _date.getMinutes(); // 当前分
+      const s = _date.getSeconds(); // 当前秒
+      const andZero = (num) => {
+        if (num < 10) {
+          return `0${num}`;
+        }
+        return num;
+      };
+      temp.PauseTime = `${year}-${andZero(month)}-${andZero(day)}T${andZero(h)}:${andZero(m)}:${andZero(s)}.997`;
       temp.PausePerson = userInfo.StaffName;
       temp.PauseRemark = data.Remark;
       const index = state.orderListData.findIndex(it => it.OrderID === data.OrderID);
