@@ -30,6 +30,7 @@ export default {
     OrderStatusList: [
       // canStopProduction 终止生产
       // canCancelInMyFactory 取消订单非s2b平台
+      // noncancelability 不能在物流系统点击取消的状态
       { name: '不限', ID: '' },
       { name: '待分发', ID: 20, canCancel: true, canCancelInMyFactory: true },
       { name: '已分发', ID: 30, canCancel: true, canCancelInMyFactory: true },
@@ -42,10 +43,10 @@ export default {
       { name: '已生产', ID: 60, canProdProgress: true },
       { name: '已入库', ID: 70, canProdProgress: true },
       { name: '已发货', ID: 80, canProdProgress: true },
-      { name: '已完成', ID: 200, canProdProgress: true },
-      { name: '终止生产', ID: 253 },
-      { name: '已取消', ID: 254 },
-      { name: '已过期', ID: 255 },
+      { name: '已完成', ID: 200, noncancelability: true, canProdProgress: true },
+      { name: '终止生产', ID: 253, noncancelability: true },
+      { name: '已取消', ID: 254, noncancelability: true },
+      { name: '已过期', ID: 255, noncancelability: true },
       { name: '问题件', ID: 35, canCancel: true, canCancelInMyFactory: true, isProblemShipment: true },
     ],
     orderStatueTitle: '不限',
@@ -89,6 +90,7 @@ export default {
       DateType: 'today',
       FieldType: 2,
       OnlyShowOwnQuestionOrder: false,
+      IsPause: false,
     },
     /* 订单列表数据（网络请求到的）
     -------------------------------*/
@@ -296,6 +298,7 @@ export default {
         DateType: 'today',
         FieldType: 2,
         OnlyShowOwnQuestionOrder: false,
+        IsPause: false,
       };
       if (type === 'onKeyWordSubmit') state.objForOrderList.KeyWords = _keywordsText;
       state.largeTitle = '不限';
@@ -352,6 +355,29 @@ export default {
     },
     setOrderTotalAmount(state, amount) {
       state.orderTotalAmount = amount;
+    },
+    changePauseOrderListData(state, data) {
+      const _detailData = localStorage.getItem('staffDetailData');
+      const userInfo = JSON.parse(_detailData);
+      const temp = { ...data };
+      const _date = new Date();
+      const year = _date.getFullYear(); // 年
+      const month = _date.getMonth(); // 月 ------------- 用于显示时 应 + 1 处理
+      const day = _date.getDate(); // 当前日
+      const h = _date.getHours(); // 当前时
+      const m = _date.getMinutes(); // 当前分
+      const s = _date.getSeconds(); // 当前秒
+      const andZero = (num) => {
+        if (num < 10) {
+          return `0${num}`;
+        }
+        return num;
+      };
+      temp.PauseTime = `${year}-${andZero(month)}-${andZero(day)}T${andZero(h)}:${andZero(m)}:${andZero(s)}.997`;
+      temp.PausePerson = userInfo.StaffName;
+      temp.PauseRemark = data.Remark;
+      const index = state.orderListData.findIndex(it => it.OrderID === data.OrderID);
+      state.orderListData[index].OrderPause = temp;
     },
     changeStatus4OrderListData(state, [index, status]) {
       state.orderListData[index].Status = status;
@@ -460,6 +486,15 @@ export default {
     },
   },
   actions: {
+    async getOrderPause({ state, dispatch }, prop) { // 暂停
+      const res = await api.getOrderPause(prop.submitData); // 网络请求
+      if (!res) return;
+      if (res.data.Status === 1000) {
+        // commit('changePauseOrderListData', prop.submitData);
+        dispatch('getOrderTableData', { page: state.objForOrderList.Page, type: 'get' });
+        if (prop.back) prop.back();
+      }
+    },
     async getOrderTableData({ state, commit }, prop = { page: 1, type: 'get' }) { // 获取订单管理列表数据
       let method;
       if (prop.type === 'get') {

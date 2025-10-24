@@ -70,6 +70,10 @@
           key='order-Terminal'
           label=''
         />
+
+        <el-checkbox v-model="localOnlyShowOwnPauseOrder" style="margin-right: 30px;margin-top: -1px;margin-left: 30px;">
+          <span style="font-size: 12px;">仅显示已暂停订单</span>
+        </el-checkbox>
       </li>
       <li class="row-two">
         <!-- <TimeSearchSelector /> -->
@@ -166,6 +170,16 @@ export default {
       },
       set(val) {
         this.setOrderManageRequestObj([['OnlyShowOwnQuestionOrder'], val]);
+        this.getDataList();
+      },
+    },
+    localOnlyShowOwnPauseOrder: {
+      get() {
+        return this.objForOrderList.IsPause;
+      },
+      set(val) {
+        console.log(val);
+        this.setOrderManageRequestObj([['IsPause'], val]);
         this.getDataList();
       },
     },

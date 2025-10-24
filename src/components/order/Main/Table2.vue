@@ -17,11 +17,28 @@
        >{{ scope.row.OrderID }}</span>
     </el-table-column>
     <TableColumnItem v-for="colItem in tableColData.filter(it => it.show)" :key="colItem.label" :colItem='colItem' />
-    <el-table-column width="330px" prop="handle" label="操作" fixed="right">
+    <el-table-column width="390px" prop="handle" label="操作" fixed="right">
       <template slot="header">
         <TableInfoDefindHeaderColumnScope @onClick="onInfoClick" />
       </template>
       <ul class="handle-menus" slot-scope="scope">
+        <li v-if="localPermission.OrderPause">
+          <span @click="onPauseClick(scope.row)" v-if="scope.row.OrderPause.IsPause"
+          :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status)}">
+            <el-tooltip class="item" effect="dark"
+            :content="`暂停人：${scope.row.OrderPause.PausePerson}；
+            暂停时间：${scope.row.OrderPause.PauseTime?.split('.')[0].slice(0, -3).replace('T', ' ')||''}；
+            备注：${scope.row.OrderPause.PauseRemark}`"
+            placement="top">
+            <span :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status)}">
+              <img src="@/assets/images/start.png" class="start-img" />启动
+            </span>
+            </el-tooltip>
+          </span>
+          <span @click="onPauseClick(scope.row)" v-else :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status)}">
+            <img src="@/assets/images/pause.png" class="stop-img" />暂停
+          </span>
+        </li>
         <li>
           <span @click="onMenuClick(scope.row, 1)">
             <img src="@/assets/images/detail.png" />
@@ -45,21 +62,41 @@
           </span>
         </li>
         <li v-if="localPermission.CancleOrder || localPermission.ProductionStop">
-          <!-- v-if="(canCancelStatuses.includes(scope.row.Status) || localPermission.CancleOrder)" -->
+          <!-- IsOwnSystem: 是否是自己系统(自己工厂系统/鹏的系统) v-if="(canCancelStatuses.includes(scope.row.Status) || localPermission.CancleOrder)" -->
           <template v-if="scope.row.IsOwnSystem">
-            <span
-              v-if="canStopProductionStatuses.includes(scope.row.Status) && localPermission.ProductionStop"
-              @click="onOrderStop(scope.row, scope.$index)">
-              <img src="@/assets/images/cancel.png" />取消
-            </span>
-            <span
-              v-else-if="canStopCancelInMyFactoryStatuses.includes(scope.row.Status)"
-              @click="onOrderDel(scope.row, scope.$index)">
-              <img src="@/assets/images/cancel.png" />取消
-            </span>
-            <span v-else class="disbaled">
-              <img src="@/assets/images/cancelstop.png" />取消
-            </span>
+
+            <!-- IsOwnLogistics: 是否是自己物流(自己物流系统/般若的物流系统) 临时解决方案 最终会全都替换成自己的物流系统（开始上线到全部上线期间会并存） -->
+            <template v-if="scope.row.IsOwnLogistics">
+              <!-- 如果不允许点击取消 -->
+              <span v-if="canNoncancelabilityStatuses.includes(scope.row.Status)" class="disbaled">
+                <img src="@/assets/images/cancelstop.png" />取消
+              </span>
+              <!-- 如果已发至工厂之前点击取消 -->
+              <span v-else-if="canStopCancelInMyFactoryStatuses.includes(scope.row.Status)"
+                @click="onOrderDel(scope.row, scope.$index)">
+                <img src="@/assets/images/cancel.png" />取消
+              </span>
+              <!-- 否则（不是发至工厂并且允许点击 那就是需要输入损失） -->
+              <span v-else @click="onOrderStop(scope.row, scope.$index)">
+                <img src="@/assets/images/cancel.png" />取消
+              </span>
+            </template>
+            <template v-else>
+              <span
+                v-if="canStopProductionStatuses.includes(scope.row.Status) && localPermission.ProductionStop"
+                @click="onOrderStop(scope.row, scope.$index)">
+                <img src="@/assets/images/cancel.png" />取消
+              </span>
+              <span
+                v-else-if="canStopCancelInMyFactoryStatuses.includes(scope.row.Status)"
+                @click="onOrderDel(scope.row, scope.$index)">
+                <img src="@/assets/images/cancel.png" />取消
+              </span>
+              <span v-else class="disbaled">
+                <img src="@/assets/images/cancelstop.png" />取消
+              </span>
+            </template>
+
           </template>
           <template v-else>
             <span
@@ -112,6 +149,10 @@ export default {
     canStopProductionStatuses() {
       return this.OrderStatusList.filter(it => it.canStopProduction === true).map(it => it.ID);
     },
+    // 不能在物流系统点击取消的状态
+    canNoncancelabilityStatuses() {
+      return this.OrderStatusList.filter(it => it.noncancelability === true).map(it => it.ID);
+    },
   },
   components: {
     TableColumnItem,
@@ -132,6 +173,10 @@ export default {
     },
     open(index, OrderID) {
       this.messageBox.warnCancelBox('确定取消此订单吗 ?', `订单号：[ ${OrderID} ]`, () => this.delTargetOrder(index), null);
+    },
+    onPauseClick(data) {
+      if (this.canNoncancelabilityStatuses.includes(data.Status)) return;
+      this.$emit('onPauseClick', data);
     },
     ServiceAfterSalesClick(data) {
       this.$emit('ServiceAfterSalesClick', data);
@@ -330,6 +375,27 @@ export default {
           show: true,
         },
         {
+          label: '暂停',
+          minWidth: '76px',
+          showOverflowTooltip: true,
+          scope: (scope) => {
+            if (!scope.row.OrderPause.IsPause) {
+              return <span></span>;
+            }
+            const contentText = `暂停人：${scope.row.OrderPause.PausePerson}；
+            暂停时间：${this.$options.filters.formatDate(scope.row.OrderPause.PauseTime)}；
+            备注：${scope.row.OrderPause.PauseRemark}`;
+            return <span>
+            <el-tooltip class="item" effect="dark"
+            content={contentText}
+            placement="top">
+              <span class="is-pink">暂停</span>
+            </el-tooltip>
+          </span>;
+          },
+          show: true,
+        },
+        {
           label: '配送方式',
           prop: 'Express',
           minWidth: '76px',
@@ -452,6 +518,14 @@ export default {
       span.disbaled {
         cursor: not-allowed;
         color: $--color-text-secondary;
+        .stop-img{
+          filter: grayscale(100%);
+          opacity: 0.3;
+        }
+        .start-img{
+          filter: grayscale(100%);
+          opacity: 0.8;
+        }
       }
       img {
         margin-right: 5px;
