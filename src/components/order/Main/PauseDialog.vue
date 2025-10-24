@@ -25,7 +25,7 @@
     <div class="dialog-box">
       <div class="main">
         <span>备注：</span>
-        <el-input  type="textarea" :rows="3" placeholder="请输入备注" v-model="submitData.Remark"></el-input>
+        <el-input  type="textarea" :rows="3" maxlength="200" show-word-limit placeholder="请输入备注" v-model="submitData.Remark"></el-input>
       </div>
       <!-- <div class="btns">
         <el-button @click="submit" type="primary">提交</el-button>
@@ -103,7 +103,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      span{
+      >span{
         font-size: 16px;
         font-weight: 700;
         line-height: 30px;

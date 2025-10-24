@@ -30,8 +30,8 @@
             暂停时间：${scope.row.OrderPause.PauseTime?.split('.')[0].slice(0, -3).replace('T', ' ')||''}；
             备注：${scope.row.OrderPause.PauseRemark}`"
             placement="top">
-            <span>
-              <img src="@/assets/images/start.png" class="stop-img" />启动
+            <span :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status)}">
+              <img src="@/assets/images/start.png" class="start-img" />启动
             </span>
             </el-tooltip>
           </span>
@@ -175,6 +175,7 @@ export default {
       this.messageBox.warnCancelBox('确定取消此订单吗 ?', `订单号：[ ${OrderID} ]`, () => this.delTargetOrder(index), null);
     },
     onPauseClick(data) {
+      if (this.canNoncancelabilityStatuses.includes(data.Status)) return;
       this.$emit('onPauseClick', data);
     },
     ServiceAfterSalesClick(data) {
@@ -520,6 +521,10 @@ export default {
         .stop-img{
           filter: grayscale(100%);
           opacity: 0.3;
+        }
+        .start-img{
+          filter: grayscale(100%);
+          opacity: 0.8;
         }
       }
       img {
