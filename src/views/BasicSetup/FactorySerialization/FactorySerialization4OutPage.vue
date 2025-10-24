@@ -3,7 +3,12 @@
     <Header :condition="localManageData.condition" @getList="() => localManageData.getList()" />
 
     <main>
-      <Table :list="localManageData.list" :loading="localManageData.loading" @click="(it, type) => localManageData.onSetupClick(it, type)" />
+      <Table
+        :list="localManageData.list"
+        :loading="localManageData.loading"
+        :changeIncludeDescribeFile="(row) => localManageData.setRowIncludeDescribeFile(row)"
+        @click="(it, type) => localManageData.onSetupClick(it, type)"
+      />
 
       <!-- 订单信息序列化设置 -->
       <MROrderDialog :visible.sync="localManageData.orderVisible" :item="localManageData.currentItem" @submit="(e) => localManageData.setupMROrder(e)" />
