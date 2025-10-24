@@ -25,4 +25,8 @@ export const baseSetupApis = {
   getPrintPackageChangeUnFinishedOrderLimit(allowPrint: boolean) {
     return instance.put('/Api/PrintPackage/ChangeUnFinishedOrderLimit', undefined, { params: { allowPrint } });
   },
+  /** /Api/Product/SetIncludeDescribeFile  PUT  productID产品ID  includeDescribeFile 包含需求描述文件 */
+  getProductSetIncludeDescribeFile(productID: string, includeDescribeFile: boolean) {
+    return instance.put('/Api/Product/SetIncludeDescribeFile', undefined, { params: { productID, includeDescribeFile } });
+  },
 };

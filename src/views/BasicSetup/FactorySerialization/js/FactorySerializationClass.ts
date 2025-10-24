@@ -86,4 +86,19 @@ export class FactorySerializationClass {
       });
     }
   }
+
+  async setRowIncludeDescribeFile(row: IMRProduct) {
+    const IncludeDescribeFile = !row.IncludeDescribeFile;
+    const resp = await api.getProductSetIncludeDescribeFile(row.ID, IncludeDescribeFile);
+    if (resp.data?.isSuccess) {
+      const t = this.list.find(it => it.ID === row.ID);
+      if (t) {
+        t.IncludeDescribeFile = IncludeDescribeFile;
+      }
+
+      return true;
+    }
+
+    return false;
+  }
 }

@@ -83,6 +83,9 @@ export interface IMRProduct extends IMRPart {
   /** 最后修改人 */
   Operator: string
 
+  /** 是否生成文档 */
+  IncludeDescribeFile: boolean
+
   /** 是否显示订单号 */
   ShowOrderID: boolean
   /** 是否显示订单名称 */
