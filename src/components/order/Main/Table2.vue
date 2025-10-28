@@ -24,18 +24,19 @@
       <ul class="handle-menus" slot-scope="scope">
         <li v-if="localPermission.OrderPause">
           <span @click="onPauseClick(scope.row)" v-if="scope.row.OrderPause.IsPause"
-          :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status)}">
+          :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status) || !scope.row.IsOwnLogistics}">
             <el-tooltip class="item" effect="dark"
             :content="`暂停人：${scope.row.OrderPause.PausePerson}；
             暂停时间：${scope.row.OrderPause.PauseTime?.split('.')[0].slice(0, -3).replace('T', ' ')||''}；
             备注：${scope.row.OrderPause.PauseRemark}`"
             placement="top">
-            <span :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status)}">
+            <span :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status) || !scope.row.IsOwnLogistics}">
               <img src="@/assets/images/start.png" class="start-img" />启动
             </span>
             </el-tooltip>
           </span>
-          <span @click="onPauseClick(scope.row)" v-else :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status)}">
+          <span @click="onPauseClick(scope.row)"
+          v-else :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status) || !scope.row.IsOwnLogistics}">
             <img src="@/assets/images/pause.png" class="stop-img" />暂停
           </span>
         </li>
@@ -175,7 +176,7 @@ export default {
       this.messageBox.warnCancelBox('确定取消此订单吗 ?', `订单号：[ ${OrderID} ]`, () => this.delTargetOrder(index), null);
     },
     onPauseClick(data) {
-      if (this.canNoncancelabilityStatuses.includes(data.Status)) return;
+      if (this.canNoncancelabilityStatuses.includes(data.Status) || !data.IsOwnLogistics) return;
       this.$emit('onPauseClick', data);
     },
     ServiceAfterSalesClick(data) {
