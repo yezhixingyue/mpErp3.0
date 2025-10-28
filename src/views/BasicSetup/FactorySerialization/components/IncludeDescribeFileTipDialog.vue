@@ -10,7 +10,10 @@
         </div>
       </div>
 
-      <div class="tips-box">说明：审稿无送出文件订单，无论是否设置均会生成文档</div>
+      <div class="tips-box">
+        <p>说明：1. 审稿无送出文件订单，无论是否设置均会生成文档。</p>
+        <p style="margin-left: 3em;">2. 选中“生成文档“下载文件名上不再体现“生产序列化设置”内容，仅将“订单信息序列化设置”内容作为文件名。</p>
+      </div>
     </div>
   </CommonDialogComp>
 </template>
@@ -47,10 +50,10 @@ const close = () => {
 .dialog {
   .content {
     margin-top: 26px;
-    padding-left: 20px;
+    padding-left: 15px;
     padding-right: 10px;
     margin-bottom: -10px;
-    height: 90px;
+    min-height: 125px;
 
     .title {
       display: flex;
@@ -82,10 +85,17 @@ const close = () => {
     }
 
     .tips-box {
-      width: 360px;
+      width: 400px;
       background-color: #fff;
       font-size: 13px;
-      margin-left: 15px;
+      margin-left: 5px;
+      line-height: 16px;
+
+      p {
+        margin-bottom: 6px;
+        text-indent: -1.15em;
+        letter-spacing: 0.2px;
+      }
     }
   }
 }
