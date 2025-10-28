@@ -186,13 +186,14 @@ export default {
     },
     // 终止生产
     onOrderStop(data, index) {
+      this.$emit('TerminateProductionClick', index, data);
       // 生产中
-      if (this.canStopProductionStatuses.includes(data.Status)) {
-        this.$emit('TerminateProductionClick', index, data);
-      } else {
-        this.setOrderID2Del(data.OrderID);
-        this.$emit('CancelProductionClick', index, data);
-      }
+      // if (this.canStopProductionStatuses.includes(data.Status)) {
+      //   this.$emit('TerminateProductionClick', index, data);
+      // } else {
+      //   this.setOrderID2Del(data.OrderID);
+      //   this.$emit('CancelProductionClick', index, data);
+      // }
     },
     onOrderDel(data, index) {
       this.setOrderID2Del(data.OrderID);

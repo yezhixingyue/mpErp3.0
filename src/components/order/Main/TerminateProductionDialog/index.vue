@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { formatListItemSize, formatListItemCraft } from '@/assets/js/filters/filters';
 import titleComp from './title.vue';
 import formTableComp from './formTableComp.vue';
@@ -85,6 +86,13 @@ export default {
       isOverTime: false,
       timer: null,
     };
+  },
+  computed: {
+    ...mapState('orderModule', ['OrderStatusList']),
+    // 终止生产的状态
+    canStopProductionStatuses() {
+      return this.OrderStatusList.filter(it => it.canStopProduction === true).map(it => it.ID);
+    },
   },
   methods: {
     paySeccess() {
@@ -180,10 +188,15 @@ export default {
     initData() {
       this.initLoading = true;
       if (this.OrderData.IsOwnFactory) {
-        Promise.all([
+        const PromiseList = [
           this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).catch(() => {}),
-          this.api.getOrderProductionInfo(this.OrderData.OrderID).catch(() => {}),
-        ]).then(([ProductionStopQueryRes, ProductionInfoRes]) => {
+        ];
+        if (this.canStopProductionStatuses.includes(this.OrderData.Status)) {
+          PromiseList.push(
+            this.api.getOrderProductionInfo(this.OrderData.OrderID).catch(() => {}),
+          );
+        }
+        Promise.all(PromiseList).then(([ProductionStopQueryRes, ProductionInfoRes]) => {
           this.initLoading = false;
           if (ProductionStopQueryRes.data.Status === 1000 && ProductionInfoRes.data.Status === 1000) {
             this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
