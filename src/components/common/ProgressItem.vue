@@ -2,7 +2,7 @@
   <li class="order-list-progress-item">
           <section class="left-title-wrap">
               <div>
-                <span v-if="operator" :class="!isCurNewIndex ? 'operator' : 'operator active'">
+                <span :title="operator" v-if="operator" :class="!isCurNewIndex ? 'operator' : 'operator active'">
                     {{operator}}
                 </span>
                 <i v-if="operator">/</i>
@@ -133,7 +133,7 @@ export default {
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            flex-wrap: wrap;
+            // flex-wrap: wrap; // 因物流暂停备注较多的时候会换行 所以不注释掉此样式并添加title属性
             .text-title {
               font-size: 14px;
               font-weight: 600;
