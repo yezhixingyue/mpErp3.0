@@ -2,7 +2,7 @@
   <section class="freight-write-off-from-comp">
     <ul>
       <li class="clients-requirement">
-        <span class="label is-bold" style="line-height: 35px;">客户要求：{{ ruleForm.Address.Express.Second }}</span><span class="value">
+        <span class="label is-bold" style="line-height: 35px;">客户要求：</span><span class="value">
           <!-- 33 宇鑫物流 硬编码禁用更改快递信息 -->
           <el-button :disabled="ruleForm.Address.Express.Second === 1 || OrderDetail.Address.Express.Second === 33"
           size="medium" @click="userRequest(0)" :type="`${ruleForm.Type === 0 ? 'primary' : ''}`">更改快递信息</el-button>
