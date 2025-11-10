@@ -3,7 +3,8 @@
     <ul>
       <li class="clients-requirement">
         <span class="label is-bold" style="line-height: 35px;">客户要求：</span><span class="value">
-          <el-button :disabled="ruleForm.Address.Express.Second === 1"
+          <!-- 33 宇鑫物流 硬编码禁用更改快递信息 -->
+          <el-button :disabled="ruleForm.Address.Express.Second === 1 || OrderDetail.Address.Express.Second === 33"
           size="medium" @click="userRequest(0)" :type="`${ruleForm.Type === 0 ? 'primary' : ''}`">更改快递信息</el-button>
           <el-button size="medium" @click="userRequest(1)" :type="`${ruleForm.Type === 1 ? 'primary' : ''}`">其他</el-button>
         </span>
@@ -47,8 +48,9 @@
         </li>
         <li v-if="isNotYetShipped">
           <span class="label is-bold" style="line-height: 25px;">更改后的运输方式：</span><span class="value">
+            <!-- spreadExpressList filter 33 不能修改为宇鑫物流（）33 -->
             <select-comp
-            :options='spreadExpressList'
+            :options='spreadExpressList.filter(it => it.ID !== 33)'
             :defaultProps='{ label: "Name", value: "ID", }'
             :title='ruleForm.Address.Express.Second'
             @handleChange='handleChange'
@@ -520,7 +522,8 @@ export default {
         this.ruleForm.Amount = '';
       }
     }, 10);
-    if (this.OrderDetail.Address.Express.Second === 1) {
+    // 33 宇鑫物流 硬编码禁用更改快递信息
+    if (this.OrderDetail.Address.Express.Second === 1 || this.OrderDetail.Address.Express.Second === 33) {
       this.ruleForm.Type = 1;
     }
     this.CustomerName = this.OrderDetail.Customer.CustomerName;
