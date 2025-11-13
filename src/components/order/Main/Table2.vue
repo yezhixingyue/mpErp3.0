@@ -1,6 +1,6 @@
 <template>
   <el-table
-    class="mp-table-wrap"
+    class="mp-table-wrap fixed-right-bg"
     :max-height="h" :height="h"
     border
     fit
@@ -396,6 +396,11 @@ export default {
   height: 100%;
   border-color: #e5e5e5;
   border-bottom: 1px solid #e5e5e5 !important;
+  &.fixed-right-bg{
+    .el-table__fixed-right{
+      background-color: #fff;
+    }
+  }
   &.el-table::before{
     display: none;
   }
