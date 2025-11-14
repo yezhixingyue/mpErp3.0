@@ -29,7 +29,7 @@
             :content="`暂停人：${scope.row.OrderPause.PausePerson}；
             暂停时间：${scope.row.OrderPause.PauseTime?.split('.')[0].slice(0, -3).replace('T', ' ')||''}；
             备注：${scope.row.OrderPause.PauseRemark}`"
-            disbaled: canNoncancelabilityStatuses.includes(scope.row.Status) || !scope.row.IsOwnLogistics
+            :disabled="canNoncancelabilityStatuses.includes(scope.row.Status) || !scope.row.IsOwnLogistics"
             placement="top">
             <span :class="{disbaled: canNoncancelabilityStatuses.includes(scope.row.Status) || !scope.row.IsOwnLogistics}">
               <img src="@/assets/images/start.png" class="start-img" />启动
