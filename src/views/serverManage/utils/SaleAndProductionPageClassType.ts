@@ -1,5 +1,5 @@
 import api from '@/api';
-import { MpMessage } from '@/assets/js/utils/MpMessage';
+import { dialogSuccess, MpMessage } from '@/assets/js/utils/MpMessage';
 import { SaleAndProductionListItemPlainType } from './SaleAndProductionListItemClass';
 
 export class SaleAndProductionPageClassType {
@@ -75,6 +75,23 @@ export class SaleAndProductionPageClassType {
         title: '生成成功',
         onOk: cb,
         onCancel: cb,
+      });
+    }
+  }
+
+  async setSmsStop(params: { row: SaleAndProductionListItemPlainType; stopEndTime: string | null }) {
+    if (!params.row.ID) return;
+    const resp = await api.getConvertServerNotifyReceiveSwitch(params.row.ID, params.stopEndTime).catch(() => null);
+    if (resp?.data?.Status === 1000) {
+      const cb = () => {
+        const t = this.list.find(it => it.ID === params.row.ID);
+        if (t) {
+          t.StopEndTime = params.stopEndTime;
+        }
+      };
+      dialogSuccess({
+        title: params.stopEndTime ? '短信已停发' : '短信通知已恢复',
+        onOk: cb,
       });
     }
   }

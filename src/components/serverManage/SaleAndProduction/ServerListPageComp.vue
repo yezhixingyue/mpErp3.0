@@ -14,6 +14,7 @@
      @remove="onRemoveClick"
      @generate="onGenerateClick"
      @notify="setNotifyClick"
+     @sms-stop="setSmsStop"
     />
     <Dialog :pageTypeData="props.pageTypeData" />
     <NotifySetupDialog :pageTypeData="props.pageTypeData" />
@@ -57,6 +58,10 @@ const onGenerateClick = (item: SaleAndProductionListItemPlainType) => {
 const setNotifyClick = (item: null | SaleAndProductionListItemPlainType) => {
   props.pageTypeData.setCurEditItem(item);
   props.pageTypeData.setNotifyVisible(true);
+};
+
+const setSmsStop = ({ row, stopEndTime }: { row: SaleAndProductionListItemPlainType; stopEndTime: string | null }) => {
+  props.pageTypeData.setSmsStop({ row, stopEndTime });
 };
 
 const visible = ref(false);
