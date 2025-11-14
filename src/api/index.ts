@@ -1577,6 +1577,10 @@ const api = {
   getConvertServerNotifyReceiveSetup(data: Partial<SaleAndProductionListItemPlainType>) { // POST /Api/ConvertServer/NotifyReceiveSetup  转换器转换失败通知设置
     return instance.post('/Api/ConvertServer/NotifyReceiveSetup', data);
   },
+  /** /Api/ConvertServer/NotifyReceive/Switch PUT请求  参数：id转换服务器ID  stopEndTime停止结束时间 */
+  getConvertServerNotifyReceiveSwitch(id: string, stopEndTime: string | null) { // PUT /Api/ConvertServer/NotifyReceive/Switch  转换器转换失败通知开关
+    return instance.put('/Api/ConvertServer/NotifyReceive/Switch', null, { params: { id, stopEndTime } });
+  },
   /* 转换异常订单列表
   ------------------------------- */
   getConvertExceptionOrderList(data) { // POST /Api/ConvertException/List  排程异常列表

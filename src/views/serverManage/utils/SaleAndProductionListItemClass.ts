@@ -47,6 +47,8 @@ export class SaleAndProductionListItemClass {
   /** 创建时间 */
   CreateTime = ''
 
+  StopEndTime: null | string = null;
+
   constructor(data?: SaleAndProductionListItemPlainType) {
     if (data) {
       if (typeof data === 'object') {
