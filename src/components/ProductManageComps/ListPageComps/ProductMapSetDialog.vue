@@ -173,9 +173,15 @@ export default {
     },
     async getFormulaList() {
       // if (this.curData) return []; // 此时设置的为部件，为部件时不设置重量，不需要数据，所以直接返回空数组
-      const resp = await this.api.getFormulaList({ ProductID: this.itemData.ID, UseModule: 1 }, true).catch(() => {});
+      const temp = {
+        ProductID: this.itemData.ID,
+        UseModule: this.curData.UseTimes.MaxValue > 1 ? 2 : 1,
+      };
+
+      const resp = await this.api.getFormulaList(temp, true).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
-        return resp.data.Data.map(it => ({ ...it, Name: `公式：${it.Name}`, isFormula: true }));
+        return resp.data.Data.filter(it => (temp.UseModule === 2 ? it.PartID === this.curData?.ID : !it.PartID) && !it.GroupID)
+          .map(it => ({ ...it, Name: `公式：${it.Name}`, isFormula: true }));
       }
       this.ElementData.PositionID = '';
       return [];
