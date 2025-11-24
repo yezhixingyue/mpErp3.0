@@ -175,7 +175,7 @@ export default {
       // if (this.curData) return []; // 此时设置的为部件，为部件时不设置重量，不需要数据，所以直接返回空数组
       const temp = {
         ProductID: this.itemData.ID,
-        UseModule: this.curData.UseTimes.MaxValue > 1 ? 2 : 1,
+        UseModule: this.curData && this.curData.UseTimes.MaxValue > 1 ? 2 : 1,
       };
 
       const resp = await this.api.getFormulaList(temp, true).catch(() => {});
