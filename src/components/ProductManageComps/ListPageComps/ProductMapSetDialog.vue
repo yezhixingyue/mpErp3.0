@@ -86,7 +86,7 @@ export default {
       const list = this.List.map(it => it.Second).filter(it => it);
       if (list.length > 1) {
         const len1 = list.length;
-        const len2 = [...new Set(list)].length;
+        const len2 = new Set(list).size;
         if (len1 > len2) {
           this.messageBox.failSingleError('保存失败', '元素设置值不能重复!');
           return;
@@ -172,7 +172,7 @@ export default {
       return list;
     },
     async getFormulaList() {
-      if (this.curData) return []; // 此时设置的为部件，为部件时不设置重量，不需要数据，所以直接返回空数组
+      // if (this.curData) return []; // 此时设置的为部件，为部件时不设置重量，不需要数据，所以直接返回空数组
       const resp = await this.api.getFormulaList({ ProductID: this.itemData.ID, UseModule: 1 }, true).catch(() => {});
       if (resp && resp.status === 200 && resp.data.Status === 1000) {
         return resp.data.Data.map(it => ({ ...it, Name: `公式：${it.Name}`, isFormula: true }));
