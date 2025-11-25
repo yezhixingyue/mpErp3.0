@@ -1,6 +1,6 @@
 <template>
   <CommonDialogComp
-    width="650px"
+    width="540px"
     top='15vh'
     title="设置元素"
     :visible="visible"
@@ -13,9 +13,9 @@
     class="mp-erp-comps-pruduct-module-product-element-map-set-dialog-comp-wrap"
   >
     <ul v-if="!loading" class="list">
-      <li v-for="(it, i) in List" :key="it.First + '-' + i" class="item">
-        <span class="label">{{it.label}}：</span>
-        <el-select v-model="it.Second" placeholder="请选择" size="small">
+      <li v-for="(it, i) in List" :key="it.First + '-' + i" class="item" :class="{num: it.isNumber}">
+        <span class="label">{{it.label}}:</span>
+        <el-select v-model="it.Second" placeholder="请选择" size="small" :style="`width: ${it.width};`">
           <el-option
             v-for="item in it.OptionList"
             :key="item.ID || item.Name"
@@ -24,10 +24,18 @@
             :value="item.ID">
           </el-option>
         </el-select>
+
+        <div class="tip" v-if="it.isNumber && curData">
+          <span>*注：</span>
+          <span>数量单位请务必统一为“张”，否则将影响部件生产数量部件印刷份数=部件张数x印面÷审稿送出文件页数</span>
+          <span class="img-box">
+            <img src="@/assets/images/warning-triangle.png" alt="">
+          </span>
+        </div>
       </li>
     </ul>
     <p class="tips-box">
-      <i class="el-icon-warning"></i>注：  数量、款数设置为“无”时默认为 1；重量设置为“无”时默认为 0 。
+      <i class="el-icon-warning"></i>注：数量、款数设置为“无”时默认为1；重量设置为“无”时默认为0
     </p>
   </CommonDialogComp>
 </template>
@@ -137,6 +145,8 @@ export default {
           needFormula: it.needFormula,
           needElement: it.needElement,
           OptionList,
+          width: it.width,
+          isNumber: it.isNumber || false,
         };
       });
     },
@@ -193,35 +203,100 @@ export default {
 .mp-erp-comps-pruduct-module-product-element-map-set-dialog-comp-wrap {
 
   .el-dialog__body {
-    min-height: 100px;
-    padding-left: 15px;
-    padding-top: 40px;
+    min-height: 185px;
+    padding-left: 2px;
+    padding-top: 15px;
+    padding-bottom: 0;
     > ul.list {
       display: flex;
       flex-wrap: wrap;
+      margin-left: 50px;
       > li.item {
-        margin-bottom: 18px;
-        margin-right: 20px;
+        margin-bottom: 15px;
+        margin-right: 5px;
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         > span {
-          margin-right: 6px;
-          color: #888E99;
-          font-size: 14px;
-          width: 120px;
+          margin-right: 7px;
+          color: #00151E;
+          font-size: 12px;
+          color: #444444;
+          font-weight: bold;
+          width: 48px;
           text-align: right;
           line-height: 20px;
         }
         .el-select {
-          width: 140px;
+          width: 160px;
+
+          .el-input__inner, .el-input__icon {
+            line-height: 28px;
+            height: 28px;
+          }
+
+          .el-input__inner {
+            color: #444444;
+          }
+        }
+
+        &.num {
+          .el-select {
+            .el-input__inner, .el-input__icon {
+              line-height: 35px;
+              height: 35px;
+            }
+            .el-input__inner {
+              color:#00151E;
+            }
+          }
+
+          > span {
+            color: #00151E;
+          }
+        }
+
+        .tip {
+          line-height: 16px;
+          color: #FF3769;
+          font-size: 11px;
+          font-weight: bold;
+          font-family: Microsoft YaHei UI, Microsoft YaHei UI;
+          background: #FFF1F4;
+          border-radius: 2px;
+          display: flex;
+          margin-left: 55px;
+          margin-top: 5px;
+          width: 380px;
+          padding: 7px 0;
+          box-sizing: border-box;
+
+          span:first-of-type {
+            flex: none;
+            width: 40px;
+            text-align: right;
+          }
+
+          .img-box {
+            width: 55px;
+            flex: none;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            margin-right: 6px;
+          }
         }
       }
     }
     > .tips-box {
       margin-top: 10px;
-      margin-left: 54px;
-      width: 500px;
-      letter-spacing: 1px;
+      margin-left: 88px;
+      font-size: 11px;
+      width: 360px;
+      padding-left: 10px;
+      font-family: Microsoft YaHei UI, Microsoft YaHei UI;
+      color: #F1A30C;
+      background: #FEF9EF;
       > i {
         margin-right: 6px;
       }

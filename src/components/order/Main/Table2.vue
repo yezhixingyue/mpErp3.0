@@ -1,6 +1,6 @@
 <template>
   <el-table
-    class="mp-table-wrap fixed-right-bg"
+    class="mp-table-wrap order-list-table fixed-right-bg"
     :max-height="h" :height="h"
     border
     fit
@@ -11,7 +11,7 @@
     :key="tableKey"
     style="width: 100%"
   >
-    <el-table-column width="115px" prop="OrderID" label="订单编号" fixed="left">
+    <el-table-column width="115px" prop="OrderID" label="订单编号" fixed="left" label-class-name="fixed-col">
       <span
         slot-scope="scope"
        >{{ scope.row.OrderID }}</span>
@@ -659,6 +659,10 @@ export default {
   }
   .el-table__fixed::before, .el-table__fixed-right::before {
     display: none;
+  }
+
+  .fixed-col {
+    pointer-events: none;
   }
 }
 </style>
