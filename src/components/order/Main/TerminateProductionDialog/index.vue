@@ -162,7 +162,7 @@ export default {
         return;
       }
       if (Number(this.Amount) === 0 && this.OrderData.IsOwnFactory
-      && (this.ProductionInfo.PlateList.length + this.ProductionInfo.ChunkList.length + this.ProductionInfo.FinishedKindCount)) {
+      && (!this.ProductionInfo || this.ProductionInfo.PlateList.length + this.ProductionInfo.ChunkList.length + this.ProductionInfo.FinishedKindCount)) {
         this.messageBox.failSingleError('提交失败', '工厂已产生损失，请正确输入扣除损失金额');
         return;
       }
@@ -187,6 +187,8 @@ export default {
     },
     initData() {
       this.initLoading = true;
+      console.log(this.OrderData.IsOwnFactory);
+
       if (this.OrderData.IsOwnFactory) {
         const PromiseList = [
           this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).catch(() => {}),
