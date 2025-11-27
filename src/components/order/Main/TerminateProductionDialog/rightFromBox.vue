@@ -28,7 +28,7 @@
         <li>
           <span class="label">扣除损失金额:</span>
           <span class="value">
-            <el-input size="small" oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]" v-model="AmountValue" placeholder="请输入损失金额"></el-input>
+            <el-input size="small" v-model="AmountValue" placeholder="请输入损失金额"></el-input>
             元
           </span>
         </li>
@@ -50,11 +50,8 @@
 <script>
 export default {
   props: {
-    Amount: (props, propName) => {
-      if (!Number(props[propName])) {
-        return new Error('输入了非数字');
-      }
-      return true;
+    Amount: {
+      type: String,
     },
     PaymentMethod: {
       type: Number,
@@ -77,7 +74,7 @@ export default {
         return this.Amount;
       },
       set(val) {
-        this.$emit('AmountChange', val);
+        this.$emit('AmountChange', (val || '').match(/^\d*(\.?\d{0,2})/g)[0]);
       },
     },
     PaymentMethodValue: {

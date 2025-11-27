@@ -24,8 +24,8 @@
         </div>
         <div class="right-from" style="width: 507px;">
           <h3 v-if="OrderData?.IsOwnFactory && ProductionInfo">已生产完成{{ProductionInfo.FinishedKindCount}}款（共{{OrderData.KindCount}}款）</h3>
-          <rightFromBox :orderInfo="ProductionStopQuery" :OrderData="OrderData" @AmountChange="(val) => Amount = val"
-            @PaymentMethodChange="(val) => PaymentMethod = val"
+          <rightFromBox :orderInfo="ProductionStopQuery" :OrderData="OrderData" @AmountChange="AmountChange"
+            @PaymentMethodChange="PaymentMethodChange"
             :Amount="Amount" :PaymentMethod="PaymentMethod"/>
         </div>
       </div>
@@ -95,6 +95,12 @@ export default {
     },
   },
   methods: {
+    AmountChange(Amount) {
+      this.Amount = Amount;
+    },
+    PaymentMethodChange(PaymentMethod) {
+      this.PaymentMethod = PaymentMethod;
+    },
     paySeccess() {
       // this.submit();
       this.PayCodeDialogClose();
@@ -185,10 +191,19 @@ export default {
       this.refreshTime();
       this.initData();
     },
+    getOrderProductionStopQuery() {
+      this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).then((ProductionStopQueryRes) => {
+        this.initLoading = false;
+        if (ProductionStopQueryRes.data.Status === 1000) {
+          this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
+        }
+      }).catch((err) => {
+        this.initLoading = false;
+        throw new Error(err);
+      });
+    },
     initData() {
       this.initLoading = true;
-      console.log(this.OrderData.IsOwnFactory);
-
       if (this.OrderData.IsOwnFactory) {
         const PromiseList = [
           this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).catch(() => {}),
@@ -197,38 +212,32 @@ export default {
           PromiseList.push(
             this.api.getOrderProductionInfo(this.OrderData.OrderID).catch(() => {}),
           );
+          Promise.all(PromiseList).then(([ProductionStopQueryRes, ProductionInfoRes]) => {
+            this.initLoading = false;
+            if (ProductionStopQueryRes.data.Status === 1000 && ProductionInfoRes.data.Status === 1000) {
+              this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
+              this.ProductionInfo = ProductionInfoRes.data.Data;
+            }
+            if (ProductionInfoRes.data.Status !== 1000) {
+              const cb = () => { this.close(); }; // 生产拼板中不能取消 （取消订单时弹框提示 点确定时关闭取消生产弹框）
+              this.messageBox.failSingleError('操作失败', `[ ${ProductionInfoRes.data.Message} ]`, cb, cb);
+            }
+            const tempValue = {};
+            if (this.ProductionInfo) {
+              this.ProductionInfo.PlateList.forEach(element => {
+                tempValue[element.ID] = this.formValue[element.ID] || 0;
+              });
+              this.formValue = { ...tempValue };
+            }
+          }).catch((err) => {
+            this.initLoading = false;
+            throw new Error(err);
+          });
+        } else {
+          this.getOrderProductionStopQuery();
         }
-        Promise.all(PromiseList).then(([ProductionStopQueryRes, ProductionInfoRes]) => {
-          this.initLoading = false;
-          if (ProductionStopQueryRes.data.Status === 1000 && ProductionInfoRes.data.Status === 1000) {
-            this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
-            this.ProductionInfo = ProductionInfoRes.data.Data;
-          }
-          if (ProductionInfoRes.data.Status !== 1000) {
-            const cb = () => { this.close(); }; // 生产拼板中不能取消 （取消订单时弹框提示 点确定时关闭取消生产弹框）
-            this.messageBox.failSingleError('操作失败', `[ ${ProductionInfoRes.data.Message} ]`, cb, cb);
-          }
-          const tempValue = {};
-          if (this.ProductionInfo) {
-            this.ProductionInfo.PlateList.forEach(element => {
-              tempValue[element.ID] = this.formValue[element.ID] || 0;
-            });
-            this.formValue = { ...tempValue };
-          }
-        }).catch((err) => {
-          this.initLoading = false;
-          throw new Error(err);
-        });
       } else {
-        this.api.getOrderProductionStopQuery({ OrderID: this.OrderData.OrderID, SearchType: 1 }).then((ProductionStopQueryRes) => {
-          this.initLoading = false;
-          if (ProductionStopQueryRes.data.Status === 1000) {
-            this.ProductionStopQuery = ProductionStopQueryRes.data.Data;
-          }
-        }).catch((err) => {
-          this.initLoading = false;
-          throw new Error(err);
-        });
+        this.getOrderProductionStopQuery();
       }
     },
     refresh() {
