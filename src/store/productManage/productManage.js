@@ -109,10 +109,10 @@ export default {
      * 产品元素映射
      */
     ProductElementTypeList: [
-      { Name: '数量', ID: 0, onlyProduct: false, needFormula: false, needElement: true },
+      { Name: '数量', ID: 0, onlyProduct: false, needFormula: true, needElement: true, width: '380px', isNumber: true },
+      { Name: '印面', ID: 3, onlyProduct: false, needFormula: false, needElement: true, width: '300px' },
       { Name: '款数', ID: 1, onlyProduct: true, needFormula: false, needElement: true },
       { Name: '重量', ID: 2, onlyProduct: true, needFormula: true, needElement: false },
-      { Name: '印面', ID: 3, onlyProduct: false, needFormula: false, needElement: true },
     ],
   },
   getters: {

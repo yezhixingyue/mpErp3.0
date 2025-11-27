@@ -124,8 +124,11 @@ export default {
       }
     },
     handleSortEnd(e) {
+      if (e.newIndex === e.oldIndex) return;
+
       let oldIndex = e.oldIndex - 1;
       let newIndex = e.newIndex - 1;
+
       if (this.curShowColTableData.length < this.tableColData.length) {
         if (this.curShowColTableData[oldIndex]) {
           const _oldLabel = this.curShowColTableData[oldIndex].label;
