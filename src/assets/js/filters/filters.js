@@ -254,18 +254,18 @@ Vue.filter('formatProducePeriod', ProducePeriod => {
     const m = fullDay.split('-')[1];
     const d = fullDay.split('-')[2];
     dayTimeStr = `${m}月${d}日`;
-    const _m = `${new Date().getMonth() + 1}`;
-    const _d = `${new Date().getDate()}`;
+    const _m = `0${new Date().getMonth() + 1}`.slice(-2);
+    const _d = `0${new Date().getDate()}`.slice(-2);
     if (m === _m) {
       if (d === _d) dayTimeStr = '今日';
       if (d - _d === 1) dayTimeStr = '明日';
       if (d - _d === 2) dayTimeStr = '后日';
-    } else if ((_m - m === 1 || (m === '1' && _m === '12')) && (d === '1' || d === '2')) {
+    } else if ((_m - m === 1 || (m === '01' && _m === '12')) && (d === '01' || d === '02')) {
       const year = new Date().getFullYear();
       const surMonthDayCount = new Date(year, _m, 0).getDate();
       if (surMonthDayCount - _d === 0) {
         // eslint-disable-next-line no-nested-ternary
-        dayTimeStr = d === '1' ? '明日' : (d === '2' ? '后日' : dayTimeStr);
+        dayTimeStr = d === '01' ? '明日' : (d === '02' ? '后日' : dayTimeStr);
       } else if (surMonthDayCount - _d === 1 && d === '1') {
         dayTimeStr = '后日';
       }
