@@ -242,40 +242,36 @@ Vue.filter('formatProducePeriod', ProducePeriod => {
   if (!ProducePeriod) return '';
   const { IncludeDiliveryTime, TotalTime } = ProducePeriod;
   if (!TotalTime) return '';
+
   const str = IncludeDiliveryTime ? '送达' : '出货';
+
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(TotalTime)) return TotalTime + str;
 
   const fullDay = TotalTime.split('T')[0];
   let dayTimeStr = fullDay;
 
-  const y = fullDay.split('-')[0];
-  const _y = `${new Date().getFullYear()}`;
+  const [y, m, d] = fullDay.split('-').map(Number);
+  const targetTime = new Date(y, m - 1, d).getTime();
 
-  if (y === _y) {
-    const m = fullDay.split('-')[1];
-    const d = fullDay.split('-')[2];
+  const now = new Date();
+  const todayTime = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+  const diffTime = targetTime - todayTime;
+  const dayDiff = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  if (dayDiff === 0) {
+    dayTimeStr = '今日';
+  } else if (dayDiff === 1) {
+    dayTimeStr = '明日';
+  } else if (dayDiff === 2) {
+    dayTimeStr = '后日';
+  } else if (y === now.getFullYear()) {
     dayTimeStr = `${m}月${d}日`;
-    const _m = `0${new Date().getMonth() + 1}`.slice(-2);
-    const _d = `0${new Date().getDate()}`.slice(-2);
-    if (m === _m) {
-      if (d === _d) dayTimeStr = '今日';
-      if (d - _d === 1) dayTimeStr = '明日';
-      if (d - _d === 2) dayTimeStr = '后日';
-    } else if ((_m - m === 1 || (m === '01' && _m === '12')) && (d === '01' || d === '02')) {
-      const year = new Date().getFullYear();
-      const surMonthDayCount = new Date(year, _m, 0).getDate();
-      if (surMonthDayCount - _d === 0) {
-        // eslint-disable-next-line no-nested-ternary
-        dayTimeStr = d === '01' ? '明日' : (d === '02' ? '后日' : dayTimeStr);
-      } else if (surMonthDayCount - _d === 1 && d === '1') {
-        dayTimeStr = '后日';
-      }
-    }
+  } else {
+    dayTimeStr = `${y}年${m}月${d}日`;
   }
 
-  let hour = TotalTime.split('T')[1].split('+')[0].slice(0, 5);
-  if (dayTimeStr && dayTimeStr.length === 10) hour = ` ${hour}`;
-  hour = '';
-  return `${dayTimeStr}${hour}${str}`;
+  return `${dayTimeStr}${str}`;
 });
 
 /**
