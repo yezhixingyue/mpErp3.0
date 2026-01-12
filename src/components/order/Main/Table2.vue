@@ -70,7 +70,7 @@
             <!-- IsOwnLogistics: 是否是自己物流(自己物流系统/般若的物流系统) 临时解决方案 最终会全都替换成自己的物流系统（开始上线到全部上线期间会并存） -->
             <template v-if="scope.row.IsOwnLogistics">
               <!-- 如果不允许点击取消 -->
-              <span v-if="canNoncancelabilityStatuses.includes(scope.row.Status)" class="disbaled">
+              <span v-if="canNoncancelabilityStatuses.includes(scope.row.Status) || canTemporaryStatuses.includes(scope.row.Status)" class="disbaled">
                 <img src="@/assets/images/cancelstop.png" />取消
               </span>
               <!-- 如果已发至工厂之前点击取消 -->
@@ -154,6 +154,10 @@ export default {
     // 不能在物流系统点击取消的状态
     canNoncancelabilityStatuses() {
       return this.OrderStatusList.filter(it => it.noncancelability === true).map(it => it.ID);
+    },
+    // 不能点击取消的状态 般若和自己物流共存时候的临时字段
+    canTemporaryStatuses() {
+      return this.OrderStatusList.filter(it => it.temporary === true).map(it => it.ID);
     },
   },
   components: {

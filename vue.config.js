@@ -5,7 +5,8 @@ require('events').EventEmitter.defaultMaxListeners = 20; // 将MaxListeners的�
 const publicPath = process.env.NODE_ENV === 'development' ? '' : '/Web/';
 
 // let proxyUrl = 'http://192.168.2.234:8050'; // 吕伟
-let proxyUrl = 'http://192.168.1.92:8050';
+// let proxyUrl = 'http://192.168.1.92:8050';
+let proxyUrl = 'http://192.168.17.66:8050'; // 强哥
 // let proxyUrl = 'http://192.168.2.238:8050';
 // let proxyUrl = 'http://erp.ybz888.com/';
 if (process.env.VUE_APP_ENV_TYPE && process.env.VUE_APP_ENV_TYPE === 'dev-test') proxyUrl = 'http://192.168.1.92:8050';

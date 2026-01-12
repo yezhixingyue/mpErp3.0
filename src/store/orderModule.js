@@ -31,6 +31,7 @@ export default {
       // canStopProduction 终止生产
       // canCancelInMyFactory 取消订单非s2b平台
       // noncancelability 不能在物流系统点击取消的状态
+      // temporary 不能点击取消的状态 般若和自己物流共存时候的临时字段 用于限制取消按钮
       { name: '不限', ID: '' },
       { name: '待分发', ID: 20, canCancel: true, canCancelInMyFactory: true },
       { name: '已分发', ID: 30, canCancel: true, canCancelInMyFactory: true },
@@ -40,13 +41,13 @@ export default {
       { name: '拼版中', ID: 45, canStopProduction: true, canProdProgress: true },
       { name: '已拼版', ID: 50, canStopProduction: true, canProdProgress: true },
       { name: '生产中', ID: 55, canStopProduction: true, canProdProgress: true },
-      { name: '已生产', ID: 60, canProdProgress: true },
-      { name: '已入库', ID: 70, canProdProgress: true },
-      { name: '已发货', ID: 80, canProdProgress: true },
-      { name: '已完成', ID: 200, noncancelability: true, canProdProgress: true },
-      { name: '终止生产', ID: 253, noncancelability: true },
-      { name: '已取消', ID: 254, noncancelability: true },
-      { name: '已过期', ID: 255, noncancelability: true },
+      { name: '已生产', ID: 60, canProdProgress: true, temporary: true },
+      { name: '已入库', ID: 70, canProdProgress: true, temporary: true },
+      { name: '已发货', ID: 80, canProdProgress: true, temporary: true },
+      { name: '已完成', ID: 200, noncancelability: true, canProdProgress: true, temporary: true },
+      { name: '终止生产', ID: 253, noncancelability: true, temporary: true },
+      { name: '已取消', ID: 254, noncancelability: true, temporary: true },
+      { name: '已过期', ID: 255, noncancelability: true, temporary: true },
       { name: '问题件', ID: 35, canCancel: true, canCancelInMyFactory: true, isProblemShipment: true },
     ],
     orderStatueTitle: '不限',
