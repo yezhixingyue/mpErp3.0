@@ -10,7 +10,7 @@
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
        /> -->
       <EpCascaderByArea
-        class="mr-20"
+        class="mr-20 sellarea"
         :getList="getCustomerOrderBill"
         :setCondition="setCondition4OrderType"
         :RegionalID="condition4OrderType.SellArea.RegionalID"
@@ -145,5 +145,9 @@ export default {
 </script>
 
 <style>
-
+.sellarea.mpzj-sell-lib-comps-ep-cascader-comp-wrap {
+  > .title {
+    margin-right: 15px;
+  }
+}
 </style>

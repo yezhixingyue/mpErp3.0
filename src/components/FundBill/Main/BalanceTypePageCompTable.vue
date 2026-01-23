@@ -23,11 +23,11 @@
     <el-table-column label="类型" min-width="70">
      <span
       slot-scope="scope"
-      :class="{ 'is-success': scope.row.Type === 21, 'is-red': scope.row.Type === 11 }"
-     >{{ scope.row.Type | formatFundBillBalanceType }}</span>
+      :class="{ 'is-success': scope.row.Type === BillTypeEnumObj.Disbursement, 'is-red': scope.row.Type === BillTypeEnumObj.Income }"
+     >{{ getTypeText(scope.row.Type) }}</span>
     </el-table-column>
     <el-table-column label="方式" min-width="70">
-      <template slot-scope="scope">{{scope.row.Currency | formatFundBillBalanceCurrency}}</template>
+      <template slot-scope="scope">{{getModeText(scope.row.Mode)}}</template>
     </el-table-column>
     <el-table-column label="时间" min-width="125">
       <span class="is-gray" slot-scope="scope">{{
@@ -36,7 +36,7 @@
     </el-table-column>
     <el-table-column prop="name" :label="isBeanType ? '印豆数量' : '金额'" min-width="100" show-overflow-tooltip>
       <span
-       :class="{ 'is-success': scope.row.Amount < 0, 'is-red': scope.row.Amount > 0 }"
+       :class="{ 'is-success': scope.row.Type === BillTypeEnumObj.Disbursement, 'is-red': scope.row.Type === BillTypeEnumObj.Income }"
         slot-scope="scope"><i class="is-font-size-13">{{ scope.row.Amount}}</i>{{isBeanType ? '个' : '元'}}</span>
     </el-table-column>
     <!-- <el-table-column label="原账户余额" min-width="110">
@@ -74,6 +74,7 @@
 <script>
 import { mapState } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
+import { BillTypeEnumList, BillModeEnumList, BillTypeEnumObj } from '@/packages/enums/billEnumList.js';
 
 export default {
   computed: {
@@ -83,6 +84,11 @@ export default {
     },
   },
   mixins: [tableMixin],
+  data() {
+    return {
+      BillTypeEnumObj,
+    };
+  },
   methods: {
     setHeight() {
       const tempHeight = this.getHeight('.mp-fund-bill-page-balance-type-page-comp-wrap > header', 122);
@@ -91,6 +97,12 @@ export default {
     getAdd(SellArea) {
       const { RegionalName, CityName, CountyName } = SellArea;
       return `${RegionalName}${CityName}${CountyName}`;
+    },
+    getTypeText(type) {
+      return BillTypeEnumList.find(it => it.ID === type)?.Name || '';
+    },
+    getModeText(mode) {
+      return BillModeEnumList.find(it => it.ID === mode)?.Name || '';
     },
   },
 };

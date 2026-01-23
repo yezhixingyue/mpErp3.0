@@ -199,22 +199,22 @@ Vue.filter('formatGenerateType', GenerateType => {
 /**
  * 客户余额流水类型
  */
-const { FundBillBalanceTypeList } = store.state.common;
-Vue.filter('formatFundBillBalanceType', Type => {
-  const _t = FundBillBalanceTypeList.find(_it => _it.ID === Type);
-  if (_t) return _t.name;
-  return '';
-});
+// const { FundBillBalanceTypeList } = store.state.common;
+// Vue.filter('formatFundBillBalanceType', Type => {
+//   const _t = FundBillBalanceTypeList.find(_it => _it.ID === Type);
+//   if (_t) return _t.name;
+//   return '';
+// });
 
 /**
  * 客户余额流水方式
  */
-const { FundBillBalanceCurrencyList } = store.state.common;
-Vue.filter('formatFundBillBalanceCurrency', Currency => {
-  const _t = FundBillBalanceCurrencyList.find(_it => _it.ID === Currency);
-  if (_t) return _t.name;
-  return '';
-});
+// const { FundBillBalanceCurrencyList } = store.state.common;
+// Vue.filter('formatFundBillBalanceCurrency', Currency => {
+//   const _t = FundBillBalanceCurrencyList.find(_it => _it.ID === Currency);
+//   if (_t) return _t.name;
+//   return '';
+// });
 
 /**
  * 客户订单流水类型

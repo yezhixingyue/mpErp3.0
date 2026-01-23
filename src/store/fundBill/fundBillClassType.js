@@ -8,11 +8,23 @@ export default class FundBillClassType {
       CountyID: '',
     }
 
-    Type= ''
+    /** 原交易类型 */
+    // Type= ''
 
-    BillType = 1
+    /** 原账单类型 */
+    // BillType = 1
 
-    Currency= ''
+    /** 原方式 */
+    // Currency= ''
+
+    /** 新流水类型 - 类型 */
+    CustomerBillType = ''
+
+    /** 新支付方式 - 方式 */
+    CustomerBillMode = ''
+
+    /** 新流水账号 - 客户账号 */
+    CustomerBillAccount = ''
 
     Date = {
       First: '',

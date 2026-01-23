@@ -48,7 +48,7 @@
         scope.row.CreateTime | format2MiddleLangTypeDate
       }}</span>
     </el-table-column>
-    <el-table-column label="销售区域" width="180" show-overflow-tooltip>
+    <el-table-column label="销售区域" width="170" show-overflow-tooltip>
       <template slot-scope="scope" v-if="scope.row.Customer">{{
         getAdd(scope.row.Customer.SellArea) }}</template>
     </el-table-column>
