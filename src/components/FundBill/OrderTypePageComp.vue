@@ -13,7 +13,7 @@
        :handlePageChange='handlePageChange'
        :count='orderTypeDataCount'
        >
-        <DownLoadExcelComp :configObj="configObj" v-if="localPermission.ExportOrderBillExcel" />
+        <DownLoadExcelComp :getConfigObj="getConfigObj" v-if="localPermission.ExportOrderBillExcel" />
       </Count>
     </footer>
   </section>
@@ -43,22 +43,19 @@ export default {
       }
       return {};
     },
-    condition() {
-      return CommonClassType.filter(this.condition4OrderType);
+  },
+  methods: {
+    handlePageChange(page) {
+      this.$store.dispatch('fundBill/getCustomerOrderBill', page);
     },
-    configObj() {
+    getConfigObj() {
       return {
-        condition: this.condition,
+        condition: CommonClassType.filter(this.condition4OrderType, true),
         count: this.orderTypeDataCount,
         fileDefaultName: '客户订单流水',
         fileDate: this.condition4OrderType.Date,
         downFunc: data => this.api.getOrderBillExcel(data),
       };
-    },
-  },
-  methods: {
-    handlePageChange(page) {
-      this.$store.dispatch('fundBill/getCustomerOrderBill', page);
     },
   },
 };

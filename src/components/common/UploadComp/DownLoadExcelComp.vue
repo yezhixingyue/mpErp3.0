@@ -27,10 +27,20 @@ export default {
         downFunc() {}, // 下载函数
       }),
     },
+    getConfigObj: {
+      type: Function,
+      default: null,
+    },
   },
   methods: {
+    getLocalConfigObj() {
+      if (this.getConfigObj) return this.getConfigObj();
+
+      return this.configObj;
+    },
     onClick() {
-      if (this.configObj.condition.Page === 1 && this.configObj.count === 0) {
+      const _configObj = this.getLocalConfigObj();
+      if (_configObj.condition.Page === 1 && _configObj.count === 0) {
         this.messageBox.warnSingleError('[ 当前条件没有可导出的列表数据! ]', null, null, '导出失败');
         return;
       }
@@ -38,12 +48,14 @@ export default {
       this.handleDownFunc();
     },
     async handleDownFunc() {
-      const config = JSON.parse(JSON.stringify(this.configObj.condition)); // 获取经过处理过的请求头配置对象
+      const _configObj = this.getLocalConfigObj();
+
+      const config = JSON.parse(JSON.stringify(_configObj.condition)); // 获取经过处理过的请求头配置对象
 
       delete config.Page;
       delete config.PageSize;
 
-      const res = await this.configObj.downFunc(config);
+      const res = await _configObj.downFunc(config);
       // console.log(res, config);
       if (res.status !== 200) {
         this.messageBox.failSingleError('出错啦 ！', `[ 下载失败：${res.statusText} ]`);
@@ -53,9 +65,9 @@ export default {
       const { data } = res;
       const blobData = new Blob([data], { type: 'application/vnd.ms-excel' });
 
-      let fileName = `${this.configObj.fileDefaultName}(全部).xls`;
-      if (this.configObj.fileDate) {
-        const { First, Second } = this.configObj.fileDate;
+      let fileName = `${_configObj.fileDefaultName}(全部).xls`;
+      if (_configObj.fileDate) {
+        const { First, Second } = _configObj.fileDate;
         if (First && Second) {
           const f = First.split('T')[0];
           let _second = '';
@@ -66,12 +78,12 @@ export default {
             _second = Second;
           }
           const t2 = _second ? ConvertTimeFormat(new Date(new Date(_second.replace('Z', '')).getTime())) : '';
-          if (f) fileName = `${this.configObj.fileDefaultName}(${f}至${t2}).xls`;
+          if (f) fileName = `${_configObj.fileDefaultName}(${f}至${t2}).xls`;
         }
       }
-      if (this.configObj.showDateByFile === false) {
+      if (_configObj.showDateByFile === false) {
         const curDate = ConvertTimeFormat(new Date());
-        fileName = `${this.configObj.fileDefaultName}(${curDate}日导出).xls`;
+        fileName = `${_configObj.fileDefaultName}(${curDate}日导出).xls`;
       }
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(blobData, fileName);

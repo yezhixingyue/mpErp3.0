@@ -45,35 +45,35 @@
       /> -->
 
       <OrderChannelSelector
-      :options='BillTypeEnumList'
-      :requestFunc='getCustomerBill'
-      :changePropsFunc='setCustomerBillType'
-      :typeList="[['CustomerBillType', '']]"
-      :value='condition4BalanceType.CustomerBillType'
-      :defaultProps="{ label: 'Name', value: 'ID' }"
-      label="类型"
-      withEmpty
+        :options='BillTypeEnumList'
+        :requestFunc='getCustomerBill'
+        :changePropsFunc='setCustomerBillType'
+        :typeList="[['CustomerBillType', '']]"
+        :value='condition4BalanceType.CustomerBillType'
+        :defaultProps="{ label: 'Name', value: 'ID' }"
+        label="类型"
+        withEmpty
       />
       <OrderChannelSelector
-      :options='localBillModeEnumList'
-      :requestFunc='getCustomerBill'
-      :changePropsFunc='setCustomerBillMode'
-      :typeList="[['CustomerBillMode', '']]"
-      :value='condition4BalanceType.CustomerBillMode'
-      :defaultProps="{ label: 'Name', value: 'ID' }"
-      label="方式"
-      withEmpty
-      style="margin-right:18px;margin-left: -10px;"
+        :options='localBillModeEnumList'
+        :requestFunc='getCustomerBill'
+        :changePropsFunc='setCustomerBillMode'
+        :typeList="[['CustomerBillMode', '']]"
+        :value='condition4BalanceType.CustomerBillMode'
+        :defaultProps="{ label: 'Name', value: 'ID' }"
+        label="方式"
+        withEmpty
+        style="margin-right:18px;margin-left: -10px;"
       />
       <OrderChannelSelector
-      :options='localBillAccountEnumList'
-      :requestFunc='getCustomerBill'
-      :changePropsFunc='setCondition4BalanceType'
-      :typeList="[['CustomerBillAccount', '']]"
-      :value='condition4BalanceType.CustomerBillAccount'
-      :defaultProps="{ label: 'Name', value: 'ID' }"
-      label="客户账号"
-      withEmpty
+        :options='localBillAccountEnumList'
+        :requestFunc='getCustomerBill'
+        :changePropsFunc='setCondition4BalanceType'
+        :typeList="[['CustomerBillAccount', '']]"
+        :value='condition4BalanceType.CustomerBillAccount'
+        :defaultProps="{ label: 'Name', value: 'ID' }"
+        label="客户账号"
+        withEmpty
       />
       <div class="user-selector">
         <OrderChannelSelector
