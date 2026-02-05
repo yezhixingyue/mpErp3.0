@@ -5,14 +5,14 @@
                 <span :title="operator" v-if="operator" :class="!isCurNewIndex ? 'operator' : 'operator active'">
                     {{operator}}
                 </span>
-                <i v-if="operator">/</i>
+                <i v-if="operator" style="flex: none">/</i>
                 <span :class="!isCurNewIndex ? 'text-title' : 'text-title active'">
                   {{progressTitle === '下单' ? '创建订单' : progressTitle}}
                 </span>
                 <el-tooltip v-if="progressDesc" :content="progressDesc" placement="top">
-                  <span :class="!isCurNewIndex?'desc-line':'desc-line active'">（{{
+                  <span :class="!isCurNewIndex?'desc-line':'desc-line active'">（<i>{{
                     progressDesc
-                  }}）</span>
+                  }}</i>）</span>
                 </el-tooltip>
               </div>
               <div>
@@ -133,24 +133,37 @@ export default {
             display: flex;
             justify-content: flex-end;
             align-items: center;
+            overflow: hidden;
             // flex-wrap: wrap; // 因物流暂停备注较多的时候会换行 所以不注释掉此样式并添加title属性
+
+            .operator {
+              flex: none;
+            }
+
             .text-title {
               font-size: 14px;
               font-weight: 600;
               white-space: nowrap;
+              flex: none;
               &.active{
                   color: $--color-text-primary;
               }
             }
             .desc-line {
               font-size: 13px;
-              display: inline-block;
+              display: flex;
               font-weight: 600;
               max-height: 30px;
               line-height: 15px;
               max-width: 100%;
-              overflow: hidden;
+              white-space: nowrap;
               margin-top: -1px;
+              flex: 0 1 auto;
+              overflow: hidden;
+              > i {
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
               &.active {
                 color: $--color-text-primary;
               }
