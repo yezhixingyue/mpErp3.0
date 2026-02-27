@@ -313,6 +313,7 @@ export default {
           obj.afterTime = afterTime;
           obj.year = year;
         }
+        if (it.Pics && it.Pics.length > 0) obj.Pics = it.Pics;
         arr.push(obj);
       });
       const newArr = arr.map((item, index) => {
