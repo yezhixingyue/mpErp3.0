@@ -50,7 +50,7 @@ export default {
   },
   mounted() {
     // 简单判断是否使用Chrome相同内核或Firefox浏览器
-    const bool = navigator.userAgent.includes('Chrome') || navigator.userAgent.includes('Firefox');
+    const bool = navigator.userAgent.includes('AppleWebKit') || navigator.userAgent.includes('Firefox');
     if (!bool) {
       const url = process.env.NODE_ENV === 'development' ? '/browser' : '/Web/browser';
       window.location.replace(url);

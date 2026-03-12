@@ -96,13 +96,13 @@ export default {
     > .left {
       width: 40%;
       flex: none;
-      min-width: 550px;
+      // min-width: 550px;
       // margin-right: 50px;
     }
     > .right {
       flex: none;
       width: 60%;
-      min-width: 740px;
+      // min-width: 740px;
       border-left: 1px solid #eee;
     }
     .mp-common-comps-tree-comp-wrap > .content > .el-tree > .el-tree-node
