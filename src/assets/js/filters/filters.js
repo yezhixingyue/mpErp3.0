@@ -197,45 +197,6 @@ Vue.filter('formatGenerateType', GenerateType => {
 });
 
 /**
- * 客户余额流水类型
- */
-// const { FundBillBalanceTypeList } = store.state.common;
-// Vue.filter('formatFundBillBalanceType', Type => {
-//   const _t = FundBillBalanceTypeList.find(_it => _it.ID === Type);
-//   if (_t) return _t.name;
-//   return '';
-// });
-
-/**
- * 客户余额流水方式
- */
-// const { FundBillBalanceCurrencyList } = store.state.common;
-// Vue.filter('formatFundBillBalanceCurrency', Currency => {
-//   const _t = FundBillBalanceCurrencyList.find(_it => _it.ID === Currency);
-//   if (_t) return _t.name;
-//   return '';
-// });
-
-/**
- * 客户订单流水类型
- */
-const { FundBillOrderTypeList } = store.state.common;
-Vue.filter('formatFundBillOrderType', Type => {
-  const _t = FundBillOrderTypeList.find(_it => _it.ID === Type);
-  if (_t) return _t.name;
-  return '';
-});
-/**
- * 客户订单流水渠道
- */
-const { FundBillOrderCurrencyList } = store.state.common;
-Vue.filter('formatFundBillOrderCurrency', Currency => {
-  const _t = FundBillOrderCurrencyList.find(_it => _it.ID === Currency);
-  if (_t) return _t.name;
-  return '';
-});
-
-/**
  * 工期时间
  */
 Vue.filter('formatProducePeriod', ProducePeriod => {

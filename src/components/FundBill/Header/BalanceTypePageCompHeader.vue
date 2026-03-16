@@ -1,14 +1,6 @@
 <template>
   <ul>
     <li>
-      <!-- <area-selector
-        :changePropsFunc="setCondition4BalanceType"
-        :requestFunc="getCustomerBill"
-        :RegionalID="condition4BalanceType.SellArea.RegionalID"
-        :CityID="condition4BalanceType.SellArea.CityID"
-        :CountyID="condition4BalanceType.SellArea.CountyID"
-        :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
-       /> -->
       <EpCascaderByArea
         class="mr-20 sellarea"
         :getList="getCustomerBill"
@@ -18,31 +10,6 @@
         :CountyID="condition4BalanceType.SellArea.CountyID"
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
       />
-      <!-- <OrderChannelSelector
-      :options='FundBillMonetyTypeList'
-      :requestFunc='getCustomerBill'
-      :changePropsFunc='setCondition4BalanceType'
-      :typeList="[['BillType', '']]"
-      :value='condition4BalanceType.BillType'
-      label="账单类型"
-      style="margin-right:12px"
-      />
-      <OrderChannelSelector
-      :options='FundBillBalanceTypeList'
-      :requestFunc='getCustomerBill'
-      :changePropsFunc='setCondition4BalanceType'
-      :typeList="[['Type', '']]"
-      :value='condition4BalanceType.Type'
-      label="交易类型"
-      />
-      <OrderChannelSelector
-      :options='FundBillBalanceCurrencyList'
-      :requestFunc='getCustomerBill'
-      :changePropsFunc='setCondition4BalanceType'
-      :typeList="[['Currency', '']]"
-      :value='condition4BalanceType.Currency'
-      label="方式"
-      /> -->
 
       <OrderChannelSelector
         :options='BillTypeEnumList'
@@ -53,6 +20,7 @@
         :defaultProps="{ label: 'Name', value: 'ID' }"
         label="类型"
         withEmpty
+        style="margin-right: 10px;"
       />
       <OrderChannelSelector
         :options='localBillModeEnumList'
@@ -63,7 +31,7 @@
         :defaultProps="{ label: 'Name', value: 'ID' }"
         label="方式"
         withEmpty
-        style="margin-right:18px;margin-left: -10px;"
+        style="margin-right:25px;margin-left: -10px;"
       />
       <OrderChannelSelector
         :options='localBillAccountEnumList'
@@ -72,7 +40,7 @@
         :typeList="[['CustomerBillAccount', '']]"
         :value='condition4BalanceType.CustomerBillAccount'
         :defaultProps="{ label: 'Name', value: 'ID' }"
-        label="客户账号"
+        label="客户账户"
         withEmpty
       />
       <div class="user-selector">
@@ -108,7 +76,6 @@
         label="时间"
         :dateList="dateList"
         />
-      <!-- <ElDateRangeSelector v-model="conditionDate"  :menus='dateMenus' title="时间" :condition="condition4BalanceType" /> -->
       <search-input-comp
         class="search-section"
         :typeList="[['KeyWords', '']]"
@@ -125,13 +92,11 @@
 </template>
 
 <script>
-// import AreaSelector from '@/components/common/SelectorComps/AreaSelectorIndex.vue';
 import OrderChannelSelector from '@/components/common/SelectorComps/OrderChannelSelector.vue';
 import LineDateSelectorComp from '@/components/common/SelectorComps/LineDateSelectorComp.vue';
 import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
 import {
   BillTypeEnumList, BillModeEnumList, BillAccountEnumList, BillTypeEnumObj, BillModeEnumObj, BillAccountEnumObj } from '@/packages/enums/billEnumList.js';
-// import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState, mapMutations, mapActions } from 'vuex';
 import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
 
@@ -146,26 +111,15 @@ export default {
   },
   computed: {
     ...mapState('fundBill', ['condition4BalanceType', 'balanceTypeDataList']),
-    ...mapState('common', ['FundBillBalanceTypeList', 'FundBillBalanceCurrencyList', 'userTypeList', 'userRankList', 'FundBillMonetyTypeList']),
+    ...mapState('common', ['userTypeList', 'userRankList']),
     UserDefinedTimeIsActive() {
       return this.condition4BalanceType.DateType === '' && !!this.condition4BalanceType.Date.First && !!this.condition4BalanceType.Date.Second;
     },
-    // conditionDate: {
-    //   get() {
-    //     return [this.condition4BalanceType.Date.First, this.condition4BalanceType.Date.Second];
-    //   },
-    //   set(newVal) {
-    //     const [key, value] = newVal?.length === 2 ? newVal : ['', ''];
-    //     this.setCondition4BalanceType([['Date', 'First'], key]);
-    //     this.setCondition4BalanceType([['Date', 'Second'], value]);
-    //     this.getCustomerBill();
-    //   },
-    // },
     localBillAccountEnumList() {
       const bool = this.condition4BalanceType.CustomerBillType === BillTypeEnumObj.Recharge
         || this.condition4BalanceType.CustomerBillMode === BillModeEnumObj.Recharge;
 
-      return this.BillAccountEnumList.map(it => ({
+      return this.BillAccountEnumList.filter(it => !it.Only4Order).map(it => ({
         ...it,
         disabled: bool && [BillAccountEnumObj.FundCash, BillAccountEnumObj.PrintBean].includes(it.ID),
       }));

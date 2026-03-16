@@ -1,14 +1,6 @@
 <template>
   <ul>
     <li>
-      <!-- <area-selector
-        :changePropsFunc="setCondition4OrderType"
-        :requestFunc="getCustomerOrderBill"
-        :RegionalID="condition4OrderType.SellArea.RegionalID"
-        :CityID="condition4OrderType.SellArea.CityID"
-        :CountyID="condition4OrderType.SellArea.CountyID"
-        :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
-       /> -->
       <EpCascaderByArea
         class="mr-20 sellarea"
         :getList="getCustomerOrderBill"
@@ -19,20 +11,25 @@
         :typeList="[['SellArea', 'RegionalID'],['SellArea', 'CityID'],['SellArea', 'CountyID']]"
       />
         <order-channel-selector
-        :options='FundBillOrderTypeList'
+        class="mr-25"
+        :options='OrderBillTypeEnumList'
         :requestFunc='getCustomerOrderBill'
         :changePropsFunc='setCondition4OrderType'
         :typeList="[['Type', '']]"
+        :defaultProps="{ label: 'Name', value: 'ID' }"
         :value='condition4OrderType.Type'
-        label="类型"
+        label="方式"
+        withEmpty
        />
         <order-channel-selector
-        :options='FundBillOrderCurrencyList'
+        :options='BillAccountEnumList'
         :requestFunc='getCustomerOrderBill'
         :changePropsFunc='setCondition4OrderType'
-        :typeList="[['Currency', '']]"
-        :value='condition4OrderType.Currency'
-        label="渠道"
+        :typeList="[['Account', '']]"
+        :value='condition4OrderType.Account'
+        :defaultProps="{ label: 'Name', value: 'ID' }"
+        label="客户账户"
+        withEmpty
        />
        <div class="user-selector">
         <order-channel-selector
@@ -91,6 +88,7 @@ import { SearchInputComp } from '@/components/common/mpzj-sell-lib/lib';
 // import ElDateRangeSelector from '@/components/common/SelectorComps/ElDateRangeSelector';
 import { mapState, mapMutations, mapActions } from 'vuex';
 import EpCascaderByArea from '../../common/SelectorComps/EpCascaderWrap/EpCascaderByArea.vue';
+import { OrderBillTypeEnumList, BillAccountEnumList } from '@/packages/enums/billEnumList.js';
 
 export default {
   components: {
@@ -103,7 +101,7 @@ export default {
   },
   computed: {
     ...mapState('fundBill', ['condition4OrderType', 'orderTypeDataList']),
-    ...mapState('common', ['FundBillOrderTypeList', 'FundBillOrderCurrencyList', 'userTypeList', 'userRankList']),
+    ...mapState('common', ['userTypeList', 'userRankList']),
     UserDefinedTimeIsActive() {
       // eslint-disable-next-line max-len
       return this.condition4OrderType.DateType === '' && !!this.condition4OrderType.Date.First && !!this.condition4OrderType.Date.Second;
@@ -132,6 +130,8 @@ export default {
         { text: '本月', key: 'curMonthDate' },
         { text: '上月', key: 'lastMonthDate' },
       ],
+      OrderBillTypeEnumList,
+      BillAccountEnumList,
     };
   },
   methods: {

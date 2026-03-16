@@ -202,52 +202,7 @@ export default {
       { name: '手动生成', ID: 0 },
       { name: '自动生成', ID: 1 },
     ],
-    /* 客户余额流水类型列表
-    -------------------------------*/
-    FundBillBalanceTypeList: [
-      { name: '不限', ID: '' },
-      { name: '充值', ID: 11 },
-      { name: '支出', ID: 21 },
-      // { name: '扫码减款', ID: 31 },
-    ],
-    FundBillMonetyTypeList: [
-      { name: '印豆', ID: 0 },
-      { name: '现金', ID: 1 },
-    ],
-    /* 客户余额流水方式列表
-    -------------------------------*/
-    FundBillBalanceCurrencyList: [
-      { name: '不限', ID: '' },
-      { name: '余额', ID: 1 },
-      { name: '支付宝', ID: 3 },
-      { name: '微信支付', ID: 4 },
-      { name: '物流代收', ID: 5 },
-      { name: '退到余额', ID: 12 },
-      { name: '返现', ID: 15 },
-      { name: '手动入账', ID: 16 },
-      { name: '手动扣款', ID: 23 },
-      { name: '支付订单', ID: 24 },
-      { name: '充值印豆', ID: 25 },
-      { name: '退到扫码账户', ID: 26 },
-    ],
-    /* 客户订单类型流水类型列表
-    -------------------------------*/
-    FundBillOrderTypeList: [
-      { name: '不限', ID: '' },
-      { name: '订单退款', ID: 12 },
-      { name: '支付订单', ID: 21 },
-    ],
-    /* 客户订单类型流水渠道列表
-    -------------------------------*/
-    FundBillOrderCurrencyList: [
-      { name: '不限', ID: '' },
-      { name: '余额', ID: 1 },
-      { name: '退款', ID: 12 },
-      { name: '支付宝', ID: 3 },
-      { name: '微信支付', ID: 4 },
-      { name: '物流代收', ID: 5 },
-      { name: '订单支付', ID: 24 },
-    ],
+
     /* 属性间的关系列表
     -------------------------------*/
     OperatorKeyValueList: [

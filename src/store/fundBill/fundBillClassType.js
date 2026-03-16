@@ -1,6 +1,4 @@
-// import store from '@/store';
-// import { ConvertTimeFormat } from '@/assets/js/utils/ConvertTimeFormat';
-
+/** 客户资金流水筛选条件类 */
 export default class FundBillClassType {
     SellArea = {
       RegionalID: '',
@@ -8,29 +6,24 @@ export default class FundBillClassType {
       CountyID: '',
     }
 
-    /** 原交易类型 */
-    // Type= ''
-
-    /** 原账单类型 */
-    // BillType = 1
-
-    /** 原方式 */
-    // Currency= ''
-
-    /** 新流水类型 - 类型 */
+    /** [资金流水] - 类型 */
     CustomerBillType = ''
 
-    /** 新支付方式 - 方式 */
+    /** [资金流水] - 方式 */
     CustomerBillMode = ''
 
-    /** 新流水账号 - 客户账号 */
+    /** [资金流水] - 客户账户 */
     CustomerBillAccount = ''
+
+    /** 日期筛选 */
+    DateType = 'last30Date'
 
     Date = {
       First: '',
       Second: '',
     }
 
+    /** 用户类型和等级 */
     CustomerType = {
       First: '',
       Second: '',
@@ -41,12 +34,4 @@ export default class FundBillClassType {
     Page= 1
 
     PageSize= 30
-
-    DateType = ''
-
-    // initDateText= ''
-
-    constructor(DateType = 'last30Date') {
-      this.DateType = DateType;
-    }
 }
