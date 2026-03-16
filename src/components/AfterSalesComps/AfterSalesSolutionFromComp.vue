@@ -40,11 +40,11 @@
                 <el-table-column
                   type="selection"
                   label="包裹号"
-                  width="60">
+                  width="40">
                 </el-table-column>
                 <el-table-column prop="ID" label="包裹号" minWidth="115" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="Logistics.BillNo" label="运单号" minWidth="140" show-overflow-tooltip>
+                <el-table-column prop="Logistics.BillNo" label="运单号" minWidth="120" show-overflow-tooltip>
                   <template slot-scope="scope">
                     {{ scope.row.Logistics?.BillNo }}
                     <template v-if="scope.row.Logistics?.BillNo && PackagesList?.PackageBills.filter(it => it.ExpressBillType === 1)
@@ -56,8 +56,9 @@
                     </template>
                   </template></el-table-column>
                 <el-table-column prop="ProductAmount" label="产品数量" minWidth="70" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="TotalAmount" label="金额" minWidth="70" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="UnPaidAmount" label="代收金额" minWidth="84" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="TotalAmount" label="金额" minWidth="50" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="RefundCashAmount" label="已退金额" minWidth="70" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="UnPaidAmount" label="代收金额" minWidth="70" show-overflow-tooltip></el-table-column>
               </el-table>
             </span>
           </li>
