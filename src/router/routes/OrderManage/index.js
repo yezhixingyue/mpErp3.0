@@ -113,31 +113,6 @@ const routes = { // 客户订单管理
     //   },
     //   component: () => import('../../../views/QutstandingPage.vue'),
     // },
-    /*  售后管理
-    ------------------------------------------ */
-    // {
-    //   path: '/Service',
-    //   name: 'Service',
-    //   meta: {
-    //     title: '售后管理',
-    //     icon: 'iconfont icon-shouhouguanli',
-    //     pageName: 'ServicePage',
-    //     requiresAuth: true,
-    //     PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
-    //   },
-    //   component: () => import('../../../views/AfterSaleQuestion/ServicePage.vue'),
-    // },
-    // {
-    //   path: '/ResponsibilityMeasure',
-    //   name: 'ResponsibilityMeasure',
-    //   meta: {
-    //     title: '售后管理',
-    //     pageName: 'ResponsibilityMeasurePage',
-    //     requiresAuth: true,
-    //     PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
-    //   },
-    //   component: () => import('../../../views/AfterSaleQuestion/ResponsibilityMeasurePage.vue'),
-    // },
     {
       path: '/QuestionClass',
       name: 'QuestionClass',
@@ -149,44 +124,6 @@ const routes = { // 客户订单管理
       },
       component: () => import('../../../views/AfterSaleQuestion/QuestionClassPage.vue'),
     },
-    // {
-    //   path: '/ServiceInfo',
-    //   name: 'ServiceInfo',
-    //   meta: {
-    //     title: '售后详情',
-    //     pageName: 'ServiceAfterSaleInfoPage',
-    //     PermissionInfo: ['PermissionManageAfterSales', 'HavePomission'],
-    //     requiresAuth: true,
-    //   },
-    //   component: () => import('../../../components/ServiceAfterSale/Main/ServiceAfterSaleInfoPage.vue'),
-    // },
-    /*  售后申请列表
-    ------------------------------------------ */
-    // {
-    //   path: '/Feedback',
-    //   name: 'Feedback',
-    //   meta: {
-    //     title: '售后申请列表',
-    //     icon: 'iconfont icon-shouhoushenqingliebiao',
-    //     pageName: 'FeedbackPage',
-    //     requiresAuth: true,
-    //     PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
-    //   },
-    //   component: () => import('../../../views/FeedbackPage/FeedbackListPage.vue'),
-    // },
-    /*  售后详情
-    ------------------------------------------ */
-    // {
-    //   path: '/FeedbackInfo',
-    //   name: 'FeedbackInfo',
-    //   meta: {
-    //     title: '售后详情',
-    //     pageName: 'feedbackInfoPage',
-    //     PermissionInfo: ['PermissionAfterSalesApply', 'HavePomission'],
-    //     requiresAuth: true,
-    //   },
-    //   component: () => import('../../../views/FeedbackPage/FeedbackInfoPage.vue'),
-    // },
     /*  新售后列表
     ------------------------------------------ */
     {

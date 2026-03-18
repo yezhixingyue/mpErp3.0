@@ -57,7 +57,8 @@
                   </template></el-table-column>
                 <el-table-column prop="ProductAmount" label="产品数量" minWidth="70" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="TotalAmount" label="金额" minWidth="50" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="RefundCashAmount" label="已退金额" minWidth="70" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="PaidCashAmount" label="已付" minWidth="50" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="RefundCashAmount" label="已退" minWidth="50" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="UnPaidAmount" label="代收金额" minWidth="70" show-overflow-tooltip></el-table-column>
               </el-table>
             </span>

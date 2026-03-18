@@ -172,9 +172,19 @@
                     <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.ProductAmount }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="TotalAmount" label="金额" minWidth="70" show-overflow-tooltip>
+                <el-table-column prop="TotalAmount" label="金额" minWidth="50" show-overflow-tooltip>
                   <template slot-scope="scope">
                     <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.TotalAmount }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="PaidCashAmount" label="已付" minWidth="50" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.PaidCashAmount }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="RefundCashAmount" label="已退" minWidth="50" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.RefundCashAmount }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="UnPaidAmount" label="代收金额" minWidth="70" show-overflow-tooltip>
