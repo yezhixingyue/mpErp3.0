@@ -67,23 +67,21 @@
             <template v-if="dataInfo?.SurplusOrderBalance">
               <span class="label is-bold">退到余额：</span><span class="value">
                 <span>
-                  <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]" v-model="CompleteFrom.Solution.RefundBalance" style="width: 80px;"></el-input> 元
+                  <el-input v-model="RefundBalance" style="width: 80px;"></el-input> 元
                 </span>
               </span>
             </template>
             <template v-if="dataInfo?.SurplusFreightAmount">
               <span class="label is-bold" style="width: 5em; text-align: right;">退运费：</span><span class="value">
                 <span>
-                  <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"
-                  v-model="CompleteFrom.Solution.RefundFreightAmount" style="width: 80px;"></el-input> 元
+                  <el-input v-model="RefundFreightAmount" style="width: 80px;"></el-input> 元
                 </span>
               </span>
             </template>
             <template v-if="dataInfo?.UnPaidAmount">
               <span class="label is-bold" style="width: 5em; text-align: right;">减尾款：</span><span class="value">
                 <span>
-                  <el-input oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]"
-                  v-model="CompleteFrom.Solution.UnpaidReducedAmount" style="width: 80px;"></el-input> 元
+                  <el-input v-model="UnpaidReducedAmount" style="width: 80px;"></el-input> 元
                 </span>
               </span>
             </template>
@@ -392,6 +390,30 @@ export default {
     ...mapState('common', ['userTypeList']),
     ...mapState('orderModule', ['objForOrderList']),
     ...mapState('AfterSale', ['QuestionClassList', 'AfterSalesCondition']),
+    RefundBalance: {
+      get() {
+        return this.CompleteFrom.Solution.RefundBalance;
+      },
+      set(val) {
+        [this.CompleteFrom.Solution.RefundBalance] = val.match(/^\d*(\.?\d{0,2})/g);
+      },
+    },
+    RefundFreightAmount: {
+      get() {
+        return this.CompleteFrom.Solution.RefundFreightAmount;
+      },
+      set(val) {
+        [this.CompleteFrom.Solution.RefundFreightAmount] = val.match(/^\d*(\.?\d{0,2})/g);
+      },
+    },
+    UnpaidReducedAmount: {
+      get() {
+        return this.CompleteFrom.Solution.UnpaidReducedAmount;
+      },
+      set(val) {
+        [this.CompleteFrom.Solution.UnpaidReducedAmount] = val.match(/^\d*(\.?\d{0,2})/g);
+      },
+    },
     resultRadio: {
       get() {
         if (this.CompleteFrom.IsReject === true) {
@@ -565,6 +587,12 @@ export default {
           return false;
         }
         if (this.SolutionTypes === 2) {
+          const num = Number(this.CompleteFrom.Solution.RefundBalance)
+          + Number(this.CompleteFrom.Solution.RefundFreightAmount) + Number(this.CompleteFrom.Solution.UnpaidReducedAmount);
+          if (num === 0) {
+            this.messageBox.failSingleError('操作失败', '‘退到余额’，‘退运费’，‘尾款减少’必须填写一个');
+            return false;
+          }
           if (Number(this.CompleteFrom.Solution.RefundBalance) > this.dataInfo?.SurplusOrderBalance) {
             this.messageBox.failSingleError('操作失败', `最大‘退到余额’为${this.dataInfo?.SurplusOrderBalance}`);
             return false;
