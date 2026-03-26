@@ -13,6 +13,11 @@
           <el-radio v-for="it in ContentReviewModeEnumList" :key="it.ID" :label="it.ID">{{it.Name}}</el-radio>
         </el-radio-group>
       </li>
+      <li v-if="DealType===FileHandleModeEnums.auto.ID">
+        <label>审稿出血：</label>
+        <el-input v-model.trim="Bleed" maxlength="3" size="mini" style="width: 80px;" />
+        <span class="is-gray ml-6 ft-12">mm</span>
+      </li>
     </ul>
     <div class="remark">
       <i class="el-icon-warning is-origin"></i>
@@ -30,6 +35,7 @@
 </template>
 
 <script>
+import ReviewFlowPanelClass from '../../../../store/review/TypeClass/PanelClass/ReviewFlowPanelClass';
 import { FileHandleModeEnumList, FileHandleModeEnums, ContentReviewModeEnumList, ContentReviewModeEnums } from '../../../../store/review/reviewEnums';
 
 export default {
@@ -63,6 +69,14 @@ export default {
         this.change({ IsCheckContent: val });
       },
     },
+    Bleed: {
+      get() {
+        return this.value ? this.value.Bleed : '';
+      },
+      set(val) {
+        this.change({ Bleed: val });
+      },
+    },
   },
   methods: {
     onFileHandleModeChange(e) { // 设置文件处理方式
@@ -72,7 +86,9 @@ export default {
     },
     change(singleObj) {
       if (!this.value || typeof this.value !== 'object') return;
-      this.$emit('input', { ...this.value, ...singleObj });
+
+      const temp = { ...this.value, ...singleObj };
+      this.$emit('input', new ReviewFlowPanelClass(temp));
     },
   },
 };
