@@ -102,6 +102,9 @@
           <li>
             <span class="label is-bold">运费：</span><span class="value">{{OrderDetail.FreightAmount}}元</span>
           </li>
+          <li>
+            <span class="label is-bold">已退运费：</span><span class="value">{{OrderDetail.RefundFreightAmount}}元</span>
+          </li>
           <li v-if="OrderDetail.Reduced">
             <span class="label is-bold">减尾款：</span><span class="value">{{OrderDetail.Reduced}}元</span>
           </li>

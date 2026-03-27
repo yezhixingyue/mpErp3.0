@@ -70,8 +70,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <el-input size="small" v-model="ruleForm.Amount"
-            oninput="value=value.match(/^\d*(\.?\d{0,1})/g)[0]" :disabled="isNotYetShipped || AmountSelect === 3" style="width: 120px;"></el-input> 元
+            <el-input size="small" v-model="Amount"  :disabled="isNotYetShipped || AmountSelect === 3" style="width: 120px;"></el-input> 元
             <!-- <span class="is-pink" v-if="!isNotYetShipped && Number(ruleForm.Amount)">
               <template v-if="Number(ruleForm.Amount) > 0">
                 <b>退给</b>客户{{Math.abs(ruleForm.Amount)}}元
@@ -99,8 +98,7 @@
       <template v-else>
         <li>
           <span class="label is-bold" style="line-height: 32px;">运费金额：</span><span class="value">
-            <el-input size="small" v-model="ruleForm.Amount" style="width: 120px;"
-            oninput="value=value.match(/^\d*(\.?\d{0,1})/g)[0]"></el-input> 元
+            <el-input size="small" v-model="Amount" style="width: 120px;" ></el-input> 元
             <p class="is-orgin" style="margin-top: 5px;">
               注：此处金额仅作说明用，记录运费的实际金额
             </p>
@@ -173,6 +171,14 @@ export default {
     },
     isNotYetShipped() { // 是否未发货
       return this.OrderDetail.Status < 80;
+    },
+    Amount: {
+      get() {
+        return this.ruleForm.Amount;
+      },
+      set(val) {
+        [this.ruleForm.Amount] = (val || '').match(/^\d*(\.?\d{0,2})/g);
+      },
     },
   },
   data() {

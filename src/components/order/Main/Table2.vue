@@ -599,6 +599,20 @@ export default {
           margin-left: -4px;
         }
       }
+
+      &.fixed-col +  .el-table__cell{
+        &::before {
+          content: "";
+          width: 1px;
+          height: 15px;
+          display: inline-block;
+          position: absolute;
+          left: 0;
+          top: 10px;
+          background-color: rgba(0, 0, 0, 0.15);
+          pointer-events: none;
+        }
+      }
     }
     td,
     th {

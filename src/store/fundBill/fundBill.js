@@ -1,6 +1,7 @@
 import api from '@/api/index';
 import ClassType from '../CommonClassType';
 import FundBillClassType from './fundBillClassType';
+import FundOrderBillCondition from './fundOrderBillCondition';
 
 export default {
   namespaced: true,
@@ -10,7 +11,7 @@ export default {
     condition4BalanceType: new FundBillClassType(),
     /* 客户订单流水类型筛选条件信息
     -------------------------------*/
-    condition4OrderType: new FundBillClassType(),
+    condition4OrderType: new FundOrderBillCondition(),
     /* 列表数据
     -------------------------------*/
     balanceTypeDataList: [],
@@ -61,7 +62,7 @@ export default {
       state.condition4BalanceType = new FundBillClassType();
     },
     clearConditionDate4Order(state) {
-      state.condition4OrderType = new FundBillClassType();
+      state.condition4OrderType = new FundOrderBillCondition();
     },
     /* 设置列表数据是否正在加载中
     -------------------------------*/

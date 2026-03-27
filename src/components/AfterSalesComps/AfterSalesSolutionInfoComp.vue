@@ -45,7 +45,7 @@
               <li class="form-box" style="line-height: 35px;">
                 <span class="label is-bold">额外支出：</span><span class="value">
                   <span>
-                    <el-input v-model="CompleteFrom.ExtraPayAmount" oninput="value=value.match(/^\d*(\.?\d{0,2})/g)[0]" style="width: 80px;"></el-input> 元
+                    <el-input v-model="ExtraPayAmount" style="width: 80px;"></el-input> 元
                   </span>
                   <span style="margin-left: 30px;">
                     <el-checkbox v-model="CompleteFrom.ExtraPayIsShow">支出给客户</el-checkbox>
@@ -172,9 +172,19 @@
                     <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.ProductAmount }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="TotalAmount" label="金额" minWidth="70" show-overflow-tooltip>
+                <el-table-column prop="TotalAmount" label="金额" minWidth="50" show-overflow-tooltip>
                   <template slot-scope="scope">
                     <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.TotalAmount }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="PaidCashAmount" label="已付" minWidth="50" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.PaidCashAmount }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="RefundCashAmount" label="已退" minWidth="50" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    <span :class="{'is-gray': !appealData.AfterSalePackages.find(it => it.PackageID === scope.row.ID)}">{{ scope.row.RefundCashAmount }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="UnPaidAmount" label="代收金额" minWidth="70" show-overflow-tooltip>
@@ -251,6 +261,14 @@ export default {
   },
   computed: {
     ...mapState('common', ['userTypeList']),
+    ExtraPayAmount: {
+      get() {
+        return this.CompleteFrom.ExtraPayAmount;
+      },
+      set(val) {
+        [this.CompleteFrom.ExtraPayAmount] = val.match(/^\d*(\.?\d{0,2})/g);
+      },
+    },
   },
   data() {
     return {

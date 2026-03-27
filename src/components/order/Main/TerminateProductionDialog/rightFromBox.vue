@@ -11,6 +11,10 @@
           <span class="value" v-if="orderInfo">{{ orderInfo.Order.Freight }}元</span>
         </li>
         <li>
+          <span class="label">已退运费:</span>
+          <span class="value" v-if="orderInfo">{{ orderInfo.Order.RefundFreight }}元</span>
+        </li>
+        <li>
           <span class="label">已付金额:</span>
           <span class="value" v-if="orderInfo">{{ orderInfo.Order.PaidAmount }}元</span>
         </li>
@@ -107,7 +111,7 @@ export default {
   }
   >div{
     margin-bottom: 10px;
-    height: 140px;
+    height: 166px;
     display: flex;
     >.line{
       width: 1px;

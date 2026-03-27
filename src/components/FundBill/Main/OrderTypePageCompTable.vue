@@ -18,14 +18,11 @@
      show-overflow-tooltip prop="Customer.Type.Second" label="客户类型" width="80"></el-table-column>
      <el-table-column
      show-overflow-tooltip prop="Customer.Grade.Second" label="客户等级" width="80"></el-table-column>
-    <el-table-column prop="Customer.CustomerName" label="类型" width="90" show-overflow-tooltip>
-      <span
-        slot-scope="scope"
-        :class="{ 'is-success': scope.row.Type === 21, 'is-red': scope.row.Type === 12 }"
-      >{{ scope.row.Type | formatFundBillOrderType }}</span>
+    <el-table-column label="方式" width="90" show-overflow-tooltip>
+      <template slot-scope="scope">{{ getTypeText(scope.row.Type) }}</template>
     </el-table-column>
-    <el-table-column label="渠道" width="90">
-     <template slot-scope="scope">{{scope.row.Currency | formatFundBillOrderCurrency}}</template>
+    <el-table-column label="客户账户" width="90">
+     <template slot-scope="scope">{{getAccountText(scope.row.Account)}}</template>
     </el-table-column>
     <el-table-column label="现金" width="120">
       <span
@@ -64,6 +61,7 @@
 <script>
 import { mapState } from 'vuex';
 import tableMixin from '@/assets/js/mixins/tableHeightAutoMixin';
+import { BillAccountEnumList, OrderBillTypeEnumList } from '@/packages/enums/billEnumList.js';
 
 export default {
   computed: {
@@ -78,6 +76,12 @@ export default {
     getAdd(SellArea) {
       const { RegionalName, CityName, CountyName } = SellArea;
       return `${RegionalName}${CityName}${CountyName}`;
+    },
+    getTypeText(type) {
+      return OrderBillTypeEnumList.find(it => it.ID === type)?.Name || '';
+    },
+    getAccountText(mode) {
+      return BillAccountEnumList.find(it => it.ID === mode)?.Name || '';
     },
   },
 };

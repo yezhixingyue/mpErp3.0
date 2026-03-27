@@ -17,7 +17,8 @@
 <script>
 import CommonDialogComp from '../../../../packages/CommonDialogComp';
 import WorkFlowPanel from '../Panels/WorkFlowPanel.vue';
-import { FileHandleModeEnums, ContentReviewModeEnums } from '../../../../store/review/reviewEnums';
+// import { FileHandleModeEnums, ContentReviewModeEnums } from '../../../../store/review/reviewEnums';
+import ReviewFlowPanelClass from '../../../../store/review/TypeClass/PanelClass/ReviewFlowPanelClass';
 
 export default {
   props: {
@@ -51,16 +52,12 @@ export default {
   },
   methods: {
     onOpen() {
-      const DealType = this.item && (this.item.DealType || this.item.DealType === 0) ? this.item.DealType : FileHandleModeEnums.manual.ID;
-      const IsCheckContent = this.item && typeof this.item.IsCheckContent === 'boolean' ? this.item.IsCheckContent : ContentReviewModeEnums.review.ID;
-      this.ruleForm = { // 初始化 ruleForm --- item中的key值为暂定 后续需要更改或查看
-        DealType,
-        IsCheckContent,
-      };
+      this.ruleForm = new ReviewFlowPanelClass(this.item);
     },
     submit() {
+      const data = this.ruleForm.getInfo();
       this.messageBox.warnCancelBox('确定要保存吗', '修改默认操作影响所有订单的匹配规则，请谨慎操作！！', () => {
-        this.$emit('submit', this.ruleForm);
+        this.$emit('submit', data.DealFileProcess);
       });
     },
     cancel() {
