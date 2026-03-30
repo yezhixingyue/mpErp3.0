@@ -30,6 +30,9 @@
       <p class="tips-box">
         <span>注：当需要审核内容且没有生成缩略图时，在内容审核界面显示警告图片，让审核人员知晓</span>
       </p>
+      <p class="tips-box">
+        <span>注：自动审稿只处理仅有1个印刷文件的订单，并且只生成1个文件，否则工厂会生产出错</span>
+      </p>
     </div>
   </div>
 </template>
