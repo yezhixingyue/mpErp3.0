@@ -38,6 +38,20 @@ const routes = { // 财务管理
       },
       component: () => import('../../../views/FundBillPage.vue'),
     },
+    /*  退款异常
+    ------------------------------------------ */
+    {
+      path: '/refundException',
+      name: 'refundException',
+      meta: {
+        title: '退款异常',
+        icon: 'iconfont icon-tuikuanyichang ft-f-12',
+        pageName: 'RefundExceptionPage',
+        requiresAuth: true,
+        PermissionInfo: ['PermissionManageRefund', 'HavePomission'], // Handle Query
+      },
+      component: () => import('../../../views/Finance/RefundExceptionPage/RefundExceptionPage.vue'),
+    },
     /*  发票管理
     ------------------------------------------ */
     {

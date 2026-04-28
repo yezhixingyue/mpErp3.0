@@ -29,5 +29,13 @@ export interface IUser {
     }
     /** 抛货管理 */
     PermissionBulkyCargo: IBasicModulePermission
+    /** 退款异常 */
+    PermissionManageRefund?: {
+      HavePomission: boolean
+      Obj: {
+        Query: boolean
+        Handle: boolean
+      },
+    }
   }
 }

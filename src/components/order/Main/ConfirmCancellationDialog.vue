@@ -28,7 +28,7 @@
           <p>
             <i>{{OrderData.OrderID}}</i>
             <i>{{OrderData.ProductName}}</i>
-            <i>{{OrderData.kindCount}}款</i>
+            <i>{{OrderData.KindCount}}款</i>
             <i>{{OrderData.ProductAmount}}{{OrderData.Unit}}</i>
             <i>{{formatCraft(OrderData.CraftList)}}</i>
             <i>{{formatSize(OrderData.SizeList)}}</i>

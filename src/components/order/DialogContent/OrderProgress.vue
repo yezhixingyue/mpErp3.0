@@ -2,7 +2,10 @@
   <ul class="order-list-progress-wrap mp-scroll-wrap">
     <ProgressItem
       v-for="(item, i) in orderProgress" :key='item.Status + "-" + i'
-      :status='status' :orderProgressData='orderProgress' :index='i' />
+      :orderProgressData='orderProgress' :index='i'
+      :showFundGone="localShowFundGone"
+      @showFundGone="onFundGoneClick"
+      />
   </ul>
 </template>
 
@@ -18,30 +21,29 @@ export default {
       type: Array,
       default: () => [],
     },
-    /**
-     * 订单进度状态序号与名称对照表
-     */
-    OrderStatusList: {
-      type: Array,
-      default: () => [],
+    showFundGone: {
+      type: Boolean,
+      default: false,
     },
-  },
-  data() {
-    return {
-      status: 0,
-    };
   },
   components: {
     ProgressItem,
   },
+  computed: {
+    localShowFundGone() { // 是否展示钱款去向
+      if (!this.showFundGone || this.orderProgress.length < 2) return false;
+
+      const [last, secondLast] = this.orderProgress.filter(it => it.FinishPercent === 100);
+
+      return last && secondLast && [254, 253].includes(last.Status) && secondLast.Status !== 10;
+    },
+  },
   methods: {
-    getStatus() {
-      if (this.orderProgress.length === 0) return;
-      this.status = this.orderProgress[this.orderProgress.length - 1].Status;
+    onFundGoneClick() {
+      this.$emit('showFundGone');
     },
   },
   mounted() {
-    this.getStatus();
   },
 };
 </script>

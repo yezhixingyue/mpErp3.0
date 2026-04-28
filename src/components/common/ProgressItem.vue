@@ -2,6 +2,7 @@
   <li class="order-list-progress-item">
           <section class="left-title-wrap">
               <div>
+                <span v-if="showFundGone && [254, 253].includes(Status)" class="fund-gone" @click="onFundGoneClick">钱款去向</span>
                 <span :title="operator" v-if="operator" :class="!isCurNewIndex ? 'operator' : 'operator active'">
                     {{operator}}
                 </span>
@@ -54,12 +55,9 @@ export default {
       type: Number,
       default: 0,
     },
-    /**
-     * 当前订单进度
-     */
-    status: {
-      type: Number,
-      default: 0,
+    showFundGone: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -72,6 +70,7 @@ export default {
       title: '创建订单',
       showLine: true,
       isCurNewIndex: false,
+      Status: -1,
     };
   },
   computed: {
@@ -100,10 +99,15 @@ export default {
       this.rightInfo1 = obj.FinishPercent > 0 ? `${obj.FinishPercent}%` : '';
       if (obj.ShowFocus) this.isCurNewIndex = true;
       if (obj.FinishPercent < 100) this.isCompleted = false;
+
+      this.Status = obj.Status;
     },
     switchDate(date) {
       const str = date.split('.')[0].replace('T', ' ').substring(0, 16);
       return str;
+    },
+    onFundGoneClick() {
+      this.$emit('showFundGone');
     },
   },
   watch: {
@@ -174,6 +178,7 @@ export default {
               overflow: hidden;
               text-overflow: ellipsis;
               vertical-align: middle;
+              flex: 0 1 auto;
             }
             > i{
               margin: 0 7px 0 5px;
@@ -273,6 +278,40 @@ export default {
     }
     .time{
       font-family: sans-serif;
+    }
+
+    .fund-gone {
+      margin-right: 10px;
+      color: #26BCF9;
+      font-size: 12px;
+      cursor: pointer;
+      padding-left: 3px;
+      padding-right: 6px;
+      border-radius: 8px;
+      flex: none;
+
+      &::before {
+        content: '￥';
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        background-color: #26BCF9;
+        color: #fff;
+        text-align: center;
+        line-height: 15px;
+        border-radius: 50%;
+        margin-right: 5px;
+        font-weight: 100;
+        vertical-align: -1px;
+      }
+
+      &:hover {
+        background-color: rgba($color: #26BCF9, $alpha: 0.2);
+      }
+
+      &:active {
+        background-color: rgba($color: #26BCF9, $alpha: 0.3);
+      }
     }
 }
 </style>

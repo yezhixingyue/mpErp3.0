@@ -19,7 +19,7 @@
         @tab-click="handleClick"
       >
         <el-tab-pane v-if="showService" label="查看进度" name="third">
-          <OrderProgress  v-if="!isLoading" :orderProgress='orderProgress' />
+          <OrderProgress v-if="!isLoading" :orderProgress='orderProgress' showFundGone @showFundGone="onFundGoneClick" />
           <LoadingComp v-else />
         </el-tab-pane>
         <el-tab-pane v-if="showDetail" label="订单详情" name="first">
@@ -41,6 +41,9 @@
         <normalBtn @click.native="setOrderListDialogHide" />
       </span>
     </el-dialog>
+
+    <!-- 退款去向 -->
+    <RefundDetailDialog hiddenTips :visible.sync="visible" :RefundDetail="OrderRefundDetail" />
   </div>
 </template>
 
@@ -52,6 +55,7 @@ import OrderProgress from '@/components/order/DialogContent/OrderProgress.vue';
 import ExpressProgress from '@/components/order/DialogContent/ExpressProgress.vue';
 import normalBtn from '@/components/common/normalBtn.vue';
 import LoadingComp from '@/components/common/LoadingComp.vue';
+import RefundDetailDialog from './RefundDetailDialog/RefundDetailDialog.vue';
 
 export default {
   props: {
@@ -71,6 +75,8 @@ export default {
       showDetail: false,
       showService: false,
       isFetchCertificateListWaiting: false, // 等待获取证书列表数据
+      visible: false,
+      OrderRefundDetail: null,
     };
   },
   components: {
@@ -80,6 +86,7 @@ export default {
     OrderProgress,
     ExpressProgress,
     LoadingComp,
+    RefundDetailDialog,
   },
   computed: {
     ...mapState('orderModule', ['orderListDialogShowText', 'orderProgress', 'curOrderStatus', 'orderDetailData', 'curOrderID', 'curExpressID',
@@ -217,6 +224,16 @@ export default {
     },
     onAnewUploadClick() { // 重新上传文件再审稿
       this.$emit('anewUpload');
+    },
+    async onFundGoneClick() { // 钱款去向
+      const OrderID = this.orderDetailData?.OrderID;
+      if (!OrderID) return;
+
+      const resp = await this.api.getOrderRefundDetail(OrderID);
+      if (resp && resp.data.Status === 1000) {
+        this.OrderRefundDetail = resp.data.Data;
+        this.visible = true;
+      }
     },
   },
   mounted() {

@@ -53,7 +53,10 @@ const api = {
   getOrderPause(data) { // 取消客户订单(接单员)
     return instance.post('/Api/Order/Pause', data);
   },
-
+  /** get /Api/Order/RefundDetail  查看订单退款详情 */
+  getOrderRefundDetail(orderID) {
+    return instance.get('/Api/Order/RefundDetail', { params: { orderID } });
+  },
   getOrderProductionInfo(OrderID) { // 获取订单生产信息
     return instance.get(`/Api/Order/ProductionInfo?orderID=${OrderID}`, { closeTip: true });
   },
@@ -494,6 +497,17 @@ const api = {
   getOrderBillExcel(data) { // POST /Api/OrderBill/Excel 导出客户订单流水Excel
     return instance.post('/Api/OrderBill/Excel', data, { responseType: 'arraybuffer', closeTip: true });
   },
+  /* 退款异常api
+  ----------------------------------------------------------------------------------- */
+  /** post /Api/RefundOriginalAccount/List 退款到原账户列表 */
+  getRefundOriginalAccountList(data) {
+    return instance.post('/Api/RefundOriginalAccount/List', data);
+  },
+  /** put /Api/RefundOriginalAccount/Handle 退款到原账户手工处理 */
+  getRefundOriginalAccountHandle(id: number) {
+    return instance.put('/Api/RefundOriginalAccount/Handle', null, { params: { id } });
+  },
+
   /* 工期相关api
   ----------------------------------------------------------------------------------- */
   getProducePeriodList(classID) { // GET /Api/ProducePeriod/List   获取工期列表
