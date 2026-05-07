@@ -506,7 +506,9 @@ export default {
   },
   watch: {
     ExpressArea() {
-      this.ruleForm.Amount = '';
+      if (this.AmountSelect !== 3) { // 如果不等于无差额 则置空
+        this.ruleForm.Amount = '';
+      }
     },
   },
   mounted() {
