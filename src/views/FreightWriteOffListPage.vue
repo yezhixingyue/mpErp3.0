@@ -217,12 +217,12 @@
                 </li>
                 <li v-if="FreightWriteOffDetailData.Amount < 0">
                   <span class="label is-bold">退款方式：</span><span class="value">
-                    <template v-if="Math.abs(FreightWriteOffDetailData.Amount) > Math.abs(FreightWriteOffDetailData.RefundQRAmount)">
+                    <template v-if="Math.abs(FreightWriteOffDetailData.Amount) > Math.abs(FreightWriteOffDetailData.QRAmount)">
                       退回客户余额
                     </template>
-                    <template v-if="(Math.abs(FreightWriteOffDetailData.Amount) > Math.abs(FreightWriteOffDetailData.RefundQRAmount))
-                    && (Math.abs(FreightWriteOffDetailData.RefundQRAmount) > 0)">、</template>
-                    <template v-if="Math.abs(FreightWriteOffDetailData.RefundQRAmount) > 0">
+                    <template v-if="(Math.abs(FreightWriteOffDetailData.Amount) > Math.abs(FreightWriteOffDetailData.QRAmount))
+                    && (Math.abs(FreightWriteOffDetailData.QRAmount) > 0)">、</template>
+                    <template v-if="Math.abs(FreightWriteOffDetailData.QRAmount) > 0">
                       原路退回
                     </template>
                   </span>
