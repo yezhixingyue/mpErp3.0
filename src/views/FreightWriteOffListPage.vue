@@ -216,7 +216,16 @@
                   <span class="label is-bold">差额：</span><span class="value">{{FreightWriteOffDetailData.Amount}}元</span>
                 </li>
                 <li v-if="FreightWriteOffDetailData.Amount < 0">
-                  <span class="label is-bold">退款方式：</span><span class="value">{{ FreightWriteOffDetailData.IsRefundBalance ? '退回客户余额' : '原路退回'}}</span>
+                  <span class="label is-bold">退款方式：</span><span class="value">
+                    <template v-if="Math.abs(FreightWriteOffDetailData.Amount) > Math.abs(FreightWriteOffDetailData.RefundQRAmount)">
+                      退回客户余额
+                    </template>
+                    <template v-if="(Math.abs(FreightWriteOffDetailData.Amount) > Math.abs(FreightWriteOffDetailData.RefundQRAmount))
+                    && (Math.abs(FreightWriteOffDetailData.RefundQRAmount) > 0)">、</template>
+                    <template v-if="Math.abs(FreightWriteOffDetailData.RefundQRAmount) > 0">
+                      原路退回
+                    </template>
+                  </span>
                 </li>
                 <li v-if="FreightWriteOffDetailData.Remark">
                   <span class="label is-bold">备注：</span><span class="value">{{FreightWriteOffDetailData.Remark}}</span>
