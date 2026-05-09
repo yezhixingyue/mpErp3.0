@@ -20,7 +20,7 @@
       </el-table-column>
       <el-table-column class-name='md-font-item' label="运费" minWidth="60">
         <template slot-scope="scope">
-          {{scope.row.Freight}}元
+          {{scope.row.OriginalFreight}}元
         </template>
       </el-table-column>
       <el-table-column class-name='md-font-item' label="使用余额" minWidth="87">

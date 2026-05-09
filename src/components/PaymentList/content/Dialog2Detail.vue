@@ -19,7 +19,7 @@
             总共<i class="is-pink"> {{this.PayDetailOrderList.OrderCount}}</i> 个订单（
             <span class="remark-box">
               产品总金额：<i class="is-primary">{{this.PayDetailData.ProductPrice}}元</i>，
-            总运费：<i class="is-primary">{{this.PayDetailData.Freight}}元</i>
+            总运费：<i class="is-primary">{{this.PayDetailData.OriginalFreight}}元</i>
             </span>
             ）
           </span>
@@ -126,26 +126,6 @@ export default {
         return this.Permission.PermissionList.PermissionPayment.Obj;
       }
       return {};
-    },
-    totalSum() { // 计算总产品价格
-      let totalSum = 0;
-      this.PayDetailOrderList.forEach((item) => {
-        totalSum += item.Funds.FinalPrice;
-      });
-      return totalSum;
-    },
-    list() { // 根据row中PackageList数据获取到共用运费的情况列表，传递到表格中供其进行运费表格划分
-      if (!this.PayDetailData.PackageList) return '';
-      const arr1 = [];
-      const arr2 = JSON.parse(JSON.stringify(this.PayDetailOrderList));
-      this.PayDetailData.PackageList.forEach((item, index) => {
-        arr1.push(item.OrderList.length);
-        item.OrderList.forEach((it, i) => {
-          if (i > 0) arr1.push(0);
-        });
-        if (arr2[index]) arr2[index].webFreight = item.Freight;
-      });
-      return { arr1, arr2 };
     },
   },
   methods: {

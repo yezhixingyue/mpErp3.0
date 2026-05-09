@@ -87,6 +87,7 @@ export default {
 
   > main {
     overflow: hidden;
+    padding-left: 20px;
   }
 
   > footer {

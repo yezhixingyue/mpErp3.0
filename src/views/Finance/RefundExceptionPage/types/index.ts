@@ -46,7 +46,7 @@ export interface IRefundExceptionItem {
   PayCode: number
   /** 扫码账户 BillAccountEnumList */
   QRAccount: number
-  /** 通联支付单号 */
+  /** 交易单号 通联支付单号 */
   ThirdTradeSN: string
   /** 微信/支付宝单号 */
   OutTradeSN: string

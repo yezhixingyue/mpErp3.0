@@ -2,30 +2,31 @@
     <el-table
      :data="list" border stripe class="mp-finance-refund-exception-page-wrap-table-comp-wrap"
      :max-height="h" :height="h" fit style="width: 100%">
-      <el-table-column show-overflow-tooltip width="85px" prop="ID" label="异常编号" />
-      <el-table-column show-overflow-tooltip width="90px" prop="Customer.CustomerSN" label="客户编号" />
-      <el-table-column show-overflow-tooltip width="145px" prop="Customer.CustomerName" label="客户名称" />
-      <el-table-column show-overflow-tooltip width="95px" prop="Customer.Mobile" label="联系方式" />
-      <el-table-column show-overflow-tooltip width="95px" prop="Customer.Type.Second" label="客户类型" />
-      <el-table-column show-overflow-tooltip width="95px" prop="Customer.Grade.Second" label="会员等级" />
-      <el-table-column show-overflow-tooltip width="90px" prop="_QRAccountText" label="原支付账户" />
+      <el-table-column show-overflow-tooltip width="80px" prop="ID" label="异常编号" />
+      <el-table-column show-overflow-tooltip width="140px" prop="ThirdTradeSN" label="交易单号" />
+      <el-table-column show-overflow-tooltip width="85px" prop="Customer.CustomerSN" label="客户编号" />
+      <el-table-column show-overflow-tooltip width="140px" prop="Customer.CustomerName" label="客户名称" />
+      <el-table-column show-overflow-tooltip width="90px" prop="Customer.Mobile" label="联系方式" />
+      <el-table-column show-overflow-tooltip width="80px" prop="Customer.Type.Second" label="客户类型" />
+      <el-table-column show-overflow-tooltip width="80px" prop="Customer.Grade.Second" label="会员等级" />
+      <el-table-column show-overflow-tooltip width="80px" prop="_QRAccountText" label="原支付账户" />
       <el-table-column show-overflow-tooltip width="70px" prop="Amount" label="金额" />
-      <el-table-column show-overflow-tooltip width="100px" prop="OrderID" label="订单号" />
-      <el-table-column show-overflow-tooltip width="125px" prop="_PayTime" label="订单付款时间" />
-      <el-table-column show-overflow-tooltip width="125px" prop="_ApplyTime" label="申请退款时间">
+      <el-table-column show-overflow-tooltip width="75px" prop="OrderID" label="订单号" />
+      <el-table-column show-overflow-tooltip width="120px" prop="_PayTime" label="订单付款时间" />
+      <el-table-column show-overflow-tooltip width="120px" prop="_ApplyTime" label="申请退款时间">
         <template #default="scope">
           <span :class="{'is-red': scope.row.Status === RefundExceptionStatusEnum.Pending}">{{ scope.row._ApplyTime || '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip width="95px" prop="_ChannelText" label="退款渠道" />
+      <el-table-column show-overflow-tooltip width="75px" prop="_ChannelText" label="退款渠道" />
       <el-table-column show-overflow-tooltip min-width="95px" prop="Error" label="异常原因" />
       <el-table-column show-overflow-tooltip width="60px" prop="_StatusText" label="状态">
         <template #default="scope">
           <span>{{ RefundExceptionStatusEnumList.find(it => it.ID === scope.row.Status)?.Name || '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip width="85px" prop="OperatorName" label="处理人" />
-      <el-table-column show-overflow-tooltip width="230px" label="操作">
+      <el-table-column show-overflow-tooltip width="75px" prop="OperatorName" label="处理人" />
+      <el-table-column show-overflow-tooltip width="220px" label="操作">
         <template #default="scope">
           <div class="menus">
             <el-button type="text" v-if="haveHandlePermission" size="small" @click="emit('manualProcess', scope.row)" class="mr-20"

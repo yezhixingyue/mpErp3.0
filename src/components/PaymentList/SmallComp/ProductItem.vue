@@ -7,7 +7,7 @@
                   {{data.ProductPrice}}元</i>
             </span>
             <span class="product-item-header-freight-box">
-                运费：<i>{{data.Freight}}元</i>
+                运费：<i>{{data.OriginalFreight}}元</i>
             </span>
             <span class="is-primary">{{data.Address?data.Address.ExpressText:''}}</span>
             <span>配送地址：
