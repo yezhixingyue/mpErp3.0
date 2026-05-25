@@ -11,6 +11,10 @@
       </el-tab-pane>
       <el-tab-pane label="物流中心" name="logisticsCenter" v-if="localPermission.LogisticsManage">
       </el-tab-pane>
+      <el-tab-pane label="生产工厂" name="FactoryManage" v-if="localPermission.FactoryManage">
+      </el-tab-pane>
+      <el-tab-pane label="配送中心" name="ExpressManage" v-if="localPermission.ExpressManage">
+      </el-tab-pane>
     </el-tabs>
     <ul>
       <li>
@@ -164,6 +168,12 @@ export default {
         case 'logisticsCenter':
           this.setCondition4DataList([['DepartmentID', ''], 3]);
           break;
+        case 'FactoryManage':
+          this.setCondition4DataList([['DepartmentID', ''], 2]);
+          break;
+        case 'ExpressManage':
+          this.setCondition4DataList([['DepartmentID', ''], 4]);
+          break;
         default:
           break;
       }
@@ -200,6 +210,12 @@ export default {
     } else if (this.localPermission.LogisticsManage) {
       this.activeName = 'logisticsCenter';
       this.setCondition4DataList([['DepartmentID', ''], 3]);
+    } else if (this.localPermission.FactoryManage) {
+      this.activeName = 'FactoryManage';
+      this.setCondition4DataList([['DepartmentID', ''], 2]);
+    } else if (this.localPermission.ExpressManage) {
+      this.activeName = 'ExpressManage';
+      this.setCondition4DataList([['DepartmentID', ''], 4]);
     } else {
       this.setCondition4DataList([['DepartmentID', ''], '']);
     }

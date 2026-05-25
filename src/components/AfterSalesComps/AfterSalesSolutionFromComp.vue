@@ -231,7 +231,7 @@
                 </template>
               </span>
               <span style="width: 50%;">
-                <el-checkbox v-model="ProportionResponsibility.Department2" style="margin-right: 20px;">中央工厂</el-checkbox>
+                <el-checkbox v-model="ProportionResponsibility.Department2" style="margin-right: 20px;">生产工厂</el-checkbox>
                 <template v-if="ProportionResponsibility.Department2">
                   所占责任：
                   <el-input oninput="value=value.replace(/[^\d]/g,'')"
