@@ -16,7 +16,7 @@
             业务中心 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 1).Proportion }}%
           </p>
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2)">
-            生产工厂 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2).Proportion }}%
+            生产中心 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2).Proportion }}%
           </p>
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 3)"
             :class="`${ResponsibilityConfirmCondition.DepartmentID === 3 ? 'is-pink fontsize14' : ''}`">
@@ -27,11 +27,11 @@
           </p>
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 5)"
             :class="`${ResponsibilityConfirmCondition.DepartmentID === 5 ? 'is-pink fontsize14' : ''}`">
-            自动审稿软件 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 5).Proportion }}%
+            印前软件 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 5).Proportion }}%
           </p>
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 6)"
             :class="`${ResponsibilityConfirmCondition.DepartmentID === 6 ? 'is-pink fontsize14' : ''}`">
-            其他软件 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 6).Proportion }}%
+            ERP软件 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 6).Proportion }}%
           </p>
         </div>
       </li>
