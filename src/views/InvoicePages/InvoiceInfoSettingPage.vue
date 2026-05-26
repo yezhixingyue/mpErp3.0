@@ -74,17 +74,13 @@ export default {
       this.$goback();
     },
     onResetClick() {
-      this.itemData = new InvoiceInfoItemClass(this.curEditOriginItem);
+      this.itemData = new InvoiceInfoItemClass(this.curEditOriginItem, this.allProductClassify);
     },
     onSubmitClick() {
       if (!this.itemData.checker(this.InvoiceInfoList, this.defaultItemInfo)) return;
       this.submit();
     },
     async submit() {
-      if (this.isEdit && JSON.stringify(this.itemData) === JSON.stringify(new InvoiceInfoItemClass(this.curEditOriginItem))) {
-        this.messageBox.failSingleError('操作失败', '信息未改动');
-        return;
-      }
       const resp = await this.api.getInvoiceCategorySave(this.itemData).catch(() => null);
       if (!resp || resp.data.Status !== 1000) return;
       const cb = () => {
@@ -109,7 +105,6 @@ export default {
       const _list = [];
       this.InvoiceInfoList.forEach((it) => {
         if (it.InvoiceCategoryID !== this.itemData.InvoiceCategoryID) {
-          // const tempArr = oTree.getDefaultCheckedKeys(it.ProductList);
           const tempArr = it.ProductList.map(_it => _it.TypeID);
           if (Array.isArray(tempArr)) {
             _list.push(...tempArr);

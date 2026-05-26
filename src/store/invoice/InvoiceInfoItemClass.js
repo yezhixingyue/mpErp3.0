@@ -1,4 +1,3 @@
-import restoreInitDataByOrigin from '../../assets/js/utils/reduction';
 import messageBox from '../../assets/js/utils/message';
 
 export default class InvoiceInfoItemClass {
@@ -12,9 +11,24 @@ export default class InvoiceInfoItemClass {
 
   ProductList = []
 
-  constructor(data) {
-    restoreInitDataByOrigin(this, data);
-    if (!data) this.key = Math.random().toString(16).slice(-10);
+  constructor(data, allProductClassify) {
+    if (data) {
+      this.InvoiceCategoryID = data.InvoiceCategoryID;
+      this.CategoryName = data.CategoryName;
+      this.Unit = data.Unit;
+      this.IsDefault = data.IsDefault;
+
+      // 处理ProductList
+      this.ProductList = data.ProductList.map(it => {
+        const { TypeID } = it;
+
+        const t = allProductClassify.find(lv1 => lv1.children.map(lv2 => lv2.ID).includes(TypeID));
+
+        return t ? { TypeID, ClassID: t.ID } : null;
+      }).filter(Boolean);
+    } else {
+      this.key = Math.random().toString(16).slice(-10);
+    }
   }
 
   checker(InvoiceInfoList, defaultItemInfo) {
