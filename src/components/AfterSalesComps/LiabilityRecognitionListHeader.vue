@@ -5,11 +5,15 @@
     localPermission.AutoSoftManage || localPermission.OtherSoftManage || localPermission.LogisticsManage">
       <el-tab-pane label="业务中心" name="businessCenter" v-if="localPermission.BusinessQueryAll || localPermission.BusinessQueryDepartment">
       </el-tab-pane>
-      <el-tab-pane label="自动审稿软件" name="reviewSoftware" v-if="localPermission.AutoSoftManage">
+      <el-tab-pane label="印前软件" name="reviewSoftware" v-if="localPermission.AutoSoftManage">
       </el-tab-pane>
-      <el-tab-pane label="其他软件" name="otherSoftware" v-if="localPermission.OtherSoftManage">
+      <el-tab-pane label="ERP软件" name="otherSoftware" v-if="localPermission.OtherSoftManage">
       </el-tab-pane>
       <el-tab-pane label="物流中心" name="logisticsCenter" v-if="localPermission.LogisticsManage">
+      </el-tab-pane>
+      <el-tab-pane label="生产中心" name="FactoryManage" v-if="localPermission.FactoryManage">
+      </el-tab-pane>
+      <el-tab-pane label="配送中心" name="DeliveryManage" v-if="localPermission.DeliveryManage">
       </el-tab-pane>
     </el-tabs>
     <ul>
@@ -164,6 +168,12 @@ export default {
         case 'logisticsCenter':
           this.setCondition4DataList([['DepartmentID', ''], 3]);
           break;
+        case 'FactoryManage':
+          this.setCondition4DataList([['DepartmentID', ''], 2]);
+          break;
+        case 'DeliveryManage':
+          this.setCondition4DataList([['DepartmentID', ''], 4]);
+          break;
         default:
           break;
       }
@@ -200,6 +210,12 @@ export default {
     } else if (this.localPermission.LogisticsManage) {
       this.activeName = 'logisticsCenter';
       this.setCondition4DataList([['DepartmentID', ''], 3]);
+    } else if (this.localPermission.FactoryManage) {
+      this.activeName = 'FactoryManage';
+      this.setCondition4DataList([['DepartmentID', ''], 2]);
+    } else if (this.localPermission.DeliveryManage) {
+      this.activeName = 'DeliveryManage';
+      this.setCondition4DataList([['DepartmentID', ''], 4]);
     } else {
       this.setCondition4DataList([['DepartmentID', ''], '']);
     }

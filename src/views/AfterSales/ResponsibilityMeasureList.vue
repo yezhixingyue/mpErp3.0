@@ -58,7 +58,7 @@
                 业务中心
               </template>
               <template v-if="it.Department === 2">
-                生产工厂
+                生产中心
               </template>
               <template v-if="it.Department === 3">
                 物流中心
@@ -67,10 +67,10 @@
                 配送中心
               </template>
               <template v-if="it.Department === 5">
-                自动审稿软件
+                印前软件
               </template>
               <template v-if="it.Department === 6">
-                其他软件
+                ERP软件
               </template>:{{ it.Proportion }}%
             </span>
           </template>

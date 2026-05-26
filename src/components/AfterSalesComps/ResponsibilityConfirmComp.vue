@@ -15,23 +15,25 @@
             :class="`${ResponsibilityConfirmCondition.DepartmentID === 1 ? 'is-pink fontsize14' : ''}`">
             业务中心 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 1).Proportion }}%
           </p>
-          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2)">
-            生产工厂 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2).Proportion }}%
+          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2)"
+            :class="`${ResponsibilityConfirmCondition.DepartmentID === 2 ? 'is-pink fontsize14' : ''}`">
+            生产中心 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 2).Proportion }}%
           </p>
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 3)"
             :class="`${ResponsibilityConfirmCondition.DepartmentID === 3 ? 'is-pink fontsize14' : ''}`">
             物流中心 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 3).Proportion }}%
           </p>
-          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 4)">
+          <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 4)"
+            :class="`${ResponsibilityConfirmCondition.DepartmentID === 4 ? 'is-pink fontsize14' : ''}`">
             配送中心 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 4).Proportion }}%
           </p>
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 5)"
             :class="`${ResponsibilityConfirmCondition.DepartmentID === 5 ? 'is-pink fontsize14' : ''}`">
-            自动审稿软件 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 5).Proportion }}%
+            印前软件 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 5).Proportion }}%
           </p>
           <p v-if="ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 6)"
             :class="`${ResponsibilityConfirmCondition.DepartmentID === 6 ? 'is-pink fontsize14' : ''}`">
-            其他软件 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 6).Proportion }}%
+            ERP软件 {{ ConfirmDetail.AfterSaleResponsibilities.find(it => it.Department === 6).Proportion }}%
           </p>
         </div>
       </li>
@@ -122,7 +124,8 @@ export default {
     ...mapState('common', ['userTypeList']),
     ...mapState('AfterSale', ['QuestionClassList', 'ResponsibilityConfirmCondition']),
     isNoPerson() {
-      return this.ResponsibilityConfirmCondition.DepartmentID === 5
+      return this.ResponsibilityConfirmCondition.DepartmentID === 5 || this.ResponsibilityConfirmCondition.DepartmentID === 2
+      || this.ResponsibilityConfirmCondition.DepartmentID === 4
       || this.ResponsibilityConfirmCondition.DepartmentID === 6 || this.ResponsibilityConfirmCondition.DepartmentID === 3;
     },
   },

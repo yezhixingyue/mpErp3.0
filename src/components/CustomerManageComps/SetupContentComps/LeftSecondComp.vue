@@ -30,8 +30,8 @@
       <el-button
        class="cancel-blue-btn"
        @click="onAddressItemSaveClick(null)"
-       :disabled='ruleForm.Address.length >= 3 || (!PermissionObj.EditOther  && isEdit)'
-       title="最多可添加3条配送地址">+ 增加一条配送地址</el-button>
+       :disabled='ruleForm.Address.length >= 6 || (!PermissionObj.EditOther  && isEdit)'
+       title="最多可添加6条配送地址">+ 增加一条配送地址</el-button>
       <AddMapComp
         isEmitType
         top='5vh'

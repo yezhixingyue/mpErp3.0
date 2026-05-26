@@ -36,7 +36,7 @@
                 </template>
               </p>
               <p>
-                <el-checkbox v-model="ProportionResponsibility.Department2">生产工厂</el-checkbox>
+                <el-checkbox v-model="ProportionResponsibility.Department2">生产中心</el-checkbox>
                 <template v-if="ProportionResponsibility.Department2">
                   所占责任：
                   <el-input v-model="ProportionResponsibility.DepartmentProportion2" size="medium" style="width: 50px;"></el-input> %
@@ -72,7 +72,7 @@
                 </template>
               </p>
               <p>
-                <el-checkbox v-model="ProportionResponsibility.Department5">自动审稿软件</el-checkbox>
+                <el-checkbox v-model="ProportionResponsibility.Department5">印前软件</el-checkbox>
                 <template v-if="ProportionResponsibility.Department5">
                   所占责任：
                   <el-input v-model="ProportionResponsibility.DepartmentProportion5" size="medium" style="width: 50px;"></el-input> %
@@ -84,7 +84,7 @@
                 </template>
               </p>
               <p>
-                <el-checkbox v-model="ProportionResponsibility.Department6">其他软件</el-checkbox>
+                <el-checkbox v-model="ProportionResponsibility.Department6">ERP软件</el-checkbox>
                 <template v-if="ProportionResponsibility.Department6">
                   所占责任：
                   <el-input v-model="ProportionResponsibility.DepartmentProportion6" size="medium" style="width: 50px;"></el-input> %
@@ -101,7 +101,7 @@
                 业务中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 1).Proportion }}%
               </p>
               <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 2)">
-                生产工厂 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 2).Proportion }}%
+                生产中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 2).Proportion }}%
               </p>
               <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 3)">
                 物流中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 3).Proportion }}%
@@ -110,10 +110,10 @@
                 配送中心 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 4).Proportion }}%
               </p>
               <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 5)">
-                自动审稿软件 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 5).Proportion }}%
+                印前软件 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 5).Proportion }}%
               </p>
               <p v-if="ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 6)">
-                其他软件 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 6).Proportion }}%
+                ERP软件 {{ ResponsibilityDivideDetail.AfterSaleResponsibilities.find(it => it.Department === 6).Proportion }}%
               </p>
             </template>
           </div>

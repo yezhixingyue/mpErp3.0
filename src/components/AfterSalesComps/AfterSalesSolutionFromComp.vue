@@ -231,7 +231,7 @@
                 </template>
               </span>
               <span style="width: 50%;">
-                <el-checkbox v-model="ProportionResponsibility.Department2" style="margin-right: 20px;">中央工厂</el-checkbox>
+                <el-checkbox v-model="ProportionResponsibility.Department2" style="margin-right: 20px;">生产中心</el-checkbox>
                 <template v-if="ProportionResponsibility.Department2">
                   所占责任：
                   <el-input oninput="value=value.replace(/[^\d]/g,'')"
@@ -255,7 +255,7 @@
                 </template>
               </span>
               <span style="width: 50%;">
-                <el-checkbox v-model="ProportionResponsibility.Department5" style="margin-right: 20px;">自动审稿软件</el-checkbox>
+                <el-checkbox v-model="ProportionResponsibility.Department5" style="margin-right: 20px;">印前软件</el-checkbox>
                 <template v-if="ProportionResponsibility.Department5">
                   所占责任：
                   <el-input oninput="value=value.replace(/[^\d]/g,'')"
@@ -263,7 +263,7 @@
                 </template>
               </span>
               <span style="width: 50%;">
-                <el-checkbox v-model="ProportionResponsibility.Department6" style="margin-right: 20px;">其他软件</el-checkbox>
+                <el-checkbox v-model="ProportionResponsibility.Department6" style="margin-right: 20px;">ERP软件</el-checkbox>
                 <template v-if="ProportionResponsibility.Department6">
                   所占责任：
                   <el-input oninput="value=value.replace(/[^\d]/g,'')"

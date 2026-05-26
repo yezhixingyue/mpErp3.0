@@ -196,7 +196,7 @@ export default {
             title = '业务中心';
             break;
           case 2:
-            title = '生产工厂';
+            title = '生产中心';
             break;
           case 3:
             title = '物流中心';
@@ -205,10 +205,10 @@ export default {
             title = '配送中心';
             break;
           case 5:
-            title = '自动审稿软件';
+            title = '印前软件';
             break;
           case 6:
-            title = '其他软件';
+            title = 'ERP软件';
             break;
           default:
             title = '业务中心';
