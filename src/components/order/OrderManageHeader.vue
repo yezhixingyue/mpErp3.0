@@ -178,7 +178,6 @@ export default {
         return this.objForOrderList.IsPause;
       },
       set(val) {
-        console.log(val);
         this.setOrderManageRequestObj([['IsPause'], val]);
         this.getDataList();
       },

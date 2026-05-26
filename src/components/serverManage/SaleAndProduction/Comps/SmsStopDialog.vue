@@ -106,7 +106,6 @@ const onOpen = async () => {
 const submit = () => {
   oForm.value.validate((valid: boolean) => {
     if (valid) {
-      console.log(`${ruleForm.value.date}T${ruleForm.value.time}`);
       emit('submit', getTimeString());
     }
   });
