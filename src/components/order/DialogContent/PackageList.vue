@@ -262,7 +262,7 @@ import CommonDialogComp from '@/packages/CommonDialogComp';
 import { mapState, mapMutations, mapActions } from 'vuex';
 // import ImgBtn from '@/components/common/ImgBtn.vue';
 import MiniProgressItem from '@/components/common/MiniProgressItem.vue';
-import { format2LangTypeDateFunc } from '@/assets/js/filters/filters.js';
+import { format2LangTypeDateFunc, format2MiddleLangTypeDateFunc2 } from '@/assets/js/filters/filters.js';
 
 const img1 = require('@/assets/images/service.png');
 const img2 = require('@/assets/images/servicestop.png');
@@ -279,7 +279,6 @@ export default {
       visible: false,
       BillNo: '',
       dataList: [],
-      curPackageID: '',
       loading: false,
     };
   },
@@ -313,6 +312,10 @@ export default {
           obj.afterTime = afterTime;
           obj.year = year;
         }
+        obj.IsPause = it.IsPause;
+        obj.PausePerson = it.PausePerson;
+        obj.PauseRemark = it.PauseRemark;
+        obj.PauseTime = format2MiddleLangTypeDateFunc2(it.PauseTime);
         if (it.Pics && it.Pics.length > 0) obj.Pics = it.Pics;
         arr.push(obj);
       });
@@ -347,7 +350,7 @@ export default {
       return `${worth.toFixed(1)}元`;
     },
     async getExpressDetail(id, ExressID) {
-      if (!id || id === this.curPackageID) return;
+      if (!id) return;
       this.dataList = [];
       let key = true;
       this.loading = true;
@@ -355,7 +358,6 @@ export default {
       this.loading = false;
       if (key && res && res.data.Status === 1000) {
         this.dataList = res.data.Data;
-        this.curPackageID = id;
       }
     },
     onExpressClick({ ID, Logistics, BillNo: haveSunBillNo }) {

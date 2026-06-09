@@ -17,7 +17,7 @@
 <script>
 import { mapState } from 'vuex';
 import MiniProgressItem from '@/components/common/MiniProgressItem.vue';
-import { format2LangTypeDateFunc } from '@/assets/js/filters/filters.js';
+import { format2LangTypeDateFunc, format2MiddleLangTypeDateFunc2 } from '@/assets/js/filters/filters.js';
 
 export default {
   components: {
@@ -41,6 +41,10 @@ export default {
           obj.afterTime = afterTime;
           obj.year = year;
         }
+        obj.IsPause = it.IsPause;
+        obj.PausePerson = it.PausePerson;
+        obj.PauseRemark = it.PauseRemark;
+        obj.PauseTime = format2MiddleLangTypeDateFunc2(it.PauseTime);
         if (it.Pics && it.Pics.length > 0) obj.Pics = it.Pics;
         arr.push(obj);
       });

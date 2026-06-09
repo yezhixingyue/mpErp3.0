@@ -12,6 +12,12 @@
       <div>
         <span v-if="data.StatusName" class="title">{{ data.StatusName }}</span>
         <span>{{ data.expressDetail }}</span>
+        <template v-if="data.IsPause">
+          <el-tooltip placement="top"
+          :content="`暂停人：${data.PausePerson}；暂停时间：${data.PauseTime}；备注：${data.PauseRemark}`">
+            <span class="is-pink">(暂停)</span>
+          </el-tooltip>
+        </template>
         <span v-if="data.operator" class="operator"><i>/</i>{{ data.operator }}</span>
       </div>
       <div v-if="data.Pics && data.Pics.length > 0" class="express-pics-wrap">
