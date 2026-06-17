@@ -30,15 +30,23 @@
         {{scope.row.StopDistributionNumber}}人
       </template>
     </el-table-column>
+    <el-table-column width="100px"  show-overflow-tooltip label="状态">
+      <template slot-scope="scope">
+        {{scope.row.Disabled ? '已停用' : '已启用'}}
+      </template>
+    </el-table-column>
     <el-table-column width="375px" label="操作">
       <template slot-scope="scope">
         <CtrlMenus
           :canRemove='scope.row.TotalNumber===0'
           :showList="showList"
           detailText="查看成员"
+          :enableText="scope.row.Disabled ? '启用' : '停用'"
+          :isEnable="!scope.row.Disabled"
           @edit='onEditClick(scope.row, scope.$index)'
           @remove='onRemoveClick(scope.row, scope.$index)'
           @detail="onMemberViewClick(scope.row.ID)"
+          @enable="onEnableClick(scope.row, scope.$index)"
         />
       </template>
     </el-table-column>
@@ -79,6 +87,7 @@ export default {
         arr.push('detail');
       }
       if (this.localPermission.GroupSetup) {
+        arr.push('enable');
         arr.push('edit');
         arr.push('del');
       }
@@ -100,6 +109,11 @@ export default {
     },
     onMemberViewClick(id) {
       this.$emit('member', id);
+    },
+    onEnableClick(data, index) {
+      this.messageBox.warnCancelBox(`确定${data.Disabled ? '启用' : '停用'}该分组吗 ?`, `组名称：${data.Name}`, () => {
+        this.$emit('enable', [data, index]);
+      }, null);
     },
   },
 };

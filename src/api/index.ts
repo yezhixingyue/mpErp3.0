@@ -1391,6 +1391,9 @@ const api = {
   getMemberGroupRemove(id) { // DELETE /Api/MemberGroup/Remove  人员分组删除
     return instance.delete('/Api/MemberGroup/Remove', { params: { id } });
   },
+  getMemberGroupEnable(id, disabled) { // DELETE /Api/MemberGroup/Switch  人员分组启用/停用
+    return instance.put('/Api/MemberGroup/Switch', null, { params: { id, disabled } });
+  },
   getForcedExitList(data) { // GET /Api/ForcedExit/List   获取强退列表信息
     return instance.post('/Api/ForcedExit/List', data);
   },

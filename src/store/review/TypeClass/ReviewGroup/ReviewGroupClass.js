@@ -15,6 +15,8 @@ export default class ReviewGroupClass {
 
   originData = null
 
+  Disabled = false
+
   constructor(data) {
     restoreInitDataByOrigin(this, data);
     this.originData = data || null;

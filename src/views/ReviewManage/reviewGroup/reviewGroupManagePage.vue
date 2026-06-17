@@ -5,7 +5,12 @@
       <span class="red-span is-bold ml-20" @click="onStrongBackListClick" v-if="localPermission.QueryForcedExit">强退人员名单</span>
     </header>
     <main>
-      <GroupTable :list="reviewGroupList" :loading="loading" @edit="onItemEditClick" @remove="onItemRemoveClick" @member="onMemberViewClick" />
+      <GroupTable :list="reviewGroupList" :loading="loading"
+       @edit="onItemEditClick"
+       @remove="onItemRemoveClick"
+       @enable="onItemEnableClick"
+       @member="onMemberViewClick" />
+
       <GroupEditDialog :visible.sync="visible" :item="curEditItem" @success="handleSaveSuccess" :list="reviewGroupList" />
     </main>
     <footer>
@@ -51,6 +56,9 @@ export default {
     },
     onItemRemoveClick([item, index]) { // 删除
       this.$store.dispatch('review/getMemberGroupRemove', [item, index]);
+    },
+    onItemEnableClick([item, index]) { // 启用/停用
+      this.$store.dispatch('review/getMemberGroupEnable', [item, index]);
     },
     onMemberViewClick(id) { // 查看成员
       this.$router.push({ name: 'reviewGroupMembers', params: { id } });

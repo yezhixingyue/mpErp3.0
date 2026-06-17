@@ -1,5 +1,10 @@
 <template>
   <div class="ctrl-menus-container">
+    <span @click="onEnableClick" :class="canEnable ? '' : 'disabled'" v-if="showList.includes('enable')">
+      <img v-if="isEnable" src="@/assets/images/menu/stop.png" alt="" style="height: 15px;position:relative;top:1px">
+      <img v-else src="@/assets/images/menu/enable.png" alt="" style="height: 15px;position:relative;top:1px">
+      <i>{{enableText}}</i>
+    </span>
     <span @click="onAddClick" :class="canAdd ? '' : 'disabled'" v-if="showList.includes('add') && addBefore">
       <img src="@/assets/images/add.png" alt="">
       <i>{{addText}}</i>
@@ -99,6 +104,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    isEnable: {
+      type: Boolean,
+      default: false,
+    },
+    canEnable: {
+      type: Boolean,
+      default: true,
+    },
     canDetail: {
       type: Boolean,
       default: true,
@@ -163,6 +176,10 @@ export default {
       type: String,
       default: '详情',
     },
+    enableText: {
+      type: String,
+      default: '启用',
+    },
   },
   methods: {
     onEditClick() {
@@ -219,6 +236,11 @@ export default {
     onDetailClick() {
       if (!this.canDetail) return;
       this.$emit('detail');
+    },
+    onEnableClick() {
+      if (!this.canEnable) return;
+
+      this.$emit('enable');
     },
   },
 };

@@ -400,6 +400,17 @@ export default {
         messageBox.successSingle('删除成功', cb, cb);
       }
     },
+    async getMemberGroupEnable({ commit }, [item, index]) { // 审稿分组启用/停用
+      if (!item) return;
+      const { ID, Disabled } = item;
+      const resp = await api.getMemberGroupEnable(ID, !Disabled).catch(() => null);
+      if (resp && resp.data.Status === 1000) {
+        const cb = () => {
+          commit('setReviewGroupItemChange', { item: { ...item, Disabled: !Disabled }, index, isDelete: false });
+        };
+        messageBox.successSingle(`${Disabled ? '启用' : '停用'}成功`, cb, cb);
+      }
+    },
   },
 };
 
