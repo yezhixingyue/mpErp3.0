@@ -56,7 +56,7 @@
         <li @click="onCloseAllClick">关闭所有</li>
       </ul>
       <div class="user">
-        <!-- <span class="menu ft-12 mr-18" v-if="showFileCheck" @click="handleFileCheck"> <i class="iconfont icon-pindianjiancha ft-16"></i> 检查文件内容</span> -->
+        <NotificationMenu v-if="Permission && Permission.ReceiveMessage" />
         <el-dropdown trigger="click" v-if="Permission && (showBatchUpload || showFileCheck)" @command='onCommand' class="mr-15">
           <span class="el-dropdown-link">
             <i class="iconfont icon-qitafuwu ft-18"></i>
@@ -119,10 +119,12 @@ import { logout } from '../../../basic/logout';
 import ChangePwdDialog from './ChangePwdDialog.vue';
 import { WikiHandler } from '@/assets/js/TypeClass/WikiHandler';
 import { siteType } from '@/config';
+import NotificationMenu from './NotificationMenu.vue';
 
 export default {
   components: {
     ChangePwdDialog,
+    NotificationMenu,
   },
   data() {
     return {
@@ -395,7 +397,7 @@ export default {
     padding-top: 8px;
     position: relative;
     // padding-bottom: 2px;
-    padding-right: 260px;
+    padding-right: 327px;
     width: 100%;
     box-sizing: border-box;
     background-color: #191F2A;
@@ -534,7 +536,7 @@ export default {
       position: absolute;
       flex: none;
       text-align: right;
-      width: 260px;
+      width: 327px;
       right: 0;
       top: 0;
       bottom: 0;
@@ -712,7 +714,7 @@ export default {
     }
   }
 }
-.mp-erp-header-username-tooltip-popper-box {
+.mp-erp-header-username-tooltip-popper-box, .mp-erp-header-message-tooltip-popper-box {
   background: rgb(25, 31, 42) !important;
   background: rgb(34, 43, 58) !important;
 }

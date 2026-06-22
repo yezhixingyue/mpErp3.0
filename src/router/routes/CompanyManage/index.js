@@ -102,6 +102,20 @@ const routes = { // 基本设置
       },
       component: () => import('../../../views/CompanyManage/EquipmentManage/EquipmentList/EquipmentListManageView.vue'),
     },
+    /*  消息提醒设置
+    ------------------------------------------ */
+    {
+      path: '/notification',
+      name: 'notification',
+      meta: {
+        title: '消息提醒设置',
+        icon: 'el-icon-chat-line-square',
+        pageName: 'NotificationListManageView',
+        PermissionInfo: ['PermissionManageMessage', 'HavePomission'],
+        requiresAuth: true,
+      },
+      component: () => import('../../../views/CompanyManage/NotificationManage/NotificationManageView.vue'),
+    },
     /*  资产管理
     ------------------------------------------ */
     // {

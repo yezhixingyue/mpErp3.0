@@ -9,6 +9,7 @@ import TokenClass from '../assets/js/utils/tokenManage';
 import { getLastRouteInfoByName } from './getLastRouteInfoByName';
 import router from './index';
 import { useUserStore } from '../pinia/modules/user';
+import { signalR } from '../assets/js/notification/SignalRService.ts';
 
 // if (window.location.protocol.includes('https')) {
 //   window.location = window.location.href.replace('https', 'http');
@@ -162,6 +163,12 @@ const handleRouterEach = (_router) => {
               const userStore = useUserStore();
               userStore.setUserDetail(res);
               handlePermission(to, next, res.PermissionList, from);
+
+              // 获取用户信息成功
+              console.log(res);
+              if (res.ReceiveMessage) {
+                signalR.start(res.StaffID);
+              }
             }
           });
         } else if (permission.Token === token) {

@@ -1798,6 +1798,24 @@ const api = {
   getDeveloperBindCustomer(data) {
     return instance.post('/Api/Developer/BindCustomer', data);
   },
+  /* 消息管理
+  ------------------------------- */
+  //   GET    /Api/Message/Member/List                                      消息接收人列表
+  getMessageMemberList() {
+    return instance.get('/Api/Message/Member/List');
+  },
+  // POST   /Api/Message/Member/Save                                        消息接收人保存
+  getMessageMemberSave(data) {
+    return instance.post('/Api/Message/Member/Save', data);
+  },
+  // DELETE /Api/Message/Member/Remove                                      消息接收人删除
+  getMessageMemberRemove(id: string) {
+    return instance.delete('/Api/Message/Member/Remove', { params: { id } });
+  },
+  // /Api/Message/List GET  初始信息
+  getMessageList() {
+    return instance.get('/Api/Message/List');
+  },
 };
 
 export default api;

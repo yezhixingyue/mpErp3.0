@@ -54,13 +54,16 @@ export default class TokenClass {
           && !_obj.PermissionList.PermissionManageAfterSales.Obj.QueryOwn) {
           _obj.PermissionList.PermissionManageAfterSales.HavePomission = false;
         }
+
         localStorage.setItem('staffDetailData', JSON.stringify(_obj));
         return _obj;
       }
       return res && res.data ? res.data.Message : '获取账号信息失败，请刷新重试';
     }
     const data = JSON.parse(_detailData);
-    if (data.Token === token) return data;
+    if (data.Token === token) {
+      return data;
+    }
     localStorage.removeItem('staffDetailData');
     return this.getPermission(token);
   }

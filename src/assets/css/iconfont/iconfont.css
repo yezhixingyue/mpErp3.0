@@ -1,11 +1,11 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3470998 */
-  src: url('iconfont.eot?t=1776847806960'); /* IE9 */
-  src: url('iconfont.eot?t=1776847806960#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('iconfont.woff2?t=1776847806960') format('woff2'),
-       url('iconfont.woff?t=1776847806960') format('woff'),
-       url('iconfont.ttf?t=1776847806960') format('truetype'),
-       url('iconfont.svg?t=1776847806960#iconfont') format('svg');
+  src: url('iconfont.eot?t=1782092841005'); /* IE9 */
+  src: url('iconfont.eot?t=1782092841005#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('iconfont.woff2?t=1782092841005') format('woff2'),
+       url('iconfont.woff?t=1782092841005') format('woff'),
+       url('iconfont.ttf?t=1782092841005') format('truetype'),
+       url('iconfont.svg?t=1782092841005#iconfont') format('svg');
 }
 
 .iconfont {
@@ -14,6 +14,18 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-tixing:before {
+  content: "\ea42";
+}
+
+.icon-tingyong:before {
+  content: "\e6d3";
+}
+
+.icon-qiyong:before {
+  content: "\e6d2";
 }
 
 .icon-fanhui:before {

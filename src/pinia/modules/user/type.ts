@@ -37,5 +37,13 @@ export interface IUser {
         Handle: boolean
       },
     }
+    /** 信息提醒设置 */
+    PermissionManageMessage?: {
+      HavePomission: boolean
+      Obj: {
+        Query: boolean
+        Setup: boolean
+      },
+    }
   }
 }
