@@ -54,7 +54,7 @@ export class MessageMemberListManageModel {
   staffList: { StaffID: string; StaffName: string }[] = []
 
   async getStaffList() {
-    const resp = await api.getStaffList({ FieldType: 3 }).catch(() => null);
+    const resp = await api.getStaffList({ FieldType: 1 }).catch(() => null);
 
     if (resp?.data?.isSuccess) {
       this.staffList = (resp.data.Data || []).map(it => ({
