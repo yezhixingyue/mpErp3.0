@@ -60,7 +60,7 @@
           </span>
         </li>
         <li>
-          <span class="label is-bold" style="line-height: 32px;">差额：</span><span class="value">
+          <span class="label is-bold" style="line-height: 32px;">差额：</span><span class="value" v-if="!isHaveOriginalID">
             <el-select class="amount-select" size="small" @change="AmountSelectChange" v-model="AmountSelect" placeholder="请选择"
             style="margin-right: 20px; width: 90px;" v-if="!isNotYetShipped">
               <el-option
@@ -82,6 +82,7 @@
             <el-button size="small" type="primary" style="margin-left: 20px;" v-if="isNotYetShipped"
               @click="FreightCalculate">计算运费差额</el-button>
           </span>
+          <span class="value" style="line-height: 32px; color: red;" v-else>补印单不收取/退还运费差额</span>
         </li>
         <li>
           <span class="label is-bold">备注（选填）：</span><span class="value">
@@ -171,6 +172,9 @@ export default {
     },
     isNotYetShipped() { // 是否未发货
       return this.OrderDetail.Status < 80;
+    },
+    isHaveOriginalID() { // 是否是补印单
+      return !!this.OrderDetail.OriginalID;
     },
     Amount: {
       get() {
@@ -431,22 +435,24 @@ export default {
         this.messageBox.failSingleError('操作失败', '请输入正确的手机号');
         return false;
       }
-      if (this.ruleForm.Type === 0 && this.isNotYetShipped && this.ruleForm.Amount === '') {
-        this.messageBox.failSingleError('操作失败', '请点击“计算运费差额”后提交');
-        return false;
-      }
-      if (this.ruleForm.Type === 0 && !this.isNotYetShipped && this.ruleForm.Amount === '') {
-        this.messageBox.failSingleError('操作失败', '请输入差额');
-        return false;
-      }
-      if (this.ruleForm.Type === 0 && !this.isNotYetShipped && this.ruleForm.Amount === '0' && (this.AmountSelect === 6 || this.AmountSelect === 9)) {
-        this.messageBox.failSingleError('操作失败', '差额不能为0');
-        return false;
-      }
-      if (this.ruleForm.Type === 0 && !this.isNotYetShipped && this.AmountSelect === 6
-      && this.ruleForm.Amount > Number((this.OrderDetail.Funds.Freight - this.OrderDetail.Funds.RefundFreightAmount).toFixed(1))) {
-        this.messageBox.failSingleError('操作失败', '需退差额超过原运费');
-        return false;
+      if (!this.isHaveOriginalID) { // 如果是补印单则不需要验证差额
+        if (this.ruleForm.Type === 0 && this.isNotYetShipped && this.ruleForm.Amount === '') {
+          this.messageBox.failSingleError('操作失败', '请点击“计算运费差额”后提交');
+          return false;
+        }
+        if (this.ruleForm.Type === 0 && !this.isNotYetShipped && this.ruleForm.Amount === '') {
+          this.messageBox.failSingleError('操作失败', '请输入差额');
+          return false;
+        }
+        if (this.ruleForm.Type === 0 && !this.isNotYetShipped && this.ruleForm.Amount === '0' && (this.AmountSelect === 6 || this.AmountSelect === 9)) {
+          this.messageBox.failSingleError('操作失败', '差额不能为0');
+          return false;
+        }
+        if (this.ruleForm.Type === 0 && !this.isNotYetShipped && this.AmountSelect === 6
+        && this.ruleForm.Amount > Number((this.OrderDetail.Funds.Freight - this.OrderDetail.Funds.RefundFreightAmount).toFixed(1))) {
+          this.messageBox.failSingleError('操作失败', '需退差额超过原运费');
+          return false;
+        }
       }
       if (this.ruleForm.Type === 1 && this.ruleForm.Amount === '') {
         this.messageBox.failSingleError('操作失败', '请输入运费金额');
@@ -475,7 +481,9 @@ export default {
           }
           _ruleForm.CurrentAmount = (Number(this.ruleForm.OriginalAmount) + Number(_ruleForm.Amount)).toFixed(1);
         }
-
+        if (this.isHaveOriginalID && this.ruleForm.Type === 0) { // 如果是补印单则不需要验证差额
+          _ruleForm.Amount = 0;
+        }
         // 提交数据
         this.api.getOrderExpressChange(_ruleForm).then(res => {
           if (res.data.Status === 1000) {
