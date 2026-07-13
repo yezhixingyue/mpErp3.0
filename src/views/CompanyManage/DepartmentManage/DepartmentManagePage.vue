@@ -102,6 +102,11 @@ export default {
         if (removeRes.status === 200 && removeRes.data.Status === 1000);
       }
       // 保存
+      if (!returnData.length) {
+        await this.$store.dispatch('department/getDepartmentList');
+        callback();
+        return;
+      }
       const res = await api.getDepartmentSave(returnData);
       if (res.status === 200 && res.data.Status === 1000) {
         await this.$store.dispatch('department/getDepartmentList');
