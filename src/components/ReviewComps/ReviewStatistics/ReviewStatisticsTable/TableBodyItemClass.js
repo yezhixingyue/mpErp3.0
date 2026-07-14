@@ -17,16 +17,21 @@ export default class TableBodyItemClass {
       ...staff,
       DataList: ProductList
         .map(p => DataList.find(it => it.StaffID === staff.ID && it.TypeID === p.ID)
-           || { KindCount: 0, OrderCount: 0, TotalAmount: 0, StaffID: staff.ID, TypeID: p.ID }),
+           || { KindCount: 0, OrderCount: 0, TotalAmount: 0, PNumber: null, StaffID: staff.ID, TypeID: p.ID }),
     }))
       .map(it => { // 4. 为每一行添加上合计信息
         const KindCount = it.DataList.map(_it => _it.KindCount).reduce((a, b) => a + b, 0);
         const OrderCount = it.DataList.map(_it => _it.OrderCount).reduce((a, b) => a + b, 0);
         const TotalAmount = it.DataList.map(_it => _it.TotalAmount).reduce((a, b) => a + b, 0);
+
+        const PNumberList = it.DataList.map(_it => _it.PNumber).filter(_it => _it !== null);
+        const PNumber = PNumberList.length > 0 ? Number((PNumberList.reduce((a, b) => a + b, 0)).toFixed(1)) : null;
+
         return {
           ...it,
           key: Math.random().toString(16).slice(-10),
-          DataList: [...it.DataList, { KindCount, OrderCount, TotalAmount: +(TotalAmount.toFixed(1)), StaffID: '', TypeID: -1 }],
+          DataList: [...it.DataList,
+            { KindCount, OrderCount, TotalAmount: +(TotalAmount.toFixed(1)), PNumber, StaffID: '', TypeID: -1 }],
         };
       });
     // 添加组及组合计信息
@@ -37,7 +42,8 @@ export default class TableBodyItemClass {
       const KindCount = _list.map(_it => _it.KindCount).reduce((a, b) => a + b, 0);
       const OrderCount = _list.map(_it => _it.OrderCount).reduce((a, b) => a + b, 0);
       const TotalAmount = _list.map(_it => _it.TotalAmount).reduce((a, b) => a + b, 0);
-      HeaderDataList.push({ KindCount, OrderCount, TotalAmount, StaffID: '', TypeID: -1 });
+      const PNumber = _list.map(_it => _it.PNumber).reduce((a, b) => a + b, 0);
+      HeaderDataList.push({ KindCount, OrderCount, TotalAmount, PNumber, StaffID: '', TypeID: -1 });
     }
 
     // list.unshift({ ID: '', Name: '合计', DataList: HeaderDataList, isGroup: true });

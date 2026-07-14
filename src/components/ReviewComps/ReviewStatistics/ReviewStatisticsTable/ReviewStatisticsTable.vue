@@ -128,9 +128,9 @@ export default {
               &.hide {
                 display: none;
                 margin-left: 0px;
-                & + span {
-                  margin-left: 0;
-                }
+                // & + span {
+                //  margin-left: 0;
+                // }
               }
             }
           }

@@ -6,6 +6,10 @@
       <td class="item" v-for="(d, i) in it.DataList" :key="d.StaffID + '' + i">
         <span :class="{hide: !(typeof d.OrderCount === 'number' && condition.ShowOrderCount)}">{{d.OrderCount}}单</span>
         <span :class="{hide: !(typeof d.KindCount === 'number' && condition.ShowKind)}">{{d.KindCount}}款</span>
+        <span class="p" :class="{hide: !(condition.ShowPNumber)}">
+          <template v-if="typeof d.PNumber === 'number'">{{d.PNumber}}P</template>
+          <template v-if="d.PNumber === null">-</template>
+        </span>
         <span class="p" :class="{hide: !(typeof d.TotalAmount === 'number' && condition.ShowAmount)}">{{d.TotalAmount}}元</span>
       </td>
     </tr>

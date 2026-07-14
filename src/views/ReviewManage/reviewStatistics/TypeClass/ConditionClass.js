@@ -14,6 +14,8 @@ export default class ConditionClass {
 
   ShowAmount = true // 金额
 
+  ShowPNumber = true // P数
+
   Page = 1
 
   PageSize = 30
@@ -24,6 +26,7 @@ export default class ConditionClass {
     temp.ShowOrderCount = true;
     temp.ShowKind = true;
     temp.ShowAmount = true;
+    temp.ShowPNumber = true;
     return temp;
   }
 

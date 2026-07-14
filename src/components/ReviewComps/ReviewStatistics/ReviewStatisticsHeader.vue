@@ -14,6 +14,7 @@
       <span>显示内容：</span>
       <el-checkbox v-model="ShowOrderCount">订单数量</el-checkbox>
       <el-checkbox v-model="ShowKind">款数</el-checkbox>
+      <el-checkbox v-model="ShowPNumber">P数</el-checkbox>
       <el-checkbox v-model="ShowAmount">金额</el-checkbox>
     </div>
   </header>
@@ -78,6 +79,14 @@ export default {
       },
       set(val) {
         this.setCondition([['ShowAmount'], val]);
+      },
+    },
+    ShowPNumber: {
+      get() {
+        return this.condition.ShowPNumber;
+      },
+      set(val) {
+        this.setCondition([['ShowPNumber'], val]);
       },
     },
   },

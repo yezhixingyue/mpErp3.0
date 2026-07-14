@@ -110,7 +110,8 @@ export default {
      */
     ProductElementTypeList: [
       { Name: '数量', ID: 0, onlyProduct: false, needFormula: true, needElement: true, width: '380px', isNumber: true },
-      { Name: '印面', ID: 3, onlyProduct: false, needFormula: false, needElement: true, width: '300px' },
+      { Name: '印面', ID: 3, onlyProduct: false, needFormula: false, needElement: true },
+      { Name: 'P数', ID: 4, onlyProduct: true, needFormula: true, needElement: false },
       { Name: '款数', ID: 1, onlyProduct: true, needFormula: false, needElement: true },
       { Name: '重量', ID: 2, onlyProduct: true, needFormula: true, needElement: false },
     ],
