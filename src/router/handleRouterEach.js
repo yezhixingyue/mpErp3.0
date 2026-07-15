@@ -165,7 +165,6 @@ const handleRouterEach = (_router) => {
               handlePermission(to, next, res.PermissionList, from);
 
               // 获取用户信息成功
-              console.log(res);
               if (res.ReceiveMessage) {
                 signalR.start(res.StaffID);
               }
